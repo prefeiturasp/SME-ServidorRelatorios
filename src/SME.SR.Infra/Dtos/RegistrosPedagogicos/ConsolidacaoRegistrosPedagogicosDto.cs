@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SME.SR.Infra.Utilitarios;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SME.SR.Infra
@@ -10,7 +12,8 @@ namespace SME.SR.Infra
         public string Bimestre { get; set; }
         public long TurmaId { get; set; }
         public string TurmaNome { get; set; }
-        public string TurmaModalidade { get; set; }
+        public long  ModalidadeCodigo { get; set; }
+        public string NomeModalidade { get; set; }
         public int AnoLetivo { get; set; }
         public long ComponenteCurricularId { get; set; }
         public string ComponenteCurricularNome { get; set; }
@@ -23,19 +26,20 @@ namespace SME.SR.Infra
         public int PlanoAulaPendentes { get; set; }
         public string NomeProfessor { get; set; }
         public string RFProfessor { get; set; }
+        public string NomeTurmaFormatado { get => ObterNomeTurmaFormatado(); }
 
         public ConsolidacaoRegistrosPedagogicosDto()
         {
 
         }
 
-        public ConsolidacaoRegistrosPedagogicosDto(long periodoEscolarId, string bimestre, long turmaId, string turmaNome, string turmaModalidade, int anoLetivo, long componenteCurricularId, string componenteCurricularNome, int quantidadeAulas, int frequenciasPendentes, DateTime dataUltimaFrequencia, DateTime dataUltimoPlanoAula, DateTime dataUltimoDiarioBordo, int diarioBordoPendentes, int planoAulaPendentes, string nomeProfessor, string rFProfessor)
+        public ConsolidacaoRegistrosPedagogicosDto(long periodoEscolarId, string bimestre, long turmaId, string turmaNome, long turmaModalidade, int anoLetivo, long componenteCurricularId, string componenteCurricularNome, int quantidadeAulas, int frequenciasPendentes, DateTime dataUltimaFrequencia, DateTime dataUltimoPlanoAula, DateTime dataUltimoDiarioBordo, int diarioBordoPendentes, int planoAulaPendentes, string nomeProfessor, string rFProfessor)
         {
             PeriodoEscolarId = periodoEscolarId;
             Bimestre = bimestre;
             TurmaId = turmaId;
             TurmaNome = turmaNome;
-            TurmaModalidade = turmaModalidade;
+            ModalidadeCodigo = turmaModalidade;
             AnoLetivo = anoLetivo;
             ComponenteCurricularId = componenteCurricularId;
             ComponenteCurricularNome = componenteCurricularNome;
@@ -48,6 +52,17 @@ namespace SME.SR.Infra
             PlanoAulaPendentes = planoAulaPendentes;
             NomeProfessor = nomeProfessor;
             RFProfessor = rFProfessor;
+        }
+
+        private string ObterNomeTurmaFormatado()
+        {
+            var modalidade = Enum.GetValues(typeof(Modalidade))
+                                .Cast<Modalidade>()
+                                .Where(d => ((long)d) == ModalidadeCodigo)
+                                .Select(d => new { name = d.Name(), shortName = d.ShortName() })
+                                .FirstOrDefault();
+            NomeModalidade = modalidade.name;
+            return modalidade.shortName + " - " + TurmaNome;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace SME.SR.Infra
     {
         public RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto()
         {
-
+            ComponentesCurriculares = new List<RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto>();
         }
         public RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto(string nome)
         {

@@ -18,14 +18,14 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicos(int anoLetivo, long[] componentesCurriculares, long[] turmasId, string professorCodigo, string professorNome, List<int> bimestres)
+        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicos(string dreCodigo, string ueCodigo, int anoLetivo, long[] componentesCurriculares, long[] turmasId, string professorCodigo, string professorNome, List<int> bimestres)
         {
             var query = new StringBuilder(@"select 
                                             crp.periodo_escolar_id as PeriodoEscolarId,
                                             pe.bimestre as Bimestre,
                                             crp.turma_id as TurmaId,
                                             t.nome as TurmaNome,
-                                            t.modalidade_codigo as TurmaModalidade,
+                                            t.modalidade_codigo as ModalidadeCodigo,
                                             crp.ano_letivo as AnoLetivo,
                                             crp.componente_curricular_id as ComponenteCurricularId,
                                             cc.descricao_sgp as ComponenteCurricularNome,
@@ -40,17 +40,27 @@ namespace SME.SR.Data
                                             inner join turma t on t.id = crp.turma_id
                                             inner join periodo_escolar pe on pe.id = crp.periodo_escolar_id
                                             inner join componente_curricular cc on cc.id = crp.componente_curricular_id
+                                            inner join ue ue on ue.id = t.ue_id
+                                            inner join dre dre on dre.id = ue.dre_id
                                             where crp.ano_letivo = @anoLetivo");
-
-            if(componentesCurriculares.Length > 0)
+           
+            if (dreCodigo != null)
+            {
+                query.AppendLine(@" and dre.dre_id = @dreCodigo");
+            }
+            if (ueCodigo != null)
+            {
+                query.AppendLine(@" and ue.ue_id = @ueCodigo");
+            }
+            if (componentesCurriculares != null)
             {
                 query.AppendLine(@" and crp.componente_curricular_id in (@componentesCurriculares)");
             }
-            if(turmasId.Length > 0)
+            if (turmasId != null)
             {
                 query.AppendLine(@" and crp.turma_id in (@turmasId)");
             }
-            if(professorCodigo != null && professorCodigo != "")
+            if (professorCodigo != null && professorCodigo != "")
             {
                 query.AppendLine(@" and crp.rf_professor in (@professorCodigo)");
             }
@@ -58,13 +68,15 @@ namespace SME.SR.Data
             {
                 query.AppendLine(@" and crp.nome_professor in (@professorNome)");
             }
-            if (bimestres.Any())
+            if (bimestres != null && bimestres.Any())
             {
                 query.AppendLine(@" and pe.bimestre in (@bimestres)");
             }
 
             var parametros = new
             {
+                dreCodigo,
+                ueCodigo,
                 anoLetivo,
                 componentesCurriculares,
                 turmasId,
@@ -79,14 +91,14 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicosInfantil(int anoLetivo, long[] turmasId, string professorCodigo, string professorNome, List<int> bimestres)
+        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicosInfantil(string dreCodigo, string ueCodigo, int anoLetivo, string professorCodigo, string professorNome, List<int> bimestres, long[] turmasId)
         {
             var query = new StringBuilder(@"select 
                                             crp.periodo_escolar_id as PeriodoEscolarId,
                                             pe.bimestre as Bimestre,
                                             crp.turma_id as TurmaId,
                                             t.nome as TurmaNome,
-                                            t.modalidade_codigo as TurmaModalidade,
+                                            t.modalidade_codigo as ModalidadeCodigo,
                                             crp.ano_letivo as AnoLetivo,
                                             crp.componente_curricular_id as ComponenteCurricularId,
                                             cc.descricao_sgp as ComponenteCurricularNome,
@@ -101,9 +113,18 @@ namespace SME.SR.Data
                                             inner join turma t on t.id = crp.turma_id
                                             inner join periodo_escolar pe on pe.id = crp.periodo_escolar_id
                                             inner join componente_curricular cc on cc.id = crp.componente_curricular_id
+                                            inner join ue ue on ue.id = t.ue_id
+                                            inner join dre dre on dre.id = ue.dre_id
                                             where crp.ano_letivo = @anoLetivo");
-
-            if (turmasId.Length > 0)
+            if(dreCodigo != null)
+            {
+                query.AppendLine(@" and dre.dre_id = @dreCodigo");
+            }
+            if(ueCodigo != null)
+            {
+                query.AppendLine(@" and ue.ue_id = @ueCodigo");
+            }
+            if (turmasId != null)
             {
                 query.AppendLine(@" and crp.turma_id in (@turmasId)");
             }
@@ -115,13 +136,15 @@ namespace SME.SR.Data
             {
                 query.AppendLine(@" and crp.nome_professor in (@professorNome)");
             }
-            if (bimestres.Any())
+            if (bimestres != null && bimestres.Any())
             {
                 query.AppendLine(@" and pe.bimestre in (@bimestres)");
             }
 
             var parametros = new
             {
+                dreCodigo,
+                ueCodigo,
                 anoLetivo,
                 turmasId,
                 professorCodigo,

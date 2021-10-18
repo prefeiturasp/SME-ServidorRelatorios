@@ -21,21 +21,23 @@ namespace SME.SR.Application
 
         public async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>> Handle(ObterDadosPedagogicosTurmaQuery request, CancellationToken cancellationToken)
         {
-            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicosInfantil(request.AnoLetivo, request.TurmasId, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
+            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicosInfantil(request.DreCodigo, request.UeCodigo, request.AnoLetivo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.TurmasId);
             var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>();
 
             if (consolidacoesFiltradas.Any())
             {
-                foreach (var consolidacoes in consolidacoesFiltradas.GroupBy(cf => cf.Bimestre))
+                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre))
                 {
                     var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto();
-                    bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{bimestre}º BIMESTRE" : "FINAL";
+                    bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{consolidacoes.FirstOrDefault().Bimestre}º BIMESTRE" : "FINAL";
 
-                    foreach (var turma in consolidacoes)
+                    foreach (var turma in consolidacoes.OrderBy(t=> t.TurmaNome))
                     {
+                        string nomeTurmaComplementar = turma.RFProfessor == "" ? $"{turma.NomeProfessor}"
+                                                                               : $"{turma.NomeProfessor} ({turma.RFProfessor })";
                         var dadosTurma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
                         {
-                            Nome = $"{turma.TurmaModalidade} - {turma.TurmaNome}",
+                            Nome = $"{turma.NomeTurmaFormatado} - {nomeTurmaComplementar}",
                             Aulas = turma.QuantidadeAulas,
                             FrequenciasPendentes = turma.FrequenciasPendentes,
                             DataUltimoRegistroFrequencia = turma.DataUltimaFrequencia,

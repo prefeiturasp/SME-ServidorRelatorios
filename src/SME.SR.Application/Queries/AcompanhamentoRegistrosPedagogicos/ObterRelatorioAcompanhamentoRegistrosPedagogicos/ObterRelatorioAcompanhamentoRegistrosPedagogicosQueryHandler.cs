@@ -34,7 +34,7 @@ namespace SME.SR.Application
 
             var turmas = await ObterTurmasPorCodigo(request.Turmas);
 
-            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.ComponentesCurriculares, request.AnoLetivo, request.Turmas, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
+            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.DreCodigo, request.UeCodigo, request.ComponentesCurriculares, request.AnoLetivo, request.Turmas, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
 
             return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosQuery(dre, ue, turmas, dadosRelatorio, bimestres, request.UsuarioNome, request.UsuarioRF));
         }
@@ -56,9 +56,9 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterTurmasPorIdsQuery(turmasId));
         }
 
-        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> ObterDadosComponentesCurriculares(long[] componentesCurriculares, int anoLetivo, long[] turmasId, string professorNome, string professorCodigo, List<int> bimestres)
+        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> ObterDadosComponentesCurriculares(string dreCodigo, string ueCodigo, long[] componentesCurriculares, int anoLetivo, long[] turmasId, string professorNome, string professorCodigo, List<int> bimestres)
         {
-            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(componentesCurriculares, anoLetivo, turmasId, professorNome, professorCodigo, bimestres));
+            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(dreCodigo, ueCodigo, componentesCurriculares, anoLetivo, turmasId, professorNome, professorCodigo, bimestres));
         }
     }
 }

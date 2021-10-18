@@ -8,7 +8,7 @@ namespace SME.SR.Data
 {
     public interface IRegistrosPedagogicosRepository
     {
-        Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicos(int AnoLetivo, long[] componentesCurriculares, long[] TurmasId, string professorCodigo, string professorNome, List<int> bimestres);
-        Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicosInfantil(int AnoLetivo, long[] TurmasId, string professorCodigo, string professorNome, List<int> bimestres);
+        Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicos(string dreCodigo, string ueCodigo, int AnoLetivo, long[] componentesCurriculares, long[] TurmasId, string professorCodigo, string professorNome, List<int> bimestres);
+        Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicosInfantil(string dreCodigo, string ueCodigo, int AnoLetivo, string professorCodigo, string professorNome, List<int> bimestres, long[] TurmasId = null);
     }
 }

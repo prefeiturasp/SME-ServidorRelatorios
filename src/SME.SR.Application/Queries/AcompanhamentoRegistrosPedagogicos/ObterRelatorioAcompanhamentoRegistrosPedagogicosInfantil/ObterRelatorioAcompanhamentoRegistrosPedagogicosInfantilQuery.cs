@@ -12,6 +12,7 @@ namespace SME.SR.Application
         private string _ueCodigo;
         private List<int> _bimestres { get; set; }
         private long[] _turmasId { get; set; }
+        private long[] _componentesCurriculares { get; set; }
         public int AnoLetivo { get; set; }
 
         public string DreCodigo
@@ -41,7 +42,11 @@ namespace SME.SR.Application
         public string ProfessorNome { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
-        public long[] ComponentesCurriculares { get; set; }
+        public long[] ComponentesCurriculares
+        {
+            get => TodosParaNullComponentesCurriculares(_componentesCurriculares);
+            set { _componentesCurriculares = value; }
+        }
 
 
         private string TodosParaNull(string filtro)
@@ -62,6 +67,13 @@ namespace SME.SR.Application
         }
 
         private long[] TodosParaNullTurmas(long[] filtro)
+        {
+            if (filtro != null && filtro[0] == -99)
+                return null;
+            return filtro;
+        }
+
+        private long[] TodosParaNullComponentesCurriculares(long[] filtro)
         {
             if (filtro != null && filtro[0] == -99)
                 return null;

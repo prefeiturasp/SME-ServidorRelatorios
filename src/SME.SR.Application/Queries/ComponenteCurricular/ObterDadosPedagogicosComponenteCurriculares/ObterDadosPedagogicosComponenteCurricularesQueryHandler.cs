@@ -22,22 +22,22 @@ namespace SME.SR.Application
 
         public async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> Handle(ObterDadosPedagogicosComponenteCurricularesQuery request, CancellationToken cancellationToken)
         {
-            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicos(request.AnoLetivo, request.ComponentesCurriculares, request.TurmasId, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
+            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicos(request.DreCodigo, request.UeCodigo, request.AnoLetivo, request.ComponentesCurriculares, request.TurmasId, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
             var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>();
 
             if (consolidacoesFiltradas.Any())
             {
-                foreach (var consolidacoes in consolidacoesFiltradas.GroupBy(cf => cf.Bimestre))
+                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre))
                 {
                     var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto();
-                    bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{bimestre}º BIMESTRE" : "FINAL";
+                    bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{consolidacoes.FirstOrDefault().Bimestre}º BIMESTRE" : "FINAL";
 
-                    foreach (var turmas in consolidacoes.GroupBy(t => t.TurmaId))
+                    foreach (var turmas in consolidacoes.OrderBy(t=> t.TurmaNome).GroupBy(t => t.TurmaId))
                     {
                         var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto();
-                        turma.Nome = $"{turmas.FirstOrDefault().TurmaModalidade} - {turmas.FirstOrDefault().TurmaNome}";
+                        turma.Nome = $"{turmas.FirstOrDefault().NomeTurmaFormatado}";
 
-                        foreach (var compCurricular in turmas)
+                        foreach (var compCurricular in turmas.OrderBy(c=> c.ComponenteCurricularNome))
                         {
                             string nomeComponente = compCurricular.RFProfessor == "" ? $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor}"
                                                                                      : $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor} ({compCurricular.RFProfessor }";

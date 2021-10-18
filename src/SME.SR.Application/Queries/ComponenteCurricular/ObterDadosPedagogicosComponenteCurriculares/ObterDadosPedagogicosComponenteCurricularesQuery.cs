@@ -9,8 +9,10 @@ namespace SME.SR.Application
     public class ObterDadosPedagogicosComponenteCurricularesQuery : IRequest<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>>
     {
         public ObterDadosPedagogicosComponenteCurricularesQuery() { }
-        public ObterDadosPedagogicosComponenteCurricularesQuery(long[] componentesCurriculares, int anoLetivo, long[] codigoTurmas, string professorNome, string professorCodigo, List<int> bimestres)
+        public ObterDadosPedagogicosComponenteCurricularesQuery(string dreCodigo, string ueCodigo, long[] componentesCurriculares, int anoLetivo, long[] codigoTurmas, string professorNome, string professorCodigo, List<int> bimestres)
         {
+            DreCodigo = dreCodigo;
+            UeCodigo = ueCodigo;
             ComponentesCurriculares = componentesCurriculares;
             TurmasId = codigoTurmas;
             AnoLetivo = anoLetivo;
@@ -19,6 +21,8 @@ namespace SME.SR.Application
             Bimestres = bimestres;
         }
 
+        public string DreCodigo { get; set; }
+        public string UeCodigo { get; set; }
         public long[] ComponentesCurriculares { get; set; }
         public int AnoLetivo { get; set; }
         public long[] TurmasId { get; set; }
