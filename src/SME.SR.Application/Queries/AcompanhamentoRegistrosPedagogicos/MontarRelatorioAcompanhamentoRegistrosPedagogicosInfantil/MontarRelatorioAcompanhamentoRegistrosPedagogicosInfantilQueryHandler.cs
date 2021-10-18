@@ -14,43 +14,12 @@ namespace SME.SR.Application
     {
         public async Task<RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto> Handle(MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery request, CancellationToken cancellationToken)
         {
-            var relatorio = new RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto();
+            var cabecalho = MontarCabecalho(request.Dre, request.Ue, request.Turmas, request.Bimestres, request.UsuarioNome, request.UsuarioRF);
 
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.Turmas, request.Bimestres, request.UsuarioNome, request.UsuarioRF);
-
-            if (request.Bimestres == null || !request.Bimestres.Any())
-            {
-                var bimestres = new List<int>();
-                bimestres = bimestres.Distinct().OrderBy(b => b == 0).ThenBy(b => b).ToList();
-                request.Bimestres = bimestres.ToArray();
-            }
-            else
-                request.Bimestres = request.Bimestres.OrderBy(b => b == 0).ThenBy(b => b).ToArray();
-
-            foreach (var bimestre in request.Bimestres)
-            {
-                var nomeBimestre = request.Bimestres != null && request.Bimestres.Any() &&
-                                      request.Bimestres.Count() == 1 ? "" : (bimestre > 0 ? $"{bimestre}º BIMESTRE" : "FINAL");
-                var bimestreRelatorio = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto(nomeBimestre);
-
-                foreach (var turma in request.DadosPedagogicosTurmas)
-                {
-                    var turmaRelatorio = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
-                    {
-                        Nome = $"{turma.SiglaModalidade} - {turma.Nome} - {turma.ProfessorResponsavel} ({turma.ProfessorRF})",
-                        Aulas = turma.Aulas,
-                        FrequenciasPendentes = turma.FrequenciasPendentes, 
-                        DataUltimoRegistroFrequencia = turma.DataUltimoRegistroFrequencia,
-                        DiarioBordoPendentes = turma.DiarioBordoPendentes,
-                        DataUltimoRegistroDiarioBordo = turma.DataUltimoRegistroDiarioBordo
-                    };  
-                    bimestreRelatorio.TurmasInfantil.Add(turmaRelatorio);
-                }
-            }
-            return await Task.FromResult(relatorio);
+            return await Task.FromResult(new RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto(request.DadosBimestre, cabecalho));
         }
 
-        private void MontarCabecalho(RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto relatorio, Dre dre, Ue ue, IEnumerable<Turma> turmas, int[] bimestres, string nomeUsuario, string rfUsuario)
+        private RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto MontarCabecalho(Dre dre, Ue ue, IEnumerable<Turma> turmas, int[] bimestres, string nomeUsuario, string rfUsuario)
         {
             string turma = "TODAS";
             string bimestre = "TODOS";
@@ -85,7 +54,7 @@ namespace SME.SR.Application
                     bimestre = string.Join(", ", bimestres.Select(b => $"{b}º").OrderBy(b => b));
             }
 
-            relatorio.Cabecalho = new RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto()
+            return new RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto()
             {
                 Dre = dre != null ? dre.Abreviacao : "TODAS",
                 Ue = ue != null ? ue.NomeRelatorio : "TODAS",

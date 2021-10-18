@@ -25,34 +25,37 @@ namespace SME.SR.Application
             var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicos(request.AnoLetivo, request.ComponentesCurriculares, request.TurmasId, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
             var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>();
 
-            foreach (var consolidacoes in consolidacoesFiltradas.GroupBy(cf => cf.Bimestre))
+            if (consolidacoesFiltradas.Any())
             {
-                var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto();
-                bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{bimestre}º BIMESTRE" : "FINAL";
-
-                foreach (var turmas in consolidacoes.GroupBy(t => t.TurmaId))
+                foreach (var consolidacoes in consolidacoesFiltradas.GroupBy(cf => cf.Bimestre))
                 {
-                    var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto();
-                    turma.Nome = $"{turmas.FirstOrDefault().TurmaModalidade} - {turmas.FirstOrDefault().TurmaNome}"; 
+                    var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto();
+                    bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{bimestre}º BIMESTRE" : "FINAL";
 
-                    foreach (var compCurricular in turmas)
+                    foreach (var turmas in consolidacoes.GroupBy(t => t.TurmaId))
                     {
-                        string nomeComponente = compCurricular.RFProfessor == "" ? $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor}" 
-                                                                                 : $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor} ({compCurricular.RFProfessor }";
-                        var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
+                        var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto();
+                        turma.Nome = $"{turmas.FirstOrDefault().TurmaModalidade} - {turmas.FirstOrDefault().TurmaNome}";
+
+                        foreach (var compCurricular in turmas)
                         {
-                            Nome = nomeComponente,
-                            QuantidadeAulas = compCurricular.QuantidadeAulas,
-                            FrequenciasPendentes = compCurricular.FrequenciasPendentes,
-                            DataUltimoRegistroFrequencia = compCurricular.DataUltimaFrequencia,
-                            PlanosAulaPendentes = compCurricular.PlanoAulaPendentes,
-                            DataUltimoRegistroPlanoAula = compCurricular.DataUltimoPlanoAula
-                        };
-                        turma.ComponentesCurriculares.Add(componente);
+                            string nomeComponente = compCurricular.RFProfessor == "" ? $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor}"
+                                                                                     : $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor} ({compCurricular.RFProfessor }";
+                            var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
+                            {
+                                Nome = nomeComponente,
+                                QuantidadeAulas = compCurricular.QuantidadeAulas,
+                                FrequenciasPendentes = compCurricular.FrequenciasPendentes,
+                                DataUltimoRegistroFrequencia = compCurricular.DataUltimaFrequencia,
+                                PlanosAulaPendentes = compCurricular.PlanoAulaPendentes,
+                                DataUltimoRegistroPlanoAula = compCurricular.DataUltimoPlanoAula
+                            };
+                            turma.ComponentesCurriculares.Add(componente);
+                        }
+                        bimestre.Turmas.Add(turma);
                     }
-                    bimestre.Turmas.Add(turma);
+                    bimestres.Add(bimestre);
                 }
-                bimestres.Add(bimestre);
             }
 
             return bimestres;

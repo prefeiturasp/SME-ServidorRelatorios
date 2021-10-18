@@ -33,7 +33,7 @@ namespace SME.SR.Application
             int[] bimestres = request.Bimestres?.ToArray();
 
             var turmas = await ObterTurmasPorId(request.TurmasId);
-            var dadosTurmas = await ObterDadosPedagogicosTurmas(request.TurmasId);
+            var dadosTurmas = await ObterDadosPedagogicosInfantil(request.AnoLetivo, request.TurmasId, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
 
             return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery(dre, ue, turmas, dadosTurmas, bimestres, request.UsuarioNome, request.UsuarioRF));
         }
@@ -56,11 +56,9 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterTurmasPorIdsQuery(turmas));
         }
 
-        private async Task<IEnumerable<TurmaDadosPedagogicosDto>> ObterDadosPedagogicosTurmas(long[] turmas)
+        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>> ObterDadosPedagogicosInfantil(int anoLetivo, long [] turmasId, string professorCodigo, string professorNome, List<int> bimestres)
         {
-            //montar query..
-
-            return null;
+            return await mediator.Send(new ObterDadosPedagogicosTurmaQuery(anoLetivo, turmasId, professorNome, professorCodigo, bimestres));
         }
     }
 }
