@@ -1,0 +1,237 @@
+﻿@model SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosDto
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 45;
+    bool quebrou = false;
+
+    string informacoesQuebra()
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+
+        return "";
+    }
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO DO FECHAMENTO</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.Cabecalho.Dre</td>
+                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.Cabecalho.Ue</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='40%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Cabecalho.Turma</td>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>Bimestre: 1 Bimestre</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>RF: @Model.Cabecalho.UsuarioRF</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>DATA DE IMPRESSÃO: @Model.Cabecalho.UsuarioRF</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>DATA DE IMPRESSÃO: @Model.Cabecalho.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    string EspacoEmBranco()
+    {
+        if (quebrou)
+        {
+            return "";
+        }
+
+        return @"<table><tbody><tr><td height='17px' width='100%' class='tabela-cabecalho sem-border-bottom sem-border-top'></td></tr></tbody></table>";
+    }
+
+    bool VerificaQuebra(int numeroLinhasDescricao = 0)
+    {
+        if (contadorQuebrarPagina + numeroLinhasDescricao >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            quebrou = true;
+            return true;
+        }
+        quebrou = false;
+        return false;
+
+    }
+
+    string MontarTituloPrincipal(string turmaDescricao)
+    {
+        <tr>
+            <td colspan="2" class="fundo-cinza">@turmaDescricao @contadorQuebrarPagina</td>
+        </tr>
+
+        return "";
+    }
+
+    string MontarTituloComponentesFechamento()
+    {
+        <tr>
+            <td class="fundo-cinza">COMPONENTES</td>
+            <td class="fundo-cinza">
+                FECHAMENTO <br />
+                <span style="font-size:12px">SITUAÇÃO POR COMPONENTE CURRICULAR @contadorQuebrarPagina</span>
+            </td>
+        </tr>
+
+        return "";
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE ACOMPANHAMENTO DO FECHAMENTO</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .subtitulo-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .linha-pendencias {
+            height: 17px !important;
+            font-size: 12px !important;
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+        }
+    </div>
+</body>
+</html>
