@@ -38,6 +38,7 @@ namespace SME.SR.Application
             set { _bimestres = value; }
         }
         public string ProfessorCodigo { get; set; }
+        public string ProfessorNome { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
         public long[] ComponentesCurriculares { get; set; }

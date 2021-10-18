@@ -6,18 +6,24 @@ using System.Text;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosPedagogicosComponenteCurricularesQuery : IRequest<IEnumerable<ComponenteCurricularPedagogicoDto>>
+    public class ObterDadosPedagogicosComponenteCurricularesQuery : IRequest<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>>
     {
         public ObterDadosPedagogicosComponenteCurricularesQuery() { }
-        public ObterDadosPedagogicosComponenteCurricularesQuery(long[] componentesCurriculares, int anoLetivo, long[] codigoTurmas)
+        public ObterDadosPedagogicosComponenteCurricularesQuery(long[] componentesCurriculares, int anoLetivo, long[] codigoTurmas, string professorNome, string professorCodigo, List<int> bimestres)
         {
             ComponentesCurriculares = componentesCurriculares;
             TurmasId = codigoTurmas;
             AnoLetivo = anoLetivo;
+            ProfessorNome = professorNome;
+            ProfessorCodigo = professorCodigo;
+            Bimestres = bimestres;
         }
 
         public long[] ComponentesCurriculares { get; set; }
         public int AnoLetivo { get; set; }
         public long[] TurmasId { get; set; }
+        public string ProfessorNome { get; set; }
+        public string ProfessorCodigo { get; set; }
+        public List<int> Bimestres { get; set; }
     }
 }
