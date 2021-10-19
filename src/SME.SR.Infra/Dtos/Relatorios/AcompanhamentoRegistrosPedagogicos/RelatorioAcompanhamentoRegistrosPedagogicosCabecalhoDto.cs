@@ -9,6 +9,7 @@ namespace SME.SR.Infra
         public string Dre { get; set; }
         public string Ue { get; set; }
         public string Turma { get; set; }
+        public string Bimestre { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
         public string Data => DateTime.Now.ToString("dd/MM/yyyy");
