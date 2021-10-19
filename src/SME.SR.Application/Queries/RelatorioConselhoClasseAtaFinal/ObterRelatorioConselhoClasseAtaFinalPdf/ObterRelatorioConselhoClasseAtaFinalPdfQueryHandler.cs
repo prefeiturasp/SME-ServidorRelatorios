@@ -28,7 +28,7 @@ namespace SME.SR.Application
         {
             var mensagensErro = new List<string>();
             var relatoriosTurmas = new List<ConselhoClasseAtaFinalPaginaDto>();
-            var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray())) ;
+            var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.Filtro.TurmasCodigos.ToArray()));
 
             turmas.AsParallel().WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas).ForAll(turma =>
             {
@@ -418,7 +418,19 @@ namespace SME.SR.Application
             relatorio.Linhas.AddRange(alunosSemNumeroChamada);
         }
 
-        private async Task<List<ConselhoClasseAtaFinalLinhaDto>> MontarLinhaAluno(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, IEnumerable<PeriodoEscolar> periodosEscolares, Turma turma, IEnumerable<IGrouping<int, AlunoHistoricoEscolar>> listaTurmasAlunos, int qtdeDisciplinasLancamFrequencia = 0, double compensacaoAusenciaPercentualRegenciaClasse = 0, double compensacaoAusenciaPercentualFund2 = 0)
+        private async Task<List<ConselhoClasseAtaFinalLinhaDto>> MontarLinhaAluno(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, 
+                                                                                  IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, 
+                                                                                  ComponenteCurricularPorTurma>> gruposMatrizes, 
+                                                                                  IEnumerable<NotaConceitoBimestreComponente> notasFinais, 
+                                                                                  IEnumerable<FrequenciaAluno> frequenciaAlunos, 
+                                                                                  IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, 
+                                                                                  IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, 
+                                                                                  IEnumerable<PeriodoEscolar> periodosEscolares, 
+                                                                                  Turma turma, 
+                                                                                  IEnumerable<IGrouping<int, AlunoHistoricoEscolar>> listaTurmasAlunos, 
+                                                                                  int qtdeDisciplinasLancamFrequencia = 0, 
+                                                                                  double compensacaoAusenciaPercentualRegenciaClasse = 0, 
+                                                                                  double compensacaoAusenciaPercentualFund2 = 0)
         {
             List<ConselhoClasseAtaFinalLinhaDto> linhas = new List<ConselhoClasseAtaFinalLinhaDto>();
             for (var i = 0; i < alunos.Count(); i++)
@@ -594,8 +606,8 @@ namespace SME.SR.Application
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
                 if (textoParecer == null)
                 {
-                    var ativoOuConcluido = new SituacaoMatriculaAluno[] { SituacaoMatriculaAluno.Ativo, SituacaoMatriculaAluno.Concluido };
-                    textoParecer = !ativoOuConcluido.Contains(aluno.CodigoSituacaoMatricula) ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
+                    bool ativoOuConcluido = AlunoAtivo(aluno.CodigoSituacaoMatricula);
+                    textoParecer = !ativoOuConcluido ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
                 }
                 linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
                 return;
@@ -606,6 +618,19 @@ namespace SME.SR.Application
             linhaDto.AdicionaCelula(99, 99, "0", 2);
             linhaDto.AdicionaCelula(99, 99, string.Empty, 3);
             linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
+        }
+
+        private static bool AlunoAtivo(SituacaoMatriculaAluno situacaoMatricula)
+        {
+            SituacaoMatriculaAluno[] SituacoesAtiva = new[] 
+            { 
+                SituacaoMatriculaAluno.Ativo,
+                SituacaoMatriculaAluno.Rematriculado,
+                SituacaoMatriculaAluno.PendenteRematricula,
+                SituacaoMatriculaAluno.SemContinuidade,
+                SituacaoMatriculaAluno.Concluido 
+            };
+            return SituacoesAtiva.Contains(situacaoMatricula);
         }
 
         private List<ComponenteCurricularPorTurma> ObterComponentesCurriculares(List<ComponenteCurricularPorTurma> componenteCurricularPorTurmas)
