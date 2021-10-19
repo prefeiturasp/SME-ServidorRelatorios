@@ -8,7 +8,12 @@ namespace SME.SR.Infra
     {
         public RelatorioAcompanhamentoRegistrosPedagogicosDto()
         {
-            Bimestre = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>();
+
+        }
+        public RelatorioAcompanhamentoRegistrosPedagogicosDto(List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto> bimestres, RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto cabecalho)
+        {
+            Bimestre = bimestres;
+            Cabecalho = cabecalho;
         }
         public RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto Cabecalho { get; set; }
         public List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto> Bimestre { get; set; }
