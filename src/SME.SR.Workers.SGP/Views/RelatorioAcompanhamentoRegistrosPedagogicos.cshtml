@@ -1,4 +1,4 @@
-﻿@model SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto
+﻿@model SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosDto
 
 @{
     double contadorQuebrarPagina = 0;
@@ -120,23 +120,24 @@
         }
     }
 
-    void MontarLinhaTabela(SME.SR.Infra.RelatorioAcompanhamentRegistrosPedagogicosTurmaInfantilDto turma,bool temBimestre, string bimestreNome)
+    void MontarLinhaTabela(SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto componentesCurriculares,bool temBimestre, string bimestreNome,bool temTurma,string turmaNome)
     {
-        var turmaNome = turma.Nome;
-        ContagemCaracteres(turmaNome);
+        var componentesCurricularesNome = componentesCurriculares.Nome;
+        ContagemCaracteres(componentesCurricularesNome);
         if(quebrou)
         {
             MontarBimestre(temBimestre, bimestreNome);
+            MontarTurma(temTurma, turmaNome);
             MontarTituloRegistros();
         }
 
         <tr>
-            <td class="alinhar-esquerda espaco-esquerda-8">@turmaNome</td>
-            <td>@turma.Aulas</td>
-            <td>@turma.FrequenciasPendentes</td>
-            <td>@turma.DataUltimoRegistroFrequencia</td>
-            <td>@turma.DiarioBordoPendentes</td>
-            <td>@turma.DataUltimoRegistroDiarioBordo</td>
+            <td class="alinhar-esquerda espaco-esquerda-8">@componentesCurricularesNome</td>
+            <td>@componentesCurriculares.QuantidadeAulas</td>
+            <td>@componentesCurriculares.FrequenciasPendentes</td>
+            <td>@componentesCurriculares.DataUltimoRegistroFrequencia</td>
+            <td>@componentesCurriculares.PlanosAulaPendentes</td>
+            <td>@componentesCurriculares.DataUltimoRegistroPlanoAula</td>
         </tr>
     }
 
@@ -146,6 +147,15 @@
         {
             int numeroLinhas = 2;
             MontarTitulo(bimestreNome, numeroLinhas);
+        }
+    }
+
+    void MontarTurma(bool temTurma, string turmaNome)
+    {
+        if (temTurma)
+        {
+            int numeroLinhas = 4;
+            MontarTitulo(turmaNome, numeroLinhas);
         }
     }
 
@@ -296,11 +306,20 @@
                     bool temBimestre = !String.IsNullOrWhiteSpace(bimestreNome);
                     
                     MontarBimestre(temBimestre,bimestreNome);                 
-                    MontarTituloRegistros();
 
-                    @foreach (var turmas in bimestres.TurmasInfantil)
+                    @foreach (var turmas in bimestres.Turmas)
                     {
-                        MontarLinhaTabela(turmas, temBimestre, bimestreNome);                        
+                        var turmaNome = turmas.Nome;
+                        bool temTurma = !String.IsNullOrWhiteSpace(turmaNome);
+
+                        MontarTurma(temTurma, turmaNome);
+
+                        MontarTituloRegistros();
+
+                        @foreach (var componentesCurriculares in turmas.ComponentesCurriculares)
+                        {
+                            MontarLinhaTabela(componentesCurriculares, temBimestre, bimestreNome, temTurma, turmaNome);
+                        }
                     }
                 }
             </table>

@@ -7846,59 +7846,165 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             }
         }
 
-        [HttpGet("acompanhamento-fechamento-ue")]
-        public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
-        {
-            var fechamento= new RelatorioConsolidadoFechamento()
+        //[HttpGet("acompanhamento-fechamento-ue")]
+        //public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
+        //{
+        //    var fechamento= new RelatorioConsolidadoFechamento()
+        //    {
+        //        NaoIniciado = 3,
+        //        ProcessadoComPendencia = 2,
+        //        ProcessadoComSucesso = 5
+        //    };
+        //    var conselhoDeClasse= new RelatorioConsolidadoConselhoClasse()
+        //    {
+        //        NaoIniciado = 4,
+        //        EmAndamento = 8,
+        //        Concluido = 7,
+        //    };
+
+        //    var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseDto>();
+        //    var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseDto("EF -1A")
+        //    {
+        //        FechamentoConsolidado = fechamento,
+        //        ConselhoDeClasseConsolidado =  conselhoDeClasse ,
+        //    };
+        //    fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
+
+        //    var bimestres = new List<RelatorioAcompanhamentoFechamentoBimestresDto>();
+        //    var bimestre = new RelatorioAcompanhamentoFechamentoBimestresDto("1º Bimestre","0123")
+        //    {                
+        //        FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
+        //    };
+        //    bimestres.Add(bimestre);            
+
+        //    var ues = new List<RelatorioAcompanhamentoFechamentoUesDto>();
+        //    var ue = new RelatorioAcompanhamentoFechamentoUesDto("CEU EMEF BUTANTA")
+        //    {
+        //       Bimestres = bimestres,
+        //    };
+        //    ues.Add(ue);
+
+        //    var model = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto()
+        //    {
+        //        DreNome = "DRE-BT",
+        //        UeNome = "TODAS",
+        //        Turma = "TODAS",
+        //        Bimestre = "TODOS",
+        //        Usuario = "JULIA FERREIRA DE OLIVEIRA",
+        //        RF = "1234567",
+        //        Data = "13/09/2021",
+        //        Ues = ues,
+        //    };
+
+        //    return View("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", model);
+        //}
+
+        [HttpGet("acompanhamento-pedagocicos")]
+        public async Task<IActionResult> AcompanhamentoRegistrosPedagogicos([FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase useCase)
+        {           
+            var componentesCurriculares = new List<RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto>();
+            for(var i = 0; i < 29; i++)
             {
-                NaoIniciado = 3,
-                ProcessadoComPendencia = 2,
-                ProcessadoComSucesso = 5
-            };
-            var conselhoDeClasse= new RelatorioConsolidadoConselhoClasse()
+                var componentesCurricular = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
+                {
+                    Nome = "EI - "+ (i + 1 )+ "A - GABRIELA MANZOLLI ROWLANDS LOPES (7924488)",
+                    QuantidadeAulas = 234 + i,
+                    FrequenciasPendentes = 5 + i,
+                    DataUltimoRegistroFrequencia = DateTime.Now,
+                    PlanosAulaPendentes = 4 + i,
+                    DataUltimoRegistroPlanoAula = DateTime.Now,
+                };
+                componentesCurriculares.Add(componentesCurricular);
+            }
+
+            var turmas = new List<RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto>();
+            for (var i = 0; i < 5; i++)
             {
-                NaoIniciado = 4,
-                EmAndamento = 8,
-                Concluido = 7,
+                var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto()
+                {
+                    Nome = "EF - "+ (i + 1) + "A",
+                    ComponentesCurriculares = componentesCurriculares,
+                };
+                turmas.Add(turma);
+            }
+
+            var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>();
+            for (var i = 0; i < 5; i++)
+            {
+                var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto()
+                {
+                    Bimestre = (i + 1) + "º BIMESTRE",
+                    Turmas = turmas,
+                };
+                bimestres.Add(bimestre);
+            }
+
+            var model = new RelatorioAcompanhamentoRegistrosPedagogicosDto()
+            {
+                Cabecalho = new RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto()
+                {                    
+                    Dre = "DRE-BT",
+                    Ue = "TODAS",
+                    Turma = "TODAS",
+                    Bimestre = "TODOS",
+                    UsuarioNome = "JULIA FERREIRA DE OLIVEIRA",
+                    UsuarioRF = "1234567",                   
+                },
+                Bimestre = bimestres,
+                
             };
 
-            var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseDto>();
-            var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseDto("EF -1A")
-            {
-                FechamentoConsolidado = fechamento,
-                ConselhoDeClasseConsolidado =  conselhoDeClasse ,
-            };
-            fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
-
-            var bimestres = new List<RelatorioAcompanhamentoFechamentoBimestresDto>();
-            var bimestre = new RelatorioAcompanhamentoFechamentoBimestresDto("1º Bimestre","0123")
-            {                
-                FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
-            };
-            bimestres.Add(bimestre);            
-          
-            var ues = new List<RelatorioAcompanhamentoFechamentoUesDto>();
-            var ue = new RelatorioAcompanhamentoFechamentoUesDto("CEU EMEF BUTANTA")
-            {
-               Bimestres = bimestres,
-            };
-            ues.Add(ue);
-
-            var model = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto()
-            {
-                DreNome = "DRE-BT",
-                UeNome = "TODAS",
-                Turma = "TODAS",
-                Bimestre = "TODOS",
-                Usuario = "JULIA FERREIRA DE OLIVEIRA",
-                RF = "1234567",
-                Data = "13/09/2021",
-                Ues = ues,
-            };
-
-            return View("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", model);
+            return View("RelatorioAcompanhamentoRegistrosPedagogicos", model);
         }
-        
+
+
+        [HttpGet("acompanhamento-pedagocicos-infantil")]
+        public async Task<IActionResult> AcompanhamentoRegistrosPedagogicosInfantil([FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase useCase)
+        {            
+            var turmas = new List<RelatorioAcompanhamentRegistrosPedagogicosTurmaInfantilDto>();
+            for (var i = 0; i < 5; i++)
+            {
+                var turma = new RelatorioAcompanhamentRegistrosPedagogicosTurmaInfantilDto()
+                {
+                    Nome = "EI - " + (i + 1) + "A - GABRIELA MANZOLLI ROWLANDS LOPES (7924488)",
+                    Aulas = 234 + i,
+                    FrequenciasPendentes = 5 + i,
+                    DataUltimoRegistroFrequencia = DateTime.Now,
+                    DiarioBordoPendentes = 4 + i,
+                    DataUltimoRegistroDiarioBordo = DateTime.Now,
+                };
+                turmas.Add(turma);
+            }
+
+            var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>();
+            for (var i = 0; i < 5; i++)
+            {
+                var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto()
+                {
+                    Bimestre = (i + 1) + "º BIMESTRE",
+                    TurmasInfantil = turmas,
+                };
+                bimestres.Add(bimestre);
+            }
+
+            var model = new RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto()
+            {
+                Cabecalho = new RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto()
+                {
+                    Dre = "DRE-BT",
+                    Ue = "TODAS",
+                    Turma = "TODAS",
+                    Bimestre = "TODOS",
+                    UsuarioNome = "JULIA FERREIRA DE OLIVEIRA",
+                    UsuarioRF = "1234567",
+                },
+                Bimestre = bimestres,
+
+            };
+
+            return View("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", model);
+        }
+
     }
 }
 
