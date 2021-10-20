@@ -28,15 +28,13 @@ namespace SME.SR.Application
             {
                 var relatorioQueryInfantil = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery>();
                 var relatorioInfantilDto = await mediator.Send(relatorioQueryInfantil);
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilDto, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilDto, request.CodigoCorrelacao,"","Relatório de Acompanhamento de registros",true,"RELATÓRIO DE ACOMPANHAMENTO DE REGISTROS"));
             }
             else
             {
                 var relatorioDto = await mediator.Send(relatorioQuery);
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao,"", "Relatório de Acompanhamento de registros",true, "RELATÓRIO DE ACOMPANHAMENTO DE REGISTROS"));
             }
-
-
         }
     }
 }
