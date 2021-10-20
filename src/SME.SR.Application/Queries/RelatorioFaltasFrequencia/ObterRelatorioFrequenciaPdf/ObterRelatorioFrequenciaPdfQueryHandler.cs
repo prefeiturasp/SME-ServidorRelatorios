@@ -90,6 +90,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                             foreach (var componente in bimestre.Componentes)
                             {
                                 var componenteAtual = componentes.FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
+
+                                var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
+                                int totalAulasDisciplinaTurmaBimestre = await mediator.Send(new ObterTotalAulasPorDisciplinaTurmaBimestreQuery(int.Parse(bimestre.Numero), componente.CodigoComponente, turmasccc.ToArray()));
+
                                 if (componenteAtual != null)
                                     componente.NomeComponente = componenteAtual.Descricao.ToUpper();
 
@@ -116,10 +120,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         aluno.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
                                         aluno.TotalAusencias = totalAusente != null ? totalAusente.Quantidade : 0;
                                         aluno.NomeTurma = turmaFiltrada == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaFiltrada.Nome}";
+                                        aluno.TotalAulas = totalAulasDisciplinaTurmaBimestre;
                                     }
                                 }
-
-                                var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
+                                
                                 var alunosSemFrequenciaNaTurma = alunos
                                     .Where(a => a.Ativo)
                                     .Where(a => turmasccc.Contains(a.TurmaCodigo))
