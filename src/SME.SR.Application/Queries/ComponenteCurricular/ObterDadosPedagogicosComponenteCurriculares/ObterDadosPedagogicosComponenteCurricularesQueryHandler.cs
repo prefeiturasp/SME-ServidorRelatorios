@@ -22,7 +22,7 @@ namespace SME.SR.Application
 
         public async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> Handle(ObterDadosPedagogicosComponenteCurricularesQuery request, CancellationToken cancellationToken)
         {
-            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicos(request.DreCodigo, request.UeCodigo, request.AnoLetivo, request.ComponentesCurriculares, request.TurmasId, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
+            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicos(request.DreCodigo, request.UeCodigo, request.AnoLetivo, request.ComponentesCurriculares, request.TurmasCodigo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.Modalidade);
             var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>();
 
             if (consolidacoesFiltradas.Any())
@@ -43,7 +43,7 @@ namespace SME.SR.Application
                                                                                      : $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor} ({compCurricular.RFProfessor})";
                             var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
                             {
-                                Nome = nomeComponente,
+                                Nome = nomeComponente.ToUpper(),
                                 QuantidadeAulas = compCurricular.QuantidadeAulas,
                                 FrequenciasPendentes = compCurricular.FrequenciasPendentes,
                                 DataUltimoRegistroFrequencia = compCurricular.DataUltimaFrequencia,

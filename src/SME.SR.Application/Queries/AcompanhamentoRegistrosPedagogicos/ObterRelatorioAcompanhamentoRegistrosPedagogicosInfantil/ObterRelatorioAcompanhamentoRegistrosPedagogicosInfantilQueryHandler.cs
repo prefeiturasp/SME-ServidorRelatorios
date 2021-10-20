@@ -32,8 +32,8 @@ namespace SME.SR.Application
 
             int[] bimestres = request.Bimestres?.ToArray();
 
-            var turmas = await ObterTurmasPorId(request.TurmasId);
-            var dadosTurmas = await ObterDadosPedagogicosInfantil(request.DreCodigo, request.UeCodigo, request.AnoLetivo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.TurmasId);
+            var turmas = await ObterTurmasPorCodigo(request.TurmasCodigo);
+            var dadosTurmas = await ObterDadosPedagogicosInfantil(request.DreCodigo, request.UeCodigo, request.AnoLetivo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.TurmasCodigo);
 
             return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery(dre, ue, turmas, dadosTurmas, bimestres, request.UsuarioNome, request.UsuarioRF));
         }
@@ -51,12 +51,12 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorId(long[] turmas)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorCodigo(List<string> turmas)
         {
-            return await mediator.Send(new ObterTurmasPorIdsQuery(turmas));
+            return await mediator.Send(new ObterTurmasPorCodigoQuery(turmas?.ToArray()));
         }
 
-        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>> ObterDadosPedagogicosInfantil(string dreCodigo, string ueCodigo, int anoLetivo, string professorCodigo, string professorNome, List<int> bimestres, long[] turmasId = null)
+        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>> ObterDadosPedagogicosInfantil(string dreCodigo, string ueCodigo, int anoLetivo, string professorCodigo, string professorNome, List<int> bimestres, List<string> turmasId = null)
         {
             return await mediator.Send(new ObterDadosPedagogicosTurmaQuery(dreCodigo, ueCodigo, anoLetivo, professorNome, professorCodigo, bimestres, turmasId));
         }

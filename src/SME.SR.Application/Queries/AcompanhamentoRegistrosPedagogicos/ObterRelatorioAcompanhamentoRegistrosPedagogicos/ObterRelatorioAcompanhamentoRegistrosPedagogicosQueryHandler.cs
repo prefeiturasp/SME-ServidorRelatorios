@@ -32,9 +32,9 @@ namespace SME.SR.Application
 
             int[] bimestres = request.Bimestres?.ToArray();
 
-            var turmas = await ObterTurmasPorCodigo(request.Turmas);
+            var turmas = await ObterTurmasPorCodigo(request.TurmasCodigo);
 
-            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.DreCodigo, request.UeCodigo, request.ComponentesCurriculares, request.AnoLetivo, request.Turmas, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres);
+            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.DreCodigo, request.UeCodigo, request.ComponentesCurriculares, request.AnoLetivo, request.TurmasCodigo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.Modalidade);
 
             return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosQuery(dre, ue, turmas, dadosRelatorio, bimestres, request.UsuarioNome, request.UsuarioRF));
         }
@@ -51,14 +51,14 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorCodigo(long[] turmasId)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorCodigo(List<string> turmasCodigo)
         {
-            return await mediator.Send(new ObterTurmasPorIdsQuery(turmasId));
+            return await mediator.Send(new ObterTurmasPorCodigoQuery(turmasCodigo?.ToArray()));
         }
 
-        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> ObterDadosComponentesCurriculares(string dreCodigo, string ueCodigo, long[] componentesCurriculares, int anoLetivo, long[] turmasId, string professorNome, string professorCodigo, List<int> bimestres)
+        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> ObterDadosComponentesCurriculares(string dreCodigo, string ueCodigo, long[] componentesCurriculares, int anoLetivo, List<string> turmasCodigo, string professorCodigo, string professorNome, List<int> bimestres, Modalidade modalidade)
         {
-            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(dreCodigo, ueCodigo, componentesCurriculares, anoLetivo, turmasId, professorNome, professorCodigo, bimestres));
+            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(dreCodigo, ueCodigo, componentesCurriculares, anoLetivo, turmasCodigo, professorNome, professorCodigo, bimestres, modalidade));
         }
     }
 }

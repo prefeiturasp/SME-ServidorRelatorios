@@ -7961,10 +7961,10 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         [HttpGet("acompanhamento-pedagocicos-infantil")]
         public async Task<IActionResult> AcompanhamentoRegistrosPedagogicosInfantil([FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase useCase)
         {            
-            var turmas = new List<RelatorioAcompanhamentRegistrosPedagogicosTurmaInfantilDto>();
+            var turmas = new List<RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto>();
             for (var i = 0; i < 5; i++)
             {
-                var turma = new RelatorioAcompanhamentRegistrosPedagogicosTurmaInfantilDto()
+                var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
                 {
                     Nome = "EI - " + (i + 1) + "A - GABRIELA MANZOLLI ROWLANDS LOPES (7924488)",
                     Aulas = 234 + i,

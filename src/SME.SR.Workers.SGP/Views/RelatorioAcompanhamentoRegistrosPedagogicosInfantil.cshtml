@@ -12,7 +12,7 @@
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
         </div>
         <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-        <div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO DO FECHAMENTO</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO DOS REGISTROS <br/>PEDAGÓGICOS</div>
         <div class='fonte-14 header-pagina'>
             <table class='tblTopo'>
                 <tbody>
@@ -120,7 +120,7 @@
         }
     }
 
-    void MontarLinhaTabela(SME.SR.Infra.RelatorioAcompanhamentRegistrosPedagogicosTurmaInfantilDto turma,bool temBimestre, string bimestreNome)
+    void MontarLinhaTabela(SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto turma,bool temBimestre, string bimestreNome)
     {
         var turmaNome = turma.Nome;
         ContagemCaracteres(turmaNome);
