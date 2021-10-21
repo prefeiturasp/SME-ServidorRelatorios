@@ -34,7 +34,7 @@ namespace SME.SR.Application
 
             var turmas = await ObterTurmasPorCodigo(request.TurmasCodigo);
 
-            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.DreCodigo, request.UeCodigo, request.ComponentesCurriculares, request.AnoLetivo, request.TurmasCodigo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.Modalidade);
+            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.DreCodigo, request.UeCodigo, request.ComponentesCurriculares, request.AnoLetivo, request.TurmasCodigo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.Modalidade, request.Semestre);
 
             return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosQuery(dre, ue, turmas, dadosRelatorio, bimestres, request.UsuarioNome, request.UsuarioRF));
         }
@@ -56,9 +56,9 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterTurmasPorCodigoQuery(turmasCodigo?.ToArray()));
         }
 
-        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> ObterDadosComponentesCurriculares(string dreCodigo, string ueCodigo, long[] componentesCurriculares, int anoLetivo, List<string> turmasCodigo, string professorCodigo, string professorNome, List<int> bimestres, Modalidade modalidade)
+        private async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> ObterDadosComponentesCurriculares(string dreCodigo, string ueCodigo, long[] componentesCurriculares, int anoLetivo, List<string> turmasCodigo, string professorCodigo, string professorNome, List<int> bimestres, Modalidade modalidade, int semestre)
         {
-            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(dreCodigo, ueCodigo, componentesCurriculares, anoLetivo, turmasCodigo, professorNome, professorCodigo, bimestres, modalidade));
+            return await mediator.Send(new ObterDadosPedagogicosComponenteCurricularesQuery(dreCodigo, ueCodigo, componentesCurriculares, anoLetivo, turmasCodigo, professorCodigo, bimestres, modalidade, semestre));
         }
     }
 }

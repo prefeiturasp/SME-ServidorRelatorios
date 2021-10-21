@@ -18,9 +18,11 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicos(string dreCodigo, string ueCodigo, int anoLetivo, long[] componentesCurriculares, List<string> turmasCodigo, string professorCodigo, string professorNome, List<int> bimestres, Modalidade modalidade)
+        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicos(string dreCodigo, string ueCodigo, int anoLetivo, long[] componentesCurriculares, List<string> turmasCodigo, string professorCodigo, List<int> bimestres, Modalidade modalidade, int semestre)
         {
             var turmaCodigo = turmasCodigo?.ToArray();
+            int periodoCalendario = 0;
+
             var query = new StringBuilder(@"select 
                                             crp.periodo_escolar_id as PeriodoEscolarId,
                                             pe.bimestre as Bimestre,
@@ -40,6 +42,7 @@ namespace SME.SR.Data
                                             from consolidacao_registros_pedagogicos crp
                                             inner join turma t on t.id = crp.turma_id
                                             inner join periodo_escolar pe on pe.id = crp.periodo_escolar_id
+                                            inner join tipo_calendario tc on tc.id = pe.tipo_calendario_id
                                             inner join componente_curricular cc on cc.id = crp.componente_curricular_id
                                             inner join ue ue on ue.id = t.ue_id
                                             inner join dre dre on dre.id = ue.dre_id
@@ -65,16 +68,19 @@ namespace SME.SR.Data
             {
                 query.AppendLine(@" and crp.rf_professor in (@professorCodigo)");
             }
-            if (professorNome != null && professorNome != "")
-            {
-                query.AppendLine(@" and crp.nome_professor in (@professorNome)");
-            }
             if (bimestres != null && bimestres.Any())
             {
                 query.AppendLine(@" and pe.bimestre = any(@bimestres)");
             }
+
             int codigoModalidade = (int)modalidade;
             query.AppendLine(@"and t.modalidade_codigo in (@codigoModalidade)");
+
+            if (semestre > 0)
+            {
+                periodoCalendario = (int)Periodo.Semestral;
+                query.AppendLine(@" and tc.periodo = @periodoCalendario and pe.bimestre = @semestre");
+            }
 
             var parametros = new
             {
@@ -84,9 +90,10 @@ namespace SME.SR.Data
                 componentesCurriculares,
                 turmaCodigo,
                 professorCodigo,
-                professorNome,
                 bimestres,
-                codigoModalidade
+                codigoModalidade,
+                periodoCalendario,
+                semestre
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
@@ -95,16 +102,15 @@ namespace SME.SR.Data
                 {
                     return await conexao.QueryAsync<ConsolidacaoRegistrosPedagogicosDto>(query.ToString(), parametros);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     var a = ex;
                     return null;
                 }
-                
             }
         }
 
-        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicosInfantil(string dreCodigo, string ueCodigo, int anoLetivo, string professorCodigo, string professorNome, List<int> bimestres, List<string> turmasCodigo)
+        public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicosInfantil(string dreCodigo, string ueCodigo, int anoLetivo, string professorCodigo, List<int> bimestres, List<string> turmasCodigo)
         {
             var turmaCodigo = turmasCodigo?.ToArray();
             var query = new StringBuilder(@"select 
@@ -146,10 +152,6 @@ namespace SME.SR.Data
             {
                 query.AppendLine(@" and crp.rf_professor in (@professorCodigo)");
             }
-            if (professorNome != null && professorNome != "")
-            {
-                query.AppendLine(@" and crp.nome_professor in (@professorNome)");
-            }
             if (bimestres != null && bimestres.Any())
             {
                 query.AppendLine(@" and pe.bimestre = any(@bimestres)");
@@ -162,21 +164,12 @@ namespace SME.SR.Data
                 anoLetivo,
                 turmaCodigo,
                 professorCodigo,
-                professorNome,
                 bimestres
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                try
-                {
-                    return await conexao.QueryAsync<ConsolidacaoRegistrosPedagogicosDto>(query.ToString(), parametros);
-                }
-                catch(Exception ex)
-                {
-                    var a = ex;
-                    return null;
-                }
+                return await conexao.QueryAsync<ConsolidacaoRegistrosPedagogicosDto>(query.ToString(), parametros);
             }
         }
     }
