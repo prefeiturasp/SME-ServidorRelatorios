@@ -7,7 +7,7 @@ namespace SME.SR.Application
     public class ObterNotificacoesFiltrosQuery : IRequest<IEnumerable<NotificacaoDto>>
     {
         public ObterNotificacoesFiltrosQuery(long ano, string usuarioRf, long[] categorias, 
-            long[] tipos, long[] situacoes, bool exibirDescricao, bool exibirExcluidas, string dre, string ue)
+            long[] tipos, long[] situacoes, bool exibirDescricao, bool exibirExcluidas, string dre, string ue, string turmaCodigo)
         {
             Ano = ano;
             UsuarioRf = usuarioRf;
@@ -18,6 +18,7 @@ namespace SME.SR.Application
             ExibirExcluidas = exibirExcluidas;
             DRE = dre;
             UE = ue;
+            TurmaCodigo = turmaCodigo;
         }
         public long Ano { get; set; }
         public long[] Categorias { get; set; }
@@ -29,5 +30,6 @@ namespace SME.SR.Application
         public string UsuarioRf { get; set; }
         public string DRE { get; set; }
         public string UE { get; set; }
+        public string TurmaCodigo { get; set; }
     }
 }

@@ -24,12 +24,13 @@ namespace SME.SR.Application
         public async Task<bool> Handle(GerarRelatorioNotificacaoCommand request, CancellationToken cancellationToken)
         {
             var dto = new RelatorioNotificacaoDto();
+            var filtro = request.Filtros;
 
             var situacoes = new long[] { };
             var categorias = new long[] { };
             var tipos = new long[] { };
 
-            if (request.Filtros.Situacoes.Contains(-99))
+            if (filtro.Situacoes.Contains(-99))
             {
                 situacoes = new long[] {
                         (long)NotificacaoStatus.Aceita,
@@ -39,10 +40,10 @@ namespace SME.SR.Application
                     };
             } else
             {
-                situacoes = request.Filtros.Situacoes.ToArray();
+                situacoes = filtro.Situacoes.ToArray();
             }
 
-            if (request.Filtros.Categorias.Contains(-99))
+            if (filtro.Categorias.Contains(-99))
             {
                 categorias = new long[] {
                         (long)NotificacaoCategoria.Alerta,
@@ -52,10 +53,10 @@ namespace SME.SR.Application
             }
             else
             {
-                categorias = request.Filtros.Categorias.ToArray();
+                categorias = filtro.Categorias.ToArray();
             }
 
-            if (request.Filtros.Tipos.Contains(-99))
+            if (filtro.Tipos.Contains(-99))
             {
                 tipos = new long[] {
                         (long)NotificacaoTipo.Calendario,
@@ -71,11 +72,11 @@ namespace SME.SR.Application
             }
             else
             {
-                tipos = request.Filtros.Tipos.ToArray();
+                tipos = filtro.Tipos.ToArray();
             }
 
-            var notificacoes = await mediator.Send(new ObterNotificacoesFiltrosQuery(request.Filtros.AnoLetivo, request.Filtros.UsuarioBuscaRf,
-                categorias, tipos, situacoes, request.Filtros.ExibirDescricao, request.Filtros.ExibirNotificacoesExcluidas, request.Filtros.DRE, request.Filtros.UE));
+            var notificacoes = await mediator.Send(new ObterNotificacoesFiltrosQuery(filtro.AnoLetivo, filtro.UsuarioBuscaRf,
+                categorias, tipos, situacoes, filtro.ExibirDescricao, filtro.ExibirNotificacoesExcluidas, filtro.DRE, filtro.UE, filtro.Turma));
 
             if (!notificacoes.Any())
                 throw new NegocioException("<b>O relatório com o filtro solicitado não possui informações.</b>");
