@@ -15,5 +15,6 @@ namespace SME.SR.Data
                                                                                       IEnumerable<int> bimestres,
                                                                                       TipoRelatorioFaltasFrequencia tipoRelatorio,
                                                                                       List<string> codigosTurma);
+        Task<int> ObterTotalAulasPorDisciplinaTurmaBimestre(int bimestre, string disciplinaId, string[] turmasId);
     }
 }
