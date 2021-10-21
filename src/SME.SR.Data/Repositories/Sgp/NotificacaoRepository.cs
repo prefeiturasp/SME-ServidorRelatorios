@@ -19,7 +19,7 @@ namespace SME.SR.Data.Repositories.Sgp
         }
 
         public async Task<IEnumerable<NotificacaoDto>> ObterComFiltros(long ano, string usuarioRf, long[] categorias, long[] tipos, long[] situacoes,
-            bool exibirDescricao = false, bool exibirExcluidas = false, string dreCodigo = "-99", string ueCodigo = "-99")
+            string turmaCodigo, bool exibirDescricao = false, bool exibirExcluidas = false, string dreCodigo = "-99", string ueCodigo = "-99")
         {
             var query = new StringBuilder($@"select 
 							n.codigo as Codigo
@@ -57,6 +57,8 @@ namespace SME.SR.Data.Repositories.Sgp
                 query.AppendLine($" and n.ue_id = @ueCodigo ");
             if (!string.IsNullOrEmpty(usuarioRf))
                 query.AppendLine(" and u.rf_codigo = @usuarioRf ");
+            if (!string.IsNullOrEmpty(turmaCodigo) && turmaCodigo != "-99")
+                query.AppendLine(" and turma_id = @turmaCodigo ");
 
             query.AppendLine(" order by u.nome ");
 
@@ -68,7 +70,8 @@ namespace SME.SR.Data.Repositories.Sgp
                 situacoes,
                 dreCodigo,
                 ueCodigo,
-                usuarioRf
+                usuarioRf,
+                turmaCodigo
             };
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
