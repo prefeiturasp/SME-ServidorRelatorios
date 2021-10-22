@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesPorAlunosQuery request, CancellationToken cancellationToken)
         {
-            var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorAlunos(request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
+            var componentesDasTurmas = await ObterComponentesPorAlunos(request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
 
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
             {
@@ -83,7 +83,29 @@ namespace SME.SR.Application
                 }
 
                 return componentesMapeados.GroupBy(cm => cm.CodigoAluno);
-            } throw new NegocioException("Não foi possível localizar os componentes curriculares da turma.");
+            }
+            throw new NegocioException("Não foi possível localizar os componentes curriculares da turma.");
+        }
+
+        private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
+        {
+            var componentes = new List<ComponenteCurricular>();
+            int alunosPorPagina = 100;
+            if (alunosCodigos.Length > alunosPorPagina)
+            {                
+                for (int i = 0; i < alunosCodigos.Length; i++)
+                {
+                    var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
+                    var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(alunosPagina.ToArray(), anoLetivo, semestre, consideraHistorico);
+                    componentes.AddRange(componentesCurriculares.ToList());
+                }
+                return componentes.AsEnumerable();
+            }
+            else
+            {
+                var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(alunosCodigos, anoLetivo, semestre, consideraHistorico);
+                return componentesCurriculares.AsEnumerable();
+            }                            
         }
     }
 }

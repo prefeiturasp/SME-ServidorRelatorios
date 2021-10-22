@@ -30,7 +30,7 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
-            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
+            string[] codigosTurma = turmas.OrderBy(tb => tb.Nome).Select(t => t.Codigo).ToArray();
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
