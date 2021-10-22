@@ -7903,32 +7903,43 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public async Task<IActionResult> FrequenciaIndividual()
         {
             var justificativas = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-            var justificativa = new RelatorioFrequenciaIndividualJustificativasDto()
+            for(var i = 0; i < 3; i++)
             {
-                DataAusencia = "21/01/2020",
-                MotivoAusencia = "Atestado médico da criança",
+                var justificativa = new RelatorioFrequenciaIndividualJustificativasDto()
+                {
+                    DataAusencia = "21/01/2020",
+                    MotivoAusencia = "Atestado médico da criança " +(i + 1),
 
+                };
+                justificativas.Add(justificativa);
             };
-            justificativas.Add(justificativa);
 
-            var bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
-            var bimestre = new RelatorioFrequenciaIndividualBimestresDto()
+            var dadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto()
             {
-                NomeBimestre = "1º bimestre - 2020",
                 TotalAulasDadas = 30,
                 TotalPresencas = 20,
                 TotalRemoto = 5,
                 TotalAusencias = 3,
                 TotalCompensacoes = 2,
                 PercentualFrequencia = "96,67%",
-                Justificativas = justificativas,                
             };
-            bimestres.Add(bimestre);
 
+
+            var bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var bimestre = new RelatorioFrequenciaIndividualBimestresDto()
+                {
+                    NomeBimestre = (i + 1) + "º bimestre - 2020",
+                    DadosFrequencia = dadosFrequencia,
+                    Justificativas = justificativas,
+                };
+                bimestres.Add(bimestre);
+            }
             var alunos = new List<RelatorioFrequenciaIndividualAlunosDto > ();
             var aluno = new RelatorioFrequenciaIndividualAlunosDto()
             {
-                NomeAluno = "",
+                NomeAluno = "Antônio CarLos dos santos (1234567)",
                 Bimestres = bimestres,
             };
             var model = new RelatorioFrequenciaIndividualDto()

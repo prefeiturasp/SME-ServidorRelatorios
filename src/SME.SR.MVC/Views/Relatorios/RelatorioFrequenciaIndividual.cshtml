@@ -3,6 +3,7 @@
 @{
     double contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 48;
+    int contadorEspacoEmBranco = 4;
     bool quebrou = false;
 
     string informacoesQuebra()
@@ -55,72 +56,86 @@
         return false;
     }
 
-    string MontarTituloPrincipal(string turmaDescricao)
+    void EspacoEmBranco()
     {
-        <tr>
-            <td colspan="3" class="fundo-cinza">@turmaDescricao @contadorQuebrarPagina</td>
+        <tr style="height: 8px;">
+            <td colspan="7" class="sem-border-top"></td>
         </tr>
 
-        return "";
-    }
-
-    void MontarTituloUe(string nomeUe, int contadorTurmas, bool temBimestre)
-    {
-        if (!String.IsNullOrEmpty(nomeUe) && contadorTurmas == 0)
+        if(contadorEspacoEmBranco == 4)
         {
-            var numLinhas = temBimestre ? 5 : 4;
-            var quebra = VerificaQuebra(numLinhas);
-            if (quebra)
-            {
-                informacoesQuebra();
-                MontarCabecalho();
-                @Html.Raw("<table class='tabela-cabecalho'>");
-            }
-
-            @Html.Raw(MontarTituloPrincipal(nomeUe))
+            contadorEspacoEmBranco = 0;
             contadorQuebrarPagina++;
         }
     }
 
-    void MontarTituloBimestre(string bimestre, bool temBimestre)
+    void MontarTituloPrincipal(string turmaDescricao, int colspan)
     {
-        if (temBimestre)
+        <tr>
+            <td colspan="@colspan" class="fundo-cinza">@turmaDescricao @contadorQuebrarPagina</td>
+        </tr>
+    }
+
+    void MontarTituloTabela()
+    {
+        <tr>
+            <td width="16%" class="fundo-cinza">AULAS DADAS</td>
+            <td width="16%" colspan="2" class="fundo-cinza">PRESENÇAS</td>
+            <td width="16%" class="fundo-cinza">REMOTO</td>
+            <td width="16%" class="fundo-cinza">AUSÊNCIAS</td>
+            <td width="16%" class="fundo-cinza">COMPENSAÇÕES</td>
+            <td width="20%" class="fundo-cinza">% DE FREQUÊNCIA @contadorQuebrarPagina</td>
+        </tr>
+    }
+
+    void MontarLinhasTabela(SME.SR.Infra.RelatorioFrequenciaIndividualDadosFrequenciasDto dadosFrequencia)
+    {
+        <tr>
+            <td>@dadosFrequencia.TotalAulasDadas</td>
+            <td colspan="2">@dadosFrequencia.TotalPresencas</td>
+            <td>@dadosFrequencia.TotalRemoto</td>
+            <td>@dadosFrequencia.TotalAusencias</td>
+            <td>@dadosFrequencia.TotalCompensacoes</td>
+            <td>@dadosFrequencia.PercentualFrequencia @contadorQuebrarPagina</td>
+        </tr>
+    }
+
+    void MontarTituloJustificativas()
+    {
+        <tr>
+            <td width="25%" colspan="2" class="fundo-cinza">DATA DA AUSÊNCIA</td>
+            <td width="75%" colspan="5" class="fundo-cinza">MOTIVO @contadorQuebrarPagina</td>
+        </tr>
+    }
+
+
+    void MontarLinhasJustificativas(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto justificativas)
+    {
+        <tr>
+            <td colspan="2">@justificativas.DataAusencia</td>
+            <td colspan="5" class="alinhar-esquerda espaco-esquerda-15">@justificativas.MotivoAusencia @contadorQuebrarPagina</td>
+        </tr>
+    }
+
+    void MontarJustificativas(SME.SR.Infra.RelatorioFrequenciaIndividualBimestresDto bimestres)
+    {
+        int contadorJustificativas = 0;
+        @foreach (var justificativas in bimestres.Justificativas)
         {
-            var quebra = VerificaQuebra(3);
-            if (quebra)
+            @if (contadorJustificativas == 0)
             {
-                informacoesQuebra();
-                MontarCabecalho();
-                @Html.Raw("<table class='tabela-cabecalho'>");
+                EspacoEmBranco();
+
+                MontarTituloJustificativas();
+                contadorQuebrarPagina++;
             }
 
-            @Html.Raw(MontarTituloPrincipal(bimestre))
+            MontarLinhasJustificativas(justificativas);
             contadorQuebrarPagina++;
-        }
+
+            contadorJustificativas++;
+        } 
     }
-
-    string MontarCabecalhoDados(int contadorBimestres)
-    {
-        @if (contadorBimestres == 0)
-        {
-            <tr>
-                <td class="fundo-cinza" width="10%">TURMA</td>
-                <td class="fundo-cinza" width="50%">
-                    FECHAMENTO <br />
-                    <span>QUANTIDADE DE COMPONENTES CURRICULARES POR SITUAÇÃO</span>
-                </td>
-                <td class="fundo-cinza" width="40%">
-                    CONSELHO DE CLASSE @contadorQuebrarPagina<br />
-                    <span>QUANTIDADE DE ESTUDANTES POR SITUAÇÃO</span>
-                </td>
-            </tr>
-
-            contadorQuebrarPagina = contadorQuebrarPagina + 1.6;
-        }
-
-        return "";
-    }
-
 }
 
 <!DOCTYPE html>
@@ -259,8 +274,33 @@
     </style>
     <div>
         @{
-            MontarCabecalho();           
-        }
+            MontarCabecalho();
+
+            <table class="tabela-cabecalho" cellpadding="10">
+                @foreach (var alunos in Model.Alunos)
+                {
+                    MontarTituloPrincipal(alunos.NomeAluno, 7);
+                    contadorQuebrarPagina++;
+
+                    int contadorBimestres = 0;
+                    @foreach (var bimestres in alunos.Bimestres)
+                    {
+                        MontarTituloPrincipal(bimestres.NomeBimestre, 7);
+                        contadorQuebrarPagina++;
+
+                        MontarTituloTabela();
+                        contadorQuebrarPagina++;
+
+                        MontarLinhasTabela(bimestres.DadosFrequencia);
+                        contadorQuebrarPagina++;
+
+                        MontarJustificativas(bimestres);
+
+                        contadorBimestres++;
+                    }
+                }
+            </table>        
+    }
     </div>
 </body>
 </html>
