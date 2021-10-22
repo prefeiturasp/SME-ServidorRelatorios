@@ -26,6 +26,7 @@ namespace SME.SR.Infra
         public int PlanoAulaPendentes { get; set; }
         public string NomeProfessor { get; set; }
         public string RFProfessor { get; set; }
+        public bool CJ { get; set; }
         public string NomeTurmaFormatado { get => ObterNomeTurmaFormatado(); }
 
         public ConsolidacaoRegistrosPedagogicosDto()
