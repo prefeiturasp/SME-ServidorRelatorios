@@ -7846,59 +7846,103 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             }
         }
 
-        [HttpGet("acompanhamento-fechamento-ue")]
-        public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
+        //    [HttpGet("acompanhamento-fechamento-ue")]
+        //    public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
+        //    {
+        //        var fechamento= new RelatorioConsolidadoFechamento()
+        //        {
+        //            NaoIniciado = 3,
+        //            ProcessadoComPendencia = 2,
+        //            ProcessadoComSucesso = 5
+        //        };
+        //        var conselhoDeClasse= new RelatorioConsolidadoConselhoClasse()
+        //        {
+        //            NaoIniciado = 4,
+        //            EmAndamento = 8,
+        //            Concluido = 7,
+        //        };
+
+        //        var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseDto>();
+        //        var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseDto("EF -1A")
+        //        {
+        //            FechamentoConsolidado = fechamento,
+        //            ConselhoDeClasseConsolidado =  conselhoDeClasse ,
+        //        };
+        //        fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
+
+        //        var bimestres = new List<RelatorioAcompanhamentoFechamentoBimestresDto>();
+        //        var bimestre = new RelatorioAcompanhamentoFechamentoBimestresDto("1º Bimestre","0123")
+        //        {                
+        //            FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
+        //        };
+        //        bimestres.Add(bimestre);            
+
+        //        var ues = new List<RelatorioAcompanhamentoFechamentoUesDto>();
+        //        var ue = new RelatorioAcompanhamentoFechamentoUesDto("CEU EMEF BUTANTA")
+        //        {
+        //           Bimestres = bimestres,
+        //        };
+        //        ues.Add(ue);
+
+        //        var model = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto()
+        //        {
+        //            DreNome = "DRE-BT",
+        //            UeNome = "TODAS",
+        //            Turma = "TODAS",
+        //            Bimestre = "TODOS",
+        //            Usuario = "JULIA FERREIRA DE OLIVEIRA",
+        //            RF = "1234567",
+        //            Data = "13/09/2021",
+        //            Ues = ues,
+        //        };
+
+        //        return View("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", model);
+        //    }
+
+        [HttpGet("frequencia-individual")]
+        public async Task<IActionResult> FrequenciaIndividual()
         {
-            var fechamento= new RelatorioConsolidadoFechamento()
+            var justificativas = new List<RelatorioFrequenciaIndividualJustificativasDto>();
+            var justificativa = new RelatorioFrequenciaIndividualJustificativasDto()
             {
-                NaoIniciado = 3,
-                ProcessadoComPendencia = 2,
-                ProcessadoComSucesso = 5
-            };
-            var conselhoDeClasse= new RelatorioConsolidadoConselhoClasse()
-            {
-                NaoIniciado = 4,
-                EmAndamento = 8,
-                Concluido = 7,
-            };
+                DataAusencia = "21/01/2020",
+                MotivoAusencia = "Atestado médico da criança",
 
-            var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseDto>();
-            var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseDto("EF -1A")
-            {
-                FechamentoConsolidado = fechamento,
-                ConselhoDeClasseConsolidado =  conselhoDeClasse ,
             };
-            fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
+            justificativas.Add(justificativa);
 
-            var bimestres = new List<RelatorioAcompanhamentoFechamentoBimestresDto>();
-            var bimestre = new RelatorioAcompanhamentoFechamentoBimestresDto("1º Bimestre","0123")
-            {                
-                FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
-            };
-            bimestres.Add(bimestre);            
-          
-            var ues = new List<RelatorioAcompanhamentoFechamentoUesDto>();
-            var ue = new RelatorioAcompanhamentoFechamentoUesDto("CEU EMEF BUTANTA")
+            var bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
+            var bimestre = new RelatorioFrequenciaIndividualBimestresDto()
             {
-               Bimestres = bimestres,
+                NomeBimestre = "1º bimestre - 2020",
+                TotalAulasDadas = 30,
+                TotalPresencas = 20,
+                TotalRemoto = 5,
+                TotalAusencias = 3,
+                TotalCompensacoes = 2,
+                PercentualFrequencia = "96,67%",
+                Justificativas = justificativas,                
             };
-            ues.Add(ue);
+            bimestres.Add(bimestre);
 
-            var model = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto()
+            var alunos = new List<RelatorioFrequenciaIndividualAlunosDto > ();
+            var aluno = new RelatorioFrequenciaIndividualAlunosDto()
             {
-                DreNome = "DRE-BT",
-                UeNome = "TODAS",
-                Turma = "TODAS",
-                Bimestre = "TODOS",
+                NomeAluno = "",
+                Bimestres = bimestres,
+            };
+            var model = new RelatorioFrequenciaIndividualDto()
+            {
+                DreNome = "DRE - BT",
+                UeNome = "CEU EMEF BUTANTA",
                 Usuario = "JULIA FERREIRA DE OLIVEIRA",
                 RF = "1234567",
-                Data = "13/09/2021",
-                Ues = ues,
+                Alunos = alunos,
             };
+            alunos.Add(aluno);
 
-            return View("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", model);
+            return View("RelatorioFrequenciaIndividual", model);
         }
-        
     }
 }
 
