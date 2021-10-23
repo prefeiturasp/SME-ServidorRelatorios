@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SME.SR.Application;
+using SME.SR.Workers.SGP.Filters;
 using System;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/v1/downloads/sgp")]
+    [ChaveIntegracaoSrApi]
     [ApiController]
     public class SgpDownloadController : Controller
     {

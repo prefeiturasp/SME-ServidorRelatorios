@@ -3,12 +3,14 @@ using Newtonsoft.Json;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Workers.SGP.Filters;
 using System;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
     [ApiController]
+    [ChaveIntegracaoSrApi]
     [Route("api/v1/relatorios/sincronos")]
     public class RelatoriosSincronosSgpController : ControllerBase
     {
