@@ -32,52 +32,31 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         {
             try
             {
-                var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
+                var documentos = new List<string>();
 
-                var model = (RelatorioAcompanhamentoAprendizagemDto)request.Model;
+                var model = request.Model;
 
-                var nomeTemplateCabecalho = "RelatorioAcompanhamentoAprendizagemCabecalho";
-                var nomeTemplateCorpo = "RelatorioAcompanhamentoAprendizagemCorpo";
+                var nomeTemplateCabecalho = "RelatorioAcompanhamentoAprendizagemHeader";
+                var nomeTemplateCorpo = "RelatorioAcompanhamentoAprendizagem";
 
-                var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, model.Cabecalho);
-                htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-                htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
-
-                var alunos = model.Alunos.OrderBy(a => a.NomeEol);
-
-                foreach (var aluno in alunos)
-                {
-                    var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, aluno);
-
-                    var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
-                    var iNumPagina = 1;
-                    if (paginasDoAluno.Length > 0)
-                    {
-                        foreach (var paginaDoAluno in paginasDoAluno)
-                        {
-                            var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", paginaDoAluno);
-                            paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
-                            iNumPagina++;
-                        }
-                    }
-                    else
-                    {
-                        var htmlParaIncluir = htmlCabecalho.Replace("#CONTEUDO_ALUNO", htmlCorpo);
-                        paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
-                    }
-                }
+                var html = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, model);
+                var htmlHeader = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, model);
 
                 var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
+                var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
+                var nomeHeader = $"{nomeArquivo}.html";
 
-            //PdfGenerator pdfGenerator = new PdfGenerator(converter);
-            reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
+                System.IO.StreamWriter file = new System.IO.StreamWriter(nomeHeader);
+                file.WriteLine(htmlHeader);
+                file.Close();
+
+                reportConverter.Converter(html, nomeArquivo, templateHeader: htmlHeader);
             
-            if (request.EnvioPorRabbit)
-            {
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
-                return string.Empty;
-            }
+                if (request.EnvioPorRabbit)
+                {
+                    await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                    return string.Empty;
+                }
 
                 return request.CodigoCorrelacao.ToString();
             }
