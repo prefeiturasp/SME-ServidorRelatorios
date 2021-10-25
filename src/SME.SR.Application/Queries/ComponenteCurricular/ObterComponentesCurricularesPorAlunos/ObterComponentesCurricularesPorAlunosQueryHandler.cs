@@ -91,13 +91,18 @@ namespace SME.SR.Application
         {
             var componentes = new List<ComponenteCurricular>();
             int alunosPorPagina = 100;
+                       
             if (alunosCodigos.Length > alunosPorPagina)
-            {                
-                for (int i = 0; i < alunosCodigos.Length; i++)
+            {
+                int cont = 0;
+                int i = 0;
+                while (cont < alunosCodigos.Length)
                 {
                     var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
                     var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(alunosPagina.ToArray(), anoLetivo, semestre, consideraHistorico);
                     componentes.AddRange(componentesCurriculares.ToList());
+                    cont += alunosPagina.Count();
+                    i++;
                 }
                 return componentes.AsEnumerable();
             }
