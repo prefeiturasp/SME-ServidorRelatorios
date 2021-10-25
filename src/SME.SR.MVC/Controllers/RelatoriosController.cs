@@ -7903,13 +7903,13 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public async Task<IActionResult> FrequenciaIndividual()
         {
             var justificativas = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-            for(var i = 0; i < 3; i++)
+            for(var i = 0; i < 34; i++)
             {
                 var justificativa = new RelatorioFrequenciaIndividualJustificativasDto()
                 {
                     DataAusencia = "21/01/2020",
                     MotivoAusencia = "Atestado médico da criança " +(i + 1),
-
+                    //MotivoAusencia = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. " + (i + 1),
                 };
                 justificativas.Add(justificativa);
             };
@@ -7936,21 +7936,28 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 };
                 bimestres.Add(bimestre);
             }
+
             var alunos = new List<RelatorioFrequenciaIndividualAlunosDto > ();
-            var aluno = new RelatorioFrequenciaIndividualAlunosDto()
+
+            for (var i = 0; i < 10; i++)
             {
-                NomeAluno = "Antônio CarLos dos santos (1234567)",
-                Bimestres = bimestres,
-            };
+                var aluno = new RelatorioFrequenciaIndividualAlunosDto()
+                {
+                    NomeAluno = "Antônio CarLos dos santos " + (i + 1) + " (1234567)",
+                    Bimestres = bimestres,
+                };
+                alunos.Add(aluno);
+            }
+
             var model = new RelatorioFrequenciaIndividualDto()
             {
                 DreNome = "DRE - BT",
                 UeNome = "CEU EMEF BUTANTA",
                 Usuario = "JULIA FERREIRA DE OLIVEIRA",
                 RF = "1234567",
+                ehInfantil = true,
                 Alunos = alunos,
             };
-            alunos.Add(aluno);
 
             return View("RelatorioFrequenciaIndividual", model);
         }
