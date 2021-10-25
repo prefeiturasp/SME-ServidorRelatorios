@@ -1,0 +1,329 @@
+﻿@model SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosDto
+
+@{
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 37;
+    bool quebrou = false;
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO DOS REGISTROS ACOMPANHAMENTO</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.Cabecalho.Dre</td>
+                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.Cabecalho.Ue</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='40%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Cabecalho.Turma</td>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>Bimestre: @Model.Cabecalho.Bimestre</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='53%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Cabecalho.UsuarioNome</td>
+                        <td width='15%' class='sem-border-top espaco-esquerda-15'>RF: @Model.Cabecalho.UsuarioRF</td>
+                        <td width='32%' class='sem-border-top espaco-esquerda-15'>DATA DA IMPRESSÃO: @Model.Cabecalho.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    string InformacoesQuebra()
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+
+        return "";
+    }
+
+    void ImprimirQuebra(bool quebra)
+    {
+        if (quebra)
+        {
+            InformacoesQuebra();
+            MontarCabecalho();
+            @Html.Raw("<table class='tabela-cabecalho'>");
+        }
+    }
+
+    bool VerificaQuebra(double numeroLinhasDescricao = 0)
+    {
+        if (contadorQuebrarPagina + numeroLinhasDescricao >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            quebrou = true;
+            return true;
+        }
+        quebrou = false;
+        return false;
+
+    }
+
+    void MontarTitulo(string descricao, int numeroLinhas = 1)
+    {
+        bool quebra = VerificaQuebra(numeroLinhas);
+        ImprimirQuebra(quebra);
+
+        <tr>
+            <td class="fundo-cinza" colspan="6">@descricao @contadorQuebrarPagina</td>
+        </tr>
+
+        contadorQuebrarPagina++;
+    }
+
+    void MontarTituloRegistros()
+    {
+        bool quebra = VerificaQuebra();
+        ImprimirQuebra(quebra);
+
+        <tr>
+            <td width="33%" class="fundo-cinza">TURMA @contadorQuebrarPagina</td>
+            <td width="6%" class="fundo-cinza">AULAS</td>
+            <td width="12%" class="fundo-cinza">FREQUÊNCIAS <br />PENDENTES</td>
+            <td width="15%" class="fundo-cinza">ÚLTIMO REGISTRO <br />DE FREQUÊNCIA</td>
+            <td width="16%" class="fundo-cinza">DIÁRIOS DE BORDO <br />PENDENTES</td>
+            <td width="17%" class="fundo-cinza">ÚLTIMO REGISTRO DE <br />DIÁRIO DE BORDO</td>
+        </tr>
+
+        contadorQuebrarPagina += 1.5;
+    }
+
+    void ContagemCaracteres(string nome)
+    {
+        int maximoCaracteresComponentesCurriculares = 35;
+        double linhasComponentesCurriculares = nome.Length / maximoCaracteresComponentesCurriculares;
+        bool quebra = VerificaQuebra();
+        ImprimirQuebra(quebra);
+
+        if (linhasComponentesCurriculares > 1)
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + linhasComponentesCurriculares;
+        }
+        else
+        {
+            contadorQuebrarPagina++;
+        }
+    }
+
+    void MontarLinhaTabela(SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto componentesCurriculares,bool temBimestre, string bimestreNome,bool temTurma,string turmaNome)
+    {
+        var componentesCurricularesNome = componentesCurriculares.Nome;
+        ContagemCaracteres(componentesCurricularesNome);
+        if(quebrou)
+        {
+            MontarBimestre(temBimestre, bimestreNome);
+            MontarTurma(temTurma, turmaNome);
+            MontarTituloRegistros();
+        }
+
+        <tr>
+            <td class="alinhar-esquerda espaco-esquerda-8">@componentesCurricularesNome</td>
+            <td>@componentesCurriculares.QuantidadeAulas</td>
+            <td>@componentesCurriculares.FrequenciasPendentes @contadorQuebrarPagina</td>
+            <td>@componentesCurriculares.DataUltimoRegistroFrequencia</td>
+            <td>@componentesCurriculares.PlanosAulaPendentes</td>
+            <td>@componentesCurriculares.DataUltimoRegistroPlanoAula</td>
+        </tr>
+    }
+
+    void MontarBimestre(bool temBimestre, string bimestreNome)
+    {
+        if (temBimestre)
+        {
+            int numeroLinhas = 2;
+            MontarTitulo(bimestreNome, numeroLinhas);
+        }
+    }
+
+    void MontarTurma(bool temTurma, string turmaNome)
+    {
+        if (temTurma)
+        {
+            int numeroLinhas = 4;
+            MontarTitulo(turmaNome, numeroLinhas);
+        }
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE ACOMPANHAMENTO DOS REGISTROS ACOMPANHAMENTO</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .subtitulo-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .espaco-esquerda-8 {
+            padding-left: 8px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .linha-pendencias {
+            height: 17px !important;
+            font-size: 12px !important;
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            <table class="tabela-cabecalho">
+                @foreach (var bimestres in Model.Bimestre)
+                {
+                    var bimestreNome = bimestres.Bimestre;
+                    bool temBimestre = !String.IsNullOrWhiteSpace(bimestreNome);
+                    
+                    MontarBimestre(temBimestre,bimestreNome);                 
+
+                    @foreach (var turmas in bimestres.Turmas)
+                    {
+                        var turmaNome = turmas.Nome;
+                        bool temTurma = !String.IsNullOrWhiteSpace(turmaNome);
+
+                        MontarTurma(temTurma, turmaNome);
+
+                        MontarTituloRegistros();
+
+                        @foreach (var componentesCurriculares in turmas.ComponentesCurriculares)
+                        {
+                            MontarLinhaTabela(componentesCurriculares, temBimestre, bimestreNome, temTurma, turmaNome);
+                        }
+                    }
+                }
+            </table>
+        }
+    </div>
+</body>
+</html>
