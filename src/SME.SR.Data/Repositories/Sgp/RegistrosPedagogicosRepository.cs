@@ -99,15 +99,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                try
-                {
-                    return await conexao.QueryAsync<ConsolidacaoRegistrosPedagogicosDto>(query.ToString(), parametros);
-                }
-                catch (Exception ex)
-                {
-                    var a = ex;
-                    return null;
-                }
+                return await conexao.QueryAsync<ConsolidacaoRegistrosPedagogicosDto>(query.ToString(), parametros);
             }
         }
 
