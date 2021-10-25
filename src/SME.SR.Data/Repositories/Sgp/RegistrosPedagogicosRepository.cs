@@ -38,7 +38,8 @@ namespace SME.SR.Data
                                             crp.data_ultimo_planoaula as DataUltimoPlanoAula,
                                             crp.planos_aula_pendentes as PlanoAulaPendentes,
                                             crp.nome_professor as NomeProfessor,
-                                            crp.rf_professor as RFProfessor
+                                            crp.rf_professor as RFProfessor,
+                                            crp.cj as CJ
                                             from consolidacao_registros_pedagogicos crp
                                             inner join turma t on t.id = crp.turma_id
                                             inner join periodo_escolar pe on pe.id = crp.periodo_escolar_id
@@ -128,7 +129,8 @@ namespace SME.SR.Data
                                             crp.data_ultimo_diariobordo as DataUltimoDiarioBordo,
                                             crp.diario_bordo_pendentes as DiarioBordoPendentes,
                                             crp.nome_professor as NomeProfessor,
-                                            crp.rf_professor as RFProfessor
+                                            crp.rf_professor as RFProfessor,
+                                            crp.cj as CJ
                                             from consolidacao_registros_pedagogicos crp
                                             inner join turma t on t.id = crp.turma_id
                                             inner join periodo_escolar pe on pe.id = crp.periodo_escolar_id

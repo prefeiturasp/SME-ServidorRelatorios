@@ -40,7 +40,11 @@ namespace SME.SR.Application
                         foreach (var compCurricular in turmas.OrderBy(c=> c.ComponenteCurricularNome))
                         {
                             string nomeComponente = compCurricular.RFProfessor == "" ? $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor}"
-                                                                                     : $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor} ({compCurricular.RFProfessor})";
+                                                                                     : $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor} ({compCurricular.RFProfessor}) ";
+
+                            if (compCurricular.CJ)
+                                nomeComponente = $"{nomeComponente} - CJ";
+
                             var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
                             {
                                 Nome = nomeComponente.ToUpper(),

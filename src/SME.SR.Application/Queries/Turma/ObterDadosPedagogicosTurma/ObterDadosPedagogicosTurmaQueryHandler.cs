@@ -31,21 +31,57 @@ namespace SME.SR.Application
                     var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto();
                     bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{consolidacoes.FirstOrDefault().Bimestre}º BIMESTRE" : "FINAL";
 
-                    foreach (var turma in consolidacoes.OrderBy(t=> t.TurmaNome))
+                    foreach (var turma in consolidacoes.OrderBy(t=> t.TurmaNome).GroupBy(t=> t.TurmaId))
                     {
-                        string nomeTurmaComplementar = turma.RFProfessor == "" ? $"{turma.NomeProfessor}"
-                                                                               : $"{turma.NomeProfessor} ({turma.RFProfessor })";
-                        var dadosTurma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
+                        if(turma.Count() == 1)
                         {
-                            Nome = $"{turma.NomeTurmaFormatado} - {nomeTurmaComplementar}",
-                            Aulas = turma.QuantidadeAulas,
-                            FrequenciasPendentes = turma.FrequenciasPendentes,
-                            DataUltimoRegistroFrequencia = turma.DataUltimaFrequencia,
-                            DiarioBordoPendentes = turma.DiarioBordoPendentes,
-                            DataUltimoRegistroDiarioBordo = turma.DataUltimoDiarioBordo
-                        };
+                            var dadosTurma = turma.FirstOrDefault();
+                            string nomeTurmaComplementar = dadosTurma.RFProfessor == "" ? $"{dadosTurma.NomeProfessor}"
+                                                                               : $"{dadosTurma.NomeProfessor} ({dadosTurma.RFProfessor }) ";
 
-                        bimestre.TurmasInfantil.Add(dadosTurma);
+                            if (dadosTurma.CJ)
+                                nomeTurmaComplementar = $"{nomeTurmaComplementar} - CJ";
+
+                            var registroTurma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
+                            {
+                                Nome = $"{dadosTurma.NomeTurmaFormatado} - {nomeTurmaComplementar}",
+                                Aulas = dadosTurma.QuantidadeAulas,
+                                FrequenciasPendentes = dadosTurma.FrequenciasPendentes,
+                                DataUltimoRegistroFrequencia = dadosTurma.DataUltimaFrequencia,
+                                DiarioBordoPendentes = dadosTurma.DiarioBordoPendentes,
+                                DataUltimoRegistroDiarioBordo = dadosTurma.DataUltimoDiarioBordo
+                            };
+
+                            bimestre.TurmasInfantil.Add(registroTurma);
+                        }
+                        else
+                        {
+                            string nomeProfessor = string.Empty;
+                            string[] nomesProfessores = turma.Select(t => t.NomeProfessor).ToArray();
+                            string[] rfProfessores = turma.Select(t => t.RFProfessor).ToArray();
+                            var dadosTurma = turma.FirstOrDefault();
+                            var listaProfessores = new List<string>();
+
+                            for (int i=0; i<2; i++)
+                            {
+                                nomeProfessor = $"{nomesProfessores[i]} - ({rfProfessores[i]})";
+                                listaProfessores.Add(nomeProfessor);
+                            }
+
+                            var registroTurma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
+                            {
+                                Nome = dadosTurma.NomeTurmaFormatado,
+                                Professores = listaProfessores,
+                                Aulas = dadosTurma.QuantidadeAulas,
+                                FrequenciasPendentes = dadosTurma.FrequenciasPendentes,
+                                DataUltimoRegistroFrequencia = dadosTurma.DataUltimaFrequencia,
+                                DiarioBordoPendentes = dadosTurma.DiarioBordoPendentes,
+                                DataUltimoRegistroDiarioBordo = dadosTurma.DataUltimoDiarioBordo
+                            };
+
+                            bimestre.TurmasInfantil.Add(registroTurma);
+                        }
+                        
                     }
                     bimestres.Add(bimestre);
                 }
