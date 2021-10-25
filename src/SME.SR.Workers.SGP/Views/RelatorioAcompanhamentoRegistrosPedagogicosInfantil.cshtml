@@ -131,12 +131,36 @@
         }
 
         <tr>
-            <td class="alinhar-esquerda espaco-esquerda-8">@turmaNome</td>
-            <td>@turma.Aulas</td>
-            <td>@turma.FrequenciasPendentes</td>
-            <td>@turma.DataUltimoRegistroFrequencia</td>
-            <td>@turma.DiarioBordoPendentes</td>
-            <td>@turma.DataUltimoRegistroDiarioBordo</td>
+            <td class="alinhar-esquerda espaco-esquerda-8">
+                @turmaNome
+
+                @if (turma.Professores != null)
+                {
+                    <br />
+                    if (turma.Professores.Count == 1)
+                    {
+                        @turma.Professores.FirstOrDefault()
+                    }
+                    else
+                    {
+                        if (turma.Professores.Count > 1)
+                        {
+                            @for (var i = 0; i < 2; i++)
+                            {
+                                @turma.Professores[i]
+                                @if (i == 0)
+                                {<br />}
+                            }
+                        }
+                    }
+                }
+
+            </td>
+                <td>@turma.Aulas</td>
+                <td>@turma.FrequenciasPendentes</td>
+                <td>@turma.DataUltimoRegistroFrequencia</td>
+                <td>@turma.DiarioBordoPendentes</td>
+                <td>@turma.DataUltimoRegistroDiarioBordo</td>
         </tr>
     }
 

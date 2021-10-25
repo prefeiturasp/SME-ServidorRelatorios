@@ -29,7 +29,7 @@ namespace SME.SR.Application
                 var relatorioQueryInfantil = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery>();
                 var relatorioInfantilDto = await mediator.Send(relatorioQueryInfantil);
                 if (relatorioInfantilDto.Bimestre.Any())
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilDto, request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true, "RELATÓRIO DE ACOMPANHAMENTO DOS REGISTROS PEDAGÓGIGOS"));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilDto, request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true));
                 else    
                     throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");     
             }
@@ -37,7 +37,7 @@ namespace SME.SR.Application
             {
                 var relatorioDto = await mediator.Send(relatorioQuery);
                 if (relatorioDto.Bimestre.Any())
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao,"", "Relatório de Acompanhamento de registros pedagógicos",true,"RELATÓRIO DE ACOMPANHAMENTO DOS REGISTROS PEDAGÓGICOS"));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao,"", "Relatório de Acompanhamento de registros pedagógicos",true));
                 else
                     throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
             }

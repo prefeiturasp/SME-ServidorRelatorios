@@ -56,21 +56,22 @@ namespace SME.SR.Application
                         }
                         else
                         {
-                            string nomeTurmaComProfessor = string.Empty;
+                            string nomeProfessor = string.Empty;
                             string[] nomesProfessores = turma.Select(t => t.NomeProfessor).ToArray();
                             string[] rfProfessores = turma.Select(t => t.RFProfessor).ToArray();
                             var dadosTurma = turma.FirstOrDefault();
+                            var listaProfessores = new List<string>();
 
                             for (int i=0; i<2; i++)
                             {
-                                nomeTurmaComProfessor = $"{dadosTurma.NomeTurmaFormatado} - {nomesProfessores[i]} - {rfProfessores[i]}";
-                                if (i == 0)
-                                    nomeTurmaComProfessor += "<br/>";
+                                nomeProfessor = $"{nomesProfessores[i]} - ({rfProfessores[i]})";
+                                listaProfessores.Add(nomeProfessor);
                             }
 
                             var registroTurma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
                             {
-                                Nome = $"{nomeTurmaComProfessor}",
+                                Nome = dadosTurma.NomeTurmaFormatado,
+                                Professores = listaProfessores,
                                 Aulas = dadosTurma.QuantidadeAulas,
                                 FrequenciasPendentes = dadosTurma.FrequenciasPendentes,
                                 DataUltimoRegistroFrequencia = dadosTurma.DataUltimaFrequencia,
