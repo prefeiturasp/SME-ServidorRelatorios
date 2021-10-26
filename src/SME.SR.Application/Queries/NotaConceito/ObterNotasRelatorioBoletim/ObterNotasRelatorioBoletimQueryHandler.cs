@@ -20,12 +20,29 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> Handle(ObterNotasRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
-            var notas = await notasConceitoRepository.ObterNotasTurmasAlunos(request.CodigosAlunos, request.CodigosTurmas, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var notasRetorno = new List<NotasAlunoBimestre>();
+            var alunosCodigos = request.CodigosAlunos;
+            int alunosPorPagina = 100;
 
-            if (notas == null || !notas.Any())
+            foreach (string codTurma in request.CodigosTurmas)
+            {
+                var arrTurma = new string[] { codTurma };
+                int cont = 0;
+                int i = 0;
+                while (cont < alunosCodigos.Length)
+                {
+                    var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
+                    var notasAlunosPagina = await notasConceitoRepository.ObterNotasTurmasAlunos(alunosPagina.ToArray(), arrTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+                    notasRetorno.AddRange(notasAlunosPagina.ToList());
+                    cont += alunosPagina.Count();
+                    i++;
+                }
+            }
+
+            if (notasRetorno == null || !notasRetorno.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
 
-            return notas.GroupBy(nf => nf.CodigoAluno);
+            return notasRetorno.GroupBy(nf => nf.CodigoAluno);
         }
     }
 }
