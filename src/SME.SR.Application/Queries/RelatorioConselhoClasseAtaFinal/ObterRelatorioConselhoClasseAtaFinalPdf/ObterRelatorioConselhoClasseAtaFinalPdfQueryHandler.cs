@@ -64,7 +64,7 @@ namespace SME.SR.Application
 
                 throw new NegocioException(erros.ToString());
             }
-                
+
 
 
             return relatoriosTurmas.OrderBy(a => a.Cabecalho.Turma).ToList();
@@ -254,7 +254,7 @@ namespace SME.SR.Application
             componentes.AddRange(componentesCurriculares.Select(cc => (cc.CodigoTurma, cc.CodDisciplina)).Distinct());
             if (componentesCurriculares.Any(a => a.Regencia))
             {
-                foreach(var componenteRegencia in componentesCurriculares.Where(a => a.Regencia))
+                foreach (var componenteRegencia in componentesCurriculares.Where(a => a.Regencia))
                     componentes.AddRange(componenteRegencia.ComponentesCurricularesRegencia.Select(cc => (componenteRegencia.CodigoTurma, cc.CodDisciplina)).Distinct());
             }
 
@@ -541,20 +541,16 @@ namespace SME.SR.Application
 
                             var frequencia = "-";
 
-                            if (possuiComponente)
-                            {
-                                if (turma.AnoLetivo.Equals(2020))
-                                    frequencia = frequenciaAluno?.PercentualFrequenciaFinal.ToString();
-                                else
-                                {
-                                    if (frequenciaAluno == null && turmaPossuiFrequenciaRegistrada)
-                                        frequencia = "100";
-                                    else if (frequenciaAluno != null)
-                                        frequencia = frequenciaAluno?.PercentualFrequencia.ToString();
-                                    else
-                                        frequencia = string.Empty;
-                                }
-                            }
+                            if (possuiComponente)                            
+                                frequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
+                                      ?
+                                      "100"
+                                      :
+                                      frequenciaAluno != null
+                                      ?
+                                      frequenciaAluno.PercentualFrequenciaFinal.ToString()
+                                      :
+                                      "";                            
 
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                     componente.CodDisciplina,
@@ -564,14 +560,12 @@ namespace SME.SR.Application
                             continue;
                         }
 
-
                         var textoParaExibir = possuiComponente ? "" : "-";
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, (!aluno.Inativo && possuiComponente) ? "" : "-", ++coluna);
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
-
                     }
                 }
 
