@@ -7903,43 +7903,61 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         public async Task<IActionResult> FrequenciaIndividual()
         {
             var justificativas = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-            var justificativa = new RelatorioFrequenciaIndividualJustificativasDto()
+            for(var i = 0; i < 34; i++)
             {
-                DataAusencia = "21/01/2020",
-                MotivoAusencia = "Atestado médico da criança",
-
+                var justificativa = new RelatorioFrequenciaIndividualJustificativasDto()
+                {
+                    DataAusencia = "21/01/2020",
+                    MotivoAusencia = "Atestado médico da criança " +(i + 1),
+                    //MotivoAusencia = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. " + (i + 1),
+                };
+                justificativas.Add(justificativa);
             };
-            justificativas.Add(justificativa);
 
-            var bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
-            var bimestre = new RelatorioFrequenciaIndividualBimestresDto()
+            var dadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto()
             {
-                NomeBimestre = "1º bimestre - 2020",
                 TotalAulasDadas = 30,
                 TotalPresencas = 20,
                 TotalRemoto = 5,
                 TotalAusencias = 3,
                 TotalCompensacoes = 2,
                 PercentualFrequencia = "96,67%",
-                Justificativas = justificativas,                
             };
-            bimestres.Add(bimestre);
+
+
+            var bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
+            for (var i = 0; i < 2; i++)
+            {
+                var bimestre = new RelatorioFrequenciaIndividualBimestresDto()
+                {
+                    NomeBimestre = (i + 1) + "º bimestre - 2020",
+                    DadosFrequencia = dadosFrequencia,
+                    Justificativas = justificativas,
+                };
+                bimestres.Add(bimestre);
+            }
 
             var alunos = new List<RelatorioFrequenciaIndividualAlunosDto > ();
-            var aluno = new RelatorioFrequenciaIndividualAlunosDto()
+
+            for (var i = 0; i < 10; i++)
             {
-                NomeAluno = "",
-                Bimestres = bimestres,
-            };
+                var aluno = new RelatorioFrequenciaIndividualAlunosDto()
+                {
+                    NomeAluno = "Antônio CarLos dos santos " + (i + 1) + " (1234567)",
+                    Bimestres = bimestres,
+                };
+                alunos.Add(aluno);
+            }
+
             var model = new RelatorioFrequenciaIndividualDto()
             {
                 DreNome = "DRE - BT",
                 UeNome = "CEU EMEF BUTANTA",
                 Usuario = "JULIA FERREIRA DE OLIVEIRA",
                 RF = "1234567",
+                ehInfantil = true,
                 Alunos = alunos,
             };
-            alunos.Add(aluno);
 
             return View("RelatorioFrequenciaIndividual", model);
         }
