@@ -134,7 +134,13 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
                     anoParaIncluir.Nome = cicloAgrupado.Ano + "º Ano";
 
                     var turmasFiltradas = await mediator.Send(new ObterTurmasPorUeCicloAnoQuery(cicloAgrupado.Id, cicloAgrupado.Ano.ToString(), ueId, anoLetivo));
-                    var alunosDasTurmas = await turmaRepository.ObterAlunosPorTurmas(turmasFiltradas.Select(a => long.Parse(a.Codigo)));
+
+                    IEnumerable<AlunoDaTurmaDto> alunosDasTurmas = new List<AlunoDaTurmaDto>();
+
+                    if (anoLetivo < DateTime.Now.Year)
+                        alunosDasTurmas = await mediator.Send(new ObterAlunosPorTurmasAnosAnterioresQuery(turmasFiltradas.Select(a => long.Parse(a.Codigo))));                                         
+                    else
+                        alunosDasTurmas = await mediator.Send(new ObterAlunosPorTurmasQuery(turmasFiltradas.Select(a => long.Parse(a.Codigo))));                                       
 
                     foreach (var turma in turmasFiltradas)
                     {

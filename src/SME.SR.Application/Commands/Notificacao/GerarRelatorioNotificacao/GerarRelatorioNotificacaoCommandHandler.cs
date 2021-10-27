@@ -25,9 +25,9 @@ namespace SME.SR.Application
         {
             var dto = new RelatorioNotificacaoDto();
 
-            long[] situacoes = new long[] { };
-            long[] categorias = new long[] { };
-            long[] tipos = new long[] { };
+            var situacoes = new long[] { };
+            var categorias = new long[] { };
+            var tipos = new long[] { };
 
             if (request.Filtros.Situacoes.Contains(-99))
             {
