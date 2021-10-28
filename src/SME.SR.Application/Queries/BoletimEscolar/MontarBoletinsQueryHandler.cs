@@ -103,7 +103,21 @@ namespace SME.SR.Application
             if(!boletinsAlunos.Any())
                 throw new NegocioException("Não foram encontradas informações para geração do boletim");
 
-            return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos.OrderBy(tb => tb.Cabecalho.NomeTurma).ThenBy(ab => ab.Cabecalho.Aluno).ToList()));
+            return await Task.FromResult(new BoletimEscolarDto(OrdenarBoletins(boletinsAlunos)));
+        }
+
+        private List<BoletimEscolarAlunoDto> OrdenarBoletins(List<BoletimEscolarAlunoDto> boletinsAlunos)
+        {
+            var boletinsOrdenados = new List<BoletimEscolarAlunoDto>();
+            var turmas = boletinsAlunos.OrderBy(b => b.Cabecalho.NomeTurma).Select(b => b.Cabecalho.NomeTurma);
+            
+            foreach(string turma in turmas)
+            {
+                var alunosTurma = boletinsAlunos.Where(a => a.Cabecalho.NomeTurma == turma).OrderBy(a => a.Cabecalho.Aluno).ToList();
+                boletinsOrdenados.AddRange(alunosTurma);
+            }
+
+            return boletinsOrdenados;
         }
 
         private BoletimEscolarCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, Turma turma, string alunoCodigo, string nome, string frequenciaGlobal)
