@@ -1,58 +1,373 @@
 ﻿@model SME.SR.Infra.RelatorioAcompanhamentoAprendizagemDto
+
+@{
+  var tdTheadPrincipal = "borda-padrao alinhar-esquerda padding-left-15";
+  var tdTheadPadrao = "borda-padrao background-color-thead";
+  var tdTheadInterno = tdTheadPadrao + " alinhar-centro";
+  var tdTbodyInterno = "borda-padrao alinhar-centro";
+
+  void MontarCabecalho()
+  {
+    <div>
+      <img class='img-logo-sgp' src=@SME.SR.HtmlPdf.SmeConstants.LogoSmeMono alt='Logo SGP' />
+    </div>
+    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+    <div class='titulo-relatorio'>RELATÓRIO DO ACOMPANHAMENTO DA APRENDIZAGEM</div>
+    <div class='titulo-sub-relatorio'>@Model.Cabecalho.Semestre</div>
+
+    <table class="estilo-tabela campos-header-principal-pagina">
+      <tbody>
+        <tr>
+          <td class='@tdTheadPrincipal width-20'>DRE: @Model.Cabecalho.Dre</td>
+          <td class='@tdTheadPrincipal width-80'>UE: @Model.Cabecalho.Ue</td>
+        </tr>
+        <tr>
+          <td class='@tdTheadPrincipal width-20'>TURMA: @Model.Cabecalho.Turma</td>
+          <td class='@tdTheadPrincipal width-80'>PROFESSORES: @Model.Cabecalho.Professores</td>
+        </tr>
+      </tbody>
+    </table>
+  }
+
+  void MontarHeaderUnico(string titulo)
+  {
+    <table class='estilo-tabela'>
+      <thead>
+        <tr>
+          <td class='@tdTheadPadrao'>@titulo</td>
+        </tr>
+      </thead>
+    </table>
+  }
+
+  void MontarEstudantes(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+  {
+    <table class='estilo-tabela'>
+      <thead>
+        <tr>
+          <td class='@tdTheadInterno'>DATA NASCIMENTO</td>
+          <td class='@tdTheadInterno'>CÓDIGO EOL</td>
+          <td class='@tdTheadInterno'>SITUAÇÃO</td>
+          <td class='@tdTheadInterno'>RESPONSÁVEL</td>
+          <td class='@tdTheadInterno'>TELEFONE</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class='@tdTbodyInterno' width="20%">@aluno.DataNascimento</td>
+          <td class='@tdTbodyInterno' width="14%">@aluno.CodigoEol</td>
+          <td class='@tdTbodyInterno' width="22%">@aluno.Situacao</td>
+          <td class='@tdTbodyInterno' width="22%">@aluno.Responsavel</td>
+          <td class='@tdTbodyInterno' width="22%">@aluno.Telefone</td>
+        </tr>
+      </tbody>
+    </table>
+  }
+
+  void MontarPercursoColetivoTurma(string percursoTurma)
+  {
+    <table class='estilo-tabela'>
+      <thead>
+        <tr>
+          <td class='@tdTheadInterno border-top-none'>PERCURSO COLETIVO DA TURMA</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class='@tdTbodyInterno'>
+            <span class="quebra-conteudo-editor">@Html.Raw(percursoTurma)</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  }
+
+  void MontarFrequencia(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+  {
+    <table class='estilo-tabela' style="page-break-inside: avoid">
+      <thead>
+        <tr>
+          <td colspan="4" class='@tdTheadInterno border-top-none'>FREQUÊNCIA</td>
+        </tr>
+        <tr>
+          <td class='@tdTheadInterno'>BIMESTRE</td>
+          <td class='@tdTheadInterno'>AULAS</td>
+          <td class='@tdTheadInterno'>AUSÊNCIAS</td>
+          <td class='@tdTheadInterno'>FREQUÊNCIA</td>
+        </tr>
+      </thead>
+      <tbody>
+
+        @foreach (var frequencia in aluno.Frequencias)
+        {
+          <tr>
+            <td class='@tdTbodyInterno' width="25%">@frequencia.Bimestre</td>
+            <td class='@tdTbodyInterno' width="25%">@frequencia.Aulas</td>
+            <td class='@tdTbodyInterno' width="25%">@frequencia.Ausencias</td>
+            <td class='@tdTbodyInterno' width="25%">@frequencia.Frequencia</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  void MontarPercursoIndividual(string percursoIndividual)
+  {
+    <table class='estilo-tabela'>
+      <thead>
+        <tr>
+          <td class='@tdTheadInterno border-top-none'>PERCURSO INDIVIDUAL DA CRIANÇA</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class='@tdTbodyInterno'>
+            <span class="quebra-conteudo-editor">@Html.Raw(percursoIndividual)</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  }
+
+
+  void MontarObservacoes(string observacao)
+  {
+    <table class='estilo-tabela' style="page-break-inside: avoid">
+      <thead>
+        <tr>
+          <td class='@tdTheadInterno border-top-none'>OBSERVAÇÕES</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class='@tdTbodyInterno'>
+            @observacao
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  }
+
+  void MontarOcorrencias(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
+  {
+    <table class='estilo-tabela' style="page-break-inside: avoid">
+      <thead>
+        <tr>
+          <td class='@tdTheadInterno border-top-none' colspan="3">OCORRÊNCIAS</td>
+        </tr>
+        <tr>
+          <th class='@tdTbodyInterno'>DATA DO OCORRÊNCIA</th>
+          <th class='@tdTbodyInterno'>TIPO</th>
+          <th class='@tdTbodyInterno'>DESCRIÇÃO DA OCORRÊNCIA</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var ocorrencia in aluno.Ocorrencias)
+        {
+          var descricaoOcorrencia = ocorrencia.Descricao;
+          <tr>
+            <td class='@tdTbodyInterno' rowspan="2" width="15%">@ocorrencia.Data</td>
+            <td class='@tdTbodyInterno' rowspan="2" width="15%">@ocorrencia.Tipo</td>
+            <td class='@tdTbodyInterno alinhar-esquerda'>@ocorrencia.Titulo</td>
+          </tr>
+          <tr>
+            <td class='@tdTbodyInterno alinhar-esquerda'>@descricaoOcorrencia</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  void MontarAssinatura()
+  {
+    <table class='estilo-tabela' style='page-break-after: always; page-break-inside: avoid'>
+      <thead>
+        <tr>
+          <td class='@tdTheadInterno border-top-none' colspan="2">ESTOU CIENTE DESTE RELATÓRIO</td>
+        </tr>
+        <tr>
+          <td class='@tdTbodyInterno'>DATA ASSINATURA</td>
+          <td class='@tdTbodyInterno'>ASSINATURA</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="height: 48px">
+          <td class='@tdTbodyInterno' width="20%" />
+          <td class='@tdTbodyInterno' width="80%" />
+        </tr>
+      </tbody>
+    </table>
+  }
+}
+
 <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>RELATÓRIO DO ACOMPANHAMENTO DA APRENDIZAGEM</title>
-    </head>
-    <body class="body-rel-acompanhamento-aprendizagem">
-        <style type="text/css">
-            thead {
-                display: table-header-group;
-            }
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RELATÓRIO DO ACOMPANHAMENTO DA APRENDIZAGEM</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
+  <style>
 
-            tfoot {
-                display: table-row-group;
-            }
+    .container-conteudo {
+      font-family: 'Roboto Mono';
+      background: white;
+      color: #42474a;
+    }
 
-            tr {
-                page-break-inside: avoid;
-            }
-            @@media print {
-            .element-that-contains-table {
-                overflow: visible !important;
+    .img-logo-sgp {
+      height: 64px;
+      float: left;
+    }
+
+    .titulo-sgp {
+      text-align: right;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .titulo-relatorio {
+      text-align: right;
+      font-size: 14.5px;
+      margin-top: 7px;
+      font-weight: normal;
+    }
+
+    .titulo-sub-relatorio {
+      text-align: right;
+      font-size: 12.5px;
+      margin-top: 7px;
+      font-weight: normal;
+    }
+
+    .campos-header-principal-pagina {
+      margin-top: 33px;
+      margin-bottom: 22px;
+      font-size: 14px !important;
+    }
+
+    .th-header-principal {
+      background-color: white;
+      position: relative;
+    }
+
+    .width-20 {
+      width: 20%;
+    }
+
+    .width-80 {
+      width: 80%;
+    }
+
+    .padding-left-15 {
+      padding-left: 15px;
+    }
+
+    .estilo-tabela {
+      display: table;
+      width: 100%;
+      border-color: #42474a;
+      empty-cells: show;
+      border: none;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    .borda-padrao {
+      border: 1px solid #42474a;
+    }
+
+    .background-color-thead {
+      background-color: #f3f3f3;
+    }
+
+    .alinhar-esquerda {
+      text-align: left;
+    }
+
+    .alinhar-centro {
+      text-align: center;
+    }
+
+    .border-top-none {
+      border-top: none;
+    }
+
+    .quebra-conteudo-editor table {
+      page-break-inside: avoid;
+    }
+
+    .quebra-conteudo-editor img {
+      margin-top: 5px !important;
+    }
+  </style>
+</head>
+
+<body class="container-conteudo">
+
+  <div>
+    @{
+      var alunosOrdenados = Model.Alunos.OrderBy(a => a.NomeEol);
+
+      foreach (var aluno in alunosOrdenados)
+      {
+
+        <table style='page-break-after:always'>
+          <thead>
+            <tr>
+              <th class="th-header-principal">
+                @{
+                  MontarCabecalho();
+                  <div style="margin-bottom: -5px">
+                    @{
+                      MontarHeaderUnico(aluno.Nome);
+                    }
+                  </div>
                 }
-            }
-        </style>
-        <div class="element-that-contains-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            HEADER FIXO
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            @{
-                                <div>Nº24 - AGATHA HAIANNE VASQUEZ ARTEAGA</div>
-                                <div style='page-break-after:always'>ASSINATURA</div>
-                                <div>Nº30 - ANA CLARA ACIOLE DOS SANTOS</div>
-                                <div>ASSINATURA</div>
-                            }
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        @*@{
-            <div>Nº24 - AGATHA HAIANNE VASQUEZ ARTEAGA</div>
-            <div style='page-break-after:always'>ASSINATURA</div>
-            <div>Nº30 - ANA CLARA ACIOLE DOS SANTOS</div>
-            <div>ASSINATURA</div>
-        }*@
-    </body>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-tabela-principal">
+                @{
+                  MontarEstudantes(aluno);
+
+                  if (!String.IsNullOrEmpty(aluno.PercursoColetivoTurma))
+                  {
+                    MontarPercursoColetivoTurma(aluno.PercursoColetivoTurma);
+                  }
+
+                  if (aluno.Frequencias.Count() > 0)
+                  {
+                    MontarFrequencia(aluno);
+                  }
+
+                  if (!String.IsNullOrEmpty(aluno.PercursoIndividual))
+                  {
+                    MontarPercursoIndividual(aluno.PercursoIndividual);
+                  }
+
+                  if (!String.IsNullOrEmpty(aluno.Observacoes))
+                  {
+                    MontarObservacoes(aluno.Observacoes);
+                  }
+
+                  if (aluno.Ocorrencias.Count() > 0)
+                  {
+                    MontarOcorrencias(aluno);
+                  }
+
+                  MontarAssinatura();
+
+                }
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      }
+    }
+  </div>
+</body>
 </html>
