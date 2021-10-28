@@ -29,7 +29,7 @@ namespace SME.SR.Data
 
             var lstFotosAluno = new List<AlunoFotoArquivoDto>();
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 await conexao.QueryAsync<AlunoFotoArquivoDto, ArquivoDto, AlunoFotoArquivoDto>(query.ToString(),
                  (alunoFoto,  arquivoDto) =>

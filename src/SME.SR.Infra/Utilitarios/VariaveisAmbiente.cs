@@ -15,6 +15,11 @@ namespace SME.SR.Infra
             configuration.GetSection("ConnectionStrings:SGP_Postgres").Value : 
             Environment.GetEnvironmentVariable("ConnectionStrings__SGP_Postgres");
 
+        public string ConnectionStringSgpConsultas => !string.IsNullOrEmpty(configuration.GetSection("ConnectionStrings:SGP_PostgresConsultas").Value) ?
+            configuration.GetSection("ConnectionStrings:SGP_PostgresConsultas").Value : 
+            Environment.GetEnvironmentVariable("ConnectionStrings__SGP_PostgresConsultas");
+
+
         public string ConnectionStringEol => !string.IsNullOrEmpty(configuration.GetSection("EolConnection").Value) ? 
             configuration.GetSection("EolConnection").Value : 
             Environment.GetEnvironmentVariable("EolConnection");

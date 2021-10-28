@@ -1,13 +1,15 @@
 ﻿using MediatR;
-using SME.SR.Data;
-using System;
+using SME.SR.Infra;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SME.SR.Application
 {
-    public class ObterAlunosPorTurmasQuery : IRequest<IEnumerable<Aluno>>
+    public class ObterAlunosPorTurmasQuery : IRequest<IEnumerable<AlunoDaTurmaDto>>
     {
+        public ObterAlunosPorTurmasQuery(IEnumerable<long> turmasId)
+        {
+            TurmasId = turmasId;
+        }
         public IEnumerable<long> TurmasId { get; set; }
     }
 }

@@ -97,7 +97,7 @@ namespace SME.SR.Data
             else
                 query.AppendLine("order by t.nome , fa.bimestre");
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 var dres = new List<RelatorioFrequenciaDreDto>();
 
@@ -128,6 +128,38 @@ namespace SME.SR.Data
 
                 return dres;
             };
+        }
+
+        private String QueryObterTotalAulasPorDisciplinaTurmaBimestre(int bimestre, string disciplinaId, string[] turmasId)
+        {
+            StringBuilder query = new StringBuilder();
+            query.AppendLine("select ");
+            query.AppendLine("COALESCE(SUM(a.quantidade),0) AS total");
+            query.AppendLine("from ");
+            query.AppendLine("aula a ");
+            query.AppendLine("inner join registro_frequencia rf on ");
+            query.AppendLine("rf.aula_id = a.id ");
+            query.AppendLine("inner join periodo_escolar p on ");
+            query.AppendLine("a.tipo_calendario_id = p.tipo_calendario_id ");
+            query.AppendLine("where not a.excluido");
+            query.AppendLine("and p.bimestre = @bimestre ");
+            query.AppendLine("and a.data_aula >= p.periodo_inicio");
+            query.AppendLine("and a.data_aula <= p.periodo_fim ");
+
+            if (!string.IsNullOrWhiteSpace(disciplinaId))
+                query.AppendLine("and a.disciplina_id = @disciplinaId ");
+
+            query.AppendLine("and a.turma_id = ANY(@turmasId) ");
+            return query.ToString();
+        }
+
+        public async Task<int> ObterTotalAulasPorDisciplinaTurmaBimestre(int bimestre, string disciplinaId, string[] turmasId)
+        {
+            String query = QueryObterTotalAulasPorDisciplinaTurmaBimestre(bimestre, disciplinaId, turmasId);
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString(), new { bimestre, disciplinaId, turmasId });
+            }
         }
 
         private static RelatorioFrequenciaComponenteDto ObterComponente(RelatorioFrequenciaBimestreDto bimestre, RelatorioFrequenciaComponenteDto componente)
