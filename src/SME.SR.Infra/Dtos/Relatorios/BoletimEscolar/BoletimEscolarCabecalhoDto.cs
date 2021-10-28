@@ -19,6 +19,9 @@ namespace SME.SR.Infra
         [JsonProperty("aluno")]
         public string Aluno { get; set; }
 
+        [JsonIgnore]
+        public string NomeAlunoOrdenacao { get; set; }
+
         [JsonProperty("codigoEol")]
         public string CodigoEol { get; set; }
 

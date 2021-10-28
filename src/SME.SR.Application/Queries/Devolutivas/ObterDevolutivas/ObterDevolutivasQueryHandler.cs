@@ -25,6 +25,9 @@ namespace SME.SR.Application
             var devolutivasDto = new List<TurmasDevolutivasDto>();
             var devolutivas = await devolutivaRepository.ObterDevolutivas(request.UeId, request.Turmas, request.Bimestres, request.Ano);
 
+            if (devolutivas == null || !devolutivas.Any())
+                throw new NegocioException("O relatório com o filtro solicitado não possui informações.");
+
             foreach (var devolutivasPorTurma in devolutivas.GroupBy(a => new { a.Aula.Turma.Id, a.Aula.Turma.Nome }))
             {
                 devolutivasDto.Add(new TurmasDevolutivasDto()
