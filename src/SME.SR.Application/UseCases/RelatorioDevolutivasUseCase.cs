@@ -22,25 +22,17 @@ namespace SME.SR.Application
         {
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioDevolutivasDto>();
 
-            try
-            {
-                var relatorioDto = new RelatorioDevolutivasDto();
+            var relatorioDto = new RelatorioDevolutivasDto();
 
-                await ObterFiltrosRelatorio(relatorioDto, parametros);
+            await ObterFiltrosRelatorio(relatorioDto, parametros);
 
-                var turmas = ObterTurmas(parametros.Turmas);
-                var bimestres = ObterBimestresFiltro(parametros.Bimestres);
+            var turmas = ObterTurmas(parametros.Turmas);
+            var bimestres = ObterBimestresFiltro(parametros.Bimestres);
 
-                relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano));
+            relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano));
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
-
-            }
-            catch (Exception e)
-            {
-
-                throw;
-            }        
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
+    
         }
 
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
