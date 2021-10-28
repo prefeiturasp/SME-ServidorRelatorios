@@ -93,7 +93,14 @@ namespace SME.SR.Application
                     var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
                     var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 
-                    boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, turma, aluno.First().CodigoAluno.ToString(), aluno.First().NomeRelatorio, $"{percentualFrequenciaGlobal}%");
+                    boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, 
+                                                                             ue, 
+                                                                             turma, 
+                                                                             aluno.First().CodigoAluno.ToString(), 
+                                                                             aluno.First().NomeRelatorio, 
+                                                                             aluno.First().ObterNomeFinal(), 
+                                                                             $"{percentualFrequenciaGlobal}%");
+
                     boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0) ? parecerConclusivo?.ParecerConclusivo : null;
 
                     boletinsAlunos.Add(boletimEscolarAlunoDto);
@@ -103,10 +110,24 @@ namespace SME.SR.Application
             if(!boletinsAlunos.Any())
                 throw new NegocioException("Não foram encontradas informações para geração do boletim");
 
-            return await Task.FromResult(new BoletimEscolarDto(boletinsAlunos.OrderBy(tb => tb.Cabecalho.NomeTurma).ThenBy(ab => ab.Cabecalho.Aluno).ToList()));
+            return await Task.FromResult(new BoletimEscolarDto(OrdenarBoletins(boletinsAlunos)));
         }
 
-        private BoletimEscolarCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, Turma turma, string alunoCodigo, string nome, string frequenciaGlobal)
+        private List<BoletimEscolarAlunoDto> OrdenarBoletins(List<BoletimEscolarAlunoDto> boletinsAlunos)
+        {
+            var boletinsOrdenados = new List<BoletimEscolarAlunoDto>();
+            var turmas = boletinsAlunos.OrderBy(b => b.Cabecalho.NomeTurma).Select(b => b.Cabecalho.NomeTurma);
+            
+            foreach(string turma in turmas)
+            {
+                var alunosTurma = boletinsAlunos.Where(a => a.Cabecalho.NomeTurma == turma).OrderBy(a => a.Cabecalho.NomeAlunoOrdenacao).ToList();
+                boletinsOrdenados.AddRange(alunosTurma);
+            }
+
+            return boletinsOrdenados;
+        }
+
+        private BoletimEscolarCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, Turma turma, string alunoCodigo, string nome, string nomeAlunoOrdenacao, string frequenciaGlobal)
         {
             return new BoletimEscolarCabecalhoDto()
             {
@@ -116,6 +137,7 @@ namespace SME.SR.Application
                 NomeTurma = turma.NomeRelatorio,
                 CodigoEol = alunoCodigo,
                 Aluno = nome,
+                NomeAlunoOrdenacao = nomeAlunoOrdenacao,
                 AnoLetivo = turma.AnoLetivo.ToString(),
                 FrequenciaGlobal = frequenciaGlobal
             };
