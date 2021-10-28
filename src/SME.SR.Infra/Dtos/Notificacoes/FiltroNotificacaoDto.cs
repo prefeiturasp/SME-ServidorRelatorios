@@ -14,7 +14,7 @@ namespace SME.SR.Infra
         public string UE { get; set; }
         public Modalidade ModalidadeTurma { get; set; }
         public int Semestre { get; set; }
-        public long Turma { get; set; }
+        public string Turma { get; set; }
         public string UsuarioBuscaNome { get; set; }
         public string UsuarioBuscaRf { get; set; }
         public IEnumerable<long> Categorias { get; set; }

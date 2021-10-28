@@ -12,5 +12,6 @@ namespace SME.SR.Infra
         public string SituacaoMatricula { get; set; }
         public string NumeroAlunoChamada { get; set; }
         public DateTime DataSituacaoAluno { get; set; }
+        public DateTime DataMatricula { get; set; }
     }
 }

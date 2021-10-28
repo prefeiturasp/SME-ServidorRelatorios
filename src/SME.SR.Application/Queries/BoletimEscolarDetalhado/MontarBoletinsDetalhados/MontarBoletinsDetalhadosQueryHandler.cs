@@ -314,7 +314,7 @@ namespace SME.SR.Application
         {
             var possuiFrequenciaTurma = aulasCadastradas?.Any(nf => nf.Bimestre == bimestre);
 
-            var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) && !possuiFrequenciaTurma.Value ? "" :
+            var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
                 frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ?? (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
 
             if (!String.IsNullOrEmpty(frequencia))
