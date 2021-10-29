@@ -5,7 +5,7 @@
 
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 43;
+    int contadorMaximoLinhasPorPagina = 55;
     int contadorPagina = 0;
     bool montarCabecalho = true;
 
@@ -127,14 +127,14 @@ RELATÓRIO DE NOTIFICAÇÕES
                             montarCabecalho = false;
                         }
                         str += $@"<tr>
-                    <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
-                    <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
-                    <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
-                    <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
-                    <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
-                    <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
-                    <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
-                </tr>";
+                                    <td width='11%' class='td-valor'>{notificacao.Codigo}</td>
+                                    <td width='25%' class='td-valor'>{notificacao.Titulo}</td>
+                                    <td width='12%' class='td-valor'>{notificacao.Categoria.Name()}</td>
+                                    <td width='12%' class='td-valor'>{notificacao.Tipo.Name()}</td>
+                                    <td width='12%' class='td-valor'>{notificacao.Situacao.Name()}</td>
+                                    <td width='15%' class='td-valor'>{notificacao.DataRecebimento:dd/MM/yyyy HH:mm:ss}</td>
+                                    <td width='15%' class='td-valor'>{notificacao.DataLeitura:dd/MM/yyyy HH:mm:ss}</td>
+                                  </tr>";
 
                         if ((int)(notificacao.Titulo.ToString().Length / 18) > 2)
                         {
@@ -176,16 +176,34 @@ RELATÓRIO DE NOTIFICAÇÕES
                             var mensagem = UtilRegex.RemoverTagsHtml(notificacao.Mensagem);
 
                             str += "<tr><td colspan='7' style='padding:5px;font-size: 14.5px'>";
-                            for (int i = 0; i < mensagem.Length; i++)
-                            {
 
-                                if (tamanho <= 100)
+                            decimal tamanhoTotalMensagem = mensagem.Length;
+
+                            decimal linhasMensagem = tamanhoTotalMensagem / 100;
+
+                            var totalLinhas = Math.Ceiling(linhasMensagem);                            
+                           
+                                var posicaoAtual = 0;
+                                for (int j = 1; j <= totalLinhas; j++)
                                 {
-                                    str += mensagem[i];
-                                    tamanho = tamanho + 1;
-                                }
-                                else
-                                {
+                                    if(tamanhoTotalMensagem >= 100)
+                                    {
+                                        var sobraMsg = tamanhoTotalMensagem - posicaoAtual;
+                                        if (sobraMsg <= 100)
+                                        {
+                                            str += mensagem.Substring(posicaoAtual, (int)sobraMsg);
+                                        }
+                                        else
+                                        {
+                                            str += mensagem.Substring(posicaoAtual, 100);
+                                            posicaoAtual += 100;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        str += mensagem.Substring(posicaoAtual, (int)tamanhoTotalMensagem);
+                                    }
+
                                     contadorQuebrarPagina = contadorQuebrarPagina + 1;
 
                                     retornoVerificacao = VerificaQuebra();
@@ -202,13 +220,9 @@ RELATÓRIO DE NOTIFICAÇÕES
                                         str += retornoVerificacao;
                                     }
 
-                                    tamanho = 0;
-                                    str += mensagem[i];
-                                }
-                            }
+                                }                                                       
 
-                            str += "</td></tr>";
-                            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+                            str += "</td></tr>";                           
                         }
                     }
                     str += "</table>";
@@ -293,7 +307,7 @@ RELATÓRIO DE NOTIFICAÇÕES
 
         .campo-dre {
             width: 25%;
-        }
+        }       
 
         .campo-ue {
             width: 60%;
