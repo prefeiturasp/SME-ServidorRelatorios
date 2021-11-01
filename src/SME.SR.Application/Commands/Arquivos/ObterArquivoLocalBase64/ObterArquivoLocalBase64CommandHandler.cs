@@ -18,7 +18,9 @@ namespace SME.SR.Application
 
         public async Task<string> Handle(ObterArquivoLocalBase64Command request, CancellationToken cancellationToken)
         {
-            var nomeArquivo = $"{variaveisAmbiente.PastaArquivosSGP ?? string.Empty}{request.CaminhoArquivo}";
+            var nomeArquivo =
+                Path.Combine($"{variaveisAmbiente.PastaArquivosSGP ?? AppDomain.CurrentDomain.BaseDirectory}",
+                    $"{request.CaminhoArquivo.Replace(@"/", @"\")}");
             if (!File.Exists(nomeArquivo))
                 return "";
 

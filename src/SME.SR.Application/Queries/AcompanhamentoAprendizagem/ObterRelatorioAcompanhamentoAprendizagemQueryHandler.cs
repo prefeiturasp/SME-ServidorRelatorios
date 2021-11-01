@@ -73,7 +73,6 @@ namespace SME.SR.Application
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             var acompanhamento = acompanhamentoAlunos.Any() ? acompanhamentoAlunos?.First() : null;
-            var quantidadeImagensParam = await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(ano, TipoParametroSistema.QuantidadeImagensPercursoTurma));
             var percursoFormatado = acompanhamento != null ?
                 await FormatarHtml(acompanhamento.PercursoColetivoTurma) : "";
 

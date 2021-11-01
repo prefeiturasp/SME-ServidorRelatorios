@@ -10,14 +10,27 @@ namespace SME.SR.Workers.SGP.Controllers
     public class SgpDownloadController : Controller
     {
         [HttpGet("pdf/{relatorionome}/{correlacaoId}")]
-        public async Task<IActionResult> DownloadPdf(Guid correlacaoId, string relatorioNome, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        public async Task<IActionResult> DownloadPdf(Guid correlacaoId, string relatorioNome,
+            [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf"), "application/pdf", $"{relatorioNome}");
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf"), "application/pdf",
+                $"{relatorioNome}");
         }
+
         [HttpGet("xlsx/{relatorionome}/{correlacaoId}")]
-        public async Task<IActionResult> DownloadExcel(Guid correlacaoId, string relatorioNome, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        public async Task<IActionResult> DownloadExcel(Guid correlacaoId, string relatorioNome,
+            [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".xlsx"), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{relatorioNome}");
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".xlsx"),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{relatorioNome}");
+        }
+
+        [HttpGet("html/{relatorionome}/{correlacaoId}")]
+        public async Task<IActionResult> Downloadhtml(Guid correlacaoId, string relatorioNome,
+            [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        {
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".html"),
+                "text/html", $"{relatorioNome}.html");
         }
     }
 }

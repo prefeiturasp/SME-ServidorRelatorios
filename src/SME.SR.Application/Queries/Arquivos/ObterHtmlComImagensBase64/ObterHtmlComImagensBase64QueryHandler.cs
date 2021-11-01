@@ -1,4 +1,6 @@
-﻿using HtmlAgilityPack;
+﻿using System;
+using System.Net.Http;
+using HtmlAgilityPack;
 using MediatR;
 using SME.SR.Infra.Utilitarios;
 using System.Text.RegularExpressions;
@@ -31,32 +33,17 @@ namespace SME.SR.Application
                 {
                     var caminho = img.Attributes["src"].Value;
 
-                    var arquivoBase64 = await ObterArquivo(caminho);
+                    var arquivoBase64 = await ObterArquivoRemotoBase64(caminho);
 
                     registroFormatado = registroFormatado.Replace(caminho, arquivoBase64);
                 }
 
             return registroFormatado;
         }
-
-        private async Task<string> ObterArquivo(string caminho)
-            => await CaminhoLocal(caminho) ?
-            await ObterArquivoLocalBase64(caminho) :
-            await ObterArquivoRemotoBase64(caminho);
-
         private async Task<string> ObterArquivoRemotoBase64(string url)
         {
             return await mediator.Send(new ObterArquivoRemotoBase64Command(url));
         }
 
-        private async Task<string> ObterArquivoLocalBase64(string url)
-        {
-            var posicao = url.IndexOf("/Arquivos/");
-            var caminho = url.Substring(posicao, url.Length - posicao);
-            return await mediator.Send(new ObterArquivoLocalBase64Command(caminho));
-        }
-
-        private async Task<bool> CaminhoLocal(string caminho)
-            => caminho.Contains("/Arquivos/");
     }
 }

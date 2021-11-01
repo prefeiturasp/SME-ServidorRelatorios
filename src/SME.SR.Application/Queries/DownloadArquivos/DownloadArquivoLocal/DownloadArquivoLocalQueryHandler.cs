@@ -10,15 +10,16 @@ namespace SME.SR.Application.Commands.RetornarRelatorioPronto
 {
     public class DownloadArquivoLocalQueryHandler : IRequestHandler<DownloadArquivoLocalQuery, byte[]>
     {
-        public DownloadArquivoLocalQueryHandler()        {
-            
+        public DownloadArquivoLocalQueryHandler()
+        {
         }
+
         public async Task<byte[]> Handle(DownloadArquivoLocalQuery request, CancellationToken cancellationToken)
         {
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = $"{request.PastaFisicaCaminho}/{request.ArquivoNome}";
+            var nomeArquivo = Path.Combine(request.PastaFisicaCaminho, request.ArquivoNome);
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
-            
+
             SentrySdk.AddBreadcrumb($"Caminho arquivo para download: {caminhoArquivo}");
 
             var arquivo = await File.ReadAllBytesAsync(caminhoArquivo);
