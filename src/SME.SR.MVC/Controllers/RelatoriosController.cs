@@ -7910,9 +7910,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Nome = "EI - "+ (i + 1 )+ "A - GABRIELA MANZOLLI ROWLANDS LOPES (7924488)",
                     QuantidadeAulas = 234 + i,
                     FrequenciasPendentes = 5 + i,
-                    DataUltimoRegistroFrequencia = DateTime.Now,
+                    DataUltimoRegistroFrequencia = DateTime.Now.ToString(),
                     PlanosAulaPendentes = 4 + i,
-                    DataUltimoRegistroPlanoAula = DateTime.Now,
+                    DataUltimoRegistroPlanoAula = DateTime.Now.ToString(),
                 };
                 componentesCurriculares.Add(componentesCurricular);
             }
@@ -7969,9 +7969,9 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                     Nome = "EI - " + (i + 1) + "A - GABRIELA MANZOLLI ROWLANDS LOPES (7924488)",
                     Aulas = 234 + i,
                     FrequenciasPendentes = 5 + i,
-                    DataUltimoRegistroFrequencia = DateTime.Now,
+                    DataUltimoRegistroFrequencia = DateTime.Now.ToString(),
                     DiarioBordoPendentes = 4 + i,
-                    DataUltimoRegistroDiarioBordo = DateTime.Now,
+                    DataUltimoRegistroDiarioBordo = DateTime.Now.ToString(),
                 };
                 turmas.Add(turma);
             }
