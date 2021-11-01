@@ -10,8 +10,8 @@ namespace SME.SR.Infra
         public List<string> Professores { get; set; }
         public int Aulas { get; set; }
         public int FrequenciasPendentes { get; set; }
-        public DateTime? DataUltimoRegistroFrequencia { get; set; }
+        public string DataUltimoRegistroFrequencia { get; set; }
         public int DiarioBordoPendentes { get; set; }
-        public DateTime? DataUltimoRegistroDiarioBordo { get; set; }
+        public string DataUltimoRegistroDiarioBordo { get; set; }
     }
 }

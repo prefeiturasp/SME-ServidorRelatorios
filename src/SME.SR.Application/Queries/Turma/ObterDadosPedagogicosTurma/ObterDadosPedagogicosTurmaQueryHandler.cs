@@ -26,7 +26,7 @@ namespace SME.SR.Application
 
             if (consolidacoesFiltradas.Any())
             {
-                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre))
+                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre).Distinct())
                 {
                     var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto();
                     bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{consolidacoes.FirstOrDefault().Bimestre}º BIMESTRE" : "FINAL";
@@ -47,9 +47,9 @@ namespace SME.SR.Application
                                 Nome = $"{dadosTurma.NomeTurmaFormatado} - {nomeTurmaComplementar}",
                                 Aulas = dadosTurma.QuantidadeAulas,
                                 FrequenciasPendentes = dadosTurma.FrequenciasPendentes,
-                                DataUltimoRegistroFrequencia = dadosTurma.DataUltimaFrequencia,
+                                DataUltimoRegistroFrequencia = dadosTurma.DataUltimaFrequencia != null ? dadosTurma.DataUltimaFrequencia?.ToString("dd/MM/yyyy HH:mm:ss") : "",
                                 DiarioBordoPendentes = dadosTurma.DiarioBordoPendentes,
-                                DataUltimoRegistroDiarioBordo = dadosTurma.DataUltimoDiarioBordo
+                                DataUltimoRegistroDiarioBordo = dadosTurma.DataUltimoDiarioBordo != null ? dadosTurma.DataUltimoDiarioBordo?.ToString("dd/MM/yyyy HH:mm:ss") : ""
                             };
 
                             bimestre.TurmasInfantil.Add(registroTurma);
@@ -74,9 +74,9 @@ namespace SME.SR.Application
                                 Professores = listaProfessores,
                                 Aulas = dadosTurma.QuantidadeAulas,
                                 FrequenciasPendentes = dadosTurma.FrequenciasPendentes,
-                                DataUltimoRegistroFrequencia = dadosTurma.DataUltimaFrequencia,
+                                DataUltimoRegistroFrequencia = dadosTurma.DataUltimaFrequencia != null ? dadosTurma.DataUltimaFrequencia?.ToString("dd/MM/yyyy HH:mm:ss") : "",
                                 DiarioBordoPendentes = dadosTurma.DiarioBordoPendentes,
-                                DataUltimoRegistroDiarioBordo = dadosTurma.DataUltimoDiarioBordo
+                                DataUltimoRegistroDiarioBordo = dadosTurma.DataUltimoDiarioBordo != null ? dadosTurma.DataUltimoDiarioBordo?.ToString("dd/MM/yyyy HH:mm:ss") : ""
                             };
 
                             bimestre.TurmasInfantil.Add(registroTurma);

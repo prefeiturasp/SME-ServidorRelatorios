@@ -27,7 +27,7 @@ namespace SME.SR.Application
 
             if (consolidacoesFiltradas.Any())
             {
-                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre))
+                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre).Distinct())
                 {
                     var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto();
                     bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{consolidacoes.FirstOrDefault().Bimestre}º BIMESTRE" : "FINAL";
@@ -45,14 +45,21 @@ namespace SME.SR.Application
                             if (compCurricular.CJ)
                                 nomeComponente = $"{nomeComponente} - CJ";
 
+                            string dataUltimoRegistroFrequencia = compCurricular.DataUltimaFrequencia != null ?
+                                                                  compCurricular.DataUltimaFrequencia?.ToString("dd/MM/yyyy HH:mm:ss")
+                                                                  : "";
+                            string dataUltimoRegistroPlanoAula = compCurricular.DataUltimoPlanoAula != null ?
+                                                                  compCurricular.DataUltimoPlanoAula?.ToString("dd/MM/yyyy HH:mm:ss")
+                                                                  : "";
+
                             var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
                             {
                                 Nome = nomeComponente.ToUpper(),
                                 QuantidadeAulas = compCurricular.QuantidadeAulas,
                                 FrequenciasPendentes = compCurricular.FrequenciasPendentes,
-                                DataUltimoRegistroFrequencia = compCurricular.DataUltimaFrequencia,
+                                DataUltimoRegistroFrequencia = dataUltimoRegistroFrequencia,
                                 PlanosAulaPendentes = compCurricular.PlanoAulaPendentes,
-                                DataUltimoRegistroPlanoAula = compCurricular.DataUltimoPlanoAula
+                                DataUltimoRegistroPlanoAula = dataUltimoRegistroPlanoAula
                             };
                             turma.ComponentesCurriculares.Add(componente);
                         }
