@@ -23,7 +23,7 @@ namespace SME.SR.Data
             var turmaCodigo = turmasCodigo?.ToArray();
             int periodoCalendario = 0;
 
-            var query = new StringBuilder(@"select 
+            var query = new StringBuilder(@"select distinct
                                             crp.periodo_escolar_id as PeriodoEscolarId,
                                             pe.bimestre as Bimestre,
                                             crp.turma_id as TurmaId,
@@ -106,7 +106,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> ObterDadosConsolidacaoRegistrosPedagogicosInfantil(string dreCodigo, string ueCodigo, int anoLetivo, string professorCodigo, List<int> bimestres, List<string> turmasCodigo)
         {
             var turmaCodigo = turmasCodigo?.ToArray();
-            var query = new StringBuilder(@"select 
+            var query = new StringBuilder(@"select distinct
                                             crp.periodo_escolar_id as PeriodoEscolarId,
                                             pe.bimestre as Bimestre,
                                             crp.turma_id as TurmaId,
