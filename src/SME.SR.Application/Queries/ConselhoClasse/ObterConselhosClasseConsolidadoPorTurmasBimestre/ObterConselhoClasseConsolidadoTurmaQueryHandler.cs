@@ -17,8 +17,12 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterConselhosClasseConsolid
         }
 
         public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> Handle(ObterConselhoClasseConsolidadoTurmaQuery request, CancellationToken cancellationToken)
-        {
-            return await conselhoClasseConsolidadoRepository.ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(request.DreCodigo,request.ModalidadeCodigo,request.Bimestres,request.SituacaoConselhoClasse,request.AnoLetivo, request.Semestre);
-        }
+            => await conselhoClasseConsolidadoRepository.ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(request.DreCodigo, 
+                                                                                                               request.ModalidadeCodigo, 
+                                                                                                               request.Bimestres, 
+                                                                                                               request.SituacaoConselhoClasse, 
+                                                                                                               request.AnoLetivo, 
+                                                                                                               request.Semestre, 
+                                                                                                               request.ExibirHistorico);        
     }
 }

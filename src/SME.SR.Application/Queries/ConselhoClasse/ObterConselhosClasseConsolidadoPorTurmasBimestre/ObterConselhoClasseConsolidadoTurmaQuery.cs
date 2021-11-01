@@ -12,7 +12,8 @@ namespace SME.SR.Application
         public SituacaoConselhoClasse? SituacaoConselhoClasse { get; set; }
         public int AnoLetivo { get; set; }
         public int Semestre { get; set; }
-        public ObterConselhoClasseConsolidadoTurmaQuery(string dreCodigo, int modalidadeCodigo, int[] bimestres, SituacaoConselhoClasse? situacaoConselhoClasse, int anoLetivo, int semestre = 0)
+        public bool ExibirHistorico { get; set; }
+        public ObterConselhoClasseConsolidadoTurmaQuery(string dreCodigo, int modalidadeCodigo, int[] bimestres, SituacaoConselhoClasse? situacaoConselhoClasse, int anoLetivo, int semestre = 0, bool exibirHistorico = false)
         {
             DreCodigo = dreCodigo;
             ModalidadeCodigo = modalidadeCodigo;
@@ -20,6 +21,7 @@ namespace SME.SR.Application
             SituacaoConselhoClasse = situacaoConselhoClasse;
             AnoLetivo = anoLetivo;
             Semestre = semestre;
+            ExibirHistorico = exibirHistorico;
         }
     }
 }

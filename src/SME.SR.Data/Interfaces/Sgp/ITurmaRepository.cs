@@ -30,7 +30,8 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosSemParecerConclusivo(long[] codigoAlunos);
         Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaSemParecerConclusivo(long turmaCodigo);
         Task<IEnumerable<Turma>> ObterTurmasPorAnoEModalidade(int anoLetivo, string[] anosEscolares, Modalidade modalidade);
-        Task<IEnumerable<Aluno>> ObterAlunosPorTurmas(IEnumerable<long> turmasCodigo);
+        Task<IEnumerable<AlunoDaTurmaDto>> ObterAlunosPorTurmas(IEnumerable<long> turmasCodigo);
+        Task<IEnumerable<AlunoDaTurmaDto>> ObterAlunosPorTurmasAnosAnteriores(IEnumerable<long> turmasCodigo);
         Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadeESemestre(string[] uesCodigos, string[] anos, int modalidade, int? semestre);
         Task<IEnumerable<Aluno>> ObterDadosAlunosPorTurmaNotasConceitos(string codigoTurma);
         Task<IEnumerable<AlunoTurmaRegularRetornoDto>> ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long turmaCodigo);

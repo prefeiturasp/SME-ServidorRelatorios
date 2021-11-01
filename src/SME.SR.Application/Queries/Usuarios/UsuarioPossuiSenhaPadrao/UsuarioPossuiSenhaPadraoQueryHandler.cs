@@ -25,7 +25,7 @@ namespace SME.SR.Application
             var senhaPadrao = $"Sgp{rf.Substring(rf.Length - 4)}";
 
             var usuario = await usuarioRepository.ObterDadosCoreSSO(rf);
-            return senhaPadrao.CriptografarSenha(usuario.TipoCriptografia).Equals(usuario.Senha);
+            return usuario == null ? false : senhaPadrao.CriptografarSenha(usuario.TipoCriptografia).Equals(usuario.Senha);
         }
     }
 }

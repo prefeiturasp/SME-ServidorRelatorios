@@ -13,15 +13,15 @@ namespace SME.SR.Application
 
         }
 
-        public Task<bool> Handle(SalvarArquivoFisicoCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(SalvarArquivoFisicoCommand request, CancellationToken cancellationToken)
         {
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var nomeArquivo = $"{request.Pasta}/{request.ArquivoNome}";
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
 
-            File.WriteAllBytes(caminhoArquivo, request.Arquivo);
+            await File.WriteAllBytesAsync(caminhoArquivo, request.Arquivo);
 
-            return Task.FromResult(true);
+            return true;
         }
 
     }

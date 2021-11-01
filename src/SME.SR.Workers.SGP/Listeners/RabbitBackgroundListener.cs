@@ -41,7 +41,9 @@ namespace SME.SR.Workers.SGP.Services
                 HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
                 UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
                 Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
-                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value,
+                AutomaticRecoveryEnabled = true,
+                RequestedHeartbeat = TimeSpan.FromSeconds(60)
             };
 
             conexaoRabbit = factory.CreateConnection();
