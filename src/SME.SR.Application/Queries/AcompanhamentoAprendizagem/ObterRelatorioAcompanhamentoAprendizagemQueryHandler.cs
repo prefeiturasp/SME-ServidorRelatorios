@@ -72,83 +72,46 @@ namespace SME.SR.Application
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
-            var acompanhamento = acompanhamentoAlunos.Count() > 0 ? acompanhamentoAlunos?.First() : null;
+            var acompanhamento = acompanhamentoAlunos.Any() ? acompanhamentoAlunos?.First() : null;
             var quantidadeImagensParam = await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(ano, TipoParametroSistema.QuantidadeImagensPercursoTurma));
-            var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado(int.Parse(quantidadeImagensParam)) ?? "") : "";
-
-            List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
-
-            //if (acompanhamento != null && acompanhamento.PercursoTurmaImagens.Count > 0)
-            //{
-            //    foreach (var imagem in acompanhamento.PercursoTurmaImagens)
-            //    {
-            //        var arr = imagem.Imagem.Split("/");
-            //        var codigo = arr[arr.Length - 1];
-            //        codigo = codigo.Split(".")[0];
-            //        var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
-
-            //        var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
-            //        if (!String.IsNullOrEmpty(fotoBase64))
-            //        {
-            //            percursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
-            //            {
-            //                NomeImagem = imagem.NomeImagem,
-            //                Imagem = fotoBase64
-            //            });
-            //        }
-
-            //    }
-            //}
+            var percursoFormatado = acompanhamento != null ?
+                await FormatarHtml(acompanhamento.PercursoColetivoTurma) : "";
 
             foreach (var alunoEol in alunosEol)
             {
-                //AcompanhamentoAprendizagemAlunoDto acompanhamentoAluno = null;
+                AcompanhamentoAprendizagemAlunoDto acompanhamentoAluno = null;
 
-                //if (acompanhamento != null)
-                //    acompanhamentoAluno = acompanhamento.Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+                if (acompanhamento != null)
+                    acompanhamentoAluno = acompanhamentoAlunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
 
-                //if (alunoEol == null)
-                //    throw new NegocioException("AlunoEol não encontrado");
+                if (alunoEol == null)
+                    throw new NegocioException("AlunoEol não encontrado");
 
-                //var alunoRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoDto
-                //{
-                //    NomeEol = alunoEol.NomeAluno,
-                //    Nome = alunoEol.NomeRelatorio,
-                //    DataNascimento = alunoEol.DataNascimentoFormatado(),
-                //    CodigoEol = alunoEol.AlunoCodigo.ToString(),
-                //    Situacao = alunoEol.SituacaoRelatorio,
-                //    Responsavel = alunoEol.ResponsavelFormatado(),
-                //    Telefone = alunoEol.ResponsavelCelularFormatado(),
-                //    RegistroPercursoTurma = percursoFormatado,
-                //    Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "",
-                //    PercursoIndividual = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoIndividualFormatado() ?? "") : "",
-                //    PercursoTurmaImagens = percursoTurmaImagens
-                //};
+                var alunoRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoDto
+                {
+                    NomeEol = alunoEol.NomeAluno,
+                    Nome = alunoEol.NomeRelatorio,
+                    DataNascimento = alunoEol.DataNascimentoFormatado(),
+                    CodigoEol = alunoEol.AlunoCodigo.ToString(),
+                    Situacao = alunoEol.SituacaoRelatorio,
+                    Responsavel = alunoEol.ResponsavelFormatado(),
+                    Telefone = alunoEol.ResponsavelCelularFormatado(),
+                    PercursoColetivoTurma = percursoFormatado,
+                    Observacoes = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.Observacoes) : "",
+                    PercursoIndividual = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.PercursoIndividual) : "",
+                };
 
+                alunoRelatorio.Frequencias = await MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres, periodoId, turma);
+                alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, ocorrencias);
 
-                //if (acompanhamentoAluno != null)
-                //{
-                //    foreach (var foto in acompanhamentoAluno.Fotos)
-                //    {
-                //        var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(foto));
-                //        if (!String.IsNullOrEmpty(fotoBase64))
-                //        {
-                //            alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
-                //            {
-                //                Caminho = fotoBase64
-                //            });
-                //        }
-                //    }
-                //}
-
-                //alunoRelatorio.Frequencias = await MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres, periodoId, turma);
-                //alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, ocorrencias);
-
-                //alunosRelatorio.Add(alunoRelatorio);
+                alunosRelatorio.Add(alunoRelatorio);
             }
 
             return alunosRelatorio;
         }
+
+        private async Task<string> FormatarHtml(string html)
+            => await mediator.Send(new ObterHtmlComImagensBase64Query(html));
 
         private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, long periodoId, Turma turma)
         {

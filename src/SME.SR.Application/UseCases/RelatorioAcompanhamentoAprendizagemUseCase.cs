@@ -18,8 +18,8 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto filtro)
         {
-            await GerarRelatorioMock();
-            return;
+            //await GerarRelatorioMock();
+            //return;
 
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
 
