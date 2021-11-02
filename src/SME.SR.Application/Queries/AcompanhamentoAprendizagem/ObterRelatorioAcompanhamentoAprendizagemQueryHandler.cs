@@ -22,7 +22,7 @@ namespace SME.SR.Application
             var turma = request.Turma;
             var alunosEol = request.AlunosEol;
             var professores = request.Professores;
-            var acompanhamentoTurma = request.AcompanhamentoTurma;
+            var acompanhamentoAlunos = request.AcompanhamentoTurma;
             var frequenciaAlunos = request.FrequenciaAlunos;
             var ocorrencias = request.Ocorrencias;
             var filtro = request.Filtro;
@@ -34,7 +34,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = await MontarAlunos(acompanhamentoTurma, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo, periodoId, turma),
+                Alunos = await MontarAlunos(acompanhamentoAlunos, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo, periodoId, turma),
             };
 
             return relatorio;
@@ -60,44 +60,28 @@ namespace SME.SR.Application
             return cabecalho;
         }
 
-        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, int ano, long periodoId, Turma turma)
+        private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoDto>> MontarAlunos(IEnumerable<AcompanhamentoAprendizagemAlunoDto> acompanhamentoAlunos,
+                                                                                           IEnumerable<AlunoRetornoDto> alunosEol,
+                                                                                           IEnumerable<FrequenciaAluno> frequenciasAlunos,
+                                                                                           IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias,
+                                                                                           IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas,
+                                                                                           int[] bimestres,
+                                                                                           int ano,
+                                                                                           long periodoId,
+                                                                                           Turma turma)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
-            var acompanhamento = acompanhamentoTurma.Count() > 0 ? acompanhamentoTurma?.First() : null;
-            var quantidadeImagensParam = await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(ano, TipoParametroSistema.QuantidadeImagensPercursoTurma));
-            var percursoFormatado = acompanhamento != null ? (acompanhamento.PercursoTurmaFormatado(int.Parse(quantidadeImagensParam)) ?? "") : "";
-
-            List<AcompanhamentoAprendizagemPercursoTurmaImagemDto> percursoTurmaImagens = new List<AcompanhamentoAprendizagemPercursoTurmaImagemDto>();
-
-            if (acompanhamento != null && acompanhamento.PercursoTurmaImagens.Count > 0)
-            {
-                foreach (var imagem in acompanhamento.PercursoTurmaImagens)
-                {
-                    var arr = imagem.Imagem.Split("/");
-                    var codigo = arr[arr.Length - 1];
-                    codigo = codigo.Split(".")[0];
-                    var arquivo = await mediator.Send(new ObterArquivoPorCodigoQuery(Guid.Parse(codigo)));
-
-                    var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(arquivo));
-                    if (!String.IsNullOrEmpty(fotoBase64))
-                    {
-                        percursoTurmaImagens.Add(new AcompanhamentoAprendizagemPercursoTurmaImagemDto
-                        {
-                            NomeImagem = imagem.NomeImagem,
-                            Imagem = fotoBase64
-                        });
-                    }
-
-                }
-            }
+            var acompanhamento = acompanhamentoAlunos.Any() ? acompanhamentoAlunos?.First() : null;
+            var percursoFormatado = acompanhamento != null ?
+                await FormatarHtml(acompanhamento.PercursoColetivoTurma) : "";
 
             foreach (var alunoEol in alunosEol)
             {
                 AcompanhamentoAprendizagemAlunoDto acompanhamentoAluno = null;
 
                 if (acompanhamento != null)
-                    acompanhamentoAluno = acompanhamento.Alunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
+                    acompanhamentoAluno = acompanhamentoAlunos.FirstOrDefault(a => long.Parse(a.AlunoCodigo) == alunoEol.AlunoCodigo);
 
                 if (alunoEol == null)
                     throw new NegocioException("AlunoEol não encontrado");
@@ -111,27 +95,10 @@ namespace SME.SR.Application
                     Situacao = alunoEol.SituacaoRelatorio,
                     Responsavel = alunoEol.ResponsavelFormatado(),
                     Telefone = alunoEol.ResponsavelCelularFormatado(),
-                    RegistroPercursoTurma = percursoFormatado,
-                    Observacoes = acompanhamentoAluno != null ? (acompanhamentoAluno.ObservacoesFormatado() ?? "") : "",
-                    PercursoIndividual = acompanhamentoAluno != null ? (acompanhamentoAluno.PercursoIndividualFormatado() ?? "") : "",
-                    PercursoTurmaImagens = percursoTurmaImagens
+                    PercursoColetivoTurma = percursoFormatado,
+                    Observacoes = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.Observacoes) : "",
+                    PercursoIndividual = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.PercursoIndividual) : "",
                 };
-
-
-                if (acompanhamentoAluno != null)
-                {
-                    foreach (var foto in acompanhamentoAluno.Fotos)
-                    {
-                        var fotoBase64 = await mediator.Send(new TransformarArquivoBase64Command(foto));
-                        if (!String.IsNullOrEmpty(fotoBase64))
-                        {
-                            alunoRelatorio.Fotos.Add(new RelatorioAcompanhamentoAprendizagemAlunoFotoDto
-                            {
-                                Caminho = fotoBase64
-                            });
-                        }
-                    }
-                }
 
                 alunoRelatorio.Frequencias = await MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres, periodoId, turma);
                 alunoRelatorio.Ocorrencias = MontarOcorrencias(alunoRelatorio.CodigoEol, ocorrencias);
@@ -141,6 +108,10 @@ namespace SME.SR.Application
 
             return alunosRelatorio;
         }
+
+        private async Task<string> FormatarHtml(string html)
+            => await mediator.Send(new ObterHtmlComImagensBase64Query(html));
+
         private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, long periodoId, Turma turma)
         {
             var frequenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
@@ -194,6 +165,7 @@ namespace SME.SR.Application
             }
             return ocorrenciasRelatorio;
         }
+
         private static int[] ObterBimestresPorSemestre(int semestre)
         {
             if (semestre == 1)
