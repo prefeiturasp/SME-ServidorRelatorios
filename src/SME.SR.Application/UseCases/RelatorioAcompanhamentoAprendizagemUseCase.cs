@@ -50,7 +50,7 @@ namespace SME.SR.Application
 
             var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id));
 
-            await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, Guid.NewGuid()));
+            await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao));
         }
 
         private async Task<PeriodoEscolarDto> ObterInicioFimPeriodo(long tipoCalendarioId, int[] bimestres, int semestre)
