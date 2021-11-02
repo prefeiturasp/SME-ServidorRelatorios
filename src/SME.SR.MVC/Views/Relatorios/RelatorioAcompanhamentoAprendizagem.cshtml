@@ -74,7 +74,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class='@tdTbodyInterno'>
+          <td class='@tdTheadPadrao'>
             <span class="quebra-conteudo-editor">@Html.Raw(percursoTurma)</span>
           </td>
         </tr>
@@ -121,7 +121,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class='@tdTbodyInterno'>
+          <td class='@tdTheadPadrao'>
             <span class="quebra-conteudo-editor">@Html.Raw(percursoIndividual)</span>
           </td>
         </tr>
@@ -133,23 +133,23 @@
   void MontarObservacoes(string observacao)
   {
     <table class='estilo-tabela' style="page-break-inside: avoid">
-      <thead> 
+      <thead>
         <tr>
           <td class='@tdTheadInterno border-top-none'>OBSERVAÇÕES</td>
         </tr>
-      </thead> 
+      </thead>
       <tbody>
         <tr>
           <td class='@tdTbodyInterno'>
-            @observacao
+            @Html.Raw(observacao)
           </td>
         </tr>
       </tbody>
-    </table> 
+    </table>
   }
 
   void MontarOcorrencias(SME.SR.Infra.RelatorioAcompanhamentoAprendizagemAlunoDto aluno)
-  {  
+  {
     <table class='estilo-tabela' style="page-break-inside: avoid">
       <thead>
         <tr>
@@ -178,22 +178,17 @@
     </table>
   }
 
-  void MontarAssinatura()
+  void MontarParecerFamilia()
   {
     <table class='estilo-tabela' style='page-break-after: always; page-break-inside: avoid'>
       <thead>
         <tr>
-          <td class='@tdTheadInterno border-top-none' colspan="2">ESTOU CIENTE DESTE RELATÓRIO</td>
-        </tr>
-        <tr>
-          <td class='@tdTbodyInterno'>DATA ASSINATURA</td>
-          <td class='@tdTbodyInterno'>ASSINATURA</td>
+          <td class='@tdTheadInterno border-top-none'>PARECER DA FAMÍLIA/RESPONSÁVEIS</td>
         </tr>
       </thead>
       <tbody>
-        <tr style="height: 48px">
-          <td class='@tdTbodyInterno' width="20%" />
-          <td class='@tdTbodyInterno' width="80%" />
+        <tr style="height: 100px">
+          <td class='@tdTbodyInterno' />
         </tr>
       </tbody>
     </table>
@@ -209,10 +204,10 @@
   <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
   <style>
 
-    .container-conteudo { 
-      font-family: 'Roboto Mono'; 
+    .container-conteudo {
+      font-family: 'Roboto Mono';
       background: white;
-      color: #42474a; 
+      color: #42474a;
     }
 
     .img-logo-sgp {
@@ -292,7 +287,7 @@
 
     .border-top-none {
       border-top: none;
-    } 
+    }
 
     .quebra-conteudo-editor table {
       page-break-inside: avoid;
@@ -312,7 +307,7 @@
 
       foreach (var aluno in alunosOrdenados)
       {
-           
+
         <table style='page-break-after:always'>
           <thead>
             <tr>
@@ -320,7 +315,7 @@
                 @{
                   MontarCabecalho();
                   <div style="margin-bottom: -5px">
-                    @{ 
+                    @{
                       MontarHeaderUnico(aluno.Nome);
                     }
                   </div>
@@ -359,7 +354,7 @@
                     MontarOcorrencias(aluno);
                   }
 
-                  MontarAssinatura(); 
+                  MontarParecerFamilia();
 
                 }
               </td>

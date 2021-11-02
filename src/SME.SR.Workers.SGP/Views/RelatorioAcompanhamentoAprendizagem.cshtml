@@ -74,7 +74,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class='@tdTbodyInterno'>
+          <td class='@tdTheadPadrao'>
             <span class="quebra-conteudo-editor">@Html.Raw(percursoTurma)</span>
           </td>
         </tr>
@@ -121,7 +121,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class='@tdTbodyInterno'>
+          <td class='@tdTheadPadrao'>
             <span class="quebra-conteudo-editor">@Html.Raw(percursoIndividual)</span>
           </td>
         </tr>
@@ -141,7 +141,7 @@
       <tbody>
         <tr>
           <td class='@tdTbodyInterno'>
-            @observacao
+            @Html.Raw(observacao)
           </td>
         </tr>
       </tbody>
@@ -178,22 +178,17 @@
     </table>
   }
 
-  void MontarAssinatura()
+  void MontarParecerFamilia()
   {
     <table class='estilo-tabela' style='page-break-after: always; page-break-inside: avoid'>
       <thead>
         <tr>
-          <td class='@tdTheadInterno border-top-none' colspan="2">ESTOU CIENTE DESTE RELATÓRIO</td>
-        </tr>
-        <tr>
-          <td class='@tdTbodyInterno'>DATA ASSINATURA</td>
-          <td class='@tdTbodyInterno'>ASSINATURA</td>
+          <td class='@tdTheadInterno border-top-none'>PARECER DA FAMÍLIA/RESPONSÁVEIS</td>
         </tr>
       </thead>
       <tbody>
-        <tr style="height: 48px">
-          <td class='@tdTbodyInterno' width="20%" />
-          <td class='@tdTbodyInterno' width="80%" />
+        <tr style="height: 100px">
+          <td class='@tdTbodyInterno' />
         </tr>
       </tbody>
     </table>
@@ -359,7 +354,7 @@
                     MontarOcorrencias(aluno);
                   }
 
-                  MontarAssinatura();
+                  MontarParecerFamilia();
 
                 }
               </td>
