@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterAcompanhamentoAprendizagemPorTurmaESemestreQueryHandler : IRequestHandler<ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery, IEnumerable<AcompanhamentoAprendizagemTurmaDto>>
+    public class ObterAcompanhamentoAprendizagemPorTurmaESemestreQueryHandler : IRequestHandler<ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery, IEnumerable<AcompanhamentoAprendizagemAlunoDto>>
     {
         private readonly IAcompanhamentoAprendizagemRepository acompanhamentoAprendizagemRepository;
 
@@ -17,7 +17,7 @@ namespace SME.SR.Application
             this.acompanhamentoAprendizagemRepository = acompanhamentoAprendizagemRepository ?? throw new ArgumentNullException(nameof(acompanhamentoAprendizagemRepository));
         }
 
-        public async Task<IEnumerable<AcompanhamentoAprendizagemTurmaDto>> Handle(ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AcompanhamentoAprendizagemAlunoDto>> Handle(ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery request, CancellationToken cancellationToken)
             => await acompanhamentoAprendizagemRepository.ObterAcompanhamentoAprendizagemPorTurmaESemestre(request.TurmaId, request.AlunoCodigo, request.Semestre);        
     }
 }

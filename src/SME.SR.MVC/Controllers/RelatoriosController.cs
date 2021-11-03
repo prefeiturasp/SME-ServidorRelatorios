@@ -7812,21 +7812,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
         //    return View("RelatorioBoletimEscolarDetalhado", model);
 
         //}
-
-
-        [HttpGet("acompanhamento-aprendizagem-teste")]
-        public async Task<IActionResult> AcompanhamentoAprendizagemTeste([FromServices] IRelatorioAcompanhamentoAprendizagemUseCase useCase)
-        {
-            try
-            {
-                var dto = new RelatorioAcompanhamentoAprendizagemDto();
-                return View("RelatorioAcompanhamentoAprendizagemTeste", dto);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+     
 
         [HttpGet("acompanhamento-fechamento")]
         public async Task<IActionResult> AcompanhamentoFechamento([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)

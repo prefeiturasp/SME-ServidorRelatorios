@@ -18,7 +18,7 @@ namespace SME.SR.HtmlPdf
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
-        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true)
+        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true, string templateHeader = "" )
         {
             nomeArquivo = String.Format("{0}.pdf", nomeArquivo);
 
@@ -39,9 +39,11 @@ namespace SME.SR.HtmlPdf
                     HtmlContent = html,
                     WebSettings = { DefaultEncoding = "utf-8" },
                     PagesCount = true,
+                    HeaderSettings = { HtmUrl = templateHeader },
                     FooterSettings = { 
                         FontName="Roboto", 
-                        FontSize = 9, Right = "[page] / [toPage]", 
+                        FontSize = 9, 
+                        Right = "[page] / [toPage]", 
                         Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
                     }
                 }); 
