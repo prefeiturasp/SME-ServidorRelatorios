@@ -437,7 +437,29 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos, int? anoLetivo)
         {
-            var query = @$"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+            var query = @$"
+
+					IF OBJECT_ID('tempdb..#tmpAlunos') IS NOT NULL
+											DROP TABLE #tmpAlunos
+					select
+					cd_aluno,
+					nm_aluno,
+					dt_nascimento_aluno,
+					nm_social_aluno,
+					sg_uf_nascimento_aluno,
+					cd_nacionalidade_aluno,
+					nr_rg_aluno,
+					cd_digito_rg_aluno,
+					sg_uf_rg_aluno,
+					dt_emissao_rg,
+					cd_municipio_nascimento,
+					cd_orgao_emissor
+					into #tmpAlunos
+					from aluno
+					where
+					cd_aluno in (#codigosAlunos)
+
+					IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
 					CREATE TABLE #tmpAlunosPorCodigo 
 					(
@@ -503,7 +525,7 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM aluno
+						FROM #tmpAlunos aluno
 						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
@@ -552,7 +574,7 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM aluno
+						FROM #tmpAlunos aluno
 						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
