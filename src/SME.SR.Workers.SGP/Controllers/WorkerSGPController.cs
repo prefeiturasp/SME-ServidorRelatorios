@@ -305,5 +305,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioConselhoClasseAtaBimestralUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/acompanhamento-frequencia")]
+        [Action("relatorios/acompanhamento-frequencia", typeof(IRelatorioAcompanhamentoFrequenciaUseCase))]
+        public async Task<bool> AcompanhamentoFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoFrequenciaUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
     }
 }
