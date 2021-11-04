@@ -10,6 +10,6 @@ namespace SME.SR.Infra
         public string Bimestre { get; set; }
         public string UsuarioRF { get; set; }
         public string UsuarioNome { get; set; }
-        public IEnumerable<string> AlunosCodigo { get; set; }
+        public List<string> AlunosCodigo { get; set; }
     }
 }
