@@ -1,4 +1,4 @@
-﻿namespace SME.SR.Infra.Dtos.Relatorios.AcompanhamentoFrequencia
+﻿namespace SME.SR.Infra.Dtos
 {
     public class FrequenciaAlunoConsolidadoDto
     {

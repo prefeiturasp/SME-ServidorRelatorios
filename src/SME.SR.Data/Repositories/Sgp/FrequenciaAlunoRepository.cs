@@ -2,6 +2,7 @@
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -335,7 +336,7 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId,bimestres });
+            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId, bimestres });
         }
 
         public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAno(string codigoTurma, string componenteCurricularId, int anoLetivo)
@@ -445,6 +446,37 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<string>(query, new { turmaCodigo, bimestre });
+            }
+        }
+
+        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre)
+        {
+            var query = @"select
+	                        fa.bimestre,
+	                        fa.total_aulas as TotalAula,
+	                        fa.total_presencas as TotalPresencas,
+	                        fa.total_remotos as TotalRemotos,
+	                        fa.total_ausencias as TotalAusencias,
+	                        fa.total_compensacoes as TotalCompensacoes,
+	                        fa.codigo_aluno as CodigoAluno
+                        from frequencia_aluno fa
+                        where not fa.excluido  
+                        and fa.codigo_aluno = any(@codigosAlunos)";
+            if (bimestre != "-99")
+                query += "and fa.bimestre =@bimestre";
+            query += @"group by
+	                        fa.bimestre,
+	                        fa.total_aulas,
+	                        fa.total_presencas,
+	                        fa.total_remotos,
+	                        fa.total_ausencias,
+	                        fa.total_compensacoes,
+	                        fa.codigo_aluno;";
+            var parametros = new { codigosAlunos, bimestre };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<FrequenciaAlunoConsolidadoDto>(query, parametros);
             }
         }
     }
