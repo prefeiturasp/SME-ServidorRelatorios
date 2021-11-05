@@ -116,9 +116,9 @@ namespace SME.SR.Application
         private List<BoletimEscolarAlunoDto> OrdenarBoletins(List<BoletimEscolarAlunoDto> boletinsAlunos)
         {
             var boletinsOrdenados = new List<BoletimEscolarAlunoDto>();
-            var turmas = boletinsAlunos.OrderBy(b => b.Cabecalho.NomeTurma).Select(b => b.Cabecalho.NomeTurma);
+            var turmas = boletinsAlunos.Select(b => b.Cabecalho.NomeTurma).Distinct();
             
-            foreach(string turma in turmas)
+            foreach(string turma in turmas.OrderBy(t => t))
             {
                 var alunosTurma = boletinsAlunos.Where(a => a.Cabecalho.NomeTurma == turma).OrderBy(a => a.Cabecalho.NomeAlunoOrdenacao).ToList();
                 boletinsOrdenados.AddRange(alunosTurma);
