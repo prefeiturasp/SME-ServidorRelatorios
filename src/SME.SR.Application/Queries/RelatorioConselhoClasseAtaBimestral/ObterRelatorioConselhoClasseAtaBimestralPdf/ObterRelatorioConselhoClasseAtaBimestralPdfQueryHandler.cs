@@ -384,14 +384,14 @@ namespace SME.SR.Application
         private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
             .Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0
-                    && (a.Inativo && a.DataSituacaoAluno > periodoEscolar.PeriodoInicio))
+                    && (a.Inativo && a.DataMatricula > periodoEscolar.PeriodoFim))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
         private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosAtivos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
             .Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0 
-                    && (a.Ativo || a.DataSituacaoAluno > periodoEscolar.PeriodoFim))
+                    && (a.Ativo))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
@@ -444,7 +444,7 @@ namespace SME.SR.Application
 
                         var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, componente.CodDisciplina.ToString(), turma.AnoLetivo));
 
-                        var matriculadoDepois = aluno.Ativo ? periodosEscolares.FirstOrDefault(p => p.PeriodoInicio <= aluno.DataSituacaoAluno && p.PeriodoFim >= aluno.DataSituacaoAluno)?.Bimestre : null;
+                        var matriculadoDepois = aluno.Ativo ? periodosEscolares.FirstOrDefault(p => aluno.DataMatricula > p.PeriodoFim)?.Bimestre : null;
                         var possuiConselho = notasFinais.Any(n => n.Bimestre == bimestre
                         && n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0 && n.ComponenteCurricularCodigo == componente.CodDisciplina);
 

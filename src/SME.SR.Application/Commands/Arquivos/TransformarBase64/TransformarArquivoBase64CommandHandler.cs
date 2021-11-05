@@ -22,7 +22,7 @@ namespace SME.SR.Application
             var diretorio = Path.Combine(variaveisAmbiente.PastaArquivosSGP ?? string.Empty,  $@"Arquivos/{request.Arquivo.Tipo}");
 
             if (!Directory.Exists(diretorio))
-                Directory.CreateDirectory(diretorio);
+                return "";
 
             var nomeArquivo = $"{request.Arquivo.Codigo}.{request.Arquivo.Extensao}";
             var caminhoArquivo = Path.Combine(diretorio, nomeArquivo);

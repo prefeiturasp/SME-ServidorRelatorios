@@ -292,7 +292,7 @@ namespace SME.SR.Application
 
         private IEnumerable<ComponenteCurricularHistoricoEscolarDto> MontarComponentesNotasFrequencia(IEnumerable<Turma> turmas, IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequencia, IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
         {
-            List<ComponenteCurricularHistoricoEscolarDto> componentes = null;
+            var componentes = new List<ComponenteCurricularHistoricoEscolarDto>();
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
@@ -310,8 +310,7 @@ namespace SME.SR.Application
                                               mediasFrequencia,
                                               componentes);
                 }
-
-                componentes = new List<ComponenteCurricularHistoricoEscolarDto>();
+                
                 foreach (var componenteCurricular in componentesCurricularesDaTurma.Where(x => !x.Regencia))
                 {
                     var regencia = componentesRegencia.FirstOrDefault(x => x.Codigo == componenteCurricular.CodDisciplina.ToString());

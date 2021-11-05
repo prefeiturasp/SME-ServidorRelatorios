@@ -7,12 +7,12 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQuery : IRequest<RelatorioAcompanhamentoAprendizagemDto>
     {
-        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemTurmaDto> acompanhamentoTurma, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, long periodoId)
+        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemAlunoDto> acompanhamentoAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, long periodoId)
         {
             Turma = turma;
             AlunosEol = alunosEol;
             Professores = professores;
-            AcompanhamentoTurma = acompanhamentoTurma;
+            AcompanhamentoTurma = acompanhamentoAlunos;
             FrequenciaAlunos = frequenciaAlunos;
             Ocorrencias = ocorrencias;
             Filtro = filtro;
@@ -23,7 +23,7 @@ namespace SME.SR.Application
         public Turma Turma { get; set; }
         public IEnumerable<AlunoRetornoDto> AlunosEol { get; set; }
         public IEnumerable<ProfessorTitularComponenteCurricularDto> Professores { get; set; }
-        public IEnumerable<AcompanhamentoAprendizagemTurmaDto> AcompanhamentoTurma { get; set; }
+        public IEnumerable<AcompanhamentoAprendizagemAlunoDto> AcompanhamentoTurma { get; set; }
         public IEnumerable<FrequenciaAluno> FrequenciaAlunos { get; set; }
         public IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> Ocorrencias { get; set; }
         public FiltroRelatorioAcompanhamentoAprendizagemDto Filtro { get; set; }

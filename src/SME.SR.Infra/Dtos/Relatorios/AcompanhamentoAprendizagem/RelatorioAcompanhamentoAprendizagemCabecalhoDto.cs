@@ -7,5 +7,6 @@
         public string Turma { get; set; }
         public string Professores { get; set; }
         public string Semestre { get; set; }
+        public string NomeAluno { get; set; }
     }
 }
