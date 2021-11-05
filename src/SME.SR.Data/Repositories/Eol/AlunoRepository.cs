@@ -554,6 +554,7 @@ namespace SME.SR.Data
 						END PossuiDeficiencia
 						FROM aluno
 						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						{(anoLetivo.HasValue ? $"and matr.an_letivo = @anoLetivo" : string.Empty)}
 						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
@@ -610,9 +611,9 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada";
-
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 60);
+            
+				using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+				return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 120);				           
         }
 
 		public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
@@ -746,7 +747,7 @@ namespace SME.SR.Data
 
 			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
 			{
-				return await conexao.QueryAsync<Aluno>(query, parametros);
+				return await conexao.QueryAsync<Aluno>(query, parametros, commandTimeout: 120);
 			}
 		}
 
