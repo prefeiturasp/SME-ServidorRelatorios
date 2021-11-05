@@ -6,7 +6,7 @@ namespace SME.SR.HtmlPdf
     public interface IReportConverter
     {
         byte[] ConvertToPdf(List<string> paginas);
-        void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true);
+        void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true, string templateHeader = "");
         void ConvertToPdfPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string caminhoBase, string nomeArquivo, string tituloRelatorioRodape = "");
     }
 }
