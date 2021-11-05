@@ -7991,6 +7991,33 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             return View("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", model);
         }
 
+        [HttpGet("registro-ocorrencias")]
+        public async Task<IActionResult> RegistroOcorrencias()
+        {
+            var ocorrencias = new List<RelatorioOcorrenciasDto>();
+            var ocorrencia = new RelatorioOcorrenciasDto()
+            {
+                DataOcorrencia = "19/12/2020",
+                TipoOcorrencia = "Brica com colega de sala",
+                TituloOcorrencia = "Atrito com o coleaga após discussão",
+                DescricaoOcorrencia = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially(5;7) unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+            };
+            ocorrencias.Add(ocorrencia);
+
+            var model = new RelatorioRegistroOcorrenciasDto(){
+                DreNome = "DRE - BT",
+                UeNome = "CEU EMEF BUTANTA",
+                Endereco = "Av. Eng. Heitor Antônio Eiras García, 1870 - Jardim Esmeralda",
+                Contato = "(11) 3732 - 4520",
+                Turma = "EI - 5A",
+                CriancaNome = "ALANA FERREIRA DE OLIVEIRA (12345678)",
+                UsuarioNome = "ELIENE SOUZA MATOS",
+                UsuarioRF = "1234567",
+                Ocorrencias = ocorrencias,
+            };
+            return View("RelatorioRegistroOcorrencias", model);
+        }
+
     }
 }
 
