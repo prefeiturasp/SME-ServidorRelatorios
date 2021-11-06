@@ -136,7 +136,6 @@
 
                 @if (turma.Professores != null)
                 {
-                    <br />
                     if (turma.Professores.Count == 1)
                     {
                         @turma.Professores.FirstOrDefault()
@@ -149,18 +148,20 @@
                             {
                                 @turma.Professores[i]
                                 @if (i == 0)
-                                {<br />}
+                                {
+                                    <br />
+                                    contadorQuebrarPagina += 0.5;
+                                }
                             }
                         }
                     }
                 }
-
             </td>
-                <td>@turma.Aulas</td>
-                <td>@turma.FrequenciasPendentes</td>
-                <td>@turma.DataUltimoRegistroFrequencia</td>
-                <td>@turma.DiarioBordoPendentes</td>
-                <td>@turma.DataUltimoRegistroDiarioBordo</td>
+            <td>@turma.Aulas</td>
+            <td>@turma.FrequenciasPendentes</td>
+            <td>@turma.DataUltimoRegistroFrequencia</td>
+            <td>@turma.DiarioBordoPendentes</td>
+            <td>@turma.DataUltimoRegistroDiarioBordo</td>
         </tr>
     }
 
