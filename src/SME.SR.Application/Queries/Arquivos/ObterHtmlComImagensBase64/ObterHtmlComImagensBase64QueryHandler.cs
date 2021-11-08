@@ -59,6 +59,6 @@ namespace SME.SR.Application
         }
 
         private async Task<bool> CaminhoLocal(string caminho)
-            => false;//caminho.Contains("/Arquivos/");
+            => caminho.Contains("/Arquivos/");
     }
 }
