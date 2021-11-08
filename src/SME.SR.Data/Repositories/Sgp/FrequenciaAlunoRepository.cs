@@ -480,7 +480,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] codigosAlunos, string codigoTurma, string bimestre)
+        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre)
         {
             var query = @" select
  	                         afa.codigo_aluno as codigoAluno,
@@ -495,13 +495,13 @@ namespace SME.SR.Data
                           left join motivo_ausencia ma on afa.motivo_ausencia_id = ma.id 
                          where 
                              not afa.excluido and not a.excluido 
-                             and afa.codigo_aluno = any(@codigosAlunos)	 
-                             and a.turma_id = @codigoTurma
+                             and afa.codigo_aluno = any(@alunosCodigo)	 
+                             and a.turma_id = @turmaCodigo
                              and pe.bimestre = @bimestre
                              and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
                          order by pe.bimestre,a.data_aula  desc;";
 
-            var parametros = new { codigosAlunos, codigoTurma, bimestre };
+            var parametros = new { alunosCodigo, turmaCodigo, bimestre };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {

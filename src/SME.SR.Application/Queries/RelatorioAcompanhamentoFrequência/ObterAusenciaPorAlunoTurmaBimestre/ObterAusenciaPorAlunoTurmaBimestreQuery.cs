@@ -6,15 +6,15 @@ namespace SME.SR.Application
 {
     class ObterAusenciaPorAlunoTurmaBimestreQuery : IRequest<IEnumerable<AusenciaBimestreDto>>
     {
-        public ObterAusenciaPorAlunoTurmaBimestreQuery(string[] codigosAlunos, string codigoTurma, string bimestre)
+        public ObterAusenciaPorAlunoTurmaBimestreQuery(string[] alunosCodigo, string turmaCodigo, string bimestre)
         {
-            CodigosAlunos = codigosAlunos;
-            CodigoTurma = codigoTurma;
+            AlunosCodigo = alunosCodigo;
+            TurmaCodigo = turmaCodigo;
             Bimestre = bimestre;
         }
 
-        public string[] CodigosAlunos { get; set; }
-        public string CodigoTurma { get; set; }
+        public string[] AlunosCodigo { get; set; }
+        public string TurmaCodigo { get; set; }
         public string Bimestre { get; set; }
     }
 }
