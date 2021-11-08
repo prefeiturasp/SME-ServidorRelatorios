@@ -12,8 +12,6 @@ namespace SME.SR.Application
 {
     public class ObterArquivoRemotoBase64CommandHandler : IRequestHandler<ObterArquivoRemotoBase64Command, string>
     {
-
-
         public async Task<string> Handle(ObterArquivoRemotoBase64Command request, CancellationToken cancellationToken)
         {
             using (var client = new WebClient())
@@ -24,14 +22,37 @@ namespace SME.SR.Application
                 {
                     var imagem = new Bitmap(memoryStream);
                     var format = imagem.RawFormat;
-                    var codec = ImageCodecInfo.GetImageDecoders()
+                    var codec = ImageCodecInfo
+                        .GetImageDecoders()
                         .First(c => c.FormatID == format.Guid);
                     string mimeType = codec.MimeType;
 
-                    return $"data:{mimeType};base64,{Convert.ToBase64String(arquivo)}";
-                }
+                    var imagemBase64 = RedimencionarImagem(imagem);
 
+                    return $"data:{mimeType};base64,{imagemBase64}";
+                }
             }
+        }
+
+        private string RedimencionarImagem(Bitmap imagem)
+        {
+            if (imagem.Width <= 800)
+                return ConverterImagem(imagem);
+
+            var escala = 800f / imagem.Width;
+
+            var width = (int)(imagem.Width * escala);
+            var height = (int)(imagem.Height * escala);
+
+            var imagemRedimencionada = new Bitmap(imagem, new Size(width, height));
+            return ConverterImagem(imagemRedimencionada);
+        }
+
+        private string ConverterImagem(Bitmap bitmap)
+        {
+            var converter = new ImageConverter();
+            var arquivoConvertido = (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
+            return Convert.ToBase64String(arquivoConvertido);
         }
     }
 }
