@@ -437,7 +437,29 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos, int? anoLetivo)
         {
-            var query = @$"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+            var query = @$"
+
+					IF OBJECT_ID('tempdb..#tmpAlunos') IS NOT NULL
+											DROP TABLE #tmpAlunos
+					select
+					cd_aluno,
+					nm_aluno,
+					dt_nascimento_aluno,
+					nm_social_aluno,
+					sg_uf_nascimento_aluno,
+					cd_nacionalidade_aluno,
+					nr_rg_aluno,
+					cd_digito_rg_aluno,
+					sg_uf_rg_aluno,
+					dt_emissao_rg,
+					cd_municipio_nascimento,
+					cd_orgao_emissor
+					into #tmpAlunos
+					from aluno
+					where
+					cd_aluno in (#codigosAlunos)
+
+					IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
 					CREATE TABLE #tmpAlunosPorCodigo 
 					(
@@ -503,7 +525,7 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM aluno
+						FROM #tmpAlunos aluno
 						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
@@ -552,19 +574,18 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM aluno
+						FROM #tmpAlunos aluno
 						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						{(anoLetivo.HasValue ? $"and matr.an_letivo = @anoLetivo" : string.Empty)}
 						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 						WHERE aluno.cd_aluno in (#codigosAlunos)
-						and mte.dt_situacao_aluno in                    
-							(select mte2.dt_situacao_aluno from v_historico_matricula_cotic  matr2
-							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-								matr2.cd_aluno in (#codigosAlunos)
-							and matr2.cd_aluno = matr.cd_aluno 
+						and mte.dt_situacao_aluno in
+							(SELECT mte2.dt_situacao_aluno from v_historico_matricula_cotic  matr2
+								INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+							 WHERE matr2.cd_aluno = matr.cd_aluno 
 							{(anoLetivo.HasValue ? $"and matr2.an_letivo = @anoLetivo" : string.Empty)}
 						)
 						AND NOT EXISTS(
@@ -612,9 +633,9 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada";
-
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 60);
+            
+				using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+				return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 120);				           
         }
 
 		public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
@@ -748,7 +769,7 @@ namespace SME.SR.Data
 
 			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
 			{
-				return await conexao.QueryAsync<Aluno>(query, parametros);
+				return await conexao.QueryAsync<Aluno>(query, parametros, commandTimeout: 120);
 			}
 		}
 

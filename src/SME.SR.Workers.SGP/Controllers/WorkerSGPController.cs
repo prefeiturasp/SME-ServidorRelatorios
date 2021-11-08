@@ -313,5 +313,12 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
+        [HttpGet("relatorios/acompanhamento-registrospedagogicos")]
+        [Action("relatorios/acompanhamento-registrospedagogicos", typeof(IRelatorioAcompanhamentoRegistrosPedagogicosUseCase))]
+        public async Task<bool> RelatorioAcompanhamentoRegistrosPedagogicos([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase relatorioAcompanhamentoRegistrosPedagogicos)
+        {
+            await relatorioAcompanhamentoRegistrosPedagogicos.Executar(request);
+            return true;
+        }
     }
 }

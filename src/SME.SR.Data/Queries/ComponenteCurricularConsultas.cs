@@ -2,7 +2,17 @@
 {
     public static class ComponenteCurricularConsultas
     {
-        internal static string BuscarPorAlunos = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
+        internal static string BuscarPorAlunos = @"
+
+                    IF OBJECT_ID('tempdb..#tmp_matricula_cotic') IS NOT NULL
+                    DROP TABLE #tmp_matricula_cotic
+
+                    select cd_matricula, cd_aluno 
+                    into #tmp_matricula_cotic
+                    from v_matricula_cotic
+                    where cd_aluno in @alunosCodigos
+
+                    select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
                                         cc.cd_componente_curricular) as Codigo,
                                     iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
                                         cc.dc_componente_curricular) as Descricao,
@@ -13,7 +23,7 @@
                     from turma_escola te
 
 	                inner join matricula_turma_escola mte on mte.cd_turma_escola = te.cd_turma_escola 
-	                inner join v_matricula_cotic vmc on vmc.cd_matricula = mte.cd_matricula 
+	                inner join #tmp_matricula_cotic vmc on vmc.cd_matricula = mte.cd_matricula 
 
                              inner join escola esc ON te.cd_escola = esc.cd_escola
                              inner join v_cadastro_unidade_educacao ue on ue.cd_unidade_educacao = esc.cd_escola
@@ -41,11 +51,20 @@
                         and pcc.dt_cancelamento is null
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
-                    where vmc.cd_aluno in @alunosCodigos
-                      and te.an_letivo = @anoLetivo
+                    where te.an_letivo = @anoLetivo
                       and te.st_turma_escola in ('O', 'A', 'C')";
 
-        internal static string BuscarPorAlunosHistorico = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
+        internal static string BuscarPorAlunosHistorico = @"
+                        
+                        IF OBJECT_ID('tempdb..#tmp_aluno_cotic') IS NOT NULL
+                        DROP TABLE #tmp_aluno_cotic
+
+                        select cd_aluno 
+                        into #tmp_aluno_cotic
+                        from v_aluno_cotic
+                        where cd_aluno in @alunosCodigos
+
+                        select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
                                         cc.cd_componente_curricular) as Codigo,
                                     iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
                                         cc.dc_componente_curricular) as Descricao,
@@ -53,7 +72,7 @@
                                         dtt.qt_hora_duracao              as TurnoTurma,
                                         te.cd_turma_escola               as CodigoTurma,
                                         aluno.cd_aluno                    as CodigoAluno
-                        FROM v_aluno_cotic aluno
+                        FROM #tmp_aluno_cotic aluno
 						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
                         INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola					
@@ -84,8 +103,7 @@
                         and pcc.dt_cancelamento is null
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
-                    where aluno.cd_aluno in @alunosCodigos
-                      and te.an_letivo = @anoLetivo
+                    where te.an_letivo = @anoLetivo
                       and te.st_turma_escola in ('O', 'A', 'C')";
 
         internal static string BuscarPorTurma = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,

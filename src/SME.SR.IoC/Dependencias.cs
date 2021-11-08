@@ -176,6 +176,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IFechamentoConsolidadoRepository), typeof(FechamentoConsolidadoRepository));
             services.TryAddScoped(typeof(IPendenciaFechamentoRepository), typeof(PendenciaFechamentoRepository));
             services.TryAddScoped(typeof(IRegistroFrequenciaAlunoRepository), typeof(RegistroFrequenciaAlunoRepository));
+
+            services.TryAddScoped(typeof(IRegistrosPedagogicosRepository), typeof(RegistrosPedagogicosRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -228,6 +230,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAcompanhamentoFechamentoUseCase, RelatorioAcompanhamentoFechamentoUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaBimestralUseCase, RelatorioConselhoClasseAtaBimestralUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoFrequenciaUseCase, RelatorioAcompanhamentoFrequenciaUseCase>();
+            services.TryAddScoped<IRelatorioAcompanhamentoRegistrosPedagogicosUseCase, RelatorioAcompanhamentoRegistrosPedagogicosUseCase>();
         }
     }
 }
