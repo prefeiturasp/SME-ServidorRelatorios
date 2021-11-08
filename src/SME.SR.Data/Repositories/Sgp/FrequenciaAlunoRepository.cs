@@ -479,5 +479,34 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<FrequenciaAlunoConsolidadoDto>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] codigosAlunos, string codigoTurma, string bimestre)
+        {
+            var query = @" select
+ 	                         afa.codigo_aluno as codigoAluno,
+                             a.data_aula dataAusencia,
+                             ma.descricao motivoAusencia,
+                             pe.bimestre
+                         from 
+                             anotacao_frequencia_aluno afa 
+                         inner join aula a on a.id = afa.aula_id 
+                         inner join tipo_calendario tc on tc.id = a.tipo_calendario_id 
+                         inner join periodo_escolar pe on pe.tipo_calendario_id = tc.id
+                          left join motivo_ausencia ma on afa.motivo_ausencia_id = ma.id 
+                         where 
+                             not afa.excluido and not a.excluido 
+                             and afa.codigo_aluno = any(@codigosAlunos)	 
+                             and a.turma_id = @codigoTurma
+                             and pe.bimestre = @bimestre
+                             and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
+                         order by pe.bimestre,a.data_aula  desc;";
+
+            var parametros = new { codigosAlunos, codigoTurma, bimestre };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<AusenciaBimestreDto>(query, parametros);
+            }
+        }
     }
 }
