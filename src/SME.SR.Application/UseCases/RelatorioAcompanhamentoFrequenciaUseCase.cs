@@ -32,6 +32,7 @@ namespace SME.SR.Application
                 codigoAlunosTodos = filtroRelatorio.AlunosCodigo;
 
             var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(filtroRelatorio.Bimestre, codigoAlunosTodos.ToArray()));
+            var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(codigoAlunosTodos.ToArray(), filtroRelatorio.TurmaCodigo, filtroRelatorio.Bimestre));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("AcompanhamentoFrequencia", relatorio, request.CodigoCorrelacao));
         }
