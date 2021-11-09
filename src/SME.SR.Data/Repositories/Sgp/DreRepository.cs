@@ -18,22 +18,15 @@ namespace SME.SR.Data
 
         public async Task<Dre> ObterPorCodigo(string dreCodigo)
         {
-            try
-            {
-                var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre where dre_id = @dreCodigo";
-                var parametros = new { dreCodigo };
+            var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre where dre_id = @dreCodigo";
+            var parametros = new { dreCodigo };
 
-                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-                {
-                    return await conexao.QueryFirstOrDefaultAsync<Dre>(query, parametros);
-                }
-            }
-            catch (Exception ex)
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-
-                throw;
+                return await conexao.QueryFirstOrDefaultAsync<Dre>(query, parametros);
             }
-        }  
+
+        }
 
         public async Task<Dre> ObterPorId(long dreId)
         {
