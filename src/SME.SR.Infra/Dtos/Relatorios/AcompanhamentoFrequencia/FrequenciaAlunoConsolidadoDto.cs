@@ -1,13 +1,29 @@
-﻿namespace SME.SR.Infra.Dtos
+﻿using System;
+
+namespace SME.SR.Infra.Dtos
 {
     public class FrequenciaAlunoConsolidadoDto
     {
-        public string Bimestre { get; set; }
-        public string TotalAula { get; set; }
-        public string TotalPresencas { get; set; }
-        public string TotalRemotos { get; set; }
-        public string TotalAusencias { get; set; }
-        public string TotalCompensacoes { get; set; }
+        public int CodigoFrequenciaAluno { get; set; }
+        public string NomeBimestre { get; set; }
+        public int Bimestre { get; set; }
+        public int TotalAula { get; set; }
+        public int TotalPresencas { get; set; }
+        public int TotalRemotos { get; set; }
+        public int TotalAusencias { get; set; }
+        public int TotalCompensacoes { get; set; }
         public string CodigoAluno { get; set; }
+        public int NumeroFaltasNaoCompensadas { get => TotalAusencias - TotalCompensacoes; }
+        public string PercentualFrequencia
+        {
+            get
+            {
+                if (TotalAula == 0)
+                    return "0";
+
+                var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAula) * 100;
+                return $"{Math.Round(porcentagem > 100 ? 100 : porcentagem, 2)}%";
+            }
+        }
     }
 }
