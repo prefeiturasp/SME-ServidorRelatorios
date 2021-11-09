@@ -2,10 +2,10 @@
 
 @{
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 37;
-    bool quebrou = false;
+    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoCaracteresPorLinha = 250;
 
-    void MontarCabecalho()
+    void MontarCabecalho(string criancaNome, string turma)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 8;
         <div>
@@ -32,39 +32,21 @@
             </table> <table>
                 <tbody>
                     <tr>
-                        <td width='20%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Turma</td>
-                        <td width='80%' class='sem-border-top espaco-esquerda-15'>CRIANÇA: @Model.CriancaNome</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>TURMA: @turma</td>
+                        <td width='80%' class='sem-border-top espaco-esquerda-15'>CRIANÇA: @criancaNome</td>
                     </tr>
                 </tbody>
             </table>
             <table>
                 <tbody>
                     <tr>
-                        <td width='53%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.UsuarioNome</td>
+                        <td width='67%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.UsuarioNome</td>
                         <td width='15%' class='sem-border-top espaco-esquerda-15'>RF: @Model.UsuarioRF</td>
-                        <td width='32%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.DataImpressao</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.DataImpressao</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    }
-
-    string InformacoesQuebra()
-    {
-        @Html.Raw("</tbody></table>");
-        @Html.Raw("<div style='page-break-before:always'></div>");
-
-        return "";
-    }
-
-    void ImprimirQuebra(bool quebra)
-    {
-        if (quebra)
-        {
-            InformacoesQuebra();
-            MontarCabecalho();
-            @Html.Raw("<table class='tabela-cabecalho'>");
-        }
     }
 
     bool VerificaQuebra(double numeroLinhasDescricao = 0)
@@ -73,44 +55,108 @@
         {
             contadorQuebrarPagina = 0;
             contadorQuebrarPagina = contadorQuebrarPagina + 1;
-            quebrou = true;
             return true;
         }
-        quebrou = false;
         return false;
-
     }
 
-    void MontarTitulo(string descricao, int numeroLinhas = 1)
+    void InformacoesQuebra()
     {
-        bool quebra = VerificaQuebra(numeroLinhas);
-        ImprimirQuebra(quebra);
+        contadorQuebrarPagina = 0;
+        <div style="page-break-before:always"></div>
+    }
 
+    void MontarTituloDescricao()
+    {
         <tr>
-            <td class="fundo-cinza" colspan="6">@descricao @contadorQuebrarPagina</td>
+            <td colspan="2" class="fundo-cinza">DESCRIÇÃO</td>
         </tr>
 
         contadorQuebrarPagina++;
     }
-   
 
-    void ContagemCaracteres(string nome)
+    void MontarDescricao(SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
     {
-        int maximoCaracteresComponentesCurriculares = 35;
-        double linhasComponentesCurriculares = nome.Length / maximoCaracteresComponentesCurriculares;
-        bool quebra = VerificaQuebra();
-        ImprimirQuebra(quebra);
 
-        if (linhasComponentesCurriculares > 1)
-        {
-            contadorQuebrarPagina = contadorQuebrarPagina + linhasComponentesCurriculares;
-        }
-        else
-        {
-            contadorQuebrarPagina++;
-        }
-    }    
+        int iContadorCaracteres = 0;
+        var descricao = ocorrencias.DescricaoOcorrencia;
+        int numeroCaracteresDescricao = descricao != null ? descricao.Length : 0;
 
+        @while (iContadorCaracteres != numeroCaracteresDescricao)
+        {
+            bool quebrarPagina = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
+            if (quebrarPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw("</td></tr></tbody></table>")
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
+                @Html.Raw("<table class='tabela-cabecalho'><tbody>")
+                MontarTituloDescricao();
+                @Html.Raw("<tr><td colspan='2' class='alinhar-esquerda espaco-esquerda-15'>")
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = numeroCaracteresDescricao - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDescricao - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina++;
+            }
+        }
+    }
+
+    void MontarTabela(SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
+    {
+        <tr>
+            <td class="espaco-esquerda-15 alinhar-esquerda fundo-cinza" width="30%">DATA DA OCORRÊNCIA</td>
+            <td class="alinhar-esquerda espaco-esquerda-15 ">@ocorrencias.DataOcorrencia</td>
+        </tr>
+        <tr>
+            <td class="espaco-esquerda-15 alinhar-esquerda fundo-cinza" width="30%">TIPO DA OCORRÊNCIA</td>
+            <td class="alinhar-esquerda espaco-esquerda-15 ">@ocorrencias.TipoOcorrencia</td>
+        </tr>
+        <tr>
+            <td class="espaco-esquerda-15 alinhar-esquerda fundo-cinza" width="30%">TÍTULO DA OCORRÊNCIA</td>
+            <td class="alinhar-esquerda espaco-esquerda-15 ">@ocorrencias.TituloOcorrencia</td>
+        </tr>
+
+        contadorQuebrarPagina += 3;
+
+        MontarTituloDescricao();
+
+        <tr>
+            <td colspan="2" class="alinhar-esquerda espaco-esquerda-15">
+                @{MontarDescricao(ocorrencias);}
+            </td>
+        </tr>
+
+    }
+
+    void MontarAssinatura()
+    {
+        <div class="d-flex mt-40 fonte-14">Estou ciente da ocorrência</div>
+        <div class="d-flex mt-40 justify-content-between">
+            <div>
+                <div>
+                    <div class="linha-assinatura"></div>
+                </div>
+                <div class="texto-assinatura" style="margin-left: 202px;">Assinatura do responsável</div>
+            </div>
+            <div>
+                <div class="d-flex">
+                    <div>____</div>
+                    <div class="contra-barra">___</div>
+                    <div>____</div>
+                    <div class="contra-barra">___</div>
+                    <div>______</div>
+                </div>
+                <div class="texto-assinatura" style="margin-left: 44px;">Data da assinatura</div>
+            </div>
+        </div>
+    }
 }
 
 <!DOCTYPE html>
@@ -123,7 +169,7 @@
 <body class="body-relatorio">
     <style>
         .tblTopo th, td {
-            padding: 3px 0;
+            padding: 3px;
             text-align: left;
         }
 
@@ -195,6 +241,10 @@
             margin-top: 25px;
         }
 
+        .mt-40 {
+            margin-top: 40px;
+        }
+
         .fonte-14 {
             font-size: 14px !important;
         }
@@ -242,14 +292,60 @@
             text-align: center;
         }
 
-        .linha-pendencias {
-            height: 17px !important;
-            font-size: 12px !important;
+        .linha-assinatura {
+            width: 545px;
+            border-bottom: 1px solid #42474a;
+            margin-top: 16px;
+        }
+
+        .contra-barra {
+            transform: rotate(-65deg);
+            margin-top: -10px;
+        }
+
+        .texto-assinatura {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between
         }
     </style>
     <div>
         @{
-            MontarCabecalho();            
+
+            int contadorOcorrencias = 0;
+            foreach (var ocorrencias in Model.Ocorrencias)
+            {
+                MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
+
+                <table class="tabela-cabecalho">
+                    <tbody>
+                        @{ MontarTabela(ocorrencias); }
+                    </tbody>
+                </table>
+
+                bool quebra = VerificaQuebra(5);
+                if (quebra)
+                {
+                    InformacoesQuebra();
+                    MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
+                }
+
+                MontarAssinatura();
+
+                if (contadorOcorrencias < Model.Ocorrencias.Count - 1)
+                {
+                    InformacoesQuebra();
+                }
+
+                contadorOcorrencias++;
+            }
         }
     </div>
 </body>
