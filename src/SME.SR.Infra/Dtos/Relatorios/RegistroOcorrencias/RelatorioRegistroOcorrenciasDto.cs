@@ -10,8 +10,6 @@ namespace SME.SR.Infra
         public string UeNome { get; set; }
         public string Endereco { get; set; }
         public string Contato { get; set; }
-        public string Turma { get; set; }
-        public string CriancaNome { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
         public string DataImpressao => DateTime.Now.ToString("dd/MM/yyyy");
