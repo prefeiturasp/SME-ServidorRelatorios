@@ -1,12 +1,8 @@
 ﻿using MediatR;
-using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,12 +19,13 @@ namespace SME.SR.Application
 
         public async Task<bool> Handle(GerarRelatorioNotificacaoCommand request, CancellationToken cancellationToken)
         {
-            var dto = new RelatorioNotificacaoDto();
             var filtro = request.Filtros;
 
-            var situacoes = new long[] { };
-            var categorias = new long[] { };
-            var tipos = new long[] { };
+            var relatorioNotificacoes = new RelatorioNotificacoesDto();
+
+            var situacoes = filtro.Situacoes.ToArray();
+            var categorias = filtro.Categorias.ToArray();
+            var tipos = filtro.Tipos.ToArray();
 
             if (filtro.Situacoes.Contains(-99))
             {
@@ -38,10 +35,8 @@ namespace SME.SR.Application
                         (long)NotificacaoStatus.Pendente,
                         (long)NotificacaoStatus.Reprovada
                     };
-            } else
-            {
-                situacoes = filtro.Situacoes.ToArray();
             }
+           
 
             if (filtro.Categorias.Contains(-99))
             {
@@ -51,10 +46,7 @@ namespace SME.SR.Application
                         (long)NotificacaoCategoria.Workflow_Aprovacao
                     };
             }
-            else
-            {
-                categorias = filtro.Categorias.ToArray();
-            }
+            
 
             if (filtro.Tipos.Contains(-99))
             {
@@ -70,88 +62,80 @@ namespace SME.SR.Application
                         (long)NotificacaoTipo.Planejamento
                     };
             }
-            else
-            {
-                tipos = filtro.Tipos.ToArray();
-            }
+            
 
             var notificacoes = await mediator.Send(new ObterNotificacoesFiltrosQuery(filtro.AnoLetivo, filtro.UsuarioBuscaRf,
                 categorias, tipos, situacoes, filtro.ExibirDescricao, filtro.ExibirNotificacoesExcluidas, filtro.DRE, filtro.UE, filtro.Turma));
 
-            if (!notificacoes.Any())
+            if (notificacoes == null || !notificacoes.Any())
                 throw new NegocioException("<b>O relatório com o filtro solicitado não possui informações.</b>");
 
-            dto = await MapearNotificacoesDto(notificacoes);
+            relatorioNotificacoes.Cabecalho = await MontarCabecalhoRelatorio(filtro);
 
-            await MontarCabecalhoRelatorioDto(dto, request.Filtros);
+            var relatorioNotificacao = await MapearNotificacoesDto(notificacoes);
 
-            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotificacoes", dto, request.CodigoCorrelacao, "", "Relatório de Notificações", true)));
+            
+
+            return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotificacoes", relatorioNotificacao, request.CodigoCorrelacao, "", "Relatório de Notificações", true)));
         }
 
-        private async Task<RelatorioNotificacaoDto> MapearNotificacoesDto(IEnumerable<NotificacaoDto> notificacoes)
+        private async Task<RelatorioNotificacoesDto> MapearNotificacoesDto(IEnumerable<NotificacaoRetornoDto> notificacoes)
         {
-            RelatorioNotificacaoDto relatorioNotificacaoDto = new RelatorioNotificacaoDto();
-            var dres = notificacoes.Select(n => n.DreId).Distinct();
+            var relatorioNotificacaoDto = new RelatorioNotificacaoDto();
+            var dresId = notificacoes.Select(n => n.DreId).Distinct();
 
-            foreach(var dre in dres)
+            foreach (var dreId in dresId)
             {
-                DreNotificacaoDto dreNotificacaoDto = new DreNotificacaoDto();
-                dreNotificacaoDto.Nome = notificacoes.FirstOrDefault(c => c.DreId == dre).DreNome;
+                var dreNotificacaoDto = new DreNotificacaoDto();
+                dreNotificacaoDto.Nome = notificacoes.FirstOrDefault(c => c.DreId == dreId).DreNome;
 
-                var ues = notificacoes.Where(c => c.DreId == dre).Select(c => c.UeId).Distinct();
+                var uesId = notificacoes.Where(c => c.DreId == dreId).Select(c => c.UeId).Distinct();
 
-                foreach(var ue in ues)
+                foreach (var ueId in uesId)
                 {
-                    UeNotificacaoDto ueNotificacaoDto = new UeNotificacaoDto();
-
-                    ueNotificacaoDto.Nome = notificacoes.FirstOrDefault(c => c.UeId == ue).UeNome;
-
-                    var usuarios = notificacoes.Where(c => c.UeId == ue && c.DreId == dre).Select(c => c.UsuarioRf).Distinct();
-
-                    foreach(var usuario in usuarios)
+                    var ueNotificacaoDto = new UeNotificacaoDto()
                     {
-                        UsuarioNotificacaoDto usuarioNotificacaoDto = new UsuarioNotificacaoDto();
+                        Nome = notificacoes.FirstOrDefault(c => c.UeId == ueId).UeNome,
+                    };
+
+                    var usuarios = notificacoes.Where(c => c.UeId == ueId && c.DreId == dreId).Select(c => c.UsuarioRf).Distinct();
+
+                    foreach (var usuario in usuarios)
+                    {
+                        var usuarioNotificacaoDto = new UsuarioNotificacaoDto();
                         var nome = notificacoes.FirstOrDefault(c => c.UsuarioRf == usuario).UsuarioNome;
-                        if(String.IsNullOrEmpty(nome))
+                        if (string.IsNullOrEmpty(nome))
                         {
                             var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(usuario));
-                            if(usuarioCoreSSO != null)
+                            if (usuarioCoreSSO != null)
                                 nome = usuarioCoreSSO.Nome;
                         }
-                        usuarioNotificacaoDto.Nome = nome != null ? $"{nome} ({usuario})"  : usuario;
-                        usuarioNotificacaoDto.Notificacoes.AddRange(notificacoes.Where(c => c.UeId == ue && c.DreId == dre && c.UsuarioRf == usuario).OrderBy(n => n.Codigo));
+                        usuarioNotificacaoDto.Nome = nome != null ? $"{nome} ({usuario})" : usuario;
+                        usuarioNotificacaoDto.Notificacoes.AddRange(notificacoes.Where(c => c.UeId == ueId && c.DreId == dreId && c.UsuarioRf == usuario).OrderBy(n => n.Codigo));
                         ueNotificacaoDto.Usuarios.Add(usuarioNotificacaoDto);
                     }
-                    
+
                     dreNotificacaoDto.UEs.Add(ueNotificacaoDto);
                 }
-                
+
                 relatorioNotificacaoDto.DREs.Add(dreNotificacaoDto);
             }
-            
+
             return relatorioNotificacaoDto;
         }
 
-        private async Task MontarCabecalhoRelatorioDto(RelatorioNotificacaoDto dto, FiltroNotificacaoDto filtros)
+        private async Task<RelatorioNotificacoesCabecalhoDto> MontarCabecalhoRelatorio(FiltroNotificacaoDto filtros)
         {
-            var nomeDre = "TODAS";
-            var nomeUe = "TODAS";
-            if (filtros.DRE != "-99")
+            var dre = await mediator.Send(new ObterDrePorCodigoQuery(filtros.DRE));
+            var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UE));
+                      
+            return new RelatorioNotificacoesCabecalhoDto
             {
-                var dre = await mediator.Send(new ObterDrePorCodigoQuery(filtros.DRE));
-                nomeDre = dre.Abreviacao;
-            }
-
-            if (filtros.UE != "-99")
-            {
-                var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UE));
-                nomeUe = $"{ue.Codigo} - {ue.TipoEscola.ShortName()} {ue.Nome}";
-            }
-
-            dto.CabecalhoDRE = nomeDre;
-            dto.CabecalhoUE = nomeUe;
-            dto.CabecalhoUsuario = filtros.UsuarioNome;
-            dto.CabecalhoUsuarioRF = filtros.UsuarioRf;
+                Dre = dre == null ? "" : dre.Abreviacao,
+                Ue = ue == null ? "" : ue.NomeRelatorio,
+                Usuario = filtros.UsuarioNome,
+                RF = filtros.UsuarioRf
+            };
         }
     }
 }
