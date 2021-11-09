@@ -110,7 +110,7 @@ namespace SME.SR.Application
                     NomeAluno = aluno.Nome + $"({aluno.Codigo})",
                     CodigoAluno = aluno.Codigo
                 };
-                
+
                 if (relatorio != null)
                 {
                     MapearBimestre(dadosFrequenciaDto, ausenciaBimestreDto, relatorioFrequenciaIndividualAlunosDto);

@@ -500,10 +500,10 @@ namespace SME.SR.Data
                              and a.turma_id = @turmaCodigo";
             
             if (bimestre != "-99")
-                query += "and pe.bimestre = @numeroBimestre";
+                query += " and pe.bimestre = @numeroBimestre ";
 
-                        query +=    @"and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
-                         order by pe.bimestre,a.data_aula  desc;";
+                        query +=    @" and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
+                         order by pe.bimestre,a.data_aula  desc; ";
 
             var parametros = new 
             { 
