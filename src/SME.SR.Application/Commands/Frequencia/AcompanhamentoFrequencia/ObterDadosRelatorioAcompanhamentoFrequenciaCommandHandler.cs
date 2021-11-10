@@ -40,9 +40,8 @@ namespace SME.SR.Application
             {
                 var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigoAlunosTodos.ToArray()));
                 if (dadosFrequencia == null || !dadosFrequencia.Any())
-                {
                     throw new NegocioException("Nenhuma informação para os filtros informados.");
-                }
+
                 var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(codigoAlunosTodos.ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
                 MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
             }
