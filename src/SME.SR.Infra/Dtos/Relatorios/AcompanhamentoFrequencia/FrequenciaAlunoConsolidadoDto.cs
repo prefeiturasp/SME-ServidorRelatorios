@@ -4,7 +4,6 @@ namespace SME.SR.Infra.Dtos
 {
     public class FrequenciaAlunoConsolidadoDto
     {
-        public int CodigoFrequenciaAluno { get; set; }
         public string NomeBimestre { get; set; }
         public int Bimestre { get; set; }
         public int TotalAula { get; set; }
