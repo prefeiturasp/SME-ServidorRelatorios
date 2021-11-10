@@ -451,8 +451,9 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre)
         {
-            var query = @"select
-	                        fa.bimestre,
+            var query = @"select fa.id as CodigoFrequenciaAluno,
+	                        fa.bimestre || '° Bimestre ' || ' - ' || extract(year from periodo_inicio) as NomeBimestre,
+                            fa.bimestre,
 	                        fa.total_aulas as TotalAula,
 	                        fa.total_presencas as TotalPresencas,
 	                        fa.total_remotos as TotalRemotos,
@@ -461,18 +462,18 @@ namespace SME.SR.Data
 	                        fa.codigo_aluno as CodigoAluno
                         from frequencia_aluno fa
                         where not fa.excluido  
-                        and fa.codigo_aluno = any(@codigosAlunos)";
+                        and fa.codigo_aluno = any(@codigosAlunos) ";
             if (bimestre != "-99")
-                query += "and fa.bimestre =@bimestre";
-            query += @"group by
+                query += "and fa.bimestre = @numeroBimestre ";
+            query += @"     group by fa.id,
 	                        fa.bimestre,
 	                        fa.total_aulas,
 	                        fa.total_presencas,
 	                        fa.total_remotos,
 	                        fa.total_ausencias,
 	                        fa.total_compensacoes,
-	                        fa.codigo_aluno;";
-            var parametros = new { codigosAlunos, bimestre };
+	                        fa.codigo_aluno,fa.periodo_inicio;";
+            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre) };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -496,12 +497,20 @@ namespace SME.SR.Data
                          where 
                              not afa.excluido and not a.excluido 
                              and afa.codigo_aluno = any(@alunosCodigo)	 
-                             and a.turma_id = @turmaCodigo
-                             and pe.bimestre = @bimestre
-                             and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
-                         order by pe.bimestre,a.data_aula  desc;";
+                             and a.turma_id = @turmaCodigo";
+            
+            if (bimestre != "-99")
+                query += " and pe.bimestre = @numeroBimestre ";
 
-            var parametros = new { alunosCodigo, turmaCodigo, bimestre };
+                        query +=    @" and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
+                         order by pe.bimestre,a.data_aula  desc; ";
+
+            var parametros = new 
+            { 
+                alunosCodigo, 
+                turmaCodigo, 
+                numeroBimestre = Convert.ToInt32(bimestre) 
+            };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {

@@ -5,6 +5,10 @@ namespace SME.SR.Infra
 {
     public class RelatorioFrequenciaIndividualDto
     {
+        public RelatorioFrequenciaIndividualDto()
+        {
+            Alunos = new List<RelatorioFrequenciaIndividualAlunosDto>();
+        }
         public string DreNome { get; set; }
         public string UeNome { get; set; }
         public string Usuario { get; set; }
