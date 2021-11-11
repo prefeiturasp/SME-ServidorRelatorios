@@ -48,7 +48,6 @@ namespace SME.SR.Application
                 MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
             }
             return relatorio;
-
         }
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, RelatorioFrequenciaIndividualAlunosDto aluno)
         {
@@ -129,7 +128,6 @@ namespace SME.SR.Application
             var dre = await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
             return dre.Abreviacao;
         }
-
         private async Task<string> ObterNomeUe(string ueCodigo)
         {
             var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
