@@ -87,6 +87,7 @@ namespace SME.SR.Application
                     Categoria = notificacao.Categoria.Name(),
                     Tipo = notificacao.Tipo.Name(),
                     Situacao = notificacao.Situacao.Name(),
+                    Descricao = notificacao.Mensagem,
                     DataRecebimento = notificacao.DataRecebimento.ToString("dd/MM/yyyy HH:mm:ss"),
                     DataLeitura = notificacao.DataLeitura == null ? "" : notificacao.DataLeitura?.ToString("dd/MM/yyyy HH:mm:ss"),
                 };
