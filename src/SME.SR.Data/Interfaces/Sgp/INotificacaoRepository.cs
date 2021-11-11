@@ -8,6 +8,6 @@ namespace SME.SR.Data
     {
         Task<IEnumerable<NotificacaoDto>> ObterPorAnoEUsuarioRf(long ano, string usuarioRf);
         Task<IEnumerable<NotificacaoRetornoDto>> ObterComFiltros(long ano, string usuarioRf, long[] categorias, long[] tipos, long[] situacoes,
-            string turmaCodigo, string dreCodigo, string ueCodigo, bool exibirDescricao = false, bool exibirExcluidas = false)
+            string turmaCodigo, string dreCodigo, string ueCodigo, bool exibirDescricao = false, bool exibirExcluidas = false);
     }
 }

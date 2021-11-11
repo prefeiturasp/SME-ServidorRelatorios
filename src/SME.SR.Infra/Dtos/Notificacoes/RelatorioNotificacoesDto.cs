@@ -6,10 +6,10 @@ namespace SME.SR.Infra
     {
         public RelatorioNotificacoesDto()
         {
-            Usuarios = new List<RelatorioNotificacoesUsuario>();
+            Usuarios = new List<RelatorioNotificacoesUsuarioDto>();
         }
 
         public RelatorioNotificacoesCabecalhoDto Cabecalho { get; set; }
-        public IEnumerable<RelatorioNotificacoesUsuario> Usuarios { get; set; }
+        public IEnumerable<RelatorioNotificacoesUsuarioDto> Usuarios { get; set; }
     }
 }
