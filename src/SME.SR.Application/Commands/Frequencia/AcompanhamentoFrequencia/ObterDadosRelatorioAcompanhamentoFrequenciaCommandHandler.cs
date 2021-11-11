@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
@@ -26,6 +27,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioFrequenciaIndividualDto();
             var codigoAlunosTodos = new List<string>();
             await MapearCabecalho(relatorio, request.FiltroRelatorio);
+            relatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
             if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
             {
                 var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = request.FiltroRelatorio.TurmaCodigo });
@@ -49,6 +51,7 @@ namespace SME.SR.Application
             }
             return relatorio;
         }
+
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, RelatorioFrequenciaIndividualAlunosDto aluno)
         {
             if (dadosFrequenciaDto != null && dadosFrequenciaDto.Any())
@@ -60,7 +63,7 @@ namespace SME.SR.Application
                     {
                         var bimestre = new RelatorioFrequenciaIndividualBimestresDto
                         {
-                            NomeBimestre = item.NomeBimestre,
+                            NomeBimestre = item.BimestreFormatado,
                         };
 
                         bimestre.DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto
@@ -70,7 +73,8 @@ namespace SME.SR.Application
                             TotalRemoto = item.TotalRemotos,
                             TotalAusencias = item.TotalAusencias,
                             TotalCompensacoes = item.TotalCompensacoes,
-                            PercentualFrequencia = item.PercentualFrequencia,
+                            TotalPercentualFrequencia = Math.Round(item.TotalPercentualFrequencia, 0),
+                            TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
                         };
 
                         if (ausenciaBimestreDto != null && ausenciaBimestreDto.Any())
@@ -91,7 +95,15 @@ namespace SME.SR.Application
                         }
                         aluno.Bimestres.Add(bimestre);
                     }
+
                 }
+                aluno.TotalAulasDadasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAulasDadas);
+                aluno.TotalAusenciasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAusencias);
+                aluno.TotalCompensacoesFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalCompensacoes);
+                aluno.TotalPresencasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalPresencas);
+                aluno.TotalRemotoFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalRemoto);
+                aluno.TituloFinal = $"FINAL - {dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.CodigoAluno).FirstOrDefault().AnoBimestre}";
+                aluno.PercentualFrequenciaFinal = aluno.Bimestres.Average(x => x.DadosFrequencia.TotalPercentualFrequencia);
             }
         }
         private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio)
