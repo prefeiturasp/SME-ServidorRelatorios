@@ -50,7 +50,6 @@ namespace SME.SR.Application
                 MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
             }
             return relatorio;
-
         }
 
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, RelatorioFrequenciaIndividualAlunosDto aluno)
@@ -98,7 +97,6 @@ namespace SME.SR.Application
                     }
 
                 }
-
                 aluno.TotalAulasDadasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAulasDadas);
                 aluno.TotalAusenciasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAusencias);
                 aluno.TotalCompensacoesFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalCompensacoes);
@@ -142,7 +140,6 @@ namespace SME.SR.Application
             var dre = await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
             return dre.Abreviacao;
         }
-
         private async Task<string> ObterNomeUe(string ueCodigo)
         {
             var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
