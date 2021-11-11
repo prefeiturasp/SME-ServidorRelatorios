@@ -24,10 +24,10 @@ namespace SME.SR.Application
         public async Task<RelatorioFrequenciaIndividualDto> Handle(ObterDadosRelatorioAcompanhamentoFrequenciaCommand request, CancellationToken cancellationToken)
         {
 
-            var resultadoRelatorio = new RelatorioFrequenciaIndividualDto();
+            var relatorio = new RelatorioFrequenciaIndividualDto();
             var codigoAlunosTodos = new List<string>();
-            await MapearCabecalho(resultadoRelatorio, request.FiltroRelatorio);
-            resultadoRelatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
+            await MapearCabecalho(relatorio, request.FiltroRelatorio);
+            relatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
             if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
             {
                 var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = request.FiltroRelatorio.TurmaCodigo });
@@ -47,9 +47,9 @@ namespace SME.SR.Application
                     throw new NegocioException("Nenhuma informação para os filtros informados.");
 
                 var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(codigoAlunosTodos.ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
-                MapearAlunos(alunosSelecionados, resultadoRelatorio, dadosFrequencia, dadosAusencia);
+                MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
             }
-            return resultadoRelatorio;
+            return relatorio;
 
         }
 
