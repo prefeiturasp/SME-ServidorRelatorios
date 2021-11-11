@@ -7907,7 +7907,7 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
                 TotalRemoto = 5,
                 TotalAusencias = 3,
                 TotalCompensacoes = 2,
-                PercentualFrequencia = "96,67%",
+                TotalPercentualFrequenciaFormatado = "96,67%",
             };
 
 

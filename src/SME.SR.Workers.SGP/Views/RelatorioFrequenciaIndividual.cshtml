@@ -106,10 +106,25 @@
                 <td>@dadosFrequencia.TotalCompensacoes</td>
             }
 
-            <td>@dadosFrequencia.PercentualFrequencia</td>
+            <td>@dadosFrequencia.TotalPercentualFrequenciaFormatado</td>
         </tr>
     }
+    void MontarLinhaBimestreFinal(SME.SR.Infra.RelatorioFrequenciaIndividualAlunosDto dadosBimestreFinal)
+    {
+        <tr>
+            <td>@dadosBimestreFinal.TotalAulasDadasFinal</td>
+            <td colspan="2">@dadosBimestreFinal.TotalPresencasFinal</td>
+            <td>@dadosBimestreFinal.TotalRemotoFinal</td>
+            <td>@dadosBimestreFinal.TotalAusenciasFinal</td>
 
+            @if (!Model.ehInfantil)
+            {
+                <td>@dadosBimestreFinal.TotalCompensacoesFinal</td>
+            }
+
+            <td>@dadosBimestreFinal.PercentualFrequenciaFinal %</td>
+        </tr>
+    }
     void MontarTituloJustificativas()
     {
         int numeroColSpan = Model.ehInfantil ? 4 : 5;
@@ -380,10 +395,20 @@
 
                             contadorBimestres++;
                         }
+                            @{
+                                if (Model.ehTodosBimestre)
+                                {
+                                    MontarTituloPrincipal(alunos.TituloFinal, numeroColSpan);
+                                    contadorQuebrarPagina++;
+                                    MontarTituloTabela();
+                                    contadorQuebrarPagina++;
+                                    MontarLinhaBimestreFinal(alunos);
+                                }
+                            }
                     </tbody>
                 </table>
                 <div style="page-break-before:always"></div>
-            }
+                            }
         }
     </div>
 </body>
