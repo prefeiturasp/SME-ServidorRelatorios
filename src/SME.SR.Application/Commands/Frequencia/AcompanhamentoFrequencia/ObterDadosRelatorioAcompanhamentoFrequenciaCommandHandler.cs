@@ -129,7 +129,6 @@ namespace SME.SR.Application
             var dre = await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
             return dre.Abreviacao;
         }
-
         private async Task<string> ObterNomeUe(string ueCodigo)
         {
             var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
