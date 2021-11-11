@@ -452,7 +452,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia)
         {
             var query = @"select 
-	                        fa.bimestre || '° Bimestre ' || ' - ' || extract(year from periodo_inicio) as NomeBimestre,
+	                        extract(year from periodo_inicio) as AnoBimestre,
                             fa.bimestre,
 	                        sum(fa.total_aulas) as TotalAula,
 	                        sum(fa.total_presencas) as TotalPresencas,

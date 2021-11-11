@@ -15,6 +15,7 @@ namespace SME.SR.Infra
         public string RF { get; set; }
         public string Data => DateTime.Now.ToString("dd/MM/yyyy");
         public bool ehInfantil{ get; set; }
+        public bool ehTodosBimestre{ get; set; }
 
         public List<RelatorioFrequenciaIndividualAlunosDto> Alunos { get; set; }
     }

@@ -9,6 +9,7 @@ namespace SME.SR.Infra
         public int TotalRemoto { get; set; }
         public int TotalAusencias { get; set; }
         public int TotalCompensacoes { get; set; }
-        public string PercentualFrequencia { get; set; }
+        public double TotalPercentualFrequencia { get; set; }
+        public string TotalPercentualFrequenciaFormatado { get; set; }
     }
 }
