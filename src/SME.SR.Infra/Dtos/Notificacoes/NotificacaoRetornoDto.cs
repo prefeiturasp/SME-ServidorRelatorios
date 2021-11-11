@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SME.SR.Infra.Utilitarios;
+using System;
 
 namespace SME.SR.Infra
 {
@@ -14,5 +15,11 @@ namespace SME.SR.Infra
         public string Mensagem { get; set; }
         public DateTime DataRecebimento { get; set; }
         public DateTime? DataLeitura { get; set; }
+
+        public string DescricaoFormatada()
+        {
+            var descricao = UtilRegex.RemoverTagsHtmlMultiMidia(Mensagem);
+            return UtilRegex.RemoverTagsHtml(descricao);
+        }
     }
 }
