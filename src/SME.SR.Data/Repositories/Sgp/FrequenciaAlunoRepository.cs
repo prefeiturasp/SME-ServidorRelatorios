@@ -449,31 +449,27 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre)
+        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia)
         {
-            var query = @"select fa.id as CodigoFrequenciaAluno,
+            var query = @"select 
 	                        fa.bimestre || '° Bimestre ' || ' - ' || extract(year from periodo_inicio) as NomeBimestre,
                             fa.bimestre,
-	                        fa.total_aulas as TotalAula,
-	                        fa.total_presencas as TotalPresencas,
-	                        fa.total_remotos as TotalRemotos,
-	                        fa.total_ausencias as TotalAusencias,
-	                        fa.total_compensacoes as TotalCompensacoes,
+	                        sum(fa.total_aulas) as TotalAula,
+	                        sum(fa.total_presencas) as TotalPresencas,
+	                        sum(fa.total_remotos) as TotalRemotos,
+	                        sum(fa.total_ausencias) as TotalAusencias,
+	                        sum(fa.total_compensacoes) as TotalCompensacoes,
 	                        fa.codigo_aluno as CodigoAluno
                         from frequencia_aluno fa
-                        where not fa.excluido  
-                        and fa.codigo_aluno = any(@codigosAlunos) ";
+                        where not fa.excluido 
+                        and fa.tipo = @tipoFrequencia
+                        and fa.codigo_aluno = any(@codigosAlunos)  and fa.turma_id = @turmaCodigo ";
             if (bimestre != "-99")
                 query += "and fa.bimestre = @numeroBimestre ";
-            query += @"     group by fa.id,
-	                        fa.bimestre,
-	                        fa.total_aulas,
-	                        fa.total_presencas,
-	                        fa.total_remotos,
-	                        fa.total_ausencias,
-	                        fa.total_compensacoes,
-	                        fa.codigo_aluno,fa.periodo_inicio;";
-            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre) };
+            query += @"    group by 
+                            fa.bimestre,
+                            fa.codigo_aluno,fa.periodo_inicio;";
+            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -486,7 +482,7 @@ namespace SME.SR.Data
             var query = @" select
  	                         afa.codigo_aluno as codigoAluno,
                              a.data_aula dataAusencia,
-                             ma.descricao motivoAusencia,
+                             coalesce(ma.descricao,afa.anotacao) motivoAusencia,
                              pe.bimestre
                          from 
                              anotacao_frequencia_aluno afa 

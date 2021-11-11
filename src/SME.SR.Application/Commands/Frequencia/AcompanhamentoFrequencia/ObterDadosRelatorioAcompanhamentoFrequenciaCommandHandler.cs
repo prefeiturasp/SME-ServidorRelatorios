@@ -2,6 +2,7 @@
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace SME.SR.Application
         }
         public async Task<RelatorioFrequenciaIndividualDto> Handle(ObterDadosRelatorioAcompanhamentoFrequenciaCommand request, CancellationToken cancellationToken)
         {
+
             var relatorio = new RelatorioFrequenciaIndividualDto();
             var codigoAlunosTodos = new List<string>();
             await MapearCabecalho(relatorio, request.FiltroRelatorio);
@@ -38,7 +40,7 @@ namespace SME.SR.Application
             var alunosSelecionados = await alunoRepository.ObterNomesAlunosPorCodigos(codigoAlunosTodos.ToArray());
             if (alunosSelecionados != null && alunosSelecionados.Any())
             {
-                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigoAlunosTodos.ToArray()));
+                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigoAlunosTodos.ToArray(), request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.Geral));
                 if (dadosFrequencia == null || !dadosFrequencia.Any())
                     throw new NegocioException("Nenhuma informação para os filtros informados.");
 
@@ -46,6 +48,7 @@ namespace SME.SR.Application
                 MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
             }
             return relatorio;
+
         }
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, RelatorioFrequenciaIndividualAlunosDto aluno)
         {
@@ -80,7 +83,7 @@ namespace SME.SR.Application
                                     var justificativa = new RelatorioFrequenciaIndividualJustificativasDto
                                     {
                                         DataAusencia = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
-                                        MotivoAusencia = ausencia.MotivoAusencia,
+                                        MotivoAusencia = UtilRegex.RemoverTagsHtml(ausencia.MotivoAusencia),
                                     };
 
                                     bimestre.Justificativas.Add(justificativa);
@@ -105,17 +108,20 @@ namespace SME.SR.Application
         {
             foreach (var aluno in alunos)
             {
-                var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
+                if (dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
                 {
-                    NomeAluno = aluno.Nome + $"({aluno.Codigo})",
-                    CodigoAluno = aluno.Codigo
-                };
+                    var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
+                    {
+                        NomeAluno = aluno.Nome + $"({aluno.Codigo})",
+                        CodigoAluno = aluno.Codigo
+                    };
 
-                if (relatorio != null)
-                {
-                    MapearBimestre(dadosFrequenciaDto, ausenciaBimestreDto, relatorioFrequenciaIndividualAlunosDto);
+                    if (relatorio != null)
+                    {
+                        MapearBimestre(dadosFrequenciaDto, ausenciaBimestreDto, relatorioFrequenciaIndividualAlunosDto);
+                    }
+                    relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
                 }
-                relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
             }
         }
         private async Task<string> ObterNomeDre(string dreCodigo)

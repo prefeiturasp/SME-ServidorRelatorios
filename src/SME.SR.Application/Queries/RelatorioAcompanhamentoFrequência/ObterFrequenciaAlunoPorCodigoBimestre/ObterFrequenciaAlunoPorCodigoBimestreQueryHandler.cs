@@ -17,7 +17,7 @@ namespace SME.SR.Application
         }
         public Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> Handle(ObterFrequenciaAlunoPorCodigoBimestreQuery request, CancellationToken cancellationToken)
         {
-            return frequenciaAlunoRepository.ObterFrequenciaAlunosPorCodigoBimestre(request.CodigosAlunos, request.Bimestre);
+            return frequenciaAlunoRepository.ObterFrequenciaAlunosPorCodigoBimestre(request.CodigosAlunos, request.Bimestre,request.TurmaCodigo,request.TipoFrequencia);
         }
     }
 }
