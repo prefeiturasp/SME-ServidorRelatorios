@@ -108,13 +108,13 @@ namespace SME.SR.Application
         }
         private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio)
         {
-            var dadoDreUe = await ObterNomeDreUe(filtroRelatorio.TurmaCodigo);
+            var dadosDreUe = await ObterNomeDreUe(filtroRelatorio.TurmaCodigo);
             var turma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtroRelatorio.TurmaCodigo));
 
             relatorio.RF = filtroRelatorio.UsuarioRF;
             relatorio.Usuario = filtroRelatorio.UsuarioNome;
-            relatorio.DreNome = dadoDreUe.DreNome;
-            relatorio.UeNome = dadoDreUe.UeNome;
+            relatorio.DreNome = dadosDreUe.DreNome;
+            relatorio.UeNome = dadosDreUe.UeNome;
             relatorio.ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
         }
         private void MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto)
