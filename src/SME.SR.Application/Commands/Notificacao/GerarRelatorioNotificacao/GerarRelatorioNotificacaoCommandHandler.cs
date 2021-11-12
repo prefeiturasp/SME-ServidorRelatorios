@@ -32,31 +32,34 @@ namespace SME.SR.Application
             {
                 Cabecalho = await MontarCabecalhoRelatorio(filtro),
                 Usuarios = await MapearParaUsuarios(notificacoes),
-            };
+            };           
 
             return !string.IsNullOrEmpty(await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotificacoes", relatorioNotificacoes, request.CodigoCorrelacao, "", "Relatório de Notificações", true)));
         }
 
         private async Task<IEnumerable<RelatorioNotificacoesUsuarioDto>> MapearParaUsuarios(IEnumerable<NotificacaoRetornoDto> notificacoes)
         {
-            var usuarios = new List<RelatorioNotificacoesUsuarioDto>();
+            var usuarios = new List<RelatorioNotificacoesUsuarioDto>();            
 
-            foreach (var usuarioNotificacao in notificacoes.GroupBy(c => c.UsuarioRf).Distinct())
+            foreach(var usuarioNotificacao in notificacoes.GroupBy(c => c.UsuarioRf).Distinct())
             {
                 var usuario = new RelatorioNotificacoesUsuarioDto();
                 var nome = usuarioNotificacao.FirstOrDefault(c => c.UsuarioRf == usuarioNotificacao.Key).UsuarioNome;
 
                 if (string.IsNullOrEmpty(nome))
-                {
+                {                    
                     var usuarioCoreSSO = await mediator.Send(new ObterDadosUsuarioCoreSSOPorRfQuery(usuarioNotificacao.Key));
-                    nome = usuarioCoreSSO != null ? usuarioCoreSSO.Nome : " - ";
+                    if (usuarioCoreSSO != null)
+                        nome = usuarioCoreSSO.Nome;
+                    
+
                 }
 
-                usuario.Nome = string.IsNullOrEmpty(nome) ? "" : $"{nome} ({usuarioNotificacao.Key})";
-                usuario.Notificacoes = MontarNotificacoes(usuarioNotificacao);
+                usuario.Nome = string.IsNullOrEmpty(nome) ? " - " : $"{nome} ({usuarioNotificacao.Key})";
+                usuario.Notificacoes = MontarNotificacoes(usuarioNotificacao);                              
 
                 usuarios.Add(usuario);
-            }
+            }           
 
             return usuarios.OrderBy(u => u.Nome);
         }
@@ -77,7 +80,7 @@ namespace SME.SR.Application
 
         private IEnumerable<NotificacaoRelatorioDto> MontarNotificacoes(IEnumerable<NotificacaoRetornoDto> notificacoes)
         {
-            foreach (var notificacao in notificacoes.OrderByDescending(n => n.DataRecebimento))
+            foreach(var notificacao in notificacoes.OrderByDescending(n => n.DataRecebimento))
             {
                 yield return new NotificacaoRelatorioDto()
                 {
@@ -90,7 +93,7 @@ namespace SME.SR.Application
                     DataRecebimento = notificacao.DataRecebimento.ToString("dd/MM/yyyy HH:mm:ss"),
                     DataLeitura = notificacao.DataLeitura == null ? "" : notificacao.DataLeitura?.ToString("dd/MM/yyyy HH:mm:ss"),
                 };
-            }
+            }            
         }
     }
 }
