@@ -1,0 +1,420 @@
+﻿@model SME.SR.Infra.RelatorioFrequenciaIndividualDto
+
+@{
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 47;
+    int contadorEspacoEmBranco = 4;
+    int contadorMaximoCaracteresPorLinhaJustificativa = 192;
+
+    string QuebraPagina()
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+
+        return "";
+    }
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE FREQUÊNCIA INDIVIDUAL</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.DreNome</td>
+                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.UeNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
+                        <td width='22%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    bool VerificaQuebra(int numeroLinhasDescricao = 0)
+    {
+        if (contadorQuebrarPagina + numeroLinhasDescricao >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    void EspacoEmBranco()
+    {
+        int numeroColSpan = Model.ehInfantil ? 6 : 7;
+
+        <tr style="height: 8px;">
+            <td colspan="@numeroColSpan" class="sem-border-top"></td>
+        </tr>
+
+        if (contadorEspacoEmBranco == 4)
+        {
+            contadorEspacoEmBranco = 0;
+            contadorQuebrarPagina++;
+        }
+    }
+
+    void MontarTituloPrincipal(string nome, int colspan)
+    {
+        <tr>
+            <td colspan="@colspan" class="fundo-cinza">@nome</td>
+        </tr>
+    }
+
+    void MontarTituloTabela()
+    {
+        <tr>
+            <td width="16%" class="fundo-cinza">AULAS DADAS</td>
+            <td width="16%" colspan="2" class="fundo-cinza">PRESENÇAS</td>
+            <td width="16%" class="fundo-cinza">REMOTO</td>
+            <td width="16%" class="fundo-cinza">AUSÊNCIAS</td>
+
+            @if (!Model.ehInfantil)
+            {
+                <td width="16%" class="fundo-cinza">COMPENSAÇÕES</td>
+            }
+
+            <td width="20%" class="fundo-cinza">% DE FREQUÊNCIA</td>
+        </tr>
+    }
+
+    void MontarLinhasTabela(SME.SR.Infra.RelatorioFrequenciaIndividualDadosFrequenciasDto dadosFrequencia)
+    {
+        <tr>
+            <td>@dadosFrequencia.TotalAulasDadas</td>
+            <td colspan="2">@dadosFrequencia.TotalPresencas</td>
+            <td>@dadosFrequencia.TotalRemoto</td>
+            <td>@dadosFrequencia.TotalAusencias</td>
+
+            @if (!Model.ehInfantil)
+            {
+                <td>@dadosFrequencia.TotalCompensacoes</td>
+            }
+
+            <td>@dadosFrequencia.TotalPercentualFrequenciaFormatado</td>
+        </tr>
+    }
+    void MontarLinhaBimestreFinal(SME.SR.Infra.RelatorioFrequenciaIndividualAlunosDto dadosBimestreFinal)
+    {
+        <tr>
+            <td>@dadosBimestreFinal.TotalAulasDadasFinal</td>
+            <td colspan="2">@dadosBimestreFinal.TotalPresencasFinal</td>
+            <td>@dadosBimestreFinal.TotalRemotoFinal</td>
+            <td>@dadosBimestreFinal.TotalAusenciasFinal</td>
+
+            @if (!Model.ehInfantil)
+            {
+                <td>@dadosBimestreFinal.TotalCompensacoesFinal</td>
+            }
+
+            <td>@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
+        </tr>
+    }
+    void MontarTituloJustificativas()
+    {
+        int numeroColSpan = Model.ehInfantil ? 4 : 5;
+        <tr>
+            <td width="25%" colspan="2" class="fundo-cinza">DATA DA AUSÊNCIA</td>
+            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">MOTIVO @contadorQuebrarPagina</td>
+        </tr>
+    }
+
+    void MontarDescricaoJustificativa(string motivoAusencia, string dataAusencia, string nomeAluno, string nomeBimestre, int numeroColSpan)
+    {
+        int iContadorCaracteres = 0;
+        @while (iContadorCaracteres != motivoAusencia.Length)
+        {
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw("</td ></tr>");
+                QuebraPagina();
+                MontarCabecalho();
+                @Html.Raw("<table class='tabela-cabecalho'>");
+                MontarTituloPrincipal(nomeAluno, numeroColSpan);
+                contadorQuebrarPagina++;
+                MontarTituloPrincipal(nomeBimestre, numeroColSpan);
+                contadorQuebrarPagina++;
+                MontarTituloJustificativas();
+                contadorQuebrarPagina++;
+                @Html.Raw("<tr><td colspan='2'>")
+                @Html.Raw(dataAusencia)
+                @Html.Raw("</td><td>")
+                contadorQuebrarPagina++;
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = motivoAusencia.Length - iContadorCaracteres < contadorMaximoCaracteresPorLinhaJustificativa ? motivoAusencia.Length - iContadorCaracteres : contadorMaximoCaracteresPorLinhaJustificativa;
+                var textParaExibir = motivoAusencia.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                <span>
+                    @Html.Raw(textParaExibir)
+                </span>
+            }
+            contadorQuebrarPagina++;
+        }
+    }
+
+    void MontarLinhasJustificativas(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto justificativas, string nomeAluno, string nomeBimestre, int numeroColSpan)
+    {
+        int numeroColSpanJustificativa = Model.ehInfantil ? 4 : 5;
+        <tr>
+            <td colspan="2">@justificativas.DataAusencia</td>
+            <td colspan="@numeroColSpanJustificativa" class="alinhar-esquerda espaco-esquerda-15">@{MontarDescricaoJustificativa(justificativas.MotivoAusencia, justificativas.DataAusencia, nomeAluno, nomeBimestre, numeroColSpan);}</td>
+        </tr>
+    }
+
+    void MontarJustificativas(SME.SR.Infra.RelatorioFrequenciaIndividualBimestresDto bimestres, string nomeAluno, int numeroColSpan)
+    {
+        int contadorJustificativas = 0;
+        @foreach (var justificativas in bimestres.Justificativas)
+        {
+            bool quebra = VerificaQuebra();
+
+            if (quebra)
+            {
+                QuebraPagina();
+                MontarCabecalho();
+                @Html.Raw("<table class='tabela-cabecalho'>");
+                MontarTituloPrincipal(nomeAluno, numeroColSpan);
+                contadorQuebrarPagina++;
+                MontarTituloPrincipal(bimestres.NomeBimestre, numeroColSpan);
+                contadorQuebrarPagina++;
+                MontarTituloJustificativas();
+                contadorQuebrarPagina++;
+            }
+
+            @if (contadorJustificativas == 0)
+            {
+                EspacoEmBranco();
+
+                MontarTituloJustificativas();
+                contadorQuebrarPagina++;
+            }
+
+            MontarLinhasJustificativas(justificativas, nomeAluno, bimestres.NomeBimestre, numeroColSpan);
+            contadorQuebrarPagina++;
+
+            contadorJustificativas++;
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE FREQUÊNCIA INDIVIDUAL</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .subtitulo-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+            td span {
+                font-size: 12px;
+            }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .linha-pendencias {
+            height: 17px !important;
+            font-size: 12px !important;
+        }
+    </style>
+    <div>
+        @{
+            bool EhPrimeiroRegistro = true;
+            
+            foreach (var alunos in Model.Alunos)
+            {
+                if (EhPrimeiroRegistro)
+                    EhPrimeiroRegistro = false;
+                else QuebraPagina();
+
+                contadorQuebrarPagina = 0;
+                
+                MontarCabecalho();
+
+                <table class="tabela-cabecalho" cellpadding="10">
+                    <tbody>
+                        @{
+                            int numeroColSpan = Model.ehInfantil ? 6 : 7;
+
+                            MontarTituloPrincipal(alunos.NomeAluno, numeroColSpan);
+                            contadorQuebrarPagina++;
+
+                            int contadorBimestres = 0;
+                        }
+
+                        @foreach (var bimestres in alunos.Bimestres)
+                        {
+                            int numeroLinhasParaCabecalho = 3;
+                            bool quebra = VerificaQuebra(numeroLinhasParaCabecalho);
+
+                            if (quebra)
+                            {
+                                QuebraPagina();
+                                MontarCabecalho();
+                                @Html.Raw("<table class='tabela-cabecalho'>");
+                                MontarTituloPrincipal(alunos.NomeAluno, numeroColSpan);
+                                contadorQuebrarPagina++;
+                            }
+
+                            MontarTituloPrincipal(bimestres.NomeBimestre, numeroColSpan);
+                            contadorQuebrarPagina++;
+
+                            MontarTituloTabela();
+                            contadorQuebrarPagina++;
+
+                            MontarLinhasTabela(bimestres.DadosFrequencia);
+                            contadorQuebrarPagina++;
+
+                            MontarJustificativas(bimestres, alunos.NomeAluno, numeroColSpan);
+
+                            contadorBimestres++;
+                        }
+                            @{
+                                if (Model.ehTodosBimestre)
+                                {
+                                    MontarTituloPrincipal(alunos.TituloFinal, numeroColSpan);
+                                    contadorQuebrarPagina++;
+                                    MontarTituloTabela();
+                                    contadorQuebrarPagina++;
+                                    MontarLinhaBimestreFinal(alunos);
+                                }
+                            }
+                    </tbody>
+                </table>
+                }
+        }
+    </div>
+</body>
+</html>

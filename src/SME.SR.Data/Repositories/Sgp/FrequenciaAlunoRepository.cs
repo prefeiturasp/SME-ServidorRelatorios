@@ -2,6 +2,7 @@
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -335,7 +336,7 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId,bimestres });
+            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, periodoEscolarId, bimestres });
         }
 
         public async Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAno(string codigoTurma, string componenteCurricularId, int anoLetivo)
@@ -445,6 +446,71 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<string>(query, new { turmaCodigo, bimestre });
+            }
+        }
+
+        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia)
+        {
+            var query = @"select 
+	                        extract(year from periodo_inicio) as AnoBimestre,
+                            fa.bimestre,
+	                        sum(fa.total_aulas) as TotalAula,
+	                        sum(fa.total_presencas) as TotalPresencas,
+	                        sum(fa.total_remotos) as TotalRemotos,
+	                        sum(fa.total_ausencias) as TotalAusencias,
+	                        sum(fa.total_compensacoes) as TotalCompensacoes,
+	                        fa.codigo_aluno as CodigoAluno
+                        from frequencia_aluno fa
+                        where not fa.excluido 
+                        and fa.tipo = @tipoFrequencia
+                        and fa.codigo_aluno = any(@codigosAlunos)  and fa.turma_id = @turmaCodigo ";
+            if (bimestre != "-99")
+                query += "and fa.bimestre = @numeroBimestre ";
+            query += @"    group by 
+                            fa.bimestre,
+                            fa.codigo_aluno,fa.periodo_inicio;";
+            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<FrequenciaAlunoConsolidadoDto>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre)
+        {
+            var query = @" select
+ 	                         afa.codigo_aluno as codigoAluno,
+                             a.data_aula dataAusencia,
+                             coalesce(ma.descricao,afa.anotacao) motivoAusencia,
+                             pe.bimestre
+                         from 
+                             anotacao_frequencia_aluno afa 
+                         inner join aula a on a.id = afa.aula_id 
+                         inner join tipo_calendario tc on tc.id = a.tipo_calendario_id 
+                         inner join periodo_escolar pe on pe.tipo_calendario_id = tc.id
+                          left join motivo_ausencia ma on afa.motivo_ausencia_id = ma.id 
+                         where 
+                             not afa.excluido and not a.excluido 
+                             and afa.codigo_aluno = any(@alunosCodigo)	 
+                             and a.turma_id = @turmaCodigo";
+            
+            if (bimestre != "-99")
+                query += " and pe.bimestre = @numeroBimestre ";
+
+                        query +=    @" and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
+                         order by pe.bimestre,a.data_aula  desc; ";
+
+            var parametros = new 
+            { 
+                alunosCodigo, 
+                turmaCodigo, 
+                numeroBimestre = Convert.ToInt32(bimestre) 
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<AusenciaBimestreDto>(query, parametros);
             }
         }
     }
