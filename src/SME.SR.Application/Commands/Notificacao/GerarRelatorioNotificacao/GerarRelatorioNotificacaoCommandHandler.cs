@@ -53,7 +53,7 @@ namespace SME.SR.Application
                         nome = usuarioCoreSSO.Nome;
                 }
 
-                usuario.Nome = $"{nome} ({usuarioNotificacao.Key})";
+                usuario.Nome = string.IsNullOrEmpty(nome) ? "" : $"{nome} ({usuarioNotificacao.Key})";
                 usuario.Notificacoes = MontarNotificacoes(usuarioNotificacao);                              
 
                 usuarios.Add(usuario);
