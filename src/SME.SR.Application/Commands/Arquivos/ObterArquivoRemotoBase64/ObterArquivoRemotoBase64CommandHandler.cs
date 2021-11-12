@@ -16,21 +16,29 @@ namespace SME.SR.Application
         {
             using (var client = new WebClient())
             {
-                var arquivo = client.DownloadData(new Uri(request.Url));
-
-                using (var memoryStream = new MemoryStream(arquivo))
+                try
                 {
-                    var imagem = new Bitmap(memoryStream);
-                    var format = imagem.RawFormat;
-                    var codec = ImageCodecInfo
-                        .GetImageDecoders()
-                        .First(c => c.FormatID == format.Guid);
-                    string mimeType = codec.MimeType;
+                    var arquivo = client.DownloadData(new Uri(request.Url));
 
-                    var imagemBase64 = RedimencionarImagem(imagem);
+                    using (var memoryStream = new MemoryStream(arquivo))
+                    {
+                        var imagem = new Bitmap(memoryStream);
+                        var format = imagem.RawFormat;
+                        var codec = ImageCodecInfo
+                            .GetImageDecoders()
+                            .First(c => c.FormatID == format.Guid);
+                        string mimeType = codec.MimeType;
 
-                    return $"data:{mimeType};base64,{imagemBase64}";
+                        var imagemBase64 = RedimencionarImagem(imagem);
+
+                        return $"data:{mimeType};base64,{imagemBase64}";
+                    }
+
                 }
+                catch (Exception e)
+                {
+                    return "";
+                }            
             }
         }
 
