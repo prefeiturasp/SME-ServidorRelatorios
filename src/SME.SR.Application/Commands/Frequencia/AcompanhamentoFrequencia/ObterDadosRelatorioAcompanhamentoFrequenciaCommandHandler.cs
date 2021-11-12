@@ -108,11 +108,13 @@ namespace SME.SR.Application
         }
         private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio)
         {
+            var dadosDreUe = await ObterNomeDreUe(filtroRelatorio.TurmaCodigo);
+            var turma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtroRelatorio.TurmaCodigo));
+
             relatorio.RF = filtroRelatorio.UsuarioRF;
             relatorio.Usuario = filtroRelatorio.UsuarioNome;
-            relatorio.DreNome = await ObterNomeDre(filtroRelatorio.DreCodigo);
-            relatorio.UeNome = await ObterNomeUe(filtroRelatorio.UeCodigo);
-            var turma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtroRelatorio.TurmaCodigo));
+            relatorio.DreNome = dadosDreUe.DreNome;
+            relatorio.UeNome = dadosDreUe.UeNome;
             relatorio.ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
         }
         private void MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto)
@@ -135,15 +137,9 @@ namespace SME.SR.Application
                 }
             }
         }
-        private async Task<string> ObterNomeDre(string dreCodigo)
+        private async Task<DreUe> ObterNomeDreUe(string turmaCodigo)
         {
-            var dre = await mediator.Send(new ObterDrePorCodigoQuery(dreCodigo));
-            return dre.Abreviacao;
-        }
-        private async Task<string> ObterNomeUe(string ueCodigo)
-        {
-            var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
-            return ue.NomeRelatorio;
+            return await mediator.Send(new ObterDreUePorTurmaQuery(turmaCodigo));
         }
     }
 }
