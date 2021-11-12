@@ -18,8 +18,16 @@ namespace SME.SR.Infra
 
         public string DescricaoFormatada()
         {
-            var descricao = UtilRegex.RemoverTagsHtmlMultiMidia(Mensagem);
-            return UtilRegex.RemoverTagsHtml(descricao);
+            if (!string.IsNullOrEmpty(Mensagem))
+            {
+                var descricao = UtilRegex.RemoverTagsHtmlMultiMidia(Mensagem);
+                return UtilRegex.RemoverTagsHtml(descricao);
+            }
+            else
+            {
+                return "";
+            }
+            
         }
     }
 }
