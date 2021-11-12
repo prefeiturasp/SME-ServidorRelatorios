@@ -6,7 +6,6 @@
 @{
     double contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
-    int contadorMaximoCaracteresPorLinha = 450;
     bool quebrou = false;
 
     void MontarCabecalho()
@@ -96,19 +95,20 @@
     void MontarLinhaTabela(SME.SR.Infra.NotificacaoRelatorioDto notificacoes)
     {
         <tr>
-            <td>@notificacoes.Codigo</td>
-            <td class=" alinhar-esquerda espaco-esquerda-15">@notificacoes.Titulo</td>
-            <td>@notificacoes.Categoria</td>
-            <td>@notificacoes.Tipo</td>
-            <td>@notificacoes.Situacao @contadorQuebrarPagina</td>
-            <td>@notificacoes.DataRecebimento</td>
-            <td>@notificacoes.DataLeitura</td>
+            <td width='11%'>@notificacoes.Codigo</td>
+            <td width='25%' class=" alinhar-esquerda espaco-esquerda-15">@notificacoes.Titulo</td>
+            <td width='12%'>@notificacoes.Categoria</td>
+            <td width='12%'>@notificacoes.Tipo</td>
+            <td width='12%'>@notificacoes.Situacao @contadorQuebrarPagina</td>
+            <td width='15%'>@notificacoes.DataRecebimento</td>
+            <td width='15%'>@notificacoes.DataLeitura</td>
         </tr>
     }
     
     string MontarTextoDescricao(string descricao)
     {
         int iContadorCaracteres = 0;
+        int contadorMaximoCaracteresPorLinha = descricao.Length > 7000 ? 250 : 350;
 
         @while (iContadorCaracteres != descricao.Length)
         {
@@ -117,7 +117,9 @@
                 contadorQuebrarPagina = 0;
                 @Html.Raw("</td></tr>");
                 ImprimirQuebra();
-                @Html.Raw("<table class='tabela-cabeccalho'><tbody><tr><td class='alinhar-esquerda espaco-esquerda-' colspan='7'>");
+                @Html.Raw("<table class='tabela-cabecalho'><tbody>");
+                MontarTexto("DESCRIÇÃO");
+                @Html.Raw("<tr><td class='alinhar-esquerda espaco-esquerda-8' colspan='7'>");
             }
             else
             {
@@ -125,6 +127,7 @@
                 var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
                 iContadorCaracteres += textParaExibir.Length;
                 <span>@Html.Raw(textParaExibir)</span>
+                @Html.Raw(contadorQuebrarPagina)
             }
             contadorQuebrarPagina++;
         }
@@ -283,7 +286,7 @@
             int contadorUsuarios = 0;
             foreach (var usuarios in Model.Usuarios)
             {
-                int numerLinhasParaEscrever = 3;
+                int numerLinhasParaEscrever = 2;
                 bool quebraSuperior = VerificaQuebra(numerLinhasParaEscrever);
 
                 if (quebraSuperior)
@@ -296,15 +299,19 @@
                         @{
                             if (contadorUsuarios > 0)
                             {
-                                int linhasParaEscreverEspacoBranco = 4;
+                                int linhasParaEscreverEspacoBranco = 3;
                                 bool quebraEspacoBranco = VerificaQuebra(linhasParaEscreverEspacoBranco);
 
                                 if (quebraEspacoBranco)
                                 {
                                     ImprimirQuebra();
+                                    @Html.Raw("<table class='tabela-cabecalho'><tbody>");
                                 }
 
-                                LinhaEmBranco();
+                                if(!quebrou)
+                                {
+                                    LinhaEmBranco();
+                                }
 
                                 contadorQuebrarPagina++;
                             }
@@ -322,6 +329,7 @@
                         {
                             var descricao = notificacoes.Descricao;
                             bool temDescricao = String.IsNullOrEmpty(descricao);
+                            int linhasParaEscreverNotificacao = 2;
                             bool quebraLinha = VerificaQuebra();
 
                             if (quebraLinha)
@@ -340,6 +348,16 @@
 
                             if (!temDescricao)
                             {
+                                int linhasParaEscreverDescricao = 2;
+                                bool quebraDescricao = VerificaQuebra(linhasParaEscreverDescricao);
+
+                                if (quebraDescricao)
+                                {
+                                    ImprimirQuebra();
+                                    @Html.Raw("<table class='tabela-cabecalho'><tbody>");
+                                    MontarTexto(@usuarios.Nome);
+                                    contadorQuebrarPagina++;
+                                }
 
                                 MontarTexto("DESCRIÇÃO");
                                 
@@ -347,7 +365,7 @@
 
                                 MontarDescricao(descricao);
                             }
-                        }
+                         }   
                     </tbody>
                 </table>
 
