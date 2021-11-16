@@ -43,7 +43,7 @@ namespace SME.SR.Workers.SGP.Services
                 Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
                 VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value,
                 AutomaticRecoveryEnabled = true,
-                RequestedHeartbeat = TimeSpan.FromSeconds(60)
+                RequestedHeartbeat = TimeSpan.FromSeconds(30)
             };
 
             conexaoRabbit = factory.CreateConnection();

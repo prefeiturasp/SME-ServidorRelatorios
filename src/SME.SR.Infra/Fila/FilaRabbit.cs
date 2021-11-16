@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Polly;
 using Polly.Registry;
 using RabbitMQ.Client;
@@ -11,13 +10,15 @@ namespace SME.SR.Infra
 {
     public class FilaRabbit : IServicoFila
     {
-        private readonly IConfiguration configuration;
-        private readonly IAsyncPolicy policy;
 
-        public FilaRabbit(IConfiguration configuration, IReadOnlyPolicyRegistry<string> registry)
+        private readonly IAsyncPolicy policy;
+        private readonly IModel rabbitConnection;
+
+        public FilaRabbit(IReadOnlyPolicyRegistry<string> registry, IModel rabbitConnection)
         {
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
             this.policy = registry.Get<IAsyncPolicy>(PoliticaPolly.PublicaFila);
+            this.rabbitConnection = rabbitConnection ?? throw new ArgumentNullException(nameof(rabbitConnection));
         }
 
         public async Task PublicaFila(PublicaFilaDto publicaFilaDto)
@@ -31,27 +32,16 @@ namespace SME.SR.Infra
             });
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            var factory = new ConnectionFactory
-            {
-                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
-                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
-                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
-                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
-            };
-            await policy.ExecuteAsync(() => PublicaMensagem(publicaFilaDto, body, factory));
+            await policy.ExecuteAsync(() => PublicaMensagem(publicaFilaDto, body));
         }
 
-        private async Task PublicaMensagem(PublicaFilaDto publicaFilaDto, byte[] body, ConnectionFactory factory)
+        private async Task PublicaMensagem(PublicaFilaDto publicaFilaDto, byte[] body)
         {
             var exchange = publicaFilaDto.Exchange ?? ExchangeRabbit.WorkerRelatorios;
 
-            using (var conexaoRabbit = factory.CreateConnection())
-            {
-                using (IModel _channel = conexaoRabbit.CreateModel())
-                {
-                    _channel.BasicPublish(exchange, publicaFilaDto.Rota,  null, body);
-                }
-            }
+            rabbitConnection.BasicPublish(exchange, publicaFilaDto.Rota, null, body);
+
+            await Task.FromResult(true);
         }
     }
 }
