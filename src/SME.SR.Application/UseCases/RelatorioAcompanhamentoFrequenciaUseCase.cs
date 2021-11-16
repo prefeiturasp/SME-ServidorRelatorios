@@ -17,7 +17,7 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAcompanhamentoFrequencia;
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroAcompanhamentoFrequenciaJustificativaDto>();
             var retornoRelatorio = await mediator.Send(new ObterDadosRelatorioAcompanhamentoFrequenciaCommand(filtroRelatorio));
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFrequenciaIndividual", retornoRelatorio, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioFrequenciaIndividual", retornoRelatorio, request.CodigoCorrelacao,gerarPaginacao:false));
         }
     }
 }

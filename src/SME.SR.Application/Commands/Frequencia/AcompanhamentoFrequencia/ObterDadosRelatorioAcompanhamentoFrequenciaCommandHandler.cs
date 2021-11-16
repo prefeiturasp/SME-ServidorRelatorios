@@ -3,6 +3,7 @@ using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,36 +23,44 @@ namespace SME.SR.Application
         }
         public async Task<RelatorioFrequenciaIndividualDto> Handle(ObterDadosRelatorioAcompanhamentoFrequenciaCommand request, CancellationToken cancellationToken)
         {
-            var relatorio = new RelatorioFrequenciaIndividualDto();
-            var alunosSelecionados = new List<AlunoNomeDto>();
-            await MapearCabecalho(relatorio, request.FiltroRelatorio);
-            relatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
-            if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
+            try
             {
-                var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = request.FiltroRelatorio.TurmaCodigo });
-                foreach (var aluno in alunos.OrderBy(x => x.NomeAluno))
+                var relatorio = new RelatorioFrequenciaIndividualDto();
+                var alunosSelecionados = new List<AlunoNomeDto>();
+                await MapearCabecalho(relatorio, request.FiltroRelatorio);
+                relatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
+                if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
                 {
-                    var dto = new AlunoNomeDto
+                    var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = request.FiltroRelatorio.TurmaCodigo });
+                    foreach (var aluno in alunos.OrderBy(x => x.NomeAluno))
                     {
-                        Nome = aluno.NomeAluno,
-                        Codigo = aluno.CodigoAluno.ToString()
-                    };
-                    alunosSelecionados.Add(dto);
+                        var dto = new AlunoNomeDto
+                        {
+                            Nome = aluno.NomeAluno,
+                            Codigo = aluno.CodigoAluno.ToString()
+                        };
+                        alunosSelecionados.Add(dto);
+                    }
                 }
-            }
-            else
-                alunosSelecionados = (await alunoRepository.ObterNomesAlunosPorCodigos(request.FiltroRelatorio.AlunosCodigos.ToArray())).ToList();
+                else
+                    alunosSelecionados = (await alunoRepository.ObterNomesAlunosPorCodigos(request.FiltroRelatorio.AlunosCodigos.ToArray())).ToList();
 
-            if (alunosSelecionados != null && alunosSelecionados.Any())
+                if (alunosSelecionados != null && alunosSelecionados.Any())
+                {
+                    var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.Geral));
+                    if (dadosFrequencia == null || !dadosFrequencia.Any())
+                        throw new NegocioException("Nenhuma informação para os filtros informados.");
+
+                    var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
+                    MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
+                }
+                return relatorio;
+            }
+            catch (Exception ex)
             {
-                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.Geral));
-                if (dadosFrequencia == null || !dadosFrequencia.Any())
-                    throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-                var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
-                MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
+                throw;
             }
-            return relatorio;
         }
 
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, RelatorioFrequenciaIndividualAlunosDto aluno)
@@ -88,7 +97,7 @@ namespace SME.SR.Application
                                     var justificativa = new RelatorioFrequenciaIndividualJustificativasDto
                                     {
                                         DataAusencia = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
-                                        MotivoAusencia = ausencia.MotivoAusencia,
+                                        MotivoAusencia = UtilRegex.RemoverTagsHtml(ausencia.MotivoAusencia),
                                     };
 
                                     bimestre.Justificativas.Add(justificativa);
