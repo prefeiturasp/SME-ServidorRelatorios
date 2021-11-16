@@ -117,7 +117,19 @@ namespace SME.SR.Application
             relatorio.Usuario = filtroRelatorio.UsuarioNome;
             relatorio.DreNome = dadosDreUe.DreNome;
             relatorio.UeNome = dadosDreUe.UeNome;
+            relatorio.ComponenteNome = await ObterNomeComponente(filtroRelatorio.ComponenteCurricularId);
+            relatorio.TurmaNome = await ObterNomeTurma(filtroRelatorio.TurmaCodigo);
             relatorio.ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
+        }
+        private async Task<string> ObterNomeTurma(string turmaCodigo)
+        {
+            var consulta =  await mediator.Send(new ObterTurmaPorCodigoQuery(turmaCodigo));
+            return consulta.NomePorFiltroModalidade(null);
+        }
+        private async Task<string> ObterNomeComponente(string componenteCodigo)
+        {
+            var id = Convert.ToInt64(componenteCodigo);
+            return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(id));
         }
         private void MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto)
         {

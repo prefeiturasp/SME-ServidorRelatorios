@@ -10,6 +10,7 @@ namespace SME.SR.Infra
         public string Bimestre { get; set; }
         public string UsuarioRF { get; set; }
         public string UsuarioNome { get; set; }
+        public string ComponenteCurricularId { get; set; }
         public List<string> AlunosCodigos { get; set; }
     }
 }

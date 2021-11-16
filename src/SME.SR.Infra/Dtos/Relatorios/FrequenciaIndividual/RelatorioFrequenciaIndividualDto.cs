@@ -12,6 +12,8 @@ namespace SME.SR.Infra
         public string DreNome { get; set; }
         public string UeNome { get; set; }
         public string Usuario { get; set; }
+        public string TurmaNome { get; set; }
+        public string ComponenteNome { get; set; }
         public string RF { get; set; }
         public string Data => DateTime.Now.ToString("dd/MM/yyyy");
         public bool ehInfantil{ get; set; }
