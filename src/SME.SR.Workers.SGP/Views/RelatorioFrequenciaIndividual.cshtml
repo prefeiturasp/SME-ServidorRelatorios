@@ -31,20 +31,21 @@
                     </tr>
                 </tbody>
             </table>
+
             <table>
                 <tbody>
                     <tr>
-                        <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
-                        <td width='18%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
-                        <td width='22%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Data</td>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>Turma: @Model.TurmaNome</td>
+                        <td width='80%' class='sem-border-top espaco-esquerda-15'>Componente Curricular: @Model.ComponenteNome</td>
                     </tr>
                 </tbody>
             </table>
             <table>
                 <tbody>
                     <tr>
-                        <td width='20%' class='sem-border-top espaco-esquerda-15'>Turma: @Model.TurmaNome</td>
-                        <td width='80%' class='sem-border-top espaco-esquerda-15'>Componente Curricular: @Model.ComponenteNome</td>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
+                        <td width='22%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Data</td>
                     </tr>
                 </tbody>
             </table>
@@ -117,6 +118,7 @@
             <td>@dadosFrequencia.TotalPercentualFrequenciaFormatado</td>
         </tr>
     }
+    
     void MontarLinhaBimestreFinal(SME.SR.Infra.RelatorioFrequenciaIndividualAlunosDto dadosBimestreFinal)
     {
         <tr>
@@ -133,18 +135,20 @@
             <td>@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
         </tr>
     }
+    
     void MontarTituloJustificativas()
     {
         int numeroColSpan = Model.ehInfantil ? 4 : 5;
         <tr>
             <td width="25%" colspan="2" class="fundo-cinza">DATA DA AUSÊNCIA</td>
-            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">MOTIVO @contadorQuebrarPagina</td>
+            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">MOTIVO</td>
         </tr>
     }
 
-    void MontarDescricaoJustificativa(string motivoAusencia, string dataAusencia, string nomeAluno, string nomeBimestre, int numeroColSpan)
+    void MontarDescricaoJustificativa(string motivoAusencia, string dataAusencia, string nomeAluno, string nomeBimestre, int numeroColSpan, int numeroColSpanJustificativa)
     {
         int iContadorCaracteres = 0;
+
         @while (iContadorCaracteres != motivoAusencia.Length)
         {
             if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
@@ -162,7 +166,7 @@
                 contadorQuebrarPagina++;
                 @Html.Raw("<tr><td colspan='2'>")
                 @Html.Raw(dataAusencia)
-                @Html.Raw("</td><td>")
+                @Html.Raw("</td><td colspan="+numeroColSpanJustificativa+">")
                 contadorQuebrarPagina++;
             }
             else
@@ -183,7 +187,7 @@
         int numeroColSpanJustificativa = Model.ehInfantil ? 4 : 5;
         <tr>
             <td colspan="2">@justificativas.DataAusencia</td>
-            <td colspan="@numeroColSpanJustificativa" class="alinhar-esquerda espaco-esquerda-15">@{MontarDescricaoJustificativa(justificativas.MotivoAusencia, justificativas.DataAusencia, nomeAluno, nomeBimestre, numeroColSpan);}</td>
+            <td colspan="@numeroColSpanJustificativa" class="alinhar-esquerda espaco-esquerda-15">@{MontarDescricaoJustificativa(justificativas.MotivoAusencia, justificativas.DataAusencia, nomeAluno, nomeBimestre, numeroColSpan, numeroColSpanJustificativa);}</td>
         </tr>
     }
 
