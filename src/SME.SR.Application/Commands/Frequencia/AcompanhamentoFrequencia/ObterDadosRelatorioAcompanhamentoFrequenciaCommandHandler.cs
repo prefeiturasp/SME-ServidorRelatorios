@@ -3,7 +3,6 @@ using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
