@@ -26,7 +26,7 @@ namespace SME.SR.Application
             var devolutivas = await devolutivaRepository.ObterDevolutivas(request.UeId, request.Turmas, request.Bimestres, request.Ano);
 
             if (devolutivas == null || !devolutivas.Any())
-                throw new NegocioException("O relatório com o filtro solicitado não possui informações.");
+                throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             foreach (var devolutivasPorTurma in devolutivas.GroupBy(a => new { a.Aula.Turma.Id, a.Aula.Turma.Nome }))
             {
