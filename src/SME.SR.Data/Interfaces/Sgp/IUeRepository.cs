@@ -11,5 +11,6 @@ namespace SME.SR.Data
         Task<IEnumerable<UePorDresIdResultDto>> ObterPorDresId(long[] dreIds);
         Task<IEnumerable<Ue>> ObterPorDreSemestreModadalidadeAnoId(long dreId, int? semestre, int modalidadeId, string[] anos);
         Task<Ue> ObterPorId(long ueId);
+        Task<Ue> ObterUeComDrePorId(long ueId);
     }
 }

@@ -4,7 +4,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -32,13 +31,12 @@ namespace SME.SR.Application
             relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
-    
         }
 
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
         {
             if (bimestres.Count() == 1 && (bimestres.First() == -99))
-                return new List<int>() { 1,2,3,4 };
+                return new List<int>() { 1, 2, 3, 4 };
 
             return bimestres;
         }
@@ -53,24 +51,25 @@ namespace SME.SR.Application
 
         private async Task ObterFiltrosRelatorio(RelatorioDevolutivasDto relatorioDto, FiltroRelatorioDevolutivasDto parametros)
         {
-            var ue = await mediator.Send(new ObterUePorIdQuery(parametros.UeId));
-            var dre = await mediator.Send(new ObterDrePorIdQuery(long.Parse(ue.DreId)));
+            var ue = await mediator.Send(new ObterUeComDrePorIdQuery(parametros.UeId));
 
             var turmas = ObterTurmas(parametros.Turmas);
             var bimestres = ObterBimestresFiltro(parametros.Bimestres);
 
-            relatorioDto.Dre = dre.Abreviacao;
-            relatorioDto.Ue = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
+            relatorioDto.Dre = ue.Dre.Abreviacao;
+            relatorioDto.Ue = ue.NomeRelatorio;
             relatorioDto.Turma = await ObterTurma(turmas);
             relatorioDto.Bimestre = ObterBimestres(bimestres);
             relatorioDto.Usuario = parametros.UsuarioNome;
             relatorioDto.RF = parametros.UsuarioRF;
-            relatorioDto.ExibeConteudoDevolutivas = parametros.ExibirDetalhes;
-            relatorioDto.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+            relatorioDto.ExibeConteudoDevolutivas = parametros.ExibirDetalhes;            
         }
 
         private string ObterBimestres(IEnumerable<int> bimestres)
         {
+            if (bimestres.Any(t => t == -99))
+                return "";
+
             var bimestresDto = new List<string>();
 
             foreach (var bimestre in bimestres)
@@ -81,13 +80,16 @@ namespace SME.SR.Application
 
         private async Task<string> ObterTurma(IEnumerable<long> turmas)
         {
-            if (turmas.Count() == 1)
+            if (turmas.Any(t => t == -99))
+                return "Todas";
+
+            if (turmas.Count() == 1 && !turmas.Any(t => t == -99))
             {
                 var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(turmas.First()));
                 return turmaDto.NomeRelatorio;
             }
 
-            return "Todas";
+            return "";
         }
     }
 }
