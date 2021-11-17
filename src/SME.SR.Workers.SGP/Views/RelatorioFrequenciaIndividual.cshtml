@@ -359,14 +359,6 @@
             height: 17px !important;
             font-size: 12px !important;
         }
-        .alinhar-direita-paginacao {
-            width: 100px !important;
-            float: right !important;
-            text-align: right !important;
-            bottom: 0 !important;
-            position: absolute;
-            left: 77%;
-        }
     </style>
     <div>
         @{
@@ -435,22 +427,15 @@
                         }
                     </tbody>
                 </table>
-                <table style="vertical-align:bottom;text-align:right">
-                    <tbody>
-                        <tr>
-                            <td align="right">@($"{paginaAluno} / {totalPaginas}")</td>
-                        </tr>
-                    </tbody>
-                </table>
-                @*<div class="alinhar-direita-paginacao">
+                <div>
                     <footer>
                         <div class="content-wrapper">
                             <div>
-                                <p>@($"{paginaAluno} / {totalPaginas}")</p>
+                                <p style="height:19px;text-align:right">@($"{paginaAluno} / {totalPaginas}")</p>
                             </div>
                         </div>
                     </footer>
-                </div>*@
+                </div>
             }
         }
     </div>
