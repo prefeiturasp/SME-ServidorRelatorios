@@ -320,5 +320,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioAcompanhamentoRegistrosPedagogicos.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/ocorrencias")]
+        [Action("relatorios/ocorrencias",typeof())]
+        public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request,[FromServices] IRelatorioOcorrenciasUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
     }
 }
