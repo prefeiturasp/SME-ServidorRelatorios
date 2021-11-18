@@ -166,7 +166,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IItineranciaRepository), typeof(ItineranciaRepository));
             services.TryAddScoped(typeof(IAcompanhamentoAprendizagemRepository), typeof(AcompanhamentoAprendizagemRepository));
             services.TryAddScoped(typeof(IRegistroIndividualRepository), typeof(RegistroIndividualRepository));
-            services.TryAddScoped(typeof(IOcorrenciaRepository), typeof(OcorrenciaRepository));
+            services.TryAddScoped(typeof(Data.Interfaces.IOcorrenciaRepository), typeof(Data.IOcorrenciaRepository));
             services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
             services.TryAddScoped(typeof(IArquivoRepository), typeof(ArquivoRepository));
 

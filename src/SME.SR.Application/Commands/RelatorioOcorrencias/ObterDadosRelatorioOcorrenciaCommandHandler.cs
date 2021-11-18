@@ -17,14 +17,11 @@ namespace SME.SR.Application
 
         private readonly IUeEolRepository ueEolRepository;
 
-        private readonly OcorrenciaRepository ocorrenciaRepository;
-
-        public ObterDadosRelatorioOcorrenciaCommandHandler(IMediator mediator, IAlunoRepository alunoRepository, IUeEolRepository ueEolRepository, OcorrenciaRepository ocorrenciaRepository)
+        public ObterDadosRelatorioOcorrenciaCommandHandler(IMediator mediator, IAlunoRepository alunoRepository, IUeEolRepository ueEolRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
             this.ueEolRepository = ueEolRepository ?? throw new ArgumentNullException(nameof(ueEolRepository));
-            this.ocorrenciaRepository = ocorrenciaRepository ?? throw new ArgumentException(nameof(ocorrenciaRepository));
         }
 
         public async Task<RelatorioRegistroOcorrenciasDto> Handle(ObterDadosRelatorioOcorrenciaCommand request, CancellationToken cancellationToken)
@@ -34,7 +31,11 @@ namespace SME.SR.Application
             var alunosSelecionados = new List<AlunoNomeDto>();
 
             await MapearCabecalho(relatorio, request.FiltroOcorrencia);
-        }
+
+            await MapearOcorrencias(relatorio, request.FiltroOcorrencia);
+
+            return relatorio;
+        }        
 
         private async Task MapearCabecalho(RelatorioRegistroOcorrenciasDto relatorio, FiltroImpressaoOcorrenciaDto filtroOcorrencia)
         {
@@ -51,6 +52,16 @@ namespace SME.SR.Application
             relatorio.UsuarioNome = filtroOcorrencia.UsuarioNome;
             relatorio.UsuarioRF = filtroOcorrencia.UsuarioRf;            
             relatorio.Ocorrencias = new List<RelatorioOcorrenciasDto>();
+        }
+
+        private async Task MapearOcorrencias(RelatorioRegistroOcorrenciasDto relatorio, FiltroImpressaoOcorrenciaDto filtroOcorrencia)
+        {
+            var ocorrencias = await mediator.Send(new ObterOcorenciasPorCodigoETurmaQuery());
+
+            foreach (var item in collection)
+            {
+
+            }
         }
 
         private async Task<DreUe> ObterNomeDreUe(string turmaCodigo)

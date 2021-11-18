@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data
 {
-    public class OcorrenciaRepository : IOcorrenciaRepository
+    public class IOcorrenciaRepository : Interfaces.IOcorrenciaRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        public OcorrenciaRepository(VariaveisAmbiente variaveisAmbiente)
+        public IOcorrenciaRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new System.ArgumentNullException(nameof(variaveisAmbiente));
         }
