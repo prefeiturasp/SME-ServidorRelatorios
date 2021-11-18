@@ -15,11 +15,11 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-
         public WorkerSGPController()
         {
 
         }
+
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
         public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
@@ -322,7 +322,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/ocorrencias")]
-        [Action("relatorios/ocorrencias",typeof())]
+        [Action("relatorios/ocorrencias",typeof(IRelatorioOcorrenciasUseCase))]
         public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request,[FromServices] IRelatorioOcorrenciasUseCase useCase)
         {
             await useCase.Executar(request);

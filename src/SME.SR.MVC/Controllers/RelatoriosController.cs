@@ -7978,7 +7978,6 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             };
             return View("RelatorioRegistroOcorrencias", model);
         }
-
     }
 }
 

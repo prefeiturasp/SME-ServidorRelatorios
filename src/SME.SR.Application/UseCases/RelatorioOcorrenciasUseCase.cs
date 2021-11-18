@@ -15,7 +15,13 @@ namespace SME.SR.Application
 
         public  async Task Executar(FiltroRelatorioDto request)
         {
-            throw new NotImplementedException();
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroRelatorioOcorrencia;
+
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroImpressaoOcorrenciaDto>();
+
+            var retornoRelatorio = await mediator.Send(new ObterDadosRelatorioOcorrenciaCommand(filtroRelatorio));
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroOcorrencias", retornoRelatorio, request.CodigoCorrelacao));
         }
     }
 }
