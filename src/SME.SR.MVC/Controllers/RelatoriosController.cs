@@ -7832,163 +7832,120 @@ massa ut risus congue maximus at vitae leo.Etiam scelerisque lectus a tempor eff
             }
         }
 
-        //[HttpGet("acompanhamento-fechamento-ue")]
-        //public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
-        //{
-        //    var fechamento= new RelatorioConsolidadoFechamento()
+        //    [HttpGet("acompanhamento-fechamento-ue")]
+        //    public async Task<IActionResult> AcompanhamentoFechamentoConsolidadoUe([FromServices] IRelatorioAcompanhamentoFechamentoUseCase useCase)
         //    {
-        //        NaoIniciado = 3,
-        //        ProcessadoComPendencia = 2,
-        //        ProcessadoComSucesso = 5
-        //    };
-        //    var conselhoDeClasse= new RelatorioConsolidadoConselhoClasse()
-        //    {
-        //        NaoIniciado = 4,
-        //        EmAndamento = 8,
-        //        Concluido = 7,
-        //    };
+        //        var fechamento= new RelatorioConsolidadoFechamento()
+        //        {
+        //            NaoIniciado = 3,
+        //            ProcessadoComPendencia = 2,
+        //            ProcessadoComSucesso = 5
+        //        };
+        //        var conselhoDeClasse= new RelatorioConsolidadoConselhoClasse()
+        //        {
+        //            NaoIniciado = 4,
+        //            EmAndamento = 8,
+        //            Concluido = 7,
+        //        };
 
-        //    var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseDto>();
-        //    var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseDto("EF -1A")
-        //    {
-        //        FechamentoConsolidado = fechamento,
-        //        ConselhoDeClasseConsolidado =  conselhoDeClasse ,
-        //    };
-        //    fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
+        //        var fechamentoConselhoClasseConsolidados = new List<RelatorioAcompanhamentoFechamentoConselhoClasseDto>();
+        //        var fechamentoConselhoClasseConsolidado = new RelatorioAcompanhamentoFechamentoConselhoClasseDto("EF -1A")
+        //        {
+        //            FechamentoConsolidado = fechamento,
+        //            ConselhoDeClasseConsolidado =  conselhoDeClasse ,
+        //        };
+        //        fechamentoConselhoClasseConsolidados.Add(fechamentoConselhoClasseConsolidado);
 
-        //    var bimestres = new List<RelatorioAcompanhamentoFechamentoBimestresDto>();
-        //    var bimestre = new RelatorioAcompanhamentoFechamentoBimestresDto("1º Bimestre","0123")
-        //    {                
-        //        FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
-        //    };
-        //    bimestres.Add(bimestre);            
+        //        var bimestres = new List<RelatorioAcompanhamentoFechamentoBimestresDto>();
+        //        var bimestre = new RelatorioAcompanhamentoFechamentoBimestresDto("1º Bimestre","0123")
+        //        {                
+        //            FechamentoConselhoClasseConsolidado = fechamentoConselhoClasseConsolidados
+        //        };
+        //        bimestres.Add(bimestre);            
 
-        //    var ues = new List<RelatorioAcompanhamentoFechamentoUesDto>();
-        //    var ue = new RelatorioAcompanhamentoFechamentoUesDto("CEU EMEF BUTANTA")
-        //    {
-        //       Bimestres = bimestres,
-        //    };
-        //    ues.Add(ue);
+        //        var ues = new List<RelatorioAcompanhamentoFechamentoUesDto>();
+        //        var ue = new RelatorioAcompanhamentoFechamentoUesDto("CEU EMEF BUTANTA")
+        //        {
+        //           Bimestres = bimestres,
+        //        };
+        //        ues.Add(ue);
 
-        //    var model = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto()
-        //    {
-        //        DreNome = "DRE-BT",
-        //        UeNome = "TODAS",
-        //        Turma = "TODAS",
-        //        Bimestre = "TODOS",
-        //        Usuario = "JULIA FERREIRA DE OLIVEIRA",
-        //        RF = "1234567",
-        //        Data = "13/09/2021",
-        //        Ues = ues,
-        //    };
+        //        var model = new RelatorioAcompanhamentoFechamentoConsolidadoPorUeDto()
+        //        {
+        //            DreNome = "DRE-BT",
+        //            UeNome = "TODAS",
+        //            Turma = "TODAS",
+        //            Bimestre = "TODOS",
+        //            Usuario = "JULIA FERREIRA DE OLIVEIRA",
+        //            RF = "1234567",
+        //            Data = "13/09/2021",
+        //            Ues = ues,
+        //        };
 
-        //    return View("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", model);
-        //}
+        //        return View("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", model);
+        //    }
 
-        [HttpGet("acompanhamento-pedagocicos")]
-        public async Task<IActionResult> AcompanhamentoRegistrosPedagogicos([FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase useCase)
-        {           
-            var componentesCurriculares = new List<RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto>();
-            for(var i = 0; i < 29; i++)
+        [HttpGet("frequencia-individual")]
+        public async Task<IActionResult> FrequenciaIndividual()
+        {
+            var justificativas = new List<RelatorioFrequenciaIndividualJustificativasDto>();
+            for(var i = 0; i < 34; i++)
             {
-                var componentesCurricular = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
+                var justificativa = new RelatorioFrequenciaIndividualJustificativasDto()
                 {
-                    Nome = "EI - "+ (i + 1 )+ "A - GABRIELA MANZOLLI ROWLANDS LOPES (7924488)",
-                    QuantidadeAulas = 234 + i,
-                    FrequenciasPendentes = 5 + i,
-                    DataUltimoRegistroFrequencia = DateTime.Now.ToString(),
-                    PlanosAulaPendentes = 4 + i,
-                    DataUltimoRegistroPlanoAula = DateTime.Now.ToString(),
+                    DataAusencia = "21/01/2020",
+                    MotivoAusencia = "Atestado médico da criança " +(i + 1),
+                    //MotivoAusencia = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. " + (i + 1),
                 };
-                componentesCurriculares.Add(componentesCurricular);
-            }
+                justificativas.Add(justificativa);
+            };
 
-            var turmas = new List<RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto>();
-            for (var i = 0; i < 5; i++)
+            var dadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto()
             {
-                var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto()
-                {
-                    Nome = "EF - "+ (i + 1) + "A",
-                    ComponentesCurriculares = componentesCurriculares,
-                };
-                turmas.Add(turma);
-            }
+                TotalAulasDadas = 30,
+                TotalPresencas = 20,
+                TotalRemoto = 5,
+                TotalAusencias = 3,
+                TotalCompensacoes = 2,
+                TotalPercentualFrequenciaFormatado = "96,67%",
+            };
 
-            var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>();
-            for (var i = 0; i < 5; i++)
+
+            var bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
+            for (var i = 0; i < 2; i++)
             {
-                var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto()
+                var bimestre = new RelatorioFrequenciaIndividualBimestresDto()
                 {
-                    Bimestre = (i + 1) + "º BIMESTRE",
-                    Turmas = turmas,
+                    NomeBimestre = (i + 1) + "º bimestre - 2020",
+                    DadosFrequencia = dadosFrequencia,
+                    Justificativas = justificativas,
                 };
                 bimestres.Add(bimestre);
             }
 
-            var model = new RelatorioAcompanhamentoRegistrosPedagogicosDto()
+            var alunos = new List<RelatorioFrequenciaIndividualAlunosDto > ();
+
+            for (var i = 0; i < 10; i++)
             {
-                Cabecalho = new RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto()
-                {                    
-                    Dre = "DRE-BT",
-                    Ue = "TODAS",
-                    Turma = "TODAS",
-                    Bimestre = "TODOS",
-                    UsuarioNome = "JULIA FERREIRA DE OLIVEIRA",
-                    UsuarioRF = "1234567",                   
-                },
-                Bimestre = bimestres,
-                
-            };
-
-            return View("RelatorioAcompanhamentoRegistrosPedagogicos", model);
-        }
-
-
-        [HttpGet("acompanhamento-pedagocicos-infantil")]
-        public async Task<IActionResult> AcompanhamentoRegistrosPedagogicosInfantil([FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase useCase)
-        {            
-            var turmas = new List<RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto>();
-            for (var i = 0; i < 5; i++)
-            {
-                var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
+                var aluno = new RelatorioFrequenciaIndividualAlunosDto()
                 {
-                    Nome = "EI - " + (i + 1) + "A - GABRIELA MANZOLLI ROWLANDS LOPES (7924488)",
-                    Aulas = 234 + i,
-                    FrequenciasPendentes = 5 + i,
-                    DataUltimoRegistroFrequencia = DateTime.Now.ToString(),
-                    DiarioBordoPendentes = 4 + i,
-                    DataUltimoRegistroDiarioBordo = DateTime.Now.ToString(),
+                    NomeAluno = "Antônio CarLos dos santos " + (i + 1) + " (1234567)",
+                    Bimestres = bimestres,
                 };
-                turmas.Add(turma);
+                alunos.Add(aluno);
             }
 
-            var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>();
-            for (var i = 0; i < 5; i++)
+            var model = new RelatorioFrequenciaIndividualDto()
             {
-                var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto()
-                {
-                    Bimestre = (i + 1) + "º BIMESTRE",
-                    TurmasInfantil = turmas,
-                };
-                bimestres.Add(bimestre);
-            }
-
-            var model = new RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto()
-            {
-                Cabecalho = new RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto()
-                {
-                    Dre = "DRE-BT",
-                    Ue = "TODAS",
-                    Turma = "TODAS",
-                    Bimestre = "TODOS",
-                    UsuarioNome = "JULIA FERREIRA DE OLIVEIRA",
-                    UsuarioRF = "1234567",
-                },
-                Bimestre = bimestres,
-
+                DreNome = "DRE - BT",
+                UeNome = "CEU EMEF BUTANTA",
+                Usuario = "JULIA FERREIRA DE OLIVEIRA",
+                RF = "1234567",
+                ehInfantil = true,
+                Alunos = alunos,
             };
 
-            return View("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", model);
+            return View("RelatorioFrequenciaIndividual", model);
         }
 
         [HttpGet("registro-ocorrencias")]
