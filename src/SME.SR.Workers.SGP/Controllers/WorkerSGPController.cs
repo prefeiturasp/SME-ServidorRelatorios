@@ -322,7 +322,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/ocorrencias")]
-        [Action("relatorios/ocorrencias",typeof())]
+        [Action("relatorios/ocorrencias",typeof(IRelatorioOcorrenciasUseCase))]
         public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request,[FromServices] IRelatorioOcorrenciasUseCase useCase)
         {
             await useCase.Executar(request);
