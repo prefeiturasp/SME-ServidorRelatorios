@@ -1314,7 +1314,18 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
+		public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
+		{
+			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
+                          from v_aluno_cotic vac  
+                          where vac.cd_aluno = @codigo";
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            
+			return await conexao.QueryFirstOrDefaultAsync<AlunoNomeDto>(query, new { codigo });
+        }
+
+		public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
         {
             var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
                           from v_aluno_cotic vac  

@@ -134,10 +134,9 @@ namespace SME.SR.Data
             var query = TurmaConsultas.DadosCompletosDreUe;
             var parametros = new { CodigoTurma = codigoTurma };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
-                return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            
+            return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
         }
 
         public async Task<Turma> ObterComDreUePorCodigo(string codigoTurma)

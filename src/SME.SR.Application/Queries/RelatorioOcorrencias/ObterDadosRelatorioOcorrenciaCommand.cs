@@ -3,11 +3,11 @@ using SME.SR.Infra;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosRelatorioOcorrenciaCommand : IRequest<RelatorioRegistroOcorrenciasDto>
+    public class ObterDadosRelatorioOcorrenciaQuery : IRequest<RelatorioRegistroOcorrenciasDto>
     {
         public FiltroImpressaoOcorrenciaDto FiltroOcorrencia { get; set; }
 
-        public ObterDadosRelatorioOcorrenciaCommand(FiltroImpressaoOcorrenciaDto filtroOcorrencia)
+        public ObterDadosRelatorioOcorrenciaQuery(FiltroImpressaoOcorrenciaDto filtroOcorrencia)
         {
             FiltroOcorrencia = filtroOcorrencia;
         }

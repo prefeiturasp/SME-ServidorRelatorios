@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroImpressaoOcorrenciaDto>();
 
-            var retornoRelatorio = await mediator.Send(new ObterDadosRelatorioOcorrenciaCommand(filtroRelatorio));
+            var retornoRelatorio = await mediator.Send(new ObterDadosRelatorioOcorrenciaQuery(filtroRelatorio));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroOcorrencias", retornoRelatorio, request.CodigoCorrelacao));
         }
