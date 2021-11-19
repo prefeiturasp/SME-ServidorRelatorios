@@ -5,7 +5,7 @@
 
 @{
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 44;
+    int contadorMaximoLinhasPorPagina = 43;
     bool quebrou = false;
 
     void MontarCabecalho()
@@ -330,7 +330,7 @@
                             var descricao = notificacoes.Descricao;
                             bool temDescricao = String.IsNullOrEmpty(descricao);
                             int linhasParaEscreverNotificacao = 2;
-                            bool quebraLinha = VerificaQuebra();
+                            bool quebraLinha = VerificaQuebra(linhasParaEscreverNotificacao);
 
                             if (quebraLinha)
                             {
@@ -344,11 +344,22 @@
 
                             MontarLinhaTabela(notificacoes);
 
-                            contadorQuebrarPagina++;
+
+                            int numeroLinhasNotificacoes = notificacoes.Titulo.Length / 35;
+
+                            if (numeroLinhasNotificacoes > 1 && !temDescricao)
+                            {
+                                contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasNotificacoes;
+                            }
+                            else {
+                                contadorQuebrarPagina++;
+                            }
+
 
                             if (!temDescricao)
                             {
                                 int linhasParaEscreverDescricao = 2;
+                                contadorMaximoLinhasPorPagina = 46;
                                 bool quebraDescricao = VerificaQuebra(linhasParaEscreverDescricao);
 
                                 if (quebraDescricao)
