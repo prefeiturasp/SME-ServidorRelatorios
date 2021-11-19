@@ -39,13 +39,13 @@ namespace SME.SR.Application
 
         private async Task MapearCabecalho(RelatorioRegistroOcorrenciasDto relatorio, FiltroImpressaoOcorrenciaDto filtroOcorrencia)
         {
-            var dadosDreUe = await ObterNomeDreUe(filtroOcorrencia.TurmaCodigo);
+            var dadosDreUe = await ObterNomeDreUe(filtroOcorrencia.TurmaId);
 
             var ueCodigoConvertido = Convert.ToInt64(dadosDreUe.UeCodigo);
 
             var enderecoUe = await mediator.Send(new ObterEnderecoUeEolPorCodigoQuery(ueCodigoConvertido));
 
-            relatorio.DreNome = dadosDreUe.UeNome;
+            relatorio.DreNome = dadosDreUe.DreNome;
             relatorio.UeNome = dadosDreUe.UeNome;
             relatorio.Endereco = $"{enderecoUe.Logradouro}, {enderecoUe.Numero} - {enderecoUe.Bairro}";
             relatorio.Contato = enderecoUe.TelefoneFormatado;
@@ -56,37 +56,40 @@ namespace SME.SR.Application
 
         private async Task MapearOcorrencias(RelatorioRegistroOcorrenciasDto relatorio, FiltroImpressaoOcorrenciaDto filtroOcorrencia)
         {
-            var ocorrencias = new List<RelatorioOcorrenciasDto>();
+            var ocorrenciasRelatorio = new List<RelatorioOcorrenciasDto>();
 
-            var ocorrenciasList = await mediator.Send(new ObterOcorrenciasPorCodigoETurmaQuery(filtroOcorrencia.TurmaCodigo, filtroOcorrencia.OcorrenciasIds.ToArray()));
+            var ocorrencias = await mediator.Send(new ObterOcorrenciasPorCodigoETurmaQuery(filtroOcorrencia.TurmaId, filtroOcorrencia.OcorrenciasIds.ToArray()));
 
-            foreach (var item in ocorrenciasList)
+            var codigosAlunos = ocorrencias.Select(a => a.CodigoAluno.ToString());
+            var alunos = await ObterAlunos(codigosAlunos.ToArray());
+
+            foreach (var item in ocorrencias)
             {
+                var aluno = alunos.FirstOrDefault(a => a.Codigo == item.CodigoAluno.ToString());
+
                 var ocorrencia = new RelatorioOcorrenciasDto()
                 {
-                    CriancaNome = await ObterNomeAluno(item.CodigoAluno.ToString()),
+                    CriancaNome = aluno.Nome,
                     Turma = await ObterNomeTurma(item.TurmaId),
                     DataOcorrencia = item.OcorrenciaDataFormatada(),
                     TipoOcorrencia = item.OcorrenciaTipo,
                     TituloOcorrencia = item.OcorrenciaTitulo,
                     DescricaoOcorrencia = item.OcorrenciaDescricao
                 };
-                ocorrencias.Add(ocorrencia);
+                ocorrenciasRelatorio.Add(ocorrencia);
             }
 
-            relatorio.Ocorrencias = ocorrencias;
+            relatorio.Ocorrencias = ocorrenciasRelatorio;
         }
 
-        private async Task<DreUe> ObterNomeDreUe(string turmaCodigo)
+        private async Task<DreUe> ObterNomeDreUe(long turmaId)
         {
-            return await mediator.Send(new ObterDreUePorTurmaIdQuery(turmaCodigo));
+            return await mediator.Send(new ObterDreUePorTurmaIdQuery(turmaId));
         }
 
-        private async Task<string> ObterNomeAluno(string codigoAluno)
+        private async Task<IEnumerable<AlunoNomeDto>> ObterAlunos(string[] codigosAlunos)
         {
-            var aluno = await mediator.Send(new ObterNomeAlunoPorCodigoQuery(codigoAluno));
-            
-            return aluno.Nome;
+            return await mediator.Send(new ObterNomesAlunosPorCodigosQuery(codigosAlunos));
         }
 
         private async Task<string> ObterNomeTurma(long turmaId)

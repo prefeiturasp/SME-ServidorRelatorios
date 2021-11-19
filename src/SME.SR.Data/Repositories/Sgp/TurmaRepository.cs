@@ -1266,6 +1266,15 @@ namespace SME.SR.Data
 
         }
 
+        public async Task<DreUe> ObterDreUePorTurmaId(long turmaId)
+        {
+            var query = TurmaConsultas.DadosCompletosDreUePorTurmaId;
+            var parametros = new { turmaId };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
+        }
     }
 }
 

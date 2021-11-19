@@ -5,11 +5,11 @@ namespace SME.SR.Application
 {
     public class ObterDreUePorTurmaIdQuery : IRequest<DreUe>
     {
-        public ObterDreUePorTurmaIdQuery(string turmaCodigo)
+        public ObterDreUePorTurmaIdQuery(long turmaId)
         {
-            TurmaCodigo = turmaCodigo;
+            TurmaId = turmaId;
         }
 
-        public string TurmaCodigo { get; }
+        public long TurmaId { get; }
     }
 }

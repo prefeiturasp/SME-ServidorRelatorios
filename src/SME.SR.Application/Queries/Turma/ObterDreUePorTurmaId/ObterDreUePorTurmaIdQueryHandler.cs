@@ -16,6 +16,6 @@ namespace SME.SR.Application
         }
 
         public async Task<DreUe> Handle(ObterDreUePorTurmaIdQuery request, CancellationToken cancellationToken)
-        => await turmaRepository.ObterDreUe(request.TurmaCodigo);
+            => await turmaRepository.ObterDreUePorTurmaId(request.TurmaId);
     }
 }

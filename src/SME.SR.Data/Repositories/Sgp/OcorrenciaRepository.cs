@@ -50,12 +50,11 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AcompanhamentoAprendizagemOcorrenciaDto>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> ObterOcorrenciasCodigoETurma(string turmaCodigo, long[] ocorrenciaIds)
+        public async Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> ObterOcorrenciasCodigoETurma(long turmaId, long[] ocorrenciaIds)
         {
-            var query = new StringBuilder(@"
-                        select
-                        	o.id as OcorenciaCodigo, 
-                        	o.turma_id as TurmaCodigo,
+            var query = @"select
+                        	o.id as OcorrenciaId, 
+                        	o.turma_id as TurmaId,
                         	o.titulo as OcorrenciaTitulo,
                         	o.data_ocorrencia as OcorrenciaData,
                         	o.descricao as OcorrenciaDescricao,
@@ -64,21 +63,20 @@ namespace SME.SR.Data
                         from  ocorrencia o
 						inner join ocorrencia_tipo ot on ot.id = o.ocorrencia_tipo_id 
 						inner join ocorrencia_aluno oa on oa.ocorrencia_id = o.id 
-                        inner join turma t on t.id = o.turma_id
-                        	where not o.excluido 
+                        where not o.excluido 
                         	and o.id = any(@ocorrenciaIds)
-                        	and t.turma_id = @turmaCodigo
- 					    order by o.data_ocorrencia desc;");
+                        	and o.turma_id = @turmaId
+ 					    order by o.data_ocorrencia desc";
 
             var parametros = new
             {
-                turmaCodigo,
+                turmaId,
                 ocorrenciaIds
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<OcorrenciasPorCodigoTurmaDto>(query.ToString(), parametros);
+                return await conexao.QueryAsync<OcorrenciasPorCodigoTurmaDto>(query, parametros);
             }
         }
     }

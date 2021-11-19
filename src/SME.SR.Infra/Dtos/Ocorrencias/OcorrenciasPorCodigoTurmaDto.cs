@@ -4,7 +4,7 @@ namespace SME.SR.Infra
 {
     public class OcorrenciasPorCodigoTurmaDto
     {
-        public long OcorenciaId { get; set; }
+        public long OcorrenciaId { get; set; }
         public long TurmaId { get; set; }
         public string OcorrenciaTitulo { get; set; }
         public DateTime OcorrenciaData { get; set; }

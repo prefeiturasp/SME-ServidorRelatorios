@@ -17,7 +17,7 @@ namespace SME.SR.Application
         }
         public Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> Handle(ObterOcorrenciasPorCodigoETurmaQuery request, CancellationToken cancellationToken)
         {
-            return ocorrenciaRepository.ObterOcorrenciasCodigoETurma(request.TurmaCodigo,request.OcorrenciaIds);
+            return ocorrenciaRepository.ObterOcorrenciasCodigoETurma(request.TurmaId, request.OcorrenciaIds);
         }
     }
 }

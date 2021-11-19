@@ -8,6 +8,6 @@ namespace SME.SR.Data.Interfaces
     public interface IOcorrenciaRepository
     {
         Task<IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto>> ObterOcorenciasPorTurmaEAluno(long turmaId, long? alunoCodigo, DateTime dataInicio, DateTime dataFim);
-        Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> ObterOcorrenciasCodigoETurma(string turmaCodigo, long[] ocorrenciaIds);
+        Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> ObterOcorrenciasCodigoETurma(long turmaId, long[] ocorrenciaIds);
     }
 }

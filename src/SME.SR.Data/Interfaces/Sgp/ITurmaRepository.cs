@@ -8,6 +8,7 @@ namespace SME.SR.Data.Interfaces
     public interface ITurmaRepository
     {
         Task<DreUe> ObterDreUe(string codigoTurma);
+        Task<DreUe> ObterDreUePorTurmaId(long turmaId);
         Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId);
         Task<IEnumerable<Aluno>> ObterDadosAlunos(string codigoTurma);
         Task<Turma> ObterComDreUePorCodigo(string codigoTurma);
