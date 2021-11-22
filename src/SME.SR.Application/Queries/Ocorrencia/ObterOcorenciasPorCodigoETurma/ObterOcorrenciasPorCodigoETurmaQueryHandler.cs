@@ -15,9 +15,9 @@ namespace SME.SR.Application
         {
             this.ocorrenciaRepository = ocorrenciaRepository ?? throw new ArgumentNullException(nameof(ocorrenciaRepository));
         }
-        public Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> Handle(ObterOcorrenciasPorCodigoETurmaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> Handle(ObterOcorrenciasPorCodigoETurmaQuery request, CancellationToken cancellationToken)
         {
-            return ocorrenciaRepository.ObterOcorrenciasCodigoETurma(request.TurmaId, request.OcorrenciaIds);
+            return await ocorrenciaRepository.ObterOcorrenciasCodigoETurma(request.TurmaId, request.OcorrenciaIds);
         }
     }
 }

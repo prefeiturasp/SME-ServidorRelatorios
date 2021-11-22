@@ -2,8 +2,6 @@
 
 @{
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 46;
-    int contadorMaximoCaracteresPorLinha = 250;
 
     void MontarCabecalho(string criancaNome, string turma)
     {
@@ -48,67 +46,8 @@
             </table>
         </div>
     }
-
-    bool VerificaQuebra(double numeroLinhasDescricao = 0)
-    {
-        if (contadorQuebrarPagina + numeroLinhasDescricao >= contadorMaximoLinhasPorPagina)
-        {
-            contadorQuebrarPagina = 0;
-            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-            return true;
-        }
-        return false;
-    }
-
-    void InformacoesQuebra()
-    {
-        contadorQuebrarPagina = 0;
-        <div style="page-break-before:always"></div>
-    }
-
-    void MontarTituloDescricao()
-    {
-        <tr>
-            <td colspan="2" class="fundo-cinza">DESCRIÇÃO</td>
-        </tr>
-
-        contadorQuebrarPagina++;
-    }
-
-    void MontarDescricao(SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
-    {
-
-        int iContadorCaracteres = 0;
-        var descricao = ocorrencias.DescricaoOcorrencia;
-        int numeroCaracteresDescricao = descricao != null ? descricao.Length : 0;
-
-        @while (iContadorCaracteres != numeroCaracteresDescricao)
-        {
-            bool quebrarPagina = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
-            if (quebrarPagina)
-            {
-                contadorQuebrarPagina = 0;
-                @Html.Raw("</td></tr></tbody></table>")
-                @Html.Raw("<div style='page-break-before:always'></div>");
-                MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
-                @Html.Raw("<table class='tabela-cabecalho'><tbody>")
-                MontarTituloDescricao();
-                @Html.Raw("<tr><td colspan='2' class='alinhar-esquerda espaco-esquerda-15'>")
-            }
-            else
-            {
-                var qntCaracteresParaBuscar = numeroCaracteresDescricao - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDescricao - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
-                var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
-                iContadorCaracteres += textParaExibir.Length;
-
-                @Html.Raw(textParaExibir)
-
-                contadorQuebrarPagina++;
-            }
-        }
-    }
-
-    void MontarTabela(SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
+   
+    void MontarDadosOcorrencia (SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
     {
         <tr>
             <td class="espaco-esquerda-15 alinhar-esquerda fundo-cinza" width="30%">DATA DA OCORRÊNCIA</td>
@@ -124,37 +63,47 @@
         </tr>
 
         contadorQuebrarPagina += 3;
+    }
 
-        MontarTituloDescricao();
+    void MontarTabela(SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
+    {
+        if (ocorrencias.ImprimirDadosOcorrencia) 
+        { 
+            MontarDadosOcorrencia(ocorrencias);
+        }
 
         <tr>
+            <td colspan="2" class="fundo-cinza">DESCRIÇÃO</td>
+        </tr>
+        <tr>
             <td colspan="2" class="alinhar-esquerda espaco-esquerda-15">
-                @{MontarDescricao(ocorrencias);}
+                @ocorrencias.DescricaoOcorrencia
             </td>
         </tr>
-
     }
 
     void MontarAssinatura()
     {
-        <div class="d-flex mt-40 fonte-14">Estou ciente da ocorrência</div>
+        <div class="d-flex mt-40 fonte-14">Estou ciente desta  ocorrência</div>
         <div class="d-flex mt-40 justify-content-between">
-            <div>
-                <div>
-                    <div class="linha-assinatura"></div>
-                </div>
-                <div class="texto-assinatura" style="margin-left: 202px;">Assinatura do responsável</div>
-            </div>
-            <div>
-                <div class="d-flex">
-                    <div>____</div>
-                    <div class="contra-barra">___</div>
-                    <div>____</div>
-                    <div class="contra-barra">___</div>
-                    <div>______</div>
-                </div>
-                <div class="texto-assinatura" style="margin-left: 44px;">Data da assinatura</div>
-            </div>
+            <table class="tabela-cabecalho">
+                <tr>
+                    <td width="78%" style="border: 0; position: relative;">
+                        <div class="linha-assinatura"></div>
+                    </td>
+                    <td width="22%" style="border: 0; font-size: 30px;">
+                        __ / __ / ___
+                    </td>
+                </tr>
+                <tr style="">
+                    <td style="border: 0;">
+                        <div class="texto-assinatura">Assinatura do responsável</div>
+                    </td>
+                    <td style="border:0;">
+                        <div class="texto-assinatura">Data assinatura</div>
+                    </td>
+                </tr>
+            </table>
         </div>
     }
 }
@@ -293,23 +242,21 @@
         }
 
         .linha-assinatura {
-            width: 545px;
+            width: 540px;
             border-bottom: 1px solid #42474a;
-            margin-top: 16px;
-        }
-
-        .contra-barra {
-            transform: rotate(-65deg);
-            margin-top: -10px;
+            position: absolute;
+            bottom: 5px;
         }
 
         .texto-assinatura {
             font-size: 12px;
             margin-top: 5px;
+            margin-left: -20px;
         }
 
         .d-flex {
             display: flex;
+            flex-direction: row;
         }
 
         .justify-content-between {
@@ -318,8 +265,6 @@
     </style>
     <div>
         @{
-
-            int contadorOcorrencias = 0;
             foreach (var ocorrencias in Model.Ocorrencias)
             {
                 MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
@@ -330,21 +275,10 @@
                     </tbody>
                 </table>
 
-                bool quebra = VerificaQuebra(5);
-                if (quebra)
+                if (ocorrencias.EhUltimaPagina)
                 {
-                    InformacoesQuebra();
-                    MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
+                    MontarAssinatura();
                 }
-
-                MontarAssinatura();
-
-                if (contadorOcorrencias < Model.Ocorrencias.Count - 1)
-                {
-                    InformacoesQuebra();
-                }
-
-                contadorOcorrencias++;
             }
         }
     </div>
