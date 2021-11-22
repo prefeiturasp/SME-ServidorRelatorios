@@ -16,12 +16,15 @@ namespace SME.SR.Application
     {
         private readonly IConverter converter;
         private readonly IHtmlHelper htmlHelper;
+        private readonly IServicoFila servicoFila;
 
         public GerarRelatorioOcorrenciasCommandHandler(IConverter converter,
-                                                       IHtmlHelper htmlHelper)
+                                                       IHtmlHelper htmlHelper,
+                                                       IServicoFila servicoFila)
         {
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
             this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
+            this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
 
@@ -69,6 +72,8 @@ namespace SME.SR.Application
 
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
             pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de ocorrências");
+
+            await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
     }
 }
