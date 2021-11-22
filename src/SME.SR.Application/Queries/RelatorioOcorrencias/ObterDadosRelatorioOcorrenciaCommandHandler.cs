@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,12 +70,12 @@ namespace SME.SR.Application
 
                 var ocorrencia = new RelatorioOcorrenciasDto()
                 {
-                    CriancaNome = aluno.Nome,
+                    CriancaNome = $"{aluno.Nome}({aluno.Codigo})",
                     Turma = await ObterNomeTurma(item.TurmaId),
-                    DataOcorrencia = item.OcorrenciaDataFormatada(),
+                    DataOcorrencia = $"{item.OcorrenciaDataFormatada()}h",
                     TipoOcorrencia = item.OcorrenciaTipo,
                     TituloOcorrencia = item.OcorrenciaTitulo,
-                    DescricaoOcorrencia = item.OcorrenciaDescricao
+                    DescricaoOcorrencia = UtilRegex.RemoverTagsHtmlMultiMidia(item.OcorrenciaDescricao)
                 };
                 ocorrenciasRelatorio.Add(ocorrencia);
             }

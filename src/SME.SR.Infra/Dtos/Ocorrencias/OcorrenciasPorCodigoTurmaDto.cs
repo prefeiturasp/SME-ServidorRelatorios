@@ -11,6 +11,6 @@ namespace SME.SR.Infra
         public string OcorrenciaDescricao { get; set; }
         public string OcorrenciaTipo { get; set; }
         public long CodigoAluno { get; set; }
-        public string OcorrenciaDataFormatada() => OcorrenciaData.ToString("dd/MM/yyyy");
+        public string OcorrenciaDataFormatada() => OcorrenciaData.ToString("dd/MM/yyyy HH:mm");
     }
 }
