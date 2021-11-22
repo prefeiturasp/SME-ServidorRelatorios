@@ -45,6 +45,7 @@ namespace SME.SR.Application
                     relatorio.Contato = request.Relatorio.Contato;
                     relatorio.UsuarioNome = request.Relatorio.UsuarioNome;
                     relatorio.UsuarioRF = request.Relatorio.UsuarioRF;
+                    relatorio.EhUltimaPagina = noPagina == numeroPaginasAluno;
 
                     var descricaoOcorrencia = tamanhoDescricao <= limiteCaracteres ? descricao :
                         descricao.Substring((noPagina * limiteCaracteres) - limiteCaracteres,
