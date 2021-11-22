@@ -57,7 +57,7 @@ namespace SME.SR.Data
                         	o.turma_id as TurmaId,
                         	o.titulo as OcorrenciaTitulo,
                         	o.data_ocorrencia as OcorrenciaData,
-                        	o.descricao as OcorrenciaDescricao,
+                        	o.descricao as OcorrenciaDescricaoComTagsHtml,
                         	ot.descricao as OcorrenciaTipo,
 							oa.codigo_aluno as CodigoAluno
                         from  ocorrencia o
@@ -76,7 +76,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<OcorrenciasPorCodigoTurmaDto>(query, parametros);
+                return await conexao.QueryAsync<OcorrenciasPorCodigoTurmaDto>(query, parametros);                
             }
         }
     }

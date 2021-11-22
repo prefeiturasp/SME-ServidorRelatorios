@@ -75,7 +75,7 @@ namespace SME.SR.Application
                     DataOcorrencia = $"{item.OcorrenciaDataFormatada()}h",
                     TipoOcorrencia = item.OcorrenciaTipo,
                     TituloOcorrencia = item.OcorrenciaTitulo,
-                    DescricaoOcorrencia = UtilRegex.RemoverTagsHtmlMultiMidia(item.OcorrenciaDescricao)
+                    DescricaoOcorrencia = item.OcorrenciaDescricao
                 };
                 ocorrenciasRelatorio.Add(ocorrencia);
             }

@@ -13,6 +13,5 @@ namespace SME.SR.Infra
         public string UsuarioRF { get; set; }
         public string DataImpressao => DateTime.Now.ToString("dd/MM/yyyy");
         public List<RelatorioOcorrenciasDto> Ocorrencias { get; set; }
-        public bool EhUltimaPagina { get; set; }
     }
 }

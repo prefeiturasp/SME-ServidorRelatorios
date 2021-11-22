@@ -45,13 +45,14 @@ namespace SME.SR.Application
                     relatorio.Contato = request.Relatorio.Contato;
                     relatorio.UsuarioNome = request.Relatorio.UsuarioNome;
                     relatorio.UsuarioRF = request.Relatorio.UsuarioRF;
-                    relatorio.EhUltimaPagina = noPagina == numeroPaginasAluno;
 
                     var descricaoOcorrencia = tamanhoDescricao <= limiteCaracteres ? descricao :
                         descricao.Substring((noPagina * limiteCaracteres) - limiteCaracteres,
                                             Math.Min(descricao.Length - ((noPagina-1) * limiteCaracteres), limiteCaracteres));
 
                     ocorrencia.DescricaoOcorrencia = descricaoOcorrencia ?? string.Empty;
+                    ocorrencia.ImprimirDadosOcorrencia = noPagina == 1;
+                    ocorrencia.EhUltimaPagina = noPagina == numeroPaginasAluno;
                     relatorio.Ocorrencias = new List<RelatorioOcorrenciasDto>() { ocorrencia };
 
                     var html = await htmlHelper.RenderRazorViewToString("RelatorioRegistroOcorrencias", relatorio);
