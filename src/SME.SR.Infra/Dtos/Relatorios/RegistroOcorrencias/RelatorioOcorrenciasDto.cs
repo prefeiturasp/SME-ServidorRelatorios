@@ -7,6 +7,9 @@
         public string Turma { get; set; }
         public string TipoOcorrencia { get; set; }
         public string TituloOcorrencia { get; set; }
-        public string DescricaoOcorrencia { get; set; }        
+        public string DescricaoOcorrencia { get; set; }  
+        public bool ImprimirDadosOcorrencia { get; set; }
+        public bool EhUltimaPagina { get; set; }
+
     }
 }
