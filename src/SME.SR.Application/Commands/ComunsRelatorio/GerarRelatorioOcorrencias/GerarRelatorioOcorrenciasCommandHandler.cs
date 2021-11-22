@@ -51,7 +51,7 @@ namespace SME.SR.Application
                         descricao.Substring((noPagina * limiteCaracteres) - limiteCaracteres,
                                             Math.Min(descricao.Length - ((noPagina-1) * limiteCaracteres), limiteCaracteres));
 
-                    ocorrencia.DescricaoOcorrencia = descricaoOcorrencia;
+                    ocorrencia.DescricaoOcorrencia = descricaoOcorrencia ?? string.Empty;
                     relatorio.Ocorrencias = new List<RelatorioOcorrenciasDto>() { ocorrencia };
 
                     var html = await htmlHelper.RenderRazorViewToString("RelatorioRegistroOcorrencias", relatorio);
