@@ -38,6 +38,7 @@
         public const string RotaRelatoriosComErroAtaBimestralResultados = "sgp.relatorios.erro.notificar.atabimestralresultados";
         public const string RotaRelatoriosComErroHistoricoEscolar = "sgp.relatorios.erro.notificar.historicoescolar";
         public const string RotaRelatoriosComErroAcompanhamentoFrequencia = "sgp.relatorios.erro.notificar.acompanhamentofrequencia";
+        public const string RotaRelatoriosComErroRelatorioOcorrencia = "sgp.relatorios.erro.notificar.relatorioocorrencia";
 
         public const string RotaRelatoriosComErroRelatorioAcompanhamentoRegistrosPedagogicos = "sgp.relatorios.erro.notificar.relatorioacompanhamentoregistrospedagogicos";
     }
