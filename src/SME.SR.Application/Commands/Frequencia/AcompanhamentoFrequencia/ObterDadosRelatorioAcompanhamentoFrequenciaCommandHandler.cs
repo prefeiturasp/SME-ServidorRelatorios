@@ -138,7 +138,7 @@ namespace SME.SR.Application
                 if (dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
                 {
                     var alunoAtivo = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo)).FirstOrDefault().Ativo;
-                    var situacaoAluno = alunoAtivo ? string.Empty : " - Inativo";
+                    var situacaoAluno = alunoAtivo ? string.Empty : " - INATIVO";
                     var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                     {
                         NomeAluno = aluno.Nome + $"({aluno.Codigo})" + situacaoAluno,
