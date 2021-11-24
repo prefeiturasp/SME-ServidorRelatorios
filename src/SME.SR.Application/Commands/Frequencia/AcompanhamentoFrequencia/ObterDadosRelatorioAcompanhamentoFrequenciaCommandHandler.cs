@@ -112,7 +112,7 @@ namespace SME.SR.Application
         private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio, Turma turma)
         {
             var dadosDreUe = await ObterNomeDreUe(filtroRelatorio.TurmaCodigo);
-            
+
             relatorio.RF = filtroRelatorio.UsuarioRF;
             relatorio.Usuario = filtroRelatorio.UsuarioNome;
             relatorio.DreNome = dadosDreUe.DreNome;
@@ -130,34 +130,27 @@ namespace SME.SR.Application
             var id = Convert.ToInt64(componenteCodigo);
             return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(id));
         }
-        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto,Turma turma)
+        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, Turma turma)
         {
-            try
+
+            foreach (var aluno in alunos.OrderBy(x => x.Nome))
             {
-                foreach (var aluno in alunos.OrderBy(x => x.Nome))
+                if (dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
                 {
-                    if (dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
+                    var alunoAtivo = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo)).FirstOrDefault().Ativo;
+                    var situacaoAluno = alunoAtivo ? string.Empty : " - Inativo";
+                    var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                     {
-                        var alunoAtivo = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo)).FirstOrDefault().Ativo;
-                        var situacaoAluno = alunoAtivo ? string.Empty : " - Inativo";
-                        var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
-                        {
-                            NomeAluno = aluno.Nome + $"({aluno.Codigo})" + situacaoAluno,
-                            CodigoAluno = aluno.Codigo
-                        };
+                        NomeAluno = aluno.Nome + $"({aluno.Codigo})" + situacaoAluno,
+                        CodigoAluno = aluno.Codigo
+                    };
 
-                        if (relatorio != null)
-                        {
-                            MapearBimestre(dadosFrequenciaDto, ausenciaBimestreDto, relatorioFrequenciaIndividualAlunosDto);
-                        }
-                        relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
+                    if (relatorio != null)
+                    {
+                        MapearBimestre(dadosFrequenciaDto, ausenciaBimestreDto, relatorioFrequenciaIndividualAlunosDto);
                     }
+                    relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
                 }
-            }
-            catch (Exception ex)
-            {
-
-                throw;
             }
         }
         private async Task<DreUe> ObterNomeDreUe(string turmaCodigo)
