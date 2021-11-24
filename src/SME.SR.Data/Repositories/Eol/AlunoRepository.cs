@@ -263,7 +263,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunoHistoricoEscolar(long[] codigosAlunos)
         {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosHistoricoEscolar') IS NOT NULL
+            /*var query = @"IF OBJECT_ID('tempdb..#tmpAlunosHistoricoEscolar') IS NOT NULL
 						DROP TABLE #tmpAlunosHistoricoEscolar
 					CREATE TABLE #tmpAlunosHistoricoEscolar 
 					(
@@ -390,8 +390,8 @@ namespace SME.SR.Data
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND matr3.cd_aluno in @codigosAluno) 
-					SELECT
+							AND matr3.cd_aluno in @codigosAluno) */
+				var query =	@"SELECT
 					CodigoAluno,
 					NomeAluno,
 					NomeSocialAluno,
@@ -409,7 +409,8 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada
-					FROM #tmpAlunosHistoricoEscolar
+					FROM alunos_historico_escolar_norm
+					WHERE CodigoAluno in @codigosAlunos
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,
@@ -437,7 +438,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos, int? anoLetivo)
         {
-            var query = @$"
+           /* var query = @$"
 
 					IF OBJECT_ID('tempdb..#tmpAlunos') IS NOT NULL
 											DROP TABLE #tmpAlunos
@@ -592,8 +593,8 @@ namespace SME.SR.Data
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND matr3.cd_aluno in (#codigosAlunos)) 
-					SELECT
+							AND matr3.cd_aluno in (#codigosAlunos)) */
+           var query = @"SELECT
 					CodigoAluno,
 					NomeAluno,
 					NomeSocialAluno,
@@ -613,7 +614,7 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada
-					FROM #tmpAlunosPorCodigo
+					FROM alunos_norm WHERE CodigoAluno in (#codigosAlunos) and (AnoLetivo is null OR AnoLetivo =  @anoLetivo)
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,
@@ -775,7 +776,8 @@ namespace SME.SR.Data
 
 		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma)
 		{
-			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+			
+			/*var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -876,8 +878,8 @@ namespace SME.SR.Data
 	                    INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 	                    WHERE mte1.cd_matricula = mte3.cd_matricula
 		                    AND mte1.cd_turma_escola in @CodigosTurma) 
-
-					SELECT
+*/
+			var query = @"SELECT
 					CodigoTurma,
 					CodigoAluno,
 					NomeAluno,
@@ -885,10 +887,11 @@ namespace SME.SR.Data
 					DataNascimento,
 					CodigoSituacaoMatricula,
 					SituacaoMatricula,
-					MAX(DataSituacao) DataSituacao ,
+					MAX(DataSituacao) DataSituacao,
 					NumeroAlunoChamada,
 					PossuiDeficiencia
-					FROM #tmpAlunosFrequencia
+					FROM alunos_frequencia_norm
+					WHERE CodigoTurma in @CodigosTurma
 					GROUP BY
 					CodigoTurma,
 					CodigoAluno,
@@ -911,7 +914,7 @@ namespace SME.SR.Data
 
 		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
         {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+            /*var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
 					CREATE TABLE #tmpAlunosPorCodigo 
 					(
@@ -1045,8 +1048,8 @@ namespace SME.SR.Data
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND matr3.cd_aluno in @codigosAluno) 
-					SELECT
+							AND matr3.cd_aluno in @codigosAluno) */
+				var query = @"	SELECT
 					CodigoAluno,
 					NomeAluno,
 					NomeSocialAluno,
@@ -1066,7 +1069,7 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada
-					FROM #tmpAlunosPorCodigo
+					FROM alunos_norm
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,
@@ -1097,7 +1100,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigosEAnoLetivo(long[] codigosAlunos, long anoLetivo)
         {
-            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
+            /*var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
 					CREATE TABLE #tmpAlunosPorCodigo 
 					(
@@ -1231,7 +1234,9 @@ namespace SME.SR.Data
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						WHERE mte.cd_matricula = mte3.cd_matricula
 							AND matr3.cd_aluno in @codigosAluno) 
-					SELECT
+				*/
+            
+            var query = @"SELECT
 					CodigoAluno,
 					NomeAluno,
 					NomeSocialAluno,
@@ -1251,7 +1256,8 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada
-					FROM #tmpAlunosPorCodigo
+					FROM 
+					     WHERE alunos_norm CodigoAluno in @codigosAluno AND AnoLetivo = @anoLetivo
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,
