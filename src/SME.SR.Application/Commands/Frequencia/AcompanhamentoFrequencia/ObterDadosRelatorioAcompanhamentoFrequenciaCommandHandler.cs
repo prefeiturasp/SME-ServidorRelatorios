@@ -24,7 +24,8 @@ namespace SME.SR.Application
         {
             var relatorio = new RelatorioFrequenciaIndividualDto();
             var alunosSelecionados = new List<AlunoNomeDto>();
-            await MapearCabecalho(relatorio, request.FiltroRelatorio);
+            var turma = await ObterDadosDaTurma(request.FiltroRelatorio.TurmaCodigo);
+            await MapearCabecalho(relatorio, request.FiltroRelatorio, turma);
             relatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
             if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
             {
@@ -49,7 +50,7 @@ namespace SME.SR.Application
                     throw new NegocioException("Nenhuma informação para os filtros informados.");
 
                 var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
-                MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia);
+                await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia, turma);
             }
             return relatorio;
         }
@@ -108,38 +109,39 @@ namespace SME.SR.Application
                 aluno.PercentualFrequenciaFinal = aluno.Bimestres.Average(x => x.DadosFrequencia.TotalPercentualFrequencia);
             }
         }
-        private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio)
+        private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio, Turma turma)
         {
             var dadosDreUe = await ObterNomeDreUe(filtroRelatorio.TurmaCodigo);
-            var turma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtroRelatorio.TurmaCodigo));
 
             relatorio.RF = filtroRelatorio.UsuarioRF;
             relatorio.Usuario = filtroRelatorio.UsuarioNome;
             relatorio.DreNome = dadosDreUe.DreNome;
             relatorio.UeNome = dadosDreUe.UeNome;
             relatorio.ComponenteNome = await ObterNomeComponente(filtroRelatorio.ComponenteCurricularId);
-            relatorio.TurmaNome = await ObterNomeTurma(filtroRelatorio.TurmaCodigo);
+            relatorio.TurmaNome = turma.NomePorFiltroModalidade(null);
             relatorio.ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
         }
-        private async Task<string> ObterNomeTurma(string turmaCodigo)
+        private async Task<Turma> ObterDadosDaTurma(string turmaCodigo)
         {
-            var consulta =  await mediator.Send(new ObterTurmaPorCodigoQuery(turmaCodigo));
-            return consulta.NomePorFiltroModalidade(null);
+            return await mediator.Send(new ObterTurmaPorCodigoQuery(turmaCodigo));
         }
         private async Task<string> ObterNomeComponente(string componenteCodigo)
         {
             var id = Convert.ToInt64(componenteCodigo);
             return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(id));
         }
-        private void MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto)
+        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, Turma turma)
         {
+
             foreach (var aluno in alunos.OrderBy(x => x.Nome))
             {
                 if (dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
                 {
+                    var alunoAtivo = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo)).FirstOrDefault().Ativo;
+                    var situacaoAluno = alunoAtivo ? string.Empty : " - Inativo";
                     var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                     {
-                        NomeAluno = aluno.Nome + $"({aluno.Codigo})",
+                        NomeAluno = aluno.Nome + $"({aluno.Codigo})" + situacaoAluno,
                         CodigoAluno = aluno.Codigo
                     };
 
