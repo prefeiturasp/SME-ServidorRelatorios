@@ -88,11 +88,15 @@
         <div class="d-flex mt-40 justify-content-between">
             <table class="tabela-cabecalho">
                 <tr>
-                    <td width="78%" style="border: 0; position: relative;">
-                        <div class="linha-assinatura"></div>
+                    <td width='75%' style='border: 0; position: relative;'>
+                        <div class='linha-assinatura'></div>
                     </td>
-                    <td width="22%" style="border: 0; font-size: 30px;">
-                        __ / __ / ___
+                    <td width='25%' style='border: 0; position: relative;'>
+                        <table class='linha-data'>
+                            <th style='width: 30%'>/</th>
+                            <th style='width: 30%'>/</th>
+                            <th style='width: 40%'></th>
+                        </table>
                     </td>
                 </tr>
                 <tr style="">
@@ -239,6 +243,19 @@
 
         .centralizar {
             text-align: center;
+        }
+
+        .linha-data th {
+            border: 0;
+            font-size: 25px;
+        }
+
+        .linha-data {
+            width: 190px;
+            border-bottom: 1px solid #42474a;
+            position: absolute;
+            bottom: 5px;
+            text-align: right;
         }
 
         .linha-assinatura {
