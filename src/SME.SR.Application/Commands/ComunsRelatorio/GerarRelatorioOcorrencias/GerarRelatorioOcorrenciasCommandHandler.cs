@@ -32,7 +32,7 @@ namespace SME.SR.Application
         {
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-            var limiteCaracteres = 6150;
+            var limiteCaracteres = 5945;
             foreach (var ocorrencia in request.Relatorio.Ocorrencias)
             {
                 var descricao = ocorrencia.DescricaoOcorrencia;
