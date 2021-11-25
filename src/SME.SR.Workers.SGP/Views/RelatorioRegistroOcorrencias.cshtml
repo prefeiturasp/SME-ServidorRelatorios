@@ -285,12 +285,15 @@
             foreach (var ocorrencias in Model.Ocorrencias)
             {
                 MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
-
-                <table class="tabela-cabecalho">
-                    <tbody>
-                        @{ MontarTabela(ocorrencias); }
-                    </tbody>
-                </table>
+                
+                if(!string.IsNullOrEmpty(ocorrencias.DescricaoOcorrencia))
+                {
+                    <table class="tabela-cabecalho">
+                        <tbody>
+                            @{ MontarTabela(ocorrencias); }
+                        </tbody>
+                    </table>
+                }
 
                 if (ocorrencias.EhUltimaPagina)
                 {

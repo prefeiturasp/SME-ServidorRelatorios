@@ -37,7 +37,8 @@ namespace SME.SR.Application
             {
                 var descricao = ocorrencia.DescricaoOcorrencia;
                 var tamanhoDescricao = descricao.Length;
-                var numeroPaginasAluno = (tamanhoDescricao / limiteCaracteres) + 1;
+                var tamanhoDescricaoComAssinatura = tamanhoDescricao + 560;
+                var numeroPaginasAluno = (tamanhoDescricaoComAssinatura / limiteCaracteres) + 1;
 
                 for (int noPagina = 1; noPagina <= numeroPaginasAluno; noPagina++)
                 {
@@ -50,8 +51,8 @@ namespace SME.SR.Application
                     relatorio.UsuarioRF = request.Relatorio.UsuarioRF;
 
                     var descricaoOcorrencia = tamanhoDescricao <= limiteCaracteres ? descricao :
-                        descricao.Substring((noPagina * limiteCaracteres) - limiteCaracteres,
-                                            Math.Min(descricao.Length - ((noPagina-1) * limiteCaracteres), limiteCaracteres));
+                        descricao.Substring(Math.Min((noPagina * limiteCaracteres) - limiteCaracteres, tamanhoDescricao),
+                                            Math.Min(Math.Max(tamanhoDescricao - ((noPagina-1) * limiteCaracteres),0), limiteCaracteres));
 
                     ocorrencia.DescricaoOcorrencia = descricaoOcorrencia ?? string.Empty;
                     ocorrencia.ImprimirDadosOcorrencia = noPagina == 1;
