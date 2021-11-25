@@ -482,7 +482,8 @@ namespace SME.SR.Data
             var query = @" select
  	                         afa.codigo_aluno as codigoAluno,
                              a.data_aula dataAusencia,
-                             coalesce(ma.descricao,afa.anotacao) motivoAusencia,
+                             /*coalesce(ma.descricao,afa.anotacao) motivoAusencia, VOLTAR ESSE CODIGO DEPOISSSSSSSSSS*/
+                             afa.anotacao motivoAusencia,
                              pe.bimestre
                          from 
                              anotacao_frequencia_aluno afa 
