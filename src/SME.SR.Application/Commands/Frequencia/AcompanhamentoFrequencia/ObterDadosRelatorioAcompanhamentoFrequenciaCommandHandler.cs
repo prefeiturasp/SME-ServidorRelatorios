@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SME.SR.Application
 {
@@ -89,7 +90,7 @@ namespace SME.SR.Application
                                     var justificativa = new RelatorioFrequenciaIndividualJustificativasDto
                                     {
                                         DataAusencia = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
-                                        MotivoAusencia = ausencia.MotivoAusencia,
+                                        MotivoAusencia = HttpUtility.HtmlEncode(ausencia.MotivoAusencia),
                                     };
 
                                     bimestre.Justificativas.Add(justificativa);
@@ -141,7 +142,7 @@ namespace SME.SR.Application
                     var situacaoAluno = alunoAtivo ? string.Empty : " - Inativo";
                     var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                     {
-                        NomeAluno = aluno.Nome + $"({aluno.Codigo})" + situacaoAluno,
+                        NomeAluno =  $"{aluno.Nome} ({aluno.Codigo}) {situacaoAluno}",
                         CodigoAluno = aluno.Codigo
                     };
 
