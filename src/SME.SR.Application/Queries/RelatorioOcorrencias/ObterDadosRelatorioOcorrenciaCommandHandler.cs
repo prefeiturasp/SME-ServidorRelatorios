@@ -72,7 +72,7 @@ namespace SME.SR.Application
                 {
                     CriancaNome = $"{aluno.Nome}({aluno.Codigo})",
                     Turma = await ObterNomeTurma(item.TurmaId),
-                    DataOcorrencia = $"{item.OcorrenciaDataFormatada()}h",
+                    DataOcorrencia = item.OcorrenciaData,
                     TipoOcorrencia = item.OcorrenciaTipo,
                     TituloOcorrencia = item.OcorrenciaTitulo,
                     DescricaoOcorrencia = item.OcorrenciaDescricao
