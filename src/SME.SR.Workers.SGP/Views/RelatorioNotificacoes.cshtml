@@ -5,7 +5,7 @@
 
 @{
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 43;
+    int contadorMaximoLinhasPorPagina = 45;
     bool quebrou = false;
 
     void MontarCabecalho()
@@ -46,7 +46,6 @@
             quebrou = true;
             return true;
         }
-        quebrou = false;
         return false;
 
     }
@@ -148,7 +147,7 @@
 <head>
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto%20Mono' rel='stylesheet'>
     <title>RELATÓRIO DE NOTIFICAÇÕES</title>
 </head>
 
@@ -161,7 +160,7 @@
 
         .body-relatorio {
             margin: 0.5cm auto;
-            font-family: Roboto, sans-serif;
+            font-family: Roboto Mono;
             width: 21cm;
             min-height: 29.7cm;
             background: white;
@@ -286,7 +285,7 @@
             int contadorUsuarios = 0;
             foreach (var usuarios in Model.Usuarios)
             {
-                int numerLinhasParaEscrever = 2;
+                int numerLinhasParaEscrever = 3;
                 bool quebraSuperior = VerificaQuebra(numerLinhasParaEscrever);
 
                 if (quebraSuperior)
@@ -299,7 +298,7 @@
                         @{
                             if (contadorUsuarios > 0)
                             {
-                                int linhasParaEscreverEspacoBranco = 3;
+                                int linhasParaEscreverEspacoBranco = 5;
                                 bool quebraEspacoBranco = VerificaQuebra(linhasParaEscreverEspacoBranco);
 
                                 if (quebraEspacoBranco)
@@ -328,9 +327,10 @@
                         @foreach (var notificacoes in usuarios.Notificacoes)
                         {
                             var descricao = notificacoes.Descricao;
-                            bool temDescricao = String.IsNullOrEmpty(descricao);
-                            int linhasParaEscreverNotificacao = 2;
+                            bool ehDescricaoVaziaOuNula = String.IsNullOrEmpty(descricao);
+                            int linhasParaEscreverNotificacao = 3;
                             bool quebraLinha = VerificaQuebra(linhasParaEscreverNotificacao);
+                            quebrou = false;
 
                             if (quebraLinha)
                             {
@@ -344,10 +344,13 @@
 
                             MontarLinhaTabela(notificacoes);
 
+                            int numCaracteresNotificacoes = notificacoes.Titulo.Length;
+                            double numMaxCaracteresNotificacoes = 38;
 
-                            int numeroLinhasNotificacoes = notificacoes.Titulo.Length / 35;
+                            double numeroLinhasNotificacoes = numCaracteresNotificacoes / numMaxCaracteresNotificacoes;
+                            numeroLinhasNotificacoes = Math.Round(numeroLinhasNotificacoes, 1);
 
-                            if (numeroLinhasNotificacoes > 1 && !temDescricao)
+                            if (numeroLinhasNotificacoes > 1 && ehDescricaoVaziaOuNula)
                             {
                                 contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasNotificacoes;
                             }
@@ -356,9 +359,9 @@
                             }
 
 
-                            if (!temDescricao)
+                            if (!ehDescricaoVaziaOuNula)
                             {
-                                int linhasParaEscreverDescricao = 2;
+                                int linhasParaEscreverDescricao = 3;
                                 contadorMaximoLinhasPorPagina = 46;
                                 bool quebraDescricao = VerificaQuebra(linhasParaEscreverDescricao);
 
