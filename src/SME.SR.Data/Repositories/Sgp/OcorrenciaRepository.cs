@@ -56,7 +56,7 @@ namespace SME.SR.Data
                         	o.id as OcorrenciaId, 
                         	o.turma_id as TurmaId,
                         	o.titulo as OcorrenciaTitulo,
-                        	TO_CHAR(o.data_ocorrencia,'dd/MM/yyyy') ||' '||TO_CHAR(o.hora_ocorrencia ,'HH:mm')|| 'h' as OcorrenciaData,
+                        	TO_CHAR(o.data_ocorrencia,'dd/MM/yyyy') ||' '||TO_CHAR(o.hora_ocorrencia ,'HH24:MI')|| 'h' as OcorrenciaData,
                         	o.descricao as OcorrenciaDescricaoComTagsHtml,
                         	ot.descricao as OcorrenciaTipo,
 							oa.codigo_aluno as CodigoAluno
