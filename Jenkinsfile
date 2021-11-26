@@ -22,6 +22,17 @@ pipeline {
             steps { checkout scm }            
         }
 
+        stage('Sonar') {
+	       when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'release'; branch 'release-r2'; branch 'infra/*'; } } 
+         steps {
+             withSonarQubeEnv('sonarqube-local'){
+               sh 'dotnet-sonarscanner begin /k:"SME-Servidor-Relatorios"'
+               sh 'dotnet build SME-Servidor-Relatorios.sln'
+               sh 'dotnet-sonarscanner'
+           }
+         }
+       }
+
         stage('Build') {
           when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'release'; branch 'release-r2'; } } 
           steps {
