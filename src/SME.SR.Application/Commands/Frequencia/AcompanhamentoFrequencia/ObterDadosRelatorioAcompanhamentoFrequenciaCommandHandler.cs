@@ -3,6 +3,7 @@ using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -140,11 +141,21 @@ namespace SME.SR.Application
             {
                 if (dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
                 {
-                    var alunoAtivo = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo)).FirstOrDefault().Ativo;
-                    var situacaoAluno = alunoAtivo ? string.Empty : " - Inativo";
+                    var descricaoSituacaoAluno = string.Empty;
+
+                    var situacaoAluno = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo));
+
+                    if (situacaoAluno != null && situacaoAluno.Any())
+                    {
+                        var dataUltimaSituacao = situacaoAluno.Max(a => a.DataSituacao);
+
+                        var ultimaSituacaoAluno = situacaoAluno.Where(x => x.DataSituacao == dataUltimaSituacao).FirstOrDefault();
+
+                        descricaoSituacaoAluno = ultimaSituacaoAluno.Ativo ? string.Empty : $" - {ultimaSituacaoAluno.SituacaoRelatorio.FormatarPrimeiraMaiuscula()}";
+                    }
                     var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                     {
-                        NomeAluno =  $"{aluno.Nome} ({aluno.Codigo}) {situacaoAluno}",
+                        NomeAluno =  $"{aluno.Nome} ({aluno.Codigo}) {descricaoSituacaoAluno}",
                         CodigoAluno = aluno.Codigo
                     };
 
