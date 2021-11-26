@@ -32,7 +32,7 @@ namespace SME.SR.Application
         {
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-            var limiteCaracteres = 5000;
+            var limiteCaracteres = 4800;
             var qtdeCaracteresPorLinha = 110;
             var qtdeCaracteresPagina = 0;
             var qtdeAlunos = request.Relatorio.Alunos.Count();
