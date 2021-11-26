@@ -5,7 +5,7 @@
 
 @{
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 45;
+    int contadorMaximoLinhasPorPagina = 48; 
     bool quebrou = false;
 
     void MontarCabecalho()
@@ -81,33 +81,33 @@
     void MontarTitulo()
     {
         <tr>
-            <td width='11%' class='fundo-cinza'>CÓDIGO</td>
-            <td width='25%' class='fundo-cinza'>TÍTULO DA NOTIFICAÇÃO</td>
+            <td width='10%' class='fundo-cinza'>CÓDIGO</td>
+            <td width='53%' class='fundo-cinza'>TÍTULO DA NOTIFICAÇÃO</td>
             <td width='12%' class='fundo-cinza'>CATEGORIA</td>
-            <td width='12%' class='fundo-cinza'>TIPO</td>
-            <td width='12%' class='fundo-cinza'>SITUAÇÃO @contadorQuebrarPagina</td>
-            <td width='15%' class='fundo-cinza'>RECEBIMENTO</td>
-            <td width='15%' class='fundo-cinza'>LEITURA/AÇÃO</td>
+            <td width='10%' class='fundo-cinza'>TIPO</td>
+            <td width='10%' class='fundo-cinza'>SITUAÇÃO @contadorQuebrarPagina</td>
+            <td width='10%' class='fundo-cinza'>RECEBIMENTO</td>
+            <td width='10%' class='fundo-cinza'>LEITURA/AÇÃO</td>
         </tr>
     }
 
     void MontarLinhaTabela(SME.SR.Infra.NotificacaoRelatorioDto notificacoes)
     {
         <tr>
-            <td width='11%'>@notificacoes.Codigo</td>
-            <td width='25%' class=" alinhar-esquerda espaco-esquerda-15">@notificacoes.Titulo</td>
+            <td width='10%'>@notificacoes.Codigo</td>
+            <td width='53%' class=" alinhar-esquerda" style="padding: 3px 10px;">@notificacoes.Titulo</td>
             <td width='12%'>@notificacoes.Categoria</td>
-            <td width='12%'>@notificacoes.Tipo</td>
-            <td width='12%'>@notificacoes.Situacao @contadorQuebrarPagina</td>
-            <td width='15%'>@notificacoes.DataRecebimento</td>
-            <td width='15%'>@notificacoes.DataLeitura</td>
+            <td width='10%'>@notificacoes.Tipo</td>
+            <td width='10%'>@notificacoes.Situacao  @Math.Round(contadorQuebrarPagina, 2)</td>
+            <td width='10%'>@notificacoes.DataRecebimento</td>
+            <td width='10%'>@notificacoes.DataLeitura</td>
         </tr>
     }
     
     string MontarTextoDescricao(string descricao)
     {
         int iContadorCaracteres = 0;
-        int contadorMaximoCaracteresPorLinha = descricao.Length > 7000 ? 250 : 350;
+        int contadorMaximoCaracteresPorLinha = descricao.Length > 7000 ? 30 : 350;
 
         @while (iContadorCaracteres != descricao.Length)
         {
@@ -345,24 +345,23 @@
                             MontarLinhaTabela(notificacoes);
 
                             int numCaracteresNotificacoes = notificacoes.Titulo.Length;
-                            double numMaxCaracteresNotificacoes = 38;
+                            double numMaxCaracteresNotificacoes = 45;
 
                             double numeroLinhasNotificacoes = numCaracteresNotificacoes / numMaxCaracteresNotificacoes;
                             numeroLinhasNotificacoes = Math.Round(numeroLinhasNotificacoes, 1);
 
-                            if (numeroLinhasNotificacoes > 1 && ehDescricaoVaziaOuNula)
+                            if (numMaxCaracteresNotificacoes > 45 && ehDescricaoVaziaOuNula)
                             {
                                 contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasNotificacoes;
                             }
                             else {
-                                contadorQuebrarPagina++;
+                                contadorQuebrarPagina += 1.5;
                             }
-
 
                             if (!ehDescricaoVaziaOuNula)
                             {
                                 int linhasParaEscreverDescricao = 3;
-                                contadorMaximoLinhasPorPagina = 46;
+                                //contadorMaximoLinhasPorPagina = 46;
                                 bool quebraDescricao = VerificaQuebra(linhasParaEscreverDescricao);
 
                                 if (quebraDescricao)
