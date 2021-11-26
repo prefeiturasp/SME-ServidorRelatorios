@@ -32,7 +32,7 @@ namespace SME.SR.Application
         {
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-            var limiteCaracteres = 5200;
+            var limiteCaracteres = 5000;
             var qtdeCaracteresPorLinha = 110;
             var qtdeCaracteresPagina = 0;
             var qtdeAlunos = request.Relatorio.Alunos.Count();
@@ -41,7 +41,9 @@ namespace SME.SR.Application
 
             foreach (var alunoDto in request.Relatorio.Alunos)
             {
-                paginaAluno++;
+                var paginasAluno = new List<PaginaParaRelatorioPaginacaoSoloDto>();
+
+                paginaAluno = 1;
 
                 ehTodosOsBimestres = request.Relatorio.ehTodosBimestre;
 
@@ -59,7 +61,8 @@ namespace SME.SR.Application
 
                     if (qtdeCaracteresPaginaProposta > limiteCaracteres)
                     {
-                        paginas.Add(await GerarPagina(paginas, relatorio, qtdeAlunos, paginaAluno));
+                        paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
+                        paginaAluno++;
                         relatorio.Alunos.FirstOrDefault().NomeAluno = string.Empty;
                         relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
                     }
@@ -101,7 +104,8 @@ namespace SME.SR.Application
                             else
                                 relatorio.Alunos[0] = aluno;
 
-                            paginas.Add(await GerarPagina(paginas, relatorio, qtdeAlunos, paginaAluno));
+                            paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
+                            paginaAluno++;
                             qtdeCaracteresPagina = qtdeCaracteresPorLinha;
 
                             relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
@@ -136,7 +140,8 @@ namespace SME.SR.Application
 
                                 if (gerarPagina)
                                 {
-                                    paginas.Add(await GerarPagina(paginas, relatorio, qtdeAlunos, paginaAluno));
+                                    paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
+                                    paginaAluno++;
                                     relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
                                     lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
                                     possuiJustificativaParaAdicionar = false;
@@ -179,9 +184,15 @@ namespace SME.SR.Application
 
                 relatorio.ehTodosBimestre = ehTodosOsBimestres;
 
-                paginas.Add(await GerarPagina(paginas, relatorio, qtdeAlunos, paginaAluno));
-            }
+                paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
 
+                var ultimaPagina = paginasAluno.LastOrDefault().Pagina;
+                
+                paginasAluno.ForEach(f=> f.Total = ultimaPagina);
+
+                paginas.AddRange(paginasAluno);
+            }
+            
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
