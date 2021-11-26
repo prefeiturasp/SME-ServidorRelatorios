@@ -23,6 +23,14 @@
             <table>
                 <tbody>
                     <tr>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>Turma: @Model.TurmaNome</td>
+                        <td width='80%' class='sem-border-top espaco-esquerda-15'>Componente Curricular: @Model.ComponenteNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
                         <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
                         <td width='18%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
                         <td width='22%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Data</td>
@@ -127,7 +135,7 @@
 
             .body-relatorio {
                 margin: 0.5cm auto;
-                font-family: Roboto, sans-serif;
+                font-family: Roboto Mono;
                 width: 21cm;
                 min-height: 29.7cm;
                 background: white;

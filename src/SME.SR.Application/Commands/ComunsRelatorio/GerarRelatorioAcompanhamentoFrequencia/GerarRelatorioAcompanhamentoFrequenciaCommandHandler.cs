@@ -32,8 +32,8 @@ namespace SME.SR.Application
         {
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-            var limiteCaracteres = 6600;
-            var qtdeCaracteresPorLinha = 140;
+            var limiteCaracteres = 5200;
+            var qtdeCaracteresPorLinha = 110;
             var qtdeCaracteresPagina = 0;
             var qtdeAlunos = request.Relatorio.Alunos.Count();
             var paginaAluno = 0;
@@ -48,7 +48,7 @@ namespace SME.SR.Application
                 var relatorio = MapearRelatorio(request);
                 var aluno = MapearAluno(alunoDto);
 
-                qtdeCaracteresPagina = qtdeCaracteresPorLinha * 4;
+                qtdeCaracteresPagina = qtdeCaracteresPorLinha * 5;
 
                 var lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
                 foreach (var bimestreDto in alunoDto.Bimestres)
@@ -199,6 +199,8 @@ namespace SME.SR.Application
                 Usuario = request.Relatorio.Usuario,
                 RF = request.Relatorio.RF,
                 ehInfantil = request.Relatorio.ehInfantil,
+                TurmaNome = request.Relatorio.TurmaNome,
+                ComponenteNome = request.Relatorio.ComponenteNome
             };
         }
 
