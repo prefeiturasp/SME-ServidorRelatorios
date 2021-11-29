@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,33 +10,15 @@ namespace SME.SR.Application
 {
     public class ObterAlunosPorTurmaEDataMatriculaQueryHandler : IRequestHandler<ObterAlunosPorTurmaEDataMatriculaQuery, IEnumerable<AlunoPorTurmaRespostaDto>>
     {
-        private readonly IHttpClientFactory httpClientFactory;
-        public ObterAlunosPorTurmaEDataMatriculaQueryHandler(IHttpClientFactory httpClientFactory)
+        private readonly IAlunoRepository alunoRepository;
+        public ObterAlunosPorTurmaEDataMatriculaQueryHandler(IAlunoRepository alunoRepository)
         {
-            this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
         }
+
         public async Task<IEnumerable<AlunoPorTurmaRespostaDto>> Handle(ObterAlunosPorTurmaEDataMatriculaQuery request, CancellationToken cancellationToken)
         {
-            var httpClient = httpClientFactory.CreateClient("servicoEOL");
-            var url = $"turmas/{request.CodigoTurma}/data-matricula-ticks/{request.DataMatricula.Ticks}";
-            try
-            {
-                var resposta = await httpClient.GetAsync(url);
-                if (resposta.IsSuccessStatusCode)
-                {
-                    var json = await resposta.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<IEnumerable<AlunoPorTurmaRespostaDto>>(json);
-                }
-                else
-                {
-                    string erro = $"Não foi possível obter os alunos da turma de data aula no EOL - HttpCode {(int)resposta.StatusCode}";
-                    throw new NegocioException(erro);
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            return await alunoRepository.ObterAlunosPorTurmaEDataMatriculaQuery(long.Parse(request.CodigoTurma), request.DataMatricula);
         }
     }
 }

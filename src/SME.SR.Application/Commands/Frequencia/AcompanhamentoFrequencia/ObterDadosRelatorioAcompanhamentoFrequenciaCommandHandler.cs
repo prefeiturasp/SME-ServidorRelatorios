@@ -215,13 +215,13 @@ namespace SME.SR.Application
 
                 default:
                     return string.Empty;
-            }
+            }            
         }
 
         private async Task<AlunoPorTurmaRespostaDto> ObterAluno(AlunoRetornoDto ultimaSituacaoAluno, Turma turma)
         {
-            var alunos = await mediator.Send(new ObterAlunosPorTurmaEDataMatriculaQuery(turma.turma_id, ultimaSituacaoAluno.DataSituacao));
-            var aluno = alunos.SingleOrDefault(s => s.CodigoAluno.Equals(ultimaSituacaoAluno.AlunoCodigo));
+            var alunos = await mediator.Send(new ObterAlunosPorTurmaEDataMatriculaQuery(turma.Codigo, ultimaSituacaoAluno.DataSituacao));
+            var aluno = alunos.SingleOrDefault(s => s.CodigoAluno.Equals(ultimaSituacaoAluno.AlunoCodigo.ToString()));
             return aluno;
         }
 

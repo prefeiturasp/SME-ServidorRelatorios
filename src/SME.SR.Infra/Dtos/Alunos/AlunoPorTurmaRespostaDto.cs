@@ -30,6 +30,7 @@ namespace SME.SR.Infra
         public string NomeResponsavel { get; set; }
         public string TipoResponsavel { get; set; }
         public string CelularResponsavel { get; set; }
+        public string CodigoMatricula { get; set; }
         public DateTime DataAtualizacaoContato { get; set; }
                 
         public bool Inativo
