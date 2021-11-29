@@ -21,6 +21,7 @@ namespace SME.SR.Application
             var retornoRelatorio = await mediator.Send(new ObterDadosRelatorioAcompanhamentoFrequenciaCommand(filtroRelatorio));
 
             await mediator.Send(new GerarRelatorioAcompanhamentoFrequenciaCommand(retornoRelatorio, request.CodigoCorrelacao));
+            
         }
     }
 }
