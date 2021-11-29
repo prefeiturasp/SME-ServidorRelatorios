@@ -7,5 +7,6 @@ namespace SME.SR.Data.Interfaces
     {
         Task<long> ObterPorAnoLetivoEModalidade(int anoLetivo, ModalidadeTipoCalendario modalidade, int semestre = 0);
         Task<TipoCalendarioDto> ObterPorId(long id);
+        Task<long> ObterIdPorAnoLetivoEModalidadeAsync(int anoLetivo, ModalidadeTipoCalendario modalidade, int semestre = 0);
     }
 }

@@ -54,5 +54,10 @@ namespace SME.SR.Infra
         {
             return $"{DataNascimento:dd/MM/yyyy}";
         }
+
+        public string DataSituacaoFormatada()
+        {
+            return $"{DataSituacao:dd/MM/yyyy}";
+        }
     }
 }

@@ -29,6 +29,13 @@ namespace SME.SR.Application
             var alunosSelecionados = new List<AlunoNomeDto>();
             var turma = await ObterDadosDaTurma(request.FiltroRelatorio.TurmaCodigo);
             await MapearCabecalho(relatorio, request.FiltroRelatorio, turma);
+
+            var tipoCalendarioId = await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma));
+            if (tipoCalendarioId == default)
+                throw new NegocioException("O tipo de calendário da turma não foi encontrado.");
+
+            var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
+
             relatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
             if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
             {
@@ -53,7 +60,7 @@ namespace SME.SR.Application
                     throw new NegocioException("Nenhuma informação para os filtros informados.");
 
                 var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
-                await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia, turma);
+                await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia, turma, periodosEscolares);
             }
             return relatorio;
         }
@@ -129,14 +136,15 @@ namespace SME.SR.Application
         {
             return await mediator.Send(new ObterTurmaPorCodigoQuery(turmaCodigo));
         }
+
         private async Task<string> ObterNomeComponente(string componenteCodigo)
         {
             var id = Convert.ToInt64(componenteCodigo);
             return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(id));
         }
-        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, Turma turma)
-        {
 
+        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares)
+        {
             foreach (var aluno in alunos.OrderBy(x => x.Nome))
             {
                 if (dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
@@ -151,7 +159,9 @@ namespace SME.SR.Application
 
                         var ultimaSituacaoAluno = situacaoAluno.Where(x => x.DataSituacao == dataUltimaSituacao).FirstOrDefault();
 
-                        descricaoSituacaoAluno = ultimaSituacaoAluno.Ativo ? string.Empty : $" - {ultimaSituacaoAluno.SituacaoRelatorio.FormatarPrimeiraMaiuscula()}";
+                        var ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
+
+                        descricaoSituacaoAluno = ultimaSituacaoAluno.Ativo ? string.Empty : await ObterSituacao(ultimaSituacaoAluno, ehInfantil, periodosEscolares, turma);
                     }
                     var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                     {
@@ -167,6 +177,54 @@ namespace SME.SR.Application
                 }
             }
         }
+
+        private async Task<string> ObterSituacao(AlunoRetornoDto ultimaSituacaoAluno, bool ehInfantil, IEnumerable<PeriodoEscolar> periodosEscolares, Turma turma)
+        {
+            const int DiasDesdeInicioBimestreParaMarcadorNovo = 15;
+
+            var periodoEscolar = periodosEscolares.SingleOrDefault(s => s.PeriodoFim >= ultimaSituacaoAluno.DataSituacao && s.PeriodoFim <= ultimaSituacaoAluno.DataSituacao);
+
+            switch (ultimaSituacaoAluno.CodigoSituacaoMatricula)
+            {
+                case SituacaoMatriculaAluno.Ativo:
+                    if ((ultimaSituacaoAluno.DataSituacao > periodoEscolar.PeriodoInicio) && (ultimaSituacaoAluno.DataSituacao.AddDays(DiasDesdeInicioBimestreParaMarcadorNovo) >= DateTime.Now.Date))
+                        return $" - {(ehInfantil ? "Criança Nova" : "Estudante Novo")}: Data da matrícula {ultimaSituacaoAluno.DataSituacaoFormatada()}";
+                    else
+                        return string.Empty;
+
+                case SituacaoMatriculaAluno.Transferido:
+                    var alunoTransferido = await ObterAluno(ultimaSituacaoAluno, turma);
+                    var detalheEscola = alunoTransferido.Transferencia_Interna ?
+                                        $"para escola {alunoTransferido.EscolaTransferencia} e turma {alunoTransferido.TurmaTransferencia}" :
+                                        "para outras redes";
+
+                    return $" - {(ehInfantil ? "Criança Transferida" : "Estudante Transferido")}: {detalheEscola} em {ultimaSituacaoAluno.DataSituacaoFormatada()}";
+
+                case SituacaoMatriculaAluno.RemanejadoSaida:
+                    var alunoRemanejado = await ObterAluno(ultimaSituacaoAluno, turma);
+                    return $" - {(ehInfantil ? "Criança Remanejada" : "Estudante Remanejado")}: turma {alunoRemanejado.TurmaRemanejamento} em {ultimaSituacaoAluno.DataSituacaoFormatada()}";
+
+                case SituacaoMatriculaAluno.Desistente:
+                case SituacaoMatriculaAluno.VinculoIndevido:
+                case SituacaoMatriculaAluno.Falecido:
+                case SituacaoMatriculaAluno.NaoCompareceu:
+                case SituacaoMatriculaAluno.Deslocamento:
+                case SituacaoMatriculaAluno.Cessado:
+                case SituacaoMatriculaAluno.ReclassificadoSaida:
+                    return $" - {(ehInfantil ? "Criança Inativa" : "Estudante Inativo")} em {ultimaSituacaoAluno.DataSituacaoFormatada()}";
+
+                default:
+                    return string.Empty;
+            }
+        }
+
+        private async Task<AlunoPorTurmaRespostaDto> ObterAluno(AlunoRetornoDto ultimaSituacaoAluno, Turma turma)
+        {
+            var alunos = await mediator.Send(new ObterAlunosPorTurmaEDataMatriculaQuery(turma.turma_id, ultimaSituacaoAluno.DataSituacao));
+            var aluno = alunos.SingleOrDefault(s => s.CodigoAluno.Equals(ultimaSituacaoAluno.AlunoCodigo));
+            return aluno;
+        }
+
         private async Task<DreUe> ObterNomeDreUe(string turmaCodigo)
         {
             return await mediator.Send(new ObterDreUePorTurmaQuery(turmaCodigo));
