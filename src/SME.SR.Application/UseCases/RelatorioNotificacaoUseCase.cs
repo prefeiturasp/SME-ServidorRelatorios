@@ -19,6 +19,6 @@ namespace SME.SR.Application
         {
             var filtros = request.ObterObjetoFiltro<FiltroNotificacaoDto>();
             await mediator.Send(new GerarRelatorioNotificacaoCommand(filtros, request.CodigoCorrelacao));
-        }
+       }
     }
 }
