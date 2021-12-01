@@ -54,9 +54,7 @@ namespace SME.SR.Data.Repositories.Sgp
             if (!string.IsNullOrEmpty(turmaCodigo) && turmaCodigo != "-99")
                 query.AppendLine(" and turma_id = @turmaCodigo ");
             if(string.IsNullOrEmpty(turmaCodigo))
-                query.AppendLine(" and turma_id is null ");
-
-            query.AppendLine(" limit 2000 ");
+                query.AppendLine(" and turma_id is null ");            
 
             var parametros = new
             {
