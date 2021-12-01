@@ -7,7 +7,7 @@ namespace SME.SR.Data
     public interface INotificacaoRepository
     {
         Task<IEnumerable<NotificacaoDto>> ObterPorAnoEUsuarioRf(long ano, string usuarioRf);
-        Task<IEnumerable<NotificacaoDto>> ObterComFiltros(long ano, string usuarioRf, long[] categorias,
-            long[] tipos, long[] situacoes, string turmaCodigo, bool exibirDescricao = false, bool exibirExcluidas = false, string dre = "-99", string ue = "-99");
+        Task<IEnumerable<NotificacaoRetornoDto>> ObterComFiltros(long ano, string usuarioRf, long[] categorias, long[] tipos, long[] situacoes,
+            string turmaCodigo, string dreCodigo, string ueCodigo, bool exibirDescricao = false, bool exibirExcluidas = false);
     }
 }

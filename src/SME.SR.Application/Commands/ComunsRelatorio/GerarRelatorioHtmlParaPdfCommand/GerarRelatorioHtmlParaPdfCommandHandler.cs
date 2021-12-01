@@ -26,22 +26,31 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
-            html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-            html = html.Replace("logo.png", SmeConstants.LogoSme);
-            
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
-
-            PdfGenerator pdfGenerator = new PdfGenerator(converter);
-            pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
-
-            if (request.EnvioPorRabbit)
+            try
             {
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
-                return string.Empty;
+                var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
+                html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
+                html = html.Replace("logo.png", SmeConstants.LogoSme);
+
+                var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+                var nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
+
+                PdfGenerator pdfGenerator = new PdfGenerator(converter);
+                pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
+
+                if (request.EnvioPorRabbit)
+                {
+                    await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                    return string.Empty;
+                }
+                else return request.CodigoCorrelacao.ToString();
             }
-            else return request.CodigoCorrelacao.ToString();
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
         }
     }
 }
