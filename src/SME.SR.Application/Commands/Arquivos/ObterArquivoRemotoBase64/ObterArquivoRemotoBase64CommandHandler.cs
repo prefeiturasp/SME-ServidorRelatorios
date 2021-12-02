@@ -18,6 +18,9 @@ namespace SME.SR.Application
         {
             try
             {
+                if (request.Url.StartsWith("data:") && request.Url.Contains(";base64,"))
+                    return request.Url;
+
                 using (var client = new WebClient())
                 {
                     var arquivo = client.DownloadData(new Uri(request.Url));
