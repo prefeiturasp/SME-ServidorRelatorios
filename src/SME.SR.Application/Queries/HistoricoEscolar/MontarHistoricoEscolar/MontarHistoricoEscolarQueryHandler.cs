@@ -298,19 +298,8 @@ namespace SME.SR.Application
             {
                 
 
-                List<ComponenteCurricularHistoricoEscolarDto> componentesRegencia = new List<ComponenteCurricularHistoricoEscolarDto>();
-                var componentesRegenciaFiltro = componentesCurricularesDaTurma.Where(x => x.Regencia);
-                foreach(var componenteCurricular in componentesRegenciaFiltro)
-                {
-                    MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(),
-                                              turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma),
-                                              componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)),
-                                              notas,
-                                              frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()),
-                                              mediasFrequencia,
-                                              componentes);
-                }
-                
+                List<ComponenteCurricularHistoricoEscolarDto> componentesRegencia = new List<ComponenteCurricularHistoricoEscolarDto>();                               
+
                 foreach (var componenteCurricular in componentesCurricularesDaTurma.Where(x => !x.Regencia))
                 {
                     var regencia = componentesRegencia.FirstOrDefault(x => x.Codigo == componenteCurricular.CodDisciplina.ToString());
@@ -339,7 +328,19 @@ namespace SME.SR.Application
                         NotaConceitoOitavoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "8"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
                         NotaConceitoNonoAno = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "9"), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
                     });
-                }                
+                }
+
+                var componentesRegenciaFiltro = componentesCurricularesDaTurma.Where(x => x.Regencia);
+                foreach (var componenteCurricular in componentesRegenciaFiltro)
+                {
+                    MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(),
+                                              turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma),
+                                              componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)),
+                                              notas,
+                                              frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()),
+                                              mediasFrequencia,
+                                              componentes);
+                }
 
             }
 

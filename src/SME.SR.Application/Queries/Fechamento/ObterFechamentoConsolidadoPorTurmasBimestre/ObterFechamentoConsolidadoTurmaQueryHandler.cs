@@ -21,6 +21,7 @@ namespace SME.SR.Application
                                                                                                 request.Bimestres, 
                                                                                                 request.Situacao, 
                                                                                                 request.AnoLetivo, 
-                                                                                                request.Semestre);        
+                                                                                                request.Semestre,
+                                                                                                request.ExibirHistorico);        
     }
 }

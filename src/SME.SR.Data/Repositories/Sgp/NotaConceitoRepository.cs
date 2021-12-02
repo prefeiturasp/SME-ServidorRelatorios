@@ -147,7 +147,7 @@ namespace SME.SR.Data
 
                         return notasFrequenciaAlunoBimestre;
                     }
-                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
+                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId", commandTimeout:6000);
             }
         }
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaBimestralAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma, int bimestre)

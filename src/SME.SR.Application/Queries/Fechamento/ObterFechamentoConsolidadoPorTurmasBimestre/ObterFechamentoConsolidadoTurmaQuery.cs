@@ -12,8 +12,9 @@ namespace SME.SR.Application
         public int[] Bimestres { get; internal set; }
         public SituacaoFechamento? Situacao { get; internal set; }
         public int Semestre { get; internal set; }
+        public bool ExibirHistorico { get; internal set; }
 
-        public ObterFechamentoConsolidadoTurmaQuery(string dreCodigo, int modalidadeCodigo, int anoLetivo, int[] bimestres, SituacaoFechamento? situacao, int semestre = 0)
+        public ObterFechamentoConsolidadoTurmaQuery(string dreCodigo, int modalidadeCodigo, int anoLetivo, int[] bimestres, SituacaoFechamento? situacao, int semestre = 0, bool exibirHistorico = false)
         {
             DreCodigo = dreCodigo;
             ModalidadeCodigo = modalidadeCodigo;
@@ -21,6 +22,7 @@ namespace SME.SR.Application
             Bimestres = bimestres;
             Situacao = situacao;
             Semestre = semestre;
+            ExibirHistorico = exibirHistorico;
         }
     }
 }
