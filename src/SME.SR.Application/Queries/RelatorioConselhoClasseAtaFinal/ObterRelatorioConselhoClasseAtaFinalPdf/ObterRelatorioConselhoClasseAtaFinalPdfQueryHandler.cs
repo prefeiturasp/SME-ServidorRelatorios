@@ -539,18 +539,27 @@ namespace SME.SR.Application
                                                      possuiComponente ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
                                                     ++coluna);
 
-                            var frequencia = "-";
+                            var frequencia = "-";                            
 
-                            if (possuiComponente)                            
-                                frequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
-                                      ?
-                                      "100"
-                                      :
-                                      frequenciaAluno != null
-                                      ?
-                                      frequenciaAluno.PercentualFrequenciaFinal.ToString()
-                                      :
-                                      "";                            
+                            if (possuiComponente)
+                            {
+                                if (turma.AnoLetivo.Equals(2020))
+                                    frequencia = frequenciaAluno == null || frequenciaAluno.TotalAusencias == 0
+                                        ?
+                                        "100"
+                                        :
+                                        frequenciaAluno.PercentualFrequencia.ToString();
+                                else
+                                    frequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
+                                          ?
+                                          "100"
+                                          :
+                                          frequenciaAluno != null
+                                          ?
+                                          frequenciaAluno.PercentualFrequencia.ToString()
+                                          :
+                                          "";
+                            }
 
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                     componente.CodDisciplina,
