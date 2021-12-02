@@ -34,7 +34,7 @@ namespace SME.SR.Application
                     }
                 }
             }
-            catch (WebException)
+            catch
             {
                 return string.Empty;
             }
