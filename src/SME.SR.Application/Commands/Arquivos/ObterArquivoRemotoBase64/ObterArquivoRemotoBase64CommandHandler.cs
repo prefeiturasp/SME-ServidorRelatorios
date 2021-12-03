@@ -44,10 +44,10 @@ namespace SME.SR.Application
 
         private string RedimencionarImagem(Bitmap imagem)
         {
-            if (imagem.Width <= 800)
+            if (imagem.Width <= 750)
                 return ConverterImagem(imagem);
 
-            var escala = 800f / imagem.Width;
+            var escala = 750f / imagem.Width;
 
             var width = (int)(imagem.Width * escala);
             var height = (int)(imagem.Height * escala);
