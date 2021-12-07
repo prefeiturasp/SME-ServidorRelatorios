@@ -65,15 +65,6 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
 </div>";
         return str;
     }
-    string MontarCabecalhoTipoRelatorio()
-    {
-        contadorQuebrarPagina += 1;
-        return $@"<table class='fixed'>
-<tr>
-<td width='100%' class='td-titulo-um'>PLANO DE AULA</td>
-</tr>
-</table>";
-    }
 
     string MontarCabecalhoPlanejamento()
     {
@@ -154,23 +145,22 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
             if (!string.IsNullOrEmpty(planejamento.MeusObjetivosEspecificos))
             {
                 detalhamento = true;
-                var qtdLinhasDetalhamento = 0;
-                double tamanhoTexto = planejamento.MeusObjetivosEspecificos.Length;
-
-                qtdLinhasDetalhamento = Math.Max((int)Math.Truncate(tamanhoTexto / 55) + 1, planejamento.QtdObjetivosEspecificos);
-                contadorQuebrarPagina += qtdLinhasDetalhamento;
 
                 if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                     str += IncluirTdParaFechar(6);
 
-                str += $"</tbody></table>";
+                str += $"</table>";
 
-                
+
                 var meusObjetivosEspecificos = UtilRegex.RemoverTagsHtmlMidia(planejamento.MeusObjetivosEspecificos);
                 meusObjetivosEspecificos = UtilRegex.RemoverTagsHtml(meusObjetivosEspecificos);
 
+                str += MontarCabecalhoDetalhamento();
+                str += $@"<tr><td width='20%' class='td-valor-Objetivos'>{planejamento.ObjetivosSelecionados}</td>";
+                str += $@"<td width='80%' class='td-valor-Objetivos'>";
+
                 str += MontarDetalhamento(planejamento.ObjetivosSelecionados, meusObjetivosEspecificos.ToLower());
-                
+
                 if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                     str += IncluirTdParaFechar(4);
 
@@ -231,25 +221,27 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
         return str;
     }
 
-    int contadorMaximoCaracteresPorLinhaOcorrencias = 3900;
+    int contadorMaximoCaracteresPorLinhaOcorrencias = 3800;
     string MontarDetalhamento(string objetivosSelecionados, string meusObjetivosEspecificos)
     {
         string texto = string.Empty;
         if (string.IsNullOrEmpty(meusObjetivosEspecificos))
         {
-            return texto;
+            return null;
         }
-        contadorQuebrarPagina++;
         var iContadorCaracteres = 0;
         double numeroLimiteCaracteres = 0.7;
         @while (iContadorCaracteres != meusObjetivosEspecificos.Length)
         {
-            if (contadorQuebrarPagina + numeroLimiteCaracteres >= contadorMaximoLinhasPorPagina)
+            if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
             {
                 contadorQuebrarPagina = 0;
+                texto += "</td></tr></table>";
+                texto += "<div style='page-break-before:always'></div>";
+                texto += MontarCabecalho();
                 texto += MontarCabecalhoDetalhamento();
                 texto += $@"<tr><td width='20%' class='td-valor-Objetivos'>{objetivosSelecionados}</td>";
-                texto += $@"<td width='80%' class='td-valor-tres'>";
+                texto += $@"<td width='80%' class='td-valor-Objetivos'>";
             }
             else
             {
@@ -258,28 +250,19 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
                 iContadorCaracteres += textParaExibir.Length;
                 texto += textParaExibir.ToLower();
                 contadorQuebrarPagina += numeroLimiteCaracteres;
+
             }
+
             contadorQuebrarPagina++;
         }
-        texto += "</td>";
+        texto += "</td></tr>";
         return texto;
     }
-    string VerificaQuebraPorLinha(int linhas = 0)
-    {
-        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
-        {
-            contadorQuebrarPagina = 8;
-            contadorPagina = contadorPagina + 1;
-            return $@"<div style='page-break-before:always'></div>";
 
-        }
-        return string.Empty;
-
-    }
     string LinhaEmBranco()
     {
         contadorQuebrarPagina += 1;
-        return "</table><table><tr><td style='border-bottom:none;'><br/></td></tr></table><table class='fixed'><tbody>";
+        return "<table><tr><td style='border-bottom:none;'><br/></td></tr></table>";
     }
 
     string IncluirTdParaFechar(int quantidade)
@@ -484,10 +467,10 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
         }
 
         .td-valor-Objetivos {
-            text-align: center;
+            text-align: left;
             font-size: 12px;
-            padding: 2px;
-            border-bottom: none;
+            padding: 5px;
+           
         }
 
         .td-valor-quatro {

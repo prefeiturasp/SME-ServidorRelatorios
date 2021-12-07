@@ -18,34 +18,26 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
-                var filtros = request.ObterObjetoFiltro<ObterPlanoAulaFiltroQuery>();
 
-                var planoAula = await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
+            var filtros = request.ObterObjetoFiltro<ObterPlanoAulaFiltroQuery>();
 
-                if (planoAula == null)
-                    throw new NegocioException("Plano de aula não encontrado.");
+            var planoAula = await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
 
-                var componenteCurricular = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(planoAula.ComponenteCurricularId));
+            if (planoAula == null)
+                throw new NegocioException("Plano de aula não encontrado.");
 
-                planoAula.ComponenteCurricular = componenteCurricular.FirstOrDefault().Disciplina;
-                planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));
-                planoAula.Descricao = planoAula.Descricao != null ? planoAula.Descricao : "";
-                planoAula.LicaoCasa = planoAula.LicaoCasa != null ? planoAula.LicaoCasa : "";
-                planoAula.Recuperacao = planoAula.Recuperacao != null ? planoAula.Recuperacao : "";
+            var componenteCurricular = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(planoAula.ComponenteCurricularId));
 
-                planoAula.Usuario = filtros.Usuario.Nome;
-                planoAula.RF = filtros.Usuario.CodigoRf;
+            planoAula.ComponenteCurricular = componenteCurricular.FirstOrDefault().Disciplina;
+            planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));
+            planoAula.Descricao = planoAula.Descricao != null ? planoAula.Descricao : "";
+            planoAula.LicaoCasa = planoAula.LicaoCasa != null ? planoAula.LicaoCasa : "";
+            planoAula.Recuperacao = planoAula.Recuperacao != null ? planoAula.Recuperacao : "";
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAula", planoAula, request.CodigoCorrelacao));
-            }
-            
-            catch (Exception ex)
-            {
+            planoAula.Usuario = filtros.Usuario.Nome;
+            planoAula.RF = filtros.Usuario.CodigoRf;
 
-                throw;
-            }
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAula", planoAula, request.CodigoCorrelacao));
         }
     }
 }
