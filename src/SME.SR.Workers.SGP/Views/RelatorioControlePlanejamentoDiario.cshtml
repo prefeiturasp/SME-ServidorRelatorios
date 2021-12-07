@@ -165,21 +165,12 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
 
                 str += $"</tbody></table>";
 
-                //retornoVerificacao = VerificaQuebra();
-                //if (retornoVerificacao != string.Empty)
-                //{
-                //    str += $@"{IncluirTdParaFechar(6)}</tbody></table>{retornoVerificacao}";
-                //    contadorQuebrarPagina += qtdLinhasDetalhamento;
-                //}
-
+                
                 var meusObjetivosEspecificos = UtilRegex.RemoverTagsHtmlMidia(planejamento.MeusObjetivosEspecificos);
                 meusObjetivosEspecificos = UtilRegex.RemoverTagsHtml(meusObjetivosEspecificos);
-                //str += MontarCabecalhoDetalhamento();
 
-                //str += $@"<tr><td width='20%' class='td-valor-Objetivos'>{planejamento.ObjetivosSelecionados}</td>";
-                //str += $@"<td width='80%' class='td-valor-tres'>";
                 str += MontarDetalhamento(planejamento.ObjetivosSelecionados, meusObjetivosEspecificos.ToLower());
-                //str += "</td>";
+                
                 if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                     str += IncluirTdParaFechar(4);
 
@@ -240,77 +231,14 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
         return str;
     }
 
-    int contadorMaximoCaracteresPorLinhaOcorrencias = 3900;//4525;//4787;
+    int contadorMaximoCaracteresPorLinhaOcorrencias = 3900;
     string MontarDetalhamento(string objetivosSelecionados, string meusObjetivosEspecificos)
     {
-        var meusObjetivosEspecificos2 = @"bloco 1the standard lorem ipsum passage, used since the 1500s lorem
-         ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-         tempor incididunt ut labore et dolore magna aliqua. ut enim ad minim
-         veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-         commodo consequat. duis aute irure dolor in reprehenderit in voluptate
-         velit esse cillum dolore eu fugiat nulla pariatur.excepteur sint
-         occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-         mollit anim id est laborum.section 1.10.32 of de finibus bonorum et malorum, written by cicero in 45 bc sed
-         ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-         doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-         inventore veritatis et quasi architecto beatae vitae dicta sunt
-         explicabo.nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
-        odit aut fugit, sed quia consequuntur magni dolores eos qui ratione
-        voluptatem sequi nesciunt. neque porro quisquam est, qui dolorem ipsum
-         quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam
-         eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat
-         voluptatem.ut enim ad minima veniam, quis nostrum exercitationem ullam
-         corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
-         quis autem vel eum iure reprehenderit qui in ea voluptate velit esse
-         quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo
-         voluptas nulla pariatur ?
-         1914 translation by h. rackham
-         but i must explain to you how all this mistaken idea of denouncing
-         pleasure and praising pain was born and i will give you a complete
-         account of the system, and expound the actual teachings of the great
-         explorer of the truth, the master - builder of human happiness.no one
-         rejects, dislikes, or avoids pleasure itself, because it is pleasure, 
-         but because those who do not know how to pursue pleasure rationally
-         encounter consequences that are extremely painful. nor again is there
-         anyone who loves or pursues or desires to obtain pain of itself, because
-         it is pain, but because occasionally circumstances occur in which toil
-         and pain can procure him some great pleasure. to take a trivial example,
-         which of us ever undertakes laborious physical exercise, except to
-         obtain some advantage from it? but who has any right to find fault with a
-         man who chooses to enjoy a pleasure that has no annoying consequences,
-         or one who avoids a pain that produces no resultant pleasure?
-         section 1.10.33 of de finibus bonorum et malorum, written by cicero in 45 bc
-         at vero eos et accusamus et iusto odio dignissimos ducimus qui
-         blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-         et quas molestias excepturi sint occaecati cupiditate non provident, 
-         similique sunt in culpa qui officia deserunt mollitia animi, id est
-         laborum et dolorum fuga.et harum quidem rerum facilis est et expedita
-         distinctio.nam libero tempore, cum soluta nobis est eligendi optio
-         cumque nihil impedit quo minus id quod maxime placeat facere possimus, 
-         omnis voluptas assumenda est, omnis dolor repellendus. temporibus autem
-         quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet
-         ut et voluptates repudiandae sint et molestiae non recusandae.itaque
-         earum rerum hic tenetur a sapiente delectus, ut aut reiciendis bloco 2---------- - the standard lorem ipsum passage, used since the 1500s lorem
-         ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-         tempor incididunt ut labore et dolore magna aliqua. ut enim ad minim
-         veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-         commodo consequat. duis aute irure dolor in reprehenderit in voluptate
-         velit esse cillum dolore eu fugiat nulla pariatur.excepteur sint
-         occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-         mollit anim id est laborum.section 1.10.32 of de finibus bonorum et malorum, written by cicero in 45 bc sed
-         ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-         doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo";
         string texto = string.Empty;
         if (string.IsNullOrEmpty(meusObjetivosEspecificos))
         {
             return texto;
         }
-        //var quebra = VerificaQuebraPorLinha(2);
-        //if (quebra != String.Empty)
-        //{
-        //    texto += "<div style='page-break-before:always'></div>";
-        //}
-        //str += MontarCabecalhoDetalhamento();
         contadorQuebrarPagina++;
         var iContadorCaracteres = 0;
         double numeroLimiteCaracteres = 0.7;
@@ -319,13 +247,6 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
             if (contadorQuebrarPagina + numeroLimiteCaracteres >= contadorMaximoLinhasPorPagina)
             {
                 contadorQuebrarPagina = 0;
-                //texto += "</td></tr></table>";
-                //texto += "<div style='page-break-before:always'></div>";
-                //texto += "<table class='tabela-cabecalho'><tbody><tr><td width='80%' class='td-valor-tres'>";
-                //texto += "</td></tr></table>";
-                //texto += $@"<td width='80%' class='td-valor-tres'>";
-                //</tr>";
-                //texto += "<div style='page-break-before:always'></div>";
                 texto += MontarCabecalhoDetalhamento();
                 texto += $@"<tr><td width='20%' class='td-valor-Objetivos'>{objetivosSelecionados}</td>";
                 texto += $@"<td width='80%' class='td-valor-tres'>";
@@ -339,11 +260,6 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
                 contadorQuebrarPagina += numeroLimiteCaracteres;
             }
             contadorQuebrarPagina++;
-            //var quebra = VerificaQuebraPorLinha(2);
-            //if (quebra != String.Empty)
-            //{
-            //    texto += "<div style='page-break-before:always'></div>";
-            //}
         }
         texto += "</td>";
         return texto;
