@@ -6118,1034 +6118,501 @@ namespace SME.SR.MVC.Controllers
         [HttpGet("controle-planejamento-diario")]
         public IActionResult RelatorioControlePlanejamentoDiario()
         {
-            return Ok();
-            //var model = new RelatorioControlePlanejamentoDiarioDto()
-            //{
-            //    Filtro = new FiltroControlePlanejamentoDiarioDto()
-            //    {
-            //        Dre = "DRE - BT",
-            //        Ue = "CEU EMEF BUTANTA",
-            //        Turma = "Todas",
-            //        ComponenteCurricular = "Lingua Portuguesa",
-            //        Bimestre = "Todos",
-            //        Usuario = "Anala Ferreira de Oliveira",
-            //        RF = "9879878",
-            //    },
+            var model = new RelatorioControlePlanejamentoDiarioDto()
+            {
+                Filtro = new FiltroControlePlanejamentoDiarioDto()
+                {
+                    Dre = "DRE - BT",
+                    Ue = "CEU EMEF BUTANTA",
+                    Turma = "Todas",
+                    ComponenteCurricular = "Lingua Portuguesa",
+                    Bimestre = "Todos",
+                    Usuario = "Anala Ferreira de Oliveira",
+                    RF = "9879878",
+                },
 
-            //    Turmas = new List<TurmaPlanejamentoDiarioDto>()
-            //    {
-            //        new TurmaPlanejamentoDiarioDto()
-            //        {
-            //            Nome = "EF - 1A",
-            //            Bimestres = new List<BimestrePlanejamentoDiarioDto>()
-            //            {
-            //                new BimestrePlanejamentoDiarioDto()
-            //                {
-            //                    Nome = "1º Bimestre",
-            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
-            //                    {
-            //                        new ComponenteCurricularPlanejamentoDiarioDto()
-            //                        {
-            //                            Nome = "Lingua Portuguesa",
-            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
-            //                            {
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                }
-            //                            }
-            //                        }                                    
-            //                    }
-            //                },
-            //                new BimestrePlanejamentoDiarioDto()
-            //                {
-            //                    Nome = "2º Bimestre",
-            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
-            //                    {
-            //                        new ComponenteCurricularPlanejamentoDiarioDto()
-            //                        {
-            //                            Nome = "Lingua Portuguesa",
-            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
-            //                            {
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                }
-            //                            }
-            //                        }
-            //                    }
-            //                },
-            //                new BimestrePlanejamentoDiarioDto()
-            //                {
-            //                    Nome = "3º Bimestre",
-            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
-            //                    {
-            //                        new ComponenteCurricularPlanejamentoDiarioDto()
-            //                        {
-            //                            Nome = "Lingua Portuguesa",
-            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
-            //                            {
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                }
-            //                            }
-            //                        }
-            //                    }
-            //                },
-            //                new BimestrePlanejamentoDiarioDto()
-            //                {
-            //                    Nome = "4º Bimestre",
-            //                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
-            //                    {
-            //                        new ComponenteCurricularPlanejamentoDiarioDto()
-            //                        {
-            //                            Nome = "Lingua Portuguesa",
-            //                            PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
-            //                            {
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. ",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) -CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                  Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999) - CJ",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
-            //                                    ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                                 Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                    DesenvolvimentoAula = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
-            //                                                            Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano.",
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Não",
-            //                                    DateRegistro = string.Empty,
-            //                                    Usuario = string.Empty,
-            //                                    SecoesPreenchidas = string.Empty
-            //                                },
-            //                                new PlanejamentoDiarioDto()
-            //                                {
-            //                                    DataAula = DateTime.Now.AddDays(9).ToString("dd/MM/yyyy"),
-            //                                    QuantidadeAulas = 2,
-            //                                    PlanejamentoRealizado = "Sim",
-            //                                    DateRegistro = DateTime.Now.AddDays(8).ToString("dd/MM/yyyy HH:mm"),
-            //                                    Usuario = "Maria da Silva (999999)",
-            //                                    SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
-            //                                    ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
-            //                                    MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                    DesenvolvimentoAula = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
-            //                                }
-            //                            }
-            //                        }
-            //                    }
-            //                }
+                Turmas = new List<TurmaPlanejamentoDiarioDto>()
+                {
+                    new TurmaPlanejamentoDiarioDto()
+                    {
+                        Nome = "EF - 1A",
+                        Bimestres = new List<BimestrePlanejamentoDiarioDto>()
+                        {
+                            new BimestrePlanejamentoDiarioDto()
+                            {
+                                Nome = "1º Bimestre",
+                                ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+                                {
+                                    new ComponenteCurricularPlanejamentoDiarioDto()
+                                    {
+                                        Nome = "Lingua Portuguesa",
+                                        PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+                                        {
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = string.Empty
 
-            //            }
-            //        }
-            //    },
-            //};
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999) -CJ",
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = string.Empty
 
-            //return View("RelatorioControlePlanejamentoDiario", model);
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = false,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = false,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                        }
+                                    }
+                                }
+                            },
+                            new BimestrePlanejamentoDiarioDto()
+                            {
+                                Nome = "2º Bimestre",
+                                ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+                                {
+                                    new ComponenteCurricularPlanejamentoDiarioDto()
+                                    {
+                                        Nome = "Lingua Portuguesa",
+                                        PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+                                        {
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = string.Empty
+
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999) -CJ",
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = string.Empty
+
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = false,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = false,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                        }
+                                    }
+                                }
+                            },
+                            new BimestrePlanejamentoDiarioDto()
+                            {
+                                Nome = "3º Bimestre",
+                                ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+                                {
+                                    new ComponenteCurricularPlanejamentoDiarioDto()
+                                    {
+                                        Nome = "Lingua Portuguesa",
+                                        PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+                                        {
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"bloco 1the standard lorem ipsum passage, used since the 1500s lorem ipsum dolor sit amet, consectetur
+                                                                                adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ut enim ad minim veniam, quis
+                                                                                nostrud exercitation ullamco laboris nisi ut aliquip exea commodo consequat. duis aute irure dolor in reprehenderit
+                                                                                in voluptate velit esse cillum dolore eu fugiat nulla pariatur. excepteur sint occaecat cupidatat non proident, sunt in
+                                                                                culpa qui officia deserunt mollit anim id est laborum. section 1.10.32 ofde finibus bonorum et malorum,written
+                                                                                bycicero in 45 bc sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                                                                                laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta
+                                                                                sunt explicabo. nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur
+                                                                                magni dolores eos qui ratione voluptatem sequi nesciunt. neque porro quisquam est, qui dolorem ipsum quia
+                                                                                dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore
+                                                                                magnam aliquam quaerat voluptatem. ut enim ad minima veniam, quis nostrum exercitationem ullam corporis
+                                                                                suscipit laboriosam, nisi ut aliquid exea commodi consequatur? quis autem vel eum iure reprehenderit qui in ea
+                                                                                voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
+                                                                                pariatur? 1914 translation byh. rackham but i must explain to you howall this mistaken idea of denouncing
+                                                                                pleasure and praising pain was born and i will give you a complete account of the system, and expound the actual
+                                                                                teachings of the great explorer of the truth, the master-builder of human happiness. no one rejects, dislikes, or
+                                                                                avoids pleasure itself, because it is pleasure, but because those who do not knowhowto pursue pleasure
+                                                                                rationallyencounter consequences that are extremelypainful. nor again is there anyone who loves or pursues or
+                                                                                desires to obtain pain of itself, because it is pain, but because occasionallycircumstances occur in which toil and
+                                                                                pain can procure him some great pleasure. to take a trivial example,which of us ever undertakes laborious physical
+                                                                                exercise, except to obtain some advantage from it? butwho has anyright to find faultwith a man who chooses to
+                                                                                enjoya pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant
+                                                                                pleasure? section 1.10.33 ofde finibus bonorum et malorum,written bycicero in 45 bc at vero eos et
+                                                                                accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos
+                                                                                dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia
+                                                                                deserunt mollitia animi, id est laborum et dolorum fuga. et harum quidem rerum facilis est et expedita distinctio.
+                                                                                nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat
+                                                                                facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. temporibus autem quibusdam et aut
+                                                                                officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non
+                                                                                recusandae. itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis bloco 2 -----------the standard
+                                                                                lorem ipsum passage, used since the 1500s lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                                                                                eiusmod tempor incididunt ut labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation
+                                                                                ullamco laboris nisi ut aliquip exea commodo consequat. duis aute irure dolor in reprehenderit in voluptate velit
+                                                                                esse cillum dolore eu fugiat nulla pariatur. excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                                                                                deserunt mollit anim id est laborum. section 1.10.32 ofde finibus bonorum et malorum,written bycicero in 45 bc
+                                                                                sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
+                                                                                aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. nemo
+                                                                                enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores e 
+                                                                                consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+                                                                                aliquam quaerat voluptatem. ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit
+                                                                                laboriosam, nisi ut aliquid exea commodi consequatur? quis autem vel eum iure reprehenderit qui in ea voluptate
+                                                                                velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? 1914
+                                                                                translation byh. rackham but i must explain to you howall this mistaken idea of denouncing pleasure and praising
+                                                                                pain was born and i will give you a complete account of the system, and expound the actual teachings of the great
+                                                                                explorer of the truth, the master-builder of human happiness. no one rejects, dislikes, or avoids pleasure itself,
+                                                                                because it is pleasure, but because those who do not knowhowto pursue pleasure rationallyencounter
+                                                                                consequences that are extremelypainful. nor again is there anyone who loves or pursues or desires to obtain pain
+                                                                                of itself, because it is pain, but because occasionallycircumstances occur in which toil and pain can procure him
+                                                                                some great pleasure. to take a trivial example,which of us ever undertakes laborious physical exercise, except to
+                                                                                obtain some advantage from it? butwho has anyright to find faultwith a man who chooses to enjoya pleasure that
+                                                                                has no annoying consequences, or one who avoids a pain that produces no resultant pleasure? section 1.10.33 of
+                                                                                de finibus bonorum et malorum,written bycicero in 45 bc at vero eos et accusamus et iusto odio dignissimos
+                                                                                ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi
+                                                                                sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et
+                                                                                dolorum fuga. et harum quidem rerum facilis est et expedita distinctio. nam libero tempore, cum soluta nobis est
+                                                                                eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas
+                                                                                assumenda est, omnis dolor repellendus. temporibus autem quibusdam et aut officiis debitis aut rerum
+                                                                                necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. itaque earum rerum
+                                                                                hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus
+                                                                                asperiores repellat. bloco 3 ----the standard lorem ipsum passage, used since the 1500s lorem ipsum dolor sit
+                                                                                amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ut enim ad
+                                                                                minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip exea commodo consequat. duis aute irure
+                                                                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. excepteur sint occaecat cupidatat
+                                                                                non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. section 1.10.32 ofde finibus bonorum
+                                                                                et malorum,written bycicero in 45 bc sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+                                                                                doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae
+                                                                                vitae dicta sunt explicabo. nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+                                                                                consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. neque porro quisquam est, qui dolorem
+                                                                                ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore
+                                                                                et dolore magnam aliquam quaerat voluptatem. ut enim ad minima veniam, quis nostrum exercitationem ullam
+                                                                                corporis suscipit laboriosam, nisi ut aliquid exea commodi consequatur? quis autem vel eum iure reprehenderit
+                                                                                qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
+                                                                                pariatur? 1914 translation byh. rackham but i must explain to you howall this mistaken idea of denouncing
+                                                                                pleasure and praising pain was born and i will give you a complete account of the system, and expound the actual
+                                                                                teachings of the great explorer of the truth, the master-builder of human happiness. no one rejects, dislikes, or
+                                                                                avoids pleasure itself, because it is pleasure, but because those who do not knowhowto pursue pleasure
+                                                                                rationallyencounter consequences that are extremelypainful. nor again is there anyone who loves or pursues or
+                                                                                desires to obtain pain of itself, because it is pain, but because occasionallycircumstances occur in which toil and
+                                                                                pain can procure him some great pleasure. to take a trivial example,which of us ever undertakes laborious physical
+                                                                                exercise, except to obtain some advantage from it? butwho has anyright to find faultwith a man who chooses to
+                                                                                enjoya pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant
+                                                                                pleasure? section 1.10.33 ofde finibus bonorum et malorum,written bycicero in 45 bc at vero eos et
+                                                                                accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos
+                                                                                dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia
+                                                                                deserunt mollitia animi, id est laborum et dolorum fuga. et harum quidem rerum facilis est et expedita distinctio.
+                                                                                nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat
+                                                                                facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. temporibus autem quibusdam et aut
+                                                                                officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non
+                                                                                recusandae. itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias
+                                                                                consequatur aut perferendis doloribus asperiores repellat. voluptatibus maiores alias consequatur aut
+                                                                                perferendis doloribus asperiores repellat.",
+
+                                            },
+                                        }
+                                    }
+                                }
+                            },
+                            new BimestrePlanejamentoDiarioDto()
+                            {
+                                Nome = "4º Bimestre",
+                                ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+                                {
+                                    new ComponenteCurricularPlanejamentoDiarioDto()
+                                    {
+                                        Nome = "Lingua Portuguesa",
+                                        PlanejamentoDiario = new List<PlanejamentoDiarioDto>()
+                                        {
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999) -CJ",
+                                                SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                              Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999) - CJ",
+                                                SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+                                                ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                             Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                             Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                             Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.AddDays(5).ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999) - CJ",
+                                                SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+                                                ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = "Compreender a diversidade de modalidades esportivas e paradesportivas e as formas de prática presentes no contexto regional.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999) -CJ",
+                                                SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                              Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Relacionar a influência de diferentes ritmos a cada tipo de dança.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = false,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = false,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999) - CJ",
+                                                SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+                                                ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                             Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                             Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Objetivos de Aprendizagem e Desenvolvimento 2 objetivos selecionados <br> &nbsp; - Meus Objetivos Especificos <br> &nbsp; - Desenvolvimento da aula",
+                                                ObjetivosSelecionados = " EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = @"Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.
+                                                                             Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano de aula.Texto que o professor vai digitar no respectivo campo do plano.",
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = false,
+                                                DateRegistro = string.Empty,
+                                                Usuario = string.Empty,
+                                                SecoesPreenchidas = string.Empty
+                                            },
+                                            new PlanejamentoDiarioDto()
+                                            {
+                                                DataAula = DateTime.Now.AddDays(9).ToString("dd/MM/yyyy"),
+                                                QuantidadeAulas = 2,
+                                                PlanejamentoRealizado = true,
+                                                DateRegistro = DateTime.Now.AddDays(8).ToString("dd/MM/yyyy HH:mm"),
+                                                Usuario = "Maria da Silva (999999)",
+                                                SecoesPreenchidas = "&nbsp; - Meus Objetivos específicos <br> &nbsp; - Desenvolvimento da aula <br> &nbsp; - Lição de casa",
+                                                ObjetivosSelecionados = "EF06LP03 <br> EF06LP08 <br> EF06LP09",
+                                                MeusObjetivosEspecificos = "Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula. Texto que o professor vai digitar no respectivo campo do plano de aula.",
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                },
+            };
+
+            return View("RelatorioControlePlanejamentoDiario", model);
         }
 
         [HttpGet("controle-planejamento-diario-infantil")]
@@ -7185,7 +6652,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),                                                
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
@@ -7194,7 +6661,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),                                                
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva",
@@ -7203,7 +6670,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),                                                
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
@@ -7212,7 +6679,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
@@ -7221,7 +6688,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7229,7 +6696,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7237,7 +6704,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
@@ -7246,7 +6713,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva",
@@ -7255,7 +6722,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
@@ -7264,7 +6731,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
@@ -7273,7 +6740,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7281,7 +6748,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7289,7 +6756,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7297,7 +6764,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7305,7 +6772,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento",
@@ -7314,7 +6781,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva",
@@ -7323,7 +6790,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7331,7 +6798,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.AddDays(15).ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(13).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7353,7 +6820,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7361,7 +6828,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva"
@@ -7369,7 +6836,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7377,7 +6844,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7385,7 +6852,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7393,7 +6860,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7401,7 +6868,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7409,7 +6876,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva"
@@ -7417,7 +6884,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7425,7 +6892,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7433,7 +6900,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7441,7 +6908,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7449,7 +6916,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7457,7 +6924,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Não",
+            //                                    PlanejamentoRealizado = false,
             //                                    DateRegistro = "",
             //                                    Usuario = "",
             //                                    SecoesPreenchidas = ""
@@ -7465,7 +6932,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7473,7 +6940,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Devolutiva"
@@ -7481,7 +6948,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
@@ -7489,7 +6956,7 @@ namespace SME.SR.MVC.Controllers
             //                                new PlanejamentoDiarioInfantilDto()
             //                                {
             //                                    DataAula = DateTime.Now.AddDays(15).ToString("dd/MM/yyyy"),
-            //                                    PlanejamentoRealizado = "Sim",
+            //                                    PlanejamentoRealizado = true,
             //                                    DateRegistro = DateTime.Now.AddDays(13).ToString("dd/MM/yyyy HH:mm"),
             //                                    Usuario = "Maria da Silva (999999)",
             //                                    SecoesPreenchidas = "&nbsp; - Planejamento <br> &nbsp; - Reflexões e replanejamento"
