@@ -39,7 +39,7 @@ namespace SME.SR.Application
             }
             catch
             {
-                return string.Empty;
+                return null;
             }
         }
     }
