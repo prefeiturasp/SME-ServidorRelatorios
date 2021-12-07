@@ -182,43 +182,18 @@ PLANO DE AULA
                 meusObjetivosEspecificos = UtilRegex.RemoverTagsHtml(meusObjetivosEspecificos);
                 str += MontarCabecalhoDetalhamento();
                 str += $@"<table class='fixed'>
-                  <tbody>
-                      <tr>
-                          <td width='20%' class='td-valor-dois'>{planejamento.ObjetivosSelecionados} / {contadorQuebrarPagina}</td>
-                          <td width='80%' class='td-valor-dois'>
-                            {MontarDetalhamento(planejamento.ObjetivosSelecionados, meusObjetivosEspecificos.ToLower())}
-                          </td>
-                      </tr>
-                  </tbody>
-                </table>";
-                //var tamanho = 0;
-                //str += MontarCabecalhoDetalhamento();
-                //contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                //str += "<tbody><tr>";
-                //for (int i = 0; i < meusObjetivosEspecificos.Length; i++)
-                //{
-                //    if (tamanho <= 100)
-                //    {
-                //     //   str += meusObjetivosEspecificos[i];
-                //        tamanho = tamanho + 1;
-                //    }
-                //    else
-                //    {
-                //        contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                //        var quantidadeLinhas = meusObjetivosEspecificos.Length / 100;
-                //        retornoVerificacao = VerificaQuebra();
-                //        if (retornoVerificacao != string.Empty)
-                //        {
-                //            str += $@"<td width='20%' class='td-valor-dois'>{planejamento.ObjetivosSelecionados}</td>";
-                //            str += $@"<td width='80%' class='td-valor-dois'>{meusObjetivosEspecificos[i]}</td>";
-                //            contadorQuebrarPagina = contadorQuebrarPagina + 1;
-                //        }
-                //    }
-                //}
-                //str += "</tbody></tr></table>";
+          <tbody>
+              <tr>
+                  <td width='20%' class='td-valor-dois'>{planejamento.ObjetivosSelecionados} / {contadorQuebrarPagina}</td>
+                  <td width='80%' class='td-valor-dois'>
+                    {MontarDetalhamento(planejamento.ObjetivosSelecionados, meusObjetivosEspecificos.ToLower())}
+                  </td>
+              </tr>
+          </tbody>
+        </table>";
+               
                 if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
                     str += IncluirTdParaFechar(4);
-                //str += MontarDetalhamento(planejamento.ObjetivosSelecionados, meusObjetivosEspecificos.ToLower());
 
             }
 
@@ -271,9 +246,7 @@ PLANO DE AULA
             if (contadorQuebrarPagina + numeroLimiteCaracteres >= contadorMaximoLinhasPorPagina)
             {
                 contadorQuebrarPagina = 0;
-                //texto += MontarCabecalhoDetalhamento();
-                //texto += $@"<tr><td width='20%' class='td-valor-Objetivos'>{objetivosSelecionados}</td>";
-                //texto += $@"<td width='80%' class='td-valor-tres'>";
+
             }
             else
             {
@@ -286,7 +259,6 @@ PLANO DE AULA
                 contadorQuebrarPagina += numeroLimiteCaracteres;
             }
             contadorQuebrarPagina++;
-            texto += VerificaQuebraDetalhamento(quantidadeLinha);
         }
         return texto;
     }
@@ -297,7 +269,6 @@ PLANO DE AULA
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
 
-            //var cabecalho = MontarCabecalho();
             return $@"<div style='page-break-before:always'/>";
 
         }
