@@ -174,25 +174,23 @@
                     </tr>
                 </tbody>
               </table>";
-            if (planejamento.DesenvolvimentoAula != null && planejamento.DesenvolvimentoAula.Any()
-             || planejamento.MeusObjetivosEspecificos != null && planejamento.MeusObjetivosEspecificos.Any())
+            if (planejamento.MeusObjetivosEspecificos != null && planejamento.MeusObjetivosEspecificos.Any())
             {
                 detalhamento = true;
                 str += MontarCabecalhoDetalhamento();
-                if (planejamento.MeusObjetivosEspecificos.Length > planejamento.DesenvolvimentoAula.Length)
-                {
-                    contadorQuebrarPagina += planejamento.MeusObjetivosEspecificos.Length > 55 ? (int)(planejamento.MeusObjetivosEspecificos.Length / 55) + 1 : 1;
-                }
-                else
-                {
-                    contadorQuebrarPagina += planejamento.DesenvolvimentoAula.Length > 55 ? (int)(planejamento.DesenvolvimentoAula.Length / 55) + 1 : 1;
-                }
+                //if (planejamento.MeusObjetivosEspecificos.Length > planejamento.DesenvolvimentoAula.Length)
+                //{
+                //    contadorQuebrarPagina += planejamento.MeusObjetivosEspecificos.Length > 55 ? (int)(planejamento.MeusObjetivosEspecificos.Length / 55) + 1 : 1;
+                //}
+                //else
+                //{
+                //    contadorQuebrarPagina += planejamento.DesenvolvimentoAula.Length > 55 ? (int)(planejamento.DesenvolvimentoAula.Length / 55) + 1 : 1;
+                //}
                 str += $@"<table class='fixed'>
             <tbody>
                 <tr>
                     <td width='20%' class='td-valor-dois'>{planejamento.ObjetivosSelecionados} / {contadorQuebrarPagina}</td>
                     <td width='40%' class='td-valor-dois'>{planejamento.MeusObjetivosEspecificos}</td>
-                    <td width='40%' class='td-valor-dois'>{planejamento.DesenvolvimentoAula}</td>
                 </tr>
             </tbody>
           </table>";

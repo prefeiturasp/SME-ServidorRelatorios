@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Application;
-using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Linq;
@@ -19,26 +18,34 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtros = request.ObterObjetoFiltro<ObterPlanoAulaFiltroQuery>();
+            try
+            {
+                var filtros = request.ObterObjetoFiltro<ObterPlanoAulaFiltroQuery>();
 
-            var planoAula = await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
+                var planoAula = await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
+
+                if (planoAula == null)
+                    throw new NegocioException("Plano de aula não encontrado.");
+
+                var componenteCurricular = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(planoAula.ComponenteCurricularId));
+
+                planoAula.ComponenteCurricular = componenteCurricular.FirstOrDefault().Disciplina;
+                planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));
+                planoAula.Descricao = planoAula.Descricao != null ? planoAula.Descricao : "";
+                planoAula.LicaoCasa = planoAula.LicaoCasa != null ? planoAula.LicaoCasa : "";
+                planoAula.Recuperacao = planoAula.Recuperacao != null ? planoAula.Recuperacao : "";
+
+                planoAula.Usuario = filtros.Usuario.Nome;
+                planoAula.RF = filtros.Usuario.CodigoRf;
+
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAula", planoAula, request.CodigoCorrelacao));
+            }
             
-            if (planoAula == null)
-                throw new NegocioException("Plano de aula não encontrado.");
+            catch (Exception ex)
+            {
 
-            var componenteCurricular = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(planoAula.ComponenteCurricularId));
-
-            planoAula.ComponenteCurricular = componenteCurricular.FirstOrDefault().Disciplina;
-            planoAula.Objetivos = await mediator.Send(new ObterPlanoAulaObjetivoAprendizagemQuery(filtros.PlanoAulaId));
-            planoAula.Descricao = planoAula.Descricao != null ? planoAula.Descricao : "";
-            planoAula.LicaoCasa = planoAula.LicaoCasa != null ? planoAula.LicaoCasa : "";
-            planoAula.Recuperacao = planoAula.Recuperacao != null ? planoAula.Recuperacao : "";
-            planoAula.DesenvolvimentoAula = planoAula.DesenvolvimentoAula != null ? planoAula.DesenvolvimentoAula : "";
-
-            planoAula.Usuario = filtros.Usuario.Nome;
-            planoAula.RF = filtros.Usuario.CodigoRf;
-
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAula", planoAula, request.CodigoCorrelacao));
+                throw;
+            }
         }
     }
 }
