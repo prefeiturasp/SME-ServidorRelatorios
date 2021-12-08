@@ -2,7 +2,7 @@
 @using System.Text.RegularExpressions;
 @using SME.SR.Infra.Utilitarios;
 @{ double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 40;
+    double contadorMaximoLinhasPorPagina = 40;
     int contadorPagina = 0;
     var retornoVerificacao = string.Empty;
     var tipoRelatorio = true;
@@ -162,13 +162,13 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
                 str += MontarDetalhamento(planejamento.ObjetivosSelecionados, meusObjetivosEspecificos.ToLower());
 
                 if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
-                    str += IncluirTdParaFechar(4);
+                    str += IncluirTdParaFechar(3);
 
                 if (planejamento.AulaId == ultimaAulaRelatorio)
-                    str += IncluirTdParaFechar(4);
+                    str += IncluirTdParaFechar(3);
 
 
-                str += "</table>";
+                str += $"</tbody></table>";
 
             }
             else
@@ -262,7 +262,7 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
     string LinhaEmBranco()
     {
         contadorQuebrarPagina += 1;
-        return "<table><tr><td style='border-bottom:none;'><br/></td></tr></table>";
+        return "</table><table><tr><td style='border-bottom:none;'><br/></td></tr></table><table class='fixed'><tbody>";
     }
 
     string IncluirTdParaFechar(int quantidade)
