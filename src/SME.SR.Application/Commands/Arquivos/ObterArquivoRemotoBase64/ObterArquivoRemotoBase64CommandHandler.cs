@@ -14,6 +14,9 @@ namespace SME.SR.Application
     {
         public async Task<string> Handle(ObterArquivoRemotoBase64Command request, CancellationToken cancellationToken)
         {
+            if (request.Url.StartsWith("data:") && request.Url.Contains(";base64,"))
+                return request.Url;
+
             using (var client = new WebClient())
             {
                 try
