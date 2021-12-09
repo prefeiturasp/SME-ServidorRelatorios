@@ -44,7 +44,7 @@ namespace SME.SR.Application
         {
             foreach (var agrupamentoTurma in aulas.GroupBy(c => c.Turma))
             {
-                var turma = new TurmaPlanejamentoDiarioDto() { Nome = agrupamentoTurma.Key };
+                var turma = new TurmaPlanejamentoDiarioDto() { Nome = agrupamentoTurma.Key};
                 turma.Bimestres = AgrupaAulasBimestre(agrupamentoTurma, exibirDetalhamento);
 
                 yield return turma;
@@ -83,7 +83,7 @@ namespace SME.SR.Application
             foreach (var aula in aulasComponenteCurricular.OrderByDescending(o => o.DataAula))
             {
                 var aulaPlanejamento = new PlanejamentoDiarioDto();
-
+                
                 aulaPlanejamento.AulaId = aula.AulaId;
                 aulaPlanejamento.AulaCJ = aula.AulaCJ;
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
@@ -113,7 +113,6 @@ namespace SME.SR.Application
 
                         aulaPlanejamento.ObjetivosSelecionados = ObjetivosSalecionados;
                         aulaPlanejamento.MeusObjetivosEspecificos = string.IsNullOrEmpty(aula.ObjetivosEspecificos) ? "" : aula.ObjetivosEspecificos;
-                        aulaPlanejamento.DesenvolvimentoAula = string.IsNullOrEmpty(aula.DesenvolvimentoAula) ? "" : aula.DesenvolvimentoAula;
                     }
                 }
 
@@ -134,13 +133,7 @@ namespace SME.SR.Application
                 
             if (!string.IsNullOrEmpty(aula.ObjetivosEspecificos))
             {
-                secoes += "- Meus Objetivos específicos<br/>";
-                qtdSecoesPreenchidas++;
-            }                
-
-            if (!string.IsNullOrEmpty(aula.DesenvolvimentoAula))
-            {
-                secoes += "- Desenvolvimento da aula<br/>";
+                secoes += "- Objetivos específicos e desenvolvimento da aula<br/>";
                 qtdSecoesPreenchidas++;
             }                
 
