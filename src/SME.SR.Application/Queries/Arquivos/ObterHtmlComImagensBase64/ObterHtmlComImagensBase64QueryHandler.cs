@@ -31,7 +31,7 @@ namespace SME.SR.Application
                 {
                     var caminho = img.Attributes["src"].Value;
 
-                    var arquivoBase64 = await ObterArquivo(caminho);
+                    var arquivoBase64 = await ObterArquivoRemotoBase64(caminho);
 
                     registroFormatado = registroFormatado.Replace(caminho, arquivoBase64);
                 }
