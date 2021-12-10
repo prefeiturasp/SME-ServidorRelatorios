@@ -28,41 +28,41 @@
         contadorQuebrarPagina += 10;
 
         var str = $@"<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-<div class='titulo-relatorio'>
-<p style='margin-bottom: 0'>
-RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
-</p>
-</div>
-<div class='fonte-14 header-pagina'>
-<table class='tblTopo'>
-<tbody>
-<tr>
-<td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
-<td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
-<td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
-</tr>
-</tbody>
-</table>
+                            <div class='titulo-relatorio'>
+                            <p style='margin-bottom: 0'>
+                            RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
+                            </p>
+                            </div>
+                            <div class='fonte-14 header-pagina'>
+                            <table class='tblTopo'>
+                            <tbody>
+                            <tr>
+                            <td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+                            <td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+                            <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
+                            </tr>
+                            </tbody>
+                            </table>
 
-<table>
-<tbody>
-<tr>
-<td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
-<td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
-</tr>
-</tbody>
-</table>
+                            <table>
+                            <tbody>
+                            <tr>
+                            <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
+                            <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
+                            </tr>
+                            </tbody>
+                            </table>
 
-<table>
-<tbody>
-<tr>
-<td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
-<td width='20%'>RF: {Model.Filtro.RF}</td>
-<td width='20%'>DATA: {Model.Filtro.Data}</td>
-</tr>
-</tbody>
-</table>
-</div>";
+                            <table>
+                            <tbody>
+                            <tr>
+                            <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+                            <td width='20%'>RF: {Model.Filtro.RF}</td>
+                            <td width='20%'>DATA: {Model.Filtro.Data}</td>
+                            </tr>
+                            </tbody>
+                            </table>
+                            </div>";
         return str;
     }
 
@@ -70,15 +70,15 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
     {
         contadorQuebrarPagina += 2;
         var str = $@"<table class='fixed'>
-<tr>
-<td width='15%' class='td-titulo-dois'>DATA DA AULA</td>
-<td width='12%' class='td-titulo-dois'>QUANTIDADE DE AULAS</td>
-<td width='14%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
-<td width='14%' class='td-titulo-dois'>DATA DO REGISTRO</td>
-<td width='15%' class='td-titulo-dois'>USUÁRIO</td>
-<td width='30%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
-</tr>
-</table>";
+                    <tr>
+                    <td width='15%' class='td-titulo-dois'>DATA DA AULA</td>
+                    <td width='12%' class='td-titulo-dois'>QUANTIDADE DE AULAS</td>
+                    <td width='14%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
+                    <td width='14%' class='td-titulo-dois'>DATA DO REGISTRO</td>
+                    <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
+                    <td width='30%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
+                    </tr>
+                    </table>";
 
         return str;
     }
@@ -90,11 +90,11 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
 
 
         str += $@" <table class='fixed'>
-<tr>
-<td width='20%' class='td-titulo-dois'>OBJETIVOS SELECIONADOS</td>
-<td width='80%' class='td-titulo-dois'>OBJETIVOS ESPECÍFICOS E DESENVOLVIMENTO DA AULA</td>
-</tr>
-";
+                <tr>
+                <td width='20%' class='td-titulo-dois'>OBJETIVOS SELECIONADOS</td>
+                <td width='80%' class='td-titulo-dois'>OBJETIVOS ESPECÍFICOS E DESENVOLVIMENTO DA AULA</td>
+                </tr>
+                ";
 
         return str;
     }
@@ -104,8 +104,8 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
         var str = "";
         var detalhamento = false;
         var ultimoplanejamento = planejamentoDiario.LastOrDefault();
-        str += MontarCabecalhoPlanejamento();
-        str += "<table class='fixed'>";
+
+
         fecharTabela = "";
 
         foreach (var planejamento in planejamentoDiario)
@@ -133,14 +133,20 @@ RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
             var planejamentoRealizado = planejamento.PlanejamentoRealizado ? "Sim" : "Não";
             var cj = planejamento.PlanejamentoRealizado && planejamento.AulaCJ ? " - CJ" : "";
 
-            str += $@"<tr>
-<td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
-<td width='12%' class='td-valor-dois'>{planejamento.QuantidadeAulas}</td>
-<td width='14%' class='td-valor-dois'>{planejamentoRealizado}</td>
-<td width='14%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
-<td width='15%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
-<td width='30%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
-</tr>";
+            if (!string.IsNullOrEmpty(planejamento.DataAula))
+            {
+                str += MontarCabecalhoPlanejamento();
+                str += "<table class='fixed'>";
+                str += $@"<tr>
+                        <td width='15%' class='td-valor-dois'>{planejamento.DataAula}</td>
+                        <td width='12%' class='td-valor-dois'>{planejamento.QuantidadeAulas}</td>
+                        <td width='14%' class='td-valor-dois'>{planejamentoRealizado}</td>
+                        <td width='14%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
+                        <td width='15%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
+                        <td width='30%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
+                        </tr>"; 
+            }
+
 
             if (!string.IsNullOrEmpty(planejamento.MeusObjetivosEspecificos))
             {
