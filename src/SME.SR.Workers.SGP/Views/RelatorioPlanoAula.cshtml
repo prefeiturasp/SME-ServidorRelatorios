@@ -2,8 +2,8 @@
 @using SME.SR.Infra.Utilitarios;
 @{
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 67;
-    int tamanhoMaximoLinha = 80;
+    int contadorMaximoLinhasPorPagina = 60;
+    int contadorPagina = 0;
     bool montarCabecalhoObj = true;
 
     string VerificaQuebra()
@@ -21,29 +21,6 @@
 
     }
 
-    int CalcularLinhas(int valorLinha = 0, int caracteres = 120)
-    {
-        if (valorLinha > 0)
-        {
-            if (valorLinha < caracteres)
-            {
-                return 1;
-            }
-            var valorMod = valorLinha % caracteres;
-            int valorInt = valorLinha / caracteres;
-            if (valorMod > 0)
-            {
-                return valorInt + 1;
-            }
-            else
-            {
-                return valorInt;
-            }
-        }
-
-        return 1;
-    }
-
     string MontaCabecalhoObjetivos()
     {
         var str = "";
@@ -52,7 +29,7 @@
             str = @"<table>
 <tr>
 <td width='100 %' class=tb-cabecalho>
-OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
+OBJETIVOS DE APRENDIZAGEM(CURRÍCULO DA CIDADE)
 </td>
 </tr>
 </table> ";
@@ -62,114 +39,57 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         return str;
     }
 
-    string MontaObjetivos()
-    {
-        var str = "";
-
-        if (Model.Objetivos.Count() > 0)
-        {
-            str += MontaCabecalhoObjetivos();
-            var first = Model.Objetivos.First();
-            var last = Model.Objetivos.Last();
-
-            @foreach (var objetivo in Model.Objetivos)
-            {
-                str += $@"<table><tbody>
-<tr class='tabela-objetivos-items-tr'>
-<td class='fonte-12 tabela-objetivos-items-titulo'>
-{objetivo.Codigo}
-</td>
-<td class='fonte-12 tabela-objetivos-items-descricao'>
-{objetivo.Descricao}
-</td>
-</tr>
-</tbody>
-</table>";
-                var totalLinhasPorObjetivo = 3;
-                if(objetivo.Descricao.Length > tamanhoMaximoLinha) {
-                    var total = CalcularLinhas(objetivo.Descricao.Length, tamanhoMaximoLinha);
-                    if (total > totalLinhasPorObjetivo) totalLinhasPorObjetivo = total;
-                }
-                contadorQuebrarPagina += totalLinhasPorObjetivo;
-                str += VerificaQuebra();
-                if(objetivo != last)
-                {
-                    str += MontaCabecalhoObjetivos();
-                }
-            }
-        }
-        else
-        {
-            str += MontaDescricao("OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)", Model.Descricao);
-        }
-
-        return str;
-    }
-
-
-
     string MontaDescricao(string titulo, string descricao)
     {
-        if (descricao.Trim().Length == 0)
-        {
-            return "";
-        }
-        var str = "";
-        var totalMinimoLinhas = 4;
-
-        if(contadorQuebrarPagina + totalMinimoLinhas >= contadorMaximoLinhasPorPagina) {
-            contadorQuebrarPagina += totalMinimoLinhas;
-            str += VerificaQuebra();
-        }
-
-        str += "<div class='m-30'>";
+        var str = "<div class='m-30'>";
 
         if (titulo != "")
         {
-            str += $@"<table><tr><td width='100%' class='tb-cabecalho2'>{titulo}</td></tr></table>";
+            str = str + $@"
+<table>
+<tr>
+<td width='100%' class='tb-cabecalho2'>{titulo}</td>
+</tr>
+</table>";
         }
 
 
-        str += @"<table> <tbody><tr class='h-50'><td class='fonte-12 caixa-2'>";
+        str = str + @"<table> <tbody>
+<tr class='h-50'>
+<td class='fonte-16 caixa-2'>";
 
         int tamanho = 0;
         descricao = UtilRegex.RemoverTagsHtmlMidia(descricao);
         descricao = UtilRegex.RemoverTagsHtml(descricao);
-
         for (int i = 0; i < descricao.Length; i++)
         {
+
             if (tamanho <= 100)
             {
-                str += descricao[i];
+                str = str + descricao[i];
                 tamanho = tamanho + 1;
             }
             else
             {
+                contadorQuebrarPagina = contadorQuebrarPagina + 1;
                 var retornoVerificacao = VerificaQuebra();
                 if (retornoVerificacao != string.Empty)
                 {
-                    str += $@"</td> </tr> </tbody> </table> {retornoVerificacao} ";
-                    if (titulo != "")
-                    {
-                        str += $@"<table><tr><td width='100%' class='tb-cabecalho2'>{titulo}</td></tr></table>";
-                    }
-                    str += "<table> <tbody><tr class='h-50'><td class='fonte-12 caixa-2'>";
+                    str = str + $@"</td> </tr> </tbody> </table> {retornoVerificacao} <table> <tbody><tr class='h-50'><td class='fonte-16 caixa-2'>";
                 }
                 else
                 {
-                    str += retornoVerificacao;
+                    str = str + retornoVerificacao;
                 }
 
                 tamanho = 0;
-                str += descricao[i];
+                str = str + descricao[i];
             }
         }
-        var totalLinhas = CalcularLinhas(tamanho, tamanhoMaximoLinha);
-        contadorQuebrarPagina = contadorQuebrarPagina + (totalLinhas > totalMinimoLinhas ? totalLinhas : totalMinimoLinhas);
 
         if (!str.Substring(str.Length - 8).Equals("</table>"))
         {
-            str += @" </tr> </tbody> </table>";
+            str = str + @" </tr> </tbody> </table>";
         }
 
         return str + "</div>";
@@ -191,8 +111,8 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 <tbody>
 <tr>
 <td width='35%'>DRE: {Model.Dre}</td>
-<td width='40%'>UE: {Model.TipoEscola} {Model.Ue}</td>
-<td width='15%'>TURMA:{Model.ModalidadeTurma.ShortName()} - {Model.Turma}</td>
+<td width='40%'>UE: {Model.Ue}</td>
+<td width='15%'>TURMA: {Model.Turma}</td>
 </tr>
 </tbody>
 </table>
@@ -207,8 +127,8 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 <tbody>
 <tr>
 <td class='campo-usuario'>USUÁRIO: {Model.Usuario}</td>
-<td class='campo-rf'>RF: {Model.RF}</td>
-<td class='campo-data'>DATA: {Model.Data:dd/MM/yyyy}</td>
+<td class='campo-rf-data'>RF: {Model.RF}</td>
+<td class='campo-rf-data'>DATA: {Model.Data:dd/MM/yyyy}</td>
 </tr>
 </tbody>
 </table>
@@ -221,6 +141,7 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -285,17 +206,12 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         }
 
         .campo-usuario {
-            width: 55%;
+            width: 60%;
             border-top: none;
         }
 
-        .campo-rf {
+        .campo-rf-data {
             width: 15%;
-            border-top: none;
-        }
-
-        .campo-data {
-            width: 20%;
             border-top: none;
         }
 
@@ -359,7 +275,7 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         .tb-cabecalho {
             background-color: #f3f3f3;
             text-align: left;
-            font-size: 14px;
+            font-size: 16px;
             padding: 10px;
             padding-left: 20px;
         }
@@ -367,7 +283,7 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
         .tb-cabecalho2 {
             background-color: #f3f3f3;
             text-align: left;
-            font-size: 14px;
+            font-size: 16px;
             padding: 10px;
             border-bottom: none;
             padding-left: 20px;
@@ -446,11 +362,38 @@ OBJETIVOS DE APRENDIZAGEM E MEUS OBJETIVOS (CURRÍCULO DA CIDADE)
     <div>
         @Html.Raw(MontarCabecalho())
         <div>
-            @Html.Raw(MontaObjetivos())
-        </div>
-        @if (Model.Objetivos.Count() > 0)@Html.Raw(MontaDescricao("", @Model.Descricao))
+            @{
+                var first = Model.Objetivos.First();
+                var last = Model.Objetivos.Last();
 
-        @Html.Raw(MontaDescricao("DESENVOLVIMENTO DA AULA", @Model.DesenvolvimentoAula))
+                @foreach (var objetivo in Model.Objetivos)
+                {
+                    @Html.Raw(MontaCabecalhoObjetivos())
+                    <table>
+                        <tbody>
+                            <tr class="tabela-objetivos-items-tr">
+                                @{
+
+                                    <td class="fonte-16 tabela-objetivos-items-titulo">
+                                        @objetivo.Codigo
+                                    </td>
+                                    <td class="fonte-16 tabela-objetivos-items-descricao">
+                                        @objetivo.Descricao
+                                    </td>
+
+                                }
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+                    @Html.Raw(VerificaQuebra())
+                }
+
+            }
+
+        </div>
+        @Html.Raw(MontaDescricao("OBJETIVOS ESPECÍFICOS E DESENVOLVIMENTO DA AULA", @Model.Descricao))
         @Html.Raw(MontaDescricao("RECUPERAÇÃO CONTÍNUA", @Model.Recuperacao))
         @Html.Raw(MontaDescricao("LIÇÃO DE CASA", @Model.LicaoCasa))
 
