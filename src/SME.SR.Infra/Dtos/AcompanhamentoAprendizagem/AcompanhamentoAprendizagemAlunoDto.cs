@@ -10,5 +10,12 @@ namespace SME.SR.Infra
         public string AlunoCodigo { get; set; }
         public string Observacoes { get; set; }
         public string PercursoIndividual { get; set; }
+
+        public string PercusoIndividualFormatado()
+        {
+            if (string.IsNullOrEmpty(PercursoIndividual))
+                return "";
+            return PercursoIndividual.Replace("-19px", "0px");
+        }
     }
 }
