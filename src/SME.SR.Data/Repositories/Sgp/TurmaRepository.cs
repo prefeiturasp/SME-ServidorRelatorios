@@ -782,8 +782,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosSemParecerConclusivo(long[] codigoAlunos)
         {
-            var query = @"drop table if exists tempTurmaRegularConselhoAluno;
-                        select distinct 
+            var query = @";with tempTurmaRegularConselhoAluno as
+                        (select distinct 
                             t.turma_id as TurmaCodigo,
                             null as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
@@ -793,7 +793,6 @@ namespace SME.SR.Data
                             tc.descricao as Ciclo,
                             t.tipo_turma as TipoTurma,
                             cca.id as ConselhoClasseAlunoId
-                        into tempTurmaRegularConselhoAluno
                         from
                             fechamento_turma ft
                         inner join conselho_classe cc on
@@ -801,7 +800,7 @@ namespace SME.SR.Data
                         inner join conselho_classe_aluno cca on
                             cca.conselho_classe_id = cc.id
                         inner join turma t 
- 	                        on ft.turma_id = t.id
+                            on ft.turma_id = t.id
                         left join tipo_ciclo_ano tca on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
                         left join tipo_ciclo tc on tca.tipo_ciclo_id = tc.id
                         where not ft.excluido 
@@ -820,21 +819,18 @@ namespace SME.SR.Data
                              where not ft2.excluido 
                                 and not cc2.excluido 
                                 and ft2.turma_id = ft.turma_id 
-	                            and	cca2.aluno_codigo = cca.aluno_codigo 
-	                            and ft2.periodo_escolar_id is null
-                                and cca2.conselho_classe_parecer_id is not null);
-        
+                                and	cca2.aluno_codigo = cca.aluno_codigo 
+                                and ft2.periodo_escolar_id is null
+                                and cca2.conselho_classe_parecer_id is not null)
+                        ), tempConselhoAlunos as 
                         -- Obter turmas complementares
-                        drop table if exists tempConselhoAlunos;
-                        select 
-	                        distinct 
-	                        ConselhoClasseAlunoId
-                        into tempConselhoAlunos
+                        (select 
+                            distinct 
+                            ConselhoClasseAlunoId
                         from 
-	                        tempTurmaRegularConselhoAluno;
-	
-                        drop table if exists tempTurmaComplementarConselhoAluno;
-                        select distinct 
+                            tempTurmaRegularConselhoAluno
+                        ), tempTurmaComplementarConselhoAluno as
+                        (select distinct 
                             t.turma_id as TurmaCodigo,
                             tr.turma_id as TurmaRegularCodigo,
                             t.modalidade_codigo Modalidade,
@@ -843,45 +839,42 @@ namespace SME.SR.Data
                             t.etapa_eja as EtapaEJA,
                             tc.descricao as Ciclo,
                             t.tipo_turma as TipoTurma
-                        into tempTurmaComplementarConselhoAluno
                         from 
-	                        tempConselhoAlunos t1
+                            tempConselhoAlunos t1
                         inner join
-	                        conselho_classe_aluno cca 
-	                        on t1.ConselhoClasseAlunoId = cca.id 
+                            conselho_classe_aluno cca 
+                            on t1.ConselhoClasseAlunoId = cca.id 
                         inner join 
-	                        conselho_classe_aluno_turma_complementar ccatc 
-	                        on cca.id = ccatc.conselho_classe_aluno_id 
+                            conselho_classe_aluno_turma_complementar ccatc 
+                            on cca.id = ccatc.conselho_classe_aluno_id 
                          inner join 
-	                        conselho_classe cc
-	                        on cc.id = cca.conselho_classe_id
+                            conselho_classe cc
+                            on cc.id = cca.conselho_classe_id
                         inner join
-	                        fechamento_turma ft
-	                        on cc.fechamento_turma_id = ft.id
+                            fechamento_turma ft
+                            on cc.fechamento_turma_id = ft.id
                         inner join 
-	                        turma tr
-	                        on tr.id = ft.turma_id
+                            turma tr
+                            on tr.id = ft.turma_id
                         inner join 
-	                        turma t
-	                        on ccatc.turma_id = t.id
+                            turma t
+                            on ccatc.turma_id = t.id
                         left join 
-	                        tipo_ciclo_ano tca 
-	                        on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
+                            tipo_ciclo_ano tca 
+                            on t.modalidade_codigo = tca.modalidade and t.ano = tca.ano
                         left join 
-	                        tipo_ciclo tc 
-	                        on tca.tipo_ciclo_id = tc.id;
+                            tipo_ciclo tc 
+                            on tca.tipo_ciclo_id = tc.id)
 
                         -- Resultado
                         select 
-	                        *
+                            *
                         from 
-	                        (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
+                            (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
                         union
-	                        (select * from tempTurmaComplementarConselhoAluno)";
+                            (select * from tempTurmaComplementarConselhoAluno)";
 
-
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigoAlunos.Select(a => a.ToString()).ToArray() });
         }
 
