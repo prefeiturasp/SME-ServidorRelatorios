@@ -10,8 +10,17 @@ namespace SME.SR.Data
         public string Codigo { get; set; }
         public string Nome { get; set; }
         public TipoEscola TipoEscola { get; set; }
-        public string DreId { get; set; }
+        public long DreId { get; set; }
         public Dre Dre { get; set; }
+
+        public void AdicionarDre(Dre dre)
+        {
+            if (dre != null)
+            {
+                Dre = dre;
+                DreId = dre.Id;
+            }
+        }
 
         public string NomeRelatorio =>
             $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";

@@ -205,7 +205,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorios/notificacoes")]
         [Action("relatorios/notificacoes", typeof(IRelatorioNotificacaoUseCase))]
-        public async Task<bool> ControleGrade([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotificacaoUseCase relatorioUseCase)
+        public async Task<bool> Notificacoes([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioNotificacaoUseCase relatorioUseCase)
         {
             await relatorioUseCase.Executar(request);
             return true;
