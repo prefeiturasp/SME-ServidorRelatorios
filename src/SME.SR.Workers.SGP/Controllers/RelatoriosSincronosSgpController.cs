@@ -39,5 +39,11 @@ namespace SME.SR.Workers.SGP.Controllers
             
             return codigoCorrelacao;
         }
+
+        [HttpPost("devolutivas/{devolutivaId}")]
+        public async Task<Guid> RelatorioDevolutivas(int devolutivaId, [FromServices] IRelatorioDevolutivasUseCase relatorioUseCase)
+        {
+            return await relatorioUseCase.GerarRelatorioSincrono(devolutivaId);
+        }
     }
 }

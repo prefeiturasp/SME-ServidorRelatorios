@@ -4,7 +4,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -96,6 +95,12 @@ namespace SME.SR.Application
             }
 
             return "Todas";
+        }
+
+        public async Task<Guid> GerarRelatorioSincrono(int devolutivaId)
+        {
+            var codigoCorrelacao = Guid.NewGuid();
+            return codigoCorrelacao;
         }
     }
 }
