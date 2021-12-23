@@ -92,7 +92,7 @@ namespace SME.SR.Application
         {
             return new MensagemRelatorioProntoDto()
             {
-                MensagemTitulo = $"Relatório Ata final de resultados - {modalidade.ShortName()} - {turma}"
+                MensagemTitulo = $"Relatório Ata final de resultados - {turma}"
             };
         }
 
@@ -232,7 +232,7 @@ namespace SME.SR.Application
             worksheet.Range(2, indiceColunaTitulo, 2, totalColunas).Style.Font.FontSize = 10;
             worksheet.Range(2, indiceColunaTitulo, 2, totalColunas).Style.Font.FontName = "Arial";
 
-            worksheet.Row(3).Cell(indiceColunaTitulo).Value = "ATA DE RESULTADOS FINAIS";
+            worksheet.Row(3).Cell(indiceColunaTitulo).Value = "ATA FINAL DE RESULTADOS";
             worksheet.Range(3, indiceColunaTitulo, 3, totalColunas).Merge().Style.Font.FontSize = 10;
             worksheet.Range(3, indiceColunaTitulo, 3, totalColunas).Style.Font.FontName = "Arial";
 

@@ -177,8 +177,7 @@ namespace SME.SR.Application
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });
-            if (notas == null || !notas.Any())
-                return default;
+            if (notas == null || !notas.Any()) return default;
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var cabecalho = await ObterCabecalho(turma.Codigo);
@@ -192,24 +191,14 @@ namespace SME.SR.Application
 
             var turmaDetalhes = await ObterTurmaDetalhes(turma.Codigo);
 
-            if (turmaDetalhes.EtapaEnsino != (int)EtapaEnsino.Magisterio)
+            var tipoTurma = turmaDetalhes.EtapaEnsino != (int)EtapaEnsino.Magisterio ? TipoTurma.Regular : TipoTurma.EdFisica;
+
+            foreach (var lta in listaTurmasAlunos)
             {
-                foreach (var lta in listaTurmasAlunos)
-                {
-                    var turmaAluno = await ObterTurma(lta.Key.ToString());
-                    if (turmaAluno.TipoTurma != TipoTurma.Regular)
-                        listaTurmas.Add(turmaAluno.Codigo);
-                }
-            }
-            else
-            {
-                foreach (var lta in listaTurmasAlunos)
-                {
-                    var turmaAluno = await ObterTurma(lta.Key.ToString());
-                    if (turmaAluno.TipoTurma == TipoTurma.EdFisica)
-                        listaTurmas.Add(turmaAluno.Codigo);
-                }
-            }
+                var turmaAluno = await ObterTurma(lta.Key.ToString());
+                if (turmaAluno.TipoTurma != tipoTurma)
+                    listaTurmas.Add(turmaAluno.Codigo);
+            }            
 
             listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
 
@@ -647,11 +636,12 @@ namespace SME.SR.Application
                             componentes.Add(new ComponenteCurricularPorTurma()
                             {
                                 CodDisciplina = componenteCurricularRegencia.CodDisciplina,
-                                CodDisciplinaPai = componenteCurricularRegencia.CodDisciplinaPai,
+                                CodDisciplinaPai = componente.CodDisciplina,
                                 LancaNota = componenteCurricularRegencia.LancaNota,
                                 Disciplina = componenteCurricularRegencia.Disciplina,
                                 GrupoMatriz = componente.GrupoMatriz,
-                                CodigoTurma = componente.CodigoTurma
+                                CodigoTurma = componente.CodigoTurma,
+                                Regencia = componenteCurricularRegencia.Regencia
                             });
                     }
                 else
@@ -671,8 +661,11 @@ namespace SME.SR.Application
         {
             var componenteFrequencia = componenteCurricular.Regencia ? ObterComponenteRegenciaTurma(componentesTurmas) : componenteCurricular;
 
+            var codComponenteCurricular = componenteCurricular.Regencia ? componenteFrequencia.CodDisciplinaPai : componenteFrequencia.CodDisciplina;
+
             return frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == alunoCodigo
-                                                && c.DisciplinaId == componenteFrequencia.CodDisciplina.ToString());
+                                                && c.DisciplinaId == codComponenteCurricular.ToString());            
+            
         }
 
         private void MontarEstruturaGruposMatriz(ConselhoClasseAtaFinalDto relatorio, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<PeriodoEscolar> periodosEscolares, IEnumerable<AreaDoConhecimento> areasDoConhecimento, IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> ordenacaoGrupoArea)

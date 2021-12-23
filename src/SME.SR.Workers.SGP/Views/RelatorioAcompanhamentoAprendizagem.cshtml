@@ -74,7 +74,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class='borda-padrao'>
+          <td class='borda-padrao padding-conteudo-editor'>
             <span class="quebra-conteudo-editor">@Html.Raw(percursoTurma)</span>
           </td>
         </tr>
@@ -121,7 +121,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class='borda-padrao'>
+          <td class='borda-padrao padding-conteudo-editor'>
             <span class="quebra-conteudo-editor">@Html.Raw(percursoIndividual)</span>
           </td>
         </tr>
@@ -293,10 +293,14 @@
       page-break-inside: avoid;
     }
 
-      .quebra-conteudo-editor img {
-          margin-top: 5px !important;
-          page-break-inside: avoid;
-      }
+    .quebra-conteudo-editor img {
+      padding-top: 5px !important;
+    }
+
+    .padding-conteudo-editor {
+      padding-left: 25px !important;
+      padding-right: 25px !important;
+    }
   </style>
 </head>
 
