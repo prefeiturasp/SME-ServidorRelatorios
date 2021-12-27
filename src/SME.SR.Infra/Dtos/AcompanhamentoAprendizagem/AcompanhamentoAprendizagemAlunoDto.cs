@@ -32,7 +32,7 @@ namespace SME.SR.Infra
             if (string.IsNullOrEmpty(PercursoIndividual))
                 return "";
             var str = Regex.Replace(PercursoIndividual, @"-\d+px", "0px");
-            return str;
+            return str.Replace("700px", "380px");
         }
     }
 }
