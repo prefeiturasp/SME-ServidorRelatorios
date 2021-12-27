@@ -33,7 +33,12 @@ namespace SME.SR.Application
                     // Query DiarioBordo
                     relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
 
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
+                    if (parametros.AnoLetivo != DateTime.Now.Year)
+                        await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
+
+                    else
+                        //TODO: Alterar o texto LAYOUT_NOVO para o nome do novo template HTML para os relatórios de 2022
+                        await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("LAYOUT_NOVO", relatorioDto, request.CodigoCorrelacao));
                 }
                 else
                 {
