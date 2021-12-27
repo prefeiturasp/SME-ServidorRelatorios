@@ -33,7 +33,7 @@ namespace SME.SR.Application
                     // Query DiarioBordo
                     relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
 
-                    if (parametros.AnoLetivo != DateTime.Now.Year)
+                    if (parametros.AnoLetivo < DateTime.Now.Year)
                         await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
 
                     else
