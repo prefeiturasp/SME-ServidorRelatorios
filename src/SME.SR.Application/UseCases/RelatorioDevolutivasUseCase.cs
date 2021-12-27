@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,12 +95,6 @@ namespace SME.SR.Application
             }
 
             return "Todas";
-        }
-
-        public async Task<Guid> GerarRelatorioSincrono(FiltroRelatorioDevolutivasSincronoDto dto)
-        {
-            var codigoCorrelacao = Guid.NewGuid();
-            return codigoCorrelacao;
         }
     }
 }

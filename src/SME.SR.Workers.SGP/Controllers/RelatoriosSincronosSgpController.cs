@@ -42,7 +42,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpPost("devolutivas")]
-        public async Task<Guid> RelatorioDevolutivas([FromBody] FiltroRelatorioDevolutivasSincronoDto request, [FromServices] IRelatorioDevolutivasUseCase relatorioUseCase)
+        public async Task<Guid> RelatorioDevolutivas([FromBody] FiltroRelatorioDevolutivasSincronoDto request, [FromServices] IRelatorioDevolutivasSincronoUseCase relatorioUseCase)
         {
             return await relatorioUseCase.GerarRelatorioSincrono(request);
         }
