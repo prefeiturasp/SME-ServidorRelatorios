@@ -4,7 +4,6 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -25,12 +24,12 @@ namespace SME.SR.Data
                             , a.data_aula as DataAula
                             , a.aula_cj as AulaCJ
 	                        , t.nome as Turma
-	                        , cc.descricao_sgp as ComponenteCurricular
+	                        , coalesce (cc.descricao_infantil, cc.descricao_sgp) as ComponenteCurricular
 	                        , pe.bimestre
 	                        , db.criado_em as DataPlanejamento
 	                        , db.criado_rf as UsuarioRf
 	                        , db.criado_por as Usuario
-	                        , db.planejamento
+	                        , db.planejamento as Planejamento
 	                        , db.reflexoes_replanejamento as Reflexoes
 	                        , db.devolutiva_id as DevolutivaId
                         from aula a 
@@ -60,10 +59,9 @@ namespace SME.SR.Data
             if (semestre > 0)
                 query += " and t.semestre = @semestre ";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
-                return await conexao.QueryAsync<AulaDiarioBordoDto>(query, new { anoLetivo, bimestre, codigoUe, componenteCurricular, codigoTurma, modalidadeTurma, modalidadeCalendario, semestre });
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryAsync<AulaDiarioBordoDto>(query, new { anoLetivo, bimestre, codigoUe, componenteCurricular, codigoTurma, modalidadeTurma, modalidadeCalendario, semestre });
         }
 
         public async Task<DateTime?> ObterUltimoDiarioBordoProfessor(string professorRf)
@@ -74,10 +72,9 @@ namespace SME.SR.Data
                          where not a.excluido
                            and a.professor_rf = @professorRf";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
-                return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            
+            return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
         }
     }
 }
