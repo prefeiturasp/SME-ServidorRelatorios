@@ -43,7 +43,7 @@ namespace SME.SR.Application
             };
             var bimestreDevolutivaSincronoDto = new BimestreDevolutivaSincronoDto
             {
-                NomeBimestre = $"{devolutiva.Bimestre} º BIMESTRE"
+                NomeBimestre = $"{devolutiva.Bimestre}º BIMESTRE"
             };
 
             var devolutivaRelatorioSincronoDto = new DevolutivaRelatorioSincronoDto
