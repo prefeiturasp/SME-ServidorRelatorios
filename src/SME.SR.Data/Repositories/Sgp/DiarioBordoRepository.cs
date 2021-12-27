@@ -4,7 +4,6 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -74,6 +73,7 @@ namespace SME.SR.Data
                            and a.professor_rf = @professorRf";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            
             return await conexao.QueryFirstOrDefaultAsync<DateTime?>(query, new { professorRf });
         }
     }
