@@ -23,19 +23,22 @@ namespace SME.SR.Application
             {
                 var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
 
-                var relatorioDto = new RelatorioControlePlanejamentoDiarioDto();
-
-                relatorioDto.Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF);
+                var relatorioDto = new RelatorioControlePlanejamentoDiarioDto
+                {
+                    Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF)
+                };
 
                 if (parametros.ModalidadeTurma == Modalidade.Infantil)
                 {
                     // Query DiarioBordo
                     relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
+
                     await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
                 }
                 else
                 {
                     relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
+                    
                     await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
                 }
             }
