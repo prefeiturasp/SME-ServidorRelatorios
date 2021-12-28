@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using MediatR;
 using SME.SR.Infra.Utilitarios;
 using System.Text.RegularExpressions;
@@ -32,6 +30,12 @@ namespace SME.SR.Application
                 foreach (var img in nodes)
                 {
                     var caminho = img.Attributes["src"].Value;
+
+                    var styleImagem = img.Attributes["style"].Value;
+
+                    var styleRedimencionado = Regex.Replace(styleImagem, @"\d+px", "380px");
+
+                    registroFormatado = registroFormatado.Replace(styleImagem, styleRedimencionado);
 
                     var arquivoBase64 = await ObterArquivo(caminho);
 
