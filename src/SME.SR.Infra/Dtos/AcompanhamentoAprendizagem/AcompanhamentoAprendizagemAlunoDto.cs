@@ -1,5 +1,4 @@
-﻿using SME.SR.Infra.Utilitarios;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace SME.SR.Infra
 {
@@ -32,7 +31,7 @@ namespace SME.SR.Infra
             if (string.IsNullOrEmpty(PercursoIndividual))
                 return "";
             var str = Regex.Replace(PercursoIndividual, @"-\d+px", "0px");
-            return str.Replace("700px", "380px");
+            return str;
         }
     }
 }
