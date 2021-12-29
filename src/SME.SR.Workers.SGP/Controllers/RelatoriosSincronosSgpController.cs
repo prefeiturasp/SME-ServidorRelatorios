@@ -44,7 +44,13 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpPost("devolutivas")]
         public async Task<Guid> RelatorioDevolutivas([FromBody] FiltroRelatorioDevolutivasSincronoDto request, [FromServices] IRelatorioDevolutivasSincronoUseCase relatorioUseCase)
         {
-            return await relatorioUseCase.GerarRelatorioSincrono(request);
+            var codigoCorrelacao = Guid.NewGuid();
+            await relatorioUseCase.GerarRelatorioSincrono(new FiltroRelatorioDto() 
+            {
+                CodigoCorrelacao = codigoCorrelacao,
+                Mensagem = JsonConvert.SerializeObject(request)
+            });
+            return codigoCorrelacao;
         }
     }
 }
