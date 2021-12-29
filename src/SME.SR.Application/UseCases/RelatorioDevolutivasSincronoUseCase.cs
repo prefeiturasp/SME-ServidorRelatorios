@@ -2,7 +2,6 @@
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,19 +17,31 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.devolutivaRepository = devolutivaRepository ?? throw new ArgumentNullException(nameof(devolutivaRepository));
         }
-        public async Task<Guid> GerarRelatorioSincrono(FiltroRelatorioDevolutivasSincronoDto dto)
+        public async Task GerarRelatorioSincrono(FiltroRelatorioDto request)
         {
-            var codigoCorrelacao = Guid.NewGuid();
-            var relatorioDto = new RelatorioDevolutivasSincronoDto();
-            var devolutiva = await devolutivaRepository.ObterDevolutiva(dto.DevolutivaId);
-            var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(dto.TurmaId));
+            try
+            {
+                var parametros = request.ObterObjetoFiltro<FiltroRelatorioDevolutivasSincronoDto>();
+                var relatorioDto = new RelatorioDevolutivasSincronoDto();
+                
+                var devolutiva = await devolutivaRepository.ObterDevolutiva(parametros.DevolutivaId);
+                if (devolutiva == null)
+                    new NegocioException("Devolutiva não encontrada!!");
 
-            await ObterFiltrosRelatorio(relatorioDto, dto, devolutiva.Bimestre, turmaDto.NomeRelatorio);
+                var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(parametros.TurmaId));
+                if (turmaDto == null)
+                    new NegocioException("Turma não encontrada!!");
 
-            relatorioDto.Turmas = await MapearTurma(devolutiva, turmaDto.NomeRelatorio);
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivaSincrono", relatorioDto, codigoCorrelacao, relatorioSincrono: true));
+                await ObterFiltrosRelatorio(relatorioDto, parametros, devolutiva.Bimestre, turmaDto.NomeRelatorio);
 
-            return codigoCorrelacao;
+                relatorioDto.Turmas = await MapearTurma(devolutiva, turmaDto.NomeRelatorio);
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivaSincrono", relatorioDto, request.CodigoCorrelacao, relatorioSincrono: true));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
 
 
@@ -62,17 +73,22 @@ namespace SME.SR.Application
         }
         private async Task<string> FormatarHtml(string html)
                 => await mediator.Send(new ObterHtmlComImagensBase64Query(html));
-        private async Task ObterFiltrosRelatorio(RelatorioDevolutivasSincronoDto relatorioDto, FiltroRelatorioDevolutivasSincronoDto dto, long bimestre, string nomeTurma)
+        private async Task ObterFiltrosRelatorio(RelatorioDevolutivasSincronoDto relatorioDto, FiltroRelatorioDevolutivasSincronoDto parametros, long bimestre, string nomeTurma)
         {
-            var ue = await mediator.Send(new ObterUePorIdQuery(dto.UeId));
+            var ue = await mediator.Send(new ObterUePorIdQuery(parametros.UeId));
+            if (ue == null)
+                new NegocioException("UE não encontrada!!");
+
             var dre = await mediator.Send(new ObterDrePorIdQuery(long.Parse(ue.DreId)));
+            if (dre == null)
+                new NegocioException("DRE não encontrada!!");
 
             relatorioDto.Dre = dre.Abreviacao;
             relatorioDto.Ue = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
             relatorioDto.Turma = nomeTurma;
             relatorioDto.Bimestre = $"{bimestre}º";
-            relatorioDto.Usuario = dto.UsuarioNome;
-            relatorioDto.RF = dto.UsuarioRF;
+            relatorioDto.Usuario = parametros.UsuarioNome;
+            relatorioDto.RF = parametros.UsuarioRF;
             relatorioDto.ExibeConteudoDevolutivas = true;
             relatorioDto.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
         }

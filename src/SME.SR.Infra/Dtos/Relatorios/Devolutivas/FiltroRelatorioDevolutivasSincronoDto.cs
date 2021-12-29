@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Infra.Dtos
+﻿using System;
+
+namespace SME.SR.Infra.Dtos
 {
     public class FiltroRelatorioDevolutivasSincronoDto
     {
