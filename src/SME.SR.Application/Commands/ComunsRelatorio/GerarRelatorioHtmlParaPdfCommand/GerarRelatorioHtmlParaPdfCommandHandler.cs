@@ -34,7 +34,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             string nomeArquivo = string.Empty;
 
             if (request.RelatorioSincrono)
-                nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
+                nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.CodigoCorrelacao.ToString());
             else
                 nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
 
