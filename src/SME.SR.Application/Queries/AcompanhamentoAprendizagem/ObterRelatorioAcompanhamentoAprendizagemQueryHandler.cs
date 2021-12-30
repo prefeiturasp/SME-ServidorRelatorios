@@ -148,7 +148,7 @@ namespace SME.SR.Application
                     Bimestre = "",
                     Aulas = totalAulasInfantil,
                     Ausencias = totalAusencias,
-                    Frequencia = $"{mediaFrequencia}",
+                    Frequencia = mediaFrequencia == 0 ? "" : $"{mediaFrequencia}%",
                 };
                 frequenciasRelatorio.Add(frequenciaRelatorio);
 
