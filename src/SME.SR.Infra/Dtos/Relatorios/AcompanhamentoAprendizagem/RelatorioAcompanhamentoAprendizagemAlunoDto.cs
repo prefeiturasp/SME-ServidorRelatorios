@@ -19,6 +19,7 @@ namespace SME.SR.Infra
         public string NomeEol { get; set; }
         public string PercursoIndividual { get; set; }
         public string PercursoColetivoTurma { get; set; }
+        public Modalidade ModalidadeTurma { get; set; }
 
         public List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto> Frequencias { get; set; }
         public List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> Ocorrencias { get; set; }
