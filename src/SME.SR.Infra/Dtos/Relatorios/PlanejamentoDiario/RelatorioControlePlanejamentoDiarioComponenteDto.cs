@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Infra
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Infra
 {
     public class RelatorioControlePlanejamentoDiarioComponenteDto
     {
@@ -7,5 +9,6 @@
             Filtro = new FiltroControlePlanejamentoDiarioDto();
         }
         public FiltroControlePlanejamentoDiarioDto Filtro { get; set; }
+        public IEnumerable<BimestrePlanejamentoDiarioDto> Bimestres { get; set; }
     }
 }

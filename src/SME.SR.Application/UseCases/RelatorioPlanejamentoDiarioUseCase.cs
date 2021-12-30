@@ -55,7 +55,10 @@ namespace SME.SR.Application
             if (parametros.ModalidadeTurma == Modalidade.Infantil)
             {
                 relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
+                
                 var relatorioComponenteDto = new RelatorioControlePlanejamentoDiarioComponenteDto{Filtro = relatorioDto.Filtro};
+                await MapearComponeteCurricular(relatorioComponenteDto, relatorioDto);
+
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("LAYOUT_NOVO", relatorioComponenteDto, request.CodigoCorrelacao));
             }
             else
@@ -64,6 +67,12 @@ namespace SME.SR.Application
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
             }
         }
+
+        private async Task MapearComponeteCurricular(RelatorioControlePlanejamentoDiarioComponenteDto relatorioComponenteDto, RelatorioControlePlanejamentoDiarioDto relatorioDto)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiarioDto parametros, string usuarioLogadoRF)
         {
             return new FiltroControlePlanejamentoDiarioDto()
