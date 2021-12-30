@@ -116,27 +116,68 @@ namespace SME.SR.Application
         {
             var frequenciasRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>();
 
-            foreach (var bimestre in bimestres.OrderBy(b => b))
+            if (turma.ModalidadeCodigo == Modalidade.Infantil)
             {
-                var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, String.Empty, periodoId, new int[] { bimestre }));
-                var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
-                var aulasDadas = quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre);
+                int totalAulasInfantil = 0;
+                double somaFrequencia = 0;
+                double mediaFrequencia = 0;
+                int totalAusencias = 0;
+                int quantidadeAulas = 0;
 
-                var quantidadeAulas = quantidadeAulasDadas.Count() == 0 ?
-                    0 :
-                    aulasDadas != null ?
-                    aulasDadas.Quantidade :
-                    0;
-
-                var freqenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
+                foreach (var bimestre in bimestres.OrderBy(b => b))
                 {
-                    Bimestre = $"{bimestre}º",
-                    Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,
-                    Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
-                    Frequencia = frequenciaAluno != null ? $"{frequenciaAluno.PercentualFrequencia}%" : (turmaPossuiFrequenciaRegistrada || aulasDadas!=null) ? "100%" :"",
+                    var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, String.Empty, periodoId, new int[] { bimestre }));
+                    var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
+                    var aulasDadas = quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre);
+
+                    quantidadeAulas = quantidadeAulasDadas.Count() == 0 ?
+                        0 :
+                        aulasDadas != null ?
+                        aulasDadas.Quantidade :
+                        0;
+
+                    totalAulasInfantil += frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas;
+                    totalAusencias += frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias;
+                    somaFrequencia += frequenciaAluno != null ? frequenciaAluno.PercentualFrequencia : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? 100 : 0;
+                }
+
+                mediaFrequencia = somaFrequencia / 2;
+
+                var frequenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
+                {
+                    Bimestre = "",
+                    Aulas = totalAulasInfantil,
+                    Ausencias = totalAusencias,
+                    Frequencia = mediaFrequencia == 0 ? "" : $"{mediaFrequencia}%",
                 };
-                frequenciasRelatorio.Add(freqenciaRelatorio);
+                frequenciasRelatorio.Add(frequenciaRelatorio);
+
             }
+            else
+            {
+                foreach (var bimestre in bimestres.OrderBy(b => b))
+                {
+                    var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, String.Empty, periodoId, new int[] { bimestre }));
+                    var frequenciaAluno = frequenciasAlunos?.FirstOrDefault(f => f.CodigoAluno == alunoCodigo && f.Bimestre == bimestre);
+                    var aulasDadas = quantidadeAulasDadas.FirstOrDefault(a => a.Bimestre == bimestre);
+
+                    var quantidadeAulas = quantidadeAulasDadas.Count() == 0 ?
+                        0 :
+                        aulasDadas != null ?
+                        aulasDadas.Quantidade :
+                        0;
+
+                    var frequenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
+                    {
+                        Bimestre = $"{bimestre}º",
+                        Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,
+                        Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
+                        Frequencia = frequenciaAluno != null ? $"{frequenciaAluno.PercentualFrequencia}%" : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? "100%" : "",
+                    };
+                    frequenciasRelatorio.Add(frequenciaRelatorio);
+                }
+            }
+
             return frequenciasRelatorio;
         }
 
