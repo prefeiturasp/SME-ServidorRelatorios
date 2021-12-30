@@ -98,6 +98,7 @@ namespace SME.SR.Application
                     PercursoColetivoTurma = percursoFormatado,
                     Observacoes = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.Observacoes) : "",
                     PercursoIndividual = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.PercursoIndividual) : "",
+                    ModalidadeTurma = turma.ModalidadeCodigo
                 };
 
                 alunoRelatorio.Frequencias = await MontarFrequencias(alunoRelatorio.CodigoEol, frequenciasAlunos, quantidadeAulasDadas, bimestres, periodoId, turma);
