@@ -6973,6 +6973,287 @@ namespace SME.SR.MVC.Controllers
             //return View("RelatorioControlePlanejamentoDiarioInfantil", model);
         }
 
+        [HttpGet("controle-planejamento-diario-infantil-componente")]
+        public IActionResult RelatorioControlePlanejamentoDiarioInfantilComComponente()
+        {
+            var retorno = new RelatorioControlePlanejamentoDiarioDto
+            {
+                Filtro = new FiltroControlePlanejamentoDiarioDto
+                {
+                    Dre = "DRE - CL",
+                    Ue = "019493 - CEI - CAPAO REDONDO",
+                    Turma = "EI - 5A",
+                    ComponenteCurricular = "Regência de Classe Infantil",
+                    Bimestre = "Todos",
+                    Usuario = "TATIANE GONCALVES FERREIRA SOARES",
+                    RF = "7851493",
+                },
+                Turmas = new List<TurmaPlanejamentoDiarioDto>()
+                    {
+                        new TurmaPlanejamentoDiarioDto()
+                        {
+                            Nome = "EF - 1A",
+                            Bimestres = new List<BimestrePlanejamentoDiarioDto>()
+                            {
+                                new BimestrePlanejamentoDiarioDto()
+                                {
+                                    Nome = "1º Bimestre",
+                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+                                    {
+                                        new ComponenteCurricularPlanejamentoDiarioDto()
+                                        {
+                                            Nome = "REGÊNCIA INFANTIL EMEI 4H",
+                                            PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>()
+                                            {
+                                                new PlanejamentoDiarioInfantilDto
+                                                {
+                                                    AulaId  = 1000,
+                                                    AulaCJ  = false,
+                                                    DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    PlanejamentoRealizado  = true,
+                                                    DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    Usuario  = "Levi Gael Kevin Ribeiro",
+                                                    SecoesPreenchidas  = "- Planejamento",
+                                                    Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+                                                                      cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+                                                                      Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+                                                                      Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+                                                                      delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+                                                                      and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+                                                                      belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+                                                                      when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+                                                                      the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+                                                                      of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+                                                }
+                                            }
+                                        },
+                                       new ComponenteCurricularPlanejamentoDiarioDto()
+                                        {
+                                            Nome = "REGÊNCIA INFANTIL EMEI 2H",
+                                            PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>()
+                                            {
+                                                new PlanejamentoDiarioInfantilDto
+                                                {
+                                                    AulaId  = 1012,
+                                                    AulaCJ  = false,
+                                                    DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    PlanejamentoRealizado  = true,
+                                                    DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    Usuario  = "Levi Gael Kevin Ribeiro",
+                                                    SecoesPreenchidas  = "- Planejamento",
+                                                    Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+                                                                      cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+                                                                      Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+                                                                      Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+                                                                      delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+                                                                      and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+                                                                      belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+                                                                      when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+                                                                      the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+                                                                      of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                new BimestrePlanejamentoDiarioDto()
+                                {
+                                    Nome = "2º Bimestre",
+                                    DataAula = DateTime.Now.ToString("dd/MM/yyyy"),
+                                    ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>()
+                                    {
+                                        new ComponenteCurricularPlanejamentoDiarioDto()
+                                        {
+                                            Nome = "REGÊNCIA INFANTIL EMEI 2H",
+                                            PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>()
+                                            {
+                                                new PlanejamentoDiarioInfantilDto
+                                                {
+                                                    AulaId  = 3000,
+                                                    AulaCJ  = false,
+                                                    DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    PlanejamentoRealizado  = true,
+                                                    DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    Usuario  = "Levi Gael Kevin Ribeiro",
+                                                    SecoesPreenchidas  = "- Planejamento",
+                                                    Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+                                                                      cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+                                                                      Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+                                                                      Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+                                                                      delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+                                                                      and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+                                                                      belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+                                                                      when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+                                                                      the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+                                                                      of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+                                                }
+                                            }
+                                        },
+                                      new ComponenteCurricularPlanejamentoDiarioDto()
+                                        {
+                                            Nome = "REGÊNCIA INFANTIL EMEI 4H",
+                                            PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>()
+                                            {
+                                                new PlanejamentoDiarioInfantilDto
+                                                {
+                                                    AulaId  = 3023,
+                                                    AulaCJ  = false,
+                                                    DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    PlanejamentoRealizado  = true,
+                                                    DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+                                                    Usuario  = "Levi Gael Kevin Ribeiro",
+                                                    SecoesPreenchidas  = "- Planejamento",
+                                                    Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+                                                                      cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+                                                                      Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+                                                                      Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+                                                                      delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+                                                                      and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+                                                                      belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+                                                                      when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+                                                                      the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+                                                                      of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+            };
+            //Bimestres = new List<BimestrePlanejamentoDiarioDto>
+            //{
+            //   new BimestrePlanejamentoDiarioDto
+            //   {
+            //       Nome = "1º Bimestre",
+            //       DataAula = "03/01/2022",
+            //       ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>
+            //       {
+            //           new ComponenteCurricularPlanejamentoDiarioDto
+            //           {
+            //               Nome = "Componente 1",
+            //               PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>
+            //               {
+            //                   new PlanejamentoDiarioInfantilDto
+            //                   {
+            //                        AulaId  = 1000,
+            //                        AulaCJ  = false,
+            //                        DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        PlanejamentoRealizado  = true,
+            //                        DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        Usuario  = "Levi Gael Kevin Ribeiro",
+            //                        SecoesPreenchidas  = "- Planejamento",
+            //                        Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+            //                                          cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+            //                                          Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+            //                                          Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+            //                                          delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+            //                                          and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+            //                                          belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+            //                                          when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+            //                                          the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+            //                                          of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+            //                   },
+            //               }
+            //           },
+            //          new ComponenteCurricularPlanejamentoDiarioDto
+            //           {
+            //               Nome = "Componente 2",
+            //               PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>
+            //               {
+            //                   new PlanejamentoDiarioInfantilDto
+            //                   {
+            //                        AulaId  = 10345,
+            //                        AulaCJ  = false,
+            //                        DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        PlanejamentoRealizado  = true,
+            //                        DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        Usuario  = "Levi Gael Kevin Ribeiro",
+            //                        SecoesPreenchidas  = "- Planejamento",
+            //                        Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+            //                                          cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+            //                                          Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+            //                                          Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+            //                                          delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+            //                                          and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+            //                                          belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+            //                                          when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+            //                                          the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+            //                                          of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+            //                   },
+            //               }
+            //           }
+            //       }
+            //   },
+            //   new BimestrePlanejamentoDiarioDto
+            //   {
+            //       Nome = "2º Bimestre",
+            //       DataAula = "04/01/2022",
+            //       ComponentesCurriculares = new List<ComponenteCurricularPlanejamentoDiarioDto>
+            //       {
+            //           new ComponenteCurricularPlanejamentoDiarioDto
+            //           {
+            //               Nome = "Componente 2",
+            //               PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>
+            //               {
+            //                   new PlanejamentoDiarioInfantilDto
+            //                   {
+            //                        AulaId  = 1074,
+            //                        AulaCJ  = false,
+            //                        DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        PlanejamentoRealizado  = true,
+            //                        DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        Usuario  = "Levi Gael Kevin Ribeiro",
+            //                        SecoesPreenchidas  = "- Planejamento",
+            //                        Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+            //                                          cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+            //                                          Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+            //                                          Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+            //                                          delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+            //                                          and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+            //                                          belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+            //                                          when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+            //                                          the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+            //                                          of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+            //                   },
+            //               }
+            //           },
+            //          new ComponenteCurricularPlanejamentoDiarioDto
+            //           {
+            //               Nome = "Componente 2",
+            //               PlanejamentoDiarioInfantil = new List<PlanejamentoDiarioInfantilDto>
+            //               {
+            //                   new PlanejamentoDiarioInfantilDto
+            //                   {
+            //                        AulaId  = 1074,
+            //                        AulaCJ  = false,
+            //                        DataAula  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        PlanejamentoRealizado  = true,
+            //                        DateRegistro  = DateTime.Now.ToString("dd/MM/yyyy"),
+            //                        Usuario  = "Levi Gael Kevin Ribeiro",
+            //                        SecoesPreenchidas  = "- Planejamento",
+            //                        Planejamento  = @"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati 
+            //                                          cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. 
+            //                                          Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. 
+            //                                          Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente 
+            //                                          delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.1914 translation by H. Rackham On the other hand, we denounce with righteous indignation 
+            //                                          and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame 
+            //                                          belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, 
+            //                                          when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to 
+            //                                          the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle 
+            //                                          of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.",
+            //                   },
+            //               }
+            //           }
+            //       }
+            //   }
+            //},
+
+            return View("RelatorioControlePlanejamentoDiarioInfantilComComponente", retorno);
+        }
+
         [HttpGet("relatorio-devolutivas")]
         public IActionResult RelatorioDevolutivas()
         {

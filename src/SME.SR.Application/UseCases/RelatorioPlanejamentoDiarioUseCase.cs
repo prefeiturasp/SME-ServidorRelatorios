@@ -19,12 +19,11 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            long utilizarNovoLayoutDepoisDoAno = 2022;
+            long utilizarNovoLayoutDepoisDoAno = 2021;
             try
             {
                 var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
                 var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF) };
-                relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
 
                 if (parametros.AnoLetivo < utilizarNovoLayoutDepoisDoAno)
                     await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
@@ -55,22 +54,13 @@ namespace SME.SR.Application
             if (parametros.ModalidadeTurma == Modalidade.Infantil)
             {
                 relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
-                
-                var relatorioComponenteDto = new RelatorioControlePlanejamentoDiarioComponenteDto{Filtro = relatorioDto.Filtro};
-                await MapearComponeteCurricular(relatorioComponenteDto, relatorioDto);
-
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("LAYOUT_NOVO", relatorioComponenteDto, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantilComComponente", relatorioDto, request.CodigoCorrelacao));
             }
             else
             {
                 relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
             }
-        }
-
-        private async Task MapearComponeteCurricular(RelatorioControlePlanejamentoDiarioComponenteDto relatorioComponenteDto, RelatorioControlePlanejamentoDiarioDto relatorioDto)
-        {
-            throw new NotImplementedException();
         }
 
         private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiarioDto parametros, string usuarioLogadoRF)
