@@ -54,11 +54,14 @@ namespace SME.SR.Application
 
         private IEnumerable<BimestrePlanejamentoDiarioDto> AgrupaAulasBimestre(IGrouping<string, AulaDiarioBordoDto> aulasTurma, bool exibirDetalhamento)
         {
-            foreach(var agrupamentoBimestre in aulasTurma.GroupBy(c => c.Bimestre))
+            foreach (var agrupamentoBimestre in aulasTurma.GroupBy(c => c.Bimestre))
             {
                 var bimestre = new BimestrePlanejamentoDiarioDto();
                 if (agrupamentoBimestre.Key.HasValue)
-                    bimestre.Nome = $"{agrupamentoBimestre.Key}º Bimestre";
+                {
+                    foreach (var agrupamentoBimestreData in agrupamentoBimestre.ToList())
+                        bimestre.Nome = $"{agrupamentoBimestre.Key}º Bimestre";
+                }
 
                 bimestre.ComponentesCurriculares = AgrupaAulasComponentes(agrupamentoBimestre, exibirDetalhamento);
 
@@ -74,14 +77,13 @@ namespace SME.SR.Application
 
                 componente.Nome = agrupamentoComponente.Key;
                 componente.PlanejamentoDiarioInfantil = ObterDadosAulasComponente(agrupamentoComponente, exibirDetalhamento);
-
                 yield return componente;
             }
         }
 
         private IEnumerable<PlanejamentoDiarioInfantilDto> ObterDadosAulasComponente(IGrouping<string, AulaDiarioBordoDto> aulasComponenteCurricular, bool exibirDetalhamento)
         {
-            foreach(var aula in aulasComponenteCurricular.OrderByDescending(o => o.DataAula))
+            foreach (var aula in aulasComponenteCurricular.OrderByDescending(o => o.DataAula))
             {
                 var aulaPlanejamento = new PlanejamentoDiarioInfantilDto();
 
@@ -89,18 +91,16 @@ namespace SME.SR.Application
                 aulaPlanejamento.AulaCJ = aula.AulaCJ;
                 aulaPlanejamento.DataAula = aula.DataAula.ToString("dd/MM/yyyy");
                 aulaPlanejamento.PlanejamentoRealizado = aula.DataPlanejamento.HasValue;
-
+                aulaPlanejamento.ComponenteCurricular = string.IsNullOrEmpty(aula?.ComponenteCurricular) ? "" : aula?.ComponenteCurricular;
 
                 if (aula.DataPlanejamento.HasValue)
                 {
                     aulaPlanejamento.DateRegistro = aula.DataPlanejamento.Value.ToString("dd/MM/yyyy HH:mm");
                     aulaPlanejamento.Usuario = $"{aula.Usuario} ({aula.UsuarioRf})";
                     aulaPlanejamento.SecoesPreenchidas = ObterSecoesPreenchidas(aula);
-
                     if (exibirDetalhamento)
-                        aulaPlanejamento.Planejamento = string.IsNullOrEmpty(aula.Planejamento) ? "" : aula.Planejamento; 
+                        aulaPlanejamento.Planejamento = string.IsNullOrEmpty(aula.Planejamento) ? "" : aula.Planejamento;
                 }
-
                 yield return aulaPlanejamento;
             }
         }
