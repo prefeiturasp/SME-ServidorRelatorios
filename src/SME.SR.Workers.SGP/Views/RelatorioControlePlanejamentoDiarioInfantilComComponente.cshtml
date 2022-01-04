@@ -88,10 +88,10 @@
         str += $@"<table class='fixed'>
     <tr>
         <td width='25%' class='td-titulo-dois'>COMPONENTE CURRICULAR</td>
-        <td width='10%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
+        <td width='13%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
         <td width='10%' class='td-titulo-dois'>DATA DO REGISTRO</td>
         <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
-        <td width='40%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
+        <td width='37%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
     </tr>
 </table>";
 
@@ -135,10 +135,10 @@
 
         str += $@"<tr>
     <td width='25%' class='td-valor-dois'>{planejamento.ComponenteCurricular}</td>
-    <td width='10%' class='td-valor-dois'>{planejamentoRealizado}</td>
+    <td width='13%' class='td-valor-dois'>{planejamentoRealizado}</td>
     <td width='10%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
     <td width='15%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
-    <td width='40%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
+    <td width='37%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
   </tr>";
 
         if (!string.IsNullOrEmpty(planejamento.Planejamento))
