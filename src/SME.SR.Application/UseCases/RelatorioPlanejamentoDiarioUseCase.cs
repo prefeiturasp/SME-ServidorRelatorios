@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            long utilizarNovoLayoutDepoisDoAno = 2021;
+            long utilizarNovoLayoutDepoisDoAno = 2022;
             try
             {
                 var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
