@@ -5,14 +5,16 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>593bcb6a-cec1-4ef2-98fd-daa0ae6eeea3</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/{Scheme}://{ServiceHost}:{ServicePort}</DockerServiceUrl>
+    <DockerServiceUrl>tcp://localhost:2375</DockerServiceUrl>
     <DockerServiceName>sme.sr.workers.sgp</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
+      <DependentUpon>docker-compose.rabbit.yml</DependentUpon>
+	  <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
+	<None Include="docker-compose.rabbit.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
 </Project>
