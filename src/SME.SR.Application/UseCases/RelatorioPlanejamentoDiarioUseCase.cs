@@ -18,17 +18,20 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            long utilizarNovoLayoutDepoisDoAno = 2022;
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroControlePlanejamentoDiario;
 
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
             var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF) };
-
-            if (parametros.AnoLetivo < utilizarNovoLayoutDepoisDoAno)
+            
+            if (parametros.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year)
                 await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
             else
                 await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
 
+        }
+        public static DateTime HorarioBrasilia()
+        {
+            return DateTime.UtcNow.AddHours(-3);
         }
         private async Task RelatorioSemComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
         {
