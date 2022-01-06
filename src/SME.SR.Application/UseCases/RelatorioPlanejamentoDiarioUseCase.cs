@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Sentry;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -19,21 +18,15 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            long utilizarNovoLayoutDepoisDoAno = 2022;
-            try
-            {
-                var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
-                var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF) };
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroControlePlanejamentoDiario;
 
-                if (parametros.AnoLetivo < utilizarNovoLayoutDepoisDoAno)
-                    await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
-                else
-                    await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
-            }
-            catch (Exception ex)
-            {
-                SentrySdk.CaptureException(ex);
-            }
+            var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
+            var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF) };
+            
+            if (parametros.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year)
+                await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
+            else
+                await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
 
         }
         private async Task RelatorioSemComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
