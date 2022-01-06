@@ -347,7 +347,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
         {
-            var query = (anoLetivo == DateTime.Today.Year && !consideraHistorico) ?
+            var query = !consideraHistorico ?
                 ComponenteCurricularConsultas.BuscarPorAlunos :
                 ComponenteCurricularConsultas.BuscarPorAlunosHistorico;
 
