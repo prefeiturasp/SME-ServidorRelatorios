@@ -29,10 +29,6 @@ namespace SME.SR.Application
                 await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
 
         }
-        public static DateTime HorarioBrasilia()
-        {
-            return DateTime.UtcNow.AddHours(-3);
-        }
         private async Task RelatorioSemComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
         {
             if (parametros.ModalidadeTurma == Modalidade.Infantil)
