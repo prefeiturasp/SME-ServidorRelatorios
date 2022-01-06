@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Sentry;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -19,33 +18,43 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
-                var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroControlePlanejamentoDiario;
 
-                var relatorioDto = new RelatorioControlePlanejamentoDiarioDto();
-
-                relatorioDto.Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF);
-
-                if (parametros.ModalidadeTurma == Modalidade.Infantil)
-                {
-                    // Query DiarioBordo
-                    relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
-                }
-                else
-                {
-                    relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
-                }
-            }
-            catch (Exception ex)
-            {
-                SentrySdk.CaptureException(ex);
-                throw ex;
-            }
+            var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
+            var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF) };
             
-        }        
+            if (parametros.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year)
+                await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
+            else
+                await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
+
+        }
+        private async Task RelatorioSemComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
+        {
+            if (parametros.ModalidadeTurma == Modalidade.Infantil)
+            {
+                relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantil", relatorioDto, request.CodigoCorrelacao));
+            }
+            else
+            {
+                relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
+            }
+        }
+        private async Task RelatorioComComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
+        {
+            if (parametros.ModalidadeTurma == Modalidade.Infantil)
+            {
+                relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantilComComponente", relatorioDto, request.CodigoCorrelacao));
+            }
+            else
+            {
+                relatorioDto.Turmas = await mediator.Send(new ObterPlanejamentoDiarioPlanoAulaQuery(parametros));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
+            }
+        }
 
         private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiarioDto parametros, string usuarioLogadoRF)
         {
