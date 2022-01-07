@@ -22,12 +22,21 @@ namespace SME.SR.Application
 
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
             var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF) };
-            
-            if (parametros.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year)
-                await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
-            else
-                await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
 
+            var utilizarLayoutNovo = await UtilizarNovoLayout(parametros.AnoLetivo);
+            if (utilizarLayoutNovo)
+                await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
+            else
+                await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
+
+        }
+        private async Task<bool> UtilizarNovoLayout(long anoLetivo)
+        {
+            var parametro = await mediator.Send(new VerificarSeParametroEstaAtivoQuery(TipoParametroSistema.ControlePlanejamentoDiarioInfantilComComponente));
+            if (anoLetivo >= parametro.Ano && parametro.Ativo)
+                return true;
+            else
+                return false;
         }
         private async Task RelatorioSemComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
         {
