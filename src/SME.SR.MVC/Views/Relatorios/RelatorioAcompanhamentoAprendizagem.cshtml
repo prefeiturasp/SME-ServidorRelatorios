@@ -89,8 +89,8 @@
         <tr>
           <td colspan="4" class='@tdTheadInterno border-top-none'>FREQUÊNCIA</td>
         </tr>
-        <tr>
-          <td class='@tdTheadInterno'>BIMESTRE</td>
+        <tr>         
+          @if(aluno.ModalidadeTurma != SME.SR.Infra.Modalidade.Infantil) { <td class='@tdTheadInterno'>BIMESTRE</td> }        
           <td class='@tdTheadInterno'>AULAS</td>
           <td class='@tdTheadInterno'>AUSÊNCIAS</td>
           <td class='@tdTheadInterno'>FREQUÊNCIA</td>
@@ -101,10 +101,10 @@
         @foreach (var frequencia in aluno.Frequencias)
         {
           <tr>
-            <td class='@tdTbodyInterno' width="25%">@frequencia.Bimestre</td>
-            <td class='@tdTbodyInterno' width="25%">@frequencia.Aulas</td>
-            <td class='@tdTbodyInterno' width="25%">@frequencia.Ausencias</td>
-            <td class='@tdTbodyInterno' width="25%">@frequencia.Frequencia</td>
+              @if (aluno.ModalidadeTurma != SME.SR.Infra.Modalidade.Infantil) {<td class='@tdTbodyInterno' width="25%">@frequencia.Bimestre</td> }
+              <td class='@tdTbodyInterno' width="25%">@frequencia.Aulas</td>
+              <td class='@tdTbodyInterno' width="25%">@frequencia.Ausencias</td>
+              <td class='@tdTbodyInterno' width="25%">@frequencia.Frequencia</td>
           </tr>
         }
       </tbody>
