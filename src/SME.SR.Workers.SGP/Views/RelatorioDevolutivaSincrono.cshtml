@@ -317,7 +317,12 @@
                                 @if (exibeConteudoDevolutivas)
                                 {
                                     <tr>
-                                        <td colspan="4" class="alinhar-esquerda td-descricao">@Html.Raw(valores.Descricao)</td>
+                                        <td colspan="4" class="alinhar-esquerda" 
+                                            >
+                                            <div style="word-break: break-all !important; width: auto !important; height: auto !important; max-width: 768px !important; padding: 3px !important; ">
+                                                @Html.Raw(valores.Descricao)
+                                            </div>
+                                        </td>
                                     </tr>
 
                                     if (numeroLinhasDescricao > 1)
