@@ -39,7 +39,7 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
-                throw;
+                throw new NegocioException($"FALHA AO GERAR O RELATÓRIO DE DEVOLUTIVAS - {ex.Message}");
             }
 
         }
