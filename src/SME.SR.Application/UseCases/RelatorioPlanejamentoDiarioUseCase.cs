@@ -55,7 +55,7 @@ namespace SME.SR.Application
         {
             if (parametros.ModalidadeTurma == Modalidade.Infantil)
             {
-                relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
+                relatorioDto.TurmasInfantisComComponente = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoComComponenteQuery(parametros));
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantilComComponente", relatorioDto, request.CodigoCorrelacao));
             }
             else
