@@ -24,13 +24,11 @@ namespace SME.SR.Application
                                                 ModalidadeTipoCalendario.EJA : request.Parametros.ModalidadeTurma == Modalidade.Infantil ?
                                                     ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
 
-            var componentesCurriculares = request.Parametros.ComponentesCurricularesDisponiveis;
-
             var aulas = await diarioBordoRepository.ObterAulasDiarioBordoComComponenteCurricular(
                 request.Parametros.AnoLetivo,
                 request.Parametros.Bimestre,
                 request.Parametros.CodigoUe,
-                componentesCurriculares,
+                request.Parametros.ComponentesCurricularesDisponiveis,
                 request.Parametros.ListarDataFutura,
                 request.Parametros.CodigoTurma,
                 request.Parametros.ModalidadeTurma,

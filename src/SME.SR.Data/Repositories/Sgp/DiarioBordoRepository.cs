@@ -123,16 +123,7 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            try
-            {
-                //var componentes = "512,513";//Para evitar mais uma pesquisa no EOL, trazer todos os componentes da tela
-                //var componenteCurricularLong = componentes.Split(',').Select(long.Parse).ToList();
-                return await conexao.QueryAsync<AulaDiarioBordoDto>(query, new { anoLetivo, bimestre, codigoUe, componenteCurriculares, codigoTurma, modalidadeTurma, modalidadeCalendario });
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }            
+            return await conexao.QueryAsync<AulaDiarioBordoDto>(query, new { anoLetivo, bimestre, codigoUe, componenteCurriculares, codigoTurma, modalidadeTurma, modalidadeCalendario });           
         }
 
         private string IncluirTurma(string codigoTurma)
