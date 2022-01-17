@@ -10,5 +10,6 @@ namespace SME.SR.Data.Interfaces
     {
         Task<DateTime?> ObterUltimoDiarioBordoProfessor(string professorRf);
         Task<IEnumerable<AulaDiarioBordoDto>> ObterAulasDiarioBordo(long anoLetivo, int bimestre, string codigoUe, long componenteCurricular, bool listarDataFutura, string codigoTurma, Modalidade modalidadeTurma, ModalidadeTipoCalendario modalidadeCalendario, int semestre);
+        Task<IEnumerable<AulaDiarioBordoDto>> ObterAulasDiarioBordoComComponenteCurricular(long anoLetivo, int bimestre, string codigoUe, long[] componenteCurriculares, bool listarDataFutura, string codigoTurma, Modalidade modalidadeTurma, ModalidadeTipoCalendario modalidadeCalendario, int semestre);
     }
 }
