@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Sentry;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
@@ -39,7 +40,8 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
-                throw new NegocioException($"FALHA AO GERAR O RELATÓRIO DE DEVOLUTIVAS - {ex.Message}");
+                SentrySdk.CaptureMessage($"Devolutiva Sincrono - Erro na geração: {ex.Message}, [{ex.StackTrace}]");
+                SentrySdk.CaptureException(ex);
             }
 
         }
@@ -47,50 +49,67 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<TurmaDevolutivaSincronoDto>> MapearTurma(DevolutivaSincronoDto devolutiva, string nomeTurma)
         {
-            var retorno = new List<TurmaDevolutivaSincronoDto>();
-            var turmaDevolutivaSincronoDto = new TurmaDevolutivaSincronoDto
+            try
             {
-                NomeTurma = nomeTurma,
-            };
-            var bimestreDevolutivaSincronoDto = new BimestreDevolutivaSincronoDto
-            {
-                NomeBimestre = $"{devolutiva.Bimestre}º BIMESTRE"
-            };
+                var retorno = new List<TurmaDevolutivaSincronoDto>();
+                var turmaDevolutivaSincronoDto = new TurmaDevolutivaSincronoDto
+                {
+                    NomeTurma = nomeTurma,
+                };
+                var bimestreDevolutivaSincronoDto = new BimestreDevolutivaSincronoDto
+                {
+                    NomeBimestre = $"{devolutiva.Bimestre}º BIMESTRE"
+                };
 
-            var devolutivaRelatorioSincronoDto = new DevolutivaRelatorioSincronoDto
-            {
-                DiasIntervalo = devolutiva.DataAula.ToString("dd/MM"),
-                IntervaloDatas = $"{devolutiva.DataInicio:dd/MM/yyyy} até {devolutiva.DataFim:dd/MM/yyyy}",
-                DataRegistro = devolutiva.DataRegistro.ToString("dd/MM/yyyy"),
-                ResgistradoPor = $"{devolutiva.RegistradoPor} ({devolutiva.RegistradoRF})",
-                Descricao = await FormatarHtml(devolutiva.Descricao)
-            };
-            bimestreDevolutivaSincronoDto.Devolutivas = new List<DevolutivaRelatorioSincronoDto> { devolutivaRelatorioSincronoDto };
+                var devolutivaRelatorioSincronoDto = new DevolutivaRelatorioSincronoDto
+                {
+                    DiasIntervalo = devolutiva.DataAula.ToString("dd/MM"),
+                    IntervaloDatas = $"{devolutiva.DataInicio:dd/MM/yyyy} até {devolutiva.DataFim:dd/MM/yyyy}",
+                    DataRegistro = devolutiva.DataRegistro.ToString("dd/MM/yyyy"),
+                    ResgistradoPor = $"{devolutiva.RegistradoPor} ({devolutiva.RegistradoRF})",
+                    Descricao = await FormatarHtml(devolutiva.Descricao)
+                };
+                bimestreDevolutivaSincronoDto.Devolutivas = new List<DevolutivaRelatorioSincronoDto> { devolutivaRelatorioSincronoDto };
 
-            turmaDevolutivaSincronoDto.Bimestres = new List<BimestreDevolutivaSincronoDto> { bimestreDevolutivaSincronoDto };
-            retorno.Add(turmaDevolutivaSincronoDto);
-            return retorno;
+                turmaDevolutivaSincronoDto.Bimestres = new List<BimestreDevolutivaSincronoDto> { bimestreDevolutivaSincronoDto };
+                retorno.Add(turmaDevolutivaSincronoDto);
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureMessage($"Devolutiva Sincrono: {ex.Message}, [{ex.StackTrace}]");
+                SentrySdk.CaptureException(ex);
+                throw;
+            }
         }
         private async Task<string> FormatarHtml(string html)
                 => await mediator.Send(new ObterHtmlComImagensBase64Query(html));
         private async Task ObterFiltrosRelatorio(RelatorioDevolutivasSincronoDto relatorioDto, FiltroRelatorioDevolutivasSincronoDto parametros, long bimestre, string nomeTurma)
         {
-            var ue = await mediator.Send(new ObterUePorIdQuery(parametros.UeId));
-            if (ue == null)
-                new NegocioException("UE não encontrada!!");
+            try
+            {
+                var ue = await mediator.Send(new ObterUePorIdQuery(parametros.UeId));
+                if (ue == null)
+                    new NegocioException("UE não encontrada!!");
 
-            var dre = await mediator.Send(new ObterDrePorIdQuery(long.Parse(ue.DreId)));
-            if (dre == null)
-                new NegocioException("DRE não encontrada!!");
+                var dre = await mediator.Send(new ObterDrePorIdQuery(long.Parse(ue.DreId)));
+                if (dre == null)
+                    new NegocioException("DRE não encontrada!!");
 
-            relatorioDto.Dre = dre.Abreviacao;
-            relatorioDto.Ue = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
-            relatorioDto.Turma = nomeTurma;
-            relatorioDto.Bimestre = $"{bimestre}º";
-            relatorioDto.Usuario = parametros.UsuarioNome;
-            relatorioDto.RF = parametros.UsuarioRF;
-            relatorioDto.ExibeConteudoDevolutivas = true;
-            relatorioDto.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+                relatorioDto.Dre = dre.Abreviacao;
+                relatorioDto.Ue = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
+                relatorioDto.Turma = nomeTurma;
+                relatorioDto.Bimestre = $"{bimestre}º";
+                relatorioDto.Usuario = parametros.UsuarioNome;
+                relatorioDto.RF = parametros.UsuarioRF;
+                relatorioDto.ExibeConteudoDevolutivas = true;
+                relatorioDto.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureMessage($"Devolutiva Sincrono - Erro na geração: {ex.Message}, [{ex.StackTrace}]");
+                SentrySdk.CaptureException(ex);
+            }
         }
     }
 }
