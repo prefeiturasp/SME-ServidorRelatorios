@@ -622,7 +622,7 @@
                         {
                             var dataAulaAnterior = string.Empty;
 
-                            foreach (var componente in bimestre.Planejamento.OrderBy(o => o.DataAula))
+                            foreach (var componente in bimestre.Planejamento.OrderByDescending(o => o.DataAula))
                             {
                                 if (!dataAulaAnterior.Equals(componente.DataAula))
                                 {

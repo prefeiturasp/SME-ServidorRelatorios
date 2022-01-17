@@ -75,7 +75,8 @@ namespace SME.SR.Application
                 ComponenteCurricular = await ObterComponenteCurricular(parametros.ComponenteCurricular),
                 Turma = await ObterTurma(parametros.CodigoTurma),
                 RF = usuarioLogadoRF,
-                Usuario = parametros.UsuarioNome
+                Usuario = parametros.UsuarioNome,
+                ComponentesCurricularesDisponiveis = parametros.ComponentesCurricularesDisponiveis,
             };
         }
 

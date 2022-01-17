@@ -23,11 +23,14 @@ namespace SME.SR.Application
             var modalidadeCalendario = request.Parametros.ModalidadeTurma == Modalidade.EJA ?
                                                 ModalidadeTipoCalendario.EJA : request.Parametros.ModalidadeTurma == Modalidade.Infantil ?
                                                     ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
-            var aulas = await diarioBordoRepository.ObterAulasDiarioBordo(
+
+            var componentesCurriculares = request.Parametros.ComponentesCurricularesDisponiveis;
+
+            var aulas = await diarioBordoRepository.ObterAulasDiarioBordoComComponenteCurricular(
                 request.Parametros.AnoLetivo,
                 request.Parametros.Bimestre,
                 request.Parametros.CodigoUe,
-                request.Parametros.ComponenteCurricular,
+                componentesCurriculares,
                 request.Parametros.ListarDataFutura,
                 request.Parametros.CodigoTurma,
                 request.Parametros.ModalidadeTurma,
@@ -42,7 +45,7 @@ namespace SME.SR.Application
             var sn = turmas.ToList();
 
             return turmas;
-        }
+        } 
 
         private IEnumerable<TurmaPlanejamentoDiarioInfantilDto> AgrupaTurma(IEnumerable<AulaDiarioBordoDto> aulas, bool exibirDetalhamento)
         {
