@@ -7068,7 +7068,7 @@ namespace SME.SR.MVC.Controllers
                 Bimestre = "Todos",
                 Usuario = "Anala Ferreira de Oliveira",
                 RF = "9879878",
-                DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
+                //DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 ExibeConteudoDevolutivas = true,
                 Turmas = turmas
             };
