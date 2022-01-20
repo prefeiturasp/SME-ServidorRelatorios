@@ -30,8 +30,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarApiEol()
         {
-            var query = @"SELECT IdComponenteCurricular, 
-                            /*IdComponenteCurricularPai,*/ 
+            var query = @"SELECT IdComponenteCurricular,                             
                             EhCompartilhada, 
                             EhRegencia, 
                             PermiteRegistroFrequencia, 
