@@ -1,18 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Sentry;
-using Sentry.Protocol;
+using SME.SR.Application;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -24,17 +22,18 @@ namespace SME.SR.Workers.SGP.Services
     public class RabbitBackgroundListener : IHostedService
     {
         private readonly IServiceScopeFactory serviceScopeFactory;
-        private readonly string sentryDSN;
         private readonly IConnection conexaoRabbit;
         private readonly IConfiguration configuration;
+        private readonly IMediator mediator;
         private readonly IModel canalRabbit;
 
         public RabbitBackgroundListener(IServiceScopeFactory serviceScopeFactory,
-                                        IConfiguration configuration)
+                                        IConfiguration configuration,
+                                        IMediator mediator)
         {
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory)); ;
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            this.sentryDSN = configuration.GetValue<string>("Sentry:DSN");
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 
             var factory = new ConnectionFactory
             {
@@ -62,7 +61,6 @@ namespace SME.SR.Workers.SGP.Services
             DeclararFilasPorRota(typeof(RotasRabbitSR), ExchangeRabbit.WorkerRelatorios, ExchangeRabbit.WorkerRelatoriosDeadletter);
         }
 
-
         private void DeclararFilasPorRota(Type tipoRotas, string exchange, string exchangeDeadletter)
         {
             foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
@@ -76,59 +74,57 @@ namespace SME.SR.Workers.SGP.Services
         {
             var content = Encoding.UTF8.GetString(ea.Body.Span);
 
-            using (SentrySdk.Init(sentryDSN))
+            var mensagemRabbit = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
+            try
             {
-                var mensagemRabbit = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
-                try
+                if (!content.Equals("null"))
                 {
-                    if (!content.Equals("null"))
+                    MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
+
+                    foreach (MethodInfo method in methods)
                     {
-                        MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
-
-                        foreach (MethodInfo method in methods)
+                        ActionAttribute actionAttribute = GetActionAttribute(method);
+                        if (actionAttribute != null && actionAttribute.Name == mensagemRabbit.Action)
                         {
-                            ActionAttribute actionAttribute = GetActionAttribute(method);
-                            if (actionAttribute != null && actionAttribute.Name == mensagemRabbit.Action)
-                            {
-                                var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
+                            var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
 
-                                var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
-                                var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
+                            var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
+                            var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
-                                await method.InvokeAsync(controller, new object[] { mensagemRabbit, useCase });
+                            await method.InvokeAsync(controller, new object[] { mensagemRabbit, useCase });
 
-                                canalRabbit.BasicAck(ea.DeliveryTag, false);
-                                return;
-                            }
+                            canalRabbit.BasicAck(ea.DeliveryTag, false);
+                            return;
                         }
-                        string info = $"[ INFO ] Method not found to action: {mensagemRabbit.Action}";
-                        throw new NegocioException(info);
                     }
-                    else
-                        canalRabbit.BasicReject(ea.DeliveryTag, false);
+                    string info = $"[ INFO ] Method not found to action: {mensagemRabbit.Action}";
+                    throw new NegocioException(info);
                 }
-                catch (NegocioException nex)
-                {
-                    canalRabbit.BasicAck(ea.DeliveryTag, false);
-                    SentrySdk.AddBreadcrumb($"Erros: {nex.Message}", null, null, null, BreadcrumbLevel.Error);
-                    SentrySdk.CaptureException(nex);
-                    RegistrarSentry(ea, mensagemRabbit, nex);
-                    NotificarUsuarioRelatorioComErro(mensagemRabbit, nex.Message);
-                }
-                catch (Exception ex)
-                {
+                else
                     canalRabbit.BasicReject(ea.DeliveryTag, false);
-                    SentrySdk.AddBreadcrumb($"Erros: {ex.Message}", null, null, null, BreadcrumbLevel.Error);
-                    SentrySdk.CaptureException(ex);
-                    RegistrarSentry(ea, mensagemRabbit, ex);
-                }
+            }
+            catch (NegocioException nex)
+            {
+                canalRabbit.BasicAck(ea.DeliveryTag, false);
+                await RegistrarLogErro(ea.RoutingKey, mensagemRabbit, nex, LogNivel.Negocio);
+                NotificarUsuarioRelatorioComErro(mensagemRabbit, nex.Message);
+            }
+            catch (Exception ex)
+            {
+                canalRabbit.BasicReject(ea.DeliveryTag, false);
+                await RegistrarLogErro(ea.RoutingKey, mensagemRabbit, ex, LogNivel.Critico);
             }
         }
 
-        private void RegistrarSentry(BasicDeliverEventArgs ea, FiltroRelatorioDto mensagemRabbit, Exception ex)
+        private async Task RegistrarLogErro(string rota, FiltroRelatorioDto mensagemRabbit, Exception ex, LogNivel nivel)
         {
-            SentrySdk.CaptureMessage($"{mensagemRabbit.UsuarioLogadoRF} - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)} - ERRO - {ea.RoutingKey}", SentryLevel.Error);
-            SentrySdk.CaptureException(ex);
+            var mensagem = $"{mensagemRabbit.UsuarioLogadoRF} - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)} - ERRO - {rota}";
+            await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, nivel, ex.Message));
+        }
+
+        private async Task RegistrarLogErro(string erro)
+        {
+            await mediator.Send(new SalvarLogViaRabbitCommand("Erro de Tratamento da Mensagem ao Processar", LogNivel.Critico, erro));
         }
 
         private void NotificarUsuarioRelatorioComErro(FiltroRelatorioDto request, string erro)
@@ -180,8 +176,7 @@ namespace SME.SR.Workers.SGP.Services
                 }
                 catch (Exception ex)
                 {
-                    SentrySdk.AddBreadcrumb($"Erro ao tratar mensagem {ea.DeliveryTag}", "erro", null, null, BreadcrumbLevel.Error);
-                    SentrySdk.CaptureException(ex);
+                    await RegistrarLogErro(ex.Message);
                     canalRabbit.BasicReject(ea.DeliveryTag, false);
                 }
             };

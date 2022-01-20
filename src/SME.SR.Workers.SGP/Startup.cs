@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SME.SR.Infra;
 using SME.SR.IoC;
 using SME.SR.Workers.SGP.Filters;
 using SME.SR.Workers.SGP.Middlewares;
@@ -35,6 +36,7 @@ namespace SME.SR.Workers.SGP
             services.AddHostedService<RabbitBackgroundListener>();
             services.AddTransient<ExcecaoMiddleware>();
             services.RegistrarDependencias(Configuration);
+            ConfiguraRabbitParaLogs(services);
 
             services.AddDirectoryBrowser();
             services.AddPolicies();
@@ -45,6 +47,15 @@ namespace SME.SR.Workers.SGP
                 c.OperationFilter<FiltroIntegracao>();
             });
         }
+
+        private void ConfiguraRabbitParaLogs(IServiceCollection services)
+        {
+            var configuracaoRabbitLogOptions = new ConfiguracaoRabbitLogOptions();
+            Configuration.GetSection("ConfiguracaoRabbitLog").Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
+
+            services.AddSingleton(configuracaoRabbitLogOptions);
+        }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
