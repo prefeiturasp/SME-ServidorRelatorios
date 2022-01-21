@@ -59,8 +59,8 @@ namespace SME.SR.Application
                         TipoNota = tipoNota
                     };
 
-                    if (!componentesCurriculares.First(c => c.Key == aluno.Key).Any())
-                        throw new Exception($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
+                    if (componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key) == null)
+                        throw new NegocioException($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
 
                     var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
                     foreach (var turmaAluno in aluno)
@@ -78,14 +78,14 @@ namespace SME.SR.Application
 
                     if (notasAluno != null && notasAluno.Any())
                         SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos,
-                                             notasAluno,
-                                             frequenciasAluno,
-                                             frequenciasTurma,
-                                             mediasFrequencia,
-                                             conselhoClassBimestres,
-                                             registroFrequencia,
-                                             periodoAtual,
-                                             aulasPrevistas);
+                                                notasAluno,
+                                                frequenciasAluno,
+                                                frequenciasTurma,
+                                                mediasFrequencia,
+                                                conselhoClassBimestres,
+                                                registroFrequencia,
+                                                periodoAtual,
+                                                aulasPrevistas);
 
                     var frequeciaGlobal = frequenciasGlobal?
                         .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
@@ -93,13 +93,13 @@ namespace SME.SR.Application
                     var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
                     var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 
-                    boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, 
-                                                                             ue, 
-                                                                             turma, 
-                                                                             aluno.First().CodigoAluno.ToString(), 
-                                                                             aluno.First().NomeRelatorio, 
-                                                                             aluno.First().ObterNomeFinal(), 
-                                                                             $"{percentualFrequenciaGlobal}%");
+                    boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre,
+                                                                                ue,
+                                                                                turma,
+                                                                                aluno.First().CodigoAluno.ToString(),
+                                                                                aluno.First().NomeRelatorio,
+                                                                                aluno.First().ObterNomeFinal(),
+                                                                                $"{percentualFrequenciaGlobal}%");
 
                     boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0) ? parecerConclusivo?.ParecerConclusivo : null;
 
@@ -107,7 +107,7 @@ namespace SME.SR.Application
                 }
             }
 
-            if(!boletinsAlunos.Any())
+            if (!boletinsAlunos.Any())
                 throw new NegocioException("Não foram encontradas informações para geração do boletim");
 
             return await Task.FromResult(new BoletimEscolarDto(OrdenarBoletins(boletinsAlunos)));
