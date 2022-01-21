@@ -54,7 +54,8 @@ namespace SME.SR.Application
 
                         foreach (var fechamento in fechamentos)
                         {
-                            var componenteNome = lstComponentesCurriculares.FirstOrDefault(cc => cc.CodDisciplina == fechamento.ComponenteCurricularCodigo).Disciplina;
+                            bool existeComponente = lstComponentesCurriculares.FirstOrDefault(cc => cc.CodDisciplina == fechamento.ComponenteCurricularCodigo) != null;
+                            var componenteNome =  existeComponente ? lstComponentesCurriculares.FirstOrDefault(cc => cc.CodDisciplina == fechamento.ComponenteCurricularCodigo).Disciplina : "";
                             var descricaoStatus = fechamento.StatusRelatorio.Name();
                             var pendencias = new List<string>();
 
@@ -67,8 +68,9 @@ namespace SME.SR.Application
                                 pendencias = lstPendencias.Select(p => p.TipoPendencia.Name()).ToList();
                             }
 
-                            bimestreRelatorio.FechamentosComponente.Add(
-                                new RelatorioAcompanhamentoFechamentoComponenteDto(componenteNome, descricaoStatus, pendencias));
+                            if(!string.IsNullOrEmpty(componenteNome))
+                                bimestreRelatorio.FechamentosComponente.Add(
+                                        new RelatorioAcompanhamentoFechamentoComponenteDto(componenteNome, descricaoStatus, pendencias));
                         }
 
                         bimestreRelatorio.FechamentosComponente = bimestreRelatorio.FechamentosComponente.OrderBy(f => lstComponentesCurriculares.FindIndex(c => c.Disciplina == f.Componente)).ToList();
