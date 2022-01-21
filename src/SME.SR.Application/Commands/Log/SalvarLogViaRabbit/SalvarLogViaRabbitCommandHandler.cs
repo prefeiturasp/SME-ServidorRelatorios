@@ -46,8 +46,6 @@ namespace SME.SR.Application
                 using (IModel _channel = conexaoRabbit.CreateModel())
                 {
                     var props = _channel.CreateBasicProperties();
-
-                    //_channel.QueueBind(RotasRabbitSGP.RotaLogs, ExchangeRabbit.SgpLogs, RotasRabbitSGP.RotaLogs);
                     _channel.BasicPublish(ExchangeRabbit.SgpLogs, RotasRabbitSGP.RotaLogs, props, body);
                 }
             }
