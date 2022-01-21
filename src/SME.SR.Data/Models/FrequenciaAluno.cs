@@ -17,7 +17,9 @@ namespace SME.SR.Data
                 int totalAusencias,
                 int totalAulas,
                 int totalCompensacoes,
-                TipoFrequenciaAluno tipo)
+                TipoFrequenciaAluno tipo,
+                int totalRemotos,
+                int totalPresencas)
         {
             PercentuaisFrequenciaPorBimestre = new HashSet<(int, double)>();
             Bimestre = bimestre;
@@ -31,6 +33,8 @@ namespace SME.SR.Data
             TotalCompensacoes = totalCompensacoes;
             Tipo = tipo;
             TotalAusencias = totalAusencias;
+            TotalRemotos = totalRemotos;
+            TotalPresencas = totalPresencas;
         }
 
         public FrequenciaAluno()
@@ -65,6 +69,8 @@ namespace SME.SR.Data
         public int TotalAulas { get; set; }
         public int TotalAusencias { get; set; }
         public int TotalCompensacoes { get; set; }
+        public int TotalPresencas { get; set; }
+        public int TotalRemotos { get; set; }
         public string TurmaId { get; set; }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using SME.SR.Infra.Utilitarios;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace SME.SR.Infra
 {
@@ -19,8 +20,12 @@ namespace SME.SR.Infra
         public string ResponsavelDDD { get; set; }
         public string ResponsavelCelular { get; set; }
         public DateTime DataAtualizacaoContato { get; set; }
-        public TipoResponsavel TipoResponsavel { get; set; }        
-
+        public TipoResponsavel TipoResponsavel { get; set; }
+        public bool Ativo => new[] { SituacaoMatriculaAluno.Ativo,
+                       SituacaoMatriculaAluno.PendenteRematricula,
+                       SituacaoMatriculaAluno.Rematriculado,
+                       SituacaoMatriculaAluno.SemContinuidade,
+                       SituacaoMatriculaAluno.Concluido }.Contains(this.CodigoSituacaoMatricula);
         public string NomeRelatorio =>
              $"Nº{Convert.ToInt32(NumeroAlunoChamada)} - {(NomeSocialAluno ?? NomeAluno)}".ToUpper();
 
@@ -48,6 +53,11 @@ namespace SME.SR.Infra
         public string DataNascimentoFormatado()
         {
             return $"{DataNascimento:dd/MM/yyyy}";
+        }
+
+        public string DataSituacaoFormatada()
+        {
+            return $"{DataSituacao:dd/MM/yyyy}";
         }
     }
 }

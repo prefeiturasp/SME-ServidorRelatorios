@@ -8,5 +8,6 @@ namespace SME.SR.Data
     {
         Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresFinais(int anoLetivo, string dreCodigo, string ueCodigo, Modalidade? modalidade, int? semestre,
                                                                                      long cicloId, string[] turmasCodigo, string[] anos, long parecerConclusivoId);
+        Task<string> ObterDescricaoParecerEmAprovacao(string codigoAluno, int ano);
     }
 }

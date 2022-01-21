@@ -46,33 +46,14 @@ namespace SME.SR.Application
         {
             foreach (var recomendacao in recomendacoesConselho)
             {
-                recomendacao.AnotacoesPedagogicas =
-                    Formatar(recomendacao.AnotacoesPedagogicas);
+                recomendacao.AnotacoesPedagogicas = UtilHtml.FormatarHtmlParaTexto(recomendacao.AnotacoesPedagogicas);
 
-                recomendacao.RecomendacoesAluno =
-                    Formatar(recomendacao.RecomendacoesAluno);
+                recomendacao.RecomendacoesAluno = UtilHtml.FormatarHtmlParaTexto(recomendacao.RecomendacoesAluno);
 
-                recomendacao.RecomendacoesFamilia =
-                    Formatar(recomendacao.RecomendacoesFamilia);
+                recomendacao.RecomendacoesFamilia = UtilHtml.FormatarHtmlParaTexto(recomendacao.RecomendacoesFamilia);
             }
 
-        }
-
-        private string Formatar(string recomendacao)
-        {
-            if (!string.IsNullOrEmpty(recomendacao))
-            {
-                string semTags = UtilRegex.RemoverTagsHtmlMidia(recomendacao);
-                semTags = UtilRegex.RemoverTagsHtml(semTags);
-                semTags = UtilRegex.AdicionarEspacos(semTags);
-
-                return semTags;
-            }
-            else
-            {
-                return recomendacao;
-            }
-        }
+        } 
 
         private string MontaTextUlLis(IEnumerable<string> textos)
         {

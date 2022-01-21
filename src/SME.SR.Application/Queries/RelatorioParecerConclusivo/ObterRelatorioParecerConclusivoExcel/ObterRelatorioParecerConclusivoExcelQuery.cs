@@ -7,5 +7,6 @@ namespace SME.SR.Application
     public class ObterRelatorioParecerConclusivoExcelQuery : IRequest<IEnumerable<RelatorioParecerConclusivoExcelDto>>
     {
         public RelatorioParecerConclusivoDto RelatorioParecerConclusivo { get; set; }
+        public int AnoLetivo { get; set; }
     }
 }

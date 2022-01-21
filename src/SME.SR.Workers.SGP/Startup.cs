@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SME.SR.IoC;
+using SME.SR.Workers.SGP.Filters;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
 using System.Linq;
@@ -41,6 +42,7 @@ namespace SME.SR.Workers.SGP
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SME - Servidor de relatórios", Version = "v1" });
+                c.OperationFilter<FiltroIntegracao>();
             });
         }
 

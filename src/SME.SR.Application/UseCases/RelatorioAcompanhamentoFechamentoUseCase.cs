@@ -18,10 +18,20 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAcompanhamentoFechamento;
-            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoQuery>();
-            var relatorioDto = await mediator.Send(relatorioQuery);
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoFechamento", relatorioDto, request.CodigoCorrelacao));
+            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoQuery>();
+            if(relatorioQuery.UeCodigo == null)
+            {
+                var relatorioQueryConsolidado = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoFechamentoConselhoClasseConsolidadoQuery>();
+                var relatorioDto = await mediator.Send(relatorioQueryConsolidado);
+
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoFechamentoConsolidadoPorUe", relatorioDto, request.CodigoCorrelacao));
+            }
+            else
+            {
+                var relatorioDto = await mediator.Send(relatorioQuery);
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoFechamento", relatorioDto, request.CodigoCorrelacao));
+            }
         }
     }
 }
