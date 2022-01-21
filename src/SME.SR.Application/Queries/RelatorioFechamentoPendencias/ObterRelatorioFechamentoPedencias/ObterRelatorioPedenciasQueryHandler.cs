@@ -29,7 +29,9 @@ namespace SME.SR.Application
                             .Select(d => new { name = d.Name(), shortName = d.ShortName() }).FirstOrDefault();
         }
         public async Task<RelatorioPendenciasDto> Handle(ObterRelatorioPedenciasQuery request, CancellationToken cancellationToken)
-        {            
+        {
+            try
+            {
                 var filtros = request.FiltroRelatorioPendencias;
 
                 filtros.ExibirDetalhamento = true;
@@ -48,6 +50,9 @@ namespace SME.SR.Application
 
                 var retorno = new RelatorioPendenciasDto();
                 var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0 && x.OutrasPendencias == false).FirstOrDefault();
+                if (retornoLinearParaCabecalho == null)
+                    throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
+
                 retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
                 retorno.UsuarioLogadoRf = filtros.UsuarioLogadoRf;
                 retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
@@ -197,7 +202,13 @@ namespace SME.SR.Application
 
                 retorno.Dre.Ue.OutrasPendencias = await RetornarOutrasPendencias(outrasPendencias, filtros.ExibirDetalhamento);
 
-                return await Task.FromResult(retorno);                      
+                return await Task.FromResult(retorno);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         private async Task<List<RelatorioPendenciasPendenciaDto>> RetornarOutrasPendencias(List<RelatorioPendenciasQueryRetornoDto> outrasPendencias, bool exibirDetalhamento)
@@ -214,7 +225,7 @@ namespace SME.SR.Application
                 pendenciaParaAdicionar.DescricaoPendencia = item.Descricao;
                 pendenciaParaAdicionar.Instrucao = item.Instrucao;
                 pendenciaParaAdicionar.TipoPendencia = item.TipoPendencia;
-                pendenciaParaAdicionar.OutrasPendencias = item.OutrasPendencias;                
+                pendenciaParaAdicionar.OutrasPendencias = item.OutrasPendencias;
 
                 if (exibirDetalhamento)
                 {
@@ -222,7 +233,7 @@ namespace SME.SR.Application
                         pendenciaParaAdicionar.Detalhes = await ObterAlunosRegistroIndividual(item.Detalhes);
                     else
                         pendenciaParaAdicionar.Detalhes = item.Detalhes;
-                    
+
                     pendenciaParaAdicionar.DescricaoPendencia = UtilRegex.RemoverTagsHtml(item.Descricao);
                     pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar?.DescricaoPendencia?.Replace("Clique aqui para acessar o plano.", "");
                     pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar?.DescricaoPendencia?.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
@@ -259,7 +270,7 @@ namespace SME.SR.Application
             var alunos = await mediator.Send(new ObterNomesAlunosPorCodigosQuery(alunosCodigos.ToArray()));
 
             foreach (var aluno in alunos.OrderBy(a => a.Nome))
-                detalheAlunos.Add($"{aluno.Nome} ({aluno.Codigo})");            
+                detalheAlunos.Add($"{aluno.Nome} ({aluno.Codigo})");
 
             return detalheAlunos;
         }
