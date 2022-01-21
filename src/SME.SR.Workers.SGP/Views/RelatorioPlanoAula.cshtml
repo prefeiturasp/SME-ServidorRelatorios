@@ -363,33 +363,35 @@ OBJETIVOS DE APRENDIZAGEM(CURRÍCULO DA CIDADE)
         @Html.Raw(MontarCabecalho())
         <div>
             @{
-                var first = Model.Objetivos.First();
-                var last = Model.Objetivos.Last();
-
-                @foreach (var objetivo in Model.Objetivos)
+                if (Model.Objetivos.Any())
                 {
-                    @Html.Raw(MontaCabecalhoObjetivos())
-                    <table>
-                        <tbody>
-                            <tr class="tabela-objetivos-items-tr">
-                                @{
+                    var first = Model.Objetivos.First();
+                    var last = Model.Objetivos.Last();
 
-                                    <td class="fonte-16 tabela-objetivos-items-titulo">
-                                        @objetivo.Codigo
-                                    </td>
-                                    <td class="fonte-16 tabela-objetivos-items-descricao">
-                                        @objetivo.Descricao
-                                    </td>
+                    @foreach (var objetivo in Model.Objetivos)
+                    {
+                        @Html.Raw(MontaCabecalhoObjetivos())
+                        <table>
+                            <tbody>
+                                <tr class="tabela-objetivos-items-tr">
+                                    @{
 
-                                }
-                            </tr>
+                                        <td class="fonte-16 tabela-objetivos-items-titulo">
+                                            @objetivo.Codigo
+                                        </td>
+                                        <td class="fonte-16 tabela-objetivos-items-descricao">
+                                            @objetivo.Descricao
+                                        </td>
 
-                        </tbody>
-                    </table>
-                    contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
-                    @Html.Raw(VerificaQuebra())
+                                    }
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+                        @Html.Raw(VerificaQuebra())
+                    }
                 }
-
             }
 
         </div>
