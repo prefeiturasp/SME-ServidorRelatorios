@@ -11,5 +11,6 @@
         public string AlunoNumeroChamada { get; set; }
         public string AlunoNomeCompleto { get; set; }
         public string ParecerConclusivoDescricao { get; set; }
+        public bool EmAprovacao { get; set; }
     }
 }

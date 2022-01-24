@@ -53,7 +53,7 @@ namespace SME.SR.Data
             if (!string.IsNullOrEmpty(filtro.CodigoUe) && filtro.CodigoUe != "-99")
                 query += " and codigo_ue = @CodigoUe ";
 
-            if(filtro.CodigoUe == "-99")
+            if (filtro.CodigoUe == "-99")
                 query += " and codigo_ue is null ";
 
             if (filtro.Semestre > 0)
@@ -62,7 +62,7 @@ namespace SME.SR.Data
             if (!filtro.ListarComunicadosExpirados)
                 query += " and data_expiracao >= @DataExpiracao ";
 
-            query += " and date(data_envio) between @DataInicio and @DataFim and not comunicado.excluido ";
+            query += " and date(data_envio) between @DataInicio and @DataFim and not comunicado.excluido  and comunicado.tipo_comunicado <>9 ";
 
             if (!string.IsNullOrEmpty(filtro.Turma))
             {
@@ -83,6 +83,7 @@ namespace SME.SR.Data
                 DataFim = filtro.DataFim.GetValueOrDefault().Date,
                 DataExpiracao = DateTime.Now.Date
             });
+
         }
 
         public async Task<long[]> ObterComunicadoTurmasAlunosPorComunicadoId(long comunicado)
@@ -215,7 +216,7 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringAE);
             return (await conexao.QueryAsync<string>(query.ToString())).ToArray();
-            
+
         }
     }
 }

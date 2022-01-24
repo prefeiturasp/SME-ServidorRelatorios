@@ -46,7 +46,6 @@ namespace SME.SR.Data
             var query = @"select
 	                        plano_aula.id as Id,
                             plano_aula.descricao as Descricao,
-	                        desenvolvimento_aula as DesenvolvimentoAula,
 	                        recuperacao_aula as Recuperacao,
 	                        licao_casa as LicaoCasa,
 	                        ue.nome as Ue,
@@ -71,7 +70,6 @@ namespace SME.SR.Data
                         where plano_aula.id = @id
                         group by
                             plano_aula.id,
-	                        desenvolvimento_aula,
 	                        recuperacao_aula,
                             te.descricao,
 	                        licao_casa,
@@ -120,7 +118,6 @@ namespace SME.SR.Data
                                    pa.criado_por as Usuario,
                                    pa.criado_rf as UsuarioRf,
                                    pa.descricao as ObjetivosEspecificos,
-                                   pa.desenvolvimento_aula as DesenvolvimentoAula,
                                    pa.licao_casa as LicaoCasa,
                                    pa.recuperacao_aula as RecuperacaoContinua,
                                    obj.codigo as ObjetivosSalecionados,

@@ -27,7 +27,7 @@ namespace SME.SR.Application
             }
             else
             {
-                var turmasFiltro = await ObterTurmasPorFiltroSituacaoConsolidado(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico, request.SituacaoConselhoClasse, request.SituacaoFechamento, request.Bimestres);
+                var turmasFiltro = await ObterTurmasPorFiltroSituacaoConsolidado(request.CodigoUe, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico, request.SituacaoConselhoClasse, request.SituacaoFechamento, request.Bimestres,request.CodigoDre);
 
                 if (turmasFiltro != null && turmasFiltro.Any())
                     turmas = turmas.Concat(turmasFiltro);
@@ -44,7 +44,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterTurmasSituacaoConsolidacaoQuery(codigosTurma, situacaoFechamento, situacaoConselhoClasse, bimestres));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltroSituacaoConsolidado(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoConselhoClasse? situacaoConselhoClasse, SituacaoFechamento? situacaoFechamento , int[] bimestres)
+        private async Task<IEnumerable<Turma>> ObterTurmasPorFiltroSituacaoConsolidado(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoConselhoClasse? situacaoConselhoClasse, SituacaoFechamento? situacaoFechamento , int[] bimestres, string codigoDre)
         {
             return await mediator.Send(new ObterTurmasPorAbrangenciaTiposFiltrosQuery()
             {
@@ -57,8 +57,8 @@ namespace SME.SR.Application
                 ConsideraHistorico = consideraHistorico,
                 SituacaoFechamento = situacaoFechamento,
                 SituacaoConselhoClasse = situacaoConselhoClasse,
-                Bimestres = bimestres
-
+                Bimestres = bimestres,
+                CodigoDre = codigoDre
             });
         }
     }

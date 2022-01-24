@@ -8,6 +8,7 @@ namespace SME.SR.Data.Interfaces
     public interface ITurmaRepository
     {
         Task<DreUe> ObterDreUe(string codigoTurma);
+        Task<DreUe> ObterDreUePorTurmaId(long turmaId);
         Task<TurmaResumoDto> ObterTurmaResumoComDreUePorId(long turmaId);
         Task<IEnumerable<Aluno>> ObterDadosAlunos(string codigoTurma);
         Task<Turma> ObterComDreUePorCodigo(string codigoTurma);
@@ -18,9 +19,9 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<Turma>> ObterTurmasPorCodigos(string[] codigos);
 
         Task<string> ObterCicloAprendizagem(string turmaCodigo);
-        Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo);
-        Task<Turma> ObterPorId(long id);
+        Task<IEnumerable<AlunoSituacaoDto>> ObterDadosAlunosSituacao(string turmaCodigo);        
         Task<Turma> ObterPorCodigo(string turmaCodigo);
+        Task<Turma> ObterPorId(long turmaId);
         Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null);
         Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null);
         Task<IEnumerable<long>> ObterTurmasCodigoPorUeAnoSondagemAsync(string ano, string ueCodigo, int anoLetivo, long dreCodigo);

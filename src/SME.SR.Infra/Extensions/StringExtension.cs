@@ -12,5 +12,15 @@ namespace SME.SR.Infra.Extensions
             str = str.Replace("&gt;", "");
             return str;
         }
+
+        public static string FormatarPrimeiraMaiuscula(this string input)
+        {
+            if (input.Length < 1)
+                return input;
+
+            string sentence = input.ToLower();
+            return sentence[0].ToString().ToUpper() +
+               sentence.Substring(1);
+        }
     }
 }

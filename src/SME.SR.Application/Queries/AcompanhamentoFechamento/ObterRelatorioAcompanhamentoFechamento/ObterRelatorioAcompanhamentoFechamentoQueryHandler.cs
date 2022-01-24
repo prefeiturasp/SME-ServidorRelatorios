@@ -44,7 +44,6 @@ namespace SME.SR.Application
 
             var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
             var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);
-
             if ((consolidadoFechamento == null || !consolidadoFechamento.Any()) &&
                 (consolidadoConselhosClasse == null || !consolidadoConselhosClasse.Any()))
                 throw new NegocioException("Acompanhamento de Fechamentos das turmas do filtro não encontrado");
@@ -54,15 +53,14 @@ namespace SME.SR.Application
             var componentesCurriculares = await ObterComponentesCurricularesPorCodigo(componentesCurricularesId);
 
             componentesCurriculares = componentesCurriculares.ToList().OrderBy(c => c.Disciplina);
-
             var pendencias = Enumerable.Empty<PendenciaParaFechamentoConsolidadoDto>();
 
             if (request.ListarPendencias && componentesCurricularesId != null && componentesCurricularesId.Any())
             {
                 pendencias = await ObterPendenciasFechamentosConsolidado(codigosTurma, bimestres, componentesCurricularesId);
             }
-
             return await mediator.Send(new MontarRelatorioAcompanhamentoFechamentoQuery(dre, ue, request.TurmasCodigo?.ToArray(), turmas, componentesCurriculares, bimestres, consolidadoFechamento, consolidadoConselhosClasse, request.ListarPendencias, pendencias, request.Usuario));
+
         }
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> OrdenarComponentes(IEnumerable<ComponenteCurricularPorTurma> componentesCurriculares)
@@ -93,7 +91,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres )
+        private async Task<IEnumerable<Turma>> ObterTurmasRelatorioPorSituacaoConsolidacao(string[] turmasCodigo, string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres)
         {
             try
             {

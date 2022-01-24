@@ -4,6 +4,7 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
+using SME.SR.Workers.SGP.Filters;
 using System;
 using System.Threading.Tasks;
 
@@ -12,14 +13,15 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-
         public WorkerSGPController()
         {
 
         }
+
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
         public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
@@ -88,6 +90,14 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpGet("relatorios/boletimescolardetalhado")]
         [Action("relatorios/boletimescolardetalhado", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
         public async Task<bool> RelatorioBoletimEscolarDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
+        {
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/boletimescolardetalhadoescolaaqui")]
+        [Action("relatorios/boletimescolardetalhadoescolaaqui", typeof(IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase))]
+        public async Task<bool> RelatorioBoletimEscolarDetalhadoEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase relatorioBoletimEscolarDetalhadoUseCase)
         {
             await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
             return true;
@@ -295,6 +305,29 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioConselhoClasseAtaBimestralinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaBimestralUseCase relatorioConselhoClasseAtaBimestralUseCase)
         {
             await relatorioConselhoClasseAtaBimestralUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/acompanhamento-frequencia")]
+        [Action("relatorios/acompanhamento-frequencia", typeof(IRelatorioAcompanhamentoFrequenciaUseCase))]
+        public async Task<bool> AcompanhamentoFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoFrequenciaUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+        [HttpGet("relatorios/acompanhamento-registrospedagogicos")]
+        [Action("relatorios/acompanhamento-registrospedagogicos", typeof(IRelatorioAcompanhamentoRegistrosPedagogicosUseCase))]
+        public async Task<bool> RelatorioAcompanhamentoRegistrosPedagogicos([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase relatorioAcompanhamentoRegistrosPedagogicos)
+        {
+            await relatorioAcompanhamentoRegistrosPedagogicos.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/ocorrencias")]
+        [Action("relatorios/ocorrencias",typeof(IRelatorioOcorrenciasUseCase))]
+        public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request,[FromServices] IRelatorioOcorrenciasUseCase useCase)
+        {
+            await useCase.Executar(request);
             return true;
         }
     }
