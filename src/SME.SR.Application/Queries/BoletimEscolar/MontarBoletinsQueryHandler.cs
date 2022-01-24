@@ -119,7 +119,7 @@ namespace SME.SR.Application
             }
             catch(Exception ex)
             {
-                throw new NegocioException($"Não foi possível montar boletim - Motivo: {ex.Message}");
+                throw new Exception($"Não foi possível montar boletim - Motivo: {ex.Message}");
             }
         }
 
