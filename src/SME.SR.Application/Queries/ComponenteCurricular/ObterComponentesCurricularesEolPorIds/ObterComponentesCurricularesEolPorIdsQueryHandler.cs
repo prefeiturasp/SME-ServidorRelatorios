@@ -63,18 +63,8 @@ namespace SME.SR.Application
 
         public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesTerritorio)
         {
-            var componentesConcatenados = componentes.ToList();
-
-            foreach(var componente in componentes)
-            {
-                if(componentesTerritorio.Any(c=> c.Codigo == componente.Codigo))
-                {
-                    componentesConcatenados.Remove(componente);
-                    componentesConcatenados.Add(componentesTerritorio.FirstOrDefault(c => c.Codigo == componente.Codigo));
-                }
-            }
-
-            return componentesConcatenados;
+		var componentesConcatenados = componentes.Where(a => !componentesTerritorio.Any(x => x.Codigo == a.Codigo)).ToList();
+		return componentesConcatenados.Concat(componentesTerritorio).ToList();
         }
     }
 }
