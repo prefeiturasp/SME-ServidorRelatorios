@@ -18,7 +18,7 @@ namespace SME.SR.Application
         public ObterComponentesCurricularesEolPorIdsQuery(long[] ids, string[] turmasId = null)
         {
             ComponentesCurricularesIds = ids;
-            TurmasId = turmasId;
+            TurmasId = turmasId == null ? new string[] { } : turmasId;
         }
 
         public long[] ComponentesCurricularesIds { get; set; }
