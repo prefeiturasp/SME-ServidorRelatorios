@@ -10,7 +10,6 @@ namespace SME.SR.Application
         {
             TurmasCodigo = turmasCodigo;
         }
-
         public string[] TurmasCodigo { get; internal set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Application;
-using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Linq;
@@ -19,10 +18,11 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+
             var filtros = request.ObterObjetoFiltro<ObterPlanoAulaFiltroQuery>();
 
             var planoAula = await mediator.Send(new ObterPlanoAulaQuery(filtros.PlanoAulaId));
-            
+
             if (planoAula == null)
                 throw new NegocioException("Plano de aula não encontrado.");
 
@@ -33,7 +33,6 @@ namespace SME.SR.Workers.SGP
             planoAula.Descricao = planoAula.Descricao != null ? planoAula.Descricao : "";
             planoAula.LicaoCasa = planoAula.LicaoCasa != null ? planoAula.LicaoCasa : "";
             planoAula.Recuperacao = planoAula.Recuperacao != null ? planoAula.Recuperacao : "";
-            planoAula.DesenvolvimentoAula = planoAula.DesenvolvimentoAula != null ? planoAula.DesenvolvimentoAula : "";
 
             planoAula.Usuario = filtros.Usuario.Nome;
             planoAula.RF = filtros.Usuario.CodigoRf;

@@ -5,10 +5,11 @@
         public const string RotaRelatoriosProntosSgp = "sgp.relatorios.prontos.notificar";
         public const string RotaRelatorioCorrelacaoCopiar = "sgp.relatorios.correlacao.copiar";
         public const string RotaRelatorioCorrelacaoInserir = "sgp.relatorios.correlacao.inserir";
-
+        public const string RotaRelatoriosProntosApp = "sgp.relatorio.app.pronto.notificar";
         public const string RotaRelatorioComErro = "sgp.relatorios.erro.notificar";
         public const string RotaRelatoriosComErroBoletim = "sgp.relatorios.erro.notificar.boletim";
         public const string RotaRelatoriosComErroBoletimDetalhado = "sgp.relatorios.erro.boletimdetalhado";
+        public const string RotaRelatoriosComErroBoletimDetalhadoEscolaAqui = "sgp.relatorios.app.erro.boletimdetalhado";
         public const string RotaRelatoriosComErroPlanoDeAula = "sgp.relatorios.erro.notificar.planodeaula";
         public const string RotaRelatoriosComErroRegistroIndividual = "sgp.relatorios.erro.notificar.registroindividual";
         public const string RotaRelatoriosComErroConselhoDeClasse = "sgp.relatorios.erro.notificar.conselhodeclasse";
@@ -36,5 +37,9 @@
         public const string RotaRelatoriosComErroAtaFinalResultados = "sgp.relatorios.erro.notificar.atafinalresultados";
         public const string RotaRelatoriosComErroAtaBimestralResultados = "sgp.relatorios.erro.notificar.atabimestralresultados";
         public const string RotaRelatoriosComErroHistoricoEscolar = "sgp.relatorios.erro.notificar.historicoescolar";
+        public const string RotaRelatoriosComErroAcompanhamentoFrequencia = "sgp.relatorios.erro.notificar.acompanhamentofrequencia";
+        public const string RotaRelatoriosComErroRelatorioOcorrencia = "sgp.relatorios.erro.notificar.relatorioocorrencia";
+
+        public const string RotaRelatoriosComErroRelatorioAcompanhamentoRegistrosPedagogicos = "sgp.relatorios.erro.notificar.relatorioacompanhamentoregistrospedagogicos";
     }
 }

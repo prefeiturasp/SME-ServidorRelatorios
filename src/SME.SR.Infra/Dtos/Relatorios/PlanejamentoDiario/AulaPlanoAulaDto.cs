@@ -15,7 +15,6 @@ namespace SME.SR.Infra
         public string UsuarioRf { get; set; }
         public string Usuario { get; set; }
         public string ObjetivosEspecificos { get; set; }
-        public string DesenvolvimentoAula { get; set; }
         public string LicaoCasa { get; set; }
         public string RecuperacaoContinua { get; set; }
         public string ObjetivosSalecionados { get; set; }

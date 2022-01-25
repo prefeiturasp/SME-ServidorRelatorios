@@ -12,6 +12,7 @@
         public const string RotaRelatoriosProcessandoBoletimTurma = "sr.relatorios.processando.boletim.turma";
 
         public const string RotaRelatoriosSolicitadosBoletimDetalhado = "sr.relatorios.solicitados.boletimdetalhado";
+        public const string RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui = "sr.relatorios.app.solicitados.boletimdetalhado";
 
         public const string RotaRelatoriosSolicitadosPlanoDeAula = "sr.relatorios.solicitados.planodeaula";
 
@@ -68,5 +69,8 @@
         public const string RotaRelatoriosProcessandoHistoricoEscolar = "sr.relatorios.processando.historicoescolar";
 
         public const string RotaRelatoriosSolicitadosAtaBimestralResultados = "sr.relatorios.solicitados.atabimestralresultados";
+        public const string RotaRelatoriosSolicitadosAcompanhamentoFrequencia = "sr.relatorios.solicitados.acompanhamentofrequencia";
+        public const string RotaRelatoriosSolicitadosAcompanhamentoRegistrosPedagogicos = "sr.relatorios.solicitados.acompanhamentoregistrospedagogicos";
+        public const string RotaRelatoriosSolicitadosOcorrencias = "sr.relatorios.solicitados.ocorrencias";
     }
 }

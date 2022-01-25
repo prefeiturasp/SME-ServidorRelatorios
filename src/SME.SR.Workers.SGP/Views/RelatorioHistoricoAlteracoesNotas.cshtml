@@ -4,19 +4,30 @@
 
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 63;
+    bool emAprovacao = false;
+
+    string Quebra()
+    {
+        contadorQuebrarPagina = 0;
+
+        var str = MontarCabecalho();
+        return $@"<div style='page-break-before:always'> </div>" + str;
+    }
 
     string VerificaQuebra(int valorAdicionalParaSoma)
     {
-        if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)
+        if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina)//&& Model.EmAprovacao)
         {
-            contadorQuebrarPagina = 0;
-
-            var str = MontarCabecalho();
-            str = $@"<div style='page-break-before:always' />" + str;
-            return str;
+            var quebra = Quebra();
+            return $@"{MontarLegenda()}{quebra}";
+        }
+        else if (contadorQuebrarPagina + valorAdicionalParaSoma >= contadorMaximoLinhasPorPagina && false)
+        {
+            return Quebra();
 
         }
-        return string.Empty;
+        else
+            return string.Empty;
 
     }
 
@@ -153,6 +164,9 @@
 
             str += $@"</tr>";
 
+            if(aluno.EmAprovacao)
+                emAprovacao = true;
+
             var quebra = VerificaQuebra(0);
 
             var novaPagina = quebra + (i < alunosAlteracaoNotas.Count - 1 ? MontarCabecalhoTabela(quebra, componente, turma) : "");
@@ -162,7 +176,27 @@
         return str;
     }
 
+    string MontarLegenda()
+    {
+        if (emAprovacao)
+        {
+            return "<span class='legenda'>* Aguardando aprovação</span>";
+        }
+        else
+        {
+            return "";
+        }
+    }
 
+    string VerificaMontagemLegendaFim()
+    {
+        if (contadorQuebrarPagina > 0 && emAprovacao)
+        {
+            emAprovacao = false;
+            return MontarLegenda();
+        }
+        return "";
+    }
 }
 
 <!DOCTYPE html>
@@ -372,10 +406,13 @@
                                 }
                             }
                         }
-                }
-            }
+                }        
+                
+            }                        
         }
-
+       
+        @Html.Raw(VerificaMontagemLegendaFim())                                
+       
     </div>
 </body>
 </html>

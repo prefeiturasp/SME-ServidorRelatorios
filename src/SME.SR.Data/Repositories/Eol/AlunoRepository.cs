@@ -130,7 +130,152 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<Aluno>(query, parametros);
 
         }
-        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia)
+
+		public async Task<IEnumerable<AlunoPorTurmaRespostaDto>> ObterAlunosPorTurmaEDataMatriculaQuery(long turmaCodigo, DateTime dataReferencia)
+		{
+			var query = @"
+					IF OBJECT_ID('tempdb..#tmpAlunosDadosAtuais') IS NOT NULL
+					DROP TABLE #tmpAlunosDadosAtuais
+
+				IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+					DROP TABLE #tmpAlunosFrequencia
+
+				SELECT  aluno.cd_aluno CodigoAluno,
+						aluno.nm_aluno NomeAluno,
+						aluno.dt_nascimento_aluno DataNascimento,
+						aluno.nm_social_aluno NomeSocialAluno,
+						mte.cd_situacao_aluno CodigoSituacaoMatricula,
+						CASE
+							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+							WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+							WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+							WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+							WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+							WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+							WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+							WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							ELSE 'Fora do domínio liberado pela PRODAM'
+							END SituacaoMatricula,
+						mte.dt_situacao_aluno DataSituacao,
+						ISNULL(hm.dt_status_matricula, matr.dt_status_matricula) DataMatricula,
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+						CASE
+							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
+							ELSE 1
+						END PossuiDeficiencia,
+						LTRIM(RTRIM(nm_responsavel)) NomeResponsavel,
+						ra.tp_pessoa_responsavel TipoResponsavel, 
+						concat(LTRIM(RTRIM(ra.cd_ddd_celular_responsavel)), LTRIM(RTRIM(ra.nr_celular_responsavel))) CelularResponsavel,
+						ra.dt_atualizacao_tabela DataAtualizacaoContato,
+						matr.cd_matricula CodigoMatricula
+					INTO #tmpAlunosDadosAtuais
+					FROM v_aluno_cotic aluno
+						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+						LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
+						LEFT JOIN v_historico_matricula_cotic hm ON matr.cd_matricula = hm.cd_matricula and matr.an_letivo = hm.an_letivo and hm.st_matricula <> 4 -- Não considera vínculo indevido
+					WHERE mte.cd_turma_escola = @CodigoTurma
+
+					SELECT *
+						INTO #tmpAlunosFrequencia
+						FROM #tmpAlunosDadosAtuais
+					UNION
+					SELECT  
+						aluno.cd_aluno CodigoAluno,
+						aluno.nm_aluno NomeAluno,
+						aluno.dt_nascimento_aluno DataNascimento,
+						aluno.nm_social_aluno NomeSocialAluno,
+						mte.cd_situacao_aluno CodigoSituacaoMatricula,
+						CASE
+							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+							WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+							WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+							WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+							WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+							WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+							WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+							WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+							WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+							WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+							WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							ELSE 'Fora do domínio liberado pela PRODAM'
+							END SituacaoMatricula,
+						mte.dt_situacao_aluno DataSituacao,
+						matr.dt_status_matricula DataMatricula,
+						mte.nr_chamada_aluno NumeroAlunoChamada,
+						CASE WHEN nea.tp_necessidade_especial IS NULL
+							THEN 0
+							ELSE 1
+						END PossuiDeficiencia,
+						LTRIM(RTRIM(nm_responsavel)) NomeResponsavel,
+						ra.tp_pessoa_responsavel TipoResponsavel, 
+						concat(LTRIM(RTRIM(ra.cd_ddd_celular_responsavel)), LTRIM(RTRIM(ra.nr_celular_responsavel))) CelularResponsavel,
+						ra.dt_atualizacao_tabela DataAtualizacaoContato,
+						matr.cd_matricula CodigoMatricula												
+					FROM v_aluno_cotic aluno
+					INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+					INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
+					LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+					LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
+					WHERE mte.cd_turma_escola = @CodigoTurma
+					and matr.an_letivo = te.an_letivo
+					and NOT (mte.nr_chamada_aluno IS NULL AND mte.dt_situacao_aluno < te.dt_inicio_turma)
+					and mte.dt_situacao_aluno =                    
+						(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+						INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+						where
+						mte2.cd_turma_escola = @CodigoTurma
+						and matr2.cd_aluno = matr.cd_aluno
+					)
+					AND NOT EXISTS(
+						SELECT 1 
+							FROM #tmpAlunosDadosAtuais da
+						WHERE mte.cd_matricula = da.CodigoMatricula) 
+
+				SELECT
+					alunos.CodigoAluno,
+					alunos.NomeAluno,
+					alunos.NomeSocialAluno,
+					alunos.DataNascimento,
+					alunos.CodigoSituacaoMatricula,
+					alunos.SituacaoMatricula,
+					alunos.DataSituacao,
+					alunos.NumeroAlunoChamada,
+					alunos.PossuiDeficiencia,
+					alunos.NomeResponsavel,
+					alunos.TipoResponsavel,
+					alunos.CelularResponsavel,
+					alunos.DataAtualizacaoContato,
+					alunos.CodigoMatricula,	
+					alunos.DataMatricula
+				FROM #tmpAlunosFrequencia alunos
+				INNER JOIN (SELECT CodigoAluno, CodigoMatricula, MAX(DataMatricula) DataMatricula
+							FROM #tmpAlunosFrequencia 
+							WHERE CONVERT(date, @DataMatricula) >= CONVERT(date, DataMatricula)
+							GROUP BY CodigoAluno, CodigoMatricula) A 
+							ON alunos.CodigoMatricula = A.CodigoMatricula 
+								and alunos.DataMatricula = a.DataMatricula
+				ORDER BY alunos.NomeAluno";
+
+			var parametros = new { CodigoTurma = turmaCodigo, DataMatricula = dataReferencia };
+
+			using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+
+			return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
+
+		}
+		public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia)
         {
             StringBuilder query = new StringBuilder();
             if (anoLetivo < DateTime.Now.Date.Year)
@@ -1314,7 +1459,18 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
+		public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
+		{
+			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
+                          from v_aluno_cotic vac  
+                          where vac.cd_aluno = @codigo";
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            
+			return await conexao.QueryFirstOrDefaultAsync<AlunoNomeDto>(query, new { codigo });
+        }
+
+		public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
         {
             var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
                           from v_aluno_cotic vac  

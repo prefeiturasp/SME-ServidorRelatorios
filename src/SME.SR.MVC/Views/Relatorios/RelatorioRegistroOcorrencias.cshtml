@@ -1,0 +1,352 @@
+﻿@model SME.SR.Infra.RelatorioRegistroOcorrenciasDto
+
+@{
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoCaracteresPorLinha = 250;
+
+    void MontarCabecalho(string criancaNome, string turma)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>REGISTRO DE OCORRÊNCIA</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.DreNome</td>
+                        <td width='80%' class='espaco-esquerda-15'>UNIDADE ESCOLAR (UE): @Model.UeNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='75%' class='sem-border-top espaco-esquerda-15'>ENDEREÇO: @Model.Endereco</td>
+                        <td width='25%' class='sem-border-top espaco-esquerda-15'>CONTATO: @Model.Contato</td>
+                    </tr>
+                </tbody>
+            </table> <table>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>TURMA: @turma</td>
+                        <td width='80%' class='sem-border-top espaco-esquerda-15'>CRIANÇA: @criancaNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='67%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.UsuarioNome</td>
+                        <td width='15%' class='sem-border-top espaco-esquerda-15'>RF: @Model.UsuarioRF</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.DataImpressao</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    bool VerificaQuebra(double numeroLinhasDescricao = 0)
+    {
+        if (contadorQuebrarPagina + numeroLinhasDescricao >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorQuebrarPagina = contadorQuebrarPagina + 1;
+            return true;
+        }
+        return false;
+    }
+
+    void InformacoesQuebra()
+    {
+        contadorQuebrarPagina = 0;
+        <div style="page-break-before:always"></div>
+    }
+
+    void MontarTituloDescricao()
+    {
+        <tr>
+            <td colspan="2" class="fundo-cinza">DESCRIÇÃO</td>
+        </tr>
+
+        contadorQuebrarPagina++;
+    }
+
+    void MontarDescricao(SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
+    {
+
+        int iContadorCaracteres = 0;
+        var descricao = ocorrencias.DescricaoOcorrencia;
+        int numeroCaracteresDescricao = descricao != null ? descricao.Length : 0;
+
+        @while (iContadorCaracteres != numeroCaracteresDescricao)
+        {
+            bool quebrarPagina = contadorQuebrarPagina + 1 >= contadorMaximoLinhasPorPagina;
+            if (quebrarPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw("</td></tr></tbody></table>")
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
+                @Html.Raw("<table class='tabela-cabecalho'><tbody>")
+                MontarTituloDescricao();
+                @Html.Raw("<tr><td colspan='2' class='alinhar-esquerda espaco-esquerda-15'>")
+            }
+            else
+            {
+                var qntCaracteresParaBuscar = numeroCaracteresDescricao - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDescricao - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+
+                @Html.Raw(textParaExibir)
+
+                contadorQuebrarPagina++;
+            }
+        }
+    }
+
+    void MontarTabela(SME.SR.Infra.RelatorioOcorrenciasDto ocorrencias)
+    {
+        <tr>
+            <td class="espaco-esquerda-15 alinhar-esquerda fundo-cinza" width="30%">DATA DA OCORRÊNCIA</td>
+            <td class="alinhar-esquerda espaco-esquerda-15 ">@ocorrencias.DataOcorrencia</td>
+        </tr>
+        <tr>
+            <td class="espaco-esquerda-15 alinhar-esquerda fundo-cinza" width="30%">TIPO DA OCORRÊNCIA</td>
+            <td class="alinhar-esquerda espaco-esquerda-15 ">@ocorrencias.TipoOcorrencia</td>
+        </tr>
+        <tr>
+            <td class="espaco-esquerda-15 alinhar-esquerda fundo-cinza" width="30%">TÍTULO DA OCORRÊNCIA</td>
+            <td class="alinhar-esquerda espaco-esquerda-15 ">@ocorrencias.TituloOcorrencia</td>
+        </tr>
+
+        contadorQuebrarPagina += 3;
+
+        MontarTituloDescricao();
+
+        <tr>
+            <td colspan="2" class="alinhar-esquerda espaco-esquerda-15">
+                @{MontarDescricao(ocorrencias);}
+            </td>
+        </tr>
+
+    }
+
+    void MontarAssinatura()
+    {
+        <div class="d-flex mt-40 fonte-14">Estou ciente da ocorrência</div>
+        <div class="d-flex mt-40 justify-content-between">
+            <div>
+                <div>
+                    <div class="linha-assinatura"></div>
+                </div>
+                <div class="texto-assinatura" style="margin-left: 202px;">Assinatura do responsável</div>
+            </div>
+            <div>
+                <div class="d-flex">
+                    <div>____</div>
+                    <div class="contra-barra">___</div>
+                    <div>____</div>
+                    <div class="contra-barra">___</div>
+                    <div>______</div>
+                </div>
+                <div class="texto-assinatura" style="margin-left: 44px;">Data da assinatura</div>
+            </div>
+        </div>
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REGISTRO DE OCORRÊNCIA</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .subtitulo-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .mt-40 {
+            margin-top: 40px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .espaco-esquerda-8 {
+            padding-left: 8px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .linha-assinatura {
+            width: 545px;
+            border-bottom: 1px solid #42474a;
+            margin-top: 16px;
+        }
+
+        .contra-barra {
+            transform: rotate(-65deg);
+            margin-top: -10px;
+        }
+
+        .texto-assinatura {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between
+        }
+    </style>
+    <div>
+        @{
+
+            int contadorOcorrencias = 0;
+            foreach (var ocorrencias in Model.Ocorrencias)
+            {
+                MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
+
+                <table class="tabela-cabecalho">
+                    <tbody>
+                        @{ MontarTabela(ocorrencias); }
+                    </tbody>
+                </table>
+
+                bool quebra = VerificaQuebra(5);
+                if (quebra)
+                {
+                    InformacoesQuebra();
+                    MontarCabecalho(ocorrencias.CriancaNome, ocorrencias.Turma);
+                }
+
+                MontarAssinatura();
+
+                if (contadorOcorrencias < Model.Ocorrencias.Count - 1)
+                {
+                    InformacoesQuebra();
+                }
+
+                contadorOcorrencias++;
+            }
+        }
+    </div>
+</body>
+</html>

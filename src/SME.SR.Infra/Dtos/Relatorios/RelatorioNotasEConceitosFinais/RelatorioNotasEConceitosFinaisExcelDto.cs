@@ -27,5 +27,6 @@ namespace SME.SR.Infra
 
         [Display(Description = "Nota/Conceito")]
         public string NotaConceito { get; set; }
+        public bool EmAprovacao { get; set; }
     }
 }

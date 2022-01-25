@@ -45,9 +45,38 @@ namespace SME.SR.Data
                 dataFim
             };
 
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryAsync<AcompanhamentoAprendizagemOcorrenciaDto>(query.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> ObterOcorrenciasCodigoETurma(long turmaId, long[] ocorrenciaIds)
+        {
+            var query = @"select
+                        	o.id as OcorrenciaId, 
+                        	o.turma_id as TurmaId,
+                        	o.titulo as OcorrenciaTitulo,
+                        	TO_CHAR(o.data_ocorrencia,'dd/MM/yyyy') ||' '||TO_CHAR(o.hora_ocorrencia ,'HH24:MI')|| 'h' as OcorrenciaData,
+                        	o.descricao as OcorrenciaDescricaoComTagsHtml,
+                        	ot.descricao as OcorrenciaTipo,
+							oa.codigo_aluno as CodigoAluno
+                        from  ocorrencia o
+						inner join ocorrencia_tipo ot on ot.id = o.ocorrencia_tipo_id 
+						inner join ocorrencia_aluno oa on oa.ocorrencia_id = o.id 
+                        where not o.excluido 
+                        	and o.id = any(@ocorrenciaIds)
+                        	and o.turma_id = @turmaId
+ 					    order by o.data_ocorrencia desc";
+
+            var parametros = new
+            {
+                turmaId,
+                ocorrenciaIds
+            };
+
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<AcompanhamentoAprendizagemOcorrenciaDto>(query.ToString(), parametros);
+                return await conexao.QueryAsync<OcorrenciasPorCodigoTurmaDto>(query, parametros);                
             }
         }
     }

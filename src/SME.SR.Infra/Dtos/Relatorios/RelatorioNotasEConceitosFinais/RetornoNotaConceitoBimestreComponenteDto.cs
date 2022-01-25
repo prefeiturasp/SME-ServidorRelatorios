@@ -28,6 +28,9 @@ namespace SME.SR.Infra
         public TipoEscola TipoEscola { get; set; }
         public string NotaConceitoFinal => $"{NotaConceito} {(!ConselhoClasseAlunoId.HasValue ? "*" : string.Empty)}";
         public string UeNomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {UeNome}"; } }
-        public bool ExcluirNota { get; set; }
+        public bool ExcluirNota { get; set; }        
+        public string NotaConceitoEmAprovacao { get; set; }
+        public string NotaConceitoPosConselhoEmAprovacao { get; set; }
+        public long? ConselhoClasseNotaId { get; set; }
     }
 }
