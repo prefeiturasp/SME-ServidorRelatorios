@@ -29,8 +29,13 @@ namespace SME.SR.Application
                    .ToList();
 
             var componenteIds = request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray();
+            var componentesTS = lstComponentes.Where(c => c.TerritorioSaber && (string.IsNullOrEmpty(c.Descricao)))
+                                .Select(c => c.Codigo.ToString()).ToArray();
 
-            lstComponentes = lstComponentes.Concat(await componenteCurricularRepository.ListarComponentesTerritorioSaber(componenteIds));
+            var componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
+
+            if (componentesTerritorioSaber != null)
+                lstComponentes = ConcatenarComponenteTerritorio(lstComponentes, componentesTerritorioSaber);
 
             if (lstComponentes != null && lstComponentes.Any())
             {
@@ -56,5 +61,20 @@ namespace SME.SR.Application
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
         }
 
+        public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesTerritorio)
+        {
+            var componentesConcatenados = componentes.ToList();
+
+            foreach(var componente in componentes)
+            {
+                if(componentesTerritorio.Any(c=> c.Codigo == componente.Codigo))
+                {
+                    componentesConcatenados.Remove(componente);
+                    componentesConcatenados.Add(componentesTerritorio.FirstOrDefault(c => c.Codigo == componente.Codigo));
+                }
+            }
+
+            return componentesConcatenados;
+        }
     }
 }
