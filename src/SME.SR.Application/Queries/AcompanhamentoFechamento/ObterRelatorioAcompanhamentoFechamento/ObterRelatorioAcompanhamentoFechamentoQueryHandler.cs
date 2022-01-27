@@ -50,7 +50,7 @@ namespace SME.SR.Application
 
             var componentesCurricularesId = consolidadoFechamento?.Select(c => c.ComponenteCurricularCodigo)?.Distinct()?.ToArray();
 
-            var componentesCurriculares = await ObterComponentesCurricularesPorCodigo(componentesCurricularesId);
+            var componentesCurriculares = await ObterComponentesCurricularesPorCodigo(componentesCurricularesId, codigosTurma);
 
             componentesCurriculares = componentesCurriculares.ToList().OrderBy(c => c.Disciplina);
             var pendencias = Enumerable.Empty<PendenciaParaFechamentoConsolidadoDto>();
@@ -68,9 +68,9 @@ namespace SME.SR.Application
             return await mediator.Send(new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurriculares));
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorCodigo(long[] componentesCurricularesId)
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorCodigo(long[] componentesCurricularesId, string[] codigosTurma)
         {
-            return await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesId));
+            return await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesId, codigosTurma));
         }
 
         private async Task<IEnumerable<PendenciaParaFechamentoConsolidadoDto>> ObterPendenciasFechamentosConsolidado(string[] codigosTurma, int[] bimestres, long[] componentesCurricularesId)

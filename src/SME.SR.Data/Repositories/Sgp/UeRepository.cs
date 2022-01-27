@@ -27,22 +27,14 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<UePorDresIdResultDto>> ObterPorDresId(long[] dreIds)
-        {
-            try
-            {
+        {           
                 var query = @"select Id, ue.dre_id as dreId, ue_id Codigo, Nome, tipo_escola TipoEscola from ue ";
                 if (dreIds != null && dreIds.Any())
                     query = query += "where ue.dre_id = ANY(@dreIds) ";
 
                 var parametros = new { dreIds = dreIds.ToList() };
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-                return await conexao.QueryAsync<UePorDresIdResultDto>(query, parametros);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+                return await conexao.QueryAsync<UePorDresIdResultDto>(query, parametros);            
         }
 
         public async Task<IEnumerable<Ue>> ObterPorDreSemestreModadalidadeAnoId(long dreId, int? semestre, int modalidadeId, string[] anos)
@@ -98,6 +90,22 @@ namespace SME.SR.Data
             var parametros = new { ueId };
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryFirstOrDefaultAsync<Ue>(query, parametros);
+        }
+
+        public async Task<Ue> ObterUeComDrePorId(long ueId)
+        {
+            var query = @"select ue.*, dre.* 
+                            from ue 
+                           inner join dre on dre.id = ue.dre_id
+                           where ue.id = @ueId";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return (await conexao.QueryAsync<Ue, Dre, Ue>(query, (ue, dre) =>
+            {
+                ue.AdicionarDre(dre);
+                return ue;
+            },
+            new { ueId })).FirstOrDefault();
         }
     }
 }

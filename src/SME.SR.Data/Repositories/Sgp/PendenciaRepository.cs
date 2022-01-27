@@ -155,7 +155,7 @@ namespace SME.SR.Data
 	                    inner join ue u 
 	                        on pcu.ue_id  = u.id    
 	                    inner join tipo_escola te
-                            on te.id = u.tipo_escola   
+                            on te.cod_tipo_escola_eol = u.tipo_escola   
 	                    inner join dre d 
 	                        on u.dre_id  = d.id 
 	                    inner join tipo_calendario tc
@@ -211,7 +211,7 @@ namespace SME.SR.Data
 	                    inner join ue u 
 	                        on pcu.ue_id  = u.id    
 	                    inner join tipo_escola te
-                            on te.id = u.tipo_escola   
+                            on te.cod_tipo_escola_eol = u.tipo_escola   
 	                    inner join dre d 
 	                        on u.dre_id  = d.id 
 	                    inner join tipo_calendario tc
@@ -270,7 +270,7 @@ namespace SME.SR.Data
 	                    inner join dre d 
 	                        on u.dre_id  = d.id   
 	                    inner join tipo_escola te
-                            on te.id = u.tipo_escola       
+                            on te.cod_tipo_escola_eol = u.tipo_escola       
                         inner join pendencia_usuario pu 
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
@@ -354,7 +354,7 @@ namespace SME.SR.Data
                         inner join periodo_escolar pe 
 	                        on ft.periodo_escolar_id  = pe.id 
                         inner join tipo_escola te
-                            on te.id = u.tipo_escola
+                            on te.cod_tipo_escola_eol = u.tipo_escola
                         inner join pendencia_usuario pu 
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
@@ -432,7 +432,7 @@ namespace SME.SR.Data
                         inner join periodo_escolar pe 
 	                        on pp.periodo_escolar_id  = pe.id 
                         inner join tipo_escola te
-                            on te.id = ue.tipo_escola
+                            on te.cod_tipo_escola_eol = ue.tipo_escola
                         inner join pendencia_usuario pu 
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
@@ -511,7 +511,7 @@ namespace SME.SR.Data
                         inner join periodo_escolar pe 
 	                        on pp.periodo_escolar_id  = pe.id 
                         inner join tipo_escola te
-                            on te.id = ue.tipo_escola
+                            on te.cod_tipo_escola_eol = ue.tipo_escola
                         inner join pendencia_usuario pu 
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
@@ -592,7 +592,7 @@ namespace SME.SR.Data
                         inner join ue u 
                             on u.id  = t.ue_id       
                         inner join tipo_escola te
-                            on te.id = u.tipo_escola   
+                            on te.cod_tipo_escola_eol = u.tipo_escola   
                         inner join dre d 
                             on u.dre_id  = d.id 
                         inner join pendencia_usuario pu 
@@ -659,7 +659,7 @@ namespace SME.SR.Data
                         inner join ue u 
                             on u.id  = t.ue_id       
                         inner join tipo_escola te
-                            on te.id = u.tipo_escola   
+                            on te.cod_tipo_escola_eol = u.tipo_escola   
                         inner join dre d 
                             on u.dre_id  = d.id
                         inner join pendencia_usuario pu 
@@ -729,7 +729,7 @@ namespace SME.SR.Data
                         inner join ue u 
                             on u.id  = t.ue_id       
                         inner join tipo_escola te
-                            on te.id = u.tipo_escola   
+                            on te.cod_tipo_escola_eol = u.tipo_escola   
                         inner join dre d 
                             on u.dre_id  = d.id
                         inner join pendencia_usuario pu 

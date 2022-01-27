@@ -449,31 +449,36 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia)
+        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string componenteCurricularId)
         {
-            var query = @"select 
-	                        extract(year from periodo_inicio) as AnoBimestre,
-                            fa.bimestre,
-	                        sum(fa.total_aulas) as TotalAula,
-	                        sum(fa.total_presencas) as TotalPresencas,
-	                        sum(fa.total_remotos) as TotalRemotos,
-	                        sum(fa.total_ausencias) as TotalAusencias,
-	                        sum(fa.total_compensacoes) as TotalCompensacoes,
-	                        fa.codigo_aluno as CodigoAluno
-                        from frequencia_aluno fa
-                        where not fa.excluido 
-                        and fa.tipo = @tipoFrequencia
-                        and fa.codigo_aluno = any(@codigosAlunos)  and fa.turma_id = @turmaCodigo ";
+            var query = new StringBuilder(@"select 
+	                                            extract(year from periodo_inicio) as AnoBimestre,
+                                                fa.bimestre,
+	                                            sum(fa.total_aulas) as TotalAula,
+	                                            sum(fa.total_presencas) as TotalPresencas,
+	                                            sum(fa.total_remotos) as TotalRemotos,
+	                                            sum(fa.total_ausencias) as TotalAusencias,
+	                                            sum(fa.total_compensacoes) as TotalCompensacoes,
+	                                            fa.codigo_aluno as CodigoAluno
+                                            from frequencia_aluno fa
+                                            where not fa.excluido 
+                                            and fa.tipo = @tipoFrequencia
+                                            and fa.codigo_aluno = any(@codigosAlunos)  
+                                            and fa.turma_id = @turmaCodigo ");
+            if (!string.IsNullOrEmpty(componenteCurricularId))
+                query.AppendLine(" and fa.disciplina_id = @componenteCurricularId");
+
             if (bimestre != "-99")
-                query += "and fa.bimestre = @numeroBimestre ";
-            query += @"    group by 
-                            fa.bimestre,
-                            fa.codigo_aluno,fa.periodo_inicio;";
-            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia };
+                query.AppendLine("and fa.bimestre = @numeroBimestre ");
+
+            query.AppendLine(@" group by 
+                                fa.bimestre,
+                                fa.codigo_aluno,fa.periodo_inicio;");
+            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia, componenteCurricularId };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<FrequenciaAlunoConsolidadoDto>(query, parametros);
+                return await conexao.QueryAsync<FrequenciaAlunoConsolidadoDto>(query.ToString(), parametros);
             }
         }
 
