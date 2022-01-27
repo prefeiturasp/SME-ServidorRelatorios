@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SME.SR.Application.Interfaces
+﻿namespace SME.SR.Application.Interfaces
 {
-    public interface IRelatorioDevolutivasUseCase : IUseCase
-    {
-    }
+    public interface IRelatorioDevolutivasUseCase : IUseCase{}
 }

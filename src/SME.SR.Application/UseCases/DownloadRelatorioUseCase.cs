@@ -12,9 +12,9 @@ namespace SME.SR.Application
         {
             this.mediator = mediator;
         }
-        public async Task<byte[]> Executar(Guid codigoCorrelacao, string extensao)
+        public async Task<byte[]> Executar(Guid codigoCorrelacao, string extensao,string diretorio)
         {
-            return await mediator.Send(new DownloadArquivoLocalQuery(codigoCorrelacao.ToString() + extensao, "relatorios"));
+            return await mediator.Send(new DownloadArquivoLocalQuery(codigoCorrelacao.ToString() + extensao, diretorio));
         }
     }
 }
