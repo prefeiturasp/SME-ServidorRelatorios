@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterNotificacoesFiltrosQueryHandler : IRequestHandler<ObterNotificacoesFiltrosQuery, IEnumerable<NotificacaoDto>>
+    public class ObterNotificacoesFiltrosQueryHandler : IRequestHandler<ObterNotificacoesFiltrosQuery, IEnumerable<NotificacaoRetornoDto>>
     {
         private readonly INotificacaoRepository notificacaoRepository;
 
@@ -17,10 +17,16 @@ namespace SME.SR.Application
             this.notificacaoRepository = notificacaoRepository ?? throw new ArgumentNullException(nameof(notificacaoRepository));
         }
 
-        public async Task<IEnumerable<NotificacaoDto>> Handle(ObterNotificacoesFiltrosQuery request, CancellationToken cancellationToken)
-        {
-            return await notificacaoRepository.ObterComFiltros(request.Ano, request.UsuarioRf, request.Categorias, request.Tipos, 
-                request.Situacoes, request.ExibirDescricao, request.ExibirExcluidas, request.DRE, request.UE);
-        }
+        public async Task<IEnumerable<NotificacaoRetornoDto>> Handle(ObterNotificacoesFiltrosQuery request, CancellationToken cancellationToken)
+            => await notificacaoRepository.ObterComFiltros(request.AnoLetivo, 
+                                                           request.UsuarioRf, 
+                                                           request.Categorias, 
+                                                           request.Tipos,
+                                                           request.Situacoes, 
+                                                           request.TurmaCodigo,
+                                                           request.DreCodigo,
+                                                           request.UeCodigo,
+                                                           request.ExibirDescricao, 
+                                                           request.ExibirExcluidas);        
     }
 }
