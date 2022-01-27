@@ -362,7 +362,12 @@ namespace SME.SR.Data
             };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+            var resultado = await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+
+            if (!consideraHistorico && !resultado.Any())
+                resultado = await conexao.QueryAsync<ComponenteCurricular>(ComponenteCurricularConsultas.BuscarPorAlunosHistorico, parametros);
+
+            return resultado;
         }
     }
 }
