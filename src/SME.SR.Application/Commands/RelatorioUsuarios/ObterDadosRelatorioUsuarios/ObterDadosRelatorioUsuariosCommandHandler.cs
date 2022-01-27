@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Sentry;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -21,24 +22,36 @@ namespace SME.SR.Application
 
         public async Task<DadosRelatorioUsuariosDto> Handle(ObterDadosRelatorioUsuariosCommand request, CancellationToken cancellationToken)
         {
-            var usuarios = await mediator.Send(new ObterUsuariosAbrangenciaPorAcessoQuery(request.FiltroRelatorio.CodigoDre,
-                                                                                          request.FiltroRelatorio.CodigoUe,
-                                                                                          request.FiltroRelatorio.UsuarioRf,
-                                                                                          request.FiltroRelatorio.Perfis,
-                                                                                          request.FiltroRelatorio.DiasSemAcesso));
+            try
+            {
+                SentrySdk.CaptureMessage("1.0 Obtendo ObterUsuariosAbrangenciaPorAcessoQuery - ObterDadosRelatorioUsuariosCommandHandler");
+                var usuarios = await mediator.Send(new ObterUsuariosAbrangenciaPorAcessoQuery(request.FiltroRelatorio.CodigoDre,
+                                                                                              request.FiltroRelatorio.CodigoUe,
+                                                                                              request.FiltroRelatorio.UsuarioRf,
+                                                                                              request.FiltroRelatorio.Perfis,
+                                                                                              request.FiltroRelatorio.DiasSemAcesso));
 
-            await ObterSituacaoUsuarios(usuarios);
+                SentrySdk.CaptureMessage("1.1 ObterSituacaoUsuarios - ObterDadosRelatorioUsuariosCommandHandler");
+                await ObterSituacaoUsuarios(usuarios);
 
-            if (request.FiltroRelatorio.Situacoes.Any())
-                FiltrarSituacoesUsuario(usuarios, request.FiltroRelatorio.Situacoes);
+                if (request.FiltroRelatorio.Situacoes.Any())
+                    FiltrarSituacoesUsuario(usuarios, request.FiltroRelatorio.Situacoes);
 
-            var dadosRelatorio = new DadosRelatorioUsuariosDto();
+                var dadosRelatorio = new DadosRelatorioUsuariosDto();
 
-            dadosRelatorio.PerfisSme = ObterUsuariosPorPerfil(ObterUsuariosSme(usuarios));
+                SentrySdk.CaptureMessage("1.2 ObterUsuariosPorPerfil - ObterDadosRelatorioUsuariosCommandHandler");
+                dadosRelatorio.PerfisSme = ObterUsuariosPorPerfil(ObterUsuariosSme(usuarios));
 
-            dadosRelatorio.Dres = await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
+                SentrySdk.CaptureMessage("1.3 ObterUsuariosPorDre - ObterDadosRelatorioUsuariosCommandHandler");
+                dadosRelatorio.Dres = await ObterUsuariosPorDre(usuarios, request.FiltroRelatorio.ExibirHistorico);
 
-            return dadosRelatorio;
+                return dadosRelatorio;
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                throw;
+            }            
         }
 
         private async Task<IEnumerable<DreUsuarioDto>> ObterUsuariosPorDre(IEnumerable<DadosUsuarioDto> usuarios, bool exibirHistorico)

@@ -17,15 +17,8 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
-                var filtros = request.ObterObjetoFiltro<FiltroNotificacaoDto>();
-                await mediator.Send(new GerarRelatorioNotificacaoCommand(filtros, request.CodigoCorrelacao));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+            var filtros = request.ObterObjetoFiltro<FiltroNotificacaoDto>();
+            await mediator.Send(new GerarRelatorioNotificacaoCommand(filtros, request.CodigoCorrelacao));
+       }
     }
 }

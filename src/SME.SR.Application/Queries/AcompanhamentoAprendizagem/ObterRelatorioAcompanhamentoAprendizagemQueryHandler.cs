@@ -74,7 +74,7 @@ namespace SME.SR.Application
 
             var acompanhamento = acompanhamentoAlunos.Any() ? acompanhamentoAlunos?.First() : null;
             var percursoFormatado = acompanhamento != null ?
-                await FormatarHtml(acompanhamento.PercursoColetivoTurma) : "";
+                await FormatarHtml(acompanhamento.PercursoColetivoTurmaFormatado()) : "";
 
             foreach (var alunoEol in alunosEol)
             {
