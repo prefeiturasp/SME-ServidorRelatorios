@@ -51,26 +51,24 @@ namespace SME.SR.Application
                 foreach (var aluno in alunos)
                 {
                     var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
+                    
+                    var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
+
+                    var tipoNota = tiposNota[turma.Codigo];
+                    var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
+                    {
+                        TipoNota = tipoNota
+                    };
 
                     foreach (var codigoTurma in componentesAluno.Select(s => s.CodigoTurma).Distinct())
                     {
-                        var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
-
                         var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
                         if (conselhoClassBimestres != null && conselhoClassBimestres.Any())
                         {
-                            var tipoNota = tiposNota[turma.Codigo];
-                            var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
-                            {
-                                TipoNota = tipoNota
-                            };
-
                             if (componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key) == null)
                                 throw new NegocioException($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
 
-
-                            //foreach (var turmaAluno in aluno)
                             MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == codigoTurma.ToString()), boletimEscolarAlunoDto.Grupos);
 
                             var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
@@ -109,10 +107,10 @@ namespace SME.SR.Application
                                                                                         $"{percentualFrequenciaGlobal}%");
 
                             boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0) ? parecerConclusivo?.ParecerConclusivo : null;
-
-                            boletinsAlunos.Add(boletimEscolarAlunoDto);
+                            
                         }
                     }
+                    boletinsAlunos.Add(boletimEscolarAlunoDto);
                 }
 
                 if (!boletinsAlunos.Any())
