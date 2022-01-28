@@ -92,7 +92,7 @@ namespace SME.SR.Application
                 if (ue == null)
                     new NegocioException("UE não encontrada!!");
 
-                var dre = await mediator.Send(new ObterDrePorIdQuery(long.Parse(ue.DreId)));
+                var dre = await mediator.Send(new ObterDrePorIdQuery(ue.DreId));
                 if (dre == null)
                     new NegocioException("DRE não encontrada!!");
 

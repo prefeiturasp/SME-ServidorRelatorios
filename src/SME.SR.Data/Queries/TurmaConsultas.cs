@@ -214,14 +214,12 @@ namespace SME.SR.Data
 					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 					INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
 					WHERE mte.cd_turma_escola = @turmaCodigo
-						and mte.dt_situacao_aluno =                    
-							(select min(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
-							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-							mte2.cd_turma_escola = @turmaCodigo
-							and matr2.cd_aluno = matr.cd_aluno
-							and mte2.cd_situacao_aluno in (1, 5)
-						)
+						and mte.dt_situacao_aluno =
+							(select max(mte2.dt_situacao_aluno) 
+							    from v_historico_matricula_cotic  matr2
+								   INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
+							 where mte2.cd_turma_escola = @turmaCodigo
+							   and matr2.cd_aluno = matr.cd_aluno)
 						AND NOT EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
 						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
