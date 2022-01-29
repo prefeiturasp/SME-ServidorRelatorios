@@ -28,8 +28,6 @@ namespace SME.SR.Application
         {
             try
             {
-
-
                 var turmas = request.Turmas;
                 var dre = request.Dre;
                 var ue = request.Ue;
@@ -41,7 +39,7 @@ namespace SME.SR.Application
                 var tiposNota = request.TiposNota;
                 var mediasFrequencia = request.MediasFrequencia;
                 var pareceresConclusivos = request.PareceresConclusivos;
-                var aulasPrevistas = request.AulasPrevistas;                             
+                var aulasPrevistas = request.AulasPrevistas;
 
                 var registroFrequencia = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(turmas.Select(a => a.Codigo).ToArray(), 0, new string[] { }, new int[] { 1, 2, 3, 4 }));
                 var periodoAtual = await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dre.Id, ue.Id, request.Turmas.Select(a => a.AnoLetivo).FirstOrDefault()));
@@ -50,67 +48,66 @@ namespace SME.SR.Application
 
                 foreach (var aluno in alunos)
                 {
-                    var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
-                    
+                    // verifica PossuiConselho bimestre
                     var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
-                    var tipoNota = tiposNota[turma.Codigo];
-                    var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
-                    {
-                        TipoNota = tipoNota
-                    };
+                    var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
-                    foreach (var codigoTurma in componentesAluno.Select(s => s.CodigoTurma).Distinct())
+                    if (conselhoClassBimestres != null && conselhoClassBimestres.Any())
                     {
-                        var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
-
-                        if (conselhoClassBimestres != null && conselhoClassBimestres.Any())
+                        var tipoNota = tiposNota[turma.Codigo];
+                        var boletimEscolarAlunoDto = new BoletimEscolarAlunoDto()
                         {
-                            if (componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key) == null)
-                                throw new NegocioException($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
+                            TipoNota = tipoNota
+                        };
 
-                            MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == codigoTurma.ToString()), boletimEscolarAlunoDto.Grupos);
+                        if (componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key) == null)
+                            throw new NegocioException($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
 
-                            var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
+                        //foreach (var turmaAluno in aluno)
+                        foreach (var turmaAluno in componentesAluno.Select(s => s.CodigoTurma).Distinct())
+                            MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.ToString()), boletimEscolarAlunoDto.Grupos);
 
-                            var frequenciasAluno = frequencia?
-                                .Where(t => t.Key == aluno.First().CodigoAluno.ToString())
-                                .SelectMany(f => f);
+                        var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
 
-                            var frequenciasTurma = frequencia?
-                                .SelectMany(a => a)
-                                .Where(f => f.TurmaId == turma.Codigo);
+                        var frequenciasAluno = frequencia?
+                            .Where(t => t.Key == aluno.First().CodigoAluno.ToString())
+                            .SelectMany(f => f);
 
-                            if (notasAluno != null && notasAluno.Any())
-                                SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos,
-                                                        notasAluno,
-                                                        frequenciasAluno,
-                                                        frequenciasTurma,
-                                                        mediasFrequencia,
-                                                        conselhoClassBimestres,
-                                                        registroFrequencia,
-                                                        periodoAtual,
-                                                        aulasPrevistas);
+                        var frequenciasTurma = frequencia?
+                            .SelectMany(a => a)
+                            .Where(f => f.TurmaId == turma.Codigo);
 
-                            var frequeciaGlobal = frequenciasGlobal?
-                                .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        if (notasAluno != null && notasAluno.Any())
+                            SetarNotasFrequencia(boletimEscolarAlunoDto.Grupos,
+                                                    notasAluno,
+                                                    frequenciasAluno,
+                                                    frequenciasTurma,
+                                                    mediasFrequencia,
+                                                    conselhoClassBimestres,
+                                                    registroFrequencia,
+                                                    periodoAtual,
+                                                    aulasPrevistas);
 
-                            var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
-                            var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
+                        var frequeciaGlobal = frequenciasGlobal?
+                            .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
 
-                            boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre,
-                                                                                        ue,
-                                                                                        turma,
-                                                                                        aluno.First().CodigoAluno.ToString(),
-                                                                                        aluno.First().NomeRelatorio,
-                                                                                        aluno.First().ObterNomeFinal(),
-                                                                                        $"{percentualFrequenciaGlobal}%");
+                        var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
+                        var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 
-                            boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0) ? parecerConclusivo?.ParecerConclusivo : null;
-                            
-                        }
+                        boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre,
+                                                                                    ue,
+                                                                                    turma,
+                                                                                    aluno.First().CodigoAluno.ToString(),
+                                                                                    aluno.First().NomeRelatorio,
+                                                                                    aluno.First().ObterNomeFinal(),
+                                                                                    $"{percentualFrequenciaGlobal}%");
+
+                        boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0) ? parecerConclusivo?.ParecerConclusivo : null;
+
+                        boletinsAlunos.Add(boletimEscolarAlunoDto);
                     }
-                    boletinsAlunos.Add(boletimEscolarAlunoDto);
                 }
 
                 if (!boletinsAlunos.Any())
@@ -119,7 +116,7 @@ namespace SME.SR.Application
                 return await Task.FromResult(new BoletimEscolarDto(OrdenarBoletins(boletinsAlunos)));
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception($"Não foi possível montar boletim - Motivo: {ex.Message}");
             }
