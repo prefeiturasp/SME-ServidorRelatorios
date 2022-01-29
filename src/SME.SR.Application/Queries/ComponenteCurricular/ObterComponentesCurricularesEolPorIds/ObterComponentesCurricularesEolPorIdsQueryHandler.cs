@@ -32,7 +32,7 @@ namespace SME.SR.Application
             var componentesTS = lstComponentes.Where(c => c.TerritorioSaber && (string.IsNullOrEmpty(c.Descricao)))
                                 .Select(c => c.Codigo.ToString()).ToArray();
 
-            if (request.TurmasId.Any() && componentesTS.Any() && componentesTS.Count() > 0)
+            if (ExisteTurmaComponenteTerritorioSaber(request.TurmasId,componentesTS))
             {
                 var componentesTerritorioSaber = await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId);
 
@@ -62,6 +62,11 @@ namespace SME.SR.Application
             }
 
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
+        }
+
+        private bool ExisteTurmaComponenteTerritorioSaber(string[] turmasId, string[] componentesTS)
+        {
+            return turmasId != null && turmasId.Any() && turmasId.Count() > 0 && componentesTS != null && componentesTS.Any() && componentesTS.Count() > 0;
         }
 
         public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesTerritorio)
