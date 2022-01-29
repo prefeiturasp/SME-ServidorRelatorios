@@ -32,10 +32,13 @@ namespace SME.SR.Application
             var componentesTS = lstComponentes.Where(c => c.TerritorioSaber && (string.IsNullOrEmpty(c.Descricao)))
                                 .Select(c => c.Codigo.ToString()).ToArray();
 
-            var componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
+            if (request.TurmasId.Any() && componentesTS.Any() && componentesTS.Count() > 0)
+            {
+                var componentesTerritorioSaber = await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId);
 
-            if (componentesTerritorioSaber != null)
-                lstComponentes = ConcatenarComponenteTerritorio(lstComponentes, componentesTerritorioSaber);
+                if (componentesTerritorioSaber != null)
+                    lstComponentes = ConcatenarComponenteTerritorio(lstComponentes, componentesTerritorioSaber);
+            }            
 
             if (lstComponentes != null && lstComponentes.Any())
             {
