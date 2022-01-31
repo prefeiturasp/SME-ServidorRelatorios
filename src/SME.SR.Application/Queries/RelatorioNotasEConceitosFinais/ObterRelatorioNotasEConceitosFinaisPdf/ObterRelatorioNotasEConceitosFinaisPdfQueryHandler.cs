@@ -218,7 +218,8 @@ namespace SME.SR.Application
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas, TipoNota filtro)
         {
             var componentesCurricularesCodigos = notasPorTurmas.Select(a => a.ComponenteCurricularCodigo).Distinct();
-            var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesCodigos.ToArray() });
+            var turmasCodigo = notasPorTurmas.Select(a => a.TurmaCodigo).Distinct().ToArray();
+            var componentesCurriculares = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = componentesCurricularesCodigos.ToArray(), TurmasId = turmasCodigo });
             if (componentesCurriculares == null || !componentesCurriculares.Any())
                 throw new NegocioException("Não foi possível obter os componentes curriculares");
             return componentesCurriculares.Where(cc => filtro == TipoNota.Todas || (cc.LancaNota == (filtro != TipoNota.Sintese)));
