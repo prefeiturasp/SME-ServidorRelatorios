@@ -12,5 +12,7 @@ namespace SME.SR.Infra
         public string Usuario { get; set; }
         public string RF { get; set; }
         public string Data => DateTime.Now.ToString("dd/MM/yyyy");
+
+        public long[] ComponentesCurricularesDisponiveis { get; set; }
     }
 }

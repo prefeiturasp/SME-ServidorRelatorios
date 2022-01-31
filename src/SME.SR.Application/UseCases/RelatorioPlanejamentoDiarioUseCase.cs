@@ -55,7 +55,7 @@ namespace SME.SR.Application
         {
             if (parametros.ModalidadeTurma == Modalidade.Infantil)
             {
-                relatorioDto.Turmas = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoQuery(parametros));
+                relatorioDto.TurmasInfantisComComponente = await mediator.Send(new ObterDadosPlanejamentoDiarioBordoComComponenteQuery(parametros));
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiarioInfantilComComponente", relatorioDto, request.CodigoCorrelacao));
             }
             else
@@ -75,7 +75,8 @@ namespace SME.SR.Application
                 ComponenteCurricular = await ObterComponenteCurricular(parametros.ComponenteCurricular),
                 Turma = await ObterTurma(parametros.CodigoTurma),
                 RF = usuarioLogadoRF,
-                Usuario = parametros.UsuarioNome
+                Usuario = parametros.UsuarioNome,
+                ComponentesCurricularesDisponiveis = parametros.ComponentesCurricularesDisponiveis,
             };
         }
 

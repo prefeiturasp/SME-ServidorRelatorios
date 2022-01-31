@@ -13,6 +13,7 @@ namespace SME.SR.Infra
         public FiltroControlePlanejamentoDiarioDto Filtro { get; set; }
 
         public IEnumerable<TurmaPlanejamentoDiarioDto> Turmas { get; set; }
+        public IEnumerable<TurmaPlanejamentoDiarioInfantilDto> TurmasInfantisComComponente { get; set; }
 
     }
 }

@@ -13,5 +13,6 @@ namespace SME.SR.Infra
         public string Usuario { get; set; }
         public string SecoesPreenchidas { get; set; }
         public string Planejamento { get; set; }
+        public bool EhReposicao { get; set; }
     }
 }
