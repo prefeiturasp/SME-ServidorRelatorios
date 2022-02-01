@@ -52,7 +52,8 @@ namespace SME.SR.Data
 		                                            inner join tipo_ciclo tc
 			                                            on tca.tipo_ciclo_id = tc.id 
     	                                            inner join tipo_escola te
-                                                        on te.id = u.tipo_escola where t.tipo_turma = @tipoTurmaRegular ");
+                                                        on te.id = u.tipo_escola 
+                                            where t.tipo_turma = @tipoTurmaRegular and not cca.excluido ");
 
             if (semestre.HasValue)
                 query.AppendLine(" and t.semestre = @semestre ");
