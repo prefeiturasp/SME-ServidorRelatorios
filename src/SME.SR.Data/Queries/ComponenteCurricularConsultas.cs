@@ -52,7 +52,7 @@
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
                     where te.an_letivo = @anoLetivo
-                      and te.st_turma_escola in ('O', 'A', 'C')";
+                      and te.st_turma_escola in ('O', 'A', 'C') and serie_turma_grade.dt_fim is null ";
 
         internal static string BuscarPorAlunosHistorico = @"
                         
