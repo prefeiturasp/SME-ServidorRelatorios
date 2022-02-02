@@ -72,8 +72,12 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, AtaFinalTipoVisualizacao? visualizacao)
         {
+            var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
+            var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo);
-            var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var alunosFiltrados = alunos.Where(a => a.Ativo || (!a.Ativo && a.DataSituacaoAluno >= periodosEscolares.First().PeriodoInicio && a.DataSituacaoAluno <= periodosEscolares.Last().PeriodoFim));
+
+            var alunosCodigos = alunosFiltrados.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
             if (turma.TipoTurma == TipoTurma.Regular)
                 tiposTurma.Add((int)TipoTurma.EdFisica);
@@ -82,9 +86,7 @@ namespace SME.SR.Application
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray());
             if (notas == null || !notas.Any())
-                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
-            var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
-            var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();            
             var cabecalho = await ObterCabecalho(turma.Codigo);
             var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
             var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
@@ -141,7 +143,7 @@ namespace SME.SR.Application
                 }));
             }
 
-            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea);
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunosFiltrados, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea);
             return MontarEstruturaPaginada(dadosRelatorio);
         }
 
