@@ -190,9 +190,9 @@ namespace SME.SR.Data
 					    aluno.nm_aluno NomeAluno,
 					    mte.cd_situacao_aluno CodigoSituacaoMatricula,
 					    CASE
-						    WHEN mte.cd_situacao_aluno = 1 AND NOT (mte.nr_chamada_aluno is null and mte.dt_situacao_aluno < te.dt_inicio_turma) THEN 'Ativo'
+						    WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
 						    WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
-						    WHEN mte.cd_situacao_aluno = 3 OR dbo.proc_existe_historico_matricula_diferente_aluno(aluno.cd_aluno, matr.an_letivo, matr.cd_matricula, matr.cd_serie_ensino) = 'True' THEN 'Transferido'
+						    WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
 						    WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
 						    WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
 						    WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
@@ -201,7 +201,7 @@ namespace SME.SR.Data
 						    WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
 						    WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
 						    WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
-						    WHEN mte.cd_situacao_aluno = 13 OR dbo.proc_existe_historico_matricula_diferente_aluno(aluno.cd_aluno, matr.an_letivo, matr.cd_matricula, matr.cd_serie_ensino) = 'False' THEN 'Sem continuidade'
+						    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 						    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
 						    ELSE 'Fora do domínio liberado pela PRODAM'
