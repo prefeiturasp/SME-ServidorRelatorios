@@ -18,7 +18,7 @@ namespace SME.SR.Workers.SGP.Filters
 
                 operation.Parameters.Add(new OpenApiParameter
                 {
-                    Name = "x-sgp-api-key",
+                    Name = "x-sr-api-key",
                     In = ParameterLocation.Header,
                     Description = "Chave de Integração da API do Servidor de Relatórios",
                     Required = true
