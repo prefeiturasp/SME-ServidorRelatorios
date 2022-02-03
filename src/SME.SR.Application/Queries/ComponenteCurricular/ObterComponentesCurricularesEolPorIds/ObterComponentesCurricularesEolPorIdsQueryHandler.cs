@@ -57,7 +57,8 @@ namespace SME.SR.Application
                     TerritorioSaber = x.TerritorioSaber,
                     BaseNacional = x.BaseNacional,
                     GrupoMatriz = x.ObterGrupoMatriz(gruposMatriz),
-                    AreaDoConhecimento = x.ObterAreaDoConhecimento(areasDoConhecimento)
+                    AreaDoConhecimento = x.ObterAreaDoConhecimento(areasDoConhecimento),
+                    DescricaoInfatil = x.DescricaoInfantil
                 });
             }
 
