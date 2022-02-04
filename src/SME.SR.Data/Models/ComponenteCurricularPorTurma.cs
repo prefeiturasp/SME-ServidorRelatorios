@@ -20,5 +20,6 @@ namespace SME.SR.Data
         public ComponenteCurricularGrupoMatriz GrupoMatriz { get; set; }
         public AreaDoConhecimento AreaDoConhecimento { get; set; }
         public IEnumerable<ComponenteCurricularPorTurmaRegencia> ComponentesCurricularesRegencia { get; set; }
+        public string DescricaoInfatil { get; set; }
     }
 }

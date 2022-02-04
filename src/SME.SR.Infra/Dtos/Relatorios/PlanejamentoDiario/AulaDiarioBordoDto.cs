@@ -18,5 +18,6 @@ namespace SME.SR.Infra
         public string Planejamento { get; set; }
         public string Reflexoes { get; set; }
         public long? DevolutivaId { get; set; }
+        public TipoAula TipoAula { get; set; }
     }
 }

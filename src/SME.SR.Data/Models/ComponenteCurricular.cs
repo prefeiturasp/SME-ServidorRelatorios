@@ -27,6 +27,7 @@ namespace SME.SR.Data
         public bool LancaNota { get; set; }
         public bool Frequencia { get; set; }
         public bool BaseNacional { get; set; }
+        public string DescricaoInfantil { get; set; }
 
         public long? CodigoComponentePai(IEnumerable<ComponenteCurricularApiEol> componentesApiEol) => componentesApiEol?
                                             .FirstOrDefault(w => w.IdComponenteCurricular == Codigo)?.IdComponenteCurricularPai;

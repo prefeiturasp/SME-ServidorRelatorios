@@ -108,7 +108,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<ComponenteCurricular>> ListarComponentes()
         {
             var query = @"select cc.id as codigo,
-                               cc.descricao_sgp as descricao,
+                               coalesce(cc.descricao_sgp,descricao)as descricao,
                                cc.eh_territorio as territorioSaber,
                                cc.eh_regencia as ComponentePlanejamentoRegencia,
                                cc.componente_curricular_pai_id as CodComponentePai,
@@ -116,7 +116,8 @@ namespace SME.SR.Data
                                cc.eh_compartilhada as Compartilhada,
                                cc.permite_lancamento_nota as LancaNota,
                                cc.permite_registro_frequencia as Frequencia,
-                               cc.eh_base_nacional as BaseNacional
+                               cc.eh_base_nacional as BaseNacional,
+                               cc.descricao_infantil as DescricaoInfantil
                           from componente_curricular cc 
                          order by cc.id";
 

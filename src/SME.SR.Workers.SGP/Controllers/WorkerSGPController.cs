@@ -19,7 +19,6 @@ namespace SME.SR.Workers.SGP.Controllers
     {
         public WorkerSGPController()
         {
-
         }
 
         [HttpGet("relatorios/alunos")]

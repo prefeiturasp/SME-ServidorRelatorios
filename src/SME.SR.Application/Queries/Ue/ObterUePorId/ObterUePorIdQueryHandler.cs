@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
