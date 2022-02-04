@@ -28,8 +28,6 @@ namespace SME.SR.Application
         {
             try
             {
-
-
                 var turmas = request.Turmas;
                 var dre = request.Dre;
                 var ue = request.Ue;
@@ -67,8 +65,9 @@ namespace SME.SR.Application
                             throw new NegocioException($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
 
                         var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
-                        foreach (var turmaAluno in aluno)
-                            MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()), boletimEscolarAlunoDto.Grupos);
+                        //foreach (var turmaAluno in aluno)
+                        foreach (var turmaAluno in componentesAluno.Select(s => s.CodigoTurma).Distinct())
+                            MapearGruposEComponentes(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.ToString()), boletimEscolarAlunoDto.Grupos);
 
                         var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
 
@@ -117,7 +116,7 @@ namespace SME.SR.Application
                 return await Task.FromResult(new BoletimEscolarDto(OrdenarBoletins(boletinsAlunos)));
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception($"Não foi possível montar boletim - Motivo: {ex.Message}");
             }

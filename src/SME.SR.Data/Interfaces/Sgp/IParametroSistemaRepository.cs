@@ -11,5 +11,6 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia();
         Task<string> ObterValorPorAnoTipo(int ano, TipoParametroSistema tipo);
+        Task<ParametroSistemaAnoSituacaoDto> VerificarSeParametroEstaAtivo(TipoParametroSistema tipo);
     }
 }
