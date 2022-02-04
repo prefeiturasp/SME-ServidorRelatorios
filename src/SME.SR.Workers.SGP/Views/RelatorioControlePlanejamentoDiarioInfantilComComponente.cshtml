@@ -1,0 +1,670 @@
+﻿@model SME.SR.Infra.RelatorioControlePlanejamentoDiarioDto
+@using SME.SR.Infra.Utilitarios;
+
+@{ int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 76;
+    int contadorPagina = 0;
+    var retornoVerificacao = string.Empty;
+    var tipoRelatorio = true;
+
+    string VerificaQuebra()
+    {
+        if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            contadorPagina = contadorPagina + 1;
+
+            var str = MontarCabecalho();
+            return $@"<div style='page-break-before:always'/>" + str;
+
+        }
+        return string.Empty;
+
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina += 9;
+
+        var str = $@"<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+    <div class='titulo-relatorio'>
+    <p style='margin-bottom: 0'>
+    RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO
+    </p>
+    </div>
+    <div class='fonte-14 header-pagina'>
+    <table class='tblTopo'>
+    <tbody>
+    <tr>
+        <td  width='40%' class='sem-border-bottom'>DRE: {Model.Filtro.Dre}</td>
+        <td width='40%' class='sem-border-bottom'>UE: {Model.Filtro.Ue}</td>
+        <td  width='20%' class='sem-border-bottom'>TURMA: {Model.Filtro.Turma}</td>
+    </tr>
+    </tbody>
+    </table>
+
+    <table>
+    <tbody>
+    <tr>
+        <td width='70%' class='sem-border-bottom'>COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}</td>
+        <td width='30%' class='sem-border-bottom'>BIMESTRE: {Model.Filtro.Bimestre}</td>
+    </tr>
+    </tbody>
+    </table>
+
+    <table>
+    <tbody>
+    <tr>
+        <td width='60%'>USUÁRIO: {Model.Filtro.Usuario}</td>
+        <td width='20%'>RF: {Model.Filtro.RF}</td>
+        <td width='20%'>DATA: {Model.Filtro.Data}</td>
+    </tr>
+    </tbody>
+    </table>
+    </div>";
+        return str;
+    }
+
+    string MontarCabecalhoDetalhamento()
+    {
+        contadorQuebrarPagina += 1;
+        var str = "";
+
+
+        str += $@" <table class='fixed'>
+                    <tr>
+                        <td class='td-titulo-dois'>PLANEJAMENTO</td>
+                    </tr>
+                    ";
+
+        return str;
+    }
+
+    string MontarCabecalhoPlanejamento()
+    {
+        contadorQuebrarPagina += 2;
+        var str = "";
+
+        str += $@"<table class='fixed'>
+                    <tr>
+                        <td width='25%' class='td-titulo-dois'>COMPONENTE CURRICULAR</td>
+                        <td width='13%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
+                        <td width='10%' class='td-titulo-dois'>DATA DO REGISTRO</td>
+                        <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
+                        <td width='37%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
+                    </tr>
+                </table>";
+
+        return str;
+    }
+
+    string MontarDadosTabelaPlanejamento(SME.SR.Infra.PlanejamentoDiarioInfantilDto planejamento, string NomeTurma, string NomeBimestre, string NomeComponente, SME.SR.Infra.TurmaPlanejamentoDiarioInfantilDto turma, long ultimaAulaRelatorio, string ultimoBimestreNome)
+    {
+        var str = "";
+        var detalhamento = false;
+        var ultimoplanejamento = planejamento;
+        str += "<table class='fixed'><tbody>";
+
+        detalhamento = false;
+
+        if (!string.IsNullOrEmpty(planejamento.SecoesPreenchidas))
+        {
+            var qtdSecoes = 0;
+            var secoes = planejamento.SecoesPreenchidas.Trim().Split("<br/>");
+
+
+            foreach (var count in secoes)
+            {
+                if (!string.IsNullOrEmpty(count))
+                    qtdSecoes++;
+            }
+
+            double tamanhoTexto1 = planejamento.Usuario != null ? planejamento.Usuario.Length : 0;
+
+            var qtdLinhaUsuario = (int)Math.Truncate(tamanhoTexto1 / 12);
+
+            contadorQuebrarPagina += Math.Max(qtdSecoes, qtdLinhaUsuario);
+        }
+        else
+        {
+            contadorQuebrarPagina += 1;
+        }
+
+        var planejamentoRealizado = planejamento.PlanejamentoRealizado ? "Sim" : "Não";
+        var cj = planejamento.PlanejamentoRealizado && planejamento.AulaCJ ? " - CJ" : "";
+        var reposicao = planejamento.EhReposicao ? " - Reposição" : "";
+
+        str += $@"<tr>
+                    <td width='25%' class='td-valor-dois'>{planejamento.ComponenteCurricular}{reposicao}</td>
+                    <td width='13%' class='td-valor-dois'>{planejamentoRealizado}</td>
+                    <td width='10%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
+                    <td width='15%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
+
+                <td width='37%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
+                  </tr>";
+
+        if (!string.IsNullOrEmpty(planejamento.Planejamento))
+        {
+            detalhamento = true;
+            var qtdLinhasDetalhamento = 0;
+
+            qtdLinhasDetalhamento = (int)Math.Truncate((double)planejamento.Planejamento.Length / 130);
+            contadorQuebrarPagina += qtdLinhasDetalhamento;
+
+            if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina)
+                str += IncluirTdParaFechar();
+
+            str += $"</tbody></table>";
+
+            var planejamentoRegex = UtilRegex.RemoverTagsHtmlMidia(planejamento.Planejamento);
+            planejamentoRegex = UtilRegex.RemoverTagsHtml(planejamentoRegex);
+
+            retornoVerificacao = VerificaQuebra();
+            if (retornoVerificacao != string.Empty)
+            {
+                str += $@"{IncluirTdParaFechar()}</tbody></table>{retornoVerificacao}";
+                contadorQuebrarPagina += qtdLinhasDetalhamento;
+            }
+            str += MontarCabecalhoDetalhamento();
+
+            str += $@"
+                    <tr>
+                        <td class='td-planejamento'>{planejamentoRegex}</td>
+                    </tr>
+              </table>";
+        }
+        else
+        {
+            if (planejamento.AulaId == ultimaAulaRelatorio && NomeBimestre.Equals(ultimoBimestreNome.ToUpper()))
+                str += IncluirTdParaFechar();
+        }
+
+
+        retornoVerificacao = VerificaQuebra();
+        if (retornoVerificacao != string.Empty)
+        {
+            if (ultimoplanejamento.AulaId == planejamento.AulaId)
+            {
+                if (planejamento.AulaId == ultimaAulaRelatorio && NomeBimestre.Equals(ultimoBimestreNome.ToUpper()))
+                {
+                    str += $@"</tbody></table>";
+                }
+                else
+                {
+                    str += $@"</tbody></table>{retornoVerificacao}<table class='fixed'><tbody>";
+                }
+            }
+            else
+            {
+                str += $@"{IncluirTdParaFechar()}</tbody></table>{retornoVerificacao}{MontarCabecalhoPlanejamento()}<table class='fixed'><tbody>";
+            }
+        }
+        else
+        {
+            if (ultimoplanejamento.AulaId != planejamento.AulaId)
+            {
+                if (detalhamento)
+                    str += LinhaEmBranco();
+            }
+            else
+            {
+                if (ultimoplanejamento.AulaId == ultimaAulaRelatorio ||
+                    contadorQuebrarPagina + 5 >= contadorMaximoLinhasPorPagina)
+                {
+                    str += IncluirTdParaFechar();
+                }
+                str += "</tbody></table>";
+            }
+        }
+
+        return str;
+    }
+    
+    string LinhaEmBranco()
+    {
+    contadorQuebrarPagina += 1;
+        return "</tbody></table><table><tr><td class='td-linha-em-branco'><br/></td></tr></table><table class='fixed'><tbody>";
+    }
+
+    string IncluirTdParaFechar(int quantidade = 5)
+    {
+    var str = "<tr>";
+        for (var i = 1; i <= quantidade; i++)
+        {
+            str += "<td style='border-bottom:none;border-left:none;border-right:none;'></td>";
+        }
+        str += "</tr>";
+        return str;
+    } }
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE CONTROLE DE PLANEJAMENTO DIÁRIO</title>
+</head>
+
+<body class="body-rel-faltas-frequencia">
+    <style>
+        .body-rel-faltas-frequencia {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+            font-weight: bold;
+        }
+
+        .titulo-plano-aula {
+            text-align: right;
+            font-size: 14.5px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+                padding: 4px;
+                padding-left: 15px;
+            }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%;
+        }
+
+        .campo-ano {
+            width: 15%;
+        }
+
+        .campo-componente-curricular {
+            width: 70%;
+            border-top: none;
+        }
+
+        .campo-bimestre {
+            width: 30%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 60%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 20%;
+            border-top: none;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        .fonte-16 {
+            font-size: 16px !important;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .fonte-12 {
+            font-size: 12px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .rodape-rel-faltas-frequencia {
+            margin-top: 10px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+        }
+
+        .tb-head {
+            background-color: #f3f3f3;
+            text-align: left;
+            font-size: 16px;
+            padding: 10px;
+            padding-left: 20px;
+        }
+
+        .td-titulo-um {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-size: 14px;
+            padding: 4px;
+            border-bottom: none;
+        }
+
+        .td-titulo-dois {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-size: 12px;
+            padding: 2px;
+        }
+
+        .td-titulo-tres {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-size: 12px;
+            padding: 4px;
+            border-top: none;
+            border-bottom: none;
+        }
+
+        .td-valor-dois {
+            text-align: center;
+            font-size: 12px;
+            padding: 2px;
+        }
+
+        .td-valor-tres {
+            text-align: left;
+            font-size: 12px;
+            padding: 2px;
+            border-bottom: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .td-valor-quatro {
+            text-align: left;
+            font-size: 12px;
+            padding: 4px;
+            padding-left: 10px;
+            border-top: none;
+            border-bottom: none;
+        }
+
+        .td-secoes-preenchidas {
+            text-align: left;
+            font-size: 12px;
+            padding: 2px;
+        }
+
+        .td-secoes-preenchidas-dois {
+            text-align: left;
+            font-size: 12px;
+            padding: 2px;
+            border-bottom: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .td-planejamento {
+            text-align: justify;
+            font-size: 12px;
+            padding: 2px;
+            padding: 4px;
+            height: 12px;
+        }
+
+        .td-linha-em-branco {
+            border-top: none;
+            border-bottom: none;
+            height: 3px;
+        }
+
+        .caixa-1 {
+            text-align: justify;
+            padding: 20px 15px 20px 15px;
+        }
+
+        .caixa-2 {
+            padding: 10px 15px 10px 15px;
+            text-align: justify;
+            border-top: none;
+        }
+
+        .h-50 {
+            height: 50px;
+        }
+
+        .m-30 {
+            margin-top: 30px;
+        }
+
+        .tabela-objetivos-items-tr {
+            height: 50px;
+        }
+
+        .tabela-objetivos-items-titulo {
+            padding: 20px 15px 20px 15px;
+            border-top: none;
+            text-align: center;
+            font-weight: bold;
+            width: 15%;
+        }
+
+        .tabela-objetivos-items-descricao {
+            border-top: none;
+            width: 85%;
+            text-align: justify;
+            padding: 5px 15px 5px 15px;
+            font-size: 14px;
+        }
+
+        .tabela-planejamento {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-size: 14px;
+            padding: 4px;
+            border-bottom: none;
+        }
+
+        table.fixed {
+            table-layout: fixed;
+        }
+
+            table.fixed td {
+                overflow: hidden;
+            }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+    </style>
+    <div>
+        <div>
+            <img class="img-logo-sgp" src="logoMono.png" alt="Logo SGP" />
+        </div>
+        @Html.Raw(MontarCabecalho())
+    <div>
+        @{ var bimestreDescricaoAnt = "";
+            // DIÁRIO DE BORDO
+            if (tipoRelatorio)
+            {
+                tipoRelatorio = false;
+                contadorQuebrarPagina++;
+                @Html.Raw(VerificaQuebra())
+
+                <table class="tabela-planejamento">
+                    <thead>
+                        <tr>
+                            <th class="sem-border-bottom">@Html.Raw("DIÁRIO DE BORDO")</th>
+                        </tr>
+                    </thead>
+                </table>
+            }
+
+            var turmaOrdenada = Model.TurmasInfantisComComponente.OrderBy(o => o.Nome);
+            var ultimaTurma = turmaOrdenada.LastOrDefault();
+            var bimestreOrdenado = ultimaTurma.Bimestres.OrderBy(o => o.Nome);
+            var ultimoBimestre = bimestreOrdenado.LastOrDefault();
+            var planejamentoOrdenado = ultimoBimestre.Planejamento.OrderBy(o => o.DataAula);
+            var ultimoPlanejamento = planejamentoOrdenado.LastOrDefault();
+            var ultimaAula = ultimoPlanejamento.AulaId;
+            var ultimoBimestreNome = ultimoBimestre.Nome;
+
+            foreach (var turma in turmaOrdenada)
+            {
+                tipoRelatorio = true;
+                @if (turma.Bimestres != null || !turma.Bimestres.Any())
+                {
+                    bimestreDescricaoAnt = "";
+                    // TURMA
+                    if (Model.Filtro.Turma == "Todos" || Model.Filtro.Turma == "")
+                    {
+                        var countTurma = contadorQuebrarPagina + 6;
+                        if (countTurma >= contadorMaximoLinhasPorPagina)
+                        {
+                            contadorQuebrarPagina += 6;
+                            @Html.Raw(VerificaQuebra())
+                        }
+                        else
+                        {
+                            contadorQuebrarPagina++;
+                            @Html.Raw(VerificaQuebra())
+                        }
+
+                        <table class="tabela-planejamento">
+                            <thead>
+                                <tr>
+                                    <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    }
+
+                    foreach (var bimestre in turma.Bimestres.OrderBy(o => o.Nome))
+                    {
+                        // BIMESTRE
+                        var nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
+                        if (!bimestreDescricaoAnt.Equals(bimestre.Nome))
+                        {
+                            if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
+                            {
+                                var countBimestre = contadorQuebrarPagina + 5;
+                                if (Model.Filtro.Bimestre == "Todos" || Model.Filtro.Bimestre == "")
+                                {
+                                    contadorQuebrarPagina += 5;
+                                    @Html.Raw(VerificaQuebra())
+                                }
+                                else
+                                {
+                                    contadorQuebrarPagina++;
+                                    @Html.Raw(VerificaQuebra())
+                                }
+
+                                nomeBimestre = bimestre.Nome != null ? bimestre.Nome.ToUpper() : "BIMESTRE NÃO IDENTIFICADO";
+
+                                <table class="tabela-planejamento">
+                                    <thead>
+                                        <tr>
+                                            <th class="sem-border-bottom">@nomeBimestre</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            }
+                            bimestreDescricaoAnt = nomeBimestre;
+                        }
+
+                        @if (bimestre.Planejamento != null || bimestre.Planejamento.Any())
+                        {
+                            var dataAulaAnterior = string.Empty;
+
+                            foreach (var componente in bimestre.Planejamento.OrderByDescending(o => o.DataAula))
+                            {
+                                if (!dataAulaAnterior.Equals(componente.DataAula))
+                                {
+                                    <table class="tabela-planejamento">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@componente.DataAula</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    dataAulaAnterior = componente.DataAula;
+
+                                    @Html.Raw(MontarCabecalhoPlanejamento())
+                                }
+
+                                var quebra = VerificaQuebra();
+                                @Html.Raw(quebra);
+
+                                var countComponente = contadorQuebrarPagina + 4;
+                                if (countComponente >= contadorMaximoLinhasPorPagina)
+                                {
+                                    contadorQuebrarPagina += 4;
+                                    @Html.Raw(VerificaQuebra())
+                                    @Html.Raw(MontarCabecalhoPlanejamento())
+                                }
+                                else
+                                {
+                                    contadorQuebrarPagina++;
+                                    @Html.Raw(VerificaQuebra())
+                                }
+
+
+                                var planejamentos = MontarDadosTabelaPlanejamento(componente, turma.Nome, bimestre.Nome, componente.ComponenteCurricular, turma, ultimaAula, ultimoBimestreNome);
+                                @Html.Raw(planejamentos)
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </div>
+    </div>
+</body>
+</html>

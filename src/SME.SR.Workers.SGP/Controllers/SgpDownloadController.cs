@@ -14,7 +14,14 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<IActionResult> DownloadPdf(Guid correlacaoId, string relatorioNome,
             [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf"), "application/pdf",
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf", "relatorios"), "application/pdf",
+                $"{relatorioNome}");
+        }
+
+        [HttpGet("pdfsincrono/{relatorionome}/{correlacaoId}")]
+        public async Task<IActionResult> DownloadPdfSincrono(Guid correlacaoId, string relatorioNome,[FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        {
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf", "relatoriossincronos"), "application/pdf",
                 $"{relatorioNome}");
         }
 
@@ -22,7 +29,7 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<IActionResult> DownloadExcel(Guid correlacaoId, string relatorioNome,
             [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".xlsx"),
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".xlsx", "relatorios"),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{relatorioNome}");
         }
 
@@ -30,7 +37,7 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<IActionResult> Downloadhtml(Guid correlacaoId, string relatorioNome,
             [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".html"),
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".html", "relatorios"),
                 "text/html", $"{relatorioNome}.html");
         }
     }

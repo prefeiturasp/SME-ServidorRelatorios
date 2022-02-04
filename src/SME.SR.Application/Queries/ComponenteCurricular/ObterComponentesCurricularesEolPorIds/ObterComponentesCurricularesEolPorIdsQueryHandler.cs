@@ -32,7 +32,10 @@ namespace SME.SR.Application
             var componentesTS = lstComponentes.Where(c => c.TerritorioSaber && (string.IsNullOrEmpty(c.Descricao)))
                                 .Select(c => c.Codigo.ToString()).ToArray();
 
-            var componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
+            IEnumerable<ComponenteCurricular> componentesTerritorioSaber = null;
+
+            if (ExisteComponentesTerritorioSaberTurma(componentesTS, request.TurmasId))
+                componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
 
             if (componentesTerritorioSaber != null)
                 lstComponentes = ConcatenarComponenteTerritorio(lstComponentes, componentesTerritorioSaber);
@@ -54,11 +57,17 @@ namespace SME.SR.Application
                     TerritorioSaber = x.TerritorioSaber,
                     BaseNacional = x.BaseNacional,
                     GrupoMatriz = x.ObterGrupoMatriz(gruposMatriz),
-                    AreaDoConhecimento = x.ObterAreaDoConhecimento(areasDoConhecimento)
+                    AreaDoConhecimento = x.ObterAreaDoConhecimento(areasDoConhecimento),
+                    DescricaoInfatil = x.DescricaoInfantil
                 });
             }
 
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
+        }
+
+        private bool ExisteComponentesTerritorioSaberTurma(string[] componentesTS, string[] turmasId)
+        {
+            return componentesTS != null && componentesTS.Length > 0 && turmasId != null && turmasId.Length > 0;
         }
 
         public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesTerritorio)

@@ -54,5 +54,17 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<string>(query, new { ano, tipo });
             }
         }
+
+        public async Task<ParametroSistemaAnoSituacaoDto> VerificarSeParametroEstaAtivo(TipoParametroSistema tipo)
+        {
+            var query = @"select ativo,ano from parametros_sistema
+                         where ativo 
+                           and tipo = @tipo";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<ParametroSistemaAnoSituacaoDto>(query, new { tipo });
+            }
+        }
     }
 }

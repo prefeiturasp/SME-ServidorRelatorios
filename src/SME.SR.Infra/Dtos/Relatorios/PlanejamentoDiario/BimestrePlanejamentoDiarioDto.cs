@@ -10,6 +10,8 @@ namespace SME.SR.Infra
         }
 
         public string Nome { get; set; }
+        public string DataAula { get; set; }
+
         public IEnumerable<ComponenteCurricularPlanejamentoDiarioDto> ComponentesCurriculares { get; set; }
     }
 }
