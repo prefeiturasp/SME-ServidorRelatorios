@@ -27,14 +27,14 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<UePorDresIdResultDto>> ObterPorDresId(long[] dreIds)
-        {           
-                var query = @"select Id, ue.dre_id as dreId, ue_id Codigo, Nome, tipo_escola TipoEscola from ue ";
-                if (dreIds != null && dreIds.Any())
-                    query = query += "where ue.dre_id = ANY(@dreIds) ";
+        {
+            var query = @"select Id, ue.dre_id as dreId, ue_id Codigo, Nome, tipo_escola TipoEscola from ue ";
+            if (dreIds != null && dreIds.Any())
+                query = query += "where ue.dre_id = ANY(@dreIds) ";
 
-                var parametros = new { dreIds = dreIds.ToList() };
-                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-                return await conexao.QueryAsync<UePorDresIdResultDto>(query, parametros);            
+            var parametros = new { dreIds = dreIds.ToList() };
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return await conexao.QueryAsync<UePorDresIdResultDto>(query, parametros);
         }
 
         public async Task<IEnumerable<Ue>> ObterPorDreSemestreModadalidadeAnoId(long dreId, int? semestre, int modalidadeId, string[] anos)
@@ -94,10 +94,18 @@ namespace SME.SR.Data
 
         public async Task<Ue> ObterUeComDrePorId(long ueId)
         {
-            var query = @"select ue.*, dre.* 
-                            from ue 
-                           inner join dre on dre.id = ue.dre_id
-                           where ue.id = @ueId";
+            var query = @"select
+	                        ue.ue_id as UeCodigo,
+	                        ue.tipo_escola as TipoEscola,
+	                        ue.*,
+	                        dre.*,
+	                        dre.dre_id as DreCodigo
+                        from
+	                        ue
+                        inner join dre on
+	                        dre.id = ue.dre_id
+                        where
+	                        ue.id = @ueId";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return (await conexao.QueryAsync<Ue, Dre, Ue>(query, (ue, dre) =>
@@ -106,6 +114,7 @@ namespace SME.SR.Data
                 return ue;
             },
             new { ueId })).FirstOrDefault();
+
         }
     }
 }

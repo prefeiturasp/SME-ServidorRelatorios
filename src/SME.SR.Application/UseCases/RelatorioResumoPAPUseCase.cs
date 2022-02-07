@@ -188,7 +188,7 @@ namespace SME.SR.Application
 
                 if (dre != null)
                 {
-                    dreUe.DreCodigo = dre.Codigo;
+                    dreUe.DreCodigo = dre.DreCodigo;
                     dreUe.DreId = dre.Id;
                     dreUe.DreNome = dre.Abreviacao;
                 }
@@ -204,7 +204,7 @@ namespace SME.SR.Application
 
                 if (ue != null)
                 {
-                    dreUe.UeCodigo = ue.Codigo;
+                    dreUe.UeCodigo = ue.UeCodigo;
                     dreUe.UeId = ue.Id;
                     dreUe.UeNome = ue.NomeComTipoEscola;
                 }
