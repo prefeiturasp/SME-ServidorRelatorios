@@ -36,7 +36,7 @@ namespace SME.SR.Application
 
             if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo)
             {
-                var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+                var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
                 qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
 
@@ -73,7 +73,7 @@ namespace SME.SR.Application
             }
             else
             {
-                var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+                var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
                 qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
 
