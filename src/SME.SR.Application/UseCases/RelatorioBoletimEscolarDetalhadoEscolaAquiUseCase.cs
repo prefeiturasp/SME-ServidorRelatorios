@@ -16,23 +16,15 @@ namespace SME.SR.Application
         }
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
-                request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletimDetalhadoEscolaAqui;
-                request.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui;
-                var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQuery>();
-                relatorioQuery.Modalidade = ObterModalidade(relatorioQuery.ModalidadeCodigo);
-                relatorioQuery.Usuario = await ObterUsuarioLogado(request.UsuarioLogadoRF);
-                var relatorio = await mediator.Send(relatorioQuery);
-                relatorioQuery.CodigoArquivo = request.CodigoCorrelacao;
-                var mensagemdados = UtilJson.ConverterApenasCamposNaoNulos(relatorioQuery);
-                await mediator.Send(new GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(relatorio, request.CodigoCorrelacao, relatorioQuery.Modalidade, mensagemDados: mensagemdados));
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletimDetalhadoEscolaAqui;
+            request.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui;
+            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQuery>();
+            relatorioQuery.Modalidade = ObterModalidade(relatorioQuery.ModalidadeCodigo);
+            relatorioQuery.Usuario = await ObterUsuarioLogado(request.UsuarioLogadoRF);
+            var relatorio = await mediator.Send(relatorioQuery);
+            relatorioQuery.CodigoArquivo = request.CodigoCorrelacao;
+            var mensagemdados = UtilJson.ConverterApenasCamposNaoNulos(relatorioQuery);
+            await mediator.Send(new GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(relatorio, request.CodigoCorrelacao, relatorioQuery.Modalidade, mensagemDados: mensagemdados));
         }
         private Modalidade ObterModalidade(int modalidadeId)
         {
