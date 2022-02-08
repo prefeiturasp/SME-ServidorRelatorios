@@ -21,9 +21,11 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroControlePlanejamentoDiario;
 
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
-            var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF) };
 
             var utilizarLayoutNovo = await UtilizarNovoLayout(parametros.AnoLetivo);
+
+            var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF, utilizarLayoutNovo) };
+            
             if (utilizarLayoutNovo)
                 await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
             else
@@ -65,14 +67,16 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiarioDto parametros, string usuarioLogadoRF)
+        private async Task<FiltroControlePlanejamentoDiarioDto> ObterFiltroRelatorio(FiltroRelatorioPlanejamentoDiarioDto parametros, string usuarioLogadoRF, bool utilizarLayoutNovo)
         {
             return new FiltroControlePlanejamentoDiarioDto()
             {
                 Dre = await ObterDre(parametros.CodigoDre),
                 Ue = await ObterUe(parametros.CodigoUe),
                 Bimestre = parametros.Bimestre == -99 ? "Todos" : parametros.Bimestre.ToString(),
-                ComponenteCurricular = await ObterComponenteCurricular(parametros.ComponenteCurricular),
+                ComponenteCurricular = utilizarLayoutNovo 
+                                       ? parametros.ComponentesCurricularesDisponiveis.Count() == 1 ? await ObterComponenteCurricular(parametros.ComponentesCurricularesDisponiveis.FirstOrDefault()) : "Todos" 
+                                       : await ObterComponenteCurricular(parametros.ComponenteCurricular, false),
                 Turma = await ObterTurma(parametros.CodigoTurma),
                 RF = usuarioLogadoRF,
                 Usuario = parametros.UsuarioNome,
@@ -89,7 +93,7 @@ namespace SME.SR.Application
             return turma.NomeRelatorio;
         }
 
-        private async Task<string> ObterComponenteCurricular(long componenteCurricular)
+        private async Task<string> ObterComponenteCurricular(long componenteCurricular, bool obterDescricaoInfatil = true)
         {
             if (componenteCurricular == -99)
                 return "Todos";
@@ -97,7 +101,7 @@ namespace SME.SR.Application
             var componente = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(new long[] { componenteCurricular }));
 
             return componente != null && componente.Any() ?
-                componente.First().Disciplina : "";
+                obterDescricaoInfatil ? componente.First().DescricaoInfatil : componente.First().Disciplina : "";
         }
 
         private async Task<string> ObterUe(string codigoUe)
@@ -106,7 +110,7 @@ namespace SME.SR.Application
                 return "Todos";
 
             var ue = await mediator.Send(new ObterUePorCodigoQuery(codigoUe));
-            return $"{ue.Codigo} - {ue.NomeComTipoEscola}";
+            return $"{ue.UeCodigo} - {ue.NomeComTipoEscola}";
         }
 
         private async Task<string> ObterDre(string codigoDre)

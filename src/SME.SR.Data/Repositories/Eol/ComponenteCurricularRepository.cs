@@ -116,7 +116,8 @@ namespace SME.SR.Data
                                cc.eh_compartilhada as Compartilhada,
                                cc.permite_lancamento_nota as LancaNota,
                                cc.permite_registro_frequencia as Frequencia,
-                               cc.eh_base_nacional as BaseNacional
+                               cc.eh_base_nacional as BaseNacional,
+                               cc.descricao_infantil as DescricaoInfantil
                           from componente_curricular cc 
                          order by cc.id";
 

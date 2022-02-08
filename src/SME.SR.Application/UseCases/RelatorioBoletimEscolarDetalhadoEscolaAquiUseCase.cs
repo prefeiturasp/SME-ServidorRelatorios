@@ -24,7 +24,7 @@ namespace SME.SR.Application
             var relatorio = await mediator.Send(relatorioQuery);
             relatorioQuery.CodigoArquivo = request.CodigoCorrelacao;
             var mensagemdados = UtilJson.ConverterApenasCamposNaoNulos(relatorioQuery);
-            await mediator.Send(new GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(relatorio, request.CodigoCorrelacao, relatorioQuery.Modalidade,mensagemDados: mensagemdados));
+            await mediator.Send(new GerarRelatorioHtmlPDFBoletimDetalhadoAppCommand(relatorio, request.CodigoCorrelacao, relatorioQuery.Modalidade, mensagemDados: mensagemdados));
         }
         private Modalidade ObterModalidade(int modalidadeId)
         {
