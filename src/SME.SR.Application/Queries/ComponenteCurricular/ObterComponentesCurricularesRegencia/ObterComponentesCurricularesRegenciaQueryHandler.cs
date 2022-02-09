@@ -27,7 +27,7 @@ namespace SME.SR.Application
             Turma turma = request.Turma;
 
             if (request.Usuario.EhProfessorCj())
-                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.Codigo, turma.Ue.Codigo, request.CdComponenteCurricular, request.Usuario.CodigoRf);
+                return await ObterComponentesCJ(turma.ModalidadeCodigo, turma.Codigo, turma.Ue.UeCodigo, request.CdComponenteCurricular, request.Usuario.CodigoRf);
             else
             {
                 var componentesCurriculares = await mediator.Send(new
@@ -56,13 +56,15 @@ namespace SME.SR.Application
             if (atribuicoes == null || !atribuicoes.Any())
                 return null;
 
-            var disciplinasEol = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = atribuicoes.Select(a => a.ComponenteCurricularId).Distinct().ToArray() });
+            var turmasCodigo = atribuicoes.Select(a => a.Turma.Codigo).Distinct().ToArray();
+
+            var disciplinasEol = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = atribuicoes.Select(a => a.ComponenteCurricularId).Distinct().ToArray(), TurmasId = turmasCodigo });
 
             var componenteRegencia = disciplinasEol?.FirstOrDefault(c => c.Regencia);
             if (componenteRegencia == null || ignorarDeParaRegencia)
                 return disciplinasEol;
 
-            var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = IDS_COMPONENTES_REGENCIA });
+            var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery() { ComponentesCurricularesIds = IDS_COMPONENTES_REGENCIA, TurmasId = turmasCodigo });
             if (componentesRegencia != null)
                 return componentesRegencia;
 

@@ -24,10 +24,10 @@ namespace SME.SR.Application
 
             string dreCodigo = "", ueCodigo = "";
             if (request.Dre != null)
-                dreCodigo = request.Dre.Codigo;
+                dreCodigo = request.Dre.DreCodigo;
 
             if (request.Ue != null)
-                ueCodigo = request.Ue.Codigo;
+                ueCodigo = request.Ue.UeCodigo;
 
 
             var retornoQuery = await calendarioEventoRepository.ObterEventosPorUsuarioTipoCalendarioPerfilDreUe(request.UsuarioRF, request.UsuarioPerfil, consideraHistorico, request.ConsideraPendenteAprovacao,

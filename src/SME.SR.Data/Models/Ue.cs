@@ -7,7 +7,7 @@ namespace SME.SR.Data
     public class Ue
     {
         public long Id { get; set; }
-        public string Codigo { get; set; }
+        public string UeCodigo { get; set; }
         public string Nome { get; set; }
         public TipoEscola TipoEscola { get; set; }
         public long DreId { get; set; }
@@ -22,14 +22,23 @@ namespace SME.SR.Data
             }
         }
 
-        public string NomeRelatorio =>
-            $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
+        public string NomeRelatorio
+        {
+            get
+            {
+                if ((int)TipoEscola > 0)
+                    return $"{UeCodigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
 
-        public string TituloTipoEscolaNome =>
-            $"{TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
 
-        public string NomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {Nome}"; } }
+                return $"{UeCodigo ?? $"{UeCodigo} - "} {Nome}";
+            }
+        }
 
-        public string NomeComTipoEscolaEDre { get { return $"{TipoEscola.ShortName()} - {Nome} ({Dre.Abreviacao})"; } }
-    }
+    public string TituloTipoEscolaNome =>
+        $"{TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
+
+    public string NomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {Nome}"; } }
+
+    public string NomeComTipoEscolaEDre { get { return $"{TipoEscola.ShortName()} - {Nome} ({Dre.Abreviacao})"; } }
+}
 }

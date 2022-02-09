@@ -30,8 +30,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarApiEol()
         {
-            var query = @"SELECT IdComponenteCurricular, 
-                            IdComponenteCurricularPai, 
+            var query = @"SELECT IdComponenteCurricular,                             
                             EhCompartilhada, 
                             EhRegencia, 
                             PermiteRegistroFrequencia, 
@@ -59,16 +58,18 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ComponenteCurricularRegenciaApiEol>(query);
         }
 
-        public async Task<IEnumerable<Data.ComponenteCurricular>> ListarComponentesTerritorioSaber(string[] ids)
+        public async Task<IEnumerable<Data.ComponenteCurricular>> ListarComponentesTerritorioSaber(string[] ids, string[] turmasId)
         {
-            var query = $@"select distinct(convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd')))) as CdComponenteCurricular,
-                    concat( ter.dc_territorio_saber, ' - ',exp.dc_experiencia_pedagogica)  as Descricao, 
-                    0 as EhRegencia,
-                    1 as Territorio
-                    from  turma_grade_territorio_experiencia grade_ter inner join território_saber ter on ter.cd_territorio_saber = grade_ter.cd_territorio_saber 
-                    inner join tipo_experiencia_pedagogica exp on exp.cd_experiencia_pedagogica = grade_ter.cd_experiencia_pedagogica
-                    inner join serie_turma_grade stg on stg.cd_serie_grade = grade_ter.cd_serie_grade
-                    where convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd'))) IN ({string.Join(',', ids)})";
+            var query = $@"select distinct(convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, 
+                           FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd')))) as CdComponenteCurricular,
+                            concat( ter.dc_territorio_saber, ' - ',exp.dc_experiencia_pedagogica)  as Descricao, 
+                            grade_ter.cd_componente_curricular as Codigo,
+                            0 as EhRegencia,
+                            1 as Territorio
+                            from  turma_grade_territorio_experiencia grade_ter inner join território_saber ter on ter.cd_territorio_saber = grade_ter.cd_territorio_saber 
+                            inner join tipo_experiencia_pedagogica exp on exp.cd_experiencia_pedagogica = grade_ter.cd_experiencia_pedagogica
+                            inner join serie_turma_grade stg on stg.cd_serie_grade = grade_ter.cd_serie_grade
+                            where grade_ter.cd_componente_curricular IN ({string.Join(',', ids)}) AND stg.cd_turma_escola IN ({string.Join(',', turmasId)})";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
             return await conexao.QueryAsync<ComponenteCurricular>(query, commandTimeout: 30000);
@@ -107,7 +108,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<ComponenteCurricular>> ListarComponentes()
         {
             var query = @"select cc.id as codigo,
-                               cc.descricao_sgp as descricao,
+                               coalesce(cc.descricao_sgp,descricao)as descricao,
                                cc.eh_territorio as territorioSaber,
                                cc.eh_regencia as ComponentePlanejamentoRegencia,
                                cc.componente_curricular_pai_id as CodComponentePai,
@@ -115,7 +116,8 @@ namespace SME.SR.Data
                                cc.eh_compartilhada as Compartilhada,
                                cc.permite_lancamento_nota as LancaNota,
                                cc.permite_registro_frequencia as Frequencia,
-                               cc.eh_base_nacional as BaseNacional
+                               cc.eh_base_nacional as BaseNacional,
+                               cc.descricao_infantil as DescricaoInfantil
                           from componente_curricular cc 
                          order by cc.id";
 
@@ -361,7 +363,12 @@ namespace SME.SR.Data
             };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+            var resultado = await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+
+            if (!consideraHistorico && !resultado.Any())
+                resultado = await conexao.QueryAsync<ComponenteCurricular>(ComponenteCurricularConsultas.BuscarPorAlunosHistorico, parametros);
+
+            return resultado;
         }
     }
 }

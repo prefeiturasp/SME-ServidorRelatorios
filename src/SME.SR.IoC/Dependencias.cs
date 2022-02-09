@@ -224,6 +224,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAdesaoAppUseCase, RelatorioAdesaoAppUseCase>();
             services.TryAddScoped<IRelatorioPlanejamentoDiarioUseCase, RelatorioPlanejamentoDiarioUseCase>();
             services.TryAddScoped<IRelatorioDevolutivasUseCase, RelatorioDevolutivasUseCase>();
+            services.TryAddScoped<IRelatorioDevolutivasSincronoUseCase, RelatorioDevolutivasSincronoUseCase>();
             services.TryAddScoped<IRelatorioItineranciasUseCase, RelatorioItineranciasUseCase>();
             services.TryAddScoped<IRelatorioRegistroIndividualUseCase, RelatorioRegistroIndividualUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoAprendizagemUseCase, RelatorioAcompanhamentoAprendizagemUseCase>();

@@ -72,8 +72,12 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, AtaFinalTipoVisualizacao? visualizacao)
         {
+            var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
+            var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo);
-            var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var alunosFiltrados = alunos.Where(a => a.Ativo || (!a.Ativo && a.DataSituacaoAluno >= periodosEscolares.First().PeriodoInicio && a.DataSituacaoAluno <= periodosEscolares.Last().PeriodoFim));
+
+            var alunosCodigos = alunosFiltrados.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
             if (turma.TipoTurma == TipoTurma.Regular)
                 tiposTurma.Add((int)TipoTurma.EdFisica);
@@ -82,14 +86,12 @@ namespace SME.SR.Application
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray());
             if (notas == null || !notas.Any())
-                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
-            var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
-            var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();            
             var cabecalho = await ObterCabecalho(turma.Codigo);
             var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
             var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
 
-            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.UeCodigo, turma.ModalidadeCodigo);
             var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, tipoCalendarioId, alunosCodigos);
 
             var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.Select(long.Parse).ToArray(), filtro.AnoLetivo));
@@ -141,7 +143,7 @@ namespace SME.SR.Application
                 }));
             }
 
-            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea);
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunosFiltrados, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea);
             return MontarEstruturaPaginada(dadosRelatorio);
         }
 
@@ -202,7 +204,7 @@ namespace SME.SR.Application
 
             listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
 
-            var componentesDaTurma = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
+            var componentesDaTurma = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.UeCodigo, turma.ModalidadeCodigo);
             var frequenciaAlunosGeral = await ObterFrequenciaGeral(turma.AnoLetivo, tipoCalendarioId);
             var pareceresConclusivos = await ObterPareceresConclusivos(turma.Codigo);
 
@@ -457,7 +459,9 @@ namespace SME.SR.Application
                         if (ultimoBimestreAtivo == null)
                             possuiComponente = false;
 
-                        var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, componente.CodDisciplina.ToString(), turma.AnoLetivo));
+                        var codDisciplina = componente.Regencia ? componente.CodDisciplinaPai : componente.CodDisciplina;
+
+                        var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, codDisciplina.ToString(), turma.AnoLetivo));
 
                         var matriculadoDepois = !aluno.Inativo ? periodosEscolares.FirstOrDefault(p => aluno.DataMatricula > p.PeriodoFim)?.Bimestre : null;
                         var bimestres = periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre).ToList();
