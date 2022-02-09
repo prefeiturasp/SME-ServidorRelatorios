@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Elastic.Apm;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,16 +23,22 @@ namespace SME.SR.Workers.SGP.Services
     public class RabbitBackgroundListener : IHostedService
     {
         private readonly IServiceScopeFactory serviceScopeFactory;
+        private readonly IServicoTelemetria servicoTelemetria;
+        private readonly TelemetriaOptions telemetriaOptions;
         private readonly IConnection conexaoRabbit;
         private readonly IConfiguration configuration;
         private readonly IMediator mediator;
         private readonly IModel canalRabbit;
 
         public RabbitBackgroundListener(IServiceScopeFactory serviceScopeFactory,
+                                        ServicoTelemetria servicoTelemetria,
+                                        TelemetriaOptions telemetriaOptions,
                                         IConfiguration configuration,
                                         IMediator mediator)
         {
-            this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory)); ;
+            this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+            this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
+            this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 
@@ -80,6 +87,9 @@ namespace SME.SR.Workers.SGP.Services
                 if (!content.Equals("null"))
                 {
                     MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
+
+                    if (telemetriaOptions.Apm)
+                        Agent.Tracer.StartTransaction("TratarMensagem", "WorkerRabbitSGP");
 
                     foreach (MethodInfo method in methods)
                     {

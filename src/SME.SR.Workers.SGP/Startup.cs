@@ -1,3 +1,6 @@
+using Elastic.Apm.AspNetCore;
+using Elastic.Apm.DiagnosticSource;
+using Elastic.Apm.SqlClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -5,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.IoC;
 using SME.SR.Workers.SGP.Filters;
@@ -37,6 +41,10 @@ namespace SME.SR.Workers.SGP
             services.AddTransient<ExcecaoMiddleware>();
             services.RegistrarDependencias(Configuration);
             ConfiguraRabbitParaLogs(services);
+            var telemetriaOptions = ConfiguraTelemetria(services);
+            var servicoTelemetria = new ServicoTelemetria(telemetriaOptions);
+            DapperExtensionMethods.Init(servicoTelemetria);
+            services.AddSingleton(servicoTelemetria);
 
             services.AddDirectoryBrowser();
             services.AddPolicies();
@@ -48,6 +56,16 @@ namespace SME.SR.Workers.SGP
             });
         }
 
+        private TelemetriaOptions ConfiguraTelemetria(IServiceCollection services)
+        {
+            var telemetriaOptions = new TelemetriaOptions();
+            Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+
+            services.AddSingleton(telemetriaOptions);
+
+            return telemetriaOptions;
+        }
+
         private void ConfiguraRabbitParaLogs(IServiceCollection services)
         {
             var configuracaoRabbitLogOptions = new ConfiguracaoRabbitLogOptions();
@@ -56,9 +74,11 @@ namespace SME.SR.Workers.SGP
             services.AddSingleton(configuracaoRabbitLogOptions);
         }
 
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseElasticApm(Configuration,
+                new SqlClientDiagnosticSubscriber(),
+                new HttpDiagnosticsSubscriber());
 
             app.UseSwagger();
 
