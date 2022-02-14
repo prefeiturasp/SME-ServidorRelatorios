@@ -75,7 +75,7 @@ namespace SME.SR.Application
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo);
-            var alunosFiltrados = alunos.Where(a => a.Ativo && a.NumeroAlunoChamada != null  || (!a.Ativo && a.DataSituacaoAluno >= periodosEscolares.First().PeriodoInicio && a.DataSituacaoAluno <= periodosEscolares.Last().PeriodoFim));
+            var alunosFiltrados = alunos.Where(a => a.Ativo || (!a.Ativo && a.DataSituacaoAluno >= periodosEscolares.First().PeriodoInicio && a.DataSituacaoAluno <= periodosEscolares.Last().PeriodoFim));
 
             var alunosCodigos = alunosFiltrados.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
