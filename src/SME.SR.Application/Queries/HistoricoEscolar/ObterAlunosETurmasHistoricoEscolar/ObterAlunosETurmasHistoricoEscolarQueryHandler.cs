@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc.Formatters.Internal;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;

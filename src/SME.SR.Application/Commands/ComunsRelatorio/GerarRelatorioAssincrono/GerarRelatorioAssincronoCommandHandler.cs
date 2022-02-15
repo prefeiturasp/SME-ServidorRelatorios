@@ -19,16 +19,19 @@ namespace SME.SR.Application
         private readonly IServicoFila servicoFila;
         private readonly ILoginService loginService;
         private readonly IConfiguration configuration;
+        private readonly IMediator mediator;
 
         public GerarRelatorioAssincronoCommandHandler(IExecucaoRelatorioService execucaoRelatorioService,
                                                       IServicoFila servicoFila,
                                                       ILoginService loginService,
-                                                      IConfiguration configuration)
+                                                      IConfiguration configuration,
+                                                      IMediator mediator)
         {
             this.execucaoRelatorioService = execucaoRelatorioService ?? throw new System.ArgumentNullException(nameof(execucaoRelatorioService));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
             this.loginService = loginService ?? throw new ArgumentNullException(nameof(loginService));
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
@@ -50,20 +53,10 @@ namespace SME.SR.Application
                 };
 
 
-                SentrySdk.CaptureMessage("6.1 - Obtendo jSessionId...");
-
                 var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
-
-                SentrySdk.CaptureMessage($"6.2 - jSessionId = {jsessionId}");
-
-
-                SentrySdk.CaptureMessage("6.3 - Solicitando relatório...");
-
 
                 var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
                 var exportacaoId = retorno?.Exports?.FirstOrDefault()?.Id;
-
-                SentrySdk.CaptureMessage($"6.4 - Exportação Id = {exportacaoId}");
 
                 if (exportacaoId != null)
                 {
@@ -75,23 +68,26 @@ namespace SME.SR.Application
                     var jsonPublicaFila = UtilJson.ConverterApenasCamposNaoNulos(publicacaoFila);
                     Console.WriteLine(jsonPublicaFila);
 
-                    SentrySdk.CaptureMessage("6.5 - Sucesso na publicação da fila: " + publicacaoFila.Rota);
                     return true;
                 }
 
                 if(retorno != null)
-                    SentrySdk.CaptureMessage($"6.6 - Erro na geração  / {retorno.Status}");
+                    await RegistraErro($"6.6 - Erro na geração  / {retorno.Status}");
 
-                SentrySdk.CaptureMessage("6.6 - Erro na geração");
+                await RegistraErro("6.6 - Erro na geração");
 
                 return false;
             }
             catch (Exception ex)
             {
-                SentrySdk.CaptureMessage($"6.6 - Erro na geração: {ex.Message}, [{ex.StackTrace}]");
-                SentrySdk.CaptureException(ex);
+                await RegistraErro($"6.6 - Erro na geração: {ex.Message}, [{ex.StackTrace}]");
                 throw ex;
             }
+        }
+
+        private async Task RegistraErro(string erro)
+        {
+            await mediator.Send(new SalvarLogViaRabbitCommand(erro, LogNivel.Critico));
         }
 
         private static ParametrosRelatorioDto ObterParametrosRelatorio(string dados)
