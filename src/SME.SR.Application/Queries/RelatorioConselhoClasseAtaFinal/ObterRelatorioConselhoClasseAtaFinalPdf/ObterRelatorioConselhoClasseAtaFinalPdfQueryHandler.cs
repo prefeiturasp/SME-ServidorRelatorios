@@ -75,7 +75,7 @@ namespace SME.SR.Application
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo);
-            var alunosFiltrados = alunos.Where(a => a.Ativo && a.NumeroAlunoChamada != null  || (!a.Ativo && a.DataSituacaoAluno >= periodosEscolares.First().PeriodoInicio && a.DataSituacaoAluno <= periodosEscolares.Last().PeriodoFim));
+            var alunosFiltrados = alunos.Where(a => a.Ativo || (!a.Ativo && a.DataSituacaoAluno >= periodosEscolares.First().PeriodoInicio && a.DataSituacaoAluno <= periodosEscolares.Last().PeriodoFim));
 
             var alunosCodigos = alunosFiltrados.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
@@ -598,7 +598,7 @@ namespace SME.SR.Application
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
                 linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100, 3);
 
-                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
+                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
                 if (textoParecer == null)
                 {
