@@ -335,16 +335,8 @@ namespace SME.SR.Application
 
         private string ObterFrequenciaFinalAluno(IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma, IEnumerable<int> conselhoClassBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia)
         {
-            if (!conselhoClassBimestres.Any(a => a == 0) ||
-                frequenciasAluno == null || !frequenciasAluno.Any())
-            {
-                var possuiNotaTurma = frequenciasTurma?.Any(nf => nf.PeriodoEscolarId == null);
-
-                if (possuiNotaTurma.HasValue && possuiNotaTurma.Value)
-                    return FREQUENCIA_100;
-                else
-                    return "";
-            }
+            if (!conselhoClassBimestres.Any(a => a == 0) || frequenciasAluno == null || !frequenciasAluno.Any())
+                return FREQUENCIA_100;
             else if (frequenciasAluno.FirstOrDefault(nf => nf.PeriodoEscolarId == null) != null)
                 return frequenciasAluno.FirstOrDefault(nf => nf.PeriodoEscolarId == null).PercentualFrequencia.ToString();
             else
