@@ -598,7 +598,7 @@ namespace SME.SR.Application
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
                 linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100, 3);
 
-                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString());
+                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
                 if (textoParecer == null)
                 {

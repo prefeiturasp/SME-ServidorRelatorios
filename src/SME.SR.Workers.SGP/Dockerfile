@@ -26,9 +26,20 @@ COPY --from=publish /app/publish .
 
 RUN apt-get update && apt-get install -y wget libfontconfig1 libgdiplus libxrender1 unzip fontconfig
 
-RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O roboto.zip \
-     && unzip roboto.zip && mkdir /usr/share/fonts/truetype/robotomono
+RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O robotomono.zip \
+    && wget https://fonts.google.com/download?family=Roboto -O roboto.zip \
+    && wget https://fonts.google.com/download?family=Open%20Sans -O opensans.zip \
+    && unzip robotomono.zip && mkdir /usr/share/fonts/truetype/robotomono \
+    && unzip roboto.zip -d roboto && mkdir /usr/share/fonts/truetype/roboto \
+    && unzip opensans.zip -d opensans && mkdir /usr/share/fonts/truetype/opensans
+
+RUN find roboto/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/roboto/ \; || return 1 \
+     && rm -rf roboto.zip && rm -rf roboto
+     
+RUN find opensans/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/opensans/ \; || return 1 \
+     && rm -rf opensans.zip && rm -rf opensans
+
 RUN find RobotoMono-main/fonts/ttf/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/robotomono/ \; || return 1 \
-     && rm -rf roboto.zip &&  rm -rf RobotoMono-main && rm -rf /usr/share/fonts/truetype/dejavu \ && fc-cache -f && rm -rf /var/cache/*
+     && rm -rf robotomono.zip && rm -rf RobotoMono-main && rm -rf /usr/share/fonts/truetype/dejavu \ && fc-cache -f && rm -rf /var/cache/*
     
 ENTRYPOINT ["dotnet", "SME.SR.Workers.SGP.dll"]
