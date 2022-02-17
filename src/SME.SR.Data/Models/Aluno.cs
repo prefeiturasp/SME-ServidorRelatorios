@@ -48,7 +48,8 @@ namespace SME.SR.Data
         private SituacaoMatriculaAluno[] SituacoesAtiva => new[] { SituacaoMatriculaAluno.Ativo,
                         SituacaoMatriculaAluno.Rematriculado,
                         SituacaoMatriculaAluno.PendenteRematricula,
-                        SituacaoMatriculaAluno.SemContinuidade };
+                        SituacaoMatriculaAluno.SemContinuidade,
+                        SituacaoMatriculaAluno.Concluido};
 
         private SituacaoMatriculaAluno[] SituacoesAtivaSondagem => new[] { SituacaoMatriculaAluno.Ativo,
                         SituacaoMatriculaAluno.Rematriculado,
