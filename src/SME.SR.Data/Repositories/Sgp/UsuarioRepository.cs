@@ -23,7 +23,7 @@ namespace SME.SR.Data
 
         public async Task<Usuario> ObterDados(string codigoRf)
         {
-            string query = @"select rf_codigo as CodigoRf, login as Login, nome as Nome from usuario where rf_codigo = @codigoRf";
+            string query = @"select rf_codigo as CodigoRf, login as Login, nome as Nome from usuario where rf_codigo = @codigoRf or login = @codigoRf";
 
             var parametros = new { codigoRf };
 
