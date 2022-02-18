@@ -232,7 +232,7 @@
                     int bimestreIndex = 0;
 
 
-                    @foreach (var bimestre in turma.Bimestres)
+                    @foreach (var bimestre in turma.BimestresComponentesCurriculares)
                     {
                         var quebraInicial = VerificaQuebra(5);
 
@@ -245,7 +245,7 @@
                             bimestreIndex = 0;
                         }
 
-                        @Html.Raw(MontarCabecalhoDevolutivas(bimestreIndex, turma.NomeTurma, bimestre.NomeBimestre));
+                        @Html.Raw(MontarCabecalhoDevolutivas(bimestreIndex, turma.NomeTurma, bimestre.NomeBimestreComponenteCurricular));
 
                         <tbody>
 
@@ -346,7 +346,7 @@
                                     @Html.Raw("<div style='page-break-before:always'></div>");
                                     @Html.Raw(MontarCabecalho())
                                     @Html.Raw("<table class='tabela-cabecalho'>");
-                                    @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestre));
+                                    @Html.Raw(MontarCabecalhoDevolutivas(0, turma.NomeTurma, bimestre.NomeBimestreComponenteCurricular));
                                     @Html.Raw("<tbody>");
                                     bimestreIndex = -1;
                                 }
