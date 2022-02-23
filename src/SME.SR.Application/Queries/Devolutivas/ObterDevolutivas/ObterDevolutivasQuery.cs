@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Infra;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SME.SR.Application
 {
@@ -11,12 +9,14 @@ namespace SME.SR.Application
         private IEnumerable<long> enumerable;
         private string v;
 
-        public ObterDevolutivasQuery(long ueId, IEnumerable<long> turmas, IEnumerable<int> bimestres, int ano)
+        public ObterDevolutivasQuery(long ueId, IEnumerable<long> turmas, IEnumerable<int> bimestres, int ano, long componenteCurricular, bool utilizarLayoutNovo)
         {
             UeId = ueId;
             Turmas = turmas;
             Bimestres = bimestres;
             Ano = ano;
+            ComponenteCurricular = componenteCurricular;
+            UtilizarLayoutNovo = utilizarLayoutNovo;
         }
 
         public ObterDevolutivasQuery(long ueId, IEnumerable<long> enumerable, string v, int ano)
@@ -31,5 +31,7 @@ namespace SME.SR.Application
         public IEnumerable<long> Turmas { get; }
         public IEnumerable<int> Bimestres { get; }
         public int Ano { get; }
+        public long ComponenteCurricular { get; }
+        public bool UtilizarLayoutNovo { get; set; }
     }
 }
