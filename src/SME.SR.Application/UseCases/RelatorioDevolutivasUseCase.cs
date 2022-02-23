@@ -33,20 +33,21 @@ namespace SME.SR.Application
 
             relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano, parametros.ComponenteCurricular, utilizarLayoutNovo));
 
+            relatorioDto.Turma = !string.IsNullOrEmpty(relatorioDto.Turma) ? relatorioDto.Turma : "Todas";
+
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
         }
 
-        private async Task<bool> UtilizarNovoLayout(long anoLetivo)
+        private async Task<bool> UtilizarNovoLayout(int anoLetivo)
         {
-            var parametro = await mediator.Send(new VerificarSeParametroEstaAtivoQuery(TipoParametroSistema.Devolutiva));
-            if (anoLetivo >= parametro.Ano && parametro.Ativo)
-                return true;
-            else
-                return false;
+            return (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(anoLetivo,TipoParametroSistema.Devolutiva))) != null;
         }
 
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
         {
+            if (bimestres == null)
+                return Enumerable.Empty<int>();
+
             if (bimestres.Count() == 1 && (bimestres.First() == -99))
                 return new List<int>() { 1, 2, 3, 4 };
 
@@ -59,7 +60,7 @@ namespace SME.SR.Application
                 return Enumerable.Empty<long>();
 
             return turmas;
-        }
+        } 
 
         private async Task ObterFiltrosRelatorio(RelatorioDevolutivasDto relatorioDto, FiltroRelatorioDevolutivasDto parametros)
         {
