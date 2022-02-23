@@ -41,5 +41,7 @@
         public const string RotaRelatoriosComErroRelatorioOcorrencia = "sgp.relatorios.erro.notificar.relatorioocorrencia";
 
         public const string RotaRelatoriosComErroRelatorioAcompanhamentoRegistrosPedagogicos = "sgp.relatorios.erro.notificar.relatorioacompanhamentoregistrospedagogicos";
+
+        public const string RotaLogs = "ApplicationLog";
     }
 }

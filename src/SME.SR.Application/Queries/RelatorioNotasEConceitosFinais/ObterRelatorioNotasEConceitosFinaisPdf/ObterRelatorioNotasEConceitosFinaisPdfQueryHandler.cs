@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
             // Dres
             List<Dre> dres = await AplicarFiltroPorDre(filtros);
-            var dresCodigos = dres.Select(d => d.Codigo).ToArray();
+            var dresCodigos = dres.Select(d => d.DreCodigo).ToArray();
 
             // Ues
             string[] uesCodigos;
