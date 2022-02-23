@@ -69,11 +69,11 @@ namespace SME.SR.Data.Repositories.Sgp
 
         public async Task<IEnumerable<DevolutivaDto>> ObterDevolutivas(long ueId, IEnumerable<long> turmas, IEnumerable<int> bimestres, int ano, long componenteCurricular, bool utilizarLayoutNovo)
         {
-            var query = new StringBuilder($@"select d.id, d.periodo_inicio as DataInicio, d.periodo_fim as DataFim, d.criado_em as DataRegistro, d.criado_por as RegistradoPor, d.criado_rf RegistradoRF, d.descricao 
+            var query = new StringBuilder($@"select d.id, d.periodo_inicio as DataInicio, d.periodo_fim as DataFim, d.criado_em as DataRegistro, d.criado_por as RegistradoPor, d.criado_rf RegistradoRF, d.descricao {IncluirCampoSeparacaoDiarioBordo(utilizarLayoutNovo)} 
 	                        , a.id, a.data_aula as Data
 	                        , t.id, t.nome
 	                        , pe.id, pe.periodo_inicio as DataInicio, pe.periodo_fim as DataFim, pe.bimestre
-                            {IncluirCampoSeparacaoDiarioBordo(utilizarLayoutNovo)}
+                            
                           from devolutiva d 
                          inner join diario_bordo db on d.id = db.devolutiva_id 
                          {IncluirJuncaoSeparacaoDiarioBordo(utilizarLayoutNovo)}
@@ -98,7 +98,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
+                var retorno = await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
                     , (devolutiva, aula, turma, periodoEscolar) =>
                     {
                         aula.Turma = turma;
@@ -108,6 +108,8 @@ namespace SME.SR.Data.Repositories.Sgp
                         return devolutiva;
                     }
                     , new { ueId, turmas, bimestres, ano });
+
+                return retorno;
             }
 
         }
