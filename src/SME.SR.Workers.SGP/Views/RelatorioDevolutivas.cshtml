@@ -91,6 +91,37 @@
         return "";
     }
 
+    void MontarDescricaoDevolutivas(string descricao)
+    {
+        int iContadorCaracteres = 0;
+        int contadorMaximoCaracteresPorLinha = 250;
+
+        @while (iContadorCaracteres != descricao.Length)
+        {
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw("</td ></tr>");
+                @Html.Raw("</tbody></table>");
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw(MontarCabecalho())
+                @Html.Raw("<table class='tabela-cabecalho'>");
+                @Html.Raw("<tr><td colspan='4'>")
+            }
+            else
+            {
+                int diminuirCaracteres = descricao.Length - iContadorCaracteres;
+                var qntCaracteresParaBuscar = diminuirCaracteres < contadorMaximoCaracteresPorLinha? diminuirCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                <span>
+                    @Html.Raw(textParaExibir)
+                </span>
+            }
+            contadorQuebrarPagina++;
+        }
+    }
+
     <!DOCTYPE html>
     <html lang="pt-BR">
     <head>
@@ -242,6 +273,7 @@
                             @Html.Raw("<div style='page-break-before:always'></div>");
                             @Html.Raw(MontarCabecalho())
                             @Html.Raw("<table class='tabela-cabecalho'>");
+
                             bimestreIndex = 0;
                         }
 
@@ -262,7 +294,6 @@
                                 var numeroLinhasRegistradoPor = valores.ResgistradoPor.Length / 70;
                                 var numeroLinhasDescricao = valores.Descricao.Length / 125;
                                 var numeroLinhas = numeroLinhasDiasIntervalo > numeroLinhasRegistradoPor ? numeroLinhasDiasIntervalo : numeroLinhasRegistradoPor;
-
 
                                 <tr>
                                     <td>@valores.IntervaloDatas</td>
@@ -317,21 +348,13 @@
                                 @if (exibeConteudoDevolutivas)
                                 {
                                     <tr>
-                                        <td colspan="4" class="alinhar-esquerda td-descricao">@valores.Descricao</td>
+                                        <td colspan="4" class="alinhar-esquerda td-descricao">@{MontarDescricaoDevolutivas(valores.Descricao);}</td>
                                     </tr>
-
-                                    if (numeroLinhasDescricao > 1)
-                                    {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
-                                    }
-                                    else
-                                    {
-                                        contadorQuebrarPagina++;
-                                    }
 
                                     if (valoresIndex < bimestre.Devolutivas.Count() - 1 && !(contadorQuebrarPagina + numeroLinhasAtual >= contadorMaximoLinhasPorPagina))
                                     {
                                         @Html.Raw(EspacoEmBranco(exibeConteudoDevolutivas));
+                                        contadorQuebrarPagina++;
                                         contadorEspaçosExtras++;
                                     }
 
