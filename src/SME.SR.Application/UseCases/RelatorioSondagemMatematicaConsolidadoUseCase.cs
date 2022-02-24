@@ -47,7 +47,7 @@ namespace SME.SR.Application
             }
             var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
             
-            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo));
+            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.UeCodigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo));
 
             var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
             {
