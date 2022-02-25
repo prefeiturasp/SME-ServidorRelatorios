@@ -29,7 +29,7 @@ namespace SME.SR.Application
 
             var utilizarLayoutNovo = await UtilizarNovoLayout(parametros.Ano);
 
-            var bimestres = utilizarLayoutNovo ? ObterBimestresFiltro(parametros.Bimestres): null;            
+            var bimestres = ObterBimestresFiltro(parametros.Bimestres);            
 
             relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano, parametros.ComponenteCurricular, utilizarLayoutNovo));
 

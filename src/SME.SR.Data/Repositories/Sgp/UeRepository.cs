@@ -95,7 +95,7 @@ namespace SME.SR.Data
         public async Task<Ue> ObterUeComDrePorId(long ueId)
         {
             var query = @"select
-	                        ue.ue_id as Codigo,
+	                        ue.ue_id as UeCodigo,
 	                        ue.tipo_escola as TipoEscola,
 	                        ue.*,
 	                        dre.*,
