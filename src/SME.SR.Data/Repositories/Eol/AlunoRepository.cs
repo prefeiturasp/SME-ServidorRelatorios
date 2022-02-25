@@ -1570,8 +1570,7 @@ namespace SME.SR.Data
 				  LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 				  LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
 				 WHERE mte.cd_turma_escola = @turmaCodigo
-				   {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : (anoLetivo == DateTime.Now.Year ? "AND mte.cd_situacao_aluno in (1,5,6,10,13)" : "AND mte.cd_situacao_aluno = 5 "))}		 
-				   
+				   {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : (anoLetivo == DateTime.Now.Year ? "AND mte.cd_situacao_aluno in (1,5,6,10,13)" : "AND mte.cd_situacao_aluno in (5, 10) "))}				   
 		   UNION 
 				 SELECT aluno.cd_aluno AlunoCodigo,
 						aluno.nm_aluno NomeAluno,						
@@ -1609,7 +1608,7 @@ namespace SME.SR.Data
 				   LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 				   LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
 				  WHERE mte.cd_turma_escola = @turmaCodigo					
-					{(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : (anoLetivo == DateTime.Now.Year ? "AND mte.cd_situacao_aluno in (1,5,6,10,13)" : "AND mte.cd_situacao_aluno = 5 "))}	
+					{(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : (anoLetivo == DateTime.Now.Year ? "AND mte.cd_situacao_aluno in (1,5,6,10,13)" : "AND mte.cd_situacao_aluno in (5, 10) "))}	
 					AND mte.dt_situacao_aluno =  (
 	    										   SELECT max(mte2.dt_situacao_aluno) 
 													 FROM v_historico_matricula_cotic  matr2
@@ -1624,7 +1623,7 @@ namespace SME.SR.Data
 								   INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 								   WHERE mte.cd_matricula = mte3.cd_matricula
 									 AND mte.cd_turma_escola = @turmaCodigo									 
-									 {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : (anoLetivo == DateTime.Now.Year ? "AND mte.cd_situacao_aluno in (1,5,6,10,13)" : "AND mte.cd_situacao_aluno = 5 "))}	
+									 {(alunoCodigo != null ? "AND aluno.cd_aluno = @alunoCodigo" : (anoLetivo == DateTime.Now.Year ? "AND mte.cd_situacao_aluno in (1,5,6,10,13)" : "AND mte.cd_situacao_aluno in (5, 10) "))}	
 								)";
 
             var parametros = new { turmaCodigo, alunoCodigo };
