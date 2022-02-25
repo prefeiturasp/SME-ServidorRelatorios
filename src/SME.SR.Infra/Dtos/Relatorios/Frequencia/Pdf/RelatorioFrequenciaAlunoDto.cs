@@ -24,6 +24,9 @@ namespace SME.SR.Infra
                 if (TotalAulas == 0)
                     return "";
 
+                if (TotalAulas == TotalAusencias && TotalCompensacoes == 0)
+                    return "0";
+
                 var porcentagem = 100 - Math.Round((double)NumeroFaltasNaoCompensadas / TotalAulas, 2) * 100;
                 var porcentagemRetorno = Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
 
