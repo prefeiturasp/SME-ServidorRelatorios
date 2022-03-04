@@ -76,11 +76,13 @@ namespace SME.SR.Application
                 AdicionarPergunta(zeroIntercaladosAgrupados, grupo: "Zero intercalado", perguntas, request.QuantidadeTotalAlunos);
             }
 
-            if (perguntas.Any())
+
+            if (perguntas.Any() && request.AnoLetivo < 2022)
             {
                 perguntas.ForEach(pergunta => pergunta.Respostas = pergunta.Respostas.OrderBy(r => r.Resposta).ToList());
-                relatorio.PerguntasRespostas = perguntas;
             }
+
+            relatorio.PerguntasRespostas = perguntas;
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
             GerarGraficos(relatorio);
@@ -125,7 +127,7 @@ namespace SME.SR.Application
                 var qntDeAlunosPreencheu = perguntaResposta.Respostas.Sum(a => a.AlunosQuantidade);
                 var diferencaPreencheuNao = quantidadeTotalAlunos - qntDeAlunosPreencheu;
 
-                var percentualNaoPreencheu = (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
+                var percentualNaoPreencheu = diferencaPreencheuNao == 0 && quantidadeTotalAlunos == 0 ? 0 : (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
 
                 var existePerguntasSemPreenchimento = perguntaResposta.Respostas.FirstOrDefault(p => p.Resposta == "Sem preenchimento");
 
