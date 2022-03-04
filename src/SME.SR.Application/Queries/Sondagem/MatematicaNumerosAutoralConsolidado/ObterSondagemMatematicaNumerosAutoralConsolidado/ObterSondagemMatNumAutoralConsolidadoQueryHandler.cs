@@ -28,12 +28,13 @@ namespace SME.SR.Application
             var relatorio = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
             var perguntas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto>();
 
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Usuario.CodigoRf, request.Usuario.Nome);
+            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Bimestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
             if (request.TurmaAno > 3)
             {
-                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, ComponenteCurricularSondagemEnum.Matematica);
-                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, string.Empty, string.Empty, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+
+                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
                 if (listaPerguntas != null && listaPerguntas.Any())
                 {
@@ -141,14 +142,14 @@ namespace SME.SR.Application
             }
         }
 
-        private void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, string rf, string usuario)
+        private void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, int? bimestre, string rf, string usuario)
         {
             relatorio.Ano = anoTurma;
             relatorio.AnoLetivo = anoLetivo;
             relatorio.ComponenteCurricular = "Matemática";
             relatorio.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
             relatorio.Dre = dre != null ? dre.Abreviacao : "Todas";
-            relatorio.Periodo = $"{semestre}º Semestre";
+            relatorio.Periodo = anoLetivo >= 2022 && bimestre > 0 ? $"{bimestre}º Bimestre" : $"{semestre}º Semestre";
             relatorio.Proficiencia = int.Parse(anoTurma) > 3 ? "" : "Números";
             relatorio.RF = rf;
             relatorio.Turma = "Todas";

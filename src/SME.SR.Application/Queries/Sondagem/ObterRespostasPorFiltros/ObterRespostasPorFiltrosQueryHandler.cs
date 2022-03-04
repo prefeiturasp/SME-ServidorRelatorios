@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<SondagemAutoralDto>> Handle(ObterRespostasPorFiltrosQuery request, CancellationToken cancellationToken)
         {
-            return await sondagemAutoralRepository.ObterPorFiltros(request.DreCodigo, request.UeCodigo, request.GrupoId, request.PeriodoId, request.TurmaAno, request.AnoLetivo, request.ComponenteCurricular);
+            return await sondagemAutoralRepository.ObterPorFiltros(request.DreCodigo, request.UeCodigo, request.GrupoId, request.PeriodoId, request.Bimestre, request.TurmaAno, request.AnoLetivo, request.ComponenteCurricular);
         }
     }
 }

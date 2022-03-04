@@ -55,6 +55,7 @@ namespace SME.SR.Application
                 Dre = dre,
                 Ue = ue,
                 Semestre = filtros.Semestre,
+                Bimestre = filtros.Bimestre,
                 TurmaAno = int.Parse(filtros.Ano),
                 Usuario = usuario,
                 QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno
