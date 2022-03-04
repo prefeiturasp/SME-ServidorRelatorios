@@ -417,6 +417,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                      .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
                                      .ThenBy(c => c.NomeTurma)
                                      .ThenBy(c => c.NomeAluno)
+                                     .DistinctBy(c => c.CodigoAluno)
                                      .ToList();
             }
             else
@@ -424,6 +425,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 componente.Alunos = (from a in componente.Alunos select a).OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
                                  .ThenBy(c => c.NomeTurma)
                                  .ThenBy(c => c.NomeAluno)
+                                 .DistinctBy(c => c.CodigoAluno)
                                  .ToList();
             }
         }
