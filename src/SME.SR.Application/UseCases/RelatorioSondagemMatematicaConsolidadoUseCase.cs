@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Queries;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -45,8 +46,14 @@ namespace SME.SR.Application
                 if (usuario == null)
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
-            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
-            
+
+            DateTime dataReferencia = DateTime.Now;
+
+            if (Convert.ToInt32(filtros.Ano) <= 3 || filtros.AnoLetivo < 2022)
+                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            else if (Convert.ToInt32(filtros.Ano) > 3 && filtros.AnoLetivo >= 2022 && filtros.Bimestre > 0)
+                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
+
             var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.UeCodigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo));
 
             var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
