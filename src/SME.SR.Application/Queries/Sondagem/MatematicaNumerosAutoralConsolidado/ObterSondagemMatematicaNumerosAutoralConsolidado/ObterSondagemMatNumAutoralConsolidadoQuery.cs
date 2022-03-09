@@ -13,6 +13,7 @@ namespace SME.SR.Application
         public int TurmaAno { get; set; }
 
         public int Semestre { get; set; }
+        public int Bimestre { get; set; }
 
         public int AnoLetivo { get; set; }
 
