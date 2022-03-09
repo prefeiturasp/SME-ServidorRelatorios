@@ -137,57 +137,59 @@ namespace SME.SR.Application
                         }
                     }
                 }
+
+                if (respostas.Any())
+                {
+                    respostas.ForEach(resposta => resposta.Respostas = resposta.Respostas.OrderBy(r => r.Resposta).ToList());
+                    relatorio.PerguntasRespostas = respostas.OrderBy(r => r.Ordem).ToList();
+                }
             }
             else
             {
-                var listaPerguntasOrdem = await perguntasAditMultiNumRepository.ObterPerguntasOrdem(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
-                listaPerguntasOrdem = listaPerguntasOrdem.DistinctBy(lp => lp.PerguntaId).ToList();
+                var listaPerguntasOrdem = await perguntasAditMultiNumRepository.ObterPerguntasOrdem(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica, request.Proficiencia);
+                listaPerguntasOrdem = listaPerguntasOrdem.DistinctBy(lp => lp.Id).ToList();
 
                 var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
-                foreach (var perguntaOrdem in listaPerguntasOrdem)
+                foreach (var perguntaOrdem in listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == null))
                 {
-                    var perguntaFilho = listaPerguntasOrdem.Where(lpo => lpo.Id == perguntaOrdem.PerguntaId);
+                    var perguntaFilho = listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == perguntaOrdem.Id);
 
                     var perguntasRespostas = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto();
-                    perguntasRespostas.Ordem = $"ORDEM - {perguntaOrdem.Pergunta}";
-
-                    var respostasPergunta = await perguntasAditMultiNumRepository.ObterRespostasDaPergunta(perguntaOrdem.Id);
+                    perguntasRespostas.Ordem = perguntaOrdem.Pergunta;
 
                     foreach (var pergunta in perguntaFilho)
                     {
+                        var respostasPergunta = await perguntasAditMultiNumRepository.ObterRespostasDaPergunta(pergunta.Id);
+
                         relatorio.Perguntas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto()
                         {
-                            Id = Convert.ToInt64(pergunta.Id),
+                            PerguntaId = pergunta.Id,
                             Descricao = pergunta.Pergunta
                         });
 
                         foreach (var resposta in respostasPergunta)
                         {
-                            var alunosQuantidade = listaAlunos.Where(l => l.RespostaId == resposta.RespostaId && l.PerguntaId == perguntaOrdem.Id).Count();
+                            var alunosQuantidade = listaAlunos.Where(l => l.RespostaId == resposta.RespostaId && l.PerguntaId == pergunta.Id).Count();
                             perguntasRespostas.Respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto()
                             {
-                                PerguntaId = Convert.ToInt64(pergunta.Id),
+                                PerguntaNovaId = pergunta.Id,
+                                Pergunta = pergunta.Pergunta,
                                 Resposta = resposta.Resposta,
                                 AlunosQuantidade = alunosQuantidade,
                                 AlunosPercentual = (alunosQuantidade / request.QuantidadeTotalAlunos) * 100
-                            }); ;
+                            });
                         }
                     }
+
+                    relatorio.PerguntasRespostas.Add(perguntasRespostas);
                 }
-  
             };
 
             if (perguntas.Any())
                 relatorio.Perguntas = perguntas;
 
-            if (respostas.Any())
-            {
-                respostas.ForEach(resposta => resposta.Respostas = resposta.Respostas.OrderBy(r => r.Resposta).ToList());
-                relatorio.PerguntasRespostas = respostas.OrderBy(r => r.Ordem).ToList();
-            }
-
-            if(request.AnoLetivo < 2022)
+            if (request.AnoLetivo < 2022)
                 TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
             else
                 TrataAlunosQueNaoResponderam2022(relatorio, request.QuantidadeTotalAlunos);
@@ -315,33 +317,39 @@ namespace SME.SR.Application
                 {
                     if (contador == 0)
                     {
-                        var qntDeAlunosPreencheuIdeia = perguntaResposta.Respostas?.Where(p => p.PerguntaId == pergunta.Id).Sum(a => a.AlunosQuantidade) ?? 0;
+                        var resposta = perguntaResposta.Respostas?.FirstOrDefault(p => p.Pergunta.Equals("Ideia"));
+                        var qntDeAlunosPreencheuIdeia = perguntaResposta.Respostas?.Where(p => p.Pergunta.Equals("Ideia")).Sum(a => a.AlunosQuantidade) ?? 0;
                         var diferencaPreencheuNaoIdeia = quantidadeTotalAlunos - qntDeAlunosPreencheuIdeia;
                         var percentualNaoPreencheuIdeia = (diferencaPreencheuNaoIdeia / quantidadeTotalAlunos) * 100;
 
                         perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto()
                         {
                             PerguntaId = 1,
+                            Pergunta = "Ideia",
+                            PerguntaNovaId = resposta.PerguntaNovaId,
                             Resposta = "Sem preenchimento",
                             AlunosQuantidade = diferencaPreencheuNaoIdeia,
                             AlunosPercentual = percentualNaoPreencheuIdeia
-                        });
+                        }); 
                     }
                     else if (contador > 0)
                     {
-                        var qntDeAlunosPreencheuResultado = perguntaResposta.Respostas?.Where(p => p.PerguntaId == 2).Sum(a => a.AlunosQuantidade) ?? 0;
+                        var resposta = perguntaResposta.Respostas?.FirstOrDefault(p => p.Pergunta.Equals("Resultado"));
+                        var qntDeAlunosPreencheuResultado = perguntaResposta.Respostas?.Where(p => p.Pergunta.Equals("Resultado")).Sum(a => a.AlunosQuantidade) ?? 0;
                         var diferencaPreencheuNaoResultado = quantidadeTotalAlunos - qntDeAlunosPreencheuResultado;
                         var percentualNaoPreencheuResultado = (diferencaPreencheuNaoResultado / quantidadeTotalAlunos) * 100;
 
                         perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaAditMulConsolidadoRespostaDto()
                         {
                             PerguntaId = 2,
+                            Pergunta = "Resultado",
+                            PerguntaNovaId = resposta.PerguntaNovaId,
                             Resposta = "Sem preenchimento",
                             AlunosQuantidade = diferencaPreencheuNaoResultado,
                             AlunosPercentual = percentualNaoPreencheuResultado
                         });
                     }
-                    
+                    contador++;
                 }
 
             }

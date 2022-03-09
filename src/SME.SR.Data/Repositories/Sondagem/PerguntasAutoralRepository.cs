@@ -32,6 +32,9 @@ namespace SME.SR.Data
             if (anoTurma > 0)
                 query.Append("and \"AnoEscolar\" = @anoTurma ");
 
+            if (anoTurma <= 3)
+                query.Append("and pae.\"Grupo\" = @grupoProficiencia ");
+
             if (componenteCurricularSondagem != null)
                 query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
@@ -41,7 +44,7 @@ namespace SME.SR.Data
 
             query.Append("order by pae.\"Ordenacao\", pr.\"Ordenacao\"");
 
-            var parametros = new { anoTurma, anoLetivo = anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name() };
+            var parametros = new { anoTurma, anoLetivo = anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name(), grupoProficiencia = ProficienciaSondagemEnum.Numeros};
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<PerguntasAutoralDto>(query.ToString(), parametros);

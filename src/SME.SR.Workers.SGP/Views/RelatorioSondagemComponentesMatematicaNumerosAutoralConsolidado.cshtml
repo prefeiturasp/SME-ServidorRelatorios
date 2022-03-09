@@ -296,7 +296,7 @@
                         contadorQuebrarPagina++;
                     }
 
-                    if (Model.AnoLetivo >= 2022 && (contadorRelatorio2022 % 3 == 0))
+                    if (Model.AnoLetivo >= 2022 && (contadorRelatorio2022 % 3 == 0) && Convert.ToInt32(Model.Ano) > 3)
                     {
                         @Html.Raw(VerificaQuebra(true));
                     }

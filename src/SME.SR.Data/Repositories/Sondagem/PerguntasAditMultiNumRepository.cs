@@ -18,14 +18,13 @@ namespace SME.SR.Data.Repositories.Sondagem
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<PerguntasAditMultNumDto>> ObterPerguntasOrdem(int? anoTurma, int? anoLetivo, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
+        public async Task<IEnumerable<PerguntasAditMultNumDto>> ObterPerguntasOrdem(int? anoTurma, int? anoLetivo, ComponenteCurricularSondagemEnum? componenteCurricularSondagem, ProficienciaSondagemEnum proficiencia)
         {
             StringBuilder query = new StringBuilder();
 
-            query.Append(" select \"AnoEscolar\", p.\"Id\" Id, p.\"PerguntaId\", p.\"Descricao\", Pergunta");
+            query.Append(" select \"AnoEscolar\", p.\"Id\" Id, p.\"PerguntaId\", p.\"Descricao\" Pergunta");
             query.Append(" from \"Pergunta\" p ");
             query.Append(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" ");
-            query.Append(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\" ");
 
             if (anoTurma > 0)
                 query.Append("and \"AnoEscolar\" = @anoTurma ");
@@ -33,13 +32,15 @@ namespace SME.SR.Data.Repositories.Sondagem
             if (componenteCurricularSondagem != null)
                 query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
+            query.Append("and pae.\"Grupo\" = @proficiencia ");
+
             query.Append("and ((EXTRACT(YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo and pae.\"FimVigencia\" is null)");
 
             query.Append("or @anoLetivo <= (case when pae.\"FimVigencia\" is null then 0 else EXTRACT(YEAR FROM pae.\"FimVigencia\") end)) ");
 
-            query.Append("order by pae.\"Ordenacao\", pr.\"Ordenacao\"");
+            query.Append("order by pae.\"Ordenacao\"");
 
-            var parametros = new { anoTurma, anoLetivo = anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name() };
+            var parametros = new { anoTurma, anoLetivo = anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name(), proficiencia };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<PerguntasAditMultNumDto>(query.ToString(), parametros);
@@ -89,10 +90,10 @@ namespace SME.SR.Data.Repositories.Sondagem
         {
             StringBuilder query = new StringBuilder();
 
-            query.Append(" select r.\"Id\", r.\"Descricao\" ");
-            query.Append(" from \"PerguntaResposta\" pr inner join \"Pergunta\" p on p.\"Id\" = pr.\"PerguntaId\" ");
+            query.Append(" select r.\"Id\" RespostaId, r.\"Descricao\" Resposta ");
+            query.Append(" from \"PerguntaResposta\" pr ");
             query.Append(" inner join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\" ");
-            query.Append(" where p.\"Id\" = @perguntaId order by pr.\"Ordenacao\" ");
+            query.Append(" where pr.\"PerguntaId\" = @perguntaId order by pr.\"Ordenacao\" ");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<RespostaDescricaoDto>(query.ToString(), new { perguntaId = perguntaId});
