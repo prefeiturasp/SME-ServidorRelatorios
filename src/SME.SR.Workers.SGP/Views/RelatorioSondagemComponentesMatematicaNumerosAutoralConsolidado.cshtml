@@ -339,7 +339,7 @@
                                 <tr>
                                     @foreach (var item in items)
                                     {
-                                        <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("Graficos/GraficoBarras", item)</td>
+                                        <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("Graficos/GraficoBarras", item, new ViewDataDictionary(ViewData) { { "tamanhoFonte", "11px" } })</td>
                                     }
                                 </tr>
                             </tbody>
