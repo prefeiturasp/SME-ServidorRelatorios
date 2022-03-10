@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosPedagogicosTurmaQueryComponenteHandler : IRequestHandler<ObterDadosPedagogicosTurmaComponenteQuery, List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilComponenteDto>>
+    public class ObterDadosPedagogicosTurmaComponenteQueryHandler : IRequestHandler<ObterDadosPedagogicosTurmaComponenteQuery, List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilComponenteDto>>
     {
         private readonly IRegistrosPedagogicosRepository registrosPedagogicosRepository;
 
-        public ObterDadosPedagogicosTurmaQueryComponenteHandler(IRegistrosPedagogicosRepository registrosPedagogicosSgpRepository)
+        public ObterDadosPedagogicosTurmaComponenteQueryHandler(IRegistrosPedagogicosRepository registrosPedagogicosSgpRepository)
         {
             this.registrosPedagogicosRepository = registrosPedagogicosSgpRepository ?? throw new ArgumentNullException(nameof(registrosPedagogicosSgpRepository));
         }
