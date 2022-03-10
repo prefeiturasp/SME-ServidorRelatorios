@@ -26,13 +26,26 @@ namespace SME.SR.Application
 
             if (relatorioQuery.Modalidade == Modalidade.Infantil)
             {
-
-                // TODO NOVO - 2022 PARAMETRO
-                if (relatorioQuery.AnoLetivo == 2022)
+                var utilizarNovoLayout = (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(relatorioQuery.AnoLetivo, TipoParametroSistema.SepararDiarioBordoPorComponente)) != null);
+                
+                if (utilizarNovoLayout)
                 {
+                    var relatorioInfantilComponenteDto = await mediator.Send(new ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery());
+
+                    if (relatorioInfantilComponenteDto.Bimestres.Any())
+                    {
+                        await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilComponenteDto,
+                            request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true));
+                    }
+                    else
+                    {
+                        throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+                    }
+
                     //var relatorioQueryInfantil = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery>();
                     //var relatorioInfantilDto = await mediator.Send(relatorioQueryInfantil);
 
+                    /* TODO: modelo de implementação para as informações.
                     var cabecalho = new RelatorioAcompanhamentoRegistrosPedagogicosCabecalhoDto()
                     {
                         Dre = "BT",
@@ -114,26 +127,32 @@ namespace SME.SR.Application
                         Bimestres = bimestres,
                     };
 
-
                     if (mock.Bimestres.Any())
                         await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponente", mock, request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true));
                     else
                         throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+                    */
                 }
                 else
-                {
-               
+                {               
                     var relatorioQueryInfantil = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery>();
                     var relatorioInfantilDto = await mediator.Send(relatorioQueryInfantil);
+
                     if (relatorioInfantilDto.Bimestre.Any())
-                        await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilDto, request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true));
-                    else    
-                        throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");     
+                    {
+                        await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilDto,
+                            request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true));
+                    }
+                    else
+                    {
+                        throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+                    }
                 }
             }
             else
-            {
+            {                
                 var relatorioDto = await mediator.Send(relatorioQuery);
+
                 if (relatorioDto.Bimestre.Any())
                     await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicos", relatorioDto, request.CodigoCorrelacao,"", "Relatório de Acompanhamento de registros pedagógicos",true));
                 else
