@@ -151,12 +151,13 @@ namespace SME.SR.Application
 
                 var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
+                int ordem = 1;
                 foreach (var perguntaOrdem in listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == null))
                 {
                     var perguntaFilho = listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == perguntaOrdem.Id);
 
                     var perguntasRespostas = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto();
-                    perguntasRespostas.Ordem = perguntaOrdem.Pergunta;
+                    perguntasRespostas.Ordem = $"ORDEM {ordem} - {perguntaOrdem.Pergunta}";
 
                     foreach (var pergunta in perguntaFilho)
                     {
@@ -184,6 +185,7 @@ namespace SME.SR.Application
                     }
 
                     relatorio.PerguntasRespostas.Add(perguntasRespostas);
+                    ordem++;
                 }
             };
 
