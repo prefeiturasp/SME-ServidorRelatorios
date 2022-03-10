@@ -19,7 +19,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<PerguntasAutoralDto>> ObterPerguntasPorComponenteAnoTurma(int anoTurma, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
+        public async Task<IEnumerable<PerguntasAutoralDto>> ObterPerguntasPorComponenteAnoTurma(int anoTurma, int anoLetivo, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
         {
             StringBuilder query = new StringBuilder();
 
@@ -32,12 +32,19 @@ namespace SME.SR.Data
             if (anoTurma > 0)
                 query.Append("and \"AnoEscolar\" = @anoTurma ");
 
+            if (anoTurma <= 3)
+                query.Append("and pae.\"Grupo\" = @grupoProficiencia ");
+
             if (componenteCurricularSondagem != null)
                 query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
-            query.Append("order by pae.\"Ordenacao\" ");
+            query.Append("and ((EXTRACT(YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo and pae.\"FimVigencia\" is null)");
 
-            var parametros = new { anoTurma, componenteCurricularId = componenteCurricularSondagem.Name() };
+            query.Append("or @anoLetivo <= (case when pae.\"FimVigencia\" is null then 0 else EXTRACT(YEAR FROM pae.\"FimVigencia\") end)) ");
+
+            query.Append("order by pae.\"Ordenacao\", pr.\"Ordenacao\"");
+
+            var parametros = new { anoTurma, anoLetivo = anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name(), grupoProficiencia = ProficienciaSondagemEnum.Numeros};
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<PerguntasAutoralDto>(query.ToString(), parametros);
