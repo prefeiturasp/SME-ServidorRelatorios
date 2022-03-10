@@ -175,10 +175,11 @@ namespace SME.SR.Application
                             {
                                 PerguntaNovaId = pergunta.Id,
                                 Pergunta = pergunta.Pergunta,
+                                PerguntaId = pergunta.Pergunta.Equals("Ideia") ? 1 : 2,
                                 Resposta = resposta.Resposta,
                                 AlunosQuantidade = alunosQuantidade,
                                 AlunosPercentual = (alunosQuantidade / request.QuantidadeTotalAlunos) * 100
-                            });
+                            });;
                         }
                     }
 
@@ -309,10 +310,9 @@ namespace SME.SR.Application
 
         private void TrataAlunosQueNaoResponderam2022(RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto relatorio, int quantidadeTotalAlunos)
         {
-            int contador = 0;
-
             foreach (var perguntaResposta in relatorio.PerguntasRespostas)
             {
+                int contador = 0;
                 foreach (var pergunta in relatorio.Perguntas.OrderBy(p => p.Descricao))
                 {
                     if (contador == 0)
