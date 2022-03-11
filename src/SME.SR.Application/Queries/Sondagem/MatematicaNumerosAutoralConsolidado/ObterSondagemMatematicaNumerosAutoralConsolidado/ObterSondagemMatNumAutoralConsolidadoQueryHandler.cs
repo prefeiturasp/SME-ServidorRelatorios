@@ -127,7 +127,7 @@ namespace SME.SR.Application
                 var qntDeAlunosPreencheu = perguntaResposta.Respostas.Sum(a => a.AlunosQuantidade);
                 var diferencaPreencheuNao = quantidadeTotalAlunos - qntDeAlunosPreencheu;
 
-                var percentualNaoPreencheu = diferencaPreencheuNao == 0 && quantidadeTotalAlunos == 0 ? 0 : (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
+                var percentualNaoPreencheu = diferencaPreencheuNao == 0 && quantidadeTotalAlunos == 0 ? 0 : ((double)diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
 
                 var existePerguntasSemPreenchimento = perguntaResposta.Respostas.FirstOrDefault(p => p.Resposta == "Sem preenchimento");
 
