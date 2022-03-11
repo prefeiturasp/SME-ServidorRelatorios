@@ -32,7 +32,7 @@ namespace SME.SR.Application
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo)
+                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
                 ));
 
             RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()

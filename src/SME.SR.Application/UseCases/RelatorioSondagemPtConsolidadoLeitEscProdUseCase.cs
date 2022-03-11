@@ -131,7 +131,7 @@ namespace SME.SR.Application
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo)
+                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
                 ));
 
             var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(filtros.Bimestre, TipoPeriodoSondagem.Bimestre));
@@ -253,7 +253,7 @@ namespace SME.SR.Application
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo)
+                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
                 ));
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
