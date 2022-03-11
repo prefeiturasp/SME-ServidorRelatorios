@@ -346,7 +346,7 @@ namespace SME.SR.Data
                     FROM
 	                    v_matricula_cotic matricula
                     left JOIN matricula_turma_escola matrTurma ON
-	                    matricula.cd_matricula = matrTurma.cd_matricula and matrTurma.nr_chamada_aluno is not null
+	                    matricula.cd_matricula = matrTurma.cd_matricula 
                     INNER JOIN turma_escola turesc ON
 	                    matrTurma.cd_turma_escola = turesc.cd_turma_escola
                     INNER JOIN v_cadastro_unidade_educacao vue ON
