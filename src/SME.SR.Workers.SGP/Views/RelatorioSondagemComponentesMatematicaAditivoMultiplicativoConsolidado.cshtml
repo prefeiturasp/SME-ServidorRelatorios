@@ -206,23 +206,18 @@
                         @foreach (var perguntaId in perguntasIdsNovas)
                         {
                             double totalQuantidade = 0;
-                            double totalPercentual = 0;
 
                             @foreach (var resposta in perguntaRespostas.Respostas)
                             {
                                 if (perguntaId == resposta.PerguntaNovaId)
                                 {
                                     totalQuantidade += resposta.AlunosQuantidade;
-                                    totalPercentual += resposta.AlunosPercentual;
                                 }
 
                             }
 
-                            totalPercentual = Math.Round(totalPercentual, 2);
-                            var totalPercentualAlterado = totalPercentual.ToString("0.00").Replace(',', '.');
-
                             <td>@totalQuantidade</td>
-                            <td>@totalPercentualAlterado</td>
+                            <td>100</td>
                         }
                     }
                     
