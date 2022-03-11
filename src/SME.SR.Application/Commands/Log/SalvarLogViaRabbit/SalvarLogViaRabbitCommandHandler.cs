@@ -35,10 +35,10 @@ namespace SME.SR.Application
         {
             var factory = new ConnectionFactory
             {
-                HostName = configuracaoRabbitOptions.HostName,
-                UserName = configuracaoRabbitOptions.UserName,
-                Password = configuracaoRabbitOptions.Password,
-                VirtualHost = configuracaoRabbitOptions.VirtualHost
+                HostName = "sme_rabbitmq",
+                UserName = "user",
+                Password = "bitnami",
+                VirtualHost = "dev"
             };
 
             using (var conexaoRabbit = factory.CreateConnection())
