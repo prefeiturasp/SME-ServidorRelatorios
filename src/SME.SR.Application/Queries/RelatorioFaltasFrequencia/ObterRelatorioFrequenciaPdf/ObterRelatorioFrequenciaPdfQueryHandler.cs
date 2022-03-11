@@ -115,7 +115,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     {
                                         var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == alunoAtual.TurmaCodigo);
                                         aluno.NomeAluno = alunoAtual.NomeFinal;
-                                        aluno.NumeroChamada = alunoAtual.NumeroChamada;
+                                        aluno.NumeroChamada = alunoAtual.NumeroChamada ?? "0";
                                         aluno.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
                                         aluno.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
                                         aluno.TotalAusencias = totalAusente != null ? totalAusente.Quantidade : 0;
@@ -150,7 +150,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         CodigoAluno = c.CodigoAluno,
                                         NomeTurma = turmaAlunos == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaAlunos.Nome}",
                                         NomeAluno = c.NomeFinal,
-                                        NumeroChamada = c.NumeroChamada,
+                                        NumeroChamada = c.NumeroChamada ?? "0",
                                         TotalAusencias = 0,
                                         TotalCompensacoes = 0,
                                         TotalAulas = componente.Alunos.FirstOrDefault()?.TotalAulas ?? 0
