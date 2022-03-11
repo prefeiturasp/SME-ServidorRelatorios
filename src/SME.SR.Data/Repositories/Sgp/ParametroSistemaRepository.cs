@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Models;
 using SME.SR.Infra;

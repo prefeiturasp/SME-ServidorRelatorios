@@ -114,7 +114,7 @@ namespace SME.SR.Data
                                             t.modalidade_codigo as ModalidadeCodigo,
                                             crp.ano_letivo as AnoLetivo,
                                             crp.componente_curricular_id as ComponenteCurricularId,
-                                            cc.descricao_sgp as ComponenteCurricularNome,
+                                            coalesce (cc.descricao_infantil, cc.descricao_sgp) as ComponenteCurricularNome,
                                             crp.quantidade_aulas as QuantidadeAulas,
                                             crp.frequencias_pendentes as FrequenciasPendentes,
                                             crp.data_ultima_frequencia as DataUltimaFrequencia,

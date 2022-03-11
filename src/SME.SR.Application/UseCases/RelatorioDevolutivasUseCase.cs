@@ -40,7 +40,7 @@ namespace SME.SR.Application
 
         private async Task<bool> UtilizarNovoLayout(int anoLetivo)
         {
-            return (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(anoLetivo,TipoParametroSistema.Devolutiva))) != null;
+            return (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(anoLetivo,TipoParametroSistema.SepararDiarioBordoPorComponente))) != null;
         }
 
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)

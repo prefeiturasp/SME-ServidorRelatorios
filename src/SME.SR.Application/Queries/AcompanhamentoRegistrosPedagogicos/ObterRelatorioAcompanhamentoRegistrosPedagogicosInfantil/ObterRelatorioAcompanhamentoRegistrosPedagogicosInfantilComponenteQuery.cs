@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioAcompanhamentoRegistrosPedagogicosQuery : IRequest<RelatorioAcompanhamentoRegistrosPedagogicosDto>
+    public class ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery : IRequest<RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto>
     {
         private string _dreCodigo;
         private string _ueCodigo;
@@ -34,7 +34,6 @@ namespace SME.SR.Application
             get => TodosParaNullTurmas(_turmasCodigo);
             set { _turmasCodigo = value; }
         }
-
         public List<int> Bimestres
         {
             get => TodosParaNullBimestres(_bimestres);
