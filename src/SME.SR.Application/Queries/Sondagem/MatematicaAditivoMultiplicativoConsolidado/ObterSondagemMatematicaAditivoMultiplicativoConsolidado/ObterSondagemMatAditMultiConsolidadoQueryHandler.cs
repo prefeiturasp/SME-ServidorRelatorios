@@ -180,7 +180,7 @@ namespace SME.SR.Application
                                 PerguntaId = pergunta.Pergunta.Equals("Ideia") ? 1 : 2,
                                 Resposta = resposta.Resposta,
                                 AlunosQuantidade = alunosQuantidade,
-                                AlunosPercentual = (alunosQuantidade / request.QuantidadeTotalAlunos) * 100
+                                AlunosPercentual = ((double)alunosQuantidade / request.QuantidadeTotalAlunos) * 100
                             });;
                         }
                     }
