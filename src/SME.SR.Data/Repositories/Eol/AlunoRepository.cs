@@ -56,8 +56,6 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo
-					and mte.nr_chamada_aluno <> 0
-					and mte.nr_chamada_aluno is not null
 					and (matr.st_matricula in (1, 6, 10, 13, 5)
 					or (matr.st_matricula not in (1, 6, 10, 13, 5)
 					and matr.dt_status_matricula > @dataReferencia))
@@ -97,8 +95,6 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo
-					and mte.nr_chamada_aluno <> 0
-					and mte.nr_chamada_aluno is not null
 					and mte.dt_situacao_aluno = (
 					select
 						max(mte2.dt_situacao_aluno)
