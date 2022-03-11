@@ -110,7 +110,6 @@
                 @{
                     contadorQuebrarPagina++;
                     double totalQuantidade = 0;
-                    double totalPercentual = 0;
                 }
 
                 @foreach (var respostas in perguntaRespostas.Respostas)
@@ -143,12 +142,11 @@
                     }
 
                     totalQuantidade += respostas.AlunosQuantidade;
-                    totalPercentual += respostas.AlunosPercentual;
                 }
                 <tr class="fundo-cinza">
                     <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
                     <td>@totalQuantidade</td>
-                    <td>@Math.Floor(totalPercentual)</td>
+                    <td>100</td>
                 </tr>
             </tbody>
         </table>
