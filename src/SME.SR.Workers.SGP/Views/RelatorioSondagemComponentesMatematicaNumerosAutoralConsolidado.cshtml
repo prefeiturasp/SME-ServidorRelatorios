@@ -6,6 +6,7 @@
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 44;
     int contadorPagina = 0;
+    int contadorRelatorio2022 = 1;
 
     string VerificaQuebra(bool podeQuebrar = false)
     {
@@ -13,6 +14,7 @@
         {
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
+
             return ("<div style='page-break-before:always'></div>" + MontarCabecalho());
         }
         return "";
@@ -119,7 +121,7 @@
                     var alunosPercentual = Math.Round(respostas.AlunosPercentual, 2);
                     var alunosPercentualAlterado = alunosPercentual.ToString().Replace(',', '.');
 
-                                       <tr>
+                    <tr>
                         <td class="alinhar-esquerda espaco-esquerda-15">
                             @respostas.Resposta
                         </td>
@@ -280,10 +282,9 @@
             @{
                 @Html.Raw(MontarCabecalho())
 
-                int contadorRelatorio2022 = 1;
-
                 for (var i = 0; i < Model.PerguntasRespostas.Count; i++)
                 {
+
                     @Html.Raw(VerificaQuebra());
 
                     @Html.Raw(MontaTabelaPerguntasRespostas(Model.PerguntasRespostas[i]));
@@ -294,9 +295,17 @@
                         contadorQuebrarPagina++;
                     }
 
-                    if (Model.AnoLetivo >= 2022 && (contadorRelatorio2022 % 3 == 0) && Convert.ToInt32(Model.Ano) > 3)
+                    if (Model.AnoLetivo >= 2022)
                     {
-                        @Html.Raw(VerificaQuebra(true));
+                        if (contadorRelatorio2022 % 3 == 0 && Convert.ToInt32(Model.Ano) < 6)
+                        {
+                            @Html.Raw(VerificaQuebra(true));
+                        }
+
+                        if (contadorRelatorio2022 % 2 == 0 && Convert.ToInt32(Model.Ano) >= 6)
+                        {
+                            @Html.Raw(VerificaQuebra(true));
+                        }
                     }
 
                     contadorRelatorio2022++;
