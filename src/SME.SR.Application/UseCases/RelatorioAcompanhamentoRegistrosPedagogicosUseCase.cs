@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,12 +28,14 @@ namespace SME.SR.Application
 
                 if (utilizarNovoLayout)
                 {
-                    var relatorioInfantilComponenteDto = await mediator.Send(new ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery());
+                    var relatorioQueryInfantil = request.ObterObjetoFiltro<ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery>();
+
+                    var relatorioInfantilComponenteDto = await mediator.Send(relatorioQueryInfantil);
 
                     if (relatorioInfantilComponenteDto.Bimestres.Any())
                     {
-                        await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantil", relatorioInfantilComponenteDto,
-                            request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true));
+                        await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponente", relatorioInfantilComponenteDto,
+                        request.CodigoCorrelacao, "", "Relatório de Acompanhamento de registros pedagógicos", true));
                     }
                     else
                     {

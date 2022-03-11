@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,13 +38,13 @@ namespace SME.SR.Application
 
                     bimestre.TurmasInfantilComponente.AddRange(consolidacao.Select(c => new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilComponenteDto()
                     {
-                        Nome = c.TurmaNome,
+                        Nome = $"{((Modalidade)Enum.ToObject(typeof(Modalidade), c.ModalidadeCodigo)).GetAttribute<DisplayAttribute>().ShortName} - {c.TurmaNome}",
                         Aulas = c.QuantidadeAulas,
                         FrequenciasPendentes = c.FrequenciasPendentes,
                         DataUltimoRegistroFrequencia = c.DataUltimaFrequencia?.ToString("dd/MM/yyyy")
                     }));
 
-                    var turmarAgrupadas = consolidacao.GroupBy(c => c.TurmaNome)
+                    var turmarAgrupadas = consolidacao.GroupBy(c => $"{((Modalidade)Enum.ToObject(typeof(Modalidade), c.ModalidadeCodigo)).GetAttribute<DisplayAttribute>().ShortName} - {c.TurmaNome}")
                         .Distinct();
 
                     foreach (var turma in turmarAgrupadas)
@@ -59,6 +61,8 @@ namespace SME.SR.Application
                             }).ToList()
                         });
                     }
+
+                    bimestres.Add(bimestre);
                 }               
             }
 

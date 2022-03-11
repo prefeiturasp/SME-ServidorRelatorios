@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilQueryComponenteHandler : IRequestHandler<MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery, RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto>
+    public class MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQueryHandler : IRequestHandler<MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery, RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto>
     {
         public async Task<RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto> Handle(MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery request,
             CancellationToken cancellationToken)
