@@ -205,7 +205,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                             alunoAtual = new RelatorioFrequenciaAlunoDto();
                                             alunoAtual.CodigoAluno = aluno.CodigoAluno;
                                             alunoAtual.NomeAluno = aluno.NomeAluno;
-                                            alunoAtual.NumeroChamada = aluno.NumeroChamada;
+                                            alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
                                             componenteAtual.Alunos.Add(alunoAtual);
                                         }
                                         alunoAtual.TotalAulas += aluno.TotalAulas;
@@ -213,7 +213,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         alunoAtual.TotalCompensacoes += aluno.TotalCompensacoes;
                                         alunoAtual.NomeAluno = aluno.NomeAluno;
                                         alunoAtual.NomeTurma = aluno.NomeTurma;
-                                        alunoAtual.NumeroChamada = aluno.NumeroChamada;
+                                        alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
                                         alunoAtual.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
                                         alunoAtual.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
                                     }
@@ -264,7 +264,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                     var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == frequenciaAluno.FirstOrDefault().TurmaCodigo);
                     alunoDto.CodigoAluno = aluno.CodigoAluno;
                     alunoDto.NomeAluno = aluno.NomeFinal;
-                    alunoDto.NumeroChamada = aluno.NumeroChamada;
+                    alunoDto.NumeroChamada = aluno.NumeroChamada ?? "0";
                     alunoDto.TotalPresenca = totalPresenca != null ? totalPresenca.Quantidade : 0;
                     alunoDto.TotalRemoto = totalRemoto != null ? totalRemoto.Quantidade : 0;
                     alunoDto.TotalAusencias = totalAusente != null ? totalAusente.Quantidade : 0;
@@ -461,7 +461,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                             novoAluno.TotalCompensacoes = 0;
                             novoAluno.NomeAluno = aluno.NomeAluno;
                             novoAluno.NomeTurma = aluno.NomeTurma;
-                            novoAluno.NumeroChamada = aluno.NumeroChamada;
+                            novoAluno.NumeroChamada = aluno.NumeroChamada ?? "0";
                             novoAluno.CodigoAluno = aluno.CodigoAluno;
 
                             if (novoAluno.TotalAulas > 0)
