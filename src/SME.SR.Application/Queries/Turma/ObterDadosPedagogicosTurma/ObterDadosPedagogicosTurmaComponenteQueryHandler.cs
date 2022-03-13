@@ -36,13 +36,15 @@ namespace SME.SR.Application
                         Bimestre = !consolidacao.FirstOrDefault().Bimestre.Equals("0") ? $"{consolidacao.FirstOrDefault().Bimestre}º BIMESTRE" : "FINAL"
                     };
 
-                    bimestre.TurmasInfantilComponente.AddRange(consolidacao.Select(c => new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilComponenteDto()
+                    var frequenciaTurmaInfantil = consolidacao.Select(c => new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilComponenteDto()
                     {
                         Nome = $"{((Modalidade)Enum.ToObject(typeof(Modalidade), c.ModalidadeCodigo)).GetAttribute<DisplayAttribute>().ShortName} - {c.TurmaNome}",
                         Aulas = c.QuantidadeAulas,
                         FrequenciasPendentes = c.FrequenciasPendentes,
                         DataUltimoRegistroFrequencia = c.DataUltimaFrequencia?.ToString("dd/MM/yyyy")
-                    }));
+                    }).DistinctBy(c => c.Nome);
+
+                    bimestre.TurmasInfantilComponente.AddRange(frequenciaTurmaInfantil);
 
                     var turmarAgrupadas = consolidacao.GroupBy(c => $"{((Modalidade)Enum.ToObject(typeof(Modalidade), c.ModalidadeCodigo)).GetAttribute<DisplayAttribute>().ShortName} - {c.TurmaNome}")
                         .Distinct();
