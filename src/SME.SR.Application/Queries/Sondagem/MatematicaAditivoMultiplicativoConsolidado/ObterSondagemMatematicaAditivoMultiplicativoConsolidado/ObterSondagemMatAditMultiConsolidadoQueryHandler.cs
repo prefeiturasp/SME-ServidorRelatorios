@@ -287,8 +287,8 @@ namespace SME.SR.Application
                 var qntDeAlunosPreencheuIdeia = perguntaResposta.Respostas?.Where(p => p.PerguntaId == 1).Sum(a => a.AlunosQuantidade) ?? 0;
                 var qntDeAlunosPreencheuResultado = perguntaResposta.Respostas?.Where(p => p.PerguntaId == 2).Sum(a => a.AlunosQuantidade) ?? 0;
 
-                var diferencaPreencheuNaoIdeia = quantidadeTotalAlunos - qntDeAlunosPreencheuIdeia;
-                var diferencaPreencheuNaoResultado = quantidadeTotalAlunos - qntDeAlunosPreencheuResultado;
+                var diferencaPreencheuNaoIdeia = Math.Max(quantidadeTotalAlunos - qntDeAlunosPreencheuIdeia, 0);
+                var diferencaPreencheuNaoResultado = Math.Max(quantidadeTotalAlunos - qntDeAlunosPreencheuResultado, 0);
 
                 var percentualNaoPreencheuIdeia = (diferencaPreencheuNaoIdeia / quantidadeTotalAlunos) * 100;
                 var percentualNaoPreencheuResultado = (diferencaPreencheuNaoResultado / quantidadeTotalAlunos) * 100;
