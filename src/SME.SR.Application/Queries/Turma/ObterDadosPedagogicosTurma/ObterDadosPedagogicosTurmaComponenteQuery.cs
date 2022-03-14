@@ -8,7 +8,7 @@ namespace SME.SR.Application
     {
         public ObterDadosPedagogicosTurmaComponenteQuery() { }
         public ObterDadosPedagogicosTurmaComponenteQuery(string dreCodigo, string ueCodigo, int anoLetivo, string professorNome, string professorCodigo,
-            List<int> bimestres = null, List<string> codigoTurmas = null)
+            List<int> bimestres = null, List<string> codigoTurmas = null, List<long> componentesCurricularesIds = null)
         {
             DreCodigo = dreCodigo;
             UeCodigo = ueCodigo;
@@ -17,6 +17,7 @@ namespace SME.SR.Application
             ProfessorNome = professorNome;
             ProfessorCodigo = professorCodigo;
             Bimestres = bimestres;
+            ComponentesCurricularesIds = componentesCurricularesIds;
         }
 
         public string DreCodigo { get; set; }
@@ -26,5 +27,6 @@ namespace SME.SR.Application
         public string ProfessorNome { get; set; }
         public string ProfessorCodigo { get; set; }
         public List<int> Bimestres { get; set; }
+        public List<long> ComponentesCurricularesIds { get; set; }
     }
 }

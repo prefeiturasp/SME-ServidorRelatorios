@@ -10,7 +10,6 @@ namespace SME.SR.Application
         private string _ueCodigo;
         private List<int> _bimestres;
         private List<string> _turmasCodigo;
-        private long[] _componentesCurriculares;
 
         public int AnoLetivo { get; set; }
 
@@ -44,12 +43,6 @@ namespace SME.SR.Application
         public string ProfessorNome { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
-
-        public long[] ComponentesCurriculares
-        {
-            get => TodosParaNullComponentesCurriculares(_componentesCurriculares);
-            set { _componentesCurriculares = value; }
-        }
 
         private string TodosParaNull(string filtro)
         {

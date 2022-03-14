@@ -4,7 +4,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +15,6 @@ namespace SME.SR.Application
             CancellationToken cancellationToken)
         {
             var cabecalho = MontarCabecalho(request.Dre, request.Ue, request.Turmas, request.Bimestres, request.UsuarioNome, request.UsuarioRF);
-
             return await Task.FromResult(new RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto(request.DadosBimestre, cabecalho));
         }
 
