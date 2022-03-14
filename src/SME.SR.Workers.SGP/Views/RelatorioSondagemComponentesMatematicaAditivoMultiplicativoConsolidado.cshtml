@@ -150,6 +150,7 @@
                     }
                 }
 
+
                 @foreach (var resposta in perguntaRespostas.Respostas)
                 {
                     descricaoResposta[count] = resposta.Resposta;
@@ -161,12 +162,21 @@
                     <tr>
                         <td class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
 
-                        @foreach (var resposta in perguntaRespostas.Respostas)
+                        @foreach (var pergunta in Model.Perguntas)
                         {
-                            var alunosPercentual = Math.Round(resposta.AlunosPercentual, 2);
-                            var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
-                            if (resposta.Resposta == descricao)
+                            var respostasPergunta = perguntaRespostas.Respostas.Where(a => a.PerguntaId == pergunta.Id);
+                            var resposta = respostasPergunta.FirstOrDefault(c => c.Resposta == descricao);
+
+                            if (resposta == null)
                             {
+                                <td>0</td>
+                                <td>0.00</td>
+                            }
+                            else
+                            {
+                                var alunosPercentual = Math.Round(resposta.AlunosPercentual, 2);
+                                var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
+
                                 <td>@resposta.AlunosQuantidade</td>
                                 <td>@alunosPercentualAlterado</td>
                             }
