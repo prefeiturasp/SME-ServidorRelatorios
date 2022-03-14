@@ -8,7 +8,8 @@ namespace SME.SR.Application
     public class MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery : IRequest<RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto>
     {
         public MontarRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery(Dre dre, Ue ue, IEnumerable<Turma> turmas,
-            List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilComponenteDto> dadosBimestre, int[] bimestres, string nomeUsuario, string rfUsuario)
+            List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilComponenteDto> dadosBimestre, int[] bimestres, string nomeUsuario, string rfUsuario,
+            long[] componentesCurricularesIds)
         {
             Dre = dre;
             Ue = ue;
@@ -17,6 +18,7 @@ namespace SME.SR.Application
             DadosBimestre = dadosBimestre;
             UsuarioNome = nomeUsuario;
             UsuarioRF = rfUsuario;
+            ComponentesCurricularesIds = componentesCurricularesIds;
         }
 
         public Dre Dre { get; set; }
@@ -26,6 +28,7 @@ namespace SME.SR.Application
         public List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilComponenteDto> DadosBimestre { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
+        public long[] ComponentesCurricularesIds { get; set; }
     }
 }
 

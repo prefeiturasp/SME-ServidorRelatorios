@@ -23,7 +23,7 @@ namespace SME.SR.Application
         public async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilComponenteDto>> Handle(ObterDadosPedagogicosTurmaComponenteQuery request, CancellationToken cancellationToken)
         {
             var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicosInfantil(request.DreCodigo, request.UeCodigo,
-                request.AnoLetivo, request.ProfessorCodigo, request.Bimestres, request.TurmasId);
+                request.AnoLetivo, request.ProfessorCodigo, request.Bimestres, request.TurmasId, request.ComponentesCurricularesIds);
 
             var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilComponenteDto>();
 
