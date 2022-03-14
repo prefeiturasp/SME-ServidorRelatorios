@@ -59,7 +59,7 @@ namespace SME.SR.Application
                             {
                                 NomeComponente = c.ComponenteCurricularNome,
                                 DiarioBordoPendentes = c.DiarioBordoPendentes,
-                                DataUltimoRegistroDiarioBordo = c.DataUltimaFrequencia?.ToString("dd/MM/yyyy")
+                                DataUltimoRegistroDiarioBordo = c.DataUltimoDiarioBordo?.ToString("dd/MM/yyyy")
                             }).ToList()
                         });
                     }
