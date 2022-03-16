@@ -292,6 +292,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
+        [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
+        public async Task<bool> AcompanhamentoAprendizagemEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoAprendizagemUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/acompanhamento-fechamento")]
         [Action("relatorios/acompanhamento-fechamento", typeof(IRelatorioAcompanhamentoFechamentoUseCase))]
         public async Task<bool> AcompanhamentoFechamento([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoFechamentoUseCase relatorioUseCase)
