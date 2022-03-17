@@ -22,6 +22,7 @@
         public const string RotaRelatoriosProcessandoConselhoDeClasse = "sr.relatorios.processando.conselhodeclasse";
 
         public const string RotaRelatoriosSolicitadosRelatorioAcompanhamentoAprendizagem = "sr.relatorios.solicitados.relatorioacompanhamentoaprendizagem";
+        public const string RotaRelatoriosSolicitadosRaaEscolaAqui = "sr.relatorios.app.solicitados.raaescolaaqui";
 
         public const string RotaRelatoriosSolicitadosCalendarioEscolar = "sr.relatorios.solicitados.calendárioescolar";
 
