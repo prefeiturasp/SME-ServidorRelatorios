@@ -32,7 +32,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
 
-            var model = (RelatorioBoletimEscolarDetalhadoDto)request.Model;
+            var model = (BoletimEscolarDetalhadoEscolaAquiDto)request.Model;
 
             var nomeTemplateCabecalho = "RelatorioBoletimEscolarDetalhadoCabecalho";
             var nomeTemplateCorpo = request.Modalidade == Modalidade.EJA ? "RelatorioBoletimEscolarDetalhadoEJACorpo" : "RelatorioBoletimEscolarDetalhadoCorpo";
@@ -75,7 +75,8 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
             if (request.EnvioPorRabbit)
             {
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                var filaRabbit = !string.IsNullOrEmpty(request.MensagemDados) ? RotasRabbitSGP.RotaRelatoriosProntosApp : RotasRabbitSGP.RotaRelatoriosProntosSgp;
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo, request.MensagemDados), filaRabbit, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
                 return string.Empty;
             }
 

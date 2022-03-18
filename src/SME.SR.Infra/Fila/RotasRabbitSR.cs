@@ -4,7 +4,6 @@
     {
         public const string RotaRelatoriosSolicitados = "sr.relatorios.solicitados";
         public const string RotaRelatoriosProcessando = "sr.relatorios.processando";
-
         public const string RotaRelatoriosSolicitadosBoletim = "sr.relatorios.solicitados.boletim";
         public const string RotaRelatoriosProcessandoBoletim = "sr.relatorios.processando.boletim";
 

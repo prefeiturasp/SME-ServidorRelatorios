@@ -5,6 +5,6 @@ namespace SME.SR.Application
 {
     public interface IRelatorioBoletimEscolarDetalhadoUseCase
     {
-        Task Executar(FiltroRelatorioDto request);
+        Task Executar(FiltroRelatorioDto request,bool relatorioEscolaAqui);
     }
 }

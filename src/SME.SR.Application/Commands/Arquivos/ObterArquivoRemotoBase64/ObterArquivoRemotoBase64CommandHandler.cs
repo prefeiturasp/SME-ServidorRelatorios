@@ -32,7 +32,7 @@ namespace SME.SR.Application
                             .First(c => c.FormatID == format.Guid);
                         string mimeType = codec.MimeType;
 
-                        var imagemBase64 = RedimencionarImagem(imagem);
+                        var imagemBase64 = RedimencionarImagem(imagem,request.EscalaHorizontal,request.EscalaVertical);
 
                         return $"data:{mimeType};base64,{imagemBase64}";
                     }
@@ -45,10 +45,10 @@ namespace SME.SR.Application
             }
         }
 
-        private string RedimencionarImagem(Bitmap imagem)
+        private string RedimencionarImagem(Bitmap imagem, float escalaHorizontal, float escalaVertical)
         {
-            var escalaH = 750f / imagem.Width;
-            var escalaV = 800f / imagem.Height;
+            var escalaH = escalaHorizontal / imagem.Width;
+            var escalaV = escalaVertical / imagem.Height;
 
             var escala = Math.Min(escalaV, escalaH);
 
