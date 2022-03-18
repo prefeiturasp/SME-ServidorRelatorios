@@ -73,7 +73,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 throw new NegocioException("Turmas não localizadas para os anos informados.");
 
             var deveAdicionarFinal = filtro.Bimestres.Any(c => c == 0);
-            var mostrarSomenteFinal = deveAdicionarFinal && filtro.Bimestres.Count() == 1;
+            var mostrarSomenteFinal = deveAdicionarFinal && filtro.Bimestres.Count() == 1;          
+
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(filtro.AnoLetivo, filtro.ModalidadeTipoCalendario, filtro.Semestre));
+
+            var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
 
             foreach (var dre in dres)
             {
@@ -87,6 +91,9 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         foreach (var bimestre in ano.Bimestres)
                         {
                             bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre".ToUpper();
+
+                            var periodoEscolar = periodosEscolares.FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
+
                             foreach (var componente in bimestre.Componentes)
                             {
                                 var componenteAtual = componentes.FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
@@ -122,14 +129,15 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         aluno.NomeTurma = turmaFiltrada == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaFiltrada.Nome}";
                                         aluno.TotalAulas = totalAulasDisciplinaTurmaBimestre;
                                     }
-                                }
-                                
+                                }                               
+
+
                                 var alunosSemFrequenciaNaTurma = alunos
-                                    .Where(a => a.Ativo)
+                                    .Where(a => a.Ativo || !a.Ativo && a.DataSituacao.Date >= periodoEscolar.PeriodoInicio.Date)
                                     .Where(a => turmasccc.Contains(a.TurmaCodigo))
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
 
-                                var novosAlunosComFrequencia = await NovaBuscaAlunosSemFrequencia(componente,
+                          var novosAlunosComFrequencia = await NovaBuscaAlunosSemFrequencia(componente,
                                                                                                   turmasccc,
                                                                                                   turmas.ToList(),
                                                                                                   int.Parse(bimestre.Numero),
