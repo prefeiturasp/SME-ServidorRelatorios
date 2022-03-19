@@ -66,7 +66,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 .Select(u => u.CodigoTurma)
                 .Distinct();
 
-            var alunos = await mediator.Send(new ObterAlunosPorAnoQuery(codigosTurmas));
+            var alunos = await mediator.Send(new ObterAlunosPorTurmasRelatorioFrequenciaQuery(codigosTurmas));
 
             var turmas = await turmaRepository.ObterTurmasPorAnoEModalidade(filtro.AnoLetivo, filtro.AnosEscolares.ToArray(), filtro.Modalidade);
             if (turmas == null || !turmas.Any())

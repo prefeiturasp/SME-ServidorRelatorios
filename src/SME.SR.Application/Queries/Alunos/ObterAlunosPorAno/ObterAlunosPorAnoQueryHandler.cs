@@ -20,20 +20,13 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<AlunoTurma>> Handle(ObterAlunosPorAnoQuery request, CancellationToken cancellationToken)
-        {
-            var alunosRetorno = new List<Aluno>();
+        {           
             var alunos = await alunoRepository.ObterPorCodigosTurma(request.TurmasCodigos.ToArray());
 
             if (alunos == null || !alunos.Any())
-                throw new NegocioException("Alunos não encontrados");            
+                throw new NegocioException("Alunos não encontrados"); 
 
-            foreach (var alunosTurma in alunos.GroupBy(a => a.CodigoTurma))
-                alunosRetorno.AddRange(alunosTurma.GroupBy(a => a.CodigoAluno).SelectMany(x => x.OrderByDescending(y => y.DataSituacao).Take(1)));
-
-            if (alunosRetorno == null || !alunosRetorno.Any())
-                throw new NegocioException("Alunos não encontrados");
-
-            return alunosRetorno.Select(a => new AlunoTurma()
+            return alunos.Select(a => new AlunoTurma()
             {
                 Nome = a.NomeAluno,
                 NumeroChamada = a.NumeroAlunoChamada,
