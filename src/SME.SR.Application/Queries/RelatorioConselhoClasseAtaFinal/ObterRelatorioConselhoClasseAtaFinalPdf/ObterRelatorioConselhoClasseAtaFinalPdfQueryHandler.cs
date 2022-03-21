@@ -75,9 +75,8 @@ namespace SME.SR.Application
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo);
-            var alunosFiltrados = alunos.Where(a => a.Ativo || (!a.Ativo && a.DataSituacaoAluno >= periodosEscolares.First().PeriodoInicio && a.DataSituacaoAluno <= periodosEscolares.Last().PeriodoFim));
+            var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
 
-            var alunosCodigos = alunosFiltrados.Select(x => x.CodigoAluno.ToString()).ToArray();
             List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
             if (turma.TipoTurma == TipoTurma.Regular)
                 tiposTurma.Add((int)TipoTurma.EdFisica);
@@ -143,7 +142,7 @@ namespace SME.SR.Application
                 }));
             }
 
-            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunosFiltrados, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea);
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea);
             return MontarEstruturaPaginada(dadosRelatorio);
         }
 
