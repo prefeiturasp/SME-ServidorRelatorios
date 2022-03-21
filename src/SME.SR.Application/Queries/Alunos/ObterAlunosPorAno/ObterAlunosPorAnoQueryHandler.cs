@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,8 +20,11 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<AlunoTurma>> Handle(ObterAlunosPorAnoQuery request, CancellationToken cancellationToken)
-        {
+        {           
             var alunos = await alunoRepository.ObterPorCodigosTurma(request.TurmasCodigos.ToArray());
+
+            if (alunos == null || !alunos.Any())
+                throw new NegocioException("Alunos não encontrados"); 
 
             return alunos.Select(a => new AlunoTurma()
             {
@@ -30,7 +33,8 @@ namespace SME.SR.Application
                 CodigoAluno = a.CodigoAluno,
                 TurmaCodigo = a.CodigoTurma.ToString(),
                 NomeFinal = a.ObterNomeFinal(),
-                SituacaoMatricula= a.CodigoSituacaoMatricula
+                SituacaoMatricula = a.CodigoSituacaoMatricula,
+                DataSituacao = a.DataSituacao
             });
         }
     }
