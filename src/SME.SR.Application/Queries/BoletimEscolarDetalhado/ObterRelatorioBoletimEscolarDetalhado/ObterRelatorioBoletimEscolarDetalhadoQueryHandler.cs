@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarDetalhadoQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarDetalhadoQuery, RelatorioBoletimEscolarDetalhadoDto>
+    public class ObterRelatorioBoletimEscolarDetalhadoQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarDetalhadoQuery, BoletimEscolarDetalhadoEscolaAquiDto>
     {
         private readonly IMediator mediator;
 
@@ -20,7 +20,7 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); ;
         }
 
-        public async Task<RelatorioBoletimEscolarDetalhadoDto> Handle(ObterRelatorioBoletimEscolarDetalhadoQuery request, CancellationToken cancellationToken)
+        public async Task<BoletimEscolarDetalhadoEscolaAquiDto> Handle(ObterRelatorioBoletimEscolarDetalhadoQuery request, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrWhiteSpace(request.TurmaCodigo))
                 await ObterFechamentoTurma(request.TurmaCodigo);
@@ -52,7 +52,7 @@ namespace SME.SR.Application
 
             var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo);
 
-            return new RelatorioBoletimEscolarDetalhadoDto(boletins);
+            return new BoletimEscolarDetalhadoEscolaAquiDto(boletins);
         }
 
         private async Task<int> ObterUltimoBimestrePeriodoFechamento(long ueId, long dreId, int anoLetivo)

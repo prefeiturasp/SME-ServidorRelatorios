@@ -6,7 +6,7 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioHtmlPDFBoletimDetalhadoCommand : IRequest<string>
     {
-        public GerarRelatorioHtmlPDFBoletimDetalhadoCommand(object model, Guid codigoCorrelacao, Modalidade modalidade, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true)
+        public GerarRelatorioHtmlPDFBoletimDetalhadoCommand(object model, Guid codigoCorrelacao, Modalidade modalidade, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string mensagemDados = null)
         {
             Model = model;
             CodigoCorrelacao = codigoCorrelacao;
@@ -14,6 +14,7 @@ namespace SME.SR.Application
             MensagemTitulo = mensagemTitulo;
             EnvioPorRabbit = envioPorRabbit;
             Modalidade = modalidade;
+            MensagemDados = mensagemDados;
         }
 
         public Guid CodigoCorrelacao { get; set; }                
@@ -22,5 +23,7 @@ namespace SME.SR.Application
         public string MensagemTitulo { get; set; }
         public bool EnvioPorRabbit { get; set; }
         public Modalidade Modalidade { get; set; }
+        public string MensagemDados { get; set; }
+
     }
 }
