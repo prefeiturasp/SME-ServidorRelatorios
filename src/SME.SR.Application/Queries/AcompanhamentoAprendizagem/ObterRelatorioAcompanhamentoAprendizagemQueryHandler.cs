@@ -34,7 +34,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAcompanhamentoAprendizagemDto
             {
                 Cabecalho = MontarCabecalho(turma, professores, filtro),
-                Alunos = await MontarAlunos(acompanhamentoAlunos, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo, periodoId, turma),
+                Alunos = await MontarAlunos(acompanhamentoAlunos, alunosEol, frequenciaAlunos, ocorrencias, quantidadeAulasDadas, bimestres, turma.AnoLetivo, periodoId, turma,request.RelatorioEscolaAqui),
             };
 
             return relatorio;
@@ -68,13 +68,13 @@ namespace SME.SR.Application
                                                                                            int[] bimestres,
                                                                                            int ano,
                                                                                            long periodoId,
-                                                                                           Turma turma)
+                                                                                           Turma turma, bool relatorioEscolaAqui)
         {
             var alunosRelatorio = new List<RelatorioAcompanhamentoAprendizagemAlunoDto>();
 
             var acompanhamento = acompanhamentoAlunos.Any() ? acompanhamentoAlunos?.First() : null;
             var percursoFormatado = acompanhamento != null ?
-                await FormatarHtml(acompanhamento.PercursoColetivoTurmaFormatado()) : "";
+                await FormatarHtml(acompanhamento.PercursoColetivoTurmaFormatado(), relatorioEscolaAqui) : "";
 
             foreach (var alunoEol in alunosEol)
             {
@@ -96,8 +96,8 @@ namespace SME.SR.Application
                     Responsavel = alunoEol.ResponsavelFormatado(),
                     Telefone = alunoEol.ResponsavelCelularFormatado(),
                     PercursoColetivoTurma = percursoFormatado,
-                    Observacoes = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.Observacoes) : "",
-                    PercursoIndividual = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.PercursoIndividual) : "",
+                    Observacoes = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.Observacoes, relatorioEscolaAqui) : "",
+                    PercursoIndividual = acompanhamentoAluno != null ? await FormatarHtml(acompanhamentoAluno.PercursoIndividual, relatorioEscolaAqui) : "",
                     ModalidadeTurma = turma.ModalidadeCodigo
                 };
 
@@ -110,8 +110,13 @@ namespace SME.SR.Application
             return alunosRelatorio;
         }
 
-        private async Task<string> FormatarHtml(string html)
-            => await mediator.Send(new ObterHtmlComImagensBase64Query(html));
+        private async Task<string> FormatarHtml(string html, bool relatorioEscolaAqui)
+        {
+            if (relatorioEscolaAqui)
+                return await mediator.Send(new ObterHtmlComImagensBase64Query(html, escalaHorizontal: 360f, escalaVertical: 640f));
+            else
+                return await mediator.Send(new ObterHtmlComImagensBase64Query(html));
+        }
 
         private async Task<List<RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto>> MontarFrequencias(string alunoCodigo, IEnumerable<FrequenciaAluno> frequenciasAlunos, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, int[] bimestres, long periodoId, Turma turma)
         {

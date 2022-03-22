@@ -4,7 +4,7 @@ using SME.SR.Infra;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarDetalhadoQuery : IRequest<RelatorioBoletimEscolarDetalhadoDto>
+    public class ObterRelatorioBoletimEscolarDetalhadoQuery : IRequest<BoletimEscolarDetalhadoEscolaAquiDto>
     {
         public string DreCodigo { get; set; }
 

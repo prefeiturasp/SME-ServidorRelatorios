@@ -43,8 +43,8 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 return request.CodigoCorrelacao.ToString();
 
             await servicoFila.PublicaFila(new PublicaFilaDto(
-                new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo),
-                RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo,mensagemDados:request.MensagemDados),
+                request.NomeFila, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
             return string.Empty;
         }
     }
