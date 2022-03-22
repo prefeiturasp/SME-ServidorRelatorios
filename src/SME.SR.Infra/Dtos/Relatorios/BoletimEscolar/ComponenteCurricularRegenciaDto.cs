@@ -12,10 +12,8 @@ namespace SME.SR.Infra
             ComponentesCurriculares = new List<ComponenteCurricularRegenciaNotaDto>();
         }
 
-        [JsonIgnore]
         public string Codigo { get; set; }
 
-        [JsonIgnore]
         public bool Frequencia { get; set; }
 
         public string FrequenciaBimestre1 { get; set; }

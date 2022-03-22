@@ -22,5 +22,6 @@ namespace SME.SR.Application
 
         public Usuario Usuario { get; set; }
         public bool ConsideraHistorico { get; set; }
+        public bool TrazerAlunosInativos { get; set; }
     }
 }

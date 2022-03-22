@@ -23,25 +23,20 @@ namespace SME.SR.Workers.SGP
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
-
-            var jsonString = JsonConvert.SerializeObject(relatorio, UtilJson.ObterConfigConverterNulosEmVazio());
-            
+                        
             switch (relatorioQuery.Modalidade)
             {
                 case Modalidade.EJA:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarEja/BoletimEscolarEja", 
-                        jsonString, TipoFormatoRelatorio.Pdf, 
-                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples/BoletimEscolarEJA", 
+                        relatorio, request.CodigoCorrelacao));
                     break;
                 case Modalidade.Medio:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolarMedio/BoletimEscolarMedio", 
-                        jsonString, TipoFormatoRelatorio.Pdf, 
-                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples/BoletimEscolarEM",
+                       relatorio, request.CodigoCorrelacao));
                     break;
                 default:
-                    await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioBoletimEscolar/BoletimEscolar", 
-                        jsonString, TipoFormatoRelatorio.Pdf, 
-                        request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoBoletim));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples/BoletimEscolar",
+                       relatorio, request.CodigoCorrelacao));
                     break;
             }   
         }
