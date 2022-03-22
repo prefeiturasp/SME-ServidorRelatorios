@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
             if (relatorioEscolaAqui)
             {
-                request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletimDetalhadoEscolaAqui;
+                request.RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
                 request.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui;
                 var relatorioQuery = request.ObterObjetoFiltro<ObterDadosMensagemEscolaAquiQuery>();
                 relatorioQuery.Modalidade = ObterModalidade(relatorioQuery.ModalidadeCodigo);

@@ -55,7 +55,7 @@ namespace SME.SR.Application
                 var mensagemdados = await MapearDadosParaGerarMensagem(filtro);
                 var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id,relatorioEscolaAqui:true));
                 filtro.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosRaaEscolaAqui;
-                filtro.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroRaaEscolaAqui;
+                filtro.RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
                 await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, nomeFila: RotasRabbitSGP.RotaRelatoriosProntosApp, modalidade: turma.ModalidadeCodigo, mensagemDados: mensagemdados));
             }
             else
