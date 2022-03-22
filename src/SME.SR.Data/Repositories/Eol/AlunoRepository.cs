@@ -1044,7 +1044,7 @@ namespace SME.SR.Data
 					SituacaoMatricula,
 					NumeroAlunoChamada,
 					PossuiDeficiencia
-					ORDER BY CodigoSituacaoMatricula";
+					ORDER BY DataSituacao DESC";
 
 			var parametros = new { CodigosTurma = codigosTurma };
 
