@@ -53,7 +53,7 @@ namespace SME.SR.Application
 
                 if (turmaAlunoEol != null)
                 {
-                    var ue = ues.FirstOrDefault(ue => ue.UeCodigo == turmaAlunoEol.CodigoEscola);
+                    var ue = ues.FirstOrDefault(ue => ue.Codigo == turmaAlunoEol.CodigoEscola);
                     var turmaDetalhe = turmasDetalhe.FirstOrDefault(t => t.Codigo == turmaAlunoEol.CodigoTurma.ToString());
 
                     foreach (var ciclo in ciclos)
@@ -104,7 +104,7 @@ namespace SME.SR.Application
                     {
                         ueConclusao.AlunoCodigo = turmaRegularAluno.AlunoCodigo;
                         ueConclusao.TurmaAno = turmaRegularAluno.DescricaoAno;
-                        ueConclusao.UeCodigo = ue.UeCodigo;
+                        ueConclusao.UeCodigo = ue.Codigo;
                         ueConclusao.UeNome = ue.NomeComTipoEscolaEDre;
                         ueConclusao.UeMunicipio = "São Paulo";
                         ueConclusao.UeUF = "SP";
@@ -115,7 +115,7 @@ namespace SME.SR.Application
                         {
                             AlunoCodigo = turmaRegularAluno.AlunoCodigo,
                             TurmaAno = turmaRegularAluno.DescricaoAno,
-                            UeCodigo = ue.UeCodigo,
+                            UeCodigo = ue.Codigo,
                             UeNome = ue.NomeComTipoEscolaEDre,
                             UeMunicipio = "São Paulo",
                             UeUF = "SP"

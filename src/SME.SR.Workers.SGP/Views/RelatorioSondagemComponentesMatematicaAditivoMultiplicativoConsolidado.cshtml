@@ -191,7 +191,7 @@
                             }
                         }
 
-                        totalPercentual = Math.Round(totalPercentual, 2);
+                        totalPercentual = totalPercentual > 100 ? 100 : Math.Round(totalPercentual, 2);
                         var totalPercentualAlterado = totalPercentual.ToString("0.00").Replace(',', '.');
 
                         <td>@totalQuantidade</td>

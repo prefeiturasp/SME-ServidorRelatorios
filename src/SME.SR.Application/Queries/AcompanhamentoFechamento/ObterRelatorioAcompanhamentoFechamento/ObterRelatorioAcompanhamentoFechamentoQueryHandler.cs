@@ -34,13 +34,11 @@ namespace SME.SR.Application
 
             if (!string.IsNullOrEmpty(request.UeCodigo))
                 ue = await ObterUePorCodigo(request.UeCodigo);
-
             
             int[] bimestres = request.Bimestres?.ToArray();
 
             var turmas = await ObterTurmasRelatorioPorSituacaoConsolidacao(request.TurmasCodigo?.ToArray(), request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.AnoLetivo < DateTime.Now.Year, request.SituacaoFechamento, request.SituacaoConselhoClasse, bimestres);
             string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
-
 
             var consolidadoFechamento = await ObterFechamentosConsolidado(codigosTurma);
             var consolidadoConselhosClasse = await ObterConselhosClasseConsolidado(codigosTurma);

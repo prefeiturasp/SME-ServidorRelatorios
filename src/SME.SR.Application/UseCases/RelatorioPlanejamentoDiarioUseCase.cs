@@ -110,7 +110,7 @@ namespace SME.SR.Application
                 return "Todos";
 
             var ue = await mediator.Send(new ObterUePorCodigoQuery(codigoUe));
-            return $"{ue.UeCodigo} - {ue.NomeComTipoEscola}";
+            return $"{ue.Codigo} - {ue.NomeComTipoEscola}";
         }
 
         private async Task<string> ObterDre(string codigoDre)
