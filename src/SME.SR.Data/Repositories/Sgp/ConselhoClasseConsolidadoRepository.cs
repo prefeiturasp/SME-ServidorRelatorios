@@ -81,10 +81,11 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre)
         {
-            var query = new StringBuilder(@"select ccat.turma_id CodigoTurma, ccat.aluno_codigo CodigoAluno,
-                                 ccat.componente_curricular_id CodigoComponenteCurricular,
-                                 ccat.bimestre, ccat.Nota, ccat.ConceitoId
-                          from consolidado_conselho_classe_aluno_turma ccat");
+            var query = new StringBuilder(@"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
+                                 cccatn.componente_curricular_id CodigoComponenteCurricular,
+                                 cccatn.bimestre, cccatn.Nota, cccatn.ConceitoId
+                          from consolidado_conselho_classe_aluno_turma cccatn 
+                          inner join consolidado_conselho_classe_aluno_turma cccat on cccat.id = cccatn.consolidadoConselhoClasseAlunoTurmaId");
 
             bool passaPorWhere = alunosCodigos != null || turmasCodigos != null || semestre > 0;
 
@@ -92,20 +93,20 @@ namespace SME.SR.Data
             {
                 query.AppendLine(" where");
                 if (alunosCodigos != null)
-                    query.AppendLine(" ccat.aluno_codigo = ANY(@alunosCodigos)");
+                    query.AppendLine(" cccat.aluno_codigo = ANY(@alunosCodigos)");
 
                 if (turmasCodigos != null)
-                    query.AppendLine(" ccat.turma_id = ANY(@turmasCodigos)");
+                    query.AppendLine(" cccat.turma_id = ANY(@turmasCodigos)");
 
                 if (semestre > 0)
                     switch (semestre)
                     {
                         case 1:
-                            query.AppendLine(" ccat.bimestre in (1,2)");
+                            query.AppendLine(" cccatn.bimestre in (1,2)");
                             break;
 
                         case 2:
-                            query.AppendLine(" ccat.bimestre in (3,4)");
+                            query.AppendLine(" cccatn.bimestre in (3,4)");
                             break;
                     }  
             }

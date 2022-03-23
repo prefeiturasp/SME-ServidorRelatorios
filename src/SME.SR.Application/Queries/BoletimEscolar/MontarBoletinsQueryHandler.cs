@@ -86,10 +86,10 @@ namespace SME.SR.Application
                                                     periodoAtual,
                                                     aulasPrevistas);
 
-                        var frequeciaGlobal = frequenciasGlobal?
+                        var frequenciaGlobal = frequenciasGlobal?
                             .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
 
-                        var percentualFrequenciaGlobal = frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
+                        var percentualFrequenciaGlobal = frequenciaGlobal != null ? frequenciaGlobal.First().PercentualFrequencia : 100;
                         var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 
                         boletimAluno.Cabecalho = ObterCabecalhoInicial(dre,
