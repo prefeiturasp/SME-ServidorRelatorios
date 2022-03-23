@@ -19,5 +19,6 @@ namespace SME.SR.Infra
         public string UsuarioRf { get; set; }
 
         public ProficienciaSondagemEnum ProficienciaId { get; set; }
+        public int[] Modalidades { get; set; }
     }
 }

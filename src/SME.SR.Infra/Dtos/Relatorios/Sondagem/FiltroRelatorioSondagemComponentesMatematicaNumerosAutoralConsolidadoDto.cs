@@ -13,5 +13,7 @@
         public string Ano { get; set; }
 
         public string UsuarioRf { get; set; }
+
+        public int[] Modalidades { get; set; }
     }
 }

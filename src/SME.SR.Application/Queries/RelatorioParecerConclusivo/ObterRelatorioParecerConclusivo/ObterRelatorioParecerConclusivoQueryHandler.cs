@@ -53,12 +53,12 @@ namespace SME.SR.Application
             if (retorno.DreNome == "Todas")
             {
                 var dresRetorno = await mediator.Send(new ObterTodasDresQuery());
-                dresCodigos = dresRetorno.Select(a => a.DreCodigo);
+                dresCodigos = dresRetorno.Select(a => a.Codigo);
 
                 foreach (var dre in dresRetorno)
                 {
                     var dreParaAdicionar = new RelatorioParecerConclusivoDreDto();
-                    dreParaAdicionar.Codigo = dre.DreCodigo;
+                    dreParaAdicionar.Codigo = dre.Codigo;
                     dreParaAdicionar.Nome = dre.Abreviacao;
 
                     await TrataUes(parecesParaTratar, dreParaAdicionar, anoLetivo, dre.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId);
@@ -69,7 +69,7 @@ namespace SME.SR.Application
             {
                 var dreUnicaParaAdicionar = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = dreCodigoEnviado });
                 var dreParaAdicionar = new RelatorioParecerConclusivoDreDto();
-                dreParaAdicionar.Codigo = dreUnicaParaAdicionar.DreCodigo;
+                dreParaAdicionar.Codigo = dreUnicaParaAdicionar.Codigo;
                 dreParaAdicionar.Nome = dreUnicaParaAdicionar.Abreviacao;
 
                 if (retorno.UeNome == "Todas")
@@ -98,7 +98,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
             {
                 var ueParaAdicionar = new RelatorioParecerConclusivoUeDto();
                 ueParaAdicionar.Nome = ueDaDre.NomeComTipoEscola;
-                ueParaAdicionar.Codigo = ueDaDre.UeCodigo;
+                ueParaAdicionar.Codigo = ueDaDre.Codigo;
 
                 await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, anoLetivo, modalidadeId, cicloIdEnviado, anos, parecerConclusivoId);
 
