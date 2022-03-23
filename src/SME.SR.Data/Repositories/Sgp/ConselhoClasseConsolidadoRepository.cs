@@ -78,5 +78,41 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
 
         }
+
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre)
+        {
+            var query = new StringBuilder(@"select ccat.turma_id CodigoTurma, ccat.aluno_codigo CodigoAluno,
+                                 ccat.componente_curricular_id CodigoComponenteCurricular,
+                                 ccat.bimestre, ccat.Nota, ccat.ConceitoId
+                          from consolidado_conselho_classe_aluno_turma ccat");
+
+            bool passaPorWhere = alunosCodigos != null || turmasCodigos != null || semestre > 0;
+
+            if (passaPorWhere)
+            {
+                query.AppendLine(" where");
+                if (alunosCodigos != null)
+                    query.AppendLine(" ccat.aluno_codigo = ANY(@alunosCodigos)");
+
+                if (turmasCodigos != null)
+                    query.AppendLine(" ccat.turma_id = ANY(@turmasCodigos)");
+
+                if (semestre > 0)
+                    switch (semestre)
+                    {
+                        case 1:
+                            query.AppendLine(" ccat.bimestre in (1,2)");
+                            break;
+
+                        case 2:
+                            query.AppendLine(" ccat.bimestre in (3,4)");
+                            break;
+                    }  
+            }
+                
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            var parametros = new { alunosCodigos, turmasCodigos, semestre };
+            return await conexao.QueryAsync<NotasAlunoBimestre>(query.ToString(), parametros);
+        }
     }
 }

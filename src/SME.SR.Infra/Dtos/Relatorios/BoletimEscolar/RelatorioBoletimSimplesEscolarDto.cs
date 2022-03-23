@@ -6,17 +6,11 @@ namespace SME.SR.Infra
 {
     public class RelatorioBoletimSimplesEscolarDto
     {
-        public BoletimEscolarCabecalhoDto Cabecalho { get; set; }
-
-        public string ParecerConclusivo { get; set; }
-
-        public ComponenteCurricularRegenciaDto ComponenteCurricularRegencia { get; set; }
-
-        public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
-
-        public RelatorioBoletimSimplesEscolarDto()
+        public RelatorioBoletimSimplesEscolarDto(List<BoletimSimplesEscolarDto> relatorioBoletimEscolar)
         {
-            Cabecalho = new BoletimEscolarCabecalhoDto();
+            this.RelatorioBoletimEscolar = relatorioBoletimEscolar;
         }
+
+        public List<BoletimSimplesEscolarDto> RelatorioBoletimEscolar { get; set; }
     }
 }

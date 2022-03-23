@@ -11,11 +11,11 @@ namespace SME.SR.Application
 {
     public class ObterNotasRelatorioBoletimQueryHandler : IRequestHandler<ObterNotasRelatorioBoletimQuery, IEnumerable<IGrouping<string, NotasAlunoBimestre>>>
     {
-        private INotaConceitoRepository notasConceitoRepository;
+        private IConselhoClasseConsolidadoRepository conselhoClasseConsolidadoRepository;
 
-        public ObterNotasRelatorioBoletimQueryHandler(INotaConceitoRepository notasConceitoRepository)
+        public ObterNotasRelatorioBoletimQueryHandler(IConselhoClasseConsolidadoRepository conselhoClasseConsolidadoRepository)
         {
-            this.notasConceitoRepository = notasConceitoRepository ?? throw new ArgumentException(nameof(notasConceitoRepository));
+            this.conselhoClasseConsolidadoRepository = conselhoClasseConsolidadoRepository ?? throw new ArgumentException(nameof(conselhoClasseConsolidadoRepository));
         }
 
         public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> Handle(ObterNotasRelatorioBoletimQuery request, CancellationToken cancellationToken)
@@ -32,7 +32,8 @@ namespace SME.SR.Application
                 while (cont < alunosCodigos.Length)
                 {
                     var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
-                    var notasAlunosPagina = await notasConceitoRepository.ObterNotasTurmasAlunos(alunosPagina.ToArray(), arrTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+                    // var notasAlunosPagina = await notasConceitoRepository.ObterNotasTurmasAlunos(alunosPagina.ToArray(), arrTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+                    var notasAlunosPagina = await conselhoClasseConsolidadoRepository.ObterNotasBoletimPorAlunoTurma(alunosCodigos, request.CodigosTurmas, request.Semestre);
                     notasRetorno.AddRange(notasAlunosPagina.ToList());
                     cont += alunosPagina.Count();
                     i++;
