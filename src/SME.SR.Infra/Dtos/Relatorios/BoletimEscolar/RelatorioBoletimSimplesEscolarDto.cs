@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SME.SR.Infra
+namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
 {
     public class RelatorioBoletimSimplesEscolarDto
     {
-        public RelatorioBoletimSimplesEscolarDto(List<BoletimSimplesEscolarDto> relatorioBoletimEscolar)
-        {
-            this.RelatorioBoletimEscolar = relatorioBoletimEscolar;
-        }
 
-        public List<BoletimSimplesEscolarDto> RelatorioBoletimEscolar { get; set; }
+        public bool EhRegencia { get; set; }
+        public Modalidade ModalidadeTurma { get; set; }
+        public BoletimEscolarCabecalhoDto Cabecalho { get; set; }
+        public ComponenteCurricularRegenciaDto ComponenteCurricularRegencia { get; set; }
+        public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
     }
 }
