@@ -79,13 +79,15 @@ namespace SME.SR.Data
 
         }
 
-        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre)
+        public async Task<IEnumerable<NotasAlunoBimestreBoletimSimplesDto>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre)
         {
             var query = new StringBuilder(@"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
                                  cccatn.componente_curricular_id CodigoComponenteCurricular,
-                                 cccatn.bimestre, cccatn.Nota, cccatn.ConceitoId
-                          from consolidado_conselho_classe_aluno_turma cccatn 
-                          inner join consolidado_conselho_classe_aluno_turma cccat on cccat.id = cccatn.consolidado_conselho_classe_aluno_turma_id");
+                                 cccatn.bimestre as Bimestre, coalesce((cast (cccatn.nota as varchar)),cv.valor) as NotaConceito
+                              from consolidado_conselho_classe_aluno_turma cccat 
+                              inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = cccat.id 
+                              left join conceito_valores cv on cv.id = cccatn.conceito_id 
+                              inner join turma t on t.id = cccat.turma_id");
 
             bool passaPorWhere = alunosCodigos != null || turmasCodigos != null || semestre > 0;
 
@@ -93,10 +95,10 @@ namespace SME.SR.Data
             {
                 query.AppendLine(" where");
                 if (alunosCodigos != null)
-                    query.AppendLine(" cccat.aluno_codigo = ANY(@alunosCodigos)");
+                    query.AppendLine(" cccat.aluno_codigo = ANY(@alunosCodigos) and ");
 
                 if (turmasCodigos != null)
-                    query.AppendLine(" cccat.turma_id = ANY(@turmasCodigos)");
+                    query.AppendLine(" t.turma_id = ANY(@turmasCodigos)");
 
                 if (semestre > 0)
                     switch (semestre)
@@ -113,7 +115,14 @@ namespace SME.SR.Data
                 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var parametros = new { alunosCodigos, turmasCodigos, semestre };
-            return await conexao.QueryAsync<NotasAlunoBimestre>(query.ToString(), parametros);
+            try
+            {
+                return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

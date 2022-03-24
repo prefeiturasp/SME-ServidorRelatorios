@@ -33,7 +33,7 @@ namespace SME.SR.Application
             {
                 return request.TrazerAlunosInativos ? alunos.OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString()) 
                                                     : alunos.Where(al => al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Ativo 
-                                                        && al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Concluido)
+                                                        || al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Concluido)
                                                         .OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString());
             }
                 

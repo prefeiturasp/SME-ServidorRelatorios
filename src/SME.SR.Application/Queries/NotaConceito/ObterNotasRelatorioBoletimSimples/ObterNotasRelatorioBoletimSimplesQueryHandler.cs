@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterNotasRelatorioBoletimQueryHandler : IRequestHandler<ObterNotasRelatorioBoletimQuery, IEnumerable<IGrouping<string, NotasAlunoBimestre>>>
+    public class ObterNotasRelatorioBoletimSimplesQueryHandler : IRequestHandler<ObterNotasRelatorioBoletimSimplesQuery, IEnumerable<IGrouping<string, NotasAlunoBimestreBoletimSimplesDto>>>
     {
-        private INotaConceitoRepository notasConceitoRepository;
+        private IConselhoClasseConsolidadoRepository conselhoClasseConsolidadoRepository;
 
-        public ObterNotasRelatorioBoletimQueryHandler(INotaConceitoRepository notasConceitoRepository)
+        public ObterNotasRelatorioBoletimSimplesQueryHandler(IConselhoClasseConsolidadoRepository conselhoClasseConsolidadoRepository)
         {
-            this.notasConceitoRepository = notasConceitoRepository ?? throw new ArgumentException(nameof(notasConceitoRepository));
+            this.conselhoClasseConsolidadoRepository = conselhoClasseConsolidadoRepository ?? throw new ArgumentException(nameof(conselhoClasseConsolidadoRepository));
         }
 
-        public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> Handle(ObterNotasRelatorioBoletimQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestreBoletimSimplesDto>>> Handle(ObterNotasRelatorioBoletimSimplesQuery request, CancellationToken cancellationToken)
         {
-            var notasRetorno = new List<NotasAlunoBimestre>();
+            var notasRetorno = new List<NotasAlunoBimestreBoletimSimplesDto>();
             var alunosCodigos = request.CodigosAlunos;
             int alunosPorPagina = 100;
 
@@ -32,7 +32,7 @@ namespace SME.SR.Application
                 while (cont < alunosCodigos.Length)
                 {
                     var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
-                    var notasAlunosPagina = await notasConceitoRepository.ObterNotasTurmasAlunos(alunosPagina.ToArray(), arrTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+                    var notasAlunosPagina = await conselhoClasseConsolidadoRepository.ObterNotasBoletimPorAlunoTurma(alunosCodigos, request.CodigosTurmas, request.Semestre);
                     notasRetorno.AddRange(notasAlunosPagina.ToList());
                     cont += alunosPagina.Count();
                     i++;
