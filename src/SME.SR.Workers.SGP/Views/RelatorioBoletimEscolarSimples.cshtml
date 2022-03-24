@@ -86,7 +86,7 @@
       </thead>
       <tbody>
 
-        @if (!aluno.EhRegencia)
+        @if (aluno.EhRegencia)
         {
           MontarComponenteCurricularesRegencia(aluno);
         }
