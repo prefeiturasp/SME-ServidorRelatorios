@@ -53,7 +53,9 @@ namespace SME.SR.Data
                                         GROUP BY aas.semestre ");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            return await conexao.QueryFirstOrDefaultAsync<UltimoSemestreAcompanhamentoGeradoDto>(query.ToString(), new { alunoCodigo });
+            {
+                return await conexao.QueryFirstOrDefaultAsync<UltimoSemestreAcompanhamentoGeradoDto>(query.ToString(), new { alunoCodigo });
+            }
         }
     }
 }
