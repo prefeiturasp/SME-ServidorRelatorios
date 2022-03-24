@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class MontarBoletinsQueryHandler : IRequestHandler<MontarBoletinsQuery, List<BoletimSimplesEscolarDto>>
+    public class MontarBoletinsQueryHandler : IRequestHandler<MontarBoletinsQuery, List<RelatorioBoletimSimplesEscolarDto>>
     {
         private const string FREQUENCIA_100 = "100";
         private readonly IMediator mediator;
@@ -24,7 +24,7 @@ namespace SME.SR.Application
             this.tipoCalendarioRepository = tipoCalendarioRepository ?? throw new ArgumentNullException(nameof(tipoCalendarioRepository));
         }
 
-        public async Task<List<BoletimSimplesEscolarDto>> Handle(MontarBoletinsQuery request, CancellationToken cancellationToken)
+        public async Task<List<RelatorioBoletimSimplesEscolarDto>> Handle(MontarBoletinsQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -44,28 +44,29 @@ namespace SME.SR.Application
                 var registroFrequencia = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(turmas.Select(a => a.Codigo).ToArray(), 0, new string[] { }, new int[] { 1, 2, 3, 4 }));
                 var periodoAtual = await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dre.Id, ue.Id, request.Turmas.Select(a => a.AnoLetivo).FirstOrDefault()));
 
-                var relatorioBoletimSimplesEscolar = new List<BoletimSimplesEscolarDto>();
+                var relatorioBoletimSimplesEscolar = new List<RelatorioBoletimSimplesEscolarDto>();
 
                 foreach (var aluno in alunos)
                 {
-                    // verifica PossuiConselho bimestre
                     var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
                     var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
                     if (conselhoClassBimestres != null && conselhoClassBimestres.Any())
                     {
-                        var boletimAluno = new BoletimSimplesEscolarDto();
+                        var boletimAluno = new RelatorioBoletimSimplesEscolarDto();
 
                         if (componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key) == null)
                             throw new NegocioException($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
 
                         var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
-                        //foreach (var turmaAluno in aluno)
+
                         foreach (var turmaAluno in componentesAluno.Select(s => s.CodigoTurma).Distinct())
                             MapearComponentesOrdenadosGrupo(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.ToString()), boletimAluno);
 
                         var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+
+                        boletimAluno.ModalidadeTurma = turma.ModalidadeCodigo;
 
                         var frequenciasAluno = frequencia?
                             .Where(t => t.Key == aluno.First().CodigoAluno.ToString())
@@ -120,9 +121,9 @@ namespace SME.SR.Application
             }
         }
 
-        private List<BoletimSimplesEscolarDto> OrdenarBoletins(List<BoletimSimplesEscolarDto> boletinsAlunos)
+        private List<RelatorioBoletimSimplesEscolarDto> OrdenarBoletins(List<RelatorioBoletimSimplesEscolarDto> boletinsAlunos)
         {
-            var boletinsOrdenados = new List<BoletimSimplesEscolarDto>();
+            var boletinsOrdenados = new List<RelatorioBoletimSimplesEscolarDto>();
             var turmas = boletinsAlunos.Select(b => b.Cabecalho.NomeTurma).Distinct();
 
             foreach (string turma in turmas.OrderBy(t => t))
@@ -150,7 +151,7 @@ namespace SME.SR.Application
             };
         }
 
-        private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, BoletimSimplesEscolarDto boletim)
+        private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
         {
             foreach (var componente in componentesCurricularesPorTurma.OrderBy(a => a.GrupoMatriz).ThenBy(a=> a.Disciplina))
             {
@@ -197,13 +198,15 @@ namespace SME.SR.Application
                 boletim.ComponentesCurriculares = boletim.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
         }
 
-        private void SetarNotasFrequencia(BoletimSimplesEscolarDto boletim, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma,
+        private void SetarNotasFrequencia(RelatorioBoletimSimplesEscolarDto boletim, IEnumerable<NotasAlunoBimestre> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma,
             IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia, int periodoAtual, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
         {
             var aulasPrevistasTurma = aulasPrevistas.Where(a => a.TurmaCodigo == frequenciasTurma.FirstOrDefault().TurmaId);
 
             if (boletim.ComponenteCurricularRegencia != null)
             {
+                boletim.EhRegencia = true;
+
                 if (boletim.ComponenteCurricularRegencia.Frequencia)
                 {
                     var frequenciasAlunoRegencia = frequenciasAluno?.Where(f => f.DisciplinaId == boletim.ComponenteCurricularRegencia.Codigo);

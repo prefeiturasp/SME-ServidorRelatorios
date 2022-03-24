@@ -1,6 +1,5 @@
-﻿@model List<SME.SR.Infra.Dtos.Relatorios.BoletimEscolar.RelatorioBoletimSimplesEscolarDto>
+﻿@model List<SME.SR.Infra.RelatorioBoletimSimplesEscolarDto>
 @using SME.SR.Infra;
-@using SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
 
 
 @{ 
@@ -46,7 +45,7 @@
     </table> 
     }
 
-    void MontarBimestres(SME.SR.Infra.Dtos.Relatorios.BoletimEscolar.RelatorioBoletimSimplesEscolarDto aluno)
+    void MontarBimestres(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
     {
     var widthColComponente = ehEJA ? "270px" : "150px";
 
@@ -100,7 +99,7 @@
     </table>
     }
 
-    void MontarComponenteCurriculares(SME.SR.Infra.Dtos.Relatorios.BoletimEscolar.RelatorioBoletimSimplesEscolarDto aluno)
+    void MontarComponenteCurriculares(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
     {
        
         @foreach (var componenteCurricular in aluno.ComponentesCurriculares)
@@ -127,7 +126,7 @@
         }
     }
 
-    void MontarComponenteCurricularesRegencia(SME.SR.Infra.Dtos.Relatorios.BoletimEscolar.RelatorioBoletimSimplesEscolarDto aluno)
+    void MontarComponenteCurricularesRegencia(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
     {
         var inseriuPrimeiraLinha = false;
         var tamanhoRowspan = aluno.ComponentesCurriculares.Count;

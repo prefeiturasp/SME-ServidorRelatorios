@@ -23,22 +23,10 @@ namespace SME.SR.Workers.SGP
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
             var relatorio = await mediator.Send(relatorioQuery);
-                        
-            switch (relatorioQuery.Modalidade)
-            {
-                case Modalidade.EJA:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples/BoletimEscolarEJA", 
-                        relatorio, request.CodigoCorrelacao));
-                    break;
-                case Modalidade.Medio:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples/BoletimEscolarEM",
-                       relatorio, request.CodigoCorrelacao));
-                    break;
-                default:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples/BoletimEscolar",
-                       relatorio, request.CodigoCorrelacao));
-                    break;
-            }   
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples",
+                relatorio, request.CodigoCorrelacao));
         }
     }
 }
+

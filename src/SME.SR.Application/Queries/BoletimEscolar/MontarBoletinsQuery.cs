@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class MontarBoletinsQuery : IRequest<List<BoletimSimplesEscolarDto>>
+    public class MontarBoletinsQuery : IRequest<List<RelatorioBoletimSimplesEscolarDto>>
     {
         public Dre Dre { get; set; }
 

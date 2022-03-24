@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
+namespace SME.SR.Infra
 {
     public class RelatorioBoletimSimplesEscolarDto
     {
@@ -12,5 +12,6 @@ namespace SME.SR.Infra.Dtos.Relatorios.BoletimEscolar
         public BoletimEscolarCabecalhoDto Cabecalho { get; set; }
         public ComponenteCurricularRegenciaDto ComponenteCurricularRegencia { get; set; }
         public List<ComponenteCurricularDto> ComponentesCurriculares { get; set; }
+        public string ParecerConclusivo { get; set; }
     }
 }
