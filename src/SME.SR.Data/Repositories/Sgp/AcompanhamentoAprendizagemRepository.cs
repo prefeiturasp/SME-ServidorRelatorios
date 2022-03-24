@@ -52,7 +52,7 @@ namespace SME.SR.Data
                                         WHERE aa.aluno_codigo = @alunoCodigo
                                         GROUP BY aas.semestre ");
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas)
             {
                 return await conexao.QueryFirstOrDefaultAsync<UltimoSemestreAcompanhamentoGeradoDto>(query.ToString(), new { alunoCodigo });
             }
