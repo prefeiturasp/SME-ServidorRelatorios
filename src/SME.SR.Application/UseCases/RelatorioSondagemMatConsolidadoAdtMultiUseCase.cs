@@ -38,16 +38,18 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter a DRE.");
             }
 
-
             if (!string.IsNullOrEmpty(filtros.UsuarioRf))
             {
                 usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRf });
                 if (usuario == null)
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
-            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
 
-            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.UeCodigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo));
+            var dataReferencia = await mediator
+                .Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+
+            var quantidadeTotalAlunosUeAno = await mediator
+                .Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo, filtros.Modalidades));
 
             var relatorio = await mediator.Send(new ObterSondagemMatAditMultiConsolidadoQuery()
             {
