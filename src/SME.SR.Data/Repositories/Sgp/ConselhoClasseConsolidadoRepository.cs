@@ -85,7 +85,7 @@ namespace SME.SR.Data
                                  cccatn.componente_curricular_id CodigoComponenteCurricular,
                                  cccatn.bimestre, cccatn.Nota, cccatn.ConceitoId
                           from consolidado_conselho_classe_aluno_turma cccatn 
-                          inner join consolidado_conselho_classe_aluno_turma cccat on cccat.id = cccatn.consolidadoConselhoClasseAlunoTurmaId");
+                          inner join consolidado_conselho_classe_aluno_turma cccat on cccat.id = cccatn.consolidado_conselho_classe_aluno_turma_id");
 
             bool passaPorWhere = alunosCodigos != null || turmasCodigos != null || semestre > 0;
 
@@ -111,7 +111,7 @@ namespace SME.SR.Data
                     }  
             }
                 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var parametros = new { alunosCodigos, turmasCodigos, semestre };
             return await conexao.QueryAsync<NotasAlunoBimestre>(query.ToString(), parametros);
         }
