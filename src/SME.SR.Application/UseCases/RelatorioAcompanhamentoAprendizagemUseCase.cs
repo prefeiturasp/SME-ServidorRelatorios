@@ -36,9 +36,6 @@ namespace SME.SR.Application
 
             var acompanhmentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
 
-            if (filtro.RelatorioEscolaAqui)
-                parametros.Semestre = await ObterSemestreUltimoAcompanhamento(parametros.AlunoCodigo);
-
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
 
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(turma.AnoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre));
@@ -66,14 +63,6 @@ namespace SME.SR.Application
                 var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: false));
                 await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao));
             }
-        }
-
-        private async Task<int> ObterSemestreUltimoAcompanhamento(long? alunoCodigo)
-        {
-            var consulta = await mediator.Send(new ObterSemestreUltimoAcompanhamentoGeradoQuery(alunoCodigo.ToString()));
-            if (consulta != null)
-                return consulta.Semestre;
-            else return 0;
         }
 
         private async Task<string> MapearDadosParaGerarMensagem(FiltroRelatorioDto filtro)
