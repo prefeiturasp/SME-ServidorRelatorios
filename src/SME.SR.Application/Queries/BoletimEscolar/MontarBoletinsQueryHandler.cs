@@ -234,7 +234,7 @@ namespace SME.SR.Application
                         componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 3, periodoAtual);
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 4, periodoAtual);
 
-                        componenteCurricular.NotaFinal = notaFrequenciaComponente?.FirstOrDefault()?.NotaConceito;
+                        componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 0, periodoAtual);
                     }
                 }
             }
@@ -255,7 +255,7 @@ namespace SME.SR.Application
                         componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 3, periodoAtual);
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 4, periodoAtual);
 
-                        var notaFinal = notasComponente?.FirstOrDefault()?.NotaConceito;
+                        var notaFinal = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 0, periodoAtual);
                         componenteCurricular.NotaFinal = String.IsNullOrEmpty(notaFinal) && (periodoAtual >= 1 && periodoAtual <= 4) ? "-" : notaFinal;
                     }
                     else
