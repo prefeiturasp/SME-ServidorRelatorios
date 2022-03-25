@@ -1,0 +1,374 @@
+﻿@model List<SME.SR.Infra.RelatorioBoletimSimplesEscolarDto>
+@using SME.SR.Infra;
+
+
+@{ 
+    var tdTheadPrincipal = "borda-padrao alinhar-esquerda padding-left-4";
+    var tdTheadPadrao = "borda-padrao background-color-thead";
+    var tdTheadInterno = tdTheadPadrao + " alinhar-centro";
+    var tdTbodyInterno = "borda-padrao alinhar-centro";
+
+    var ehEnsinoMedio = Model.Count > 0 && Model[0].ModalidadeTurma == SME.SR.Infra.Modalidade.Medio;
+    var ehEJA = Model.Count > 0 && Model[0].ModalidadeTurma == SME.SR.Infra.Modalidade.EJA;
+
+    var heightBoletim = @ehEnsinoMedio ? "1345px" : "450px";
+    var topFooter = @ehEnsinoMedio ? "1295px" : "405px";
+
+    void MontarCabecalho(BoletimEscolarCabecalhoDto cabecalho)
+    {
+    <div>
+      <img class='img-logo-sgp' src=@SME.SR.HtmlPdf.SmeConstants.LogoSmeMono alt='Logo SGP' />
+    </div>
+    <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+    <div class='titulo-relatorio'>BOLETIM ESCOLAR</div>
+    <div class='titulo-sub-relatorio'>@cabecalho.AnoLetivo</div>
+
+    <table class="estilo-tabela campos-header-principal-pagina">
+      <tbody>
+        <tr>
+          <td class='@tdTheadPrincipal' width='25%'>DRE: @cabecalho.NomeDre</td>
+          <td class='@tdTheadPrincipal' width='75%'>UE: @cabecalho.NomeUe</td>
+        </tr>
+        <tr>
+          <td class='@tdTheadPrincipal' width='25%'>TURMA: @cabecalho.NomeTurma</td>
+          <td class='@tdTheadPrincipal' width='75%'>ESTUDANTE: @cabecalho.NomeAlunoOrdenacao</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="estilo-tabela campos-header-principal-pagina-ultima-linha">
+      <tbody> 
+        <tr>
+          <td class='@tdTheadPrincipal border-top-none' width='50%'>FREQUÊNCIA GLOBAL: @cabecalho.FrequenciaGlobal</td>
+          <td class='@tdTheadPrincipal border-top-none' width='50%'>DATA DE IMPRESSÃO: @cabecalho.DataImpressao</td>
+        </tr>
+      </tbody>
+    </table> 
+    }
+
+    void MontarBimestres(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
+    {
+    var widthColComponente = ehEJA ? "270px" : "150px";
+
+    <table class='estilo-tabela'>
+      <thead>
+        <tr>
+          <td colspan="1" width='@widthColComponente'></td>
+          <td colspan="2" class='@tdTheadInterno'>1º BIMESTRE</td>
+          <td colspan="2" class='@tdTheadInterno'>2º BIMESTRE</td>
+          @{ 
+              if (!ehEJA)
+              {
+                <td colspan="2" class='@tdTheadInterno'>3º BIMESTRE</td>
+                <td colspan="2" class='@tdTheadInterno'>4º BIMESTRE</td>
+              }
+          }
+          <td colspan="2" class='@tdTheadInterno'>FINAL</td>
+        </tr>
+        <tr>
+          <td class='@tdTheadInterno'></td>
+          <td class='@tdTheadInterno'>Nota</td>
+          <td class='@tdTheadInterno'>% Freq.</td>
+          <td class='@tdTheadInterno'>Nota</td>
+          <td class='@tdTheadInterno'>% Freq.</td>
+          @{ 
+            if (!ehEJA)
+            {
+              <td class='@tdTheadInterno'>Nota</td>
+              <td class='@tdTheadInterno'>% Freq.</td>
+              <td class='@tdTheadInterno'>Nota</td>
+              <td class='@tdTheadInterno'>% Freq.</td>
+            }
+          }
+          <td class='@tdTheadInterno'>Nota</td>
+          <td class='@tdTheadInterno'>% Freq.</td>
+        </tr>
+      </thead>
+      <tbody>
+
+        @if (aluno.EhRegencia)
+        {
+          MontarComponenteCurricularesRegencia(aluno);
+        }
+        else
+        {
+          MontarComponenteCurriculares(aluno);
+        }
+
+      
+      </tbody>
+    </table>
+    }
+
+    void MontarComponenteCurriculares(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
+    {
+       
+        @foreach (var componenteCurricular in aluno.ComponentesCurriculares)
+        {
+           <tr>
+              <td class='@tdTbodyInterno alinhar-esquerda'>@componenteCurricular.Nome</td>
+              <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre1</td>
+              <td class='@tdTbodyInterno'>@componenteCurricular.FrequenciaBimestre1</td>
+              <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre2</td>
+              <td class='@tdTbodyInterno'>@componenteCurricular.FrequenciaBimestre2</td>
+
+              @{ 
+                if (!ehEJA)
+                {
+                  <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre3</td>
+                  <td class='@tdTbodyInterno'>@componenteCurricular.FrequenciaBimestre3</td>
+                  <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre4</td>
+                  <td class='@tdTbodyInterno'>@componenteCurricular.FrequenciaBimestre4</td>
+                }
+              }
+              <td class='@tdTbodyInterno'>@componenteCurricular.NotaFinal</td>           
+              <td class='@tdTbodyInterno'>@componenteCurricular.FrequenciaFinal</td>            
+           </tr>
+        }
+    }
+
+    void MontarComponenteCurricularesRegencia(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
+    {
+        var inseriuPrimeiraLinha = false;
+        var tamanhoRowspan = aluno.ComponentesCurriculares.Count;
+
+        @foreach (var componenteCurricular in aluno.ComponenteCurricularRegencia.ComponentesCurriculares)
+        {
+           <tr>
+              <td class='@tdTbodyInterno alinhar-esquerda'>@componenteCurricular.Nome</td>
+              @if (!inseriuPrimeiraLinha)
+              {
+                <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre1</td>
+                <td class='@tdTbodyInterno' rowspan='@tamanhoRowspan'>@aluno.ComponenteCurricularRegencia.FrequenciaBimestre1</td>
+                <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre2</td>
+                <td class='@tdTbodyInterno' rowspan='@tamanhoRowspan'>@aluno.ComponenteCurricularRegencia.FrequenciaBimestre2</td>
+              }
+              else 
+              { 
+                  <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre1</td>
+                  <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre2</td>
+              }
+              @{ 
+                if (!ehEJA)
+                {
+                  @if (!inseriuPrimeiraLinha)
+                  {
+                    <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre3</td>
+                    <td class='@tdTbodyInterno' rowspan='@tamanhoRowspan'>@aluno.ComponenteCurricularRegencia.FrequenciaBimestre3</td>
+                    <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre4</td>
+                    <td class='@tdTbodyInterno' rowspan='@tamanhoRowspan'>@aluno.ComponenteCurricularRegencia.FrequenciaBimestre4</td>
+                  }
+                  else
+                  { 
+                    <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre3</td>
+                    <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre4</td>
+                  }
+                }
+              }
+              <td class='@tdTbodyInterno'>@componenteCurricular.NotaFinal</td>
+              @if (!inseriuPrimeiraLinha)
+              {
+                  <td class='@tdTbodyInterno' rowspan='@tamanhoRowspan'>@aluno.ComponenteCurricularRegencia.FrequenciaFinal</td>
+              }
+
+             @{
+                inseriuPrimeiraLinha = true;
+              }
+           </tr>
+        }
+    }
+
+    void MontarFooter()
+    {
+       <div class="footer">
+        <p class="descricao-footer">OBSERVAÇÕES:</p>
+        <p class="linha-obs" />
+        <p class="linha-obs" />
+      </div>
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RELATÓRIO BOLETIM SIMPLES</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
+  <style>
+    .tamanho-quadrado {
+      width: 50%;
+      height: @heightBoletim;
+      border: 1px solid black;
+      font-family: 'Roboto Mono';
+    }
+
+    .linha {
+      display: -webkit-box;
+      page-break-inside: avoid;
+      position: relative;
+    }
+
+    .img-logo-sgp {
+      height: 32px;
+      float: left;
+    }
+
+    .titulo-sgp {
+      text-align: right;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .titulo-relatorio {
+      text-align: right;
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .titulo-sub-relatorio {
+      text-align: right;
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .campos-header-principal-pagina {
+      margin-top: 8px;
+      font-size: 7px !important;
+    }
+
+    .campos-header-principal-pagina-ultima-linha {
+      margin-bottom: 8px;
+      font-size: 7px !important;
+    }
+
+    .border-top-none {
+      border-top: none !important;
+    }
+
+    .padding-left-4 {
+      padding-left: 4px;
+    }
+
+    .estilo-tabela {
+      display: table;
+      width: 100%;
+      border-color: #42474a;
+      empty-cells: show;
+      border: none;
+      border-collapse: collapse;
+      font-size: 6px;
+      font-weight: normal;
+    }
+
+    .borda-padrao {
+      border: 0.6px solid #42474a;
+    }
+
+    .alinhar-esquerda {
+      text-align: left !important;
+    }
+
+    .padding-geral {
+      padding: 5px 5px 0px 5px;
+    }
+
+    .background-color-thead {
+      background-color: #f3f3f3;
+    }
+
+    .alinhar-centro {
+      text-align: center;
+    }
+
+    .footer {
+      top: @topFooter;
+      position: absolute;
+      border-top: 1px solid black;
+      width: inherit;
+    }
+
+    .descricao-footer {
+      font-size: 10px;
+      margin-top: 3px;
+      margin-left: 9px;
+    }
+
+    .linha-obs {
+      border-top: 1px solid;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-page-a4">
+    @{
+
+      var contador = 0;
+      var aluno1 = new RelatorioBoletimSimplesEscolarDto();
+      var aluno2 = new RelatorioBoletimSimplesEscolarDto();
+
+      for (var i = 0; i < Model.Count; i++)
+      {
+        var aluno = Model[i];
+
+        var ehPar = i % 2 == 0;
+
+   
+
+        if (ehPar)
+        {
+          aluno1 = aluno;
+        }
+        else
+        {
+          aluno2 = aluno;
+        }
+
+        contador++;
+        var ehAlunoFinal = i == (Model.Count - 1);
+
+        var montarLinha = contador == 2 || ehAlunoFinal;
+
+        if (montarLinha)
+        {
+          <div class="linha">
+            @{ 
+                if (aluno1.Cabecalho != null)
+                {
+                  <div class="tamanho-quadrado">
+                    <div class="padding-geral">
+                      @{ 
+                          MontarCabecalho(aluno1.Cabecalho);
+                          MontarBimestres(aluno1);
+                      }
+                    </div>
+                      @{ 
+                          MontarFooter();
+                      }
+                  </div>
+                }
+                if (aluno2.Cabecalho != null)
+                {
+                  <div class="tamanho-quadrado">
+                    <div class="padding-geral">
+                      @{ 
+                          MontarCabecalho(aluno2.Cabecalho);
+                          MontarBimestres(aluno2);
+                      }
+                    </div>
+                      @{ 
+                          MontarFooter();
+                      }
+                  </div>
+                }
+              }
+          </div>          
+           contador = 0;
+           aluno1 = new RelatorioBoletimSimplesEscolarDto();
+           aluno2 = new RelatorioBoletimSimplesEscolarDto();
+          }
+      }
+    }   
+  </div>
+</body>
+</html>
