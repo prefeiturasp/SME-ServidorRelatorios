@@ -453,7 +453,7 @@ namespace SME.SR.Application
 
                         // Monta Colunas notComponenteCurricularRepositoryas dos bimestres
                         var ultimoBimestreAtivo = aluno.Inativo ?
-                            periodosEscolares.FirstOrDefault(p => p.PeriodoFim <= aluno.DataSituacaoAluno)?.Bimestre : 4;
+                            periodosEscolares.OrderByDescending(o => o.Bimestre).FirstOrDefault(p => p.PeriodoFim <= aluno.DataSituacaoAluno)?.Bimestre : 4;
 
                         if (ultimoBimestreAtivo == null)
                             possuiComponente = false;
