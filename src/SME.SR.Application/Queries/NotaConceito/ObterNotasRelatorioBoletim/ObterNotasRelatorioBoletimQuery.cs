@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Infra;
 using System.Collections.Generic;
 using System.Linq;
 
