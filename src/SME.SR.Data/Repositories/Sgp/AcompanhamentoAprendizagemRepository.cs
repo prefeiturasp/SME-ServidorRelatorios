@@ -41,5 +41,21 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<AcompanhamentoAprendizagemAlunoDto>(query.ToString(), new { turmaId, alunoCodigo, semestre });
             }
         }
+
+        public async Task<UltimoSemestreAcompanhamentoGeradoDto> ObterUltimoSemestreAcompanhamentoGerado(string alunoCodigo)
+        {
+            var query = new StringBuilder(@"SELECT 
+                                        max(aa.criado_em)  AS DataCriacao,
+                                        aas.semestre 
+                                        FROM acompanhamento_aluno aa 
+                                        INNER JOIN acompanhamento_aluno_semestre aas  ON aa.id = aas.acompanhamento_aluno_id 
+                                        WHERE aa.aluno_codigo = @alunoCodigo
+                                        GROUP BY aas.semestre ");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<UltimoSemestreAcompanhamentoGeradoDto>(query.ToString(), new { alunoCodigo });
+            }
+        }
     }
 }

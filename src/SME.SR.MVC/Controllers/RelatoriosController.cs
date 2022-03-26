@@ -7439,7 +7439,7 @@ namespace SME.SR.MVC.Controllers
             boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
 
 
-            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+            var model = new BoletimEscolarDetalhadoEscolaAquiDto(boletimEscolarDetalhadoDto);
 
             return View("RelatorioBoletimEscolarDetalhado", model);
 

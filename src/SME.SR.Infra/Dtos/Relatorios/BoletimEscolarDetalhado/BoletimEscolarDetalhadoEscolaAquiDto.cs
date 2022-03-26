@@ -1,8 +1,8 @@
 ﻿namespace SME.SR.Infra
 {
-   public class RelatorioBoletimEscolarDetalhadoDto
+   public class BoletimEscolarDetalhadoEscolaAquiDto
     {
-        public RelatorioBoletimEscolarDetalhadoDto(BoletimEscolarDetalhadoDto boletimEscolarDetalhado)
+        public BoletimEscolarDetalhadoEscolaAquiDto(BoletimEscolarDetalhadoDto boletimEscolarDetalhado)
         {
             this.BoletimEscolarDetalhado = boletimEscolarDetalhado;
         }

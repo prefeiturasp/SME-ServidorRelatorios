@@ -4,7 +4,6 @@
     {
         public const string RotaRelatoriosSolicitados = "sr.relatorios.solicitados";
         public const string RotaRelatoriosProcessando = "sr.relatorios.processando";
-
         public const string RotaRelatoriosSolicitadosBoletim = "sr.relatorios.solicitados.boletim";
         public const string RotaRelatoriosProcessandoBoletim = "sr.relatorios.processando.boletim";
 
@@ -22,6 +21,7 @@
         public const string RotaRelatoriosProcessandoConselhoDeClasse = "sr.relatorios.processando.conselhodeclasse";
 
         public const string RotaRelatoriosSolicitadosRelatorioAcompanhamentoAprendizagem = "sr.relatorios.solicitados.relatorioacompanhamentoaprendizagem";
+        public const string RotaRelatoriosSolicitadosRaaEscolaAqui = "sr.relatorios.app.solicitados.raaescolaaqui";
 
         public const string RotaRelatoriosSolicitadosCalendarioEscolar = "sr.relatorios.solicitados.calendárioescolar";
 
