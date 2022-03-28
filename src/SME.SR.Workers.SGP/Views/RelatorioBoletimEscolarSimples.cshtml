@@ -31,7 +31,7 @@
         </tr>
         <tr>
           <td class='@tdTheadPrincipal' width='25%'>TURMA: @cabecalho.NomeTurma</td>
-          <td class='@tdTheadPrincipal' width='75%'>ESTUDANTE: @cabecalho.NomeAlunoOrdenacao</td>
+          <td class='@tdTheadPrincipal' width='75%'>ESTUDANTE: @cabecalho.Aluno</td>
         </tr>
       </tbody>
     </table>
@@ -85,18 +85,29 @@
       </thead>
       <tbody>
 
-        @if (aluno.EhRegencia)
-        {
-          MontarComponenteCurricularesRegencia(aluno);
-        }
-        else
-        {
-          MontarComponenteCurriculares(aluno);
-        }
+          @if (aluno.EhRegencia)
+          {
+              MontarComponenteCurricularesRegencia(aluno);
+          }
+          else
+          {
+              MontarComponenteCurriculares(aluno);
+          }
 
-      
+
       </tbody>
     </table>
+
+        @if (!string.IsNullOrEmpty(aluno.ParecerConclusivo))
+        {
+            <table class="estilo-tabela">
+              <tbody>
+                <tr>
+                    <td class='@tdTbodyInterno alinhar-esquerda' width='100%'>Parecer conclusivo: @aluno.ParecerConclusivo</td>
+                </tr>
+              </tbody>
+            </table>
+        }
     }
 
     void MontarComponenteCurriculares(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
@@ -174,7 +185,7 @@
                 inseriuPrimeiraLinha = true;
               }
            </tr>
-        }
+        }          
     }
 
     void MontarFooter()
