@@ -91,7 +91,7 @@ namespace SME.SR.Application
                             .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
 
                         var percentualFrequenciaGlobal = frequenciaGlobal != null ? frequenciaGlobal.First().PercentualFrequencia : 100;
-                        var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
+                        var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);                        
 
                         boletimAluno.Cabecalho = ObterCabecalhoInicial(dre,
                                                                                     ue,
@@ -101,7 +101,7 @@ namespace SME.SR.Application
                                                                                     aluno.First().ObterNomeFinal(),
                                                                                     $"{percentualFrequenciaGlobal}%");
 
-                        boletimAluno.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0) ? parecerConclusivo?.ParecerConclusivo : null;
+                        boletimAluno.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
 
                         relatorioBoletimSimplesEscolar.Add(boletimAluno);
                     }
