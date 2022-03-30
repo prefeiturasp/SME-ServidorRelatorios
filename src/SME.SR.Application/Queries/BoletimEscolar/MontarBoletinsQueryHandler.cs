@@ -156,7 +156,7 @@ namespace SME.SR.Application
 
         private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
         {
-            var componentesTurma = componentesCurricularesPorTurma.OrderBy(a => a.GrupoMatriz.Id).ToList();
+            var componentesTurma = componentesCurricularesPorTurma.OrderBy(a => a.GrupoMatriz.Id).ThenBy(o=> o.Disciplina).ToList();
             foreach (var componente in componentesTurma)
             {
                 if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
@@ -197,9 +197,6 @@ namespace SME.SR.Application
             }
             if (boletim.ComponenteCurricularRegencia != null)
                 boletim.ComponenteCurricularRegencia.ComponentesCurriculares = boletim.ComponenteCurricularRegencia.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
-
-            if (boletim.ComponentesCurriculares != null && boletim.ComponentesCurriculares.Any())
-                boletim.ComponentesCurriculares = boletim.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
         }
 
         private void SetarNotasFrequencia(RelatorioBoletimSimplesEscolarDto boletim, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma,
@@ -237,7 +234,9 @@ namespace SME.SR.Application
                         componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 3, periodoAtual);
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 4, periodoAtual);
 
-                        componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 0, periodoAtual);
+                        var notaFinal = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 0, periodoAtual);
+
+                        componenteCurricular.NotaFinal = String.IsNullOrEmpty(notaFinal) ? "-" : notaFinal;
                     }
                 }
             }
@@ -249,21 +248,25 @@ namespace SME.SR.Application
                     var frequenciasAlunoComponente = frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
                     var frequenciasTurmaComponente = frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
 
+                    var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
+
+                    var notaFinal = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 0, periodoAtual);
+
                     if (componenteCurricular.Nota)
                     {
-                        var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
-
                         componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 1, periodoAtual);
                         componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 2, periodoAtual);
                         componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 3, periodoAtual);
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 4, periodoAtual);
 
-                        var notaFinal = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 0, periodoAtual);
-                        componenteCurricular.NotaFinal = String.IsNullOrEmpty(notaFinal) && (periodoAtual >= 1 && periodoAtual <= 4) ? "-" : notaFinal;
+                        componenteCurricular.NotaFinal = String.IsNullOrEmpty(notaFinal) && (periodoAtual == 0) ? "-" : notaFinal;
                     }
                     else
-                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
+                        componenteCurricular.NotaFinal = String.IsNullOrEmpty(notaFinal) 
+                                                         ? "-"
+                                                         : ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
 
+                    var frequenciaFinal = ObterFrequenciaFinalAluno(frequenciasAlunoComponente, frequenciasTurmaComponente, conselhoClasseBimestres, registroFrequencia.Where(rf => rf.ComponenteCurricularCodigo == componenteCurricular.Codigo));
 
                     if (componenteCurricular.Frequencia)
                     {
@@ -273,12 +276,12 @@ namespace SME.SR.Application
                         componenteCurricular.FrequenciaBimestre3 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, frequenciasTurmaComponente, 3, aulasCadastradas, periodoAtual);
                         componenteCurricular.FrequenciaBimestre4 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, frequenciasTurmaComponente, 4, aulasCadastradas, periodoAtual);
 
-                        var frequenciaFinal = ObterFrequenciaFinalAluno(frequenciasAlunoComponente, frequenciasTurmaComponente, conselhoClasseBimestres, registroFrequencia.Where(rf => rf.ComponenteCurricularCodigo == componenteCurricular.Codigo));
                         componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) && (periodoAtual >= 1 && periodoAtual <= 4) ? "-" : frequenciaFinal;
-
-                        if (!componenteCurricular.Nota)
-                            componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
                     }
+                    else
+                        componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) 
+                                                               ? "-"
+                                                               : ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);                        
                 }
             }
         }

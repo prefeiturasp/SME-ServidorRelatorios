@@ -95,13 +95,13 @@ namespace SME.SR.Data
             {
                 query.AppendLine(" where");
                 if (alunosCodigos != null)
-                    query.AppendLine(" cccat.aluno_codigo = ANY(@alunosCodigos) and ");
+                    query.AppendLine(" cccat.aluno_codigo = ANY(@alunosCodigos) ");
 
                 if (turmasCodigos != null)
-                    query.AppendLine(" t.turma_id = ANY(@turmasCodigos)");
+                    query.AppendLine(" and t.turma_id = ANY(@turmasCodigos)");
 
                 if (semestre > 0)
-                    query.AppendLine(" t.semestre = @semestre");
+                    query.AppendLine(" and t.semestre = @semestre");
             }
                 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
