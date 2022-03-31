@@ -45,7 +45,10 @@ namespace SME.SR.Data
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					mte.nr_chamada_aluno NumeroAlunoChamada
+					case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_matricula_cotic matr ON
@@ -55,9 +58,7 @@ namespace SME.SR.Data
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola = @turmaCodigo
-					and mte.nr_chamada_aluno <> 0
-					and mte.nr_chamada_aluno is not null
+					mte.cd_turma_escola = @turmaCodigo					
 					and (matr.st_matricula in (1, 6, 10, 13, 5)
 					or (matr.st_matricula not in (1, 6, 10, 13, 5)
 					and matr.dt_status_matricula > @dataReferencia))
@@ -86,7 +87,10 @@ namespace SME.SR.Data
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					mte.nr_chamada_aluno NumeroAlunoChamada
+					case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -96,9 +100,7 @@ namespace SME.SR.Data
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola = @turmaCodigo
-					and mte.nr_chamada_aluno <> 0
-					and mte.nr_chamada_aluno is not null
+					mte.cd_turma_escola = @turmaCodigo					
 					and mte.dt_situacao_aluno = (
 					select
 						max(mte2.dt_situacao_aluno)
@@ -164,7 +166,10 @@ namespace SME.SR.Data
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
 						ISNULL(hm.dt_status_matricula, matr.dt_status_matricula) DataMatricula,
-						mte.nr_chamada_aluno NumeroAlunoChamada,
+						case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada,
 						CASE
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
@@ -212,7 +217,10 @@ namespace SME.SR.Data
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
 						matr.dt_status_matricula DataMatricula,
-						mte.nr_chamada_aluno NumeroAlunoChamada,
+						case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada,
 						CASE WHEN nea.tp_necessidade_especial IS NULL
 							THEN 0
 							ELSE 1
@@ -250,8 +258,11 @@ namespace SME.SR.Data
 					alunos.DataNascimento,
 					alunos.CodigoSituacaoMatricula,
 					alunos.SituacaoMatricula,
-					alunos.DataSituacao,
-					alunos.NumeroAlunoChamada,
+					alunos.DataSituacao,					
+					case when alunos.NumeroAlunoChamada is null then '0'
+						when alunos.NumeroAlunoChamada = 'NULL' then '0'
+						else alunos.NumeroAlunoChamada
+						end as NumeroAlunoChamada,
 					alunos.PossuiDeficiencia,
 					alunos.NomeResponsavel,
 					alunos.TipoResponsavel,

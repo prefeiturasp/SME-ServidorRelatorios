@@ -4,6 +4,7 @@
     "SME.SR.Workers.SGP": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "swagger",
       "applicationUrl": "https://localhost:5011/"
     },
     "Docker": {
