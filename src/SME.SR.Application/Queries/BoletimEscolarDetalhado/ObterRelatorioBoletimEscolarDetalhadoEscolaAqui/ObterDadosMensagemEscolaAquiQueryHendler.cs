@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQueryHendler : IRequestHandler<ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQuery, RelatorioBoletimEscolarDetalhadoDto>
+    public class ObterDadosMensagemEscolaAquiQueryHendler : IRequestHandler<ObterDadosMensagemEscolaAquiQuery, BoletimEscolarDetalhadoEscolaAquiDto>
     {
         private readonly IMediator mediator;
-        public ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQueryHendler(IMediator mediator)
+        public ObterDadosMensagemEscolaAquiQueryHendler(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task<RelatorioBoletimEscolarDetalhadoDto> Handle(ObterRelatorioBoletimEscolarDetalhadoEscolaAquiQuery request, CancellationToken cancellationToken)
+        public async Task<BoletimEscolarDetalhadoEscolaAquiDto> Handle(ObterDadosMensagemEscolaAquiQuery request, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrWhiteSpace(request.TurmaCodigo))
                 await ObterFechamentoTurma(request.TurmaCodigo);
@@ -49,7 +49,7 @@ namespace SME.SR.Application
 
             var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo);
 
-            return new RelatorioBoletimEscolarDetalhadoDto(boletins);
+            return new BoletimEscolarDetalhadoEscolaAquiDto(boletins);
         }
 
         private async Task<int> ObterUltimoBimestrePeriodoFechamento(int anoLetivo)
