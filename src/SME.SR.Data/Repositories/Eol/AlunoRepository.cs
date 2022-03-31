@@ -45,7 +45,10 @@ namespace SME.SR.Data
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					mte.nr_chamada_aluno NumeroAlunoChamada
+					case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_matricula_cotic matr ON
@@ -84,7 +87,10 @@ namespace SME.SR.Data
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					mte.nr_chamada_aluno NumeroAlunoChamada
+					case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -160,7 +166,10 @@ namespace SME.SR.Data
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
 						ISNULL(hm.dt_status_matricula, matr.dt_status_matricula) DataMatricula,
-						mte.nr_chamada_aluno NumeroAlunoChamada,
+						case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada,
 						CASE
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
@@ -208,7 +217,10 @@ namespace SME.SR.Data
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
 						matr.dt_status_matricula DataMatricula,
-						mte.nr_chamada_aluno NumeroAlunoChamada,
+						case when mte.nr_chamada_aluno is null then '0'
+						when mte.nr_chamada_aluno = 'NULL' then '0'
+						else mte.nr_chamada_aluno
+						end as NumeroAlunoChamada,
 						CASE WHEN nea.tp_necessidade_especial IS NULL
 							THEN 0
 							ELSE 1
@@ -246,8 +258,11 @@ namespace SME.SR.Data
 					alunos.DataNascimento,
 					alunos.CodigoSituacaoMatricula,
 					alunos.SituacaoMatricula,
-					alunos.DataSituacao,
-					alunos.NumeroAlunoChamada,
+					alunos.DataSituacao,					
+					case when alunos.NumeroAlunoChamada is null then '0'
+						when alunos.NumeroAlunoChamada = 'NULL' then '0'
+						else alunos.NumeroAlunoChamada
+						end as NumeroAlunoChamada,
 					alunos.PossuiDeficiencia,
 					alunos.NomeResponsavel,
 					alunos.TipoResponsavel,
