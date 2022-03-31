@@ -10,6 +10,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Sgp;
+using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.JRSClient;
@@ -141,6 +142,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IMathPoolNumbersRepository), typeof(MathPoolNumbersRepository));
             services.TryAddScoped(typeof(IPerguntasAutoralRepository), typeof(PerguntasAutoralRepository));
             services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));
+            services.TryAddScoped(typeof(IPerguntasAditMultiNumRepository), typeof(PerguntasAditMultiNumRepository));
             services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
             services.TryAddScoped(typeof(IAulaPrevistaBimestreRepository), typeof(AulaPrevistaBimestreRepository));
             services.TryAddScoped(typeof(IAtribuicaoEsporadicaRepository), typeof(AtribuicaoEsporadicaRepository));
@@ -195,7 +197,6 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarDetalhadoUseCase, RelatorioBoletimEscolarDetalhadoUseCase>();
-            services.TryAddScoped<IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase, RelatorioBoletimEscolarDetalhadoEscolaAquiUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
             services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
             services.TryAddScoped<IRelatorioFrequenciasUseCase, RelatorioFrequenciasUseCase>();

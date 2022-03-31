@@ -7,5 +7,6 @@ namespace SME.SR.Data.Interfaces
     public interface IAcompanhamentoAprendizagemRepository
     {
         Task<IEnumerable<AcompanhamentoAprendizagemAlunoDto>> ObterAcompanhamentoAprendizagemPorTurmaESemestre(long turmaId, string alunoCodigo, int semestre);
+        Task<UltimoSemestreAcompanhamentoGeradoDto> ObterUltimoSemestreAcompanhamentoGerado(string alunoCodigo);
     }
 }

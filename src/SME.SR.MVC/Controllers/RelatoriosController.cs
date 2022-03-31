@@ -7177,11 +7177,11 @@ namespace SME.SR.MVC.Controllers
                 var turmasDevolutivasDto1 = new TurmasDevolutivasDto()
                 {
                     NomeTurma = i + 1 + "A",
-                    Bimestres = new List<BimestresDevolutivasDto>()
+                    BimestresComponentesCurriculares = new List<BimestresComponentesCurricularesDevolutivasDto>()
                     {
-                        new BimestresDevolutivasDto()
+                        new BimestresComponentesCurricularesDevolutivasDto()
                         {
-                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            NomeBimestreComponenteCurricular = "1º Bimestre (02/02/2020 à 29/04/2020)",
                             Devolutivas = devolutivas1
                         },
 
@@ -7196,11 +7196,11 @@ namespace SME.SR.MVC.Controllers
                 var turmasDevolutivasDto2 = new TurmasDevolutivasDto()
                 {
                     NomeTurma = i + 1 + "B",
-                    Bimestres = new List<BimestresDevolutivasDto>()
+                    BimestresComponentesCurriculares = new List<BimestresComponentesCurricularesDevolutivasDto>()
                     {
-                        new BimestresDevolutivasDto()
+                        new BimestresComponentesCurricularesDevolutivasDto()
                         {
-                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            NomeBimestreComponenteCurricular = "1º Bimestre (02/02/2020 à 29/04/2020)",
                             Devolutivas = devolutivas2
                         },
                         // new BimestresDevolutivasDto()
@@ -7439,7 +7439,7 @@ namespace SME.SR.MVC.Controllers
             boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
 
 
-            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+            var model = new BoletimEscolarDetalhadoEscolaAquiDto(boletimEscolarDetalhadoDto);
 
             return View("RelatorioBoletimEscolarDetalhado", model);
 

@@ -23,7 +23,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<TurmasDevolutivasDto>> Handle(ObterDevolutivasQuery request, CancellationToken cancellationToken)
         {
             var devolutivasDto = new List<TurmasDevolutivasDto>();
-            var devolutivas = await devolutivaRepository.ObterDevolutivas(request.UeId, request.Turmas, request.Bimestres, request.Ano);
+            var devolutivas = await devolutivaRepository.ObterDevolutivas(request.UeId, request.Turmas, request.Bimestres, request.Ano, request.ComponenteCurricular, request.UtilizarLayoutNovo);
 
             if (devolutivas == null || !devolutivas.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
@@ -33,27 +33,32 @@ namespace SME.SR.Application
                 devolutivasDto.Add(new TurmasDevolutivasDto()
                 {
                     NomeTurma = devolutivasPorTurma.Key.Nome,
-                    Bimestres = ObterBimestres(devolutivasPorTurma)
+                    BimestresComponentesCurriculares = ObterBimestresComponentesCurriculares(devolutivasPorTurma, request.UtilizarLayoutNovo),
                 });
             }
 
             return devolutivasDto;
         }
 
-        private IEnumerable<BimestresDevolutivasDto> ObterBimestres(IGrouping<object, DevolutivaDto> devolutivas)
+        private IEnumerable<BimestresComponentesCurricularesDevolutivasDto> ObterBimestresComponentesCurriculares(IGrouping<object, DevolutivaDto> devolutivas, bool utilizarLayoutNovo)
         {
             foreach (var devolutivasPorBimestre in devolutivas
-                .GroupBy(a => new { a.Aula.PeriodoEscolar.Bimestre, a.Aula.PeriodoEscolar.DataInicio, a.Aula.PeriodoEscolar.DataFim })
-                .OrderBy(a => a.Key.Bimestre))
+                .GroupBy(a => new { BimestreComponenteCurricular = utilizarLayoutNovo ? a.ComponenteCurricular : a.Aula.PeriodoEscolar.Bimestre.ToString(), a.Aula.PeriodoEscolar.DataInicio, a.Aula.PeriodoEscolar.DataFim })
+                .OrderBy(a => a.Key.BimestreComponenteCurricular))
             {
-                var periodoEscolar = devolutivasPorBimestre.Key;
+                var bimestreComponenteCurricular = devolutivasPorBimestre.Key;
 
-                yield return new BimestresDevolutivasDto()
+                yield return new BimestresComponentesCurricularesDevolutivasDto()
                 {
-                    NomeBimestre = $"{periodoEscolar.Bimestre}º BIMESTRE ({periodoEscolar.DataInicio:dd/MM/yyyy} À {periodoEscolar.DataFim:dd/MM/yyyy})",
+                    NomeBimestreComponenteCurricular = $"{bimestreComponenteCurricular.BimestreComponenteCurricular}{IncluirComplemento(utilizarLayoutNovo)} ({bimestreComponenteCurricular.DataInicio:dd/MM/yyyy} À {bimestreComponenteCurricular.DataFim:dd/MM/yyyy})",
                     Devolutivas = ObterDevolutivasQuery(devolutivasPorBimestre).ToList()
                 };
             }
+        }
+
+        private string IncluirComplemento(bool utilizarLayoutNovo)
+        {
+            return utilizarLayoutNovo ? string.Empty : "º BIMESTRE";
         }
 
         private IEnumerable<DevolutivaRelatorioDto> ObterDevolutivasQuery(IGrouping<object, DevolutivaDto> devolutivas)

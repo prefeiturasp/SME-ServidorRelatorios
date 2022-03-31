@@ -58,7 +58,7 @@ namespace SME.SR.Data
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola = @turmaCodigo					
+					mte.cd_turma_escola = @turmaCodigo
 					and (matr.st_matricula in (1, 6, 10, 13, 5)
 					or (matr.st_matricula not in (1, 6, 10, 13, 5)
 					and matr.dt_status_matricula > @dataReferencia))
@@ -100,7 +100,7 @@ namespace SME.SR.Data
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola = @turmaCodigo					
+					mte.cd_turma_escola = @turmaCodigo
 					and mte.dt_situacao_aluno = (
 					select
 						max(mte2.dt_situacao_aluno)
@@ -286,124 +286,77 @@ namespace SME.SR.Data
 			return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
 
 		}
-		public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia)
+		public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades)
         {
             StringBuilder query = new StringBuilder();
             if (anoLetivo < DateTime.Now.Date.Year)
             {
-                query.AppendLine(@"
-					SELECT
-	                    count(DISTINCT matricula.cd_aluno) Total
-                    FROM
-	                    v_historico_matricula_cotic matricula
-                    left JOIN historico_matricula_turma_escola matrTurma ON
-	                    matricula.cd_matricula = matrTurma.cd_matricula and matrTurma.nr_chamada_aluno is not null
-                    INNER JOIN turma_escola turesc ON
-	                    matrTurma.cd_turma_escola = turesc.cd_turma_escola
-                    INNER JOIN v_cadastro_unidade_educacao vue ON
-	                    vue.cd_unidade_educacao = turesc.cd_escola
-                    INNER JOIN (
-	                    SELECT
-		                    v_ua.cd_unidade_educacao, v_ua.nm_unidade_educacao, v_ua.nm_exibicao_unidade
-	                    FROM
-		                    unidade_administrativa ua
-	                    INNER JOIN v_cadastro_unidade_educacao v_ua ON
-		                    v_ua.cd_unidade_educacao = ua.cd_unidade_administrativa
-	                    WHERE
-		                    tp_unidade_administrativa = 24) dre ON
-	                    dre.cd_unidade_educacao = vue.cd_unidade_administrativa_referencia
-	                    --Serie Ensino
-                    left join serie_turma_escola ste ON
-	                    ste.cd_turma_escola = turesc.cd_turma_escola
-                    left join serie_turma_grade ON
-	                    serie_turma_grade.cd_turma_escola = ste.cd_turma_escola
-                    left join escola_grade ON
-	                    serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
-                    left join grade ON
-	                    escola_grade.cd_grade = grade.cd_grade
-                    left join serie_ensino se ON
-	                    grade.cd_serie_ensino = se.cd_serie_ensino
-                    where
-						matrTurma.dt_situacao_aluno =                    
-							(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
-							INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-							where
-							mte2.cd_turma_escola = matrTurma.cd_turma_escola
-							and matr2.cd_aluno = matricula.cd_aluno
-							and (matr2.st_matricula in (1, 6, 10, 13, 5) or (matr2.st_matricula not in (1, 6, 10, 13, 5) and matr2.dt_status_matricula > @dataFim))
-						)
-	                    and turesc.an_letivo = @anoLetivo
-	                    and turesc.cd_tipo_turma = 1
-						and se.sg_resumida_serie = @anoTurma
-	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) 
-						and matricula.dt_status_matricula > @dataFim)  ) ");
-
-                if (!string.IsNullOrEmpty(ueCodigo))
-                    query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
-
-                if (dreCodigo > 0)
-                    query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
-
-                if (!string.IsNullOrEmpty(anoTurma))
-                    query.Append("and se.sg_resumida_serie = @anoTurma ");
-
-                query.AppendLine(" and se.cd_etapa_ensino in (5, 13)");
+                query.AppendLine($@"
+									WITH lista AS (					
+									SELECT DISTINCT mte.cd_turma_escola,
+									m.cd_aluno
+									FROM v_historico_matricula_cotic m
+									INNER JOIN historico_matricula_turma_escola mte
+									ON m.cd_matricula = mte.cd_matricula
+									INNER JOIN turma_escola te
+									ON mte.cd_turma_escola = te.cd_turma_escola
+									INNER JOIN serie_turma_escola ste
+									ON te.cd_turma_escola = ste.cd_turma_escola
+									INNER JOIN serie_turma_grade stg
+									ON ste.cd_serie_ensino = stg.cd_serie_ensino
+									INNER JOIN serie_ensino se
+									ON stg.cd_serie_ensino = se.cd_serie_ensino
+									INNER JOIN etapa_ensino ee
+									ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+									INNER JOIN v_cadastro_unidade_educacao ue
+									ON te.cd_escola = ue.cd_unidade_educacao
+									WHERE te.an_letivo = @anoLetivo AND
+									te.cd_tipo_turma = 1 AND
+									mte.cd_situacao_aluno in (5, 10) AND
+									se.sg_resumida_serie = @anoTurma AND
+									ee.cd_etapa_ensino in (@modalidades)
+									{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
+									{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})
+						SELECT COUNT(DISTINCT cd_aluno) 
+								FROM lista ");               
             }
             else
             {
-                query.AppendLine(@"
-					SELECT
-	                    count(DISTINCT matricula.cd_aluno) Total
-                    FROM
-	                    v_matricula_cotic matricula
-                    left JOIN matricula_turma_escola matrTurma ON
-	                    matricula.cd_matricula = matrTurma.cd_matricula and matrTurma.nr_chamada_aluno is not null
-                    INNER JOIN turma_escola turesc ON
-	                    matrTurma.cd_turma_escola = turesc.cd_turma_escola
-                    INNER JOIN v_cadastro_unidade_educacao vue ON
-	                    vue.cd_unidade_educacao = turesc.cd_escola
-                    INNER JOIN (
-	                    SELECT
-		                    v_ua.cd_unidade_educacao, v_ua.nm_unidade_educacao, v_ua.nm_exibicao_unidade
-	                    FROM
-		                    unidade_administrativa ua
-	                    INNER JOIN v_cadastro_unidade_educacao v_ua ON
-		                    v_ua.cd_unidade_educacao = ua.cd_unidade_administrativa
-	                    WHERE
-		                    tp_unidade_administrativa = 24) dre ON
-	                    dre.cd_unidade_educacao = vue.cd_unidade_administrativa_referencia
-	                    --Serie Ensino
-                    left join serie_turma_escola ste ON
-	                    ste.cd_turma_escola = turesc.cd_turma_escola
-                    left join serie_turma_grade ON
-	                    serie_turma_grade.cd_turma_escola = ste.cd_turma_escola
-                    left join escola_grade ON
-	                    serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
-                    left join grade ON
-	                    escola_grade.cd_grade = grade.cd_grade
-                    left join serie_ensino se ON
-	                    grade.cd_serie_ensino = se.cd_serie_ensino
-                    where
-	                  	turesc.an_letivo = @anoLetivo
-	                    and turesc.cd_tipo_turma = 1
-	                    and ( matricula.st_matricula in (1, 6, 10, 13, 5)   or  (matricula.st_matricula not in (1, 6, 10, 13, 5) and matricula.dt_status_matricula > @dataFim)  ) 
-	                    and se.cd_etapa_ensino in (5, 13)");
-
-                if (!string.IsNullOrEmpty(ueCodigo))
-                    query.Append("and vue.cd_unidade_educacao = @ueCodigo ");
-
-                if (dreCodigo > 0)
-                    query.Append("and dre.cd_unidade_educacao = @dreCodigo ");
-
-                if (!string.IsNullOrEmpty(anoTurma))
-                    query.Append("and se.sg_resumida_serie = @anoTurma ");
+                query.AppendLine($@" WITH lista AS (
+										SELECT DISTINCT mte.cd_turma_escola,
+										m.cd_aluno
+										FROM v_matricula_cotic m
+										INNER JOIN matricula_turma_escola mte
+										ON m.cd_matricula = mte.cd_matricula
+										INNER JOIN turma_escola te
+										ON mte.cd_turma_escola = te.cd_turma_escola
+										INNER JOIN serie_turma_escola ste
+										ON te.cd_turma_escola = ste.cd_turma_escola
+										INNER JOIN serie_turma_grade stg
+										ON ste.cd_serie_ensino = stg.cd_serie_ensino
+										INNER JOIN serie_ensino se
+										ON stg.cd_serie_ensino = se.cd_serie_ensino
+										INNER JOIN etapa_ensino ee
+										ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+										INNER JOIN v_cadastro_unidade_educacao ue
+										ON te.cd_escola = ue.cd_unidade_educacao
+										WHERE te.an_letivo = @anoLetivo AND
+										te.cd_tipo_turma = 1 AND
+										mte.cd_situacao_aluno in (1, 6, 10, 13, 5) AND
+										mte.dt_situacao_aluno < @dataFim AND
+										se.sg_resumida_serie = @anoTurma AND
+										ee.cd_etapa_ensino in (@modalidades)
+										{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
+										{ (!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})										
+										SELECT COUNT(DISTINCT cd_aluno) 
+										FROM lista ");
             }
 
             var parametros = new { dreCodigo, ueCodigo, anoTurma, anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-            return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString(), parametros, commandTimeout: 600);
+            return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString().Replace("@modalidades", string.Join(',', modalidades)), parametros, commandTimeout: 600);
         }
 
         public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
