@@ -42,5 +42,6 @@ namespace SME.SR.Infra
         public string NotaFinal { get; set; }
 
         public string FrequenciaFinal { get; set; }
+        public long Grupo { get; set; }
     }
 }
