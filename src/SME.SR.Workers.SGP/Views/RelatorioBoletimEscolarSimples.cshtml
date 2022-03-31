@@ -47,7 +47,7 @@
 
     void MontarBimestres(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
     {
-    var widthColComponente = ehEJA ? "270px" : "150px";
+        var widthColComponente = ehEJA ? "270px" : "150px";
 
     <table class='estilo-tabela'>
       <thead>
@@ -71,30 +71,29 @@
           <td class='@tdTheadInterno'>Nota</td>
           <td class='@tdTheadInterno'>% Freq.</td>
           @{ 
-            if (!ehEJA)
-            {
+              if (!ehEJA)
+              {
               <td class='@tdTheadInterno'>Nota</td>
               <td class='@tdTheadInterno'>% Freq.</td>
               <td class='@tdTheadInterno'>Nota</td>
               <td class='@tdTheadInterno'>% Freq.</td>
-            }
+              }
           }
           <td class='@tdTheadInterno'>Nota</td>
           <td class='@tdTheadInterno'>% Freq.</td>
         </tr>
       </thead>
-      <tbody>
+      <tbody>    
+          @{
+              aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
+              {
+                  MontarComponenteCurriculares(f.Select(s=> s));
 
-          @if (aluno.EhRegencia)
-          {
-              MontarComponenteCurricularesRegencia(aluno);
+                  if (f.Key == 1)
+                      MontarComponenteCurricularesRegencia(aluno);
+
+              });
           }
-          else
-          {
-              MontarComponenteCurriculares(aluno);
-          }
-
-
       </tbody>
     </table>
 
@@ -110,10 +109,10 @@
         }
     }
 
-    void MontarComponenteCurriculares(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
+    void MontarComponenteCurriculares(IEnumerable<SME.SR.Infra.ComponenteCurricularDto> componentes)
     {
-       
-        @foreach (var componenteCurricular in aluno.ComponentesCurriculares)
+
+        @foreach (var componenteCurricular in componentes)
         {
            <tr>
               <td class='@tdTbodyInterno alinhar-esquerda'>@componenteCurricular.Nome</td>

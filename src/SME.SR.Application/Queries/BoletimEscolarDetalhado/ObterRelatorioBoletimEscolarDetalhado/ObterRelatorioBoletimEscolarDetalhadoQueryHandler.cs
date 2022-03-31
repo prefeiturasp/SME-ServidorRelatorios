@@ -40,7 +40,7 @@ namespace SME.SR.Application
 
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
 
-            var ultimoBimestrePeriodoFechamento = await ObterUltimoBimestrePeriodoFechamento(ue.Id, dre.Id, request.AnoLetivo);
+            var ultimoBimestrePeriodoFechamento = await ObterUltimoBimestrePeriodoFechamento(request.AnoLetivo);
 
             var alunosFoto = await ObterFotosAlunos(alunosPorTurma.Select(a => a.Key)?.ToArray());
 
@@ -55,9 +55,9 @@ namespace SME.SR.Application
             return new RelatorioBoletimEscolarDetalhadoDto(boletins);
         }
 
-        private async Task<int> ObterUltimoBimestrePeriodoFechamento(long ueId, long dreId, int anoLetivo)
+        private async Task<int> ObterUltimoBimestrePeriodoFechamento(int anoLetivo)
         {
-            return await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dreId, ueId, anoLetivo));
+            return await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(anoLetivo));
         }
 
         private async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesAlunosTurma(string[] codigosAlunos, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre)
