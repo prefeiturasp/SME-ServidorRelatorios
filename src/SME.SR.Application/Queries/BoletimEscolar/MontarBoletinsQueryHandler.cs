@@ -156,7 +156,10 @@ namespace SME.SR.Application
 
         private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
         {
-            var componentesTurma = componentesCurricularesPorTurma.OrderBy(a => a.GrupoMatriz.Id).ThenBy(o=> o.Disciplina).ToList();
+            var componentesTurmaComArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null).OrderBy(a => a.AreaDoConhecimento.Ordem).ThenBy(a=> a.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Id).ThenBy(b=> b.Disciplina).ToList();
+            var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
+            var componentesTurma = componentesTurmaComArea.Concat(componentesTurmaSemArea);
+
             foreach (var componente in componentesTurma)
             {
                 if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
