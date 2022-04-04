@@ -52,7 +52,7 @@ namespace SME.SR.Application
                     await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(
                         turmas.Select(a => a.Codigo).ToArray(), 0, new string[] { }, new int[] {1, 2, 3, 4}));
                 var periodoAtual =
-                    await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dre.Id, ue.Id, request.AnoLetivo));
+                    await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(request.AnoLetivo));
 
                 var boletinsAlunos = new List<BoletimEscolarDetalhadoAlunoDto>();
 

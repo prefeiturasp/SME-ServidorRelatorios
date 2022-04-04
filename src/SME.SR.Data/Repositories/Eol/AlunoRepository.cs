@@ -884,138 +884,135 @@ namespace SME.SR.Data
 
 		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma)
 		{
-			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
-						DROP TABLE #tmpAlunosFrequencia
-					CREATE TABLE #tmpAlunosFrequencia 
-					(
-						CodigoTurma int,
-						CodigoAluno int,
-						NomeAluno VARCHAR(70),
-						DataNascimento DATETIME,
-						NomeSocialAluno VARCHAR(70),
-						CodigoSituacaoMatricula INT,
-						SituacaoMatricula VARCHAR(40),
-						DataSituacao DATETIME,
-						NumeroAlunoChamada VARCHAR(5),
-						PossuiDeficiencia BIT
-					)
-					INSERT INTO #tmpAlunosFrequencia
-					SELECT mte.cd_turma_escola CodigoTurma,
-                       aluno.cd_aluno CodigoAluno,
-                       aluno.nm_aluno NomeAluno,
-                       aluno.dt_nascimento_aluno DataNascimento,
-                       aluno.nm_social_aluno NomeSocialAluno,
-                       mte.cd_situacao_aluno CodigoSituacaoMatricula,
-                       CASE
-		                    WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
-		                    WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
-		                    WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
-		                    WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
-		                    WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
-		                    WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
-		                    WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
-		                    WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
-		                    WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
-		                    WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
-		                    WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
-		                    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
-		                    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
-		                    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
-		                    ELSE 'Fora do domínio liberado pela PRODAM'
-		                    END SituacaoMatricula,
-	                    mte.dt_situacao_aluno DataSituacao,
-	                    mte.nr_chamada_aluno NumeroAlunoChamada,
-	                    CASE
-		                    WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
-		                    ELSE 1
-	                    END PossuiDeficiencia
-                      FROM matricula_turma_escola mte1 
-                     INNER JOIN v_matricula_cotic matr ON matr.cd_matricula = mte1.cd_matricula 
-                     INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno 
-                     inner join matricula_turma_escola mte on mte.cd_matricula = mte1.cd_matricula 
-                      LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-                      WHERE mte1.cd_turma_escola in @CodigosTurma
-                   UNION 
-                     SELECT mte.cd_turma_escola CodigoTurma,
-	                    aluno.cd_aluno CodigoAluno,
-	                    aluno.nm_aluno NomeAluno,
-	                    aluno.dt_nascimento_aluno DataNascimento,
-	                    aluno.nm_social_aluno NomeSocialAluno,
-	                    mte.cd_situacao_aluno CodigoSituacaoMatricula,
-	                    CASE
-		                    WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
-		                    WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
-		                    WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
-		                    WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
-		                    WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
-		                    WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
-		                    WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
-		                    WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
-		                    WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
-		                    WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
-		                    WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
-		                    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
-		                    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
-		                    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
-		                    ELSE 'Fora do domínio liberado pela PRODAM'
-		                    END SituacaoMatricula,
-	                    mte.dt_situacao_aluno DataSituacao,
-	                    mte.nr_chamada_aluno NumeroAlunoChamada,
-	                    CASE
-		                    WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
-		                    ELSE 1
-	                    END PossuiDeficiencia
-                    FROM v_historico_matricula_cotic matr
-                    INNER JOIN v_aluno_cotic aluno ON aluno.cd_aluno = matr.cd_aluno
-                    INNER JOIN historico_matricula_turma_escola mte1 ON matr.cd_matricula = mte1.cd_matricula
-                    INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
-                     LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-                    WHERE mte1.cd_turma_escola in @CodigosTurma
-	                    and mte1.dt_situacao_aluno =                    
-	                    (
-	                     select max(mte2.dt_situacao_aluno) 
-	                       from v_historico_matricula_cotic  matr2
-	                      INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
-	                    where
-		                    mte2.cd_turma_escola in @CodigosTurma
-	                    and matr2.cd_aluno = matr.cd_aluno
-	                    )
-	                    AND NOT EXISTS(
-		                    SELECT 1 FROM v_matricula_cotic matr3
-	                    INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-	                    WHERE mte1.cd_matricula = mte3.cd_matricula
-		                    AND mte1.cd_turma_escola in @CodigosTurma) 
+            var query = @";WITH AlunoBase AS
+			(
+						SELECT     mte.cd_turma_escola       codigoturma,
+									aluno.cd_aluno            codigoaluno,
+									aluno.nm_aluno            nomealuno,
+									aluno.dt_nascimento_aluno datanascimento,
+									aluno.nm_social_aluno     nomesocialaluno,
+									mte.cd_situacao_aluno     codigosituacaomatricula,
+									CASE
+												WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+												WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+												WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+												WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+												WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+												WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+												WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+												WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+												WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+												WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+												WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+												WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+												WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+												WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+												ELSE 'Fora do domínio liberado pela PRODAM'
+									END                   situacaomatricula,
+									mte.dt_situacao_aluno datasituacao,
+									mte.nr_chamada_aluno  numeroalunochamada,
+									CASE
+												WHEN isnull(nea.tp_necessidade_especial, 0) = 0 THEN 0
+												ELSE 1
+									END possuideficiencia
+						FROM       matricula_turma_escola mte1
+						INNER JOIN v_matricula_cotic matr
+						ON         matr.cd_matricula = mte1.cd_matricula
+						INNER JOIN v_aluno_cotic aluno
+						ON         aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN matricula_turma_escola mte
+						ON         mte.cd_matricula = mte1.cd_matricula
+						LEFT JOIN  necessidade_especial_aluno nea
+						ON         nea.cd_aluno = matr.cd_aluno
+						WHERE      mte1.cd_turma_escola IN ( @CodigosTurma )
+						UNION
+						SELECT     mte.cd_turma_escola       codigoturma,
+									aluno.cd_aluno            codigoaluno,
+									aluno.nm_aluno            nomealuno,
+									aluno.dt_nascimento_aluno datanascimento,
+									aluno.nm_social_aluno     nomesocialaluno,
+									mte.cd_situacao_aluno     codigosituacaomatricula,
+									CASE
+												WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+												WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+												WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+												WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+												WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+												WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+												WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+												WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+												WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+												WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+												WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+												WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+												WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+												WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+												ELSE 'Fora do domínio liberado pela PRODAM'
+									END                   situacaomatricula,
+									mte.dt_situacao_aluno datasituacao,
+									mte.nr_chamada_aluno  numeroalunochamada,
+									CASE
+												WHEN isnull(nea.tp_necessidade_especial, 0) = 0 THEN 0
+												ELSE 1
+									END possuideficiencia
+						FROM       v_historico_matricula_cotic matr
+						INNER JOIN v_aluno_cotic aluno
+						ON         aluno.cd_aluno = matr.cd_aluno
+						INNER JOIN historico_matricula_turma_escola mte1
+						ON         matr.cd_matricula = mte1.cd_matricula
+						INNER JOIN historico_matricula_turma_escola mte
+						ON         matr.cd_matricula = mte.cd_matricula
+						LEFT JOIN  necessidade_especial_aluno nea
+						ON         nea.cd_aluno = matr.cd_aluno
+						WHERE      mte1.cd_turma_escola IN ( @CodigosTurma )
+						AND        mte1.dt_situacao_aluno =
+									(
+												SELECT     max(mte2.dt_situacao_aluno)
+												FROM       v_historico_matricula_cotic matr2
+												INNER JOIN historico_matricula_turma_escola mte2
+												ON         matr2.cd_matricula = mte2.cd_matricula
+												WHERE      mte2.cd_turma_escola IN ( @CodigosTurma )
+												AND        matr2.cd_aluno = matr.cd_aluno)
+						AND        NOT EXISTS
+									(
+												SELECT     1
+												FROM       v_matricula_cotic matr3
+												INNER JOIN matricula_turma_escola mte3
+												ON         matr3.cd_matricula = mte3.cd_matricula
+												WHERE      mte1.cd_matricula = mte3.cd_matricula
+												AND        mte1.cd_turma_escola IN ( @CodigosTurma )
+									)
+				)
+                                 
+						SELECT   codigoturma,
+								codigoaluno,
+								nomealuno,
+								nomesocialaluno,
+								datanascimento,
+								codigosituacaomatricula,
+								situacaomatricula,
+								Max(datasituacao) DataSituacao,
+								numeroalunochamada,
+								possuideficiencia
+						FROM     AlunoBase
+						GROUP BY codigoturma,
+								codigoaluno,
+								nomealuno,
+								nomesocialaluno,
+								datanascimento,
+								codigosituacaomatricula,
+								situacaomatricula,
+								numeroalunochamada,
+								possuideficiencia
+						ORDER BY codigosituacaomatricula";
 
-					SELECT
-					CodigoTurma,
-					CodigoAluno,
-					NomeAluno,
-					NomeSocialAluno,
-					DataNascimento,
-					CodigoSituacaoMatricula,
-					SituacaoMatricula,
-					MAX(DataSituacao) DataSituacao ,
-					NumeroAlunoChamada,
-					PossuiDeficiencia
-					FROM #tmpAlunosFrequencia
-					GROUP BY
-					CodigoTurma,
-					CodigoAluno,
-					NomeAluno,
-					NomeSocialAluno,
-					DataNascimento,
-					CodigoSituacaoMatricula,
-					SituacaoMatricula,
-					NumeroAlunoChamada,
-					PossuiDeficiencia
-					ORDER BY CodigoSituacaoMatricula";
+            var parametros = new { CodigosTurma = codigosTurma };
 
-			var parametros = new { CodigosTurma = codigosTurma };
-
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<Aluno>(query, parametros);
-			}
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                var retorno = await conexao.QueryAsync<Aluno>(query, parametros);
+                return retorno;
+            }
 		}
 
 		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)

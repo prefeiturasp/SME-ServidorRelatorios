@@ -30,7 +30,13 @@ namespace SME.SR.Application
             if (!alunos.Any())
                 throw new NegocioException("Não foi possível localizar os alunos");
             else
-                return alunos.OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString());
+            {
+                return request.TrazerAlunosInativos ? alunos.OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString()) 
+                                                    : alunos.Where(al => al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Ativo 
+                                                        || al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Concluido)
+                                                        .OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString());
+            }
+                
         }
     }
 }

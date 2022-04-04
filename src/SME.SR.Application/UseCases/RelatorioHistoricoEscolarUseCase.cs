@@ -103,7 +103,7 @@ namespace SME.SR.Application
 
             var ue = await ObterUePorCodigo(filtros.UeCodigo);
 
-            var bimestreAtual = await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dre.Id, ue.Id, filtros.AnoLetivo));
+            var bimestreAtual = await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(filtros.AnoLetivo));
 
             var enderecoAtoUe = await ObterEnderecoAtoUe(filtros.UeCodigo);
 

@@ -18,24 +18,20 @@ namespace SME.SR.Data.Repositories.Sgp
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<int> ObterBimestrePeriodoFechamentoAtual(long ueId, long dreId, int anoLetivo)
+        public async Task<int> ObterBimestrePeriodoFechamentoAtual(int anoLetivo)
         {
             var query = @"select pe.bimestre 
                           from periodo_fechamento pf 
                          inner join periodo_fechamento_bimestre pfb on pfb.periodo_fechamento_id = pf.id
                          inner join periodo_escolar pe on pe.id = pfb.periodo_escolar_id
                          inner join tipo_calendario tc on pe.tipo_calendario_id = tc.id 
-                         where pf.ue_id = @ueId
-                           and pf.dre_id = @dreId 
-                           and tc.ano_letivo  = @anoLetivo
+                         where tc.ano_letivo  = @anoLetivo
                            and now()::date >= pfb.inicio_fechamento::date
                            order by pfb.inicio_fechamento desc 
                            limit 1 ";
 
             var parametros = new
             {
-                UeId = ueId,
-                DreId = dreId,
                 AnoLetivo = anoLetivo
             };
 
