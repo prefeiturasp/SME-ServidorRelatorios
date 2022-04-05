@@ -1,0 +1,173 @@
+﻿@using SME.SR.Infra.RelatorioPaginado.Dtos
+
+@model RelatorioPaginadoDto
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.Cabecalho.NomeRelatorio</title>
+</head>
+
+<body class="body-relatorio">
+    <style>
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+          text-align: right;
+          font-size: 14.5px;
+          margin-top: 7px;
+          font-weight: normal;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+            padding-left: 15px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .campo-dre {
+            width: 25%;
+        }
+
+        .campo-ue {
+            width: 60%
+        }
+
+        .campo-ano {
+            width: 15%
+        }
+
+        .campo-componente-curricular {
+            width: 80%;
+            border-top: none;
+        }
+
+        .campo-usuario {
+            width: 60%;
+            border-top: none;
+        }
+
+        .campo-rf-data {
+            width: 15%;
+            border-top: none;
+        }
+
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        .fonte-16 {
+            font-size: 16px !important;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .fonte-12 {
+            font-size: 12px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .titulo-sgp-rodape {
+            float: left;
+        }
+
+        .contador-pagina {
+            float: right;
+            font-size: 15px;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+         .cabecalho th {
+            text-align: left;
+        }
+
+        .footer {
+            page-break-after:always;   
+        }
+    </style>
+@{
+	foreach(var pagina in Model.Paginas) 
+	{
+		<div id="page@(pagina.Indice)">
+			<header id="header">
+                <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+                <div class='titulo-relatorio'>
+                    <p style='margin-bottom: 0'>
+                        @Model.Cabecalho.NomeRelatorio.ToUpper()
+                    </p>
+                </div>
+				@await Html.PartialAsync(Model.ViewCustomParametroCabecalho, Model.Cabecalho)
+			</header>
+			<div id="content">
+				@await Html.PartialAsync(Model.ViewCustomConteudo, pagina)
+			</div>
+			<footer class="footer">
+                <div class="titulo-sgp-rodape">
+                    SGP - SISTEMA DE GESTÃO PEDAGÓGICA 
+                </div>
+                <div class="contador-pagina">@pagina.Indice / @Model.TotalDePagina</div>
+			</footer>
+		</div>
+	}
+}
+</body>
+</html>
