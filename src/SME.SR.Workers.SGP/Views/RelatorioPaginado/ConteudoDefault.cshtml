@@ -1,0 +1,64 @@
+﻿@using SME.SR.Infra.RelatorioPaginado
+@using System.Text
+@using System.Linq.Expressions
+@using SME.SR.Infra.RelatorioPaginado.Interfaces
+
+@model Pagina
+
+<table class="tabela-cabecalho">
+    <thead class="cabecalho"> 
+        <tr>
+            @Html.Raw(ObtenhaCabecalhoNome())
+        </tr>
+    </thead>
+    <colgroup>
+        @Html.Raw(ObtenhaCabecalhoTamanho())
+    </colgroup>
+    <tbody>
+        @Html.Raw(ObtenhaConteudo())
+    </tbody>
+</table>
+
+@{
+    string ObtenhaCabecalhoNome(){
+        StringBuilder colunas = new StringBuilder();
+
+        foreach (var coluna in Model.Colunas)
+        {
+            colunas.AppendLine("<th>" + coluna.Nome + "</th>");
+        }
+
+        return colunas.ToString();
+    }
+
+    string ObtenhaCabecalhoTamanho()
+    {
+        StringBuilder colunas = new StringBuilder();
+
+        foreach (var coluna in Model.Colunas)
+        {
+            colunas.AppendLine("<col style = 'width:" + coluna.Largura + "px;'>");
+        }
+
+        return colunas.ToString();
+    }
+
+    string ObtenhaConteudo()
+    {
+        StringBuilder conteudo = new StringBuilder();
+
+        foreach (var valor in Model.Valores)
+        {
+            conteudo.AppendLine("<tr>");
+
+            foreach (var coluna in Model.Colunas)
+            {
+                conteudo.AppendLine(" <td> " + coluna.ObtenhaValorDaPropriedade(valor) + " </td> ");
+            }
+
+            conteudo.AppendLine("</tr>");
+        }
+
+        return conteudo.ToString();
+    }
+}
