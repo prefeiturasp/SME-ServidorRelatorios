@@ -3,7 +3,6 @@ using SME.SR.Application.Queries;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -68,7 +67,7 @@ namespace SME.SR.Application
                 QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno
             });
 
-            return (await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false)));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
     }
 }

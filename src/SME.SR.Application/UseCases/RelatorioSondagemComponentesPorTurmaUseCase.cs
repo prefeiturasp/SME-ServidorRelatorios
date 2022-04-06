@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Queries;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -16,26 +17,31 @@ namespace SME.SR.Application
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
         public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemComponentesPorTurmaFiltroDto>();
 
-            //Obter a data do periodo\\
-            var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            var dataPeriodoFim = await ObterDataPeriodoFim(filtros.AnoLetivo, filtros.Semestre, filtros.Bimestre);
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(filtros.TurmaCodigo, dataPeriodoFim));
 
-
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(filtros.TurmaCodigo, dataDoPeriodo));
-            if (alunosDaTurma == null || !alunosDaTurma.Any())
+            if (alunosDaTurma?.Any() != true)
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
-
 
             var relatorio = await ObterDadosRelatorio(filtros, alunosDaTurma);
 
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
-            
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+        }
+
+        private async Task<DateTime> ObterDataPeriodoFim(int anoLetivo, int semestre, int bimestre)
+        {
+            if (anoLetivo>= 2022 && bimestre > 0)
+                return await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
+            else
+                return await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
         }
 
         private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)
@@ -48,6 +54,7 @@ namespace SME.SR.Application
                     DreCodigo = filtros.DreCodigo,
                     Proficiencia = filtros.ProficienciaId,
                     Semestre = filtros.Semestre,
+                    Bimestre = filtros.Bimestre,
                     TurmaCodigo = filtros.TurmaCodigo,
                     UeCodigo = filtros.UeCodigo,
                     UsuarioRF = filtros.UsuarioRF,
