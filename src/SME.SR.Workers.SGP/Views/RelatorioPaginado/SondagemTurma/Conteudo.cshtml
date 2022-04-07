@@ -1,0 +1,91 @@
+﻿@using SME.SR.Infra
+@using SME.SR.Infra.RelatorioPaginado
+@using SME.SR.Infra.RelatorioPaginado.Interfaces
+
+@model PaginaSubColuna
+
+<table class='tabela-cabecalho'>
+   <thead>
+       <tr>
+           @(Html.Raw(ObtenhaCabecalhoOrdem()))
+       </tr>
+       <tr>
+           @(Html.Raw(ObtenhaCabecalho()))
+       </tr>
+   </thead>
+   <tbody>
+       @(Html.Raw(ObtenhaConteudo()))
+   </tbody>
+</table>
+
+@{
+    string ObtenhaCabecalhoOrdem()
+    {
+        var retorno = string.Empty;
+
+        foreach (var sub in Model.Colunas.Keys)
+        {
+            retorno += $@"<td colspan='{sub.ColSpan}' {ObtenhaClasseVazia(sub.Titulo)}>" + sub.Titulo + "</td>";
+        }
+
+        return retorno;
+    }
+
+    string ObtenhaClasseVazia(string titulo)
+    {
+        return String.IsNullOrEmpty(titulo) ? "class='coluna-vazia'" : string.Empty;
+    }
+
+    string ObtenhaCabecalho()
+    {
+        var retorno = string.Empty;
+
+        foreach (var colunas in Model.Colunas.Values)
+        {
+            foreach(var coluna in colunas)
+            {
+                retorno += "<td width='" + coluna.ObtenhaLarguraComUnidade() + "'>" + coluna.Titulo + "</td>";
+            }
+        }
+
+        return retorno;
+    }
+
+    string ObtenhaConteudo()
+    {
+        var retorno = string.Empty;
+
+        foreach(var valor in Model.Valores)
+        {
+            var linha = (RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto)valor;
+            var respostasOrdenadas = linha.OrdensRespostas.ToList().OrderBy(h => h.OrdemId).ThenBy(h => h.PerguntaId);
+
+            retorno += "<tr>";
+            retorno += $@"<td>{linha.Aluno.Codigo}</td>";
+            retorno += $@"<td>{linha.Aluno.Nome}</td>";
+
+            foreach (var colunas in Model.Colunas.Where(coluna => !coluna.Key.Chave))
+            {
+                foreach(var coluna in colunas.Value)
+                {
+                    var resposta = respostasOrdenadas.ToList().Find(resposta => resposta.OrdemId.ToString() + "_" + resposta.PerguntaId.ToString() == coluna.Nome);
+
+                    if(resposta != null)
+                    {
+                        retorno += $@"<td>{resposta.Resposta}</td>";
+                    } else
+                    {
+                        retorno += $@"<td></td>";
+                    }
+                }
+            }
+
+            retorno += "</tr>";
+        }
+
+        return retorno;
+    }
+
+
+}
+ 

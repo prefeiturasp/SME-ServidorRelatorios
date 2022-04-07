@@ -1,0 +1,31 @@
+﻿@using SME.SR.Infra.RelatorioPaginado
+
+@model PaginaComGrafico
+
+@foreach (var items in Model.Graficos)
+{
+    <table style="border:none; border-color: #ffffff!important; margin-top:30px; ">
+        <tbody>
+            <tr>
+                @foreach (var item in items)
+                {
+                    <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("../Graficos/GraficoBarras.cshtml", item)</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+
+<script>
+    window.onload = function () {
+    @{
+        foreach (var item in items)
+        {
+        <text>
+             drawBarChart_@(item.IdParaLastro)();
+        </text>
+        }
+    }
+    }
+</script>
+}
+

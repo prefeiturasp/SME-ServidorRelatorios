@@ -1,0 +1,34 @@
+﻿@using SME.SR.Infra.RelatorioPaginado.Dtos
+
+@model CabecalhoPaginadoDto
+
+<div class='fonte-14 header-pagina'>
+    <table class='tblTopo'>
+        <tbody>
+            <tr>
+                <td class='campo-dre'>DRE: @Model.Dre</td>
+                <td class='campo-ue'>UE: @Model.Ue</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr>
+                <td class='campo-componente-curricular'>COMPONENTE CURRICULAR: @Model.ComponenteCurricular</td>
+                <td width='30%' class='sem-border-bottom'>BIMESTRE: @Model.Bimestre</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr>
+                <td class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Turma</td>
+                <td class='campo-usuario'>USUÁRIO: @Model.Usuario</td>
+                <td class='campo-rf-data'>RF: @Model.Rf</td>
+                <td class='campo-rf-data'>DATA: @Model.DataSolicitacao</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
