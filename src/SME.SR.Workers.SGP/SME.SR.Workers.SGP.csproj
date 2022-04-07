@@ -53,6 +53,18 @@
     <Content Update="Views\RelatorioFaltasFrequencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="Views\RelatorioPaginado\ConteudoDefault.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\RelatorioPaginado\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\RelatorioPaginado\ParametroCabecalhoDefault.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Views\RelatorioPendencias.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -112,5 +124,23 @@
     <None Update="libwkhtmltox.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\RelatorioPaginado\SondagemTurma\Cabecalho.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\RelatorioPaginado\Grafico.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\RelatorioPaginado\SondagemTurma\Cabecalho.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\RelatorioPaginado\SondagemTurma\Conteudo.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\RelatorioPaginado\SondagemTurma\Conteudo.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\RelatorioPaginado\Grafico.cshtml" />
   </ItemGroup>
   </Project>
