@@ -23,6 +23,50 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaOrdemDto>("select ROW_NUMBER () OVER (ORDER BY \"Id\") as Id, \"Descricao\" from public.\"Ordem\" ");
         }
 
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPerguntasQueryDto>> ObterPerguntas(int anoLetivo, int anoTurma)
+        {
+            var sql = new StringBuilder();
+
+            sql.AppendLine(" select pae.\"Ordenacao\" as PerguntaId, ");
+            sql.AppendLine(" p.\"Descricao\" as Pergunta, ");
+            sql.AppendLine(" from \"PerguntaAnoEscolar\" pae ");
+            sql.AppendLine(" inner join \"Pergunta\" p on p.\"PerguntaId\" = pae.\"PerguntaId\" ");
+            sql.AppendLine(" where pae.\"AnoEscolar\" = @anoTurma ");
+            sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
+            sql.AppendLine(" or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
+
+            if (anoTurma <= 3)
+                sql.AppendLine("and pae.\"Grupo\" = @proficiencia");
+
+            var parametros = new { anoLetivo, anoTurma, ProficienciaSondagemEnum.Numeros };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPerguntasQueryDto>(sql.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPerguntasProficienciaQueryDto>> ObterPerguntasProficiencia(int anoLetivo, int anoTurma, ProficienciaSondagemEnum proficiencia)
+        {
+            var sql = new StringBuilder();
+
+            sql.AppendLine(" select pae.\"Ordenacao\" as PerguntaId, ");
+            sql.AppendLine(" p_pai.\"Descricao\" as Pergunta, ");
+            sql.AppendLine(" p_filho.\"Descricao\" as SubPergunta ");
+            sql.AppendLine(" from \"PerguntaAnoEscolar\" pae ");
+            sql.AppendLine(" inner join \"Pergunta\" p_pai on p_pai.\"Id\" = pae.\"PerguntaId\" ");
+            sql.AppendLine(" inner join \"Pergunta\" p_filho on p_filho.\"PerguntaId\" = pae.\"PerguntaId\" ");
+            sql.AppendLine(" where s.\"AnoTurma\" = @anoTurma ");
+            sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
+            sql.AppendLine("  or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
+            sql.AppendLine(" and pae.\"Grupo\" = @proficiencia ");
+
+            var parametros = new { anoLetivo, anoTurma, proficiencia };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPerguntasProficienciaQueryDto>(sql.ToString(), parametros);
+        }
+
         public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPerguntasRespostasQueryDto>> ObterPerguntasRespostas(string dreCodigo, string turmaCodigo,
             int anoLetivo, int bimestre, int anoTurma, string componenteCurricularId, string periodoId = "")
         {

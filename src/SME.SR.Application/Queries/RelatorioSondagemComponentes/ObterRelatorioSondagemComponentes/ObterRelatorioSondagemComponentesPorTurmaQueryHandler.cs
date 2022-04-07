@@ -286,12 +286,12 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> ObterOrdensProficiencia(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostasProficiencia(request.DreCodigo, request.TurmaCodigo.ToString(),
-                request.AnoLetivo, request.Bimestre, request.Proficiencia, int.Parse(request.Ano), request.ComponenteCurricular.Name());
+            var listaPerguntas = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasProficiencia(request.AnoLetivo, int.Parse(request.Ano), request.Proficiencia);
+            var ordens = listaPerguntas.Select(c => new { c.PerguntaId, c.Pergunta }).Distinct();
 
             var retorno = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
 
-            foreach (var item in listaSondagem)
+            foreach (var item in ordens)
             {
                 retorno.Add(new RelatorioSondagemComponentesPorTurmaOrdemDto()
                 {
@@ -323,15 +323,11 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntasAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            var periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Bimestre, TipoPeriodoSondagem.Bimestre));
-            var periodoId = periodoPorTipo?.Id;
-
-            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostas(request.DreCodigo, request.TurmaCodigo.ToString(),
-                request.AnoLetivo, request.Bimestre, int.Parse(request.Ano), request.ComponenteCurricular.Name(), periodoId);
+            var listaPerguntas = (await relatorioSondagemComponentePorTurmaRepository.ObterPerguntas(request.AnoLetivo, int.Parse(request.Ano))).Distinct();
 
             var retorno = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>();
 
-            foreach (var item in listaSondagem)
+            foreach (var item in listaPerguntas)
             {
                 retorno.Add(new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                 {
@@ -345,12 +341,11 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntasProficiencia(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostasProficiencia(request.DreCodigo, request.TurmaCodigo.ToString(),
-                request.AnoLetivo, request.Bimestre, request.Proficiencia, int.Parse(request.Ano), request.ComponenteCurricular.Name());
+            var listaPerguntas = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasProficiencia(request.AnoLetivo, int.Parse(request.Ano), request.Proficiencia);
 
             var retorno = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>();
 
-            foreach (var item in listaSondagem)
+            foreach (var item in listaPerguntas)
             {
                 retorno.Add(new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                 {

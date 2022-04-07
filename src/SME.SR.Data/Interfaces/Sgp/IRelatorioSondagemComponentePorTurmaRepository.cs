@@ -8,6 +8,10 @@ namespace SME.SR.Data
     {
         public Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> ObterOrdensAsync();
 
+        public Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPerguntasQueryDto>> ObterPerguntas(int anoLetivo, int anoTurma);
+
+        public Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPerguntasProficienciaQueryDto>> ObterPerguntasProficiencia(int anoLetivo, int anoTurma, ProficienciaSondagemEnum proficiencia);
+
         public Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int anoLetivo,
             int semestre, ProficienciaSondagemEnum proficiencia, int anoTurma, string periodoId = "");
 
