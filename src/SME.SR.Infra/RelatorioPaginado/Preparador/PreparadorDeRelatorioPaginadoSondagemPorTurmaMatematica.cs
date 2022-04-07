@@ -1,10 +1,6 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Dtos;
-using SME.SR.Infra.RelatorioPaginado.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace SME.SR.Infra.RelatorioPaginado.Preparador
+namespace SME.SR.Infra
 {
     public class PreparadorDeRelatorioPaginadoSondagemPorTurmaMatematica
     {

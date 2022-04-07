@@ -1,6 +1,4 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Interfaces;
-
-namespace SME.SR.Infra.RelatorioPaginado
+﻿namespace SME.SR.Infra
 {
     public class ParametroRelatorioPaginadoQuantitativo<T> : ParametroRelatorioPaginado<T> where T : class
     {

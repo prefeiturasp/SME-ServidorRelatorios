@@ -1,6 +1,4 @@
 ﻿using SME.SR.Infra;
-using SME.SR.Infra.RelatorioPaginado;
-using SME.SR.Infra.RelatorioPaginado.Dtos;
 using System;
 using System.Collections.Generic;
 

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SME.SR.Infra.RelatorioPaginado.Dtos
+namespace SME.SR.Infra
 {
     public class RelatorioPaginadoDto
     {

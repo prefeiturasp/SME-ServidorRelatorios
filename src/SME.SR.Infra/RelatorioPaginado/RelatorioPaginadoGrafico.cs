@@ -1,10 +1,7 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace SME.SR.Infra.RelatorioPaginado
+namespace SME.SR.Infra
 {
     public class RelatorioPaginadoGrafico : IRelatorioPaginado
     {
