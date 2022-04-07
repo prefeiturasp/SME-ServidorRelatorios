@@ -38,10 +38,10 @@ namespace SME.SR.Application
 
         private async Task<DateTime> ObterDataPeriodoFim(int anoLetivo, int semestre, int bimestre)
         {
-            if (anoLetivo>= 2022 && bimestre > 0)
-                return await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
-            else
+            if (anoLetivo < 2022)
                 return await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
+            else
+                return await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
         }
 
         private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)

@@ -31,13 +31,12 @@ namespace SME.SR.Application
         public async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> Handle(ObterRelatorioSondagemComponentesPorTurmaQuery request, CancellationToken cancellationToken)
         {
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
+            RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha;
 
-            int anoPlanilhaAutoral = 7;
-
-            if (request.AnoLetivo >= 2022)
-                anoPlanilhaAutoral = 4;
-
-            RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha = (int.Parse(request.Ano) >= anoPlanilhaAutoral) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
+            if (request.AnoLetivo < 2022)
+                planilha = (int.Parse(request.Ano) >= 7) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
+            else
+                planilha = (int.Parse(request.Ano) >= 4) ? await ObterPlanilhaPerguntasRespostasAutoral(request, cabecalho.Perguntas) : await ObterPlanilhaPerguntasRespostasProficiencia(request);
 
             var relatorio = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
             {
@@ -45,19 +44,12 @@ namespace SME.SR.Application
                 Planilha = planilha
             };
 
-            if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo ||
-                request.Proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
-            {
+            if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo || request.Proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
                 GerarGraficosCamposAditivoMultiplicativo(relatorio, planilha.Linhas.Count);
-            }
             else if (request.Proficiencia == ProficienciaSondagemEnum.Numeros)
-            {
                 GerarGraficoParaNumeros(relatorio);
-            }
             else
-            {
                 GerarGraficoAutoral(relatorio);
-            }
 
             return relatorio;
         }
@@ -109,7 +101,7 @@ namespace SME.SR.Application
                         grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
                     }
 
-                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+                    var valorMaximoEixo = grafico.EixosX.Count > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
                     grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                     grafico.Legendas = legendas;
@@ -242,17 +234,32 @@ namespace SME.SR.Application
         private async Task<RelatorioSondagemComponentesPorTurmaCabecalhoDto> ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
             var componenteCurricular = request.ComponenteCurricular.ShortName();
-            var ordens = await ObterOrdens(request.Ano, request.Proficiencia);
             var ue = await ObterUe(request.UeCodigo);
             var usuario = await usuarioRepository.ObterDados(request.UsuarioRF);
-            var perguntas = await ObterPerguntas(request.Proficiencia, request.Ano);
-            var dre = await ObterDre(request.DreCodigo);
-            var proficiencia = request.Proficiencia.Name();
-            var turma = await mediator.Send(new ObterTurmaSondagemEolPorCodigoQuery(request.TurmaCodigo));
-            var periodo = $"{request.Semestre}° Semestre";
 
-            if (request.AnoLetivo >= 2022 && request.Bimestre > 0)
+            List<RelatorioSondagemComponentesPorTurmaOrdemDto> ordens;
+            List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas;
+
+            string periodo;
+            string proficiencia;
+
+            if (request.AnoLetivo < 2022)
+            {
+                ordens = (await ObterOrdens(request.Ano, request.Proficiencia)).ToList();
+                perguntas = await ObterPerguntas(request.Proficiencia, request.Ano);
+                periodo = $"{request.Semestre}° Semestre";
+                proficiencia = int.Parse(request.Ano) >= 7 ? string.Empty : request.Proficiencia.Name();
+            }
+            else
+            {
+                ordens = (await ObterOrdens(request)).ToList();
+                perguntas = await ObterPerguntas(request);
                 periodo = $"{request.Bimestre}° Bimestre";
+                proficiencia = int.Parse(request.Ano) >= 4 ? string.Empty : request.Proficiencia.Name();
+            }
+
+            var dre = await ObterDre(request.DreCodigo);
+            var turma = await mediator.Send(new ObterTurmaSondagemEolPorCodigoQuery(request.TurmaCodigo));
 
             return new RelatorioSondagemComponentesPorTurmaCabecalhoDto()
             {
@@ -262,12 +269,12 @@ namespace SME.SR.Application
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Dre = dre.Abreviacao,
                 Periodo = periodo,
-                Proficiencia = (int.Parse(request.Ano) >= 7) ? string.Empty : proficiencia,
+                Proficiencia = proficiencia,
                 Turma = turma.Nome,
                 Ue = ue.NomeComTipoEscola,
                 Rf = request.UsuarioRF,
                 Usuario = usuario.Nome,
-                Ordens = ordens.ToList(),
+                Ordens = ordens,
                 Perguntas = perguntas
             };
         }
@@ -275,6 +282,33 @@ namespace SME.SR.Application
         private async Task<Dre> ObterDre(string dreCodigo)
         {
             return await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = dreCodigo });
+        }
+
+        private async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> ObterOrdensProficiencia(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        {
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostasProficiencia(request.DreCodigo, request.TurmaCodigo.ToString(),
+                request.AnoLetivo, request.Bimestre, request.Proficiencia, int.Parse(request.Ano), request.ComponenteCurricular.Name());
+
+            var retorno = new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
+
+            foreach (var item in listaSondagem)
+            {
+                retorno.Add(new RelatorioSondagemComponentesPorTurmaOrdemDto()
+                {
+                    Id = item.PerguntaId,
+                    Descricao = item.Pergunta
+                });
+            }
+
+            return retorno;
+        }
+
+        private async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> ObterOrdens(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        {
+            if (int.Parse(request.Ano) <= 3)
+                return await ObterOrdensProficiencia(request);
+
+            return new List<RelatorioSondagemComponentesPorTurmaOrdemDto>();
         }
 
         private async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaOrdemDto>> ObterOrdens(string ano, ProficienciaSondagemEnum proficiencia)
@@ -287,7 +321,56 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterUePorCodigoQuery(ueCodigo));
         }
 
-        public async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas(ProficienciaSondagemEnum proficiencia, string ano)
+        private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntasAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        {
+            var periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Bimestre, TipoPeriodoSondagem.Bimestre));
+            var periodoId = periodoPorTipo?.Id;
+
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostas(request.DreCodigo, request.TurmaCodigo.ToString(),
+                request.AnoLetivo, request.Bimestre, int.Parse(request.Ano), request.ComponenteCurricular.Name(), periodoId);
+
+            var retorno = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>();
+
+            foreach (var item in listaSondagem)
+            {
+                retorno.Add(new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                {
+                    Id = item.PerguntaId,
+                    Nome = item.Pergunta
+                });
+            }
+
+            return retorno;
+        }
+
+        private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntasProficiencia(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        {
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostasProficiencia(request.DreCodigo, request.TurmaCodigo.ToString(),
+                request.AnoLetivo, request.Bimestre, request.Proficiencia, int.Parse(request.Ano), request.ComponenteCurricular.Name());
+
+            var retorno = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>();
+
+            foreach (var item in listaSondagem)
+            {
+                retorno.Add(new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                {
+                    Id = item.PerguntaId,
+                    Nome = item.SubPergunta
+                });
+            }
+
+            return retorno;
+        }
+
+        private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        {
+            if (int.Parse(request.Ano) <= 3)
+                return await ObterPerguntasProficiencia(request);
+
+            return await ObterPerguntasAutoral(request);
+        }
+
+        private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas(ProficienciaSondagemEnum proficiencia, string ano)
         {
             if (int.Parse(ano) >= 7)
             {
@@ -383,20 +466,64 @@ namespace SME.SR.Application
             return await Task.FromResult(new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>());
         }
 
-        public async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request, List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas)
+        private async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaPerguntasRespostasAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request,
+            List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas)
         {
-            string periodoId = "";
-            int periodo = request.Semestre;
-            TipoPeriodoSondagem tipoPeriodo = TipoPeriodoSondagem.Semestre;
+            var periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Bimestre, TipoPeriodoSondagem.Bimestre));
+            var periodoId = periodoPorTipo?.Id;
 
-            if (request.AnoLetivo >= 2022)
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostas(request.DreCodigo, request.TurmaCodigo.ToString(),
+                request.AnoLetivo, request.Bimestre, int.Parse(request.Ano), request.ComponenteCurricular.Name(), periodoId);
+
+            List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+
+            foreach (var aluno in request.alunos.OrderBy(a => a.ObterNomeFinal()))
             {
-                periodo = request.Bimestre;
-                tipoPeriodo = TipoPeriodoSondagem.Bimestre;
+                var listaRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
+
+                foreach (var pergunta in perguntas)
+                {
+                    var resposta = listaSondagem.FirstOrDefault(c => c.AlunoEolCode == aluno.CodigoAluno.ToString() &&
+                        c.PerguntaId == pergunta.Id);
+
+                    if (resposta != null)
+                    {
+                        listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                        {
+                            OrdemId = 0,
+                            AnoLetivo = request.AnoLetivo,
+                            PerguntaId = pergunta.Id,
+                            Resposta = resposta.Resposta,
+                            OrdenacaoResposta = resposta.OrdenacaoResposta
+                        });
+                    }
+                    else
+                    {
+                        listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                        {
+                            OrdemId = 0,
+                            AnoLetivo = request.AnoLetivo,
+                            PerguntaId = pergunta.Id,
+                            Resposta = string.Empty,
+                            OrdenacaoResposta = 0
+                        });
+                    }
+                }
+
+                linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = TransformarAlunoDto(aluno),
+                    OrdensRespostas = listaRespostas
+                });
             }
 
-            var periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(periodo, tipoPeriodo));
-            periodoId = periodoPorTipo?.Id;
+            return new RelatorioSondagemComponentesPorTurmaPlanilhaDto() { Linhas = linhasPlanilhaQueryDto };
+        }
+
+        private async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request, List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas)
+        {
+            var periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Semestre, TipoPeriodoSondagem.Semestre));
+            var periodoId = periodoPorTipo?.Id;
 
             var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(),
                 request.AnoLetivo, request.Semestre, request.Proficiencia, int.Parse(request.Ano), periodoId);
@@ -417,6 +544,7 @@ namespace SME.SR.Application
                         listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                         {
                             OrdemId = 0,
+                            AnoLetivo = request.AnoLetivo,
                             PerguntaId = pergunta.Id,
                             Resposta = resposta.Resposta,
                             OrdenacaoResposta = resposta.OrdenacaoResposta
@@ -427,6 +555,7 @@ namespace SME.SR.Application
                         listaRespostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                         {
                             OrdemId = 0,
+                            AnoLetivo = request.AnoLetivo,
                             PerguntaId = pergunta.Id,
                             Resposta = string.Empty,
                         });
@@ -443,7 +572,45 @@ namespace SME.SR.Application
             return new RelatorioSondagemComponentesPorTurmaPlanilhaDto() { Linhas = linhasPlanilhaQueryDto };
         }
 
-        public async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilha(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        private async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaPerguntasRespostasProficiencia(ObterRelatorioSondagemComponentesPorTurmaQuery request)
+        {
+            var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostasProficiencia(request.DreCodigo, request.TurmaCodigo.ToString(),
+                request.AnoLetivo, request.Bimestre, request.Proficiencia, int.Parse(request.Ano), request.ComponenteCurricular.Name());
+
+            var linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+
+            foreach (var aluno in request.alunos.OrderBy(a => a.ObterNomeFinal()))
+            {
+                var respostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
+
+                foreach (var item in listaSondagem.Where(c => c.AlunoEolCode == aluno.CodigoAluno.ToString()))
+                {
+                    var ordemId = 0;
+
+                    if (!request.Proficiencia.Equals(ProficienciaSondagemEnum.Numeros))
+                        ordemId = item.OrdenacaoResposta;
+
+                    respostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
+                    {
+                        OrdemId = ordemId,
+                        AnoLetivo = request.AnoLetivo,
+                        PerguntaId = item.PerguntaId,
+                        Resposta = item.Resposta,
+                        OrdenacaoResposta = item.OrdenacaoResposta
+                    });
+                }
+
+                linhasPlanilhaQueryDto.Add(new RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
+                {
+                    Aluno = TransformarAlunoDto(aluno),
+                    OrdensRespostas = respostas
+                });
+            }
+
+            return new RelatorioSondagemComponentesPorTurmaPlanilhaDto() { Linhas = linhasPlanilhaQueryDto };
+        }
+
+        private async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilha(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
             var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.TurmaCodigo.ToString(),
                 request.AnoLetivo, request.Semestre, request.Proficiencia, int.Parse(request.Ano));

@@ -23,6 +23,97 @@ namespace SME.SR.Data.Repositories.Sgp
             return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaOrdemDto>("select ROW_NUMBER () OVER (ORDER BY \"Id\") as Id, \"Descricao\" from public.\"Ordem\" ");
         }
 
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPerguntasRespostasQueryDto>> ObterPerguntasRespostas(string dreCodigo, string turmaCodigo,
+            int anoLetivo, int bimestre, int anoTurma, string componenteCurricularId, string periodoId = "")
+        {
+            var sql = new StringBuilder();
+
+            sql.AppendLine("select distinct sa.\"CodigoAluno\" as AlunoEolCode, ");
+            sql.AppendLine(" sa.\"NomeAluno\", ");
+            sql.AppendLine(" s.\"AnoLetivo\", ");
+            sql.AppendLine(" s.\"AnoTurma\", ");
+            sql.AppendLine(" s.\"CodigoTurma\", ");
+            sql.AppendLine(" pae.\"Ordenacao\" as PerguntaId, ");
+            sql.AppendLine(" p.\"Descricao\" as Pergunta, ");
+            sql.AppendLine(" r.\"Descricao\" as Resposta, ");
+            sql.AppendLine(" pr.\"Ordenacao\" as OrdenacaoResposta ");
+            sql.AppendLine(" from \"SondagemAlunoRespostas\" sar ");
+            sql.AppendLine(" inner join \"SondagemAluno\" sa on sa.\"Id\" = sar.\"SondagemAlunoId\" ");
+            sql.AppendLine(" inner join \"Sondagem\" s on s.\"Id\" = sa.\"SondagemId\" ");
+            sql.AppendLine(" inner join \"Pergunta\" p on p.\"Id\" = sar.\"PerguntaId\" ");
+            sql.AppendLine(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"PerguntaId\" ");
+            sql.AppendLine(" inner join \"Resposta\" r on r.\"Id\" = sar.\"RespostaId\" ");
+            sql.AppendLine(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\" and pr.\"RespostaId\" = r.\"Id\" ");
+            sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo ");
+            sql.AppendLine(" and s.\"CodigoDre\" = @dreCodigo ");
+            sql.AppendLine(" and s.\"AnoTurma\" = @anoTurma ");
+            sql.AppendLine(" and s.\"CodigoTurma\" = @turmaCodigo");
+            sql.AppendLine(" and s.\"ComponenteCurricularId\" = @componenteCurricularId");
+
+            if (!string.IsNullOrEmpty(periodoId))
+                sql.AppendLine(" and s.\"PeriodoId\" = @periodoId ");
+
+            sql.AppendLine(" and sa.\"Bimestre\" = @bimestre ");
+            sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
+            sql.AppendLine("  or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
+
+            if (anoTurma <= 3)
+                sql.Append(" AND pae.\"Grupo\" = ").Append((int)ProficienciaSondagemEnum.Numeros).AppendLine();
+
+            sql.AppendLine(" order by sa.\"NomeAluno\", pr.\"Ordenacao\", sa.\"CodigoAluno\" ");
+
+            var parametros = new { anoLetivo, dreCodigo, anoTurma, turmaCodigo, periodoId, bimestre, componenteCurricularId };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPerguntasRespostasQueryDto>(sql.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPerguntasRespostasProficienciaQueryDto>> ObterPerguntasRespostasProficiencia(string dreCodigo,
+            string turmaCodigo, int anoLetivo, int bimestre, ProficienciaSondagemEnum proficiencia, int anoTurma, string componenteCurricularId, string periodoId = "")
+        {
+            var sql = new StringBuilder();
+
+            sql.AppendLine(" select distinct sa.\"CodigoAluno\" as AlunoEolCode, ");
+            sql.AppendLine(" sa.\"NomeAluno\", ");
+            sql.AppendLine(" s.\"AnoLetivo\", ");
+            sql.AppendLine(" s.\"AnoTurma\", ");
+            sql.AppendLine(" s.\"CodigoTurma\", ");
+            sql.AppendLine(" pae.\"Ordenacao\" as PerguntaId, ");
+            sql.AppendLine(" p_pai.\"Descricao\" as Pergunta, ");
+            sql.AppendLine(" r.\"Descricao\" as Resposta, ");
+            sql.AppendLine(" pr.\"Ordenacao\" as OrdenacaoResposta, ");
+            sql.AppendLine(" p_filho.\"Descricao\" as SubPergunta ");
+            sql.AppendLine(" from \"PerguntaAnoEscolar\" pae ");
+            sql.AppendLine(" inner join \"Pergunta\" p_pai on p_pai.\"Id\" = pae.\"PerguntaId\" ");
+            sql.AppendLine(" inner join \"Pergunta\" p_filho on p_filho.\"PerguntaId\" = pae.\"PerguntaId\" ");
+            sql.AppendLine(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p_filho.\"Id\" ");
+            sql.AppendLine(" left join \"Resposta\" r on r.\"Id\" = pr.\"RespostaId\" ");
+            sql.AppendLine(" inner join \"SondagemAlunoRespostas\" sar on sar.\"PerguntaId\" = p_filho.\"Id\" and sar.\"RespostaId\" = r.\"Id\" ");
+            sql.AppendLine(" inner join \"SondagemAluno\" sa on sa.\"Id\" = sar.\"SondagemAlunoId\" ");
+            sql.AppendLine(" inner join \"Sondagem\" s on s.\"Id\" = sa.\"SondagemId\" ");
+            sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo ");
+            sql.AppendLine(" and s.\"CodigoDre\" = @dreCodigo ");
+            sql.AppendLine(" and s.\"AnoTurma\" = @anoTurma ");
+            sql.AppendLine(" and s.\"CodigoTurma\" = @turmaCodigo ");
+            sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
+            sql.AppendLine("  or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
+            sql.AppendLine(" and sa.\"Bimestre\" = @bimestre ");
+            sql.AppendLine(" and pae.\"Grupo\" = @proficiencia ");
+            sql.AppendLine("  and s.\"ComponenteCurricularId\" = @componenteCurricularId");
+
+            if (!string.IsNullOrEmpty(periodoId))
+                sql.AppendLine(" and s.\"PeriodoId\" = @periodoId ");
+
+            sql.AppendLine(" order by sa.\"NomeAluno\", sa.\"CodigoAluno\", pae.\"Ordenacao\", p_filho.\"Descricao\" ");
+
+            var parametros = new { anoLetivo, dreCodigo, anoTurma, turmaCodigo, periodoId, bimestre, proficiencia, componenteCurricularId };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryAsync<RelatorioSondagemComponentesPorTurmaPerguntasRespostasProficienciaQueryDto>(sql.ToString(), parametros);
+        }
+
         public async Task<IEnumerable<RelatorioSondagemComponentesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string turmaCodigo, int anoLetivo,
             int semestre, ProficienciaSondagemEnum proficiencia, int anoTurma, string periodoId = "")
         {
