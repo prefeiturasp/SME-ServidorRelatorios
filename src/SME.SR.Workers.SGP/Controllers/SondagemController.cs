@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace SME.SR.Workers.SGP.Controllers
 {
     [ApiController]
-    [ChaveIntegracaoSrApi]
     [Route("api/v1/[controller]")]
     public class SondagemController : ControllerBase
     {

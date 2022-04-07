@@ -33,7 +33,20 @@ namespace SME.SR.Application
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
+            if (filtros.AnoLetivo >= 2022)
+            {
+                return await ObtenhaRelatorioPaginado(relatorio);
+            }
+
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+        }
+
+        private async Task<string> ObtenhaRelatorioPaginado(RelatorioSondagemComponentesPorTurmaRelatorioDto dtoSondagem)
+        {
+            var preparo = new PreparadorDeRelatorioPaginadoSondagemPorTurmaMatematica(dtoSondagem);
+            var dto = preparo.ObtenhaRelatorioPaginadoDto();
+
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPaginado/Index", dto, Guid.NewGuid(), envioPorRabbit: false));
         }
 
         private async Task<DateTime> ObterDataPeriodoFim(int anoLetivo, int semestre, int bimestre)

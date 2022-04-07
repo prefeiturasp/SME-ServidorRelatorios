@@ -6,6 +6,7 @@
 
         public int OrdemId { get; set; }
         public int PerguntaId { get; set; }
+        public string PerguntaKey { get; set; }
         public int AnoLetivo { get; set; }
 
         public string Resposta
