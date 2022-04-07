@@ -1,8 +1,7 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace SME.SR.Infra.RelatorioPaginado
+namespace SME.SR.Infra
 {
     public class RelatorioPaginadoQuantitativo<T> : RelatorioPaginado<T> where T : class
     {

@@ -1,9 +1,6 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace SME.SR.Infra.RelatorioPaginado
+namespace SME.SR.Infra
 {
     public class PaginaComColuna: Pagina
     {

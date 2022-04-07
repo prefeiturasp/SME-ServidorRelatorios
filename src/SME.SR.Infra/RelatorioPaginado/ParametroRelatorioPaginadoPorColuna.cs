@@ -1,7 +1,4 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Interfaces;
-using System.Collections.Generic;
-
-namespace SME.SR.Infra.RelatorioPaginado
+﻿namespace SME.SR.Infra
 {
     public class ParametroRelatorioPaginadoPorColuna<T> : ParametroRelatorioPaginado<T> where T : class
     {

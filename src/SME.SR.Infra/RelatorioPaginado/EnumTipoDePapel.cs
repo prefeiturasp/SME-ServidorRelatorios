@@ -1,4 +1,4 @@
-﻿namespace SME.SR.Infra.RelatorioPaginado
+﻿namespace SME.SR.Infra
 {
     public enum EnumTipoDePapel
     {

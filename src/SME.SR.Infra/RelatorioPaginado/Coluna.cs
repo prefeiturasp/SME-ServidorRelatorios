@@ -1,9 +1,7 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
-namespace SME.SR.Infra.RelatorioPaginado
+namespace SME.SR.Infra
 {
     public class Coluna<T> : IColuna where T : class
     {

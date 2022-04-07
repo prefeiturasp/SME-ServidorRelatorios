@@ -1,8 +1,7 @@
-﻿using SME.SR.Infra.RelatorioPaginado.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SME.SR.Infra.RelatorioPaginado
+namespace SME.SR.Infra
 {
     public abstract class RelatorioPaginadoPorColuna<T> : RelatorioPaginado<T> where T : class
     {
