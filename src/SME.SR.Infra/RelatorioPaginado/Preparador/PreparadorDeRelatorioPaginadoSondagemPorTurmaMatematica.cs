@@ -63,7 +63,15 @@ namespace SME.SR.Infra
                 UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL,
                 Valores = this._dtoSondagemTurma.Planilha.Linhas
             };
-            var relatorioPaginado = new RelatorioPaginadoSubColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>(parametro, ObtenhaDicionario());
+            RelatorioPaginadoPorColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> relatorioPaginado;
+
+            if (this._dtoSondagemTurma.Cabecalho.Ordens.Count > 0)
+            {
+                relatorioPaginado = new RelatorioPaginadoSubColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>(parametro, ObtenhaDicionarioSubColuna());
+            } else
+            {
+                relatorioPaginado = new RelatorioPaginadoColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>(parametro, ObtenhaDicionarioColuna());
+            }
 
             return relatorioPaginado.Paginas();
         }
@@ -78,7 +86,27 @@ namespace SME.SR.Infra
             return lista;
         }
 
-        private Dictionary<SubColuna, List<IColuna>> ObtenhaDicionario()
+        private List<IColuna> ObtenhaDicionarioColuna()
+        {
+            var lista = new List<IColuna>();
+
+            lista.AddRange(ObtenhaColunasChave());
+
+            foreach (var perguntas in this._dtoSondagemTurma.Cabecalho.Perguntas)
+            {
+                lista.Add(new Coluna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
+                {
+                    Largura = 17,
+                    Titulo = perguntas.Nome,
+                    Nome = perguntas.Id.ToString(),
+                    UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                });
+            }
+
+            return lista;
+        }
+
+        private Dictionary<SubColuna, List<IColuna>> ObtenhaDicionarioSubColuna()
         {
             var dicionario = new Dictionary<SubColuna, List<IColuna>>();
 
@@ -86,21 +114,26 @@ namespace SME.SR.Infra
 
             foreach(var subCabecalho in this._dtoSondagemTurma.Cabecalho.Ordens)
             {
-                var sub = new SubColuna() { Titulo = subCabecalho.Descricao, ColSpan = this._dtoSondagemTurma.Cabecalho.Perguntas.Count };
-                var lista = new List<IColuna>();
+                var perguntasOrdem = this._dtoSondagemTurma.Cabecalho.Perguntas.FindAll(pergunta => pergunta.Id == subCabecalho.Id);
 
-                foreach (var perguntas in this._dtoSondagemTurma.Cabecalho.Perguntas)
+                if (perguntasOrdem != null)
                 {
-                    lista.Add(new Coluna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
-                    {
-                        Largura = 17,
-                        Titulo = perguntas.Nome,
-                        Nome = subCabecalho.Id.ToString() + "_" + perguntas.Id.ToString(),
-                        UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
-                    }) ;
-                }
+                    var sub = new SubColuna() { Titulo = subCabecalho.Descricao, ColSpan = perguntasOrdem.Count };
+                    var lista = new List<IColuna>();
 
-                dicionario.Add(sub, lista);
+                    foreach (var perguntas in perguntasOrdem)
+                    {
+                        lista.Add(new Coluna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
+                        {
+                            Largura = 17,
+                            Titulo = perguntas.Nome,
+                            Nome = perguntas.PerguntaId,
+                            UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                        });
+                    }
+
+                    dicionario.Add(sub, lista);
+                }
             }
 
             return dicionario;

@@ -51,11 +51,12 @@ namespace SME.SR.Data.Repositories.Sgp
 
             sql.AppendLine(" select pae.\"Ordenacao\" as PerguntaId, ");
             sql.AppendLine(" p_pai.\"Descricao\" as Pergunta, ");
+            sql.AppendLine(" p_filho.\"Id\" as SubPerguntaId, ");
             sql.AppendLine(" p_filho.\"Descricao\" as SubPergunta ");
             sql.AppendLine(" from \"PerguntaAnoEscolar\" pae ");
             sql.AppendLine(" inner join \"Pergunta\" p_pai on p_pai.\"Id\" = pae.\"PerguntaId\" ");
             sql.AppendLine(" inner join \"Pergunta\" p_filho on p_filho.\"PerguntaId\" = pae.\"PerguntaId\" ");
-            sql.AppendLine(" where s.\"AnoTurma\" = @anoTurma ");
+            sql.AppendLine(" where pae.\"AnoEscolar\" = @anoTurma ");
             sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
             sql.AppendLine("  or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
             sql.AppendLine(" and pae.\"Grupo\" = @proficiencia ");
@@ -127,6 +128,7 @@ namespace SME.SR.Data.Repositories.Sgp
             sql.AppendLine(" p_pai.\"Descricao\" as Pergunta, ");
             sql.AppendLine(" r.\"Descricao\" as Resposta, ");
             sql.AppendLine(" pr.\"Ordenacao\" as OrdenacaoResposta, ");
+            sql.AppendLine(" p_filho.\"Id\" as SubPerguntaId, ");
             sql.AppendLine(" p_filho.\"Descricao\" as SubPergunta ");
             sql.AppendLine(" from \"PerguntaAnoEscolar\" pae ");
             sql.AppendLine(" inner join \"Pergunta\" p_pai on p_pai.\"Id\" = pae.\"PerguntaId\" ");

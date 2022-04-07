@@ -350,7 +350,8 @@ namespace SME.SR.Application
                 retorno.Add(new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                 {
                     Id = item.PerguntaId,
-                    Nome = item.SubPergunta
+                    Nome = item.SubPergunta,
+                    PerguntaId = item.SubPerguntaId
                 });
             }
 
@@ -590,6 +591,7 @@ namespace SME.SR.Application
                         OrdemId = ordemId,
                         AnoLetivo = request.AnoLetivo,
                         PerguntaId = item.PerguntaId,
+                        PerguntaKey = item.SubPerguntaId,
                         Resposta = item.Resposta,
                         OrdenacaoResposta = item.OrdenacaoResposta
                     });

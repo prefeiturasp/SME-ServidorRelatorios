@@ -9,6 +9,8 @@ namespace SME.SR.Infra
 
         public string ViewCustomConteudo { get; set; } = "ConteudoDefault.cshtml";
 
+        public string ViewCustomCss { get; set; } = "CssDefault.cshtml";
+
         public CabecalhoPaginadoDto Cabecalho { get; set; }
 
         public List<Pagina> Paginas { get; set; }
