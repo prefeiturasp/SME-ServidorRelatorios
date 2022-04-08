@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -10,9 +8,9 @@ namespace SME.SR.Infra
         {
             GraficosBarras = new List<GraficoBarrasVerticalDto>();
         }
+
         public RelatorioSondagemComponentesPorTurmaCabecalhoDto Cabecalho { get; set; }
         public RelatorioSondagemComponentesPorTurmaPlanilhaDto Planilha { get; set;  }
-
         public List<GraficoBarrasVerticalDto> GraficosBarras { get; set; }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -8,10 +6,10 @@ namespace SME.SR.Infra
     {
         public RelatorioSondagemComponentesPorTurmaAlunoDto Aluno { get; set; }
         public List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto> OrdensRespostas { get; set; } = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
+
         public RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto()
         {
-            this.OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
+            OrdensRespostas = new List<RelatorioSondagemComponentesPorTurmaOrdemRespostasDto>();
         }
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.SR.Application.Queries;
 using SME.SR.Data;
 using SME.SR.Infra;
@@ -38,7 +37,6 @@ namespace SME.SR.Application
                 if (dre == null)
                     throw new NegocioException("Não foi possível obter a DRE.");
             }
-
 
             if (!string.IsNullOrEmpty(filtros.UsuarioRf))
             {
