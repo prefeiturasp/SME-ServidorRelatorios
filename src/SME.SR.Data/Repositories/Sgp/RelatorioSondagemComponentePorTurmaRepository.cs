@@ -28,7 +28,7 @@ namespace SME.SR.Data.Repositories.Sgp
             var sql = new StringBuilder();
 
             sql.AppendLine(" select pae.\"Ordenacao\" as PerguntaId, ");
-            sql.AppendLine(" p.\"Descricao\" as Pergunta, ");
+            sql.AppendLine(" p.\"Descricao\" as Pergunta ");
             sql.AppendLine(" from \"PerguntaAnoEscolar\" pae ");
             sql.AppendLine(" inner join \"Pergunta\" p on p.\"PerguntaId\" = pae.\"PerguntaId\" ");
             sql.AppendLine(" where pae.\"AnoEscolar\" = @anoTurma ");
