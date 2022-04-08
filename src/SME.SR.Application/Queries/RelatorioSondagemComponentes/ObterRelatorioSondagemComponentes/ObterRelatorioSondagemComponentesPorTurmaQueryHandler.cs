@@ -68,7 +68,7 @@ namespace SME.SR.Application
             foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
                 var legendas = new List<GraficoBarrasLegendaDto>();
-                var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Id} - {ordem.Descricao}");
+                var grafico = new GraficoBarrasVerticalDto(420, $"ORDEM {ordem.Id} - {ordem.Descricao}");
 
                 var ordensRespostas = relatorio.Planilha.Linhas
                     .SelectMany(c => c.OrdensRespostas)
