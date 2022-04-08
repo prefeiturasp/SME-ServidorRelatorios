@@ -10,7 +10,7 @@
         public ComponenteCurricularSondagemEnum ComponenteCurricularId { get; set; }
         public ProficienciaSondagemEnum ProficienciaId { get; set; }
         public int Semestre { get; set; }
+        public int Bimestre { get; set; }
         public string UsuarioRF { get; set; }
-
     }
 }

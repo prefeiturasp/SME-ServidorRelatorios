@@ -9,6 +9,8 @@ namespace SME.SR.Infra
 
         public string ViewCustomConteudo { get; set; } = "ConteudoDefault.cshtml";
 
+        public string ViewCustomCss { get; set; } = "CssDefault.cshtml";
+
         public CabecalhoPaginadoDto Cabecalho { get; set; }
 
         public List<Pagina> Paginas { get; set; }
@@ -17,13 +19,12 @@ namespace SME.SR.Infra
         {  
             get
             {
-                if (this.Paginas != null && this.Paginas.Count > 0)
+                if (this.Paginas != null)
                 {
-                    return this.Paginas.Max(pagina => pagina.Indice);
+                    return this.Paginas.Count;
                 }
 
                 return 0;
-                
             } 
         }
     }
