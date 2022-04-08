@@ -1,0 +1,32 @@
+﻿@using SME.SR.Infra
+
+@model RelatorioPaginadoDto
+
+@{
+    var listaDeGraficos = Model.Paginas.FindAll(pagina => pagina.GetType() == typeof(PaginaComGrafico));
+
+    if (listaDeGraficos.Any())
+    {
+        <script>
+            window.onload = function () 
+            {
+                @{
+                    foreach(var pagina in listaDeGraficos)
+                    {
+                        var paginaGrafico = (PaginaComGrafico)pagina;
+
+                        foreach (var items in paginaGrafico.Graficos)
+                        {
+                            foreach (var item in items)
+                            {
+                                <text>
+                                    drawBarChart_@(item.IdParaLastro)();
+                                </text>
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+    }
+}

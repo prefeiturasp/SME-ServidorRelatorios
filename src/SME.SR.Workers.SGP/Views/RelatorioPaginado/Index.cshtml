@@ -15,6 +15,8 @@
 <body class="body-relatorio">
    @await Html.PartialAsync(Model.ViewCustomCss)
 @{
+    var contadorPagina = 1;
+
 	foreach(var pagina in Model.Paginas) 
 	{
 		<div id="page@(pagina.Indice)" class="pagina">
@@ -32,18 +34,33 @@
 			</header>
 			<div id="content">
                 @if (pagina.GetType() == typeof(PaginaComGrafico)){
-                    @await Html.PartialAsync("Grafico.cshtml", (PaginaComGrafico)pagina)
+                    @await Html.PartialAsync("Grafico.cshtml", pagina)
                 } else {
                     @await Html.PartialAsync(Model.ViewCustomConteudo, pagina)
                 }
 			</div>
-			<footer class="footer">
+			<footer class="footer" @Html.Raw(ObtenhaQuebraDePagina(contadorPagina))>
                 <div class="titulo-sgp-rodape">
-                    SGP - SISTEMA DE GESTÃO PEDAGÓGICA 
                 </div>
 			</footer>
-		</div>
-	}
+        </div>
+
+        contadorPagina++;
+    }
+
+    @await Html.PartialAsync("RegistradorDeGrafico.cshtml", Model)
 }
 </body>
 </html>
+
+@{
+    string ObtenhaQuebraDePagina(int pagina)
+    {
+        if (Model.TotalDePagina > pagina)
+        {
+            return " style=\"page-break-after:always;\"";
+        }
+
+        return string.Empty;
+    }
+}
