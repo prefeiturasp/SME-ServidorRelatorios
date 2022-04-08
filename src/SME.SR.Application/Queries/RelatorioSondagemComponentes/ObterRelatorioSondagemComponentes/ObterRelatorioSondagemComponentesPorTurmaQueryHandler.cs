@@ -45,13 +45,79 @@ namespace SME.SR.Application
             };
 
             if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo || request.Proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
-                GerarGraficosCamposAditivoMultiplicativo(relatorio, planilha.Linhas.Count);
+            {
+                if (int.Parse(request.Ano) <= 3)
+                    GerarGraficosCamposAditivoMultiplicativoProficiencia(relatorio, planilha.Linhas.Count);
+                else
+                    GerarGraficosCamposAditivoMultiplicativo(relatorio, planilha.Linhas.Count);
+            }
             else if (request.Proficiencia == ProficienciaSondagemEnum.Numeros)
+            {
                 GerarGraficoParaNumeros(relatorio);
+            }
             else
+            {
                 GerarGraficoAutoral(relatorio);
+            }
 
             return relatorio;
+        }
+
+        private void GerarGraficosCamposAditivoMultiplicativoProficiencia(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos)
+        {
+            foreach (var ordem in relatorio.Cabecalho.Ordens)
+            {
+                var legendas = new List<GraficoBarrasLegendaDto>();
+                var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Id} - {ordem.Descricao}");
+
+                foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+                {
+                    var respostas = relatorio.Planilha.Linhas
+                        .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem?.Id && or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
+                        .GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Adequada"));
+
+                    int chaveIndex = 0;
+                    string chave = string.Empty;
+                    int qtdSemPreenchimento = 0;
+
+                    foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                    {
+                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = resposta.Key
+                        });
+
+                        var qntRespostas = resposta.Count();
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
+                    }
+
+                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
+
+                    if (qtdSemPreenchimento > 0)
+                    {
+                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
+
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                    }
+                }
+
+                var valorMaximoEixo = grafico.EixosX.Count > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                grafico.Legendas = legendas;
+
+                relatorio.GraficosBarras.Add(grafico);
+            }
         }
 
         private void GerarGraficosCamposAditivoMultiplicativo(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos)
