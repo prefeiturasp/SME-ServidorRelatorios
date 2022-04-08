@@ -25,7 +25,6 @@ namespace SME.SR.Infra
                 }
 
                 return 0;
-                
             } 
         }
     }
