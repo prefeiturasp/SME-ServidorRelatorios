@@ -70,45 +70,45 @@ namespace SME.SR.Application
                 var legendas = new List<GraficoBarrasLegendaDto>();
                 var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Id} - {ordem.Descricao}");
 
-                foreach (var pergunta in relatorio.Cabecalho.Perguntas)
+                var ordensRespostas = relatorio.Planilha.Linhas
+                    .SelectMany(c => c.OrdensRespostas)
+                    .Select(c => new { c.PerguntaKey, c.Resposta, c.OrdemId })
+                    .Where(c => c.OrdemId == ordem.Id)
+                    .Distinct()
+                    .GroupBy(c => c.Resposta)
+                    .Where(c => !string.IsNullOrEmpty(c.Key));
+
+                int chaveIndex = 0;
+                string chave = string.Empty;
+
+                foreach (var ordemResposta in ordensRespostas)
                 {
-                    var respostas = relatorio.Planilha.Linhas
-                        .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem?.Id && or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
-                        .GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Adequada"));
+                    chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                    int chaveIndex = 0;
-                    string chave = string.Empty;
-                    int qtdSemPreenchimento = 0;
-
-                    foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
+                    legendas.Add(new GraficoBarrasLegendaDto()
                     {
-                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                        Chave = chave,
+                        Valor = ordemResposta.Key
+                    });
 
-                        legendas.Add(new GraficoBarrasLegendaDto()
-                        {
-                            Chave = chave,
-                            Valor = resposta.Key
-                        });
+                    var qntRespostas = ordemResposta.Count();
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
+                }
 
-                        var qntRespostas = resposta.Count();
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
-                    }
+                var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                var qtdSemPreenchimento = qtdAlunos - totalRespostas;
 
-                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
-                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
+                if (qtdSemPreenchimento > 0)
+                {
+                    chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                    if (qtdSemPreenchimento > 0)
+                    legendas.Add(new GraficoBarrasLegendaDto()
                     {
-                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                        Chave = chave,
+                        Valor = "Sem preenchimento"
+                    });
 
-                        legendas.Add(new GraficoBarrasLegendaDto()
-                        {
-                            Chave = chave,
-                            Valor = "Sem preenchimento"
-                        });
-
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
-                    }
+                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
                 }
 
                 var valorMaximoEixo = grafico.EixosX.Count > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
@@ -650,7 +650,7 @@ namespace SME.SR.Application
                     var ordemId = 0;
 
                     if (!request.Proficiencia.Equals(ProficienciaSondagemEnum.Numeros))
-                        ordemId = item.OrdenacaoResposta;
+                        ordemId = item.PerguntaId;
 
                     respostas.Add(new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto()
                     {
