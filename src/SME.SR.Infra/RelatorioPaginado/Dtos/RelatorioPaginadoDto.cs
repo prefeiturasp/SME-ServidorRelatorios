@@ -19,9 +19,9 @@ namespace SME.SR.Infra
         {  
             get
             {
-                if (this.Paginas != null && this.Paginas.Count > 0)
+                if (this.Paginas != null)
                 {
-                    return this.Paginas.Max(pagina => pagina.Indice);
+                    return this.Paginas.Count;
                 }
 
                 return 0;

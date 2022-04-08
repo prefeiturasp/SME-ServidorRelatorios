@@ -58,7 +58,7 @@ namespace SME.SR.Infra
         {
             var parametro = new ParametroRelatorioPaginadoPorColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
             {
-                AlturaDaLinha = 50,
+                AlturaDaLinha = 30,
                 TipoDePapel = TipoPapel.A4,
                 UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL,
                 Valores = this._dtoSondagemTurma.Planilha.Linhas
@@ -118,7 +118,7 @@ namespace SME.SR.Infra
 
                 if (perguntasOrdem != null)
                 {
-                    var sub = new SubColuna() { Titulo = subCabecalho.Descricao, ColSpan = perguntasOrdem.Count };
+                    var sub = new SubColuna() { Titulo = $"ORDEM {subCabecalho.Id} - {subCabecalho.Descricao}", ColSpan = perguntasOrdem.Count };
                     var lista = new List<IColuna>();
 
                     foreach (var perguntas in perguntasOrdem)
