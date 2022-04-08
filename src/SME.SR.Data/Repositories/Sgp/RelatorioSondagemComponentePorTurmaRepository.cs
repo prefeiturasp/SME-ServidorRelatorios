@@ -30,15 +30,17 @@ namespace SME.SR.Data.Repositories.Sgp
             sql.AppendLine(" select pae.\"Ordenacao\" as PerguntaId, ");
             sql.AppendLine(" p.\"Descricao\" as Pergunta ");
             sql.AppendLine(" from \"PerguntaAnoEscolar\" pae ");
-            sql.AppendLine(" inner join \"Pergunta\" p on p.\"PerguntaId\" = pae.\"PerguntaId\" ");
+            sql.AppendLine(" inner join \"Pergunta\" p on p.\"Id\" = pae.\"PerguntaId\" ");
             sql.AppendLine(" where pae.\"AnoEscolar\" = @anoTurma ");
             sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
             sql.AppendLine(" or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
 
             if (anoTurma <= 3)
-                sql.AppendLine("and pae.\"Grupo\" = @proficiencia");
+                sql.Append("and pae.\"Grupo\" = ").Append((int)ProficienciaSondagemEnum.Numeros).AppendLine();
 
-            var parametros = new { anoLetivo, anoTurma, ProficienciaSondagemEnum.Numeros };
+            sql.AppendLine(" order by pae.\"Ordenacao\"");
+
+            var parametros = new { anoLetivo, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
@@ -80,24 +82,16 @@ namespace SME.SR.Data.Repositories.Sgp
             sql.AppendLine(" s.\"CodigoTurma\", ");
             sql.AppendLine(" pae.\"Ordenacao\" as PerguntaId, ");
             sql.AppendLine(" p.\"Descricao\" as Pergunta, ");
-            sql.AppendLine(" r.\"Descricao\" as Resposta, ");
-            sql.AppendLine(" pr.\"Ordenacao\" as OrdenacaoResposta ");
+            sql.AppendLine(" r.\"Descricao\" as Resposta ");
             sql.AppendLine(" from \"SondagemAlunoRespostas\" sar ");
             sql.AppendLine(" inner join \"SondagemAluno\" sa on sa.\"Id\" = sar.\"SondagemAlunoId\" ");
             sql.AppendLine(" inner join \"Sondagem\" s on s.\"Id\" = sa.\"SondagemId\" ");
             sql.AppendLine(" inner join \"Pergunta\" p on p.\"Id\" = sar.\"PerguntaId\" ");
-            sql.AppendLine(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"PerguntaId\" ");
+            sql.AppendLine(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" ");
             sql.AppendLine(" inner join \"Resposta\" r on r.\"Id\" = sar.\"RespostaId\" ");
-            sql.AppendLine(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\" and pr.\"RespostaId\" = r.\"Id\" ");
             sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo ");
-            sql.AppendLine(" and s.\"CodigoDre\" = @dreCodigo ");
-            sql.AppendLine(" and s.\"AnoTurma\" = @anoTurma ");
             sql.AppendLine(" and s.\"CodigoTurma\" = @turmaCodigo");
             sql.AppendLine(" and s.\"ComponenteCurricularId\" = @componenteCurricularId");
-
-            if (!string.IsNullOrEmpty(periodoId))
-                sql.AppendLine(" and s.\"PeriodoId\" = @periodoId ");
-
             sql.AppendLine(" and sa.\"Bimestre\" = @bimestre ");
             sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
             sql.AppendLine("  or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
@@ -105,7 +99,7 @@ namespace SME.SR.Data.Repositories.Sgp
             if (anoTurma <= 3)
                 sql.Append(" AND pae.\"Grupo\" = ").Append((int)ProficienciaSondagemEnum.Numeros).AppendLine();
 
-            sql.AppendLine(" order by sa.\"NomeAluno\", pr.\"Ordenacao\", sa.\"CodigoAluno\" ");
+            sql.AppendLine(" order by sa.\"NomeAluno\", pae.\"Ordenacao\", sa.\"CodigoAluno\" ");
 
             var parametros = new { anoLetivo, dreCodigo, anoTurma, turmaCodigo, periodoId, bimestre, componenteCurricularId };
 

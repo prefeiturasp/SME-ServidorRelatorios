@@ -36,7 +36,7 @@ namespace SME.SR.Application
             if (request.AnoLetivo < 2022)
                 planilha = (int.Parse(request.Ano) >= 7) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
             else
-                planilha = (int.Parse(request.Ano) >= 4) ? await ObterPlanilhaPerguntasRespostasAutoral(request, cabecalho.Perguntas) : await ObterPlanilhaPerguntasRespostasProficiencia(request);
+                planilha = (int.Parse(request.Ano) >= 4 || request.Proficiencia == ProficienciaSondagemEnum.Numeros) ? await ObterPlanilhaPerguntasRespostasAutoral(request, cabecalho.Perguntas) : await ObterPlanilhaPerguntasRespostasProficiencia(request);
 
             var relatorio = new RelatorioSondagemComponentesPorTurmaRelatorioDto()
             {
@@ -360,7 +360,7 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntas(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            if (int.Parse(request.Ano) <= 3)
+            if (int.Parse(request.Ano) <= 3 && request.Proficiencia != ProficienciaSondagemEnum.Numeros)
                 return await ObterPerguntasProficiencia(request);
 
             return await ObterPerguntasAutoral(request);
