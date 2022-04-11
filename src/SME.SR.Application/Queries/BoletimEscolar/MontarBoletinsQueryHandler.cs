@@ -116,7 +116,6 @@ namespace SME.SR.Application
                 OrdenarBoletins(relatorioBoletimSimplesEscolar);
 
                 return relatorioBoletimSimplesEscolar;
-
             }
             catch (Exception ex)
             {
@@ -156,7 +155,7 @@ namespace SME.SR.Application
 
         private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
         {
-            var componentesTurmaComArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null).OrderBy(a => a.AreaDoConhecimento.Ordem).ThenBy(a=> a.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Id).ThenBy(b=> b.Disciplina).ToList();
+            var componentesTurmaComArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null).OrderBy(a => a.AreaDoConhecimento.Ordem).ThenBy(a => a.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Id).ThenBy(b => b.Disciplina).ToList();
             var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
             var componentesTurma = componentesTurmaComArea.Concat(componentesTurmaSemArea);
 
@@ -198,7 +197,7 @@ namespace SME.SR.Application
                                 Grupo = componente.GrupoMatriz.Id
                             });
                 }
-            }           
+            }
         }
 
         private async Task SetarNotasFrequencia(RelatorioBoletimSimplesEscolarDto boletim, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma,
@@ -261,12 +260,7 @@ namespace SME.SR.Application
                     }
                     else
                     {
-                        componenteCurricular.NotaBimestre1 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual,1);
-                        componenteCurricular.NotaBimestre2 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual,2);
-                        componenteCurricular.NotaBimestre3 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual,3);
-                        componenteCurricular.NotaBimestre4 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 4);
-
-                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual);
+                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
                     }
 
                     if (componenteCurricular.Frequencia)
@@ -279,7 +273,7 @@ namespace SME.SR.Application
 
                         var registroFrequenciaComponenteCurricular = registroFrequencia.Where(rf => rf.ComponenteCurricularCodigo == componenteCurricular.Codigo);
                         var frequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoComponente, conselhoClasseBimestres, registroFrequenciaComponenteCurricular);
-                        componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) ? "-" : frequenciaFinal;                        
+                        componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) ? "-" : frequenciaFinal;
                     }
                 }
             }
@@ -288,7 +282,7 @@ namespace SME.SR.Application
         private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, int periodoAtual)
         {
             var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
-                notasComponente?.FirstOrDefault(nc=> nc.Bimestre == bimestre)?.NotaConceito;
+                notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre)?.NotaConceito;
 
             if ((bimestre == 0 || bimestre > periodoAtual) && String.IsNullOrEmpty(retorno))
                 retorno = "-";
@@ -349,18 +343,15 @@ namespace SME.SR.Application
 
                 return frequenciaFinal.PercentualFrequencia.ToString();
             }
-
         }
 
-        private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota, int periodoAtual, int? bimestre = null)
+        private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
-            var frequencias = bimestre.HasValue ? frequenciasComponente.Where(w => w.Bimestre == bimestre.Value) : frequenciasComponente;
+            var percentualFrequencia = ObterPercentualDeFrequencia(frequenciasComponente);
+            var percentualFrequenciaMedia = ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota);
+            var sintese = percentualFrequencia.HasValue ? percentualFrequencia >= percentualFrequenciaMedia ? "F" : "NF" : "";
 
-            var percentualFrequencia = ObterPercentualDeFrequencia(frequencias);
-
-            var sintese = percentualFrequencia.HasValue ? percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF" : "";
-
-            if ((!bimestre.HasValue || (bimestre.Value > periodoAtual)) && string.IsNullOrEmpty(sintese))
+            if (string.IsNullOrEmpty(sintese))
                 sintese = "-";
 
             return sintese;
@@ -378,7 +369,8 @@ namespace SME.SR.Application
 
         private double ObterFrequenciaMedia(IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
-            if (regencia || !lancaNota)
+            //if (regencia || !lancaNota)
+            if (regencia)
                 return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse).Media;
             else
                 return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualFund2).Media;
