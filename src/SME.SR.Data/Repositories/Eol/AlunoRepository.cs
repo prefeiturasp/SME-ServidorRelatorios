@@ -885,8 +885,6 @@ namespace SME.SR.Data
 
 		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(IEnumerable<string> codigosTurma)
 		{
-            try
-            {
 				string codigo = string.Join(",", codigosTurma);
 
 				var query = @$";WITH AlunoBase AS
@@ -1015,12 +1013,6 @@ namespace SME.SR.Data
                 {
                     return await conexao.QueryAsync<Aluno>(query);
                 }
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
         }
 
 		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
