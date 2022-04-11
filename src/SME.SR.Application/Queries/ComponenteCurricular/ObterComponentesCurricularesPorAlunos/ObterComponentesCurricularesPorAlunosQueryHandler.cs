@@ -65,7 +65,8 @@ namespace SME.SR.Application
                         Modalidade = request.Modalidade,
                         ComponentesCurriculares = componentes,
                         GruposMatriz = gruposMatriz,
-                        Usuario = request.Usuario
+                        Usuario = request.Usuario,
+                        ValidarAbrangenciaProfessor = false
                     });
 
 
