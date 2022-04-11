@@ -369,7 +369,6 @@ namespace SME.SR.Application
 
         private double ObterFrequenciaMedia(IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
-            //if (regencia || !lancaNota)
             if (regencia)
                 return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse).Media;
             else
