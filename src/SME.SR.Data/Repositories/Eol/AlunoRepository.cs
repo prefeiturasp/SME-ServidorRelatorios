@@ -1008,12 +1008,9 @@ namespace SME.SR.Data
 
             var parametros = new { CodigosTurma = codigosTurma };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                var retorno = await conexao.QueryAsync<Aluno>(query, parametros);
-                return retorno;
-            }
-		}
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<Aluno>(query, parametros);
+        }
 
 		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
         {

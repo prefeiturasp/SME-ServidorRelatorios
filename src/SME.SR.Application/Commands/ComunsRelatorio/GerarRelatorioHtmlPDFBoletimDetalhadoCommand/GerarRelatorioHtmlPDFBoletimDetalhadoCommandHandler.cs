@@ -34,12 +34,10 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
             var model = (BoletimEscolarDetalhadoEscolaAquiDto)request.Model;
 
-            var nomeTemplateCabecalho = "RelatorioBoletimEscolarDetalhadoCabecalho";
+            const string nomeTemplateCabecalho = "RelatorioBoletimEscolarDetalhadoCabecalho";
             var nomeTemplateCorpo = request.Modalidade == Modalidade.EJA ? "RelatorioBoletimEscolarDetalhadoEJACorpo" : "RelatorioBoletimEscolarDetalhadoCorpo";
 
-            var boletins = model.BoletimEscolarDetalhado.Boletins.OrderBy(a => a.Cabecalho.NomeTurma);
-
-            foreach (var boletim in boletins)
+            foreach (var boletim in model.BoletimEscolarDetalhado.Boletins.OrderBy(a => a.Cabecalho.NomeTurma))
             {
                 var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, boletim.Cabecalho);
                 htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
@@ -47,11 +45,11 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 htmlCabecalho = htmlCabecalho.Replace("#PASTACSS", Path.Combine(caminhoBase, "assets/css"));
                 htmlCabecalho = htmlCabecalho.Replace("#PASTAFONTS", Path.Combine(caminhoBase, "assets/fonts"));
 
-
                 var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, boletim);
 
                 var paginasDoAluno = htmlCorpo.Split("<div style='page-break-before:always'></div>");
                 var iNumPagina = 1;
+
                 if (paginasDoAluno.Length > 0)
                 {
                     foreach (var paginaDoAluno in paginasDoAluno)
@@ -68,7 +66,6 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 }
             }
 
-
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
             reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), DateTime.Now.ToString("dd/MM/yyyy"));
@@ -81,7 +78,6 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             }
 
             return request.CodigoCorrelacao.ToString();
-
         }
     }
 }
