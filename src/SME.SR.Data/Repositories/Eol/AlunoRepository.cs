@@ -4,6 +4,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -882,9 +883,13 @@ namespace SME.SR.Data
 			}
 		}
 
-		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma)
+		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(IEnumerable<string> codigosTurma)
 		{
-            var query = @";WITH AlunoBase AS
+            try
+            {
+				string codigo = string.Join(",", codigosTurma);
+
+				var query = @$";WITH AlunoBase AS
 			(
 						SELECT     mte.cd_turma_escola       codigoturma,
 									aluno.cd_aluno            codigoaluno,
@@ -924,7 +929,7 @@ namespace SME.SR.Data
 						ON         mte.cd_matricula = mte1.cd_matricula
 						LEFT JOIN  necessidade_especial_aluno nea
 						ON         nea.cd_aluno = matr.cd_aluno
-						WHERE      mte1.cd_turma_escola IN ( @CodigosTurma )
+						WHERE      mte1.cd_turma_escola IN ({codigo})
 						UNION
 						SELECT     mte.cd_turma_escola       codigoturma,
 									aluno.cd_aluno            codigoaluno,
@@ -964,14 +969,14 @@ namespace SME.SR.Data
 						ON         matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN  necessidade_especial_aluno nea
 						ON         nea.cd_aluno = matr.cd_aluno
-						WHERE      mte1.cd_turma_escola IN ( @CodigosTurma )
+						WHERE      mte1.cd_turma_escola IN ({codigo})
 						AND        mte1.dt_situacao_aluno =
 									(
 												SELECT     max(mte2.dt_situacao_aluno)
 												FROM       v_historico_matricula_cotic matr2
 												INNER JOIN historico_matricula_turma_escola mte2
 												ON         matr2.cd_matricula = mte2.cd_matricula
-												WHERE      mte2.cd_turma_escola IN ( @CodigosTurma )
+												WHERE      mte2.cd_turma_escola IN ({codigo})
 												AND        matr2.cd_aluno = matr.cd_aluno)
 						AND        NOT EXISTS
 									(
@@ -980,7 +985,7 @@ namespace SME.SR.Data
 												INNER JOIN matricula_turma_escola mte3
 												ON         matr3.cd_matricula = mte3.cd_matricula
 												WHERE      mte1.cd_matricula = mte3.cd_matricula
-												AND        mte1.cd_turma_escola IN ( @CodigosTurma )
+												AND        mte1.cd_turma_escola IN ({codigo})
 									)
 				)
                                  
@@ -1006,10 +1011,16 @@ namespace SME.SR.Data
 								possuideficiencia
 						ORDER BY codigosituacaomatricula";
 
-            var parametros = new { CodigosTurma = codigosTurma };
+                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+                {
+                    return await conexao.QueryAsync<Aluno>(query);
+                }
+            }
+            catch (Exception ex)
+            {
 
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<Aluno>(query, parametros);
+                throw ex;
+            }
         }
 
 		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)

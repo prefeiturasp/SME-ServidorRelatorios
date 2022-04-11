@@ -9,7 +9,7 @@ namespace SME.SR.Data.Interfaces
     {
         Task<Aluno> ObterDados(string codigoTurma, string codigoAluno);
 
-        Task<IEnumerable<Aluno>> ObterPorCodigosTurma(string[] codigosTurma);
+        Task<IEnumerable<Aluno>> ObterPorCodigosTurma(IEnumerable<string> codigosTurma);
 
         Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno);
 
