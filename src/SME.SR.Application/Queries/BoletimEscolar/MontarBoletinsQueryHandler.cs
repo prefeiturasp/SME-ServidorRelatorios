@@ -260,7 +260,12 @@ namespace SME.SR.Application
                     }
                     else
                     {
-                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
+                        componenteCurricular.NotaBimestre1 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 1);
+                        componenteCurricular.NotaBimestre2 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 2);
+                        componenteCurricular.NotaBimestre3 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 3);
+                        componenteCurricular.NotaBimestre4 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 4);
+
+                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 0);
                     }
 
                     if (componenteCurricular.Frequencia)
@@ -347,9 +352,15 @@ namespace SME.SR.Application
 
         private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
-            var percentualFrequencia = ObterPercentualDeFrequencia(frequenciasComponente);
-            var percentualFrequenciaMedia = ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota);
-            var sintese = percentualFrequencia.HasValue ? percentualFrequencia >= percentualFrequenciaMedia ? "F" : "NF" : "";
+            var sintese = string.Empty;
+            var frequencias = bimestre.HasValue ? frequenciasComponente.Where(w => w.Bimestre == bimestre.Value) : frequenciasComponente;
+
+            var percentualFrequencia = ObterPercentualDeFrequencia(frequencias);
+
+            if (bimestre == 0)
+                sintese = percentualFrequencia == null ? "NF" : percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF";
+            else
+                sintese = percentualFrequencia.HasValue ? percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF" : "";
 
             if (string.IsNullOrEmpty(sintese))
                 sintese = "-";
