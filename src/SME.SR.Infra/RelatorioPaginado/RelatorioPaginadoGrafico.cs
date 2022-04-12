@@ -32,6 +32,7 @@ namespace SME.SR.Infra
                         Indice = pagina
                     });
                     pagina++;
+                    contadorLinha = 0;
                     listaDeGraficoPagina = new List<List<GraficoBarrasVerticalDto>>();
                 }
 
