@@ -11,7 +11,7 @@ namespace SME.SR.Application
 {
     public class ObterAlunosTurmasRelatorioBoletimQueryHandler : IRequestHandler<ObterAlunosTurmasRelatorioBoletimQuery, IEnumerable<IGrouping<string, Aluno>>>
     {
-        private IAlunoRepository alunoRepository;
+        private readonly IAlunoRepository alunoRepository;
 
         public ObterAlunosTurmasRelatorioBoletimQueryHandler(IAlunoRepository alunoRepository)
         {
@@ -22,7 +22,7 @@ namespace SME.SR.Application
         {
             var alunos = Enumerable.Empty<Aluno>();
 
-            if (request.CodigosAlunos != null && request.CodigosAlunos.Length > 0)
+            if (request.CodigosAlunos?.Length > 0)
                 alunos = await alunoRepository.ObterPorCodigosAlunoETurma(request.CodigosTurma, request.CodigosAlunos);
             else
                 alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurma);
@@ -36,7 +36,6 @@ namespace SME.SR.Application
                                                         || al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Concluido)
                                                         .OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString());
             }
-                
         }
     }
 }
