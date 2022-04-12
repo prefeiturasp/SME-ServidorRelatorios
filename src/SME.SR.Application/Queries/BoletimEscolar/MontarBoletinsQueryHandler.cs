@@ -260,12 +260,12 @@ namespace SME.SR.Application
                     }
                     else
                     {
-                        componenteCurricular.NotaBimestre1 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 1);
-                        componenteCurricular.NotaBimestre2 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 2);
-                        componenteCurricular.NotaBimestre3 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 3);
-                        componenteCurricular.NotaBimestre4 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 4);
+                        componenteCurricular.NotaBimestre1 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 1);
+                        componenteCurricular.NotaBimestre2 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 2);
+                        componenteCurricular.NotaBimestre3 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 3);
+                        componenteCurricular.NotaBimestre4 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 4);
 
-                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, periodoAtual, 0);
+                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 0);
                     }
 
                     if (componenteCurricular.Frequencia)
@@ -350,7 +350,7 @@ namespace SME.SR.Application
             }
         }
 
-        private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
+        private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota, int? bimestre = null)
         {
             var sintese = string.Empty;
             var frequencias = bimestre.HasValue ? frequenciasComponente.Where(w => w.Bimestre == bimestre.Value) : frequenciasComponente;
