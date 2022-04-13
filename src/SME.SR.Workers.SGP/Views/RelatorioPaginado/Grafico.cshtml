@@ -2,17 +2,20 @@
 
 @model PaginaComGrafico
 
-@foreach (var items in Model.Graficos)
-{
-    <table style="border:none; border-color: #ffffff!important; margin-top:30px; ">
-        <tbody>
-            <tr>
-                @foreach (var item in items)
-                {
-                    <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("../Graficos/GraficoBarras.cshtml", item)</td>
-                }
-            </tr>
-        </tbody>
-    </table>
-}
+@{
+    ViewData["tamanhoFonte"] = "20px";
 
+    foreach (var items in Model.Graficos)
+    {
+        <table style="border:none; border-color: #ffffff!important; margin-top:40px; ">
+            <tbody>
+                <tr>
+                    @foreach (var item in items)
+                    {
+                        <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("../Graficos/GraficoBarras.cshtml", item, ViewData)</td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    }
+}

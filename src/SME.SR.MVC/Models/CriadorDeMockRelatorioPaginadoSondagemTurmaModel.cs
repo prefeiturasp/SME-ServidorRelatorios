@@ -46,12 +46,38 @@ namespace SME.SR.MVC.Models
                         new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                         {
                             Id = 1,
-                            Nome = "Ideia"
+                            Nome = "Ideia",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 1,
+                            Nome = "Resultado",
+                            PerguntaId = "2"
                         },
                         new RelatorioSondagemComponentesPorTurmaPerguntaDto()
                         {
                             Id = 2,
-                            Nome = "Resultado"
+                            Nome = "Ideia",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 2,
+                            Nome = "Resultado",
+                            PerguntaId = "2"
+                        },
+                         new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 3,
+                            Nome = "Ideia",
+                            PerguntaId = "1"
+                        },
+                        new RelatorioSondagemComponentesPorTurmaPerguntaDto()
+                        {
+                            Id = 3,
+                            Nome = "Resultado",
+                            PerguntaId = "2"
                         }
                     },
                 },
@@ -82,22 +108,26 @@ namespace SME.SR.MVC.Models
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = 1,
+                            PerguntaKey = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = 2,
+                            PerguntaKey = "2"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = 1,
+                            PerguntaKey = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Não resolveu",
-                            PerguntaId = 2
+                            PerguntaId = 2,
+                            PerguntaKey = "2"
                         },
                     },
                 });
@@ -115,22 +145,26 @@ namespace SME.SR.MVC.Models
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = 1,
+                            PerguntaKey = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 2,
                             Resposta = "Não resolveu",
-                            PerguntaId = 2
+                            PerguntaId = 2,
+                            PerguntaKey = "2"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = 1,
+                            PerguntaKey = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = 2,
+                            PerguntaKey = "2"
                         },
                     },
                 });
@@ -148,22 +182,26 @@ namespace SME.SR.MVC.Models
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = 1,
+                            PerguntaKey = "1",
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 1,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = 2,
+                            PerguntaKey = "2"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Errou",
-                            PerguntaId = 1
+                            PerguntaId = 1,
+                            PerguntaKey = "1"
                         },
                         new RelatorioSondagemComponentesPorTurmaOrdemRespostasDto() {
                             OrdemId = 3,
                             Resposta = "Acertou",
-                            PerguntaId = 2
+                            PerguntaId = 2,
+                            PerguntaKey = "2"
                         },
                     },
                 });
