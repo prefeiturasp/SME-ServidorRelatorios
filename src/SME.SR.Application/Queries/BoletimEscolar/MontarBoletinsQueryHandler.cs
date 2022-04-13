@@ -158,7 +158,7 @@ namespace SME.SR.Application
             var componentesTurmaComArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null).OrderBy(a => a.AreaDoConhecimento.Ordem).ThenBy(a => a.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Id).ThenBy(b => b.Disciplina).ToList();
             var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
             var componentesTurma = componentesTurmaComArea.Concat(componentesTurmaSemArea);
-            
+
             foreach (var componente in componentesTurma)
             {
                 if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
@@ -260,12 +260,7 @@ namespace SME.SR.Application
                     }
                     else
                     {
-                        componenteCurricular.NotaBimestre1 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 1);
-                        componenteCurricular.NotaBimestre2 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 2);
-                        componenteCurricular.NotaBimestre3 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 3);
-                        componenteCurricular.NotaBimestre4 = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 4);
-
-                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false, 0);
+                        componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
                     }
 
                     if (componenteCurricular.Frequencia)
@@ -350,17 +345,14 @@ namespace SME.SR.Application
             }
         }
 
-        private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota, int? bimestre = null)
+        private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
             var sintese = string.Empty;
-            var frequencias = bimestre.HasValue ? frequenciasComponente.Where(w => w.Bimestre == bimestre.Value) : frequenciasComponente;
 
-            var percentualFrequencia = ObterPercentualDeFrequencia(frequencias);
+            var percentualFrequencia = ObterPercentualDeFrequencia(frequenciasComponente);
+            var frequenciaMedia = ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota);
 
-            if (bimestre == 0)
-                sintese = percentualFrequencia == null ? "NF" : percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF";
-            else
-                sintese = percentualFrequencia.HasValue ? percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF" : "";
+            sintese = percentualFrequencia.HasValue ? percentualFrequencia >= frequenciaMedia ? "F" : "NF" : "";
 
             if (string.IsNullOrEmpty(sintese))
                 sintese = "-";
