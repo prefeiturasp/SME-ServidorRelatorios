@@ -358,9 +358,9 @@ namespace SME.SR.Application
             var percentualFrequencia = ObterPercentualDeFrequencia(frequencias);
 
             if (bimestre == 0)
-                sintese = percentualFrequencia == null ? "NF" : percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF";
+                sintese = percentualFrequencia != null ? percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF" : string.Empty;
             else
-                sintese = percentualFrequencia.HasValue ? percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF" : "";
+                sintese = percentualFrequencia.HasValue ? percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota) ? "F" : "NF" : string.Empty;
 
             if (string.IsNullOrEmpty(sintese))
                 sintese = "-";
