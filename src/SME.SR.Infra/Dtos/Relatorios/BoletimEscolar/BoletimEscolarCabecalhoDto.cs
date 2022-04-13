@@ -25,6 +25,6 @@ namespace SME.SR.Infra
 
         public string DataImpressao { get { return DateTime.Today.ToString("dd/MM/yyyy"); } }
 
-        public string NomeNumeroTurma { get; set; }
+        public string NumeroTurma { get; set; }
     }
 }
