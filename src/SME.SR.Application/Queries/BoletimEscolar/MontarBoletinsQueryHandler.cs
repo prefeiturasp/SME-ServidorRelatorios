@@ -272,7 +272,7 @@ namespace SME.SR.Application
 
                         var registroFrequenciaComponenteCurricular = registroFrequencia.Where(rf => rf.ComponenteCurricularCodigo == componenteCurricular.Codigo);
                         var frequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoComponente, conselhoClasseBimestres, registroFrequenciaComponenteCurricular);
-                        componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) ? "-" : frequenciaFinal;
+                        componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) ? "" : frequenciaFinal;
                     }
                 }
             }
@@ -283,10 +283,7 @@ namespace SME.SR.Application
             var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
                 notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre)?.NotaConceito;
 
-            if ((bimestre == 0 || bimestre > periodoAtual) && String.IsNullOrEmpty(retorno))
-                retorno = "-";
-
-            return retorno;
+            return String.IsNullOrEmpty(retorno) ? String.Empty : retorno;
         }
 
         private bool VerificaPossuiConselho(IEnumerable<int> conselhoClassBimestres, int bimestre)
@@ -302,10 +299,7 @@ namespace SME.SR.Application
                 frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ??
                 (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
 
-            if (bimestre > periodoAtual && String.IsNullOrEmpty(frequencia))
-                frequencia = "-";
-
-            return frequencia;
+            return String.IsNullOrEmpty(frequencia) ? String.Empty : frequencia;
         }
 
         private async Task<string> ObterFrequenciaFinalAluno(IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<int> conselhoClassBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia)
@@ -346,17 +340,10 @@ namespace SME.SR.Application
 
         private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente, IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
-            var sintese = string.Empty;
-
             var percentualFrequencia = ObterPercentualDeFrequencia(frequenciasComponente);
             var frequenciaMedia = ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota);
 
-            sintese = percentualFrequencia.HasValue ? percentualFrequencia >= frequenciaMedia ? "F" : "NF" : "";
-
-            if (string.IsNullOrEmpty(sintese))
-                sintese = "-";
-
-            return sintese;
+            return percentualFrequencia.HasValue ? percentualFrequencia >= frequenciaMedia ? "F" : "NF" : "";
         }
 
         private bool TemFrequencia(IEnumerable<FrequenciaAluno> frequencias)
