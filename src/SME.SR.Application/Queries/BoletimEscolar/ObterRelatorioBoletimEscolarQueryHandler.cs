@@ -75,6 +75,7 @@ namespace SME.SR.Application
                 case Modalidade.Infantil:
                     modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
                     break;
+
                 case Modalidade.EJA:
                     modalidadeCalendario = ModalidadeTipoCalendario.EJA;
                     break;
@@ -172,8 +173,8 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioBoletimSimplesEscolarDto>> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
                                                              IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasAlunoBimestreBoletimSimplesDto>> notasAlunos,
-                                                             IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos, 
-                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal, 
+                                                             IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
+                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal,
                                                              IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
         {
             return await mediator.Send(new MontarBoletinsQuery()
@@ -199,7 +200,7 @@ namespace SME.SR.Application
         }
     }
 
-    class ComparadorFrequencia : IEqualityComparer<FrequenciaAluno>
+    internal class ComparadorFrequencia : IEqualityComparer<FrequenciaAluno>
     {
         public bool Equals([AllowNull] FrequenciaAluno x, [AllowNull] FrequenciaAluno y)
             => x.CodigoAluno.Equals(y.CodigoAluno)

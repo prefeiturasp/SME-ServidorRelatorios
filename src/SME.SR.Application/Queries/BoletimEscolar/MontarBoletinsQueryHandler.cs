@@ -272,7 +272,7 @@ namespace SME.SR.Application
 
                         var registroFrequenciaComponenteCurricular = registroFrequencia.Where(rf => rf.ComponenteCurricularCodigo == componenteCurricular.Codigo);
                         var frequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoComponente, conselhoClasseBimestres, registroFrequenciaComponenteCurricular);
-                        componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) ? "-" : frequenciaFinal;
+                        componenteCurricular.FrequenciaFinal = String.IsNullOrEmpty(frequenciaFinal) ? "" : frequenciaFinal;
                     }
                 }
             }
@@ -283,8 +283,8 @@ namespace SME.SR.Application
             var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
                 notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre)?.NotaConceito;
 
-            if ((bimestre == 0 || bimestre > periodoAtual) && String.IsNullOrEmpty(retorno))
-                retorno = "-";
+            if (String.IsNullOrEmpty(retorno))
+                retorno = "";
 
             return retorno;
         }
@@ -302,8 +302,8 @@ namespace SME.SR.Application
                 frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ??
                 (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
 
-            if (bimestre > periodoAtual && String.IsNullOrEmpty(frequencia))
-                frequencia = "-";
+            if (String.IsNullOrEmpty(frequencia))
+                frequencia = "";
 
             return frequencia;
         }
@@ -354,7 +354,7 @@ namespace SME.SR.Application
             sintese = percentualFrequencia.HasValue ? percentualFrequencia >= frequenciaMedia ? "F" : "NF" : "";
 
             if (string.IsNullOrEmpty(sintese))
-                sintese = "-";
+                sintese = "";
 
             return sintese;
         }
