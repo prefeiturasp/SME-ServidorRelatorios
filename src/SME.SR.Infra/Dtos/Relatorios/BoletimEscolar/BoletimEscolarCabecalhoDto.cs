@@ -24,5 +24,7 @@ namespace SME.SR.Infra
         public string AnoLetivo { get; set; }
 
         public string DataImpressao { get { return DateTime.Today.ToString("dd/MM/yyyy"); } }
+
+        public string NumeroTurma { get; set; }
     }
 }

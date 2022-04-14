@@ -113,9 +113,7 @@ namespace SME.SR.Application
                 if (!relatorioBoletimSimplesEscolar.Any())
                     throw new NegocioException("Não foram encontradas informações para geração do boletim");
 
-                OrdenarBoletins(relatorioBoletimSimplesEscolar);
-
-                return relatorioBoletimSimplesEscolar;
+                return OrdenarBoletins(relatorioBoletimSimplesEscolar);
             }
             catch (Exception ex)
             {
@@ -126,11 +124,11 @@ namespace SME.SR.Application
         private List<RelatorioBoletimSimplesEscolarDto> OrdenarBoletins(List<RelatorioBoletimSimplesEscolarDto> boletinsAlunos)
         {
             var boletinsOrdenados = new List<RelatorioBoletimSimplesEscolarDto>();
-            var turmas = boletinsAlunos.Select(b => b.Cabecalho.NomeTurma).Distinct();
+            var turmas = boletinsAlunos.Select(b => b.Cabecalho.NumeroTurma).Distinct();
 
             foreach (string turma in turmas.OrderBy(t => t))
             {
-                var alunosTurma = boletinsAlunos.Where(a => a.Cabecalho.NomeTurma == turma).OrderBy(a => a.Cabecalho.NomeAlunoOrdenacao).ToList();
+                var alunosTurma = boletinsAlunos.Where(a => a.Cabecalho.NumeroTurma == turma).OrderBy(a => a.Cabecalho.NomeAlunoOrdenacao).ToList();
                 boletinsOrdenados.AddRange(alunosTurma);
             }
 
@@ -145,6 +143,7 @@ namespace SME.SR.Application
                 NomeDre = dre.Abreviacao,
                 NomeUe = ue.NomeRelatorio,
                 NomeTurma = turma.NomeRelatorio,
+                NumeroTurma = turma.Nome,
                 CodigoEol = alunoCodigo,
                 Aluno = nome,
                 NomeAlunoOrdenacao = nomeAlunoOrdenacao,
