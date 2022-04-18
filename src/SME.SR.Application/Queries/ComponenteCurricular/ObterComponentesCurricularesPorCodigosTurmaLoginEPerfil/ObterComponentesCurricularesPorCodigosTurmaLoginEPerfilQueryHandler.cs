@@ -32,7 +32,7 @@ namespace SME.SR.Application
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
         private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
-        {
+        {            
             return componentesCurriculares?.Select(c => MapearParaDto(c, componentesApiEol, grupoMatrizes));
         }
 
@@ -136,7 +136,7 @@ namespace SME.SR.Application
                                 componentesCurriculares.Add(new Data.ComponenteCurricular()
                                 {
                                     CodigoTurma = territorio.Key,
-                                    Codigo = componenteTerritorio.FirstOrDefault().ObterCodigoComponenteCurricular(territorio.Key),
+                                    Codigo = componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular, 
                                     Descricao = componenteTerritorio.FirstOrDefault().ObterDescricaoComponenteCurricular(),
                                     TipoEscola = tipoEscola,
                                     TerritorioSaber = true
