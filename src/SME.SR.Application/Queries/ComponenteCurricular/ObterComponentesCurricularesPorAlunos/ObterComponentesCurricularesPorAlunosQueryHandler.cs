@@ -80,7 +80,7 @@ namespace SME.SR.Application
             });
         }
 
-        private static IEnumerable<long> ObterCodigosComponentesRegenciaClasse(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas)
+        private IEnumerable<long> ObterCodigosComponentesRegenciaClasse(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas)
         {
             return (from cpTurma in componentesDasTurmas
                     join reg in componentes on cpTurma.Codigo equals reg.Codigo
@@ -88,7 +88,7 @@ namespace SME.SR.Application
                     select reg.Codigo).Distinct();
         }
 
-        private static IEnumerable<ComponenteCurricularPorTurma> AdicionarComponentesRegenciaClasse(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<DisciplinaDto> disciplinasDaTurma, IEnumerable<AreaDoConhecimento> areasConhecimento)
+        private IEnumerable<ComponenteCurricularPorTurma> AdicionarComponentesRegenciaClasse(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<DisciplinaDto> disciplinasDaTurma, IEnumerable<AreaDoConhecimento> areasConhecimento)
         {
             return componentesDasTurmas?.Where(w => w.EhRegencia(componentes)).Select(c => new ComponenteCurricularPorTurma
             {
