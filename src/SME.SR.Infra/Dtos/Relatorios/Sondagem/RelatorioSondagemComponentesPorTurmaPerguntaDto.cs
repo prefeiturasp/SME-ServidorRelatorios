@@ -1,4 +1,4 @@
-﻿namespace SME.SR.Infra
+namespace SME.SR.Infra
 {
     public class RelatorioSondagemComponentesPorTurmaPerguntaDto
     {

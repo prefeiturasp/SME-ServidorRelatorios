@@ -52,7 +52,7 @@
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
                     where te.an_letivo = @anoLetivo
-                      and te.st_turma_escola in ('O', 'A', 'C') and serie_turma_grade.dt_fim is null ";
+                      and te.st_turma_escola in ('O', 'A', 'C') and serie_turma_grade.dt_fim is null and te.cd_tipo_turma <> 3 ";
 
         internal static string BuscarPorAlunosHistorico = @"
                         
@@ -104,7 +104,7 @@
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
                     where te.an_letivo = @anoLetivo
-                      and te.st_turma_escola in ('O', 'A', 'C')";
+                      and te.st_turma_escola in ('O', 'A', 'C') and te.cd_tipo_turma <> 3";
 
         internal static string BuscarPorTurma = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
                                         cc.cd_componente_curricular) as Codigo,

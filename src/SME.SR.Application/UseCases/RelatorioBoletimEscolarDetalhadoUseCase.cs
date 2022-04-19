@@ -42,7 +42,7 @@ namespace SME.SR.Application
         private Modalidade ObterModalidade(int modalidadeId)
         {
             return Enum.GetValues(typeof(Modalidade))
-            .Cast<Modalidade>().Where(x => (int)x == modalidadeId).FirstOrDefault();
+            .Cast<Modalidade>().FirstOrDefault(x => (int)x == modalidadeId);
         }
         private async Task<Usuario> ObterUsuarioLogado(string usuarioLogadorf)
         {
@@ -50,4 +50,3 @@ namespace SME.SR.Application
         }
     }
 }
-

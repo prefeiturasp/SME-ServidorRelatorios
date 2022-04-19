@@ -84,14 +84,16 @@
         </tr>
       </thead>
       <tbody>    
-          @{
-              aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
-              {
-                  MontarComponenteCurriculares(f.Select(s=> s));
+                @{
+                    aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
+                  {
+                      if (f.Key == 3 && ehEJA)
+                          MontarComponenteCurricularesRegencia(aluno);
+                
+                      MontarComponenteCurriculares(f.Select(s=> s));
 
-                  if (f.Key == 1 && aluno.EhRegencia)
-                      MontarComponenteCurricularesRegencia(aluno);
-
+                      if (f.Key == 1 && aluno.EhRegencia)
+                          MontarComponenteCurricularesRegencia(aluno);
               });
           }
       </tbody>
@@ -139,7 +141,7 @@
     void MontarComponenteCurricularesRegencia(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
     {
         var inseriuPrimeiraLinha = false;
-        var tamanhoRowspan = aluno.ComponentesCurriculares.Count;
+        var tamanhoRowspan = aluno.ComponenteCurricularRegencia.ComponentesCurriculares.Count;
 
         @foreach (var componenteCurricular in aluno.ComponenteCurricularRegencia.ComponentesCurriculares)
         {
@@ -189,7 +191,8 @@
 
     void MontarFooter()
     {
-       <div class="footer">
+      <br /> 
+      <div class="footer">
         <p class="descricao-footer">OBSERVAÇÕES:</p>
         <p class="linha-obs" />
         <p class="linha-obs" />
@@ -290,9 +293,9 @@
       text-align: center;
     }
 
-    .footer {
-      top: @topFooter;
-      position: absolute;
+    .footer {   
+      position:absolute;
+      width: 100%;
       border-top: 1px solid black;
       width: inherit;
     }

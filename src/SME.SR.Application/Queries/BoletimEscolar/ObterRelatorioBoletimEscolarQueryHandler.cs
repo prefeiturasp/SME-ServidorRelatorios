@@ -24,7 +24,6 @@ namespace SME.SR.Application
 
         public async Task<List<RelatorioBoletimSimplesEscolarDto>> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
-           
             if (!string.IsNullOrWhiteSpace(request.TurmaCodigo))
                 await ObterFechamentoTurma(request.TurmaCodigo);
 
@@ -50,7 +49,6 @@ namespace SME.SR.Application
             var notas = await ObterNotasAlunos(codigosAlunos, turmas.Select(t => t.Codigo).ToArray(), request.AnoLetivo, request.Modalidade, request.Semestre);
 
             return await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
-
         }
 
         private async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresConclusivos(string dreCodigo, string ueCodigo, IEnumerable<Turma> turmas, int anoLetivo, Modalidade modalidade, int semestre)

@@ -34,7 +34,8 @@ namespace SME.SR.Application
                     CodigosTurma = request.CodigosTurma,
                     ComponentesCurriculares = request.ComponentesCurriculares,
                     GruposMatriz = request.GruposMatriz,
-                    Usuario = request.Usuario
+                    Usuario = request.Usuario,
+                    ValidarAbrangenciaProfessor = request.ValidarAbrangenciaProfessor
                 });
 
                 return componentesCurriculares.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);

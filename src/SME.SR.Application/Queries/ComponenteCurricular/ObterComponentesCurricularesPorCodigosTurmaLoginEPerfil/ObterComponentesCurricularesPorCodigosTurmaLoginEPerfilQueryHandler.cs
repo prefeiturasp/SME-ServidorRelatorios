@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> Handle(ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery request, CancellationToken cancellationToken)
         {
-            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma);
+            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma, request.ValidarAbrangenciaProfessor);
 
             await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares, request.ComponentesCurriculares);
 
@@ -148,7 +148,7 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string[] codigosTurma)
+        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string[] codigosTurma, bool validarAbrangenciaProfessor = true)
         {
             var componentesCurriculares = new List<ComponenteCurricular>();
 
@@ -157,7 +157,7 @@ namespace SME.SR.Application
             var grupoAbrangencia = gruposAbrangenciaApiEol.FirstOrDefault(c => c.GrupoID == idPerfil);
             if (grupoAbrangencia != null)
             {
-                if (grupoAbrangencia.Abrangencia == TipoAbrangencia.Professor)
+                if (grupoAbrangencia.Abrangencia == TipoAbrangencia.Professor && validarAbrangenciaProfessor)
                 {
                     componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesPorTurmasEProfessor(login, codigosTurma));
                 }
