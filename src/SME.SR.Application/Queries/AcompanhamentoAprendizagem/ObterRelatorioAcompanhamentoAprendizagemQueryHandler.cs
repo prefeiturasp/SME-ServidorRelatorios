@@ -121,9 +121,11 @@ namespace SME.SR.Application
             {
                 int totalAulasInfantil = 0;
                 double somaFrequencia = 0;
+                double valorFrequencia = 0;
                 double mediaFrequencia = 0;
                 int totalAusencias = 0;
                 int quantidadeAulas = 0;
+                bool existeBimestreSemFrequencia = false;
 
                 foreach (var bimestre in bimestres.OrderBy(b => b))
                 {
@@ -139,10 +141,15 @@ namespace SME.SR.Application
 
                     totalAulasInfantil += frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas;
                     totalAusencias += frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias;
-                    somaFrequencia += frequenciaAluno != null ? frequenciaAluno.PercentualFrequencia : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? 100 : 0;
+                    valorFrequencia = frequenciaAluno != null ? frequenciaAluno.PercentualFrequencia : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? 100 : 0;
+
+                    if (valorFrequencia == 0)
+                        existeBimestreSemFrequencia = true;
+
+                    somaFrequencia += valorFrequencia;
                 }
 
-                mediaFrequencia = somaFrequencia / 2;
+                mediaFrequencia = existeBimestreSemFrequencia ? somaFrequencia : (somaFrequencia / 2);
 
                 var frequenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {
