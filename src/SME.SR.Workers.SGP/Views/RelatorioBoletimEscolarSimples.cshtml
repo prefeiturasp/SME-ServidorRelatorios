@@ -87,7 +87,7 @@
                 @{
                     aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
                   {
-                      if (f.Key == 3 && ehEJA)
+                      if (f.Key == 3 && ehEJA && aluno.ComponenteCurricularRegencia != null)
                           MontarComponenteCurricularesRegencia(aluno);
                 
                       MontarComponenteCurriculares(f.Select(s=> s));
