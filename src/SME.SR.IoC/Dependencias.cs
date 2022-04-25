@@ -234,6 +234,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAcompanhamentoFrequenciaUseCase, RelatorioAcompanhamentoFrequenciaUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoRegistrosPedagogicosUseCase, RelatorioAcompanhamentoRegistrosPedagogicosUseCase>();
             services.TryAddScoped<IRelatorioOcorrenciasUseCase, RelatorioOcorrenciasUseCase>();
+            services.TryAddScoped<IRelatorioFrequenciaGlobalUseCase, RelatorioFrequenciaGlobalUseCase>();
         }
     }
 }
