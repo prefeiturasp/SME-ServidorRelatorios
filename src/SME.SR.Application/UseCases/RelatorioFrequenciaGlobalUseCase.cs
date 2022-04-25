@@ -3,7 +3,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -48,9 +48,7 @@ namespace SME.SR.Application
 
         private async Task ExecuteExcel(List<FrequenciaGlobalDto> listaDeFrequencia)
         {
-            IEnumerable<DataTable> tabela = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalExcelQuery(listaDeFrequencia));
-
-            await mediator.Send(new GerarRelatorioFrequenciaGlobalExcelCommand(tabela, this.FitroRelatorio.CodigoRf));
+            await mediator.Send(new GerarExcelGenericoCommand(listaDeFrequencia.Cast<object>().ToList(), "Frequência Global", new Guid()));
         }
     }
 }
