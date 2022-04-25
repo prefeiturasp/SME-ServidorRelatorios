@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Commands\ComunsRelatorio\GerarRelatorioFrequenciaGlobal\Pdf\" />
     <Folder Include="Queries\HistoricoEscolar\MontarHistoricoEscolarTransferenciaEJA\" />
   </ItemGroup>
 
