@@ -46,6 +46,7 @@ namespace SME.SR.Application
                 {
                     var dto = new AlunoNomeDto
                     {
+                        NomeSocial = aluno.NomeSocialAluno,
                         Nome = aluno.NomeAluno,
                         Codigo = aluno.CodigoAluno.ToString()
                     };

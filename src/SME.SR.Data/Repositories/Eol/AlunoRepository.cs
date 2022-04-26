@@ -1422,7 +1422,7 @@ namespace SME.SR.Data
 
 		public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
 		{
-			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
+			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
                           from v_aluno_cotic vac  
                           where vac.cd_aluno = @codigo";
 
@@ -1433,7 +1433,7 @@ namespace SME.SR.Data
 
 		public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
         {
-            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
+            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
                           from v_aluno_cotic vac  
                           where vac.cd_aluno in @codigos";
 
