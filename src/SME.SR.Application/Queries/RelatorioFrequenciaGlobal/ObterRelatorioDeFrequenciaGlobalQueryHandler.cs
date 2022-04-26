@@ -14,12 +14,15 @@ namespace SME.SR.Application
     {
         private readonly IFrequenciaAlunoRepository _frequenciaAlunoRepository;
         private readonly IAlunoRepository _alunoRepository;
+        private readonly IMediator _mediator;
 
         public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository,
-            IAlunoRepository alunoRepository)
+            IAlunoRepository alunoRepository,
+            IMediator mediator)
         {
             _frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));  
             _alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<List<FrequenciaGlobalDto>> Handle(ObterRelatorioDeFrequenciaGlobalQuery request, CancellationToken cancellationToken)
@@ -36,7 +39,7 @@ namespace SME.SR.Application
         {
             var retornoMapeado = new List<FrequenciaGlobalDto>();
             var codigosAlunosEol = retornoQuery.Select(c => c.CodigoEol).Distinct().ToArray();
-            var alunosEscola = await _alunoRepository.ObterDadosAlunosEscola(filtro.CodigoUe, filtro.AnoLetivo);
+            var alunosEscola = await _mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo));
 
             foreach (var item in retornoQuery)
             {
