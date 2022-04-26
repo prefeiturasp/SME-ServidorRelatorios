@@ -4,6 +4,12 @@ namespace SME.SR.Infra
 {
     public class DadosAlunosEscolaDto
     {
+        public string ObterNomeFinal()
+        {
+            if (string.IsNullOrEmpty(NomeSocialAluno))
+                return NomeAluno;
+            else return NomeSocialAluno;
+        }
         public long CodigoAluno { get; set; }
         public string NomeAluno { get; set; }
         public DateTime DataNascimento { get; set; }
