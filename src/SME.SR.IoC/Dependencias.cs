@@ -9,6 +9,7 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Repositories.Cache;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
@@ -96,6 +97,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
             services.TryAddScoped(typeof(IAreaDoConhecimentoRepository), typeof(AreaDoConhecimentoRepository));
             services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
+            services.TryAddScoped(typeof(IRepositorioCache), typeof(RepositorioCache));
             services.TryAddScoped(typeof(IAtribuicaoCJRepository), typeof(AtribuicaoCJRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(ICicloRepository), typeof(CicloRepository));
