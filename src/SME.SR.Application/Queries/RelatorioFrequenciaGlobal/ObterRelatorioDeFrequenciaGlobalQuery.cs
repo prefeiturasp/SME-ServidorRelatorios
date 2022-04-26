@@ -10,7 +10,7 @@ namespace SME.SR.Application
 
         public ObterRelatorioDeFrequenciaGlobalQuery(FiltroFrequenciaGlobalDto filtros)
         {
-            this.Filtro = filtros;
+            Filtro = filtros;
         }
     }
 }

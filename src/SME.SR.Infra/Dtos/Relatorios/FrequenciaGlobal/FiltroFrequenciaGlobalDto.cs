@@ -4,6 +4,7 @@ namespace SME.SR.Infra
 {
     public class FiltroFrequenciaGlobalDto
     {
+        public bool ExibirHistorico { get; set; }
         public int AnoLetivo { get; set; }
         public string CodigoDre { get; set; }
         public string CodigoUe { get; set; }
@@ -13,7 +14,5 @@ namespace SME.SR.Infra
         public IList<string> MesesReferencias { get; set; }
         public int ApenasAlunosPercentualAbaixoDe { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
-        public string NomeUsuario { get; set; }
-        public string CodigoRf { get; set; }
     }
 }
