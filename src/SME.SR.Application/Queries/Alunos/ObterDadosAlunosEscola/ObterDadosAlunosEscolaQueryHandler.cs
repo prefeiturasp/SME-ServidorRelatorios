@@ -28,7 +28,7 @@ namespace SME.SR.Application
             {
                 var listaAlunos = await alunoRepository.ObterDadosAlunosEscola(request.CodigoEscola, request.AnoLetivo);
                 var json = JsonConvert.SerializeObject(listaAlunos);
-                await repositorioCache.SalvarAsync(cacheChave, json, 5);// Salva em cache por 5 min
+                await repositorioCache.SalvarAsync(cacheChave, json);// Salva em cache por 5 min
                 return listaAlunos;
             }
         }
