@@ -1422,7 +1422,7 @@ namespace SME.SR.Data
 
 		public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
 		{
-			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
+			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
                           from v_aluno_cotic vac  
                           where vac.cd_aluno = @codigo";
 
@@ -1433,7 +1433,7 @@ namespace SME.SR.Data
 
 		public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
         {
-            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome
+            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
                           from v_aluno_cotic vac  
                           where vac.cd_aluno in @codigos";
 
@@ -1593,6 +1593,36 @@ namespace SME.SR.Data
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 return await conexao.QueryAsync<AlunoRetornoDto>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string codigoEscola, int anoLetivo)
+        {
+			var sql = @" with matriculas as (
+						select distinct CodigoAluno, NomeAluno, DataNascimento, NomeSocialAluno, CodigoSituacaoMatricula, SituacaoMatricula, te.cd_escola AS CodigoEscola,
+						case when NumeroAlunoChamada is null then '0'
+						when NumeroAlunoChamada = 'NULL' then '0'
+						else NumeroAlunoChamada
+						end as NumeroAlunoChamada,
+						DataSituacao, DataMatricula, PossuiDeficiencia, NomeResponsavel, TipoResponsavel, CelularResponsavel,
+						DataAtualizacaoContato, CodigoTurma, CodigoMatricula, AnoLetivo, row_number() over (partition by CodigoMatricula order by DataSituacao desc) as Sequencia
+						from alunos_matriculas_norm nm(NOLOCK)
+						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
+						where 1=1
+						and te.cd_escola = @codigoEscola
+						and te.an_letivo = @anoLetivo
+						)
+
+						select *
+						from matriculas
+						where sequencia = 1
+						and CodigoSituacaoMatricula <> 4
+						and CodigoSituacaoMatricula in (1, 2, 3, 5, 6, 10, 13)";
+
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+				return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql, new { codigoEscola, anoLetivo });
             }
         }
     }

@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dtos\Comunicado\**" />
     <Compile Remove="Dtos\Respostas\**" />
+    <EmbeddedResource Remove="Dtos\Comunicado\**" />
     <EmbeddedResource Remove="Dtos\Respostas\**" />
+    <None Remove="Dtos\Comunicado\**" />
     <None Remove="Dtos\Respostas\**" />
   </ItemGroup>
 
@@ -22,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Comunicado\" />
     <Folder Include="Dtos\Relatorios\Frequencia\Excel\" />
   </ItemGroup>
 
