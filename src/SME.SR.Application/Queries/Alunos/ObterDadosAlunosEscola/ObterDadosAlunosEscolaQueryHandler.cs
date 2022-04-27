@@ -13,22 +13,25 @@ namespace SME.SR.Application
     {
         private readonly IAlunoRepository alunoRepository;
         private readonly IRepositorioCache repositorioCache;
+
         public ObterDadosAlunosEscolaQueryHandler(IAlunoRepository alunoRepository, IRepositorioCache repositorioCache)
         {
             this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
             this.repositorioCache = repositorioCache ?? throw new ArgumentNullException(nameof(repositorioCache));
         }
+
         public async Task<IEnumerable<DadosAlunosEscolaDto>> Handle(ObterDadosAlunosEscolaQuery request, CancellationToken cancellationToken)
         {
             var cacheChave = $"dados-alunos-escola:{request.CodigoEscola}";
             var cacheAlunos = repositorioCache.Obter(cacheChave);
+
             if (cacheAlunos != null)
                 return JsonConvert.DeserializeObject<List<DadosAlunosEscolaDto>>(cacheAlunos);
             else
             {
                 var listaAlunos = await alunoRepository.ObterDadosAlunosEscola(request.CodigoEscola, request.AnoLetivo);
                 var json = JsonConvert.SerializeObject(listaAlunos);
-                await repositorioCache.SalvarAsync(cacheChave, json);// Salva em cache por 5 min
+                await repositorioCache.SalvarAsync(cacheChave, json);
                 return listaAlunos;
             }
         }
