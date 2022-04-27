@@ -593,9 +593,11 @@ namespace SME.SR.Application
 
             if (possuiConselhoFinalParaAnual || aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo)
             {
+                string percentualFrequenciaFinal = ObterPercentualFrequenciaFinal(frequenciasAluno);
+
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? "0", 1);
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
-                linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : frequenciaGlobalAluno?.PercentualFrequencia.ToString()) ?? FREQUENCIA_100, 3);
+                linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : percentualFrequenciaFinal) ?? FREQUENCIA_100, 3);
 
                 var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
                 var textoParecer = parecerConclusivo?.ParecerConclusivo;
@@ -612,6 +614,20 @@ namespace SME.SR.Application
             linhaDto.AdicionaCelula(99, 99, "0", 2);
             linhaDto.AdicionaCelula(99, 99, string.Empty, 3);
             linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
+        }
+
+        private string ObterPercentualFrequenciaFinal(IEnumerable<FrequenciaAluno> frequenciasAluno)
+        {
+            var totalAulas = frequenciasAluno == null || frequenciasAluno?.Sum(f => f.TotalAulas) == 0 ? 0 : frequenciasAluno.Sum(f => f.TotalAulas);
+            var totalFaltasNaoCompensadas = frequenciasAluno == null ? 0 : frequenciasAluno.Sum(f => f.NumeroFaltasNaoCompensadas);
+
+            if (totalAulas == 0)
+                return string.Empty;
+
+            var porcentagemFrequenciaFinal = 100 - ((double)totalFaltasNaoCompensadas / totalAulas) * 100;
+
+            var percentualFrequenciaFinal = totalAulas == 0 ? "" : Math.Round(porcentagemFrequenciaFinal > 100 ? 100 : porcentagemFrequenciaFinal, 2).ToString();
+            return percentualFrequenciaFinal;
         }
 
         private bool AlunoAtivo(SituacaoMatriculaAluno situacaoMatricula)
