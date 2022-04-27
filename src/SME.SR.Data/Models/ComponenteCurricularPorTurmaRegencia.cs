@@ -19,7 +19,7 @@ namespace SME.SR.Data
         public string ObterDisciplina()
         {
             var tamnhoDisciplina = Disciplina.Length;
-            return tamnhoDisciplina > 37 ? Disciplina.Substring(0,37) : Disciplina;
+            return tamnhoDisciplina > 34 ? $"{Disciplina.Substring(0,34)}..." : Disciplina;
         }
     }
 }
