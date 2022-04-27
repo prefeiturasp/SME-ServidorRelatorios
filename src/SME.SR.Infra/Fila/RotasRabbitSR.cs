@@ -45,6 +45,8 @@
 
         public const string RotaRelatoriosSolicitadosFrequencia = "sr.relatorios.solicitados.frequencia";
 
+        public const string RotaRelatoriosSolicitadosFrequenciaMensal = "sr.relatorios.solicitados.frequenciamensal";
+
         public const string RotaRelatoriosSolicitadosCompensacaoAusencia = "sr.relatorios.solicitados.compensacaoausencia";
 
         public const string RotaRelatoriosSolicitadosControleGrade = "sr.relatorios.solicitados.controlegrade";

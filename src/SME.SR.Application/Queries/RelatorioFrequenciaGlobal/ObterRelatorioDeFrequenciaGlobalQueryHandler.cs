@@ -38,12 +38,13 @@ namespace SME.SR.Application
             IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
             var retornoMapeado = new List<FrequenciaGlobalDto>();
-            var codigosAlunosEol = retornoQuery.Select(c => c.CodigoEol).Distinct().ToArray();
             var alunosEscola = await _mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo));
 
             foreach (var item in retornoQuery)
             {
-                var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno }).FirstOrDefault(c => c.CodigoAluno == Convert.ToInt64(item.CodigoEol));
+                var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno })
+                    .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+
                 var estudante = string.IsNullOrEmpty(aluno.NomeSocialAluno) ? aluno.NomeAluno : aluno.NomeSocialAluno;
 
                 retornoMapeado.Add(new FrequenciaGlobalDto()
@@ -58,7 +59,11 @@ namespace SME.SR.Application
                 });
             }
 
-            var retornoOrdenado = retornoMapeado.OrderBy(c => new { c.CodigoDre, c.CodigoUe, c.Mes, c.Turma, c.Estudante });
+            var retornoOrdenado = retornoMapeado.OrderBy(c => c.CodigoDre)
+                .ThenBy(c => c.CodigoUe)
+                .ThenBy(c => c.Mes)
+                .ThenBy(c => c.Turma)
+                .ThenBy(c => c.Estudante);
 
             return retornoOrdenado.ToList();
         }
