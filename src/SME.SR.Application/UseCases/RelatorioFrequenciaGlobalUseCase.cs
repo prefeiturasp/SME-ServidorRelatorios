@@ -10,7 +10,7 @@ namespace SME.SR.Application
 {
     public class RelatorioFrequenciaGlobalUseCase : IRelatorioFrequenciaGlobalUseCase
     {
-        public delegate Task OpcaoRelatorio(List<FrequenciaGlobalDto> listaDeFrequencia);
+        public delegate Task OpcaoRelatorio(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao);
 
         public readonly IMediator mediator;
 
@@ -29,7 +29,7 @@ namespace SME.SR.Application
 
             if (dicionarioDeOpcoesRelatorio.ContainsKey(FitroRelatorio.TipoFormatoRelatorio))
             {
-                await dicionarioDeOpcoesRelatorio[FitroRelatorio.TipoFormatoRelatorio].Invoke(listaDeFrenquenciaGlobal);
+                await dicionarioDeOpcoesRelatorio[FitroRelatorio.TipoFormatoRelatorio].Invoke(listaDeFrenquenciaGlobal, request.CodigoCorrelacao);
             }
             else
             {
@@ -39,16 +39,17 @@ namespace SME.SR.Application
 
         private Dictionary<TipoFormatoRelatorio, OpcaoRelatorio> ObtenhaDicionarioDeOpcoesRelatorio()
         {
-            var dicionario = new Dictionary<TipoFormatoRelatorio, OpcaoRelatorio>();
-
-            dicionario.Add(TipoFormatoRelatorio.Xlsx, ExecuteExcel);
+            var dicionario = new Dictionary<TipoFormatoRelatorio, OpcaoRelatorio>
+            {
+                { TipoFormatoRelatorio.Xlsx, ExecuteExcel }
+            };
 
             return dicionario;
         }
 
-        private async Task ExecuteExcel(List<FrequenciaGlobalDto> listaDeFrequencia)
+        private async Task ExecuteExcel(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao)
         {
-            await mediator.Send(new GerarExcelGenericoCommand(listaDeFrequencia.Cast<object>().ToList(), "Frequência Global", new Guid()));
+            await mediator.Send(new GerarExcelGenericoCommand(listaDeFrequencia.Cast<object>().ToList(), "Frequência Global", codigoCorrelacao));
         }
     }
 }
