@@ -322,6 +322,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/frequencia-global")]
+        [Action("relatorios/frequencia-global", typeof(IRelatorioFrequenciaGlobalUseCase))]
+        public async Task<bool> RelatorioFrequenciaGlobal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaGlobalUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
