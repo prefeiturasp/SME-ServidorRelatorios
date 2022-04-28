@@ -37,20 +37,35 @@ namespace SME.SR.Application
                 }
             }
 
-            FormatarRecomendacoes(recomendacoes);
+           await FormatarRecomendacoes(recomendacoes);
 
             return recomendacoes;
         }
 
-        private void FormatarRecomendacoes(IEnumerable<RecomendacaoConselhoClasseAluno> recomendacoesConselho)
+        private async Task FormatarRecomendacoes(IEnumerable<RecomendacaoConselhoClasseAluno> recomendacoesConselho)
         {
             foreach (var recomendacao in recomendacoesConselho)
             {
+                var recomendacoesDoAluno = await conselhoClasseAlunoRepository.ObterRecomendacoesAlunoFamiliaPorAlunoETurma(recomendacao.AlunoCodigo, recomendacao.TurmaCodigo);
+
+                var concatenaRecomendacaoAluno = new StringBuilder();
+                foreach (var aluno in recomendacoesDoAluno.Where(r => r.Tipo == (int)ConselhoClasseRecomendacaoTipo.Aluno).ToList())
+                    concatenaRecomendacaoAluno.AppendLine("- " + aluno.Recomendacao);
+
+                concatenaRecomendacaoAluno.AppendLine("<br/>");
+                concatenaRecomendacaoAluno.AppendLine(UtilHtml.FormatarHtmlParaTexto(recomendacao.RecomendacoesAluno));
+
+                var concatenaRecomendacaoFamilia = new StringBuilder();
+                foreach (var aluno in recomendacoesDoAluno.Where(r => r.Tipo == (int)ConselhoClasseRecomendacaoTipo.Familia).ToList())
+                    concatenaRecomendacaoFamilia.AppendLine("- " + aluno.Recomendacao);
+
+                concatenaRecomendacaoFamilia.AppendLine("<br/>");
+                concatenaRecomendacaoFamilia.AppendLine(UtilHtml.FormatarHtmlParaTexto(recomendacao.RecomendacoesFamilia));
+
+
                 recomendacao.AnotacoesPedagogicas = UtilHtml.FormatarHtmlParaTexto(recomendacao.AnotacoesPedagogicas);
-
-                recomendacao.RecomendacoesAluno = UtilHtml.FormatarHtmlParaTexto(recomendacao.RecomendacoesAluno);
-
-                recomendacao.RecomendacoesFamilia = UtilHtml.FormatarHtmlParaTexto(recomendacao.RecomendacoesFamilia);
+                recomendacao.RecomendacoesAluno = concatenaRecomendacaoAluno.ToString();
+                recomendacao.RecomendacoesFamilia = concatenaRecomendacaoFamilia.ToString();
             }
 
         } 

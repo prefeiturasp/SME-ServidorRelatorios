@@ -13,7 +13,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -317,14 +317,6 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpGet("relatorios/ocorrencias")]
         [Action("relatorios/ocorrencias",typeof(IRelatorioOcorrenciasUseCase))]
         public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request,[FromServices] IRelatorioOcorrenciasUseCase useCase)
-        {
-            await useCase.Executar(request);
-            return true;
-        }
-
-        [HttpGet("relatorios/frequencia-global")]
-        [Action("relatorios/frequencia-global", typeof(IRelatorioFrequenciaGlobalUseCase))]
-        public async Task<bool> RelatorioFrequenciaGlobal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaGlobalUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
