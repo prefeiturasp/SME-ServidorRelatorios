@@ -47,7 +47,6 @@ namespace SME.SR.Application
             var codigosDisciplinas = componentesCurriculares.SelectMany(cc => cc.Select(cc => cc.CodDisciplina.ToString())).Distinct().ToArray();
             var aulasPrevistas = await mediator.Send(new ObterAulasDadasTurmaBimestreComponenteCurricularQuery(codigosTurma, tipoCalendarioId, codigosDisciplinas));
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
-            var notas = await ObterNotasAlunos(codigosAlunos, turmas.Select(t => t.Codigo).ToArray(), request.AnoLetivo, request.Modalidade, request.Semestre);
 
             return await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
         }

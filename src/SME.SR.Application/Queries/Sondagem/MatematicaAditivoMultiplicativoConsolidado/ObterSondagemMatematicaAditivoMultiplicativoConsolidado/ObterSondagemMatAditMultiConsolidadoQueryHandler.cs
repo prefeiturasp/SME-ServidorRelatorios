@@ -146,7 +146,7 @@ namespace SME.SR.Application
                 var listaPerguntasOrdem = await perguntasAditMultiNumRepository.ObterPerguntasOrdem(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica, request.Proficiencia);
                 listaPerguntasOrdem = listaPerguntasOrdem.DistinctBy(lp => lp.Id).ToList();
 
-                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
                 int ordem = 1;
                 foreach (var perguntaOrdem in listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == null))
