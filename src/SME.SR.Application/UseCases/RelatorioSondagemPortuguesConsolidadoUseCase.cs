@@ -32,8 +32,8 @@ namespace SME.SR.Application
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
-                ));
+                Convert.ToInt64(filtros.DreCodigo),
+                filtros.Modalidades));
 
             RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
@@ -46,10 +46,11 @@ namespace SME.SR.Application
 
             GerarGrafico(relatorio, 0);
 
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+            return await mediator
+                .Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
 
-         private void GerarGrafico(RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio, int qtdAlunos)
+        private void GerarGrafico(RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio, int qtdAlunos)
         {
             relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
             foreach (var ordem in relatorio.Planilhas)
@@ -177,7 +178,7 @@ namespace SME.SR.Application
                     Percentual = 1
                 });
 
-                var ordensSondagem = await mediator.Send(new ObterOrdensSondagemPorGrupoQuery() { Grupo = grupoSondagemEnum } );
+                var ordensSondagem = await mediator.Send(new ObterOrdensSondagemPorGrupoQuery() { Grupo = grupoSondagemEnum });
                 foreach (var ordem in ordensSondagem)
                 {
                     planilhas.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto()
@@ -239,7 +240,7 @@ namespace SME.SR.Application
                     Perguntas = perguntasDto
                 });
             }
-        
+
             return await Task.FromResult(planilhas);
         }
     }

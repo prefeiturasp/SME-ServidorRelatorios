@@ -51,7 +51,7 @@ namespace SME.SR.Application
             }
             else
             {
-                var listaAlunos = await mathPoolNumbersRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+                var listaAlunos = await mathPoolNumbersRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
                 var familiaresAgrupados = listaAlunos.GroupBy(fu => fu.Familiares);
 

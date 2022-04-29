@@ -97,7 +97,7 @@ namespace SME.SR.Application
                     new NegocioException("DRE não encontrada!!");
 
                 relatorioDto.Dre = dre.Abreviacao;
-                relatorioDto.Ue = $"{ue.UeCodigo} - {ue.NomeComTipoEscola}";
+                relatorioDto.Ue = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
                 relatorioDto.Turma = nomeTurma;
                 relatorioDto.Bimestre = $"{bimestre}º";
                 relatorioDto.Usuario = parametros.UsuarioNome;

@@ -45,7 +45,7 @@ namespace SME.SR.Application
             {
                 if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo)
                 {
-                    var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+                    var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
                     qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
 
@@ -68,9 +68,7 @@ namespace SME.SR.Application
                         if (request.TurmaAno != 1 && request.TurmaAno != 3)
                         {
                             var ordem4Ideia = listaAlunos.GroupBy(fu => fu.Ordem4Ideia);
-
                             var ordem4Resultado = listaAlunos.GroupBy(fu => fu.Ordem4Resultado);
-
                             AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
 
                         }
@@ -82,9 +80,9 @@ namespace SME.SR.Application
                 }
                 else
                 {
-                    var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+                    var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
-                    qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
+                qtdAlunos = listaAlunos.Count(a => !(string.IsNullOrEmpty(a.Ordem3Ideia) && string.IsNullOrWhiteSpace(a.Ordem3Resultado)));
 
                     if (request.TurmaAno == 2)
                     {
@@ -105,8 +103,7 @@ namespace SME.SR.Application
                             AdicionarOrdem(request.Proficiencia, request.TurmaAno, ordem4Ideia, ordem4Resultado, ordem: 4, respostas, request.QuantidadeTotalAlunos);
                         }
 
-
-                        var ordem5Ideia = listaAlunos.GroupBy(fu => fu.Ordem5Ideia);
+                    var ordem5Ideia = listaAlunos.GroupBy(fu => fu.Ordem5Ideia);
 
                         var ordem5Resultado = listaAlunos.GroupBy(fu => fu.Ordem5Resultado);
 
@@ -194,9 +191,9 @@ namespace SME.SR.Application
                 relatorio.Perguntas = perguntas;
 
             if (request.AnoLetivo < 2022)
-                TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
+                TrataAlunosQueNaoResponderam(relatorio, qtdAlunos);
             else
-                TrataAlunosQueNaoResponderam2022(relatorio, request.QuantidadeTotalAlunos);
+                TrataAlunosQueNaoResponderam2022(relatorio, qtdAlunos);
 
             GerarGrafico(relatorio, qtdAlunos);
 

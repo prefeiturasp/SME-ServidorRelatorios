@@ -25,7 +25,7 @@ namespace SME.SR.Application
             if (turma == null)
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var ueEndereco = await mediator.Send(new ObterEnderecoUeEolPorCodigoQuery(long.Parse(turma.Ue.UeCodigo)));
+            var ueEndereco = await mediator.Send(new ObterEnderecoUeEolPorCodigoQuery(long.Parse(turma.Ue.Codigo)));
 
             var alunosEol = await mediator.Send(new ObterAlunosReduzidosPorTurmaEAlunoQuery(turma.Codigo, parametros.AlunoCodigo));
             if (alunosEol == null || !alunosEol.Any())

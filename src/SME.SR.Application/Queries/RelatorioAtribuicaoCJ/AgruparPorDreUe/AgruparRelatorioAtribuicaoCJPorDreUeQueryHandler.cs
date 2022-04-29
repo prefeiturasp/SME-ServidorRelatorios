@@ -80,7 +80,7 @@ namespace SME.SR.Application
 
             relatorioDto.Dres.AddRange(dresCodigo.Select(dreCodigo =>
             {
-                var dreDetalhe = dres.FirstOrDefault(d => d.DreCodigo == dreCodigo);
+                var dreDetalhe = dres.FirstOrDefault(d => d.Codigo == dreCodigo);
 
                 var dreDto = new RelatorioAtribuicaoCjDreDto(dreDetalhe.Abreviacao, dreCodigo);
 

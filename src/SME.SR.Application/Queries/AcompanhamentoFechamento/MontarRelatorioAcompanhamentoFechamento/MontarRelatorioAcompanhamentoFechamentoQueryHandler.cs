@@ -14,73 +14,73 @@ namespace SME.SR.Application
     {
         public async Task<RelatorioAcompanhamentoFechamentoPorUeDto> Handle(MontarRelatorioAcompanhamentoFechamentoQuery request, CancellationToken cancellationToken)
         {
-                var relatorio = new RelatorioAcompanhamentoFechamentoPorUeDto();
-                var lstComponentesCurriculares = request.ComponentesCurriculares.ToList();
+            var relatorio = new RelatorioAcompanhamentoFechamentoPorUeDto();
+            var lstComponentesCurriculares = request.ComponentesCurriculares.ToList();
 
-                MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmasCodigo, request.Turmas, request.Bimestres, request.Usuario);
+            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmasCodigo, request.Turmas, request.Bimestres, request.Usuario);
 
-                if (request.Bimestres == null || !request.Bimestres.Any())
+            if (request.Bimestres == null || !request.Bimestres.Any())
+            {
+                var bimestresFechamento = request.ConsolidadoFechamento.Select(f => f.Bimestre);
+                var bimestresConselho = request.ConsolidadoConselhosClasse.Select(f => f.Bimestre);
+
+                var bimestres = new List<int>();
+                bimestres.AddRange(bimestresFechamento);
+                bimestres.AddRange(bimestresConselho);
+
+                bimestres = bimestres.Distinct().OrderBy(b => b == 0).ThenBy(b => b).ToList();
+
+                request.Bimestres = bimestres.ToArray();
+            }
+            else
+                request.Bimestres = request.Bimestres.OrderBy(b => b == 0).ThenBy(b => b).ToArray();
+
+            foreach (var turma in request.Turmas)
+            {
+                var turmaNome = request.TurmasCodigo != null && request.TurmasCodigo.Any() &&
+                                request.TurmasCodigo.Count() == 1 ? "" : turma.NomeRelatorio;
+
+                var turmaRelatorio = new RelatorioAcompanhamentoFechamentoTurmaDto(turmaNome);
+
+                foreach (var bimestre in request.Bimestres)
                 {
-                    var bimestresFechamento = request.ConsolidadoFechamento.Select(f => f.Bimestre);
-                    var bimestresConselho = request.ConsolidadoConselhosClasse.Select(f => f.Bimestre);
+                    var nomeBimestre = request.Bimestres != null && request.Bimestres.Any() &&
+                                       request.Bimestres.Count() == 1 ? "" : (bimestre > 0 ? $"{bimestre}º BIMESTRE" : "FINAL");
 
-                    var bimestres = new List<int>();
-                    bimestres.AddRange(bimestresFechamento);
-                    bimestres.AddRange(bimestresConselho);
+                    var bimestreRelatorio = new RelatorioAcompanhamentoFechamentoBimestreDto(nomeBimestre);
 
-                    bimestres = bimestres.Distinct().OrderBy(b => b == 0).ThenBy(b => b).ToList();
+                    var fechamentos = request.ConsolidadoFechamento.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre);
+                    var conselhos = request.ConsolidadoConselhosClasse.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre);
 
-                    request.Bimestres = bimestres.ToArray();
-                }
-                else
-                    request.Bimestres = request.Bimestres.OrderBy(b => b == 0).ThenBy(b => b).ToArray();
-
-                foreach (var turma in request.Turmas)
-                {
-                    var turmaNome = request.TurmasCodigo != null && request.TurmasCodigo.Any() &&
-                                    request.TurmasCodigo.Count() == 1 ? "" : turma.NomeRelatorio;
-
-                    var turmaRelatorio = new RelatorioAcompanhamentoFechamentoTurmaDto(turmaNome);
-
-                    foreach (var bimestre in request.Bimestres)
+                    foreach (var fechamento in fechamentos)
                     {
-                        var nomeBimestre = request.Bimestres != null && request.Bimestres.Any() &&
-                                           request.Bimestres.Count() == 1 ? "" : (bimestre > 0 ? $"{bimestre}º BIMESTRE" : "FINAL");
+                        var componenteNome = lstComponentesCurriculares.FirstOrDefault(cc => cc.CodDisciplina == fechamento.ComponenteCurricularCodigo).Disciplina;
+                        var descricaoStatus = fechamento.StatusRelatorio.Name();
+                        var pendencias = new List<string>();
 
-                        var bimestreRelatorio = new RelatorioAcompanhamentoFechamentoBimestreDto(nomeBimestre);
-
-                        var fechamentos = request.ConsolidadoFechamento.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre);
-                        var conselhos = request.ConsolidadoConselhosClasse.Where(f => f.TurmaCodigo == turma.Codigo && f.Bimestre == bimestre);
-
-                        foreach (var fechamento in fechamentos)
+                        if (request.ListarPendencias)
                         {
-                            var componenteNome = lstComponentesCurriculares.FirstOrDefault(cc => cc.CodDisciplina == fechamento.ComponenteCurricularCodigo).Disciplina;
-                            var descricaoStatus = fechamento.StatusRelatorio.Name();
-                            var pendencias = new List<string>();
+                            var lstPendencias = request.Pendencias.Where(p => p.TurmaCodigo == turma.Codigo &&
+                                                                              p.Bimestre == bimestre &&
+                                                                              p.ComponenteCurricularId == fechamento.ComponenteCurricularCodigo);
 
-                            if (request.ListarPendencias)
-                            {
-                                var lstPendencias = request.Pendencias.Where(p => p.TurmaCodigo == turma.Codigo &&
-                                                                                  p.Bimestre == bimestre &&
-                                                                                  p.ComponenteCurricularId == fechamento.ComponenteCurricularCodigo);
-
-                                pendencias = lstPendencias.Select(p => p.TipoPendencia.Name()).ToList();
-                            }
-
-                            bimestreRelatorio.FechamentosComponente.Add(
-                                new RelatorioAcompanhamentoFechamentoComponenteDto(componenteNome, descricaoStatus, pendencias));
+                            pendencias = lstPendencias.Select(p => p.TipoPendencia.Name()).ToList();
                         }
 
-                        bimestreRelatorio.FechamentosComponente = bimestreRelatorio.FechamentosComponente.OrderBy(f => lstComponentesCurriculares.FindIndex(c => c.Disciplina == f.Componente)).ToList();
-                        bimestreRelatorio.ConselhosClasse = MapearRetornoStatusAgrupado(conselhos.GroupBy(c => c.Status));
-
-                        turmaRelatorio.Bimestres.Add(bimestreRelatorio);
+                        bimestreRelatorio.FechamentosComponente.Add(
+                            new RelatorioAcompanhamentoFechamentoComponenteDto(componenteNome, descricaoStatus, pendencias));
                     }
 
-                    relatorio.Turmas.Add(turmaRelatorio);
+                    bimestreRelatorio.FechamentosComponente = bimestreRelatorio.FechamentosComponente.OrderBy(f => lstComponentesCurriculares.FindIndex(c => c.Disciplina == f.Componente)).ToList();
+                    bimestreRelatorio.ConselhosClasse = MapearRetornoStatusAgrupado(conselhos.GroupBy(c => c.Status));
+
+                    turmaRelatorio.Bimestres.Add(bimestreRelatorio);
                 }
 
-                return await Task.FromResult(relatorio);
+                relatorio.Turmas.Add(turmaRelatorio);
+            }
+
+            return await Task.FromResult(relatorio);
         }
 
         private void MontarCabecalho(RelatorioAcompanhamentoFechamentoPorUeDto relatorio, Dre dre, Ue ue, string[] turmasCodigo, IEnumerable<Turma> turmas, int[] bimestres, Usuario usuario)

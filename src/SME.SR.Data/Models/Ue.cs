@@ -7,7 +7,7 @@ namespace SME.SR.Data
     public class Ue
     {
         public long Id { get; set; }
-        public string UeCodigo { get; set; }
+        public string Codigo { get; set; }
         public string Nome { get; set; }
         public TipoEscola TipoEscola { get; set; }
         public long DreId { get; set; }
@@ -27,10 +27,10 @@ namespace SME.SR.Data
             get
             {
                 if ((int)TipoEscola > 0)
-                    return $"{UeCodigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
+                    return $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
 
 
-                return $"{UeCodigo ?? $"{UeCodigo} - "} {Nome}";
+                return $"{Codigo ?? $"{Codigo} - "} {Nome}";
             }
         }
 

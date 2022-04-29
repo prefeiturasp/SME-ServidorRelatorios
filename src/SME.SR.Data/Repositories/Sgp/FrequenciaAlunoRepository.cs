@@ -395,7 +395,7 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<FrequenciaAlunoRetornoDto>(query, new { codigosturma, componenteCurricularId, bimestre });
             }
-        }        
+        }
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterRegistroFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
@@ -494,23 +494,51 @@ namespace SME.SR.Data
                              not afa.excluido and not a.excluido 
                              and afa.codigo_aluno = any(@alunosCodigo)	 
                              and a.turma_id = @turmaCodigo";
-            
+
             if (bimestre != "-99")
                 query += " and pe.bimestre = @numeroBimestre ";
 
             query += @" and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                 order by pe.bimestre,a.data_aula desc; ";
 
-            var parametros = new 
-            { 
-                alunosCodigo, 
-                turmaCodigo, 
-                numeroBimestre = Convert.ToInt32(bimestre) 
+            var parametros = new
+            {
+                alunosCodigo,
+                turmaCodigo,
+                numeroBimestre = Convert.ToInt32(bimestre)
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<AusenciaBimestreDto>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<FrequenciaAlunoConsolidadoRelatorioDto>> ObterFrequenciaAlunosRelatorio(string[] turmasCodigo, string bimestre, string componenteCurricularId)
+        {
+            var query = new StringBuilder(@"select fa.turma_id TurmaCodigo,
+    	                                    fa.bimestre,
+    	                                    fa.disciplina_id ComponenteCurricularId,
+                                            fa.codigo_aluno AlunoCodigo,
+                                            fa.total_aulas TotalAulas,
+                                            fa.total_presencas TotalPresencas,
+                                            fa.total_remotos TotalRemotos, 
+                                            fa.total_ausencias TotalAusencias,
+                                            fa.total_compensacoes  Totalcompensacoes
+                                       from frequencia_aluno fa
+                                      where fa.tipo = @tipoFrequencia
+                                        and fa.turma_id = any(@turmasCodigo)");
+            if (!string.IsNullOrEmpty(componenteCurricularId))
+                query.AppendLine(" and fa.disciplina_id = @componenteCurricularId");
+
+            if (bimestre != "-99")
+                query.AppendLine(" and fa.bimestre = @bimestre ");
+
+            var parametros = new { turmasCodigo, bimestre = int.Parse(bimestre), componenteCurricularId, tipoFrequencia = (int)TipoFrequenciaAluno.PorDisciplina };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<FrequenciaAlunoConsolidadoRelatorioDto>(query.ToString(), parametros);
             }
         }
 
