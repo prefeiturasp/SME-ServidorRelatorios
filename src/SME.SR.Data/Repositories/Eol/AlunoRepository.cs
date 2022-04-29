@@ -134,9 +134,9 @@ namespace SME.SR.Data
 
         }
 
-		public async Task<IEnumerable<AlunoPorTurmaRespostaDto>> ObterAlunosPorTurmaEDataMatriculaQuery(long turmaCodigo, DateTime dataReferencia)
-		{
-			var query = @"
+        public async Task<IEnumerable<AlunoPorTurmaRespostaDto>> ObterAlunosPorTurmaEDataMatriculaQuery(long turmaCodigo, DateTime dataReferencia)
+        {
+            var query = @"
 					IF OBJECT_ID('tempdb..#tmpAlunosDadosAtuais') IS NOT NULL
 					DROP TABLE #tmpAlunosDadosAtuais
 
@@ -280,14 +280,14 @@ namespace SME.SR.Data
 								and alunos.DataMatricula = a.DataMatricula
 				ORDER BY alunos.NomeAluno";
 
-			var parametros = new { CodigoTurma = turmaCodigo, DataMatricula = dataReferencia };
+            var parametros = new { CodigoTurma = turmaCodigo, DataMatricula = dataReferencia };
 
-			using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-			return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
+            return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
 
-		}
-		public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades)
+        }
+        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades)
         {
             StringBuilder query = new StringBuilder();
             if (anoLetivo < DateTime.Now.Date.Year)
@@ -319,7 +319,7 @@ namespace SME.SR.Data
 									{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
 									{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})
 						SELECT COUNT(DISTINCT cd_aluno) 
-								FROM lista ");               
+								FROM lista ");
             }
             else
             {
@@ -743,14 +743,14 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada";
-            
-				using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-				return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 120);				           
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 120);
         }
 
-		public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
-		{
-			var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+        public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
+        {
+            var query = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -875,19 +875,19 @@ namespace SME.SR.Data
 					PossuiDeficiencia
 					ORDER BY CodigoSituacaoMatricula";
 
-			var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
+            var parametros = new { CodigosTurma = codigosTurma, CodigosAluno = codigosAluno };
 
-			using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-			{
-				return await conexao.QueryAsync<Aluno>(query, parametros, commandTimeout: 120);
-			}
-		}
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<Aluno>(query, parametros, commandTimeout: 120);
+            }
+        }
 
-		public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(IEnumerable<string> codigosTurma)
-		{
-				string codigo = string.Join(",", codigosTurma);
+        public async Task<IEnumerable<Aluno>> ObterPorCodigosTurma(IEnumerable<string> codigosTurma)
+        {
+            string codigo = string.Join(",", codigosTurma);
 
-				var query = @$";WITH AlunoBase AS
+            var query = @$";WITH AlunoBase AS
 			(
 						SELECT     mte.cd_turma_escola       codigoturma,
 									aluno.cd_aluno            codigoaluno,
@@ -1009,13 +1009,13 @@ namespace SME.SR.Data
 								possuideficiencia
 						ORDER BY codigosituacaomatricula";
 
-                using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-                {
-                    return await conexao.QueryAsync<Aluno>(query);
-                }
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            {
+                return await conexao.QueryAsync<Aluno>(query);
+            }
         }
 
-		public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
+        public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosHistoricoAlunosPorCodigos(long[] codigosAlunos)
         {
             var query = @"IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
 						DROP TABLE #tmpAlunosPorCodigo
@@ -1420,18 +1420,18 @@ namespace SME.SR.Data
             }
         }
 
-		public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
-		{
-			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
+        public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
+        {
+            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
                           from v_aluno_cotic vac  
                           where vac.cd_aluno = @codigo";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            
-			return await conexao.QueryFirstOrDefaultAsync<AlunoNomeDto>(query, new { codigo });
+
+            return await conexao.QueryFirstOrDefaultAsync<AlunoNomeDto>(query, new { codigo });
         }
 
-		public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
+        public async Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos)
         {
             var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
                           from v_aluno_cotic vac  
@@ -1596,9 +1596,10 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string codigoEscola, int anoLetivo)
+        public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string codigoEscola, int anoLetivo, string[] codigosAlunos)
         {
-			var sql = @" with matriculas as (
+            string codigos = string.Join(",", codigosAlunos);
+            var sql = @" with matriculas as (
 						select distinct CodigoAluno, NomeAluno, DataNascimento, NomeSocialAluno, CodigoSituacaoMatricula, SituacaoMatricula, te.cd_escola AS CodigoEscola,
 						case when NumeroAlunoChamada is null then '0'
 						when NumeroAlunoChamada = 'NULL' then '0'
@@ -1607,20 +1608,22 @@ namespace SME.SR.Data
 						DataSituacao, DataMatricula, PossuiDeficiencia, NomeResponsavel, TipoResponsavel, CelularResponsavel,
 						DataAtualizacaoContato, CodigoTurma, CodigoMatricula, AnoLetivo, row_number() over (partition by CodigoMatricula order by DataSituacao desc) as Sequencia
 						from alunos_matriculas_norm nm(NOLOCK)
-						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
-						where 1=1
-						and te.cd_escola = @codigoEscola
-						and te.an_letivo = @anoLetivo
-						)
+						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma	
+						where 1=1 ";
 
-						select *
-						from matriculas
-						where sequencia = 1
-						and CodigoSituacaoMatricula <> 4";
+            if (!string.IsNullOrEmpty(codigoEscola) && codigoEscola != "-99")
+                sql += @" and te.cd_escola = @codigoEscola ";
+            else sql += $" and CodigoAluno in({codigos}) ";
+
+            sql += @" and te.an_letivo = @anoLetivo )
+								select*
+								from matriculas
+								where sequencia = 1
+								and CodigoSituacaoMatricula<> 4";
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-				return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql, new { codigoEscola, anoLetivo });
+                return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql, new { codigoEscola, anoLetivo });
             }
         }
     }

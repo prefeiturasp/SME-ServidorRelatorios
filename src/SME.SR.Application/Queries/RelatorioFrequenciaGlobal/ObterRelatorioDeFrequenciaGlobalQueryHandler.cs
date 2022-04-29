@@ -13,15 +13,12 @@ namespace SME.SR.Application
     public class ObterRelatorioDeFrequenciaGlobalQueryHandler : IRequestHandler<ObterRelatorioDeFrequenciaGlobalQuery, List<FrequenciaGlobalDto>>
     {
         private readonly IFrequenciaAlunoRepository _frequenciaAlunoRepository;
-        private readonly IAlunoRepository _alunoRepository;
         private readonly IMediator _mediator;
 
         public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository,
-            IAlunoRepository alunoRepository,
             IMediator mediator)
         {
-            _frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));  
-            _alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
+            _frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
@@ -37,8 +34,9 @@ namespace SME.SR.Application
         private async Task<List<FrequenciaGlobalDto>> MapearRetornoQuery(FiltroFrequenciaGlobalDto filtro,
             IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
+
             var retornoMapeado = new List<FrequenciaGlobalDto>();
-            var alunosEscola = await _mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo));
+            var alunosEscola = await _mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo, retornoQuery.Select(c => c.CodigoEol).ToArray()));
 
             foreach (var item in retornoQuery)
             {
