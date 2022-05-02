@@ -36,7 +36,7 @@ namespace SME.SR.Application
 
             var componentesCurricularesCompletos = await ObterComponentesCurriculares(request, todosComponentes, gruposMatriz, componentesDasTurmas);
 
-            var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos);
+            var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental);
 
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
 
@@ -121,10 +121,11 @@ namespace SME.SR.Application
             });
         }
 
-        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesCurricularesCompletos)
+        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesCurricularesCompletos, IEnumerable<DisciplinaDto> disciplinasDaTurma, bool ehFundamental)
         {
             return (from cpTurma in componentesDasTurmas
                     join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.CodDisciplina)
+                    join disciplina in disciplinasDaTurma on (cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
                     select new ComponenteCurricularPorTurma()
                     {
                         CodigoAluno = cpTurma.CodigoAluno,
@@ -133,7 +134,7 @@ namespace SME.SR.Application
                         CodDisciplinaPai = cpTurma.CodigoComponentePai(componentes),
                         BaseNacional = cpCompleto.BaseNacional,
                         Compartilhada = cpCompleto.Compartilhada,
-                        Disciplina = cpCompleto.ObterDisciplina(),
+                        Disciplina = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.ObterDisciplina() : disciplina.ObterDisciplina(),
                         GrupoMatriz = cpCompleto.GrupoMatriz,
                         AreaDoConhecimento = cpTurma.ObterAreaDoConhecimento(areasConhecimento),
                         LancaNota = cpCompleto.LancaNota,
@@ -141,6 +142,7 @@ namespace SME.SR.Application
                         Regencia = cpTurma.EhRegencia(componentes),
                         TerritorioSaber = cpCompleto.TerritorioSaber,
                         TipoEscola = cpTurma.TipoEscola,
+                        OrdemTerritorioSaber = cpCompleto.OrdemComponenteTerritorioSaber,
                     }).ToList();
         }
 

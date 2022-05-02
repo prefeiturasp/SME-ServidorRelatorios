@@ -52,7 +52,8 @@ namespace SME.SR.Application
                 Regencia = componenteCurricular.EhRegencia(componentesApiEol) || componenteCurricular.ComponentePlanejamentoRegencia,
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
                 BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
-                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId)
+                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId),
+                OrdemComponenteTerritorioSaber = componenteCurricular.OrdemTerritorioSaber,
             };
         }
 
@@ -125,21 +126,28 @@ namespace SME.SR.Application
                     {
                         var tipoEscola = componentesCurriculares.FirstOrDefault().TipoEscola;
 
+                        territoriosBanco = territoriosBanco.OrderBy(o=> o.CodigoTerritorioSaber).ThenBy(t=> t.CodigoExperienciaPedagogica);
+
                         foreach (var territorio in territoriosBanco.GroupBy(t => t.CodigoTurma))
                         {
                             componentesCurriculares.RemoveAll(c => territoriosBanco.Any(x => x.CodigoComponenteCurricular == c.Codigo && c.CodigoTurma == territorio.Key));
 
                             var territorios = territorio.GroupBy(c => new { c.CodigoTerritorioSaber, c.CodigoExperienciaPedagogica, c.DataInicio });
 
+                            var ordemComponentesTerritorioSaber = 0;
+
                             foreach (var componenteTerritorio in territorios)
                             {
+                                ordemComponentesTerritorioSaber++;
+
                                 componentesCurriculares.Add(new Data.ComponenteCurricular()
                                 {
                                     CodigoTurma = territorio.Key,
                                     Codigo = componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular, 
                                     Descricao = componenteTerritorio.FirstOrDefault().ObterDescricaoComponenteCurricular(),
                                     TipoEscola = tipoEscola,
-                                    TerritorioSaber = true
+                                    TerritorioSaber = true,
+                                    OrdemTerritorioSaber = ordemComponentesTerritorioSaber,
                                 });
                             }
                         }

@@ -154,9 +154,12 @@ namespace SME.SR.Application
 
         private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
         {
-            var componentesTurmaComArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null).OrderBy(a => a.AreaDoConhecimento.Ordem).ThenBy(a => a.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Id).ThenBy(b => b.Disciplina).ToList();
-            var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
-            var componentesTurma = componentesTurmaComArea.Concat(componentesTurmaSemArea);
+            var componentesTurmaComAreaOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Ordem).ThenBy(b => b.AreaDoConhecimento.Id).ThenBy(d => d.Disciplina).ToList();
+            var componentesTurmaComAreaSemOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && !w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(b => b.AreaDoConhecimento.Nome).ThenBy(b => b.Disciplina).ToList();
+           
+            var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null && !w.TerritorioSaber).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
+            var componentesTerritorioSaber = componentesCurricularesPorTurma.Where(w => w.TerritorioSaber).OrderBy(o=> o.OrdemTerritorioSaber).ToList();
+            var componentesTurma = componentesTurmaComAreaOrdem.Concat(componentesTurmaSemArea).Concat(componentesTerritorioSaber).Concat(componentesTurmaComAreaSemOrdem);
 
             foreach (var componente in componentesTurma)
             {
