@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace SME.SR.Infra
 {
@@ -18,5 +19,11 @@ namespace SME.SR.Infra
         public bool ObjetivosAprendizagemOpcionais { get; set; }
         public long GrupoMatrizId { get; set; }
         public string GrupoMatrizNome { get; set; }
+
+        public string ObterDisciplina()
+        {
+            var tamnhoDisciplina = Nome.Length;
+            return tamnhoDisciplina > 34 ? $"{Nome.Substring(0, 34)}..." : Nome;
+        }
     }
 }
