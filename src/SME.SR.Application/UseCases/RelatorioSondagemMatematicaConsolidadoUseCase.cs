@@ -38,7 +38,6 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter a DRE.");
             }
 
-
             if (!string.IsNullOrEmpty(filtros.UsuarioRf))
             {
                 usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRf });
@@ -53,7 +52,7 @@ namespace SME.SR.Application
             else if (filtros.AnoLetivo >= 2022 && filtros.Bimestre > 0)
                 dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
 
-            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.UeCodigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo, new int[] { 5, 13 }));
+            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo, filtros.Modalidades));
 
             var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
             {

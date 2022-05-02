@@ -101,7 +101,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpPost("relatorios/frequencia")]
         [Action("relatorios/frequencia", typeof(IRelatorioFrequenciasUseCase))]
         public async Task<bool> RelatorioFrequencias([FromBody] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
-        {
+       {
             await relatorioFaltasFrequenciasUseCase.Executar(request);
             return true;
         }

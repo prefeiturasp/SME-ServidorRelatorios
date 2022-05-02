@@ -34,7 +34,7 @@ namespace SME.SR.Application
             {
                 var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
-                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
                 if (listaPerguntas != null && listaPerguntas.Any())
                 {
@@ -51,7 +51,7 @@ namespace SME.SR.Application
             }
             else
             {
-                var listaAlunos = await mathPoolNumbersRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+                var listaAlunos = await mathPoolNumbersRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
                 var familiaresAgrupados = listaAlunos.GroupBy(fu => fu.Familiares);
 

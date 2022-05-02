@@ -50,7 +50,7 @@ namespace SME.SR.Application
             if (!string.IsNullOrEmpty(relatorioFiltros.UeCodigo))
             {
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(relatorioFiltros.UeCodigo));
-                retorno.UeNome = $"{ue.UeCodigo} - {ue.NomeComTipoEscola}";
+                retorno.UeNome = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
             }
             else retorno.UeNome = "Todas";
 
@@ -130,7 +130,7 @@ namespace SME.SR.Application
 
             foreach (var ueParaTratar in listaConsolida.Where(a => !string.IsNullOrEmpty(a.UeCodigo) && a.TurmaCodigo == 0))
             {
-                var ue = Ues.FirstOrDefault(a => a.UeCodigo == ueParaTratar.UeCodigo);
+                var ue = Ues.FirstOrDefault(a => a.Codigo == ueParaTratar.UeCodigo);
 
                 if (ue != null)
                 {

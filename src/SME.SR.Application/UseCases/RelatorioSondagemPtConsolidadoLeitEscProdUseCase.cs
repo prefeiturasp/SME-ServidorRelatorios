@@ -131,7 +131,8 @@ namespace SME.SR.Application
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
+                Convert.ToInt64(filtros.DreCodigo),
+                filtros.Modalidades
                 ));
 
             var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(filtros.Bimestre, TipoPeriodoSondagem.Bimestre));
@@ -246,19 +247,21 @@ namespace SME.SR.Application
                 Proficiencia = filtros.ProficienciaId
             });
 
-            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
+            var dataReferencia = await mediator
+                .Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
-                ));
+                Convert.ToInt64(filtros.DreCodigo),
+                filtros.Modalidades));
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
-            var respAgrupado = linhasSondagem.GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
+            var respAgrupado = linhasSondagem
+                .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
 
             foreach (var item in respAgrupado)
             {
