@@ -38,7 +38,7 @@ namespace SME.SR.Application
             {
                 var listaAlunos = await mathPoolCARepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
-                qtdAlunos = listaAlunos.DistinctBy(a => a.AlunoEolCode).Count();
+                qtdAlunos = request.QuantidadeTotalAlunos;
 
                 var ordem1Ideia = listaAlunos.GroupBy(fu => fu.Ordem1Ideia);
 
