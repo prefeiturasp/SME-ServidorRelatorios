@@ -112,9 +112,6 @@ namespace SME.SR.Application
             if (!string.IsNullOrEmpty(aula.Planejamento))
                 secoes += "- Planejamento<br/>";
 
-            if (!string.IsNullOrEmpty(aula.Reflexoes))
-                secoes += "- Reflexões e Replanejamento<br/>";
-
             if (aula.DevolutivaId.HasValue)
                 secoes += "- Devolutiva<br/>";
 
