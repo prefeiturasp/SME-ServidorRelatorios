@@ -74,7 +74,6 @@ namespace SME.SR.Application
                     .SelectMany(c => c.OrdensRespostas)
                     .Select(c => new { c.PerguntaKey, c.Resposta, c.OrdemId })
                     .Where(c => c.OrdemId == ordem.Id)
-                    .Distinct()
                     .GroupBy(c => c.Resposta)
                     .Where(c => !string.IsNullOrEmpty(c.Key));
 
@@ -96,7 +95,7 @@ namespace SME.SR.Application
                 }
 
                 var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
-                var qtdSemPreenchimento = qtdAlunos - totalRespostas;
+                var qtdSemPreenchimento = (qtdAlunos * ordensRespostas.Count()) - totalRespostas;
 
                 if (qtdSemPreenchimento > 0)
                 {
