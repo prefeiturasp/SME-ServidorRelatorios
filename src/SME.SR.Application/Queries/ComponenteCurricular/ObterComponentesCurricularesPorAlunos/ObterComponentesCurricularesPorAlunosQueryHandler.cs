@@ -117,7 +117,8 @@ namespace SME.SR.Application
                 ComponentesCurriculares = componentes,
                 GruposMatriz = gruposMatriz,
                 Usuario = request.Usuario,
-                ValidarAbrangenciaProfessor = false
+                ValidarAbrangenciaProfessor = false,
+                EhEJA = request.Modalidade == Modalidade.EJA
             });
         }
 

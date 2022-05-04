@@ -29,6 +29,9 @@ namespace SME.SR.Application
 
             await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
+            if (request.EhEJA)
+                componentesCurriculares = componentesCurriculares.Where(w => w.Codigo != 6).ToList();
+
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
         private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
