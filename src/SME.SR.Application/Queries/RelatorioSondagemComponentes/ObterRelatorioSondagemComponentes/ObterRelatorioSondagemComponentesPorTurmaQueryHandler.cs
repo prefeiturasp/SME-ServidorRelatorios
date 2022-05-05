@@ -18,6 +18,8 @@ namespace SME.SR.Application
         private readonly IUsuarioRepository usuarioRepository;
         private readonly IMediator mediator;
 
+        private const int ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA = 2022;
+
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
             IUsuarioRepository usuarioRepository,
@@ -67,7 +69,7 @@ namespace SME.SR.Application
         {
             foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
-                var perguntas = relatorio.Cabecalho.AnoLetivo >= 2022 
+                var perguntas = relatorio.Cabecalho.AnoLetivo >= ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA
                     ? relatorio.Cabecalho.Perguntas.Where(a => a.Id == ordem.Id).ToList()
                     : relatorio.Cabecalho.Perguntas;
 
@@ -76,7 +78,7 @@ namespace SME.SR.Application
                     var legendas = new List<GraficoBarrasLegendaDto>();
                     string descricaoGrafico = string.Empty;
 
-                    if (relatorio.Cabecalho.AnoLetivo < 2022)
+                    if (relatorio.Cabecalho.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
                         descricaoGrafico = $"{ordem.Descricao} - {pergunta.Nome}";
                     else
                         descricaoGrafico = $"ORDEM {ordem.Id} - {ordem.Descricao} - {pergunta.Nome}";
