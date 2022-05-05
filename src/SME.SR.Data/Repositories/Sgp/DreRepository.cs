@@ -50,7 +50,7 @@ namespace SME.SR.Data
 
         }
 
-        public async Task<DreUe> ObterDreUePorTurmaCodigo(string turmaCodigo)
+        public async Task<DreUe> ObterDreUePorDreUeCodigo(string dreCodigo,string ueCodigo)
         {
             var query = @"
 					select
@@ -64,8 +64,8 @@ namespace SME.SR.Data
 					inner join ue on ue.id = t.ue_id 
 					inner join dre on ue.dre_id = dre.id 
 					inner join tipo_escola tp on ue.tipo_escola = tp.cod_tipo_escola_eol 
-				   where t.turma_id = @turmaCodigo";
-            var parametros = new { turmaCodigo };
+				   where dre.dre_id = @dreCodigo AND ue.ue_id = @ueCodigo ";
+            var parametros = new { dreCodigo,ueCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 

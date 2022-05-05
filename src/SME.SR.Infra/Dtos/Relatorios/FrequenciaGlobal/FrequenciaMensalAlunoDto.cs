@@ -5,6 +5,9 @@
         public string CodigoAluno { get; set; }
         public string NumeroAluno { get; set; }
         public string NomeAluno { get; set; }
-        public string ProcentagemFrequencia { get; set; }
+        public decimal? ProcentagemFrequencia { get; set; }
+        public string TurmaCodigo { get; set; }
+        public int ValorMes { get; set; }
+        public string CodigoUe { get; set; }
     }
 }

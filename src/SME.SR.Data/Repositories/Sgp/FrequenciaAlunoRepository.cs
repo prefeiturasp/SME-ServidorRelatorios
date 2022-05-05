@@ -517,11 +517,12 @@ namespace SME.SR.Data
         public async Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre,
             string codigoUe, Modalidade modalidade, int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe)
         {
-            var query = @"select d.abreviacao as DreSigla,
-                                u.nome as UeNome,
+            var query = @"select d.dre_id AS DreCodigo, d.abreviacao as DreSigla,
+                                u.nome as UeNome,u.ue_id AS UeCodigo,
                                 te.descricao as DescricaoTipoEscola,
                                 cfam.mes,
                                 t.modalidade_codigo as ModalidadeCodigo,
+                                t.turma_id AS TurmaCodigo,
                                 t.nome as TurmaNome,
                                 cfam.aluno_codigo as CodigoEol,
                                 cfam.percentual
@@ -534,10 +535,10 @@ namespace SME.SR.Data
                             and t.modalidade_codigo = @modalidade";
 
             if (codigoDre != "-99")
-                query +=  "and d.dre_id = @codigoDre";
+                query +=  " and d.dre_id = @codigoDre";
 
             if (codigoUe != "-99")
-                query += "and u.ue_id = @codigoUe";
+                query += " and u.ue_id = @codigoUe";
 
             if (!exibirHistorico)
                 query += " and not t.historica ";
