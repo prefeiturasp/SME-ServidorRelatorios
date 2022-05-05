@@ -26,21 +26,22 @@ namespace SME.SR.Workers.SGP.Services
         private readonly IServicoTelemetria servicoTelemetria;
         private readonly TelemetriaOptions telemetriaOptions;
         private readonly IConnection conexaoRabbit;
-        private readonly IConfiguration configuration;
         private readonly IMediator mediator;
         private readonly IModel canalRabbit;
 
         public RabbitBackgroundListener(IServiceScopeFactory serviceScopeFactory,
-                                        ServicoTelemetria servicoTelemetria,
+                                        IServicoTelemetria servicoTelemetria,
                                         TelemetriaOptions telemetriaOptions,
                                         IConfiguration configuration,
                                         IMediator mediator)
         {
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
-            this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));            
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
 
             var factory = new ConnectionFactory
             {
@@ -53,6 +54,7 @@ namespace SME.SR.Workers.SGP.Services
             };
 
             conexaoRabbit = factory.CreateConnection();
+
             canalRabbit = conexaoRabbit.CreateModel();
 
             canalRabbit.BasicQos(0, 1, false);
@@ -65,10 +67,10 @@ namespace SME.SR.Workers.SGP.Services
 
         private void DeclararFilas()
         {
-            DeclararFilasPorRota(typeof(RotasRabbitSR), ExchangeRabbit.WorkerRelatorios, ExchangeRabbit.WorkerRelatoriosDeadletter);
+            DeclararFilasPorRota(typeof(RotasRabbitSR), ExchangeRabbit.WorkerRelatorios);
         }
 
-        private void DeclararFilasPorRota(Type tipoRotas, string exchange, string exchangeDeadletter)
+        private void DeclararFilasPorRota(Type tipoRotas, string exchange)
         {
             foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
             {
@@ -80,20 +82,20 @@ namespace SME.SR.Workers.SGP.Services
         private async Task TratarMensagem(BasicDeliverEventArgs ea)
         {
             var content = Encoding.UTF8.GetString(ea.Body.Span);
-
+            var rota = ea.RoutingKey;
             var mensagemRabbit = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
+            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction("TratarMensagem", "WorkerRabbitSGP") : null;
+
             try
             {
                 if (!content.Equals("null"))
                 {
                     MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
 
-                    if (telemetriaOptions.Apm)
-                        Agent.Tracer.StartTransaction("TratarMensagem", "WorkerRabbitSGP");
-
                     foreach (MethodInfo method in methods)
                     {
                         ActionAttribute actionAttribute = GetActionAttribute(method);
+
                         if (actionAttribute != null && actionAttribute.Name == mensagemRabbit.Action)
                         {
                             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
@@ -101,12 +103,18 @@ namespace SME.SR.Workers.SGP.Services
                             var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
                             var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
-                            await method.InvokeAsync(controller, new object[] { mensagemRabbit, useCase });
+                            await servicoTelemetria.RegistrarAsync(async () =>
+                                await method.InvokeAsync(controller, new object[] { mensagemRabbit, useCase }),
+                                "RabbitMQ",
+                                rota,
+                                rota,
+                                content);
 
                             canalRabbit.BasicAck(ea.DeliveryTag, false);
                             return;
                         }
                     }
+
                     string info = $"[ INFO ] Method not found to action: {mensagemRabbit.Action}";
                     throw new NegocioException(info);
                 }
@@ -124,11 +132,15 @@ namespace SME.SR.Workers.SGP.Services
                 canalRabbit.BasicReject(ea.DeliveryTag, false);
                 await RegistrarLogErro(ea.RoutingKey, mensagemRabbit, ex, LogNivel.Critico);
             }
+            finally
+            {
+                transacao?.End();
+            }
         }
 
         private async Task RegistrarLogErro(string rota, FiltroRelatorioDto mensagemRabbit, Exception ex, LogNivel nivel)
         {
-            var mensagem = $"{mensagemRabbit.UsuarioLogadoRF} - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)} - ERRO - {rota}";
+            var mensagem = $"{mensagemRabbit.UsuarioLogadoRF} - {mensagemRabbit.CodigoCorrelacao.ToString()[..3]} - ERRO - {rota}";
             await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, nivel, ex.Message));
         }
 
@@ -146,24 +158,9 @@ namespace SME.SR.Workers.SGP.Services
             canalRabbit.BasicPublish(ExchangeRabbit.Sgp, request.RotaErro, null, body);
         }
 
-        private WorkerAttribute GetWorkerAttribute(Type type)
-        {
-            Attribute[] attrs = Attribute.GetCustomAttributes(type);
-            foreach (Attribute attr in attrs)
-            {
-                if (attr is WorkerAttribute)
-                {
-                    return (WorkerAttribute)attr;
-                }
-            }
-
-            return null;
-        }
-
         private ActionAttribute GetActionAttribute(MethodInfo method)
         {
-            ActionAttribute actionAttribute = (ActionAttribute)
-                method.GetCustomAttribute(typeof(ActionAttribute));
+            ActionAttribute actionAttribute = (ActionAttribute)method.GetCustomAttribute(typeof(ActionAttribute));
             return actionAttribute;
         }
 
