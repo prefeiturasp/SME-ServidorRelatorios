@@ -18,6 +18,8 @@ namespace SME.SR.Application
         private readonly IUsuarioRepository usuarioRepository;
         private readonly IMediator mediator;
 
+        private const int ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA = 2022;
+
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
             IUsuarioRepository usuarioRepository,
@@ -33,7 +35,7 @@ namespace SME.SR.Application
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
             RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha;
 
-            if (request.AnoLetivo < 2022)
+            if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
                 planilha = (int.Parse(request.Ano) >= 7) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
             else
                 planilha = (int.Parse(request.Ano) >= 4 || request.Proficiencia == ProficienciaSondagemEnum.Numeros) ? await ObterPlanilhaPerguntasRespostasAutoral(request, cabecalho.Perguntas) : await ObterPlanilhaPerguntasRespostasProficiencia(request);
@@ -67,55 +69,69 @@ namespace SME.SR.Application
         {
             foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
-                var legendas = new List<GraficoBarrasLegendaDto>();
-                var grafico = new GraficoBarrasVerticalDto(420, $"ORDEM {ordem.Id} - {ordem.Descricao}");
+                var perguntas = relatorio.Cabecalho.AnoLetivo >= ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA
+                    ? relatorio.Cabecalho.Perguntas.Where(a => a.Id == ordem.Id).ToList()
+                    : relatorio.Cabecalho.Perguntas;
 
-                var ordensRespostas = relatorio.Planilha.Linhas
-                    .SelectMany(c => c.OrdensRespostas)
-                    .Select(c => new { c.PerguntaKey, c.Resposta, c.OrdemId })
-                    .Where(c => c.OrdemId == ordem.Id)
-                    .GroupBy(c => c.Resposta)
-                    .Where(c => !string.IsNullOrEmpty(c.Key));
-
-                int chaveIndex = 0;
-                string chave = string.Empty;
-
-                foreach (var ordemResposta in ordensRespostas)
+                foreach (var pergunta in perguntas)
                 {
-                    chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                    var legendas = new List<GraficoBarrasLegendaDto>();
+                    string descricaoGrafico = string.Empty;
 
-                    legendas.Add(new GraficoBarrasLegendaDto()
+                    if (relatorio.Cabecalho.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
+                        descricaoGrafico = $"{ordem.Descricao} - {pergunta.Nome}";
+                    else
+                        descricaoGrafico = $"ORDEM {ordem.Id} - {ordem.Descricao} - {pergunta.Nome}";
+
+                    var grafico = new GraficoBarrasVerticalDto(420, descricaoGrafico);
+
+                    var ordensRespostas = relatorio.Planilha.Linhas
+                        .SelectMany(c => c.OrdensRespostas
+                        .Where(c => c.OrdemId == ordem.Id && c.PerguntaId == pergunta?.Id && c.PerguntaKey == pergunta.PerguntaId))
+                        .Select(c => new { c.PerguntaKey, c.Resposta, c.OrdemId })
+                        .GroupBy(c => c.Resposta)
+                        .Where(c => !string.IsNullOrEmpty(c.Key));
+
+                    int chaveIndex = 0;
+                    string chave = string.Empty;
+
+                    foreach (var ordemResposta in ordensRespostas)
                     {
-                        Chave = chave,
-                        Valor = ordemResposta.Key
-                    });
+                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                    var qntRespostas = ordemResposta.Count();
-                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
-                }
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = ordemResposta.Key
+                        });
 
-                var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
-                var qtdSemPreenchimento = (qtdAlunos * ordensRespostas.Count()) - totalRespostas;
+                        var qntRespostas = ordemResposta.Count();
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
+                    }
 
-                if (qtdSemPreenchimento > 0)
-                {
-                    chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                    var qtdSemPreenchimento = qtdAlunos - totalRespostas;
 
-                    legendas.Add(new GraficoBarrasLegendaDto()
+                    if (qtdSemPreenchimento > 0)
                     {
-                        Chave = chave,
-                        Valor = "Sem preenchimento"
-                    });
+                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                    grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = "Sem preenchimento"
+                        });
+
+                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                    }
+
+                    var valorMaximoEixo = grafico.EixosX.Count > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+
+                    grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                    grafico.Legendas = legendas;
+
+                    relatorio.GraficosBarras.Add(grafico);
                 }
-
-                var valorMaximoEixo = grafico.EixosX.Count > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
-
-                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
-                grafico.Legendas = legendas;
-
-                relatorio.GraficosBarras.Add(grafico);
             }
         }
 
@@ -308,7 +324,7 @@ namespace SME.SR.Application
             string periodo;
             string proficiencia;
 
-            if (request.AnoLetivo < 2022)
+            if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
             {
                 ordens = (await ObterOrdens(request.Ano, request.Proficiencia)).ToList();
                 perguntas = await ObterPerguntas(request.Proficiencia, request.Ano);
