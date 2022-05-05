@@ -35,7 +35,7 @@ namespace SME.SR.Application
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
             RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha;
 
-            if (request.AnoLetivo < 2022)
+            if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
                 planilha = (int.Parse(request.Ano) >= 7) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
             else
                 planilha = (int.Parse(request.Ano) >= 4 || request.Proficiencia == ProficienciaSondagemEnum.Numeros) ? await ObterPlanilhaPerguntasRespostasAutoral(request, cabecalho.Perguntas) : await ObterPlanilhaPerguntasRespostasProficiencia(request);
@@ -324,7 +324,7 @@ namespace SME.SR.Application
             string periodo;
             string proficiencia;
 
-            if (request.AnoLetivo < 2022)
+            if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
             {
                 ordens = (await ObterOrdens(request.Ano, request.Proficiencia)).ToList();
                 perguntas = await ObterPerguntas(request.Proficiencia, request.Ano);
