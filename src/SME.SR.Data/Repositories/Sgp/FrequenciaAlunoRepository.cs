@@ -517,11 +517,12 @@ namespace SME.SR.Data
         public async Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre,
             string codigoUe, Modalidade modalidade, int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe)
         {
-            var query = @"select d.abreviacao as DreSigla,
-                                u.nome as UeNome,
+            var query = @"select d.dre_id AS DreCodigo, d.abreviacao as DreSigla,
+                                u.nome as UeNome,u.ue_id AS UeCodigo,
                                 te.descricao as DescricaoTipoEscola,
                                 cfam.mes,
                                 t.modalidade_codigo as ModalidadeCodigo,
+                                t.turma_id AS TurmaCodigo,
                                 t.nome as TurmaNome,
                                 cfam.aluno_codigo as CodigoEol,
                                 cfam.percentual
@@ -531,9 +532,13 @@ namespace SME.SR.Data
                                 inner join tipo_escola te on te.id = u.tipo_escola
                                 inner join dre d on d.id = u.dre_id
                             where t.ano_letivo = @anoLetivo
-                            and d.dre_id = @codigoDre
-                            and u.ue_id = @codigoUe
                             and t.modalidade_codigo = @modalidade";
+
+            if (codigoDre != "-99")
+                query +=  " and d.dre_id = @codigoDre";
+
+            if (codigoUe != "-99")
+                query += " and u.ue_id = @codigoUe";
 
             if (!exibirHistorico)
                 query += " and not t.historica ";
@@ -541,10 +546,10 @@ namespace SME.SR.Data
             if (semestre > 0)
                 query += " and t.semestre = @semestre ";
 
-            if (codigosTurmas.Length > 0)
+            if (codigosTurmas.Length > 0 && !codigosTurmas.Contains("-99"))
                 query += " and t.turma_id = any(@codigosTurmas) ";
 
-            if (mesesReferencias.Length > 0)
+            if (mesesReferencias.Length > 0 && !mesesReferencias.Contains(-99))
                 query += " and cfam.mes = any(@mesesReferencias) ";
 
             if (percentualAbaixoDe > 0)

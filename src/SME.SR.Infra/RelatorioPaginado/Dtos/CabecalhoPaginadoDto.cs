@@ -17,5 +17,7 @@ namespace SME.SR.Infra
         public string Usuario { get; set; }
         public string Rf { get; set; }
         public string DataSolicitacao { get => DateTime.Now.ToString("dd/MM/yyyy"); }
+        public string Modalidade { get; set; }
+        public string MesReferencia { get; internal set; }
     }
 }

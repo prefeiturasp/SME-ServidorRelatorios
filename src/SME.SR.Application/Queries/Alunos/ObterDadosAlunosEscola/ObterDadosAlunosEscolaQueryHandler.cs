@@ -29,7 +29,7 @@ namespace SME.SR.Application
                 return JsonConvert.DeserializeObject<List<DadosAlunosEscolaDto>>(cacheAlunos);
             else
             {
-                var listaAlunos = await alunoRepository.ObterDadosAlunosEscola(request.CodigoEscola, request.AnoLetivo);
+                var listaAlunos = await alunoRepository.ObterDadosAlunosEscola(request.CodigoEscola, request.AnoLetivo,request.CodigosAlunos);
                 var json = JsonConvert.SerializeObject(listaAlunos);
                 await repositorioCache.SalvarAsync(cacheChave, json);
                 return listaAlunos;
