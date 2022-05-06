@@ -1602,7 +1602,7 @@ namespace SME.SR.Data
 
             if (!string.IsNullOrEmpty(codigoEscola) && codigoEscola != "-99")
                 sql += @" and te.cd_escola = @codigoEscola ";
-            else sql += $" and CodigoAluno in({codigos}) ";
+            else sql += $" and CodigoAluno in({codigosAlunos}) ";
 
             sql += @" and te.an_letivo = @anoLetivo )
 								select*
