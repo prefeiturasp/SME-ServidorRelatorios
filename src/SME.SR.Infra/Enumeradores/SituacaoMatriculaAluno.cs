@@ -44,6 +44,12 @@ namespace SME.SR.Infra
         RemanejadoSaida = 14,
 
         [Display(Name = "Reclassificado")]
-        ReclassificadoSaida = 15
+        ReclassificadoSaida = 15,
+
+        [Display(Name = "Transferido SED")]
+        TransferidoSED = 16,
+
+        [Display(Name = "Dispensado Ed. Física")]
+        DispensadoEdFisica = 17
     }
 }
