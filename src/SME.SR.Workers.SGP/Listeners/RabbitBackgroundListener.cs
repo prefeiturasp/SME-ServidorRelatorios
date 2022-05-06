@@ -84,7 +84,7 @@ namespace SME.SR.Workers.SGP.Services
             var content = Encoding.UTF8.GetString(ea.Body.Span);
             var rota = ea.RoutingKey;
             var mensagemRabbit = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
-            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction("TratarMensagem", "WorkerRabbitSGP") : null;
+            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, "WorkerRabbitSGP") : null;
 
             try
             {
@@ -106,9 +106,7 @@ namespace SME.SR.Workers.SGP.Services
                             await servicoTelemetria.RegistrarAsync(async () =>
                                 await method.InvokeAsync(controller, new object[] { mensagemRabbit, useCase }),
                                 "RabbitMQ",
-                                rota,
-                                rota,
-                                content);
+                                mensagemRabbit.Action);
 
                             canalRabbit.BasicAck(ea.DeliveryTag, false);
                             return;

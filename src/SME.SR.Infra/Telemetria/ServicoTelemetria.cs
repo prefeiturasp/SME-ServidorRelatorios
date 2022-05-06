@@ -34,13 +34,13 @@ namespace SME.SR.Infra
             {
                 var transactionElk = Agent.Tracer.CurrentTransaction;
 
-                await transactionElk.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                await transactionElk.CaptureSpan(telemetriaNome, "db", async (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.SetLabel("Parametros", parametros);
+                    span.SetLabel("parametros", parametros);
 
                     result = await acao();
-                });
+                }, "postgresql", acaoNome);
             }
             else
             {
@@ -74,13 +74,13 @@ namespace SME.SR.Infra
             {
                 var transactionElk = Agent.Tracer.CurrentTransaction;
 
-                transactionElk.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                transactionElk.CaptureSpan(telemetriaNome, "db", (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.SetLabel("Parametros", parametros);
+                    span.SetLabel("parametros", parametros);
 
                     result = acao();
-                });
+                }, "postgresql", acaoNome);
             }
             else
             {
@@ -112,11 +112,12 @@ namespace SME.SR.Infra
             {
                 var transactionElk = Agent.Tracer.CurrentTransaction;
 
-                transactionElk.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                transactionElk.CaptureSpan(telemetriaNome, "db", (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
                     acao();
-                });
+                }, "postgresql", acaoNome);
+
             }
             else
             {
@@ -145,13 +146,13 @@ namespace SME.SR.Infra
             {
                 var transactionElk = Agent.Tracer.CurrentTransaction;
 
-                await transactionElk.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                await transactionElk.CaptureSpan(telemetriaNome, "db", async (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.SetLabel("Parametros", parametros);
+                    span.SetLabel("parametros", parametros);
 
                     await acao();
-                });
+                }, "postgresql", acaoNome);
             }
             else
             {
@@ -162,6 +163,38 @@ namespace SME.SR.Infra
             {
                 temporizador.Stop();
                 insightsClient?.TrackDependency(acaoNome, telemetriaNome, telemetriaValor, inicioOperacao, temporizador.Elapsed, true);
+            }
+        }
+
+        public async Task RegistrarAsync(Func<Task> acao, string acaoNome, string telemetriaNome)
+        {
+            DateTime inicioOperacao = default;
+            Stopwatch temporizador = default;
+
+            if (telemetriaOptions.ApplicationInsights)
+            {
+                inicioOperacao = DateTime.UtcNow;
+                temporizador = Stopwatch.StartNew();
+            }
+
+            if (telemetriaOptions.Apm)
+            {
+                var transactionElk = Agent.Tracer.CurrentTransaction;
+
+                await transactionElk.CaptureSpan(telemetriaNome, "db", async (span) =>
+                {
+                    await acao();
+                }, "postgresql", acaoNome);
+            }
+            else
+            {
+                await acao();
+            }
+
+            if (telemetriaOptions.ApplicationInsights)
+            {
+                temporizador.Stop();
+                insightsClient?.TrackDependency(acaoNome, telemetriaNome, string.Empty, inicioOperacao, temporizador.Elapsed, true);
             }
         }
     }
