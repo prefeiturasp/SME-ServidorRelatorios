@@ -284,8 +284,8 @@ namespace SME.SR.Data
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
             return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
-        }
 
+        }
         public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades)
         {
             StringBuilder query = new StringBuilder();
@@ -317,7 +317,7 @@ namespace SME.SR.Data
 									ee.cd_etapa_ensino in (@modalidades)
 									{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
 									{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})
-						SELECT COUNT(DISTINCT cd_aluno)
+						SELECT COUNT(DISTINCT cd_aluno) 
 								FROM lista ");
             }
             else
@@ -1410,10 +1410,10 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
-        {
-            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
-                          from v_aluno_cotic vac
+		public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
+		{
+			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
+                          from v_aluno_cotic vac  
                           where vac.cd_aluno = @codigo";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
@@ -1586,9 +1586,9 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string codigoEscola, int anoLetivo)
+        public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string codigoEscola, int anoLetivo, string[] codigosAlunos)
         {
-            var sql = @" with matriculas as (
+			var sql = @" with matriculas as (
 						select distinct CodigoAluno, NomeAluno, DataNascimento, NomeSocialAluno, CodigoSituacaoMatricula, SituacaoMatricula, te.cd_escola AS CodigoEscola,
 						case when NumeroAlunoChamada is null then '0'
 						when NumeroAlunoChamada = 'NULL' then '0'
@@ -1597,16 +1597,18 @@ namespace SME.SR.Data
 						DataSituacao, DataMatricula, PossuiDeficiencia, NomeResponsavel, TipoResponsavel, CelularResponsavel,
 						DataAtualizacaoContato, CodigoTurma, CodigoMatricula, AnoLetivo, row_number() over (partition by CodigoMatricula order by DataSituacao desc) as Sequencia
 						from alunos_matriculas_norm nm(NOLOCK)
-						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
-						where 1=1
-						and te.cd_escola = @codigoEscola
-						and te.an_letivo = @anoLetivo
-						)
+						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma	
+						where 1=1 ";
 
-						select *
-						from matriculas
-						where sequencia = 1
-						and CodigoSituacaoMatricula <> 4";
+            if (!string.IsNullOrEmpty(codigoEscola) && codigoEscola != "-99")
+                sql += @" and te.cd_escola = @codigoEscola ";
+            else sql += $" and CodigoAluno in({codigos}) ";
+
+            sql += @" and te.an_letivo = @anoLetivo )
+								select*
+								from matriculas
+								where sequencia = 1
+								and CodigoSituacaoMatricula<> 4";
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
