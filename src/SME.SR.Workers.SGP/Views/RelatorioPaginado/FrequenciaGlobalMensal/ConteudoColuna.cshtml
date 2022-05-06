@@ -2,9 +2,7 @@
 @using System.Linq
 @model PaginaComColuna
 
-
 @{
-
     var listaDres = Model.Valores as List<FrequenciaMensalDto>;
     var listaDresAgrupada = listaDres.GroupBy(x => x.CodigoDre)
                                      .Distinct().ToList();
@@ -20,9 +18,10 @@
         retorno += $@"    </thead>";
         retorno += $@"</table>";
 
-         @Html.Raw(retorno);
+        @Html.Raw(retorno)
+        ;
     }
-    string ObtenhaCabecalho()
+    string ObterCabecalho()
     {
         var retorno = string.Empty;
 
@@ -33,10 +32,10 @@
 
         return retorno;
     }
-    string ObtenhaConteudo(List<FrequenciaMensalDto> lista)
+    string ObterConteudo(List<FrequenciaMensalDto> lista)
     {
         var retorno = string.Empty;
-        foreach (var valor in lista)
+        foreach (var valor in lista.OrderBy(x => x.NomeAluno))
         {
             var linha = (FrequenciaMensalDto)valor;
 
@@ -49,29 +48,29 @@
         return retorno;
     }
 
-    foreach (var itemDre in listaDresAgrupada)
+    foreach (var itemDre in listaDresAgrupada.OrderBy(x => x.Key))
     {
         MontarTable(@itemDre.FirstOrDefault().NomeDre);
-        var listaUeAgrupada = itemDre.ToList().GroupBy(x => x.CodigoUe);
+        var listaUeAgrupada = itemDre.ToList().GroupBy(x => x.CodigoUe).OrderBy(x => x.FirstOrDefault().NomeUe);
         foreach (var itemUe in listaUeAgrupada)
         {
             MontarTable(@itemUe.FirstOrDefault().NomeUe);
-            var listaTurmaAgrupada = itemUe.ToList().GroupBy(x => x.CodigoTurma);
+            var listaTurmaAgrupada = itemUe.ToList().GroupBy(x => x.CodigoTurma).OrderBy(x => x.FirstOrDefault().NomeTurma);
             foreach (var itemTurma in listaTurmaAgrupada)
             {
                 MontarTable(@itemTurma.FirstOrDefault().NomeTurma);
-                var listaMesAgrupada = itemTurma.ToList().GroupBy(x => x.ValorMes);
+                var listaMesAgrupada = itemTurma.ToList().GroupBy(x => x.ValorMes).OrderBy(x => x.FirstOrDefault().ValorMes);
                 foreach (var itemMes in listaMesAgrupada)
                 {
                     MontarTable(@itemMes.FirstOrDefault().NomeMes);
                     <table class='tabela-cabecalho'>
                         <thead>
                             <tr>
-                                @(Html.Raw(ObtenhaCabecalho()))
+                                @(Html.Raw(ObterCabecalho()))
                             </tr>
                         </thead>
                         <tbody>
-                            @(Html.Raw(ObtenhaConteudo(itemMes.ToList())))
+                            @(Html.Raw(ObterConteudo(itemMes.ToList())))
                         </tbody>
                     </table>
                 }
