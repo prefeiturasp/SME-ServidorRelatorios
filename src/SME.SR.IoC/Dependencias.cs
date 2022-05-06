@@ -90,6 +90,7 @@ namespace SME.SR.IoC
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
+            RegistrarOptions(services, configuration);
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
@@ -154,7 +155,6 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IMathPoolCARepository), typeof(MathPoolCARepository));
             services.TryAddScoped(typeof(IMathPoolCMRepository), typeof(MathPoolCMRepository));
 
-
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
@@ -188,6 +188,7 @@ namespace SME.SR.IoC
         {
             services.TryAddScoped<IServicoFila, FilaRabbit>();
             services.TryAddScoped<IReportConverter, PdfGenerator>();
+            services.TryAddScoped<IServicoTelemetria, ServicoTelemetria>();
         }
 
         private static void RegistrarUseCase(IServiceCollection services)
@@ -237,6 +238,13 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAcompanhamentoRegistrosPedagogicosUseCase, RelatorioAcompanhamentoRegistrosPedagogicosUseCase>();
             services.TryAddScoped<IRelatorioOcorrenciasUseCase, RelatorioOcorrenciasUseCase>();
             services.TryAddScoped<IRelatorioFrequenciaGlobalUseCase, RelatorioFrequenciaGlobalUseCase>();
+        }
+
+        private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
+        {
+            var telemetriaOptions = new TelemetriaOptions();
+            configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(telemetriaOptions);
         }
     }
 }

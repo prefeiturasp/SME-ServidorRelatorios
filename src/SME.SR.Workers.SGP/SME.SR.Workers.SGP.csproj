@@ -10,9 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Commons\Exceptions\**" />
+    <Compile Remove="fonts\**" />
+    <Content Remove="Commons\Exceptions\**" />
+    <Content Remove="fonts\**" />
+    <EmbeddedResource Remove="Commons\Exceptions\**" />
+    <EmbeddedResource Remove="fonts\**" />
+    <None Remove="Commons\Exceptions\**" />
+    <None Remove="fonts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Commons\Attributes\" />
-    <Folder Include="Commons\Exceptions\" />
-    <Folder Include="fonts\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +31,7 @@
     <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.11.1" />
     <PackageReference Include="MediatR" Version="8.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
