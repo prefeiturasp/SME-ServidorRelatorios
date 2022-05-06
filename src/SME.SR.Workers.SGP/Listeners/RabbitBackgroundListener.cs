@@ -124,11 +124,13 @@ namespace SME.SR.Workers.SGP.Services
                 canalRabbit.BasicAck(ea.DeliveryTag, false);
                 await RegistrarLogErro(ea.RoutingKey, mensagemRabbit, nex, LogNivel.Negocio);
                 NotificarUsuarioRelatorioComErro(mensagemRabbit, nex.Message);
+                transacao.CaptureException(nex);
             }
             catch (Exception ex)
             {
                 canalRabbit.BasicReject(ea.DeliveryTag, false);
                 await RegistrarLogErro(ea.RoutingKey, mensagemRabbit, ex, LogNivel.Critico);
+                transacao.CaptureException(ex);
             }
             finally
             {
