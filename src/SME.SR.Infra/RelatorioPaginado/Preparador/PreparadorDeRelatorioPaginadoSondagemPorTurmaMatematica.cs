@@ -58,7 +58,7 @@ namespace SME.SR.Infra
         {
             var parametro = new ParametroRelatorioPaginadoPorColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
             {
-                AlturaDaLinha = 60,
+                AlturaDaLinha = 30,
                 TipoDePapel = TipoPapel.A4,
                 UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL,
                 Valores = this._dtoSondagemTurma.Planilha.Linhas
@@ -125,7 +125,7 @@ namespace SME.SR.Infra
                     {
                         lista.Add(new Coluna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
                         {
-                            Largura = 17,
+                            Largura = 8,
                             Titulo = perguntas.Nome,
                             Nome = perguntas.PerguntaId,
                             UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL

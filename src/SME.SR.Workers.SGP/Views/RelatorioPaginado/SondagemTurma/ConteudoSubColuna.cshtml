@@ -42,7 +42,7 @@
         {
             foreach(var coluna in colunas)
             {
-                retorno += "<td width='" + coluna.ObtenhaLarguraComUnidade() + "'>" + coluna.Titulo + "</td>";
+                retorno += $@"<td width='" + coluna.ObtenhaLarguraComUnidade() + "'>" + coluna.Titulo + "</td>";
             }
         }
 
