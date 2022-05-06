@@ -175,7 +175,8 @@ namespace SME.SR.Data
                             where fa.codigo_aluno = ANY(@codigosAluno) 
                               and t.ano_letivo = @anoLetivo
                               and t.modalidade_codigo = @modalidade 
-                              and fa.tipo = 1 
+                              and fa.tipo = 1
+                              and t.tipo_turma in(1,2,7) 
                             group by fa.codigo_aluno";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
