@@ -13,15 +13,12 @@ namespace SME.SR.Application
     public class ObterRelatorioDeFrequenciaGlobalQueryHandler : IRequestHandler<ObterRelatorioDeFrequenciaGlobalQuery, List<FrequenciaGlobalDto>>
     {
         private readonly IFrequenciaAlunoRepository _frequenciaAlunoRepository;
-        private readonly IAlunoRepository _alunoRepository;
         private readonly IMediator _mediator;
 
         public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository,
-            IAlunoRepository alunoRepository,
             IMediator mediator)
         {
-            _frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));  
-            _alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
+            _frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
@@ -37,30 +34,35 @@ namespace SME.SR.Application
         private async Task<List<FrequenciaGlobalDto>> MapearRetornoQuery(FiltroFrequenciaGlobalDto filtro,
             IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
+
             var retornoMapeado = new List<FrequenciaGlobalDto>();
-            var alunosEscola = await _mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo));
+            var alunosEscola = await _mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo, retornoQuery.Select(c => c.CodigoEol).ToArray()));
 
             foreach (var item in retornoQuery)
             {
-                var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno })
+                var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno,c.NumeroAlunoChamada })
                     .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
 
                 var estudante = string.IsNullOrEmpty(aluno.NomeSocialAluno) ? aluno.NomeAluno : aluno.NomeSocialAluno;
 
                 retornoMapeado.Add(new FrequenciaGlobalDto()
                 {
-                    CodigoDre = item.DreSigla,
-                    CodigoUe = string.Concat(item.UeNome, " - ", item.DescricaoTipoEscola),
+                    SiglaDre = item.DreSigla,
+                    DreCodigo = item.DreCodigo,
+                    UeNome = string.Concat(item.UeNome, " - ", item.DescricaoTipoEscola),
+                    UeCodigo = item.UeCodigo,
                     Mes = item.Mes,
+                    TurmaCodigo = item.TurmaCodigo,
                     Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
                     CodigoEOL = item.CodigoEol,
                     Estudante = estudante,
+                    NumeroChamadda = aluno.NumeroAlunoChamada,
                     PercentualFrequencia = item.Percentual
                 });
             }
 
-            var retornoOrdenado = retornoMapeado.OrderBy(c => c.CodigoDre)
-                .ThenBy(c => c.CodigoUe)
+            var retornoOrdenado = retornoMapeado.OrderBy(c => c.SiglaDre)
+                .ThenBy(c => c.UeNome)
                 .ThenBy(c => c.Mes)
                 .ThenBy(c => c.Turma)
                 .ThenBy(c => c.Estudante);

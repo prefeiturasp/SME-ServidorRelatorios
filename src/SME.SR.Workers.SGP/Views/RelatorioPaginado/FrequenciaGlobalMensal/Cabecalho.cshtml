@@ -1,0 +1,31 @@
+﻿@using SME.SR.Infra
+@model CabecalhoPaginadoDto
+<div class='fonte-14 header-pagina'>
+    <table class='tblTopo'>
+        <tbody>
+            <tr>
+                <td width='20%' class='espaco-esquerda-15'>Ano Letivo:@Model.AnoLetivo</td>
+                <td width='40%' class='espaco-esquerda-15'>DRE: @Model.Dre</td>
+                <td width='40%' class='espaco-esquerda-15'>UE: @Model.Ue</td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <td width='30%' class='sem-border-top espaco-esquerda-15'>Modalidade: @Model.Modalidade</td>
+                <td width='30%' class='sem-border-top espaco-esquerda-15'>Turma: @Model.Turma</td>
+                <td width='40%' class='sem-border-top espaco-esquerda-15'>Mês de referência: @Model.MesReferencia</td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
+                <td width='18%' class='sem-border-top espaco-esquerda-15'>RF: @Model.Rf</td>
+                <td width='22%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.DataSolicitacao</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
