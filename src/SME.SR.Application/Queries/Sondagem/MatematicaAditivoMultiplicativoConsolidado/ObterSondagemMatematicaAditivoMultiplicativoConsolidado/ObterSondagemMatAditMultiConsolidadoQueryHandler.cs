@@ -82,7 +82,7 @@ namespace SME.SR.Application
                 {
                     var listaAlunos = await mathPoolCMRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
-                qtdAlunos = listaAlunos.Count(a => !(string.IsNullOrEmpty(a.Ordem3Ideia) && string.IsNullOrWhiteSpace(a.Ordem3Resultado)));
+                    qtdAlunos = listaAlunos.Count(a => !(string.IsNullOrEmpty(a.Ordem3Ideia) && string.IsNullOrWhiteSpace(a.Ordem3Resultado)));
 
                     if (request.TurmaAno == 2)
                     {
@@ -148,6 +148,7 @@ namespace SME.SR.Application
 
                 var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
+                qtdAlunos = listaAlunos.DistinctBy(a => a.CodigoAluno).Count();
                 int ordem = 1;
                 foreach (var perguntaOrdem in listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == null))
                 {

@@ -18,7 +18,7 @@ namespace SME.SR.Data
 
         public async Task<Dre> ObterPorCodigo(string dreCodigo)
         {
-            var query = @"select Id, dre_id DreCodigo, Abreviacao, Nome from dre where dre_id = @dreCodigo";
+            var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre where dre_id = @dreCodigo";
             var parametros = new { dreCodigo };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
