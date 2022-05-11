@@ -188,7 +188,6 @@ namespace SME.SR.IoC
         {
             services.TryAddScoped<IServicoFila, FilaRabbit>();
             services.TryAddScoped<IReportConverter, PdfGenerator>();
-            services.TryAddScoped<IServicoTelemetria, ServicoTelemetria>();
         }
 
         private static void RegistrarUseCase(IServiceCollection services)

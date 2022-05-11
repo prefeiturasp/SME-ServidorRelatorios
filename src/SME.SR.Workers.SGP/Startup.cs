@@ -1,6 +1,7 @@
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -11,7 +12,6 @@ using Microsoft.OpenApi.Models;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.IoC;
-using SME.SR.Workers.SGP.Commons.Factories;
 using SME.SR.Workers.SGP.Filters;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
@@ -70,9 +70,17 @@ namespace SME.SR.Workers.SGP
 
         private void ConfiguraTelemetria(IServiceCollection services)
         {
-            IServicoTelemetria servicoTelemetria = new TelemetriaFactory().GetServicoTelemetria(services, Configuration);
+            var serviceProvider = services.BuildServiceProvider();
+            var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+
+            var telemetriaOptions = new TelemetriaOptions();
+            Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+
+            var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
             DapperExtensionMethods.Init(servicoTelemetria);
-            services.AddSingleton(servicoTelemetria);
+
+            services.AddSingleton(telemetriaOptions);
+            services.AddSingleton<IServicoTelemetria, ServicoTelemetria>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
