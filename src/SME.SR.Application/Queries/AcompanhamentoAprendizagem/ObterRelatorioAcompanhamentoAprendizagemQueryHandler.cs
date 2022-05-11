@@ -144,7 +144,7 @@ namespace SME.SR.Application
 
                 mediaFrequencia = somaFrequencia / 2;
 
-                mediaFrequencia = mediaFrequencia > 0 ? Math.Round(mediaFrequencia, 2) : mediaFrequencia;
+                mediaFrequencia = Math.Round(mediaFrequencia, 2);
 
                 var frequenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {
