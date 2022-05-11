@@ -1602,7 +1602,8 @@ namespace SME.SR.Data
 
             if (!string.IsNullOrEmpty(codigoEscola) && codigoEscola != "-99")
                 sql += @" and te.cd_escola = @codigoEscola ";
-            else sql += $" and CodigoAluno in({codigosAlunos}) ";
+            else 
+				sql += $" and CodigoAluno in (#codigosAlunos) ";
 
             sql += @" and te.an_letivo = @anoLetivo )
 								select*
@@ -1612,7 +1613,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql, new { codigoEscola, anoLetivo });
+                return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'"), new { codigoEscola, anoLetivo });
             }
         }
     }
