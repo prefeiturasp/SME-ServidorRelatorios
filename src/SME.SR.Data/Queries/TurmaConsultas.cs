@@ -39,6 +39,8 @@ namespace SME.SR.Data
 							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
@@ -73,6 +75,8 @@ namespace SME.SR.Data
 							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
@@ -165,6 +169,8 @@ namespace SME.SR.Data
 							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
@@ -204,6 +210,8 @@ namespace SME.SR.Data
 						    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 						    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 						    ELSE 'Fora do domínio liberado pela PRODAM'
 						    END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
