@@ -2,7 +2,7 @@
 @using SME.SR.Infra.Utilitarios;
 
 @{ int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 70;
+    int contadorMaximoLinhasPorPagina = 60;
     int contadorPagina = 0;
     var retornoVerificacao = string.Empty;
     var tipoRelatorio = true;
@@ -624,20 +624,6 @@
 
                             foreach (var componente in bimestre.Planejamento.OrderByDescending(o => o.DataAula))
                             {
-                                if (!dataAulaAnterior.Equals(componente.DataAula))
-                                {
-                                    <table class="tabela-planejamento">
-                                        <thead>
-                                            <tr>
-                                                <th class="sem-border-bottom">@componente.DataAula</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                    dataAulaAnterior = componente.DataAula;
-
-                                    @Html.Raw(MontarCabecalhoPlanejamento())
-                                }
-
                                 var quebra = VerificaQuebra();
                                 @Html.Raw(quebra);
 
@@ -645,8 +631,8 @@
                                 if (countComponente >= contadorMaximoLinhasPorPagina)
                                 {
                                     contadorQuebrarPagina += 4;
+
                                     @Html.Raw(VerificaQuebra())
-                                    @Html.Raw(MontarCabecalhoPlanejamento())
                                 }
                                 else
                                 {
@@ -654,7 +640,19 @@
                                     @Html.Raw(VerificaQuebra())
                                 }
 
+                                if (!dataAulaAnterior.Equals(componente.DataAula))
+                                {
+                                    <table class="tabela-planejamento">
+                                        <thead>
+                                            <tr>
+                                                <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    dataAulaAnterior = componente.DataAula;
 
+                                    @Html.Raw(MontarCabecalhoPlanejamento())
+                                }
                                 var planejamentos = MontarDadosTabelaPlanejamento(componente, turma.Nome, bimestre.Nome, componente.ComponenteCurricular, turma, ultimaAula, ultimoBimestreNome);
                                 @Html.Raw(planejamentos)
 
