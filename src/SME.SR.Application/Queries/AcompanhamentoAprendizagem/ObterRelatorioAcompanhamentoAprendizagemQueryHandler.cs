@@ -151,6 +151,8 @@ namespace SME.SR.Application
 
                 mediaFrequencia = existeBimestreSemFrequencia ? somaFrequencia : (somaFrequencia / 2);
 
+                mediaFrequencia = Math.Round(mediaFrequencia, 2);
+
                 var frequenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {
                     Bimestre = "",
