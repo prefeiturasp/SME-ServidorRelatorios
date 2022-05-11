@@ -1,6 +1,7 @@
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -37,17 +38,20 @@ namespace SME.SR.Workers.SGP
 
             services.AddControllers();
             services.AddMvc().AddControllersAsServices();
-            services.AddHostedService<RabbitBackgroundListener>();
+
             services.AddTransient<ExcecaoMiddleware>();
+
+            services.AddApplicationInsightsTelemetry(Configuration);
+
             services.RegistrarDependencias(Configuration);
+
             ConfiguraRabbitParaLogs(services);
-            var telemetriaOptions = ConfiguraTelemetria(services);
-            var servicoTelemetria = new ServicoTelemetria(telemetriaOptions);
-            DapperExtensionMethods.Init(servicoTelemetria);
-            services.AddSingleton(servicoTelemetria);
+            ConfiguraTelemetria(services);
 
             services.AddDirectoryBrowser();
             services.AddPolicies();
+
+            services.AddHostedService<RabbitBackgroundListener>();
 
             services.AddSwaggerGen(c =>
             {
@@ -56,22 +60,27 @@ namespace SME.SR.Workers.SGP
             });
         }
 
-        private TelemetriaOptions ConfiguraTelemetria(IServiceCollection services)
-        {
-            var telemetriaOptions = new TelemetriaOptions();
-            Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
-
-            services.AddSingleton(telemetriaOptions);
-
-            return telemetriaOptions;
-        }
-
         private void ConfiguraRabbitParaLogs(IServiceCollection services)
         {
             var configuracaoRabbitLogOptions = new ConfiguracaoRabbitLogOptions();
             Configuration.GetSection("ConfiguracaoRabbitLog").Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
 
             services.AddSingleton(configuracaoRabbitLogOptions);
+        }
+
+        private void ConfiguraTelemetria(IServiceCollection services)
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+
+            var telemetriaOptions = new TelemetriaOptions();
+            Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+
+            var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
+            DapperExtensionMethods.Init(servicoTelemetria);
+
+            services.AddSingleton(telemetriaOptions);
+            services.AddSingleton<IServicoTelemetria, ServicoTelemetria>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -113,6 +122,7 @@ namespace SME.SR.Workers.SGP
             {
                 endpoints.MapControllers();
             });
+
             app.UsePathBase("/worker-relatorios");
         }
     }

@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\CoreSso\**" />
     <Compile Remove="Repositories\CoreSso\**" />
+    <EmbeddedResource Remove="Interfaces\CoreSso\**" />
     <EmbeddedResource Remove="Repositories\CoreSso\**" />
+    <None Remove="Interfaces\CoreSso\**" />
     <None Remove="Repositories\CoreSso\**" />
   </ItemGroup>
 
@@ -18,10 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SME.SR.Infra\SME.SR.Infra.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Interfaces\CoreSso\" />
   </ItemGroup>
 
 </Project>

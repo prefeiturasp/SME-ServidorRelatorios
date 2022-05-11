@@ -11,9 +11,9 @@ namespace SME.SR.Data.Repositories.Cache
     {
 
         private readonly IMemoryCache memoryCache;
-        private readonly ServicoTelemetria servicoTelemetria;
+        private readonly IServicoTelemetria servicoTelemetria;
 
-        public RepositorioCache(IMemoryCache memoryCache, ServicoTelemetria servicoTelemetria)
+        public RepositorioCache(IMemoryCache memoryCache, IServicoTelemetria servicoTelemetria)
         {
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
