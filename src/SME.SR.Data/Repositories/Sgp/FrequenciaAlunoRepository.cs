@@ -557,7 +557,7 @@ namespace SME.SR.Data
                             from consolidacao_frequencia_aluno_mensal cfam
                                 inner join turma t on t.id = cfam.turma_id
                                 inner join ue u on u.id = t.ue_id
-                                inner join tipo_escola te on te.id = u.tipo_escola
+                                inner join tipo_escola te on te.cod_tipo_escola_eol = u.tipo_escola
                                 inner join dre d on d.id = u.dre_id
                             where t.ano_letivo = @anoLetivo
                             and t.modalidade_codigo = @modalidade";
