@@ -21,7 +21,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
         {
             var query = @"select 
-                         valor Media, tipo from parametros_sistema
+                         valor Media, tipo, Ano from parametros_sistema
                          where ativo and tipo = ANY(@tipos) ";
             var parametros = new { Tipos = new int[] { (int)TipoParametroSistema.CompensacaoAusenciaPercentualFund2, (int)TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse } };
 
@@ -57,7 +57,7 @@ namespace SME.SR.Data
 
         public async Task<ParametroSistemaAnoSituacaoDto> VerificarSeParametroEstaAtivo(TipoParametroSistema tipo)
         {
-            var query = @"select ativo,ano from parametros_sistema
+            var query = @"select ativo, ano from parametros_sistema
                          where ativo 
                            and tipo = @tipo";
 
