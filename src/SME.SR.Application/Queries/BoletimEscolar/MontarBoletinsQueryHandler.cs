@@ -78,16 +78,21 @@ namespace SME.SR.Application
                                 .SelectMany(a => a)
                                 .Where(f => f.TurmaId == turma.Codigo);
 
+                            var anoLetivo = turma.AnoLetivo;
+                            var mediasFrequenciaAnoLetivo = mediasFrequencia?.Where(c => c.Ano == anoLetivo).Select(c => c);
+
                             if (notasAluno != null && notasAluno.Any())
+                            {
                                 await SetarNotasFrequencia(boletimAluno,
-                                                        notasAluno,
-                                                        frequenciasAluno,
-                                                        frequenciasTurma,
-                                                        mediasFrequencia,
-                                                        conselhoClassBimestres,
-                                                        registroFrequencia,
-                                                        periodoAtual,
-                                                        aulasPrevistas);
+                                    notasAluno,
+                                    frequenciasAluno,
+                                    frequenciasTurma,
+                                    mediasFrequenciaAnoLetivo ?? mediasFrequencia,
+                                    conselhoClassBimestres,
+                                    registroFrequencia,
+                                    periodoAtual,
+                                    aulasPrevistas);
+                            }
 
                             var frequenciaGlobal = frequenciasGlobal?
                                 .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
@@ -96,12 +101,12 @@ namespace SME.SR.Application
                             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 
                             boletimAluno.Cabecalho = ObterCabecalhoInicial(dre,
-                                                                                        ue,
-                                                                                        turma,
-                                                                                        aluno.First().CodigoAluno.ToString(),
-                                                                                        aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio,
-                                                                                        aluno.First().ObterNomeFinal(),
-                                                                                        $"{percentualFrequenciaGlobal}%");
+                                ue,
+                                turma,
+                                aluno.First().CodigoAluno.ToString(),
+                                aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio,
+                                aluno.First().ObterNomeFinal(),
+                                $"{percentualFrequenciaGlobal}%");
 
                             boletimAluno.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
 
@@ -361,7 +366,7 @@ namespace SME.SR.Application
 
         private double ObterFrequenciaMedia(IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
-            if (regencia)
+            if (regencia || !lancaNota)
                 return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse).Media;
             else
                 return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualFund2).Media;
