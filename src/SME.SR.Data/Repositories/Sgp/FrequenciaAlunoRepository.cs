@@ -579,6 +579,8 @@ namespace SME.SR.Data
 
             if (mesesReferencias.Length > 0 && !mesesReferencias.Contains(-99))
                 query += " and cfam.mes = any(@mesesReferencias) ";
+            else
+                query += " and cfam.mes > 1";
 
             if (percentualAbaixoDe > 0)
                 query += " and cfam.percentual < @percentualAbaixoDe";
