@@ -25,7 +25,9 @@ namespace SME.SR.Application
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroFrequenciaGlobalDto>();
             var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
-            if (listaDeFrenquenciaGlobal != null && listaDeFrenquenciaGlobal.Any())
+            if (listaDeFrenquenciaGlobal?.Any() != true)
+                throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+            else
             {
                 switch (filtroRelatorio.TipoFormatoRelatorio)
                 {
@@ -39,7 +41,6 @@ namespace SME.SR.Application
                         throw new NegocioException($"Não foi possível exportar este relátorio para o formato {filtroRelatorio.TipoFormatoRelatorio}");
                 }
             }
-            else throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
         }
 
         private async Task GerarRelatorioPdf(List<FrequenciaGlobalDto> listaDeFrequencia, FiltroRelatorioDto request, FiltroFrequenciaGlobalDto filtroRelatorio)

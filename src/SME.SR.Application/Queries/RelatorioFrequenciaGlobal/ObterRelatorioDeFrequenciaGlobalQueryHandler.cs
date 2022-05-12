@@ -37,27 +37,32 @@ namespace SME.SR.Application
             var retornoMapeado = new List<FrequenciaGlobalDto>();
             var alunosEscola = await _mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo, retornoQuery.Select(c => c.CodigoEol).ToArray()));
 
+            var agrupamento = alunosEscola.OrderBy(x => x.CodigoAluno).GroupBy(x => new { x.CodigoAluno, x.NomeAluno, x.CodigoTurma });
+
             foreach (var item in retornoQuery)
             {
-                var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno,c.NumeroAlunoChamada })
-                    .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol);
+                var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes);
 
-                var estudante = string.IsNullOrEmpty(aluno.NomeSocialAluno) ? aluno.NomeAluno : aluno.NomeSocialAluno;
-
-                retornoMapeado.Add(new FrequenciaGlobalDto()
+                if (dadosSituacaoAluno.ImprimirRelatorio)
                 {
-                    SiglaDre = item.DreSigla,
-                    DreCodigo = item.DreCodigo,
-                    UeNome = string.Concat(item.UeNome, " - ", item.DescricaoTipoEscola),
-                    UeCodigo = item.UeCodigo,
-                    Mes = item.Mes,
-                    TurmaCodigo = item.TurmaCodigo,
-                    Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
-                    CodigoEOL = item.CodigoEol,
-                    Estudante = estudante,
-                    NumeroChamadda = aluno.NumeroAlunoChamada,
-                    PercentualFrequencia = item.Percentual
-                });
+                    var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
+                    .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+                    retornoMapeado.Add(new FrequenciaGlobalDto()
+                    {
+                        SiglaDre = item.DreSigla,
+                        DreCodigo = item.DreCodigo,
+                        UeNome = string.Concat(item.UeNome, " - ", item.DescricaoTipoEscola),
+                        UeCodigo = item.UeCodigo,
+                        Mes = item.Mes,
+                        TurmaCodigo = item.TurmaCodigo,
+                        Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
+                        CodigoEOL = item.CodigoEol,
+                        Estudante = dadosSituacaoAluno.NomeFinalAluno,
+                        NumeroChamadda = aluno.NumeroAlunoChamada,
+                        PercentualFrequencia = item.Percentual
+                    });
+                }
             }
 
             var retornoOrdenado = retornoMapeado.OrderBy(c => c.SiglaDre)
@@ -68,6 +73,69 @@ namespace SME.SR.Application
 
             return retornoOrdenado.ToList();
         }
+
+        private UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto DeveImprimirNoRelatorio(IEnumerable<IGrouping<object, DadosAlunosEscolaDto>> agrupamento, int mesSelecionado)
+        {
+            var dadosSituacaoAluno = new UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto
+            {
+                ImprimirRelatorio = false
+            };
+            bool ultimoStatusDoMesSelecionadoEhAtivo = false;
+            var itemsMesSelecionado = agrupamento.Where(x => x.FirstOrDefault().DataSituacao.Month == mesSelecionado);
+            if (itemsMesSelecionado?.Count() > 0)
+            {
+                if (itemsMesSelecionado?.FirstOrDefault()?.FirstOrDefault().DataSituacao.Day == 1)
+                {
+                    var ativoDiaUmDoMesSelecionado = SituacoesAtiva.Contains(itemsMesSelecionado.FirstOrDefault().FirstOrDefault().CodigoSituacaoMatricula);
+                    ultimoStatusDoMesSelecionadoEhAtivo = SituacoesAtiva.Contains(itemsMesSelecionado.LastOrDefault().LastOrDefault().CodigoSituacaoMatricula);
+                    if (ativoDiaUmDoMesSelecionado && !ultimoStatusDoMesSelecionadoEhAtivo)
+                    {
+                        dadosSituacaoAluno.ImprimirRelatorio = true;
+                        dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.LastOrDefault()?.LastOrDefault()?.ObterNomeFinal() + " - " + itemsMesSelecionado.LastOrDefault()?.LastOrDefault()?.SituacaoMatricula
+                                                                                                + " " + itemsMesSelecionado.LastOrDefault()?.LastOrDefault()?.DataSituacao.ToString("dd/MM/yyyy");
+                    }
+                    else if (ativoDiaUmDoMesSelecionado && ultimoStatusDoMesSelecionadoEhAtivo)
+                    {
+                        dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
+                        dadosSituacaoAluno.ImprimirRelatorio = true;
+                    }
+                    else if (!ativoDiaUmDoMesSelecionado)
+                    {
+                        dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
+                        dadosSituacaoAluno.ImprimirRelatorio = false;
+                    }
+                }
+                else if (itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.DataSituacao.Day > 1)
+                {
+                    var ativoUltimoDiaMesAnterior = SituacoesAtiva.Contains(agrupamento?.ToList()?.LastOrDefault()?.Where(x => x.DataSituacao.Month < mesSelecionado)?.LastOrDefault()?.CodigoSituacaoMatricula
+                                                                                                                                ?? itemsMesSelecionado.FirstOrDefault().FirstOrDefault().CodigoSituacaoMatricula);
+                    ultimoStatusDoMesSelecionadoEhAtivo = SituacoesAtiva.Contains(itemsMesSelecionado.LastOrDefault().LastOrDefault().CodigoSituacaoMatricula);
+                    if (ativoUltimoDiaMesAnterior && !ultimoStatusDoMesSelecionadoEhAtivo)
+                    {
+                        dadosSituacaoAluno.ImprimirRelatorio = true;
+                        dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.LastOrDefault()?.LastOrDefault()?.ObterNomeFinal() + " - " + itemsMesSelecionado.LastOrDefault()?.LastOrDefault()?.SituacaoMatricula
+                                                                                                + " " + itemsMesSelecionado.LastOrDefault()?.LastOrDefault()?.DataSituacao.ToString("dd/MM/yyyy");
+                    }
+                    else if (ativoUltimoDiaMesAnterior && ultimoStatusDoMesSelecionadoEhAtivo)
+                    {
+                        dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
+                        dadosSituacaoAluno.ImprimirRelatorio = true;
+                    }
+                    else if (!ativoUltimoDiaMesAnterior)
+                    {
+                        dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
+                        dadosSituacaoAluno.ImprimirRelatorio = false;
+                    }
+                }
+
+            }
+            return dadosSituacaoAluno;
+        }
+        private int[] SituacoesAtiva => new[] { (int)SituacaoMatriculaAluno.Ativo,
+                        (int)SituacaoMatriculaAluno.Rematriculado,
+                        (int)SituacaoMatriculaAluno.PendenteRematricula,
+                        (int)SituacaoMatriculaAluno.SemContinuidade,
+                        (int)SituacaoMatriculaAluno.Concluido};
 
         private Modalidade ObterModalidade(int modalidadeCodigo)
         {
