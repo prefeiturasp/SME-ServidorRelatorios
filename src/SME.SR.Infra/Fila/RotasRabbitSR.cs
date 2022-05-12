@@ -4,9 +4,11 @@
     {
         public const string RotaRelatoriosSolicitados = "sr.relatorios.solicitados";
         public const string RotaRelatoriosProcessando = "sr.relatorios.processando";
+        public const string RotaRelatoriosSolicitadosBoletim = "sr.relatorios.solicitados.boletim";
         public const string RotaRelatoriosProcessandoBoletim = "sr.relatorios.processando.boletim";
 
         public const string RotaRelatoriosSolicitadosBoletimTurma = "sr.relatorios.solicitados.boletim.turma";
+        public const string RotaRelatoriosProcessandoBoletimTurma = "sr.relatorios.processando.boletim.turma";
 
         public const string RotaRelatoriosSolicitadosBoletimDetalhado = "sr.relatorios.solicitados.boletimdetalhado";
         public const string RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui = "sr.relatorios.app.solicitados.boletimdetalhado";
