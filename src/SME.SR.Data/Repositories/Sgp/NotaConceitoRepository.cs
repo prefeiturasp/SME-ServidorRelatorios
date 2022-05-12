@@ -19,8 +19,9 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre)
         {
-            var query = @"select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
+            var query = @"select * from (select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                  fn.disciplina_id CodigoComponenteCurricular,
+                                 ftd.id fechamentoDisciplina,
                                  pe.bimestre, pe.periodo_inicio PeriodoInicio,
                                  pe.periodo_fim PeriodoFim, fn.id NotaId,
                                  coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
@@ -58,6 +59,7 @@ namespace SME.SR.Data
                           
                          select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
                                 ccn.componente_curricular_codigo CodigoComponenteCurricular,
+                                f.fechamentoDisciplina,
                                 pe.bimestre, pe.periodo_inicio PeriodoInicio,
                                 pe.periodo_fim PeriodoFim, ccn.id NotaId,
                                 coalesce(ccn.conceito_id, f.conceito_id) as ConceitoId, 
@@ -76,6 +78,7 @@ namespace SME.SR.Data
  		                        left join conceito_valores cv1
  			                        on ccn.conceito_id = cv1.id
  		                        left join (select ftd.fechamento_turma_id,
+                                                  ftd.id fechamentoDisciplina,
  						                          fa.aluno_codigo,
  						                          fn.disciplina_id,
  						                          fn.conceito_id,
@@ -96,7 +99,7 @@ namespace SME.SR.Data
 	                        and t.ano_letivo = @anoLetivo
 	                        and t.modalidade_codigo = @modalidade
  	                        and t.semestre = @semestre
-                            and t.turma_id = any(@codigosTurmas);";
+                            and t.turma_id = any(@codigosTurmas)) x order by x.fechamentoDisciplina desc;";
 
             var parametros = new
             {
