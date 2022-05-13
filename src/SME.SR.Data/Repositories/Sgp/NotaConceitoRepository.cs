@@ -19,7 +19,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre)
         {
-            var query = @"select * from (select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
+            var query = @"select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                  fn.disciplina_id CodigoComponenteCurricular,
                                  ftd.id fechamentoDisciplina,
                                  pe.bimestre, pe.periodo_inicio PeriodoInicio,
@@ -30,7 +30,7 @@ namespace SME.SR.Data
 	 	                        inner join fechamento_turma ft
 	 		                        on t.id = ft.turma_id
 	 	                        inner join fechamento_turma_disciplina ftd
-	 		                        on ft.id = ftd.fechamento_turma_id
+	 		                        on ft.id = ftd.fechamento_turma_id and not ftd.excluido
 	 	                        inner join fechamento_aluno fa
 	 		                        on ftd.id = fa.fechamento_turma_disciplina_id
 	 	                        inner join fechamento_nota fn
@@ -86,7 +86,7 @@ namespace SME.SR.Data
  						                          fn.nota
  				                              from fechamento_turma_disciplina ftd
  				   	                             inner join fechamento_aluno fa
- 				   	     	                        on ftd.id = fa.fechamento_turma_disciplina_id
+ 				   	     	                        on ftd.id = fa.fechamento_turma_disciplina_id and not ftd.excluido
  				   	                             inner join fechamento_nota fn
  				   	     	                        on fa.id = fn.fechamento_aluno_id
  				   	                             inner join conceito_valores cv2
@@ -99,7 +99,7 @@ namespace SME.SR.Data
 	                        and t.ano_letivo = @anoLetivo
 	                        and t.modalidade_codigo = @modalidade
  	                        and t.semestre = @semestre
-                            and t.turma_id = any(@codigosTurmas)) x order by x.fechamentoDisciplina desc;";
+                            and t.turma_id = any(@codigosTurmas);";
 
             var parametros = new
             {
