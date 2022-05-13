@@ -21,6 +21,7 @@ namespace SME.SR.Data
         {
             var query = @"select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                  fn.disciplina_id CodigoComponenteCurricular,
+                                 ftd.id fechamentoDisciplina,
                                  pe.bimestre, pe.periodo_inicio PeriodoInicio,
                                  pe.periodo_fim PeriodoFim, fn.id NotaId,
                                  coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
@@ -29,7 +30,7 @@ namespace SME.SR.Data
 	 	                        inner join fechamento_turma ft
 	 		                        on t.id = ft.turma_id
 	 	                        inner join fechamento_turma_disciplina ftd
-	 		                        on ft.id = ftd.fechamento_turma_id
+	 		                        on ft.id = ftd.fechamento_turma_id and not ftd.excluido
 	 	                        inner join fechamento_aluno fa
 	 		                        on ftd.id = fa.fechamento_turma_disciplina_id
 	 	                        inner join fechamento_nota fn
@@ -58,6 +59,7 @@ namespace SME.SR.Data
                           
                          select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
                                 ccn.componente_curricular_codigo CodigoComponenteCurricular,
+                                f.fechamentoDisciplina,
                                 pe.bimestre, pe.periodo_inicio PeriodoInicio,
                                 pe.periodo_fim PeriodoFim, ccn.id NotaId,
                                 coalesce(ccn.conceito_id, f.conceito_id) as ConceitoId, 
@@ -76,6 +78,7 @@ namespace SME.SR.Data
  		                        left join conceito_valores cv1
  			                        on ccn.conceito_id = cv1.id
  		                        left join (select ftd.fechamento_turma_id,
+                                                  ftd.id fechamentoDisciplina,
  						                          fa.aluno_codigo,
  						                          fn.disciplina_id,
  						                          fn.conceito_id,
@@ -83,7 +86,7 @@ namespace SME.SR.Data
  						                          fn.nota
  				                              from fechamento_turma_disciplina ftd
  				   	                             inner join fechamento_aluno fa
- 				   	     	                        on ftd.id = fa.fechamento_turma_disciplina_id
+ 				   	     	                        on ftd.id = fa.fechamento_turma_disciplina_id and not ftd.excluido
  				   	                             inner join fechamento_nota fn
  				   	     	                        on fa.id = fn.fechamento_aluno_id
  				   	                             inner join conceito_valores cv2
