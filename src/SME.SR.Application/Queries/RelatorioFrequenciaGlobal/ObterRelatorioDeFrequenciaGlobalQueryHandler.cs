@@ -124,10 +124,18 @@ namespace SME.SR.Application
                     else if (!ativoUltimoDiaMesAnterior)
                     {
                         dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
-                        dadosSituacaoAluno.ImprimirRelatorio = false;
+                        dadosSituacaoAluno.ImprimirRelatorio = false; 
                     }
                 }
 
+            }
+            else
+            {
+                var estaAtivo = SituacoesAtiva.Contains(agrupamento.FirstOrDefault().FirstOrDefault().CodigoSituacaoMatricula);
+                dadosSituacaoAluno.ImprimirRelatorio = estaAtivo;
+                dadosSituacaoAluno.NomeFinalAluno = estaAtivo ? agrupamento.FirstOrDefault()?.FirstOrDefault().ObterNomeFinal() : agrupamento.LastOrDefault()?.LastOrDefault()?.ObterNomeFinal() + " - " 
+                                                       + agrupamento.LastOrDefault()?.LastOrDefault()?.SituacaoMatricula
+                                                       + " " + agrupamento.LastOrDefault()?.LastOrDefault()?.DataSituacao.ToString("dd/MM/yyyy");
             }
             return dadosSituacaoAluno;
         }
