@@ -47,12 +47,13 @@ namespace SME.SR.Application
                 if (dadosSituacaoAluno.ImprimirRelatorio)
                 {
                     var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
-                    .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+                        .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+
                     retornoMapeado.Add(new FrequenciaGlobalDto()
                     {
                         SiglaDre = item.DreSigla,
                         DreCodigo = item.DreCodigo,
-                        UeNome = string.Concat(item.UeNome, " - ", item.DescricaoTipoEscola),
+                        UeNome = string.Concat(item.DescricaoTipoEscola, " - ", item.UeNome),
                         UeCodigo = item.UeCodigo,
                         Mes = item.Mes,
                         TurmaCodigo = item.TurmaCodigo,
