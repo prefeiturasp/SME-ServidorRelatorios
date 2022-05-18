@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SME.SR.Infra
@@ -9,6 +10,7 @@ namespace SME.SR.Infra
         {
             this.ListaDeValores = parametro.Valores;
             this.Parametro = parametro;
+            this.ListaDeAgrupamento = new List<Func<T, object>>();
         }
 
         protected ParametroRelatorioPaginadoPorColuna<T> Parametro { get; set; }
@@ -21,11 +23,12 @@ namespace SME.SR.Infra
             do
             {
                 totalLinha += 1;
-                alturaLinha += this.Parametro.AlturaDaLinha; 
+                alturaLinha += this.Parametro.AlturaDaLinha;
             } while (alturaLinha <= this.Parametro.TipoDePapel.AlturaPx);
 
             return totalLinha;
         }
+
         protected bool AtingiuLimiteDeLinhas()
         {
             return ValorTotalAlturaPorPagina() <= this.Parametro.TipoDePapel.AlturaPx;
