@@ -59,7 +59,7 @@ namespace SME.SR.Workers.SGP.Services
 
             canalRabbit = conexaoRabbit.CreateModel();
 
-            canalRabbit.BasicQos(0, 10, false);
+            canalRabbit.BasicQos(0, 1, false);
 
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatorios, ExchangeType.Direct, true, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
