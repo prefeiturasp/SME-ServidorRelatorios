@@ -19,7 +19,6 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto filtro)
         {
-
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
 
             var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));

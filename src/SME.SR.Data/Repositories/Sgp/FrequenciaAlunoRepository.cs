@@ -546,7 +546,8 @@ namespace SME.SR.Data
             string codigoUe, Modalidade modalidade, int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe)
         {
             var query = @"select d.dre_id AS DreCodigo, d.abreviacao as DreSigla,
-                                u.nome as UeNome,u.ue_id AS UeCodigo,
+                                u.nome as UeNome,
+                                u.ue_id AS UeCodigo,
                                 te.descricao as DescricaoTipoEscola,
                                 cfam.mes,
                                 t.modalidade_codigo as ModalidadeCodigo,

@@ -76,7 +76,7 @@ namespace SME.SR.Workers.SGP
             var telemetriaOptions = new TelemetriaOptions();
             Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
 
-            var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
+            IServicoTelemetria servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
             DapperExtensionMethods.Init(servicoTelemetria);
 
             services.AddSingleton(telemetriaOptions);
