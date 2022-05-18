@@ -83,8 +83,9 @@ namespace SME.SR.Workers.SGP.Services
         {
             var content = Encoding.UTF8.GetString(ea.Body.Span);
             var rota = ea.RoutingKey;
-            var mensagemRabbit = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
-            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, "WorkerRabbitSGP") : null;
+
+            var filtroRelatorio = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
+            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, "WorkerSGP") : null;
 
             try
             {
@@ -96,7 +97,7 @@ namespace SME.SR.Workers.SGP.Services
                     {
                         ActionAttribute actionAttribute = GetActionAttribute(method);
 
-                        if (actionAttribute != null && actionAttribute.Name == mensagemRabbit.Action)
+                        if (actionAttribute != null && actionAttribute.Name == filtroRelatorio.Action)
                         {
                             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
 
@@ -104,16 +105,18 @@ namespace SME.SR.Workers.SGP.Services
                             var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
 
                             await servicoTelemetria.RegistrarAsync(async () =>
-                                await method.InvokeAsync(controller, new object[] { mensagemRabbit, useCase }),
+                                await method.InvokeAsync(controller, new object[] { filtroRelatorio, useCase }),
                                 "RabbitMQ",
-                                mensagemRabbit.Action);
+                                filtroRelatorio.Action,
+                                rota,
+                                filtroRelatorio.Mensagem.ToString());
 
                             canalRabbit.BasicAck(ea.DeliveryTag, false);
                             return;
                         }
                     }
 
-                    string info = $"[ INFO ] Method not found to action: {mensagemRabbit.Action}";
+                    string info = $"[ INFO ] Method not found to action: {filtroRelatorio.Action}";
                     throw new NegocioException(info);
                 }
                 else
@@ -122,14 +125,14 @@ namespace SME.SR.Workers.SGP.Services
             catch (NegocioException nex)
             {
                 canalRabbit.BasicAck(ea.DeliveryTag, false);
-                await RegistrarLogErro(ea.RoutingKey, mensagemRabbit, nex, LogNivel.Negocio);
-                NotificarUsuarioRelatorioComErro(mensagemRabbit, nex.Message);
+                await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, nex, LogNivel.Negocio);
+                NotificarUsuarioRelatorioComErro(filtroRelatorio, nex.Message);
                 transacao.CaptureException(nex);
             }
             catch (Exception ex)
             {
                 canalRabbit.BasicReject(ea.DeliveryTag, false);
-                await RegistrarLogErro(ea.RoutingKey, mensagemRabbit, ex, LogNivel.Critico);
+                await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, ex, LogNivel.Critico);
                 transacao.CaptureException(ex);
             }
             finally
