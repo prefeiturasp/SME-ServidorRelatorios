@@ -63,7 +63,6 @@ namespace SME.SR.Workers.SGP.Services
 
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatorios, ExchangeType.Direct, true, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
-            canalRabbit.ExchangeDeclare(ExchangeRabbit.Sgp, ExchangeType.Direct, true, false);
 
             DeclararFilas();
         }
