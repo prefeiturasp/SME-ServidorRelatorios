@@ -31,7 +31,6 @@ namespace SME.SR.Data
 	                        , db.criado_rf as UsuarioRf
 	                        , db.criado_por as Usuario
 	                        , db.planejamento as Planejamento
-	                        , db.reflexoes_replanejamento as Reflexoes
 	                        , db.devolutiva_id as DevolutivaId
                         from aula a 
                         inner join turma t on t.turma_id = a.turma_id 
@@ -113,7 +112,6 @@ namespace SME.SR.Data
                                 , db.criado_rf as UsuarioRf
                                 , db.criado_por as Usuario
                                 , db.planejamento as Planejamento
-                                , db.reflexoes_replanejamento as Reflexoes
                                 , db.devolutiva_id as DevolutivaId
                                 , a.tipo_aula  as TipoAula
                             from componentesCurricularesDatas cc

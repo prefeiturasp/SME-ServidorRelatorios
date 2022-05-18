@@ -263,21 +263,18 @@ namespace SME.SR.Application
             var respAgrupado = linhasSondagem
                 .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
 
+            var totalRespostas = respAgrupado.Sum(r => r.Value);
+
             foreach (var item in respAgrupado)
             {
-                if (!string.IsNullOrEmpty(item.Label))
-                {
-                    RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+                RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
-                    itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
-                    itemRetorno.Quantidade = item.Value;
-                    itemRetorno.Percentual = Math.Round(((decimal)item.Value / (decimal)alunosPorAno) * 100, 2);
-                    itemRetorno.Total = alunosPorAno;
-                    respostas.Add(itemRetorno);
-                }
-            }
-
-            var totalRespostas = respostas.Sum(r => r.Quantidade);
+                itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
+                itemRetorno.Quantidade = item.Value;
+                itemRetorno.Percentual = Math.Round(((decimal)item.Value / (decimal)totalRespostas) * 100, 2);
+                itemRetorno.Total = totalRespostas;
+                respostas.Add(itemRetorno);                
+            }            
 
             if (alunosPorAno > totalRespostas)
             {
