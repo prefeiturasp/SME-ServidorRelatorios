@@ -1,10 +1,8 @@
-﻿using SME.SR.Infra;
-using System.Threading.Tasks;
+﻿using SME.SR.Application.Interfaces;
 
 namespace SME.SR.Application
 {
-    public interface IRelatorioImpressaoCalendarioUseCase
+    public interface IRelatorioImpressaoCalendarioUseCase : IUseCase
     {
-        Task Executar(FiltroRelatorioDto request);
     }
 }

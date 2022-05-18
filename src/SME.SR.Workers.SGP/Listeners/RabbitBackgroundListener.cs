@@ -7,11 +7,13 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SME.SR.Application;
+using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -57,10 +59,11 @@ namespace SME.SR.Workers.SGP.Services
 
             canalRabbit = conexaoRabbit.CreateModel();
 
-            canalRabbit.BasicQos(0, 1, false);
+            canalRabbit.BasicQos(0, 10, false);
 
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatorios, ExchangeType.Direct, true, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
+            canalRabbit.ExchangeDeclare(ExchangeRabbit.Sgp, ExchangeType.Direct, true, false);
 
             DeclararFilas();
         }
@@ -85,31 +88,41 @@ namespace SME.SR.Workers.SGP.Services
             var rota = ea.RoutingKey;
 
             var filtroRelatorio = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
-            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, "WorkerSGP") : null;
+
+            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, "WorkerSGP_SR") : null;
 
             try
             {
                 if (!content.Equals("null"))
                 {
-                    MethodInfo[] methods = typeof(WorkerSGPController).GetMethods();
+                    MethodInfo[] methodsWorkerSgp = typeof(WorkerSGPController).GetMethods();
 
-                    foreach (MethodInfo method in methods)
+                    foreach (MethodInfo method in methodsWorkerSgp)
                     {
                         ActionAttribute actionAttribute = GetActionAttribute(method);
 
                         if (actionAttribute != null && actionAttribute.Name == filtroRelatorio.Action)
                         {
-                            var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
+                            using var scope = serviceScopeFactory.CreateScope();
+                            var useCase = scope.ServiceProvider.GetService(actionAttribute.TipoCasoDeUso);                            
 
-                            var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
-                            var useCase = serviceProvider.GetRequiredService(actionAttribute.TipoCasoDeUso);
+                            //-> registrando use case
+                            if (actionAttribute.TipoCasoDeUso.GetInterfaces().Contains(typeof(IUseCase)))
+                            {
+                                var metodoExecutar = actionAttribute.TipoCasoDeUso
+                                    .GetInterface("IUseCase")
+                                    .GetMethod("Executar");
 
-                            await servicoTelemetria.RegistrarAsync(async () =>
-                                await method.InvokeAsync(controller, new object[] { filtroRelatorio, useCase }),
-                                "RabbitMQ",
-                                filtroRelatorio.Action,
-                                rota,
-                                filtroRelatorio.Mensagem.ToString());
+                                if (metodoExecutar != null)
+                                {
+                                    await servicoTelemetria.RegistrarAsync(async () =>
+                                        await (Task)metodoExecutar.Invoke(useCase, new object[] { filtroRelatorio }),
+                                        "RabbitMQ_SR",
+                                        filtroRelatorio.Action,
+                                        rota,
+                                        filtroRelatorio.Mensagem.ToString());
+                                }
+                            }
 
                             canalRabbit.BasicAck(ea.DeliveryTag, false);
                             return;
@@ -125,14 +138,19 @@ namespace SME.SR.Workers.SGP.Services
             catch (NegocioException nex)
             {
                 canalRabbit.BasicAck(ea.DeliveryTag, false);
+
                 await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, nex, LogNivel.Negocio);
+
                 NotificarUsuarioRelatorioComErro(filtroRelatorio, nex.Message);
+
                 transacao.CaptureException(nex);
             }
             catch (Exception ex)
             {
                 canalRabbit.BasicReject(ea.DeliveryTag, false);
+
                 await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, ex, LogNivel.Critico);
+
                 transacao.CaptureException(ex);
             }
             finally

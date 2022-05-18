@@ -11,9 +11,9 @@ namespace SME.SR.Data
     {
         private static IServicoTelemetria servicoTelemetria;
 
-        public static void Init(IServicoTelemetria servicoTelemetriaSgp)
+        public static void Init(IServicoTelemetria servicoTelemetriaSr)
         {
-            servicoTelemetria = servicoTelemetriaSgp;
+            servicoTelemetria = servicoTelemetriaSr;
         }
 
         public static IEnumerable<dynamic> Query(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null, string queryName = "Query Postgres")
