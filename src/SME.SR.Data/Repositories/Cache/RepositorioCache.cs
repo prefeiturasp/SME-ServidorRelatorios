@@ -20,7 +20,7 @@ namespace SME.SR.Data.Repositories.Cache
         }
         public string Obter(string nomeChave, bool utilizarGZip = false)
         {
-            var cacheParaRetorno = servicoTelemetria.RegistrarComRetorno<string>(() => memoryCache.Get<string>(nomeChave), "Cache Obter", "", "");
+            var cacheParaRetorno = servicoTelemetria.RegistrarComRetorno<string>(() => memoryCache.Get<string>(nomeChave), "Cache Obter", "cache", "cache", "", "");
 
             if (utilizarGZip)
             {
@@ -31,7 +31,7 @@ namespace SME.SR.Data.Repositories.Cache
         }
         public async Task<T> ObterAsync<T>(string nomeChave, Func<Task<T>> buscarDados, int minutosParaExpirar = 720, bool utilizarGZip = false)
         {
-            var stringCache = servicoTelemetria.RegistrarComRetorno<string>(() => memoryCache.Get<string>(nomeChave), "Cache Obter async<T>", "", "");
+            var stringCache = servicoTelemetria.RegistrarComRetorno<string>(() => memoryCache.Get<string>(nomeChave), "Cache Obter async<T>", "cache", "cache", "", "");
 
             if (!string.IsNullOrWhiteSpace(stringCache))
             {
@@ -52,7 +52,7 @@ namespace SME.SR.Data.Repositories.Cache
 
         public async Task<string> ObterAsync(string nomeChave, bool utilizarGZip = false)
         {
-            var stringCache = servicoTelemetria.RegistrarComRetorno<string>(() => memoryCache.Get<string>(nomeChave), "Cache Obter async<T>", "Cache Obter async<T>", "");
+            var stringCache = servicoTelemetria.RegistrarComRetorno<string>(() => memoryCache.Get<string>(nomeChave), "Cache Obter async<T>", "cache", "cache", "Cache Obter async<T>", "", "");
 
             if (!string.IsNullOrWhiteSpace(stringCache))
             {
@@ -70,7 +70,7 @@ namespace SME.SR.Data.Repositories.Cache
         {
             try
             {
-                await Task.Factory.StartNew(() => servicoTelemetria.Registrar(() => memoryCache.Remove(nomeChave), "Cache Remover async", "Cache Remover async", ""));
+                await Task.Factory.StartNew(() => servicoTelemetria.Registrar(() => memoryCache.Remove(nomeChave), "Cache Remover async", "cache", "cache", "Cache Remover async", ""));
             }
             catch (Exception)
             {
@@ -87,7 +87,7 @@ namespace SME.SR.Data.Repositories.Cache
             }
             try
             {
-                servicoTelemetria.Registrar(() => memoryCache.Set(nomeChave, valor, TimeSpan.FromMinutes(minutosParaExpirar)), "Cache Obter async<T>", "", "");
+                servicoTelemetria.Registrar(() => memoryCache.Set(nomeChave, valor, TimeSpan.FromMinutes(minutosParaExpirar)), "Cache Obter async<T>", "cache", "cache", "", "");
             }
             catch (Exception)
             {
@@ -109,7 +109,8 @@ namespace SME.SR.Data.Repositories.Cache
                         valor = Convert.ToBase64String(valorComprimido);
                     }
 
-                    await Task.Factory.StartNew(() => servicoTelemetria.Registrar(() => memoryCache.Set(nomeChave, valor, TimeSpan.FromMinutes(minutosParaExpirar)), "Cache Salvar async", "Cache Salvar async", ""));
+                    await Task.Factory.StartNew(() => servicoTelemetria.Registrar(() => memoryCache.Set(nomeChave, valor, TimeSpan.FromMinutes(minutosParaExpirar)), "Cache Salvar async", "cache", "cache",
+                        "Cache Salvar async", ""));
                 }
             }
             catch (Exception)

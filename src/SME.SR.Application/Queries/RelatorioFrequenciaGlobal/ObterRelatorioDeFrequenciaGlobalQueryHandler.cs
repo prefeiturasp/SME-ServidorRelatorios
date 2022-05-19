@@ -81,8 +81,10 @@ namespace SME.SR.Application
             {
                 ImprimirRelatorio = false
             };
+
             bool ultimoStatusDoMesSelecionadoEhAtivo = false;
             var itemsMesSelecionado = agrupamento.Where(x => x.FirstOrDefault().DataSituacao.Month == mesSelecionado);
+
             if (itemsMesSelecionado?.Count() > 0)
             {
                 if (itemsMesSelecionado?.FirstOrDefault()?.FirstOrDefault().DataSituacao.Day == 1)
@@ -132,12 +134,13 @@ namespace SME.SR.Application
             }
             else
             {
-                var estaAtivo = SituacoesAtiva.Contains(agrupamento.FirstOrDefault().FirstOrDefault().CodigoSituacaoMatricula);
+                var estaAtivo = SituacoesAtiva.Contains((agrupamento?.FirstOrDefault()?.FirstOrDefault()?.CodigoSituacaoMatricula).GetValueOrDefault());
                 dadosSituacaoAluno.ImprimirRelatorio = estaAtivo;
                 dadosSituacaoAluno.NomeFinalAluno = estaAtivo ? agrupamento.FirstOrDefault()?.FirstOrDefault().ObterNomeFinal() : agrupamento.LastOrDefault()?.LastOrDefault()?.ObterNomeFinal() + " - " 
                                                        + agrupamento.LastOrDefault()?.LastOrDefault()?.SituacaoMatricula
                                                        + " " + agrupamento.LastOrDefault()?.LastOrDefault()?.DataSituacao.ToString("dd/MM/yyyy");
             }
+
             return dadosSituacaoAluno;
         }
         private int[] SituacoesAtiva => new[] { (int)SituacaoMatriculaAluno.Ativo,
