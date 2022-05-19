@@ -502,7 +502,8 @@ namespace SME.SR.Application
 
                         var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() &&
                                                                                 n.ConselhoClasseAlunoId != 0 &&
-                                                                                n.ComponenteCurricularCodigo == componente.CodDisciplina);
+                                                                                n.ComponenteCurricularCodigo == componente.CodDisciplina) || 
+                                                                  (!componente.LancaNota && componente.Frequencia);
 
                         var frequenciaAluno = ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, componentesTurmas);
 
