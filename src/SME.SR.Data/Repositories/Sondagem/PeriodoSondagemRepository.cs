@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Text;
@@ -26,20 +25,18 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
             return await conexao.QueryFirstOrDefaultAsync<DateTime>(query.ToString(), new { bimestre, anoLetivo = anoLetivo.ToString() });
-
         }
 
-        public async Task<DateTime> ObterPeriodoFixoFimPorSemestreAnoLetivo(string semestreDescricao, int anoLetivo)
+        public async Task<DateTime> ObterPeriodoFixoFimPorDescricaoAnoLetivo(string descricao, int anoLetivo)
         {
             var query = new StringBuilder("select \"DataFim\" ");
             query.AppendLine("from \"PeriodoFixoAnual\" ");
             query.AppendLine("where \"Ano\" = @anoLetivo");
-            query.AppendLine("and \"Descricao\" = @semestreDescricao");
-
+            query.AppendLine("and \"Descricao\" = @descricao");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
-            return await conexao.QueryFirstOrDefaultAsync<DateTime>(query.ToString(), new { semestreDescricao, anoLetivo });
+            return await conexao.QueryFirstOrDefaultAsync<DateTime>(query.ToString(), new { descricao, anoLetivo });
         }
 
         public async Task<PeriodoSondagem> ObterPeriodoPorTipo(int periodo, TipoPeriodoSondagem tipoPeriodo)

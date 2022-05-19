@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -18,7 +16,6 @@ namespace SME.SR.Infra
         public string Rf { get; set; }
         public string DataSolicitacao { get; set; }
         public List<RelatorioSondagemComponentesPorTurmaOrdemDto> Ordens { get; set; }
-
         public List<RelatorioSondagemComponentesPorTurmaPerguntaDto> Perguntas { get; set; }
 
         public RelatorioSondagemComponentesPorTurmaCabecalhoDto()

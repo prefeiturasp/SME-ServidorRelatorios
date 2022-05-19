@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
@@ -15,20 +14,16 @@ namespace SME.SR.Data
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
-        private readonly string CamposFrequencia = @"fa.id Id, fa.codigo_aluno CodigoAluno, 
-                            fa.tipo, fa.disciplina_id DisciplinaId, fa.periodo_inicio PeriodoInicio, 
-                            fa.periodo_fim PeriodoFim, fa.bimestre, fa.total_aulas TotalAulas, 
-                            fa.total_ausencias TotalAusencias, fa.total_compensacoes TotalCompensacoes, 
-                            fa.turma_id TurmaId, fa.periodo_escolar_id PeriodoEscolarId";
-
         public FrequenciaAlunoRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<FrequenciaAluno> ObterPorAlunoDataDisciplina(string codigoAluno, DateTime dataAtual, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
+        public async Task<FrequenciaAluno> ObterPorAlunoDataDisciplina(string codigoAluno, DateTime dataAtual,
+            TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
         {
             var query = FrequenciaAlunoConsultas.FrequenciaPorAlunoDataDisciplina;
+
             var parametros = new
             {
                 CodigoAluno = codigoAluno,
@@ -50,12 +45,12 @@ namespace SME.SR.Data
 
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
             return await conexao.QueryFirstOrDefaultAsync<double>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
-
         }
 
         public async Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
         {
             var query = FrequenciaAlunoConsultas.FrequenciaPorAlunoBimestreDisciplina;
+
             var parametros = new
             {
                 CodigoAluno = codigoAluno,
@@ -504,8 +499,8 @@ namespace SME.SR.Data
             if (bimestre != "-99")
                 query += " and pe.bimestre = @numeroBimestre ";
 
-            query += @" and a.data_aula  between  pe.periodo_inicio  and pe.periodo_fim 
-                         order by pe.bimestre,a.data_aula  desc; ";
+            query += @" and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
+                order by pe.bimestre,a.data_aula desc; ";
 
             var parametros = new
             {
@@ -546,6 +541,67 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<FrequenciaAlunoConsolidadoRelatorioDto>(query.ToString(), parametros);
             }
+        }
+
+        public async Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre,
+            string codigoUe, Modalidade modalidade, int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe)
+        {
+            var query = @"select d.dre_id AS DreCodigo, d.abreviacao as DreSigla,
+                                u.nome as UeNome,
+                                u.ue_id AS UeCodigo,
+                                te.descricao as DescricaoTipoEscola,
+                                cfam.mes,
+                                t.modalidade_codigo as ModalidadeCodigo,
+                                t.turma_id AS TurmaCodigo,
+                                t.nome as TurmaNome,
+                                cfam.aluno_codigo as CodigoEol,
+                                cfam.percentual
+                            from consolidacao_frequencia_aluno_mensal cfam
+                                inner join turma t on t.id = cfam.turma_id
+                                inner join ue u on u.id = t.ue_id
+                                inner join tipo_escola te on te.cod_tipo_escola_eol = u.tipo_escola
+                                inner join dre d on d.id = u.dre_id
+                            where t.ano_letivo = @anoLetivo
+                            and t.modalidade_codigo = @modalidade";
+
+            if (codigoDre != "-99")
+                query +=  " and d.dre_id = @codigoDre";
+
+            if (codigoUe != "-99")
+                query += " and u.ue_id = @codigoUe";
+
+            if (!exibirHistorico)
+                query += " and not t.historica ";
+
+            if (semestre > 0)
+                query += " and t.semestre = @semestre ";
+
+            if (codigosTurmas.Length > 0 && !codigosTurmas.Contains("-99"))
+                query += " and t.turma_id = any(@codigosTurmas) ";
+
+            if (mesesReferencias.Length > 0 && !mesesReferencias.Contains(-99))
+                query += " and cfam.mes = any(@mesesReferencias) ";
+            else
+                query += " and cfam.mes > 1";
+
+            if (percentualAbaixoDe > 0)
+                query += " and cfam.percentual < @percentualAbaixoDe";
+
+            var parametros = new
+            {
+                exibirHistorico,
+                anoLetivo,
+                codigoDre,
+                codigoUe,
+                modalidade,
+                semestre,
+                codigosTurmas,
+                mesesReferencias,
+                percentualAbaixoDe
+            };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            return await conexao.QueryAsync<FrequenciaAlunoMensalConsolidadoDto>(query, parametros);
         }
     }
 }

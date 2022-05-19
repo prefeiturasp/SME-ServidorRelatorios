@@ -50,9 +50,9 @@ namespace SME.SR.Application
 
                 var registroFrequencia =
                     await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(
-                        turmas.Select(a => a.Codigo).ToArray(), 0, new string[] { }, new int[] {1, 2, 3, 4}));
+                        turmas.Select(a => a.Codigo).ToArray(), 0, new string[] { }, new int[] { 1, 2, 3, 4 }));
                 var periodoAtual =
-                    await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(dre.Id, ue.Id, request.AnoLetivo));
+                    await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(request.AnoLetivo));
 
                 var boletinsAlunos = new List<BoletimEscolarDetalhadoAlunoDto>();
 
@@ -161,13 +161,13 @@ namespace SME.SR.Application
             {
                 GrupoMatrizComponenteCurricularDto grupo = null;
 
-                if (grupos.Any(g => g.Id == (int) grupoMatriz.Key.Id))
-                    grupo = grupos.FirstOrDefault(g => g.Id == (int) grupoMatriz.Key.Id);
+                if (grupos.Any(g => g.Id == (int)grupoMatriz.Key.Id))
+                    grupo = grupos.FirstOrDefault(g => g.Id == (int)grupoMatriz.Key.Id);
                 else
                 {
                     grupo = new GrupoMatrizComponenteCurricularDto()
                     {
-                        Id = (int) grupoMatriz.Key.Id,
+                        Id = (int)grupoMatriz.Key.Id,
                         Nome = $"GRUPO {gruposRetorno.Count() + 1}",
                         Descricao = grupoMatriz.Key.Nome
                     };
@@ -324,7 +324,6 @@ namespace SME.SR.Application
                             componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia,
                                 false, false);
                         }
-
 
                         if (componenteCurricular.Frequencia)
                         {

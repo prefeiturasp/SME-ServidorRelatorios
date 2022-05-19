@@ -1,0 +1,66 @@
+@using SME.SR.HtmlPdf
+@using SME.SR.Infra
+
+@model RelatorioPaginadoDto
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.Cabecalho.NomeRelatorio</title>
+</head>
+
+<body class="body-relatorio">
+   @await Html.PartialAsync(Model.ViewCustomCss)
+@{
+    var contadorPagina = 1;
+
+	foreach(var pagina in Model.Paginas) 
+	{
+		<div id="page@(pagina.Indice)" class="pagina">
+			<header id="header">
+                <div>
+                    <img class='img-logo-sgp' src='@(SmeConstants.LogoSmeMono)' alt='Logo SGP' />
+                </div>
+                <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+                <div class='titulo-relatorio'>
+                    <p style='margin-bottom: 0'>
+                        @Model.Cabecalho.NomeRelatorio.ToUpper()
+                    </p>
+                </div>
+				@await Html.PartialAsync(Model.ViewCustomParametroCabecalho, Model.Cabecalho)
+			</header>
+			<div id="content">
+                @if (pagina.GetType() == typeof(PaginaComGrafico)){
+                    @await Html.PartialAsync("Grafico.cshtml", pagina)
+                } else {
+                    @await Html.PartialAsync(Model.ViewCustomConteudo, pagina)
+                }
+			</div>
+			<footer class="footer" @Html.Raw(ObtenhaQuebraDePagina(contadorPagina))>
+                <div class="titulo-sgp-rodape">
+                </div>
+			</footer>
+        </div>
+
+        contadorPagina++;
+    }
+
+    @await Html.PartialAsync("RegistradorDeGrafico.cshtml", Model)
+}
+</body>
+</html>
+
+@{
+    string ObtenhaQuebraDePagina(int pagina)
+    {
+        if (Model.TotalDePagina > pagina)
+        {
+            return " style=\"page-break-after:always;\"";
+        }
+
+        return string.Empty;
+    }
+}

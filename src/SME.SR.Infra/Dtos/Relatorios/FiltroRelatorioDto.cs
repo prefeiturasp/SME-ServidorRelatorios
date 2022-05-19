@@ -17,6 +17,7 @@ namespace SME.SR.Infra
         public string PerfilUsuario { get; set; }
         public string RotaProcessando { get; set; }
         public string RotaErro { get; set; }
+        public bool RelatorioEscolaAqui { get; set; }
         public T ObterObjetoFiltro<T>() where T: class
         {
             return JsonConvert.DeserializeObject<T>(Mensagem.ToString());

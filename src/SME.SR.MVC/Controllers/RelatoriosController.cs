@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
-using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
+using SME.SR.MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +31,7 @@ namespace SME.SR.MVC.Controllers
         {
             return View();
         }
+
         [HttpGet("graficos")]
         public async Task<IActionResult> RelatorioGraficosTeste([FromServices] IMediator mediator)
         {
@@ -7177,11 +7178,11 @@ namespace SME.SR.MVC.Controllers
                 var turmasDevolutivasDto1 = new TurmasDevolutivasDto()
                 {
                     NomeTurma = i + 1 + "A",
-                    Bimestres = new List<BimestresDevolutivasDto>()
+                    BimestresComponentesCurriculares = new List<BimestresComponentesCurricularesDevolutivasDto>()
                     {
-                        new BimestresDevolutivasDto()
+                        new BimestresComponentesCurricularesDevolutivasDto()
                         {
-                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            NomeBimestreComponenteCurricular = "1º Bimestre (02/02/2020 à 29/04/2020)",
                             Devolutivas = devolutivas1
                         },
 
@@ -7196,11 +7197,11 @@ namespace SME.SR.MVC.Controllers
                 var turmasDevolutivasDto2 = new TurmasDevolutivasDto()
                 {
                     NomeTurma = i + 1 + "B",
-                    Bimestres = new List<BimestresDevolutivasDto>()
+                    BimestresComponentesCurriculares = new List<BimestresComponentesCurricularesDevolutivasDto>()
                     {
-                        new BimestresDevolutivasDto()
+                        new BimestresComponentesCurricularesDevolutivasDto()
                         {
-                            NomeBimestre = "1º Bimestre (02/02/2020 à 29/04/2020)",
+                            NomeBimestreComponenteCurricular = "1º Bimestre (02/02/2020 à 29/04/2020)",
                             Devolutivas = devolutivas2
                         },
                         // new BimestresDevolutivasDto()
@@ -7439,7 +7440,7 @@ namespace SME.SR.MVC.Controllers
             boletimEscolarDetalhadoDto.Boletins.Add(aluno02);
 
 
-            var model = new RelatorioBoletimEscolarDetalhadoDto(boletimEscolarDetalhadoDto);
+            var model = new BoletimEscolarDetalhadoEscolaAquiDto(boletimEscolarDetalhadoDto);
 
             return View("RelatorioBoletimEscolarDetalhado", model);
 
@@ -7698,6 +7699,16 @@ namespace SME.SR.MVC.Controllers
                 Ocorrencias = ocorrencias,
             };
             return View("RelatorioRegistroOcorrencias", model);
+        }
+
+        [HttpGet("sondagem-componentes-aditivos-paginado")]
+        public IActionResult SondagemComponentesAditivosPaginado()
+        {
+            var relatorio = new CriadorDeMockRelatorioPaginadoSondagemTurmaModel();
+            var preparo = new PreparadorDeRelatorioPaginadoSondagemPorTurmaMatematica(relatorio.ObtenhaSondagemComponente());
+            var dto = preparo.ObtenhaRelatorioPaginadoDto();
+
+            return View("RelatorioPaginado/Index", dto);
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -10,7 +7,7 @@ namespace SME.SR.Infra
         public List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> Linhas;
         public RelatorioSondagemComponentesPorTurmaPlanilhaDto()
         {
-            this.Linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
+            Linhas = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
         }
     }
 }

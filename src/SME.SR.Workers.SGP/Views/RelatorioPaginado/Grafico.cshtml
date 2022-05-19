@@ -1,0 +1,21 @@
+@using SME.SR.Infra
+
+@model PaginaComGrafico
+
+@{
+    ViewData["tamanhoFonte"] = "18px";
+
+    foreach (var items in Model.Graficos)
+    {
+        <table style="border:none; border-color: #ffffff!important; margin-top:55px; ">
+            <tbody>
+                <tr>
+                    @foreach (var item in items)
+                    {
+                        <td style="border:none; border-color: #ffffff!important">@await Html.PartialAsync("../Graficos/GraficoBarras.cshtml", item, ViewData)</td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    }
+}
