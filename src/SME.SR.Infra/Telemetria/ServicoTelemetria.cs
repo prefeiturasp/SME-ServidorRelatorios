@@ -82,13 +82,13 @@ namespace SME.SR.Infra
             {
                 var transactionElk = Agent.Tracer.CurrentTransaction;
 
-                await transactionElk.CaptureSpan(telemetriaNome, "db", async (span) =>
+                await transactionElk.CaptureSpan(telemetriaNome, "http", async (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
                     span.SetLabel("parametros", parametros);
 
                     await acao();
-                }, "postgresql", acaoNome);
+                }, "http", acaoNome);
             }
             else
             {
