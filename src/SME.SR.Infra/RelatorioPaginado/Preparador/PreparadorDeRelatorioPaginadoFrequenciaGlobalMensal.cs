@@ -55,12 +55,18 @@ namespace SME.SR.Infra
         {
             var parametro = new ParametroRelatorioPaginadoPorColuna<FrequenciaMensalDto>()
             {
-                AlturaDaLinha = 50,
+                AlturaDaLinha = 30,
                 TipoDePapel = TipoPapel.A4,
                 UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL,
                 Valores = this.frequenciaGlobalDtos
             };
             var relatorioPaginado = new RelatorioPaginadoColuna<FrequenciaMensalDto>(parametro, ObtenhaDicionarioColuna());
+
+            relatorioPaginado.AdicioneAgrupamento(grupo => grupo.CodigoDre);
+            relatorioPaginado.AdicioneAgrupamento(grupo => grupo.CodigoUe);
+            relatorioPaginado.AdicioneAgrupamento(grupo => grupo.CodigoTurma);
+            relatorioPaginado.AdicioneAgrupamento(grupo => grupo.ValorMes);
+
             return relatorioPaginado.Paginas();
         }
         private List<IColuna> ObtenhaDicionarioColuna()
