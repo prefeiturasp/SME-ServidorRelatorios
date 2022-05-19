@@ -88,7 +88,7 @@ namespace SME.SR.Workers.SGP.Services
 
             var filtroRelatorio = JsonConvert.DeserializeObject<FiltroRelatorioDto>(content);
 
-            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, "WorkerSGP_SR") : null;
+            var transacao = telemetriaOptions.Apm ? Agent.Tracer.StartTransaction(rota, "WorkerRabbitSR") : null;
 
             try
             {
