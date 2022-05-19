@@ -44,12 +44,17 @@ namespace SME.SR.Application
 
                     MontarCorpo(request, worksheet);
 
-                    if(request.PossuiNotaRodape)
+                    if (request.PossuiNotaRodape)
                         MontarRodape(request, worksheet);
 
                     var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                     var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
-                    
+
+                    if (request.RelatorioFrequenciaGlobal)
+                        AdicionarZeroNaUeFrequênciaGlobal(workbook);
+
+                    var planilha = workbook.Worksheets.First(w => w.Name == "Frequência Global");
+
                     workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
                 }
 
@@ -61,6 +66,17 @@ namespace SME.SR.Application
             {
                 SentrySdk.CaptureException(ex);
                 throw ex;
+            }
+        }
+
+        private static void AdicionarZeroNaUeFrequênciaGlobal(XLWorkbook workbook)
+        {
+            var planilha = workbook.Worksheets.First(w => w.Name == "Frequência Global");
+            var totalLinhas = planilha.Rows().Count();
+            for (int linha = 2; linha <= totalLinhas; linha++)
+            {
+                string novoValor = ("0" + planilha.Cell($"C{linha}").Value.ToString()).ToString();
+                planilha.Cell($"C{linha}").SetValue(novoValor);
             }
         }
 
@@ -115,7 +131,7 @@ namespace SME.SR.Application
 
                 CabecalhoFormataStylo(worksheet, colunaNome);
 
-                
+
                 worksheet.Cells(colunaNome).Value = colunaValor;
             }
         }
@@ -151,7 +167,7 @@ namespace SME.SR.Application
             worksheet.Cells(celulaNome).Style.Border.BottomBorderColor = XLColor.Black;
 
             worksheet.Cells(celulaNome).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-            worksheet.Cells(celulaNome).Style.Border.LeftBorderColor = XLColor.Black;           
+            worksheet.Cells(celulaNome).Style.Border.LeftBorderColor = XLColor.Black;
 
         }
 
