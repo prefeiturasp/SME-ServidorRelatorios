@@ -289,7 +289,35 @@ namespace SME.SR.Application
                 respostas.Add(itemRetorno);
             }
 
+            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Escrita)
+                respostas = OrdenarRespostasEscrita(respostas);
+
             return respostas;
+        }
+
+        private List<RelatorioSondagemPortuguesConsolidadoRespostaDto> OrdenarRespostasEscrita(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> listaRespostas)
+        {
+            var listaOrdenadaRespostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
+
+            var opcao1 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Pré-Silábico");
+            listaOrdenadaRespostas.Add(opcao1);
+
+            var opcao2 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico sem valor");
+            listaOrdenadaRespostas.Add(opcao2);
+
+            var opcao3 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico com valor");
+            listaOrdenadaRespostas.Add(opcao3);
+
+            var opcao4 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico alfabético");
+            listaOrdenadaRespostas.Add(opcao4);
+
+            var opcao5 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Alfabético");
+            listaOrdenadaRespostas.Add(opcao5);
+
+            var opcao6 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Sem Preenchimento");
+            listaOrdenadaRespostas.Add(opcao6);
+
+            return listaOrdenadaRespostas;
         }
 
         private string MontarTextoProficiencia(string proficiencia)
