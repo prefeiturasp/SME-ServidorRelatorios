@@ -30,7 +30,7 @@ namespace SME.SR.Application
 
             relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "devolutiva"));
         }
 
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
