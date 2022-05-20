@@ -453,7 +453,7 @@ namespace SME.SR.Application
 
                         // Monta Colunas notComponenteCurricularRepositoryas dos bimestres
                         var ultimoBimestreAtivo = aluno.Inativo ?
-                            periodosEscolares.OrderByDescending(o => o.Bimestre).FirstOrDefault(p => p.PeriodoFim <= aluno.DataSituacaoAluno)?.Bimestre : 4;
+                            periodosEscolares.OrderByDescending(o => o.Bimestre).FirstOrDefault(p => aluno.DataSituacaoAluno.Date > p.PeriodoFim.Date)?.Bimestre : 4;
 
                         if (ultimoBimestreAtivo == null)
                             possuiComponente = false;
@@ -502,7 +502,8 @@ namespace SME.SR.Application
 
                         var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() &&
                                                                                 n.ConselhoClasseAlunoId != 0 &&
-                                                                                n.ComponenteCurricularCodigo == componente.CodDisciplina);
+                                                                                n.ComponenteCurricularCodigo == componente.CodDisciplina) || 
+                                                                  (!componente.LancaNota && componente.Frequencia);
 
                         var frequenciaAluno = ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, componentesTurmas);
 
@@ -513,22 +514,23 @@ namespace SME.SR.Application
                             var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                 && c.ConselhoClasseAlunoId != 0
-                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0));
+                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
+                                                aluno.Ativo);
 
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                                possuiComponente ? (componente.LancaNota ?
+                                                possuiComponente && aluno.Ativo ? (componente.LancaNota ?
                                                     notaConceitofinal?.NotaConceito ?? "" :
                                                     notaConceitofinal?.Sintese ?? sintese) : "-",
                                                 ++coluna);
 
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                               possuiComponente ? (frequenciaAluno?.TotalAusencias.ToString() ?? "0") : "-",
+                                               possuiComponente && aluno.Ativo ? (frequenciaAluno?.TotalAusencias.ToString() ?? "0") : "-",
                                                 ++coluna);
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                     componente.CodDisciplina,
-                                                     possuiComponente ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
+                                                     possuiComponente && aluno.Ativo ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
                                                     ++coluna);
 
                             var frequencia = "-";                            
@@ -546,7 +548,7 @@ namespace SME.SR.Application
                                           ?
                                           "100"
                                           :
-                                          frequenciaAluno != null
+                                          frequenciaAluno != null && aluno.Ativo
                                           ?
                                           frequenciaAluno.PercentualFrequencia.ToString()
                                           :

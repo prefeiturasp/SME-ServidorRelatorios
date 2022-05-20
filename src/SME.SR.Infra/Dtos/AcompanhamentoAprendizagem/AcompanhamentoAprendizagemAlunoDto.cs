@@ -1,5 +1,4 @@
-﻿using SME.SR.Infra.Utilitarios;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace SME.SR.Infra
 {

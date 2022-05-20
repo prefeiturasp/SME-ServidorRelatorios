@@ -32,14 +32,12 @@ namespace SME.SR.Application
                 await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
 
         }
-        private async Task<bool> UtilizarNovoLayout(long anoLetivo)
+
+        private async Task<bool> UtilizarNovoLayout(int anoLetivo)
         {
-            var parametro = await mediator.Send(new VerificarSeParametroEstaAtivoQuery(TipoParametroSistema.ControlePlanejamentoDiarioInfantilComComponente));
-            if (anoLetivo >= parametro.Ano && parametro.Ativo)
-                return true;
-            else
-                return false;
+            return (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(anoLetivo, TipoParametroSistema.SepararDiarioBordoPorComponente))) != null;
         }
+
         private async Task RelatorioSemComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
         {
             if (parametros.ModalidadeTurma == Modalidade.Infantil)
@@ -53,6 +51,7 @@ namespace SME.SR.Application
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioControlePlanejamentoDiario", relatorioDto, request.CodigoCorrelacao));
             }
         }
+
         private async Task RelatorioComComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)
         {
             if (parametros.ModalidadeTurma == Modalidade.Infantil)

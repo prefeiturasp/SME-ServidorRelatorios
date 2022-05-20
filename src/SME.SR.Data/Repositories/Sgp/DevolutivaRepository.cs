@@ -98,7 +98,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
+                var retorno = await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
                     , (devolutiva, aula, turma, periodoEscolar) =>
                     {
                         aula.Turma = turma;
@@ -108,8 +108,25 @@ namespace SME.SR.Data.Repositories.Sgp
                         return devolutiva;
                     }
                     , new { ueId, turmas, bimestres, ano });
+
+                return retorno;
             }
 
+        }
+
+        private string IncluirCondicaoSeparacaoDiarioBordo(bool utilizarLayoutNovo, long componenteCurricular)
+        {
+            return utilizarLayoutNovo && componenteCurricular > 0 ? $" and cc.id = {componenteCurricular} " : string.Empty;
+        }
+
+        private string IncluirCampoSeparacaoDiarioBordo(bool utilizarLayoutNovo)
+        {
+            return utilizarLayoutNovo ? " ,coalesce(cc.descricao_infantil,cc.descricao_sgp) as ComponenteCurricular " : string.Empty;
+        }
+
+        private string IncluirJuncaoSeparacaoDiarioBordo(bool utilizarLayoutNovo)
+        {
+            return utilizarLayoutNovo ? " join componente_curricular cc on cc.id = db.componente_curricular_id " : string.Empty;
         }
 
         private string IncluirCondicaoSeparacaoDiarioBordo(bool utilizarLayoutNovo, long componenteCurricular)
