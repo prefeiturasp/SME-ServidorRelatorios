@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, RelatorioBoletimEscolarDto>
+    public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, List<RelatorioBoletimSimplesEscolarDto>>
     {
         private readonly IMediator mediator;
 
@@ -22,7 +22,7 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); ;
         }
 
-        public async Task<RelatorioBoletimEscolarDto> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
+        public async Task<List<RelatorioBoletimSimplesEscolarDto>> Handle(ObterRelatorioBoletimEscolarQuery request, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrWhiteSpace(request.TurmaCodigo))
                 await ObterFechamentoTurma(request.TurmaCodigo);
@@ -30,15 +30,13 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
+
             string[] codigosTurma = turmas.OrderBy(tb => tb.Nome).Select(t => t.Codigo).ToArray();
-
             var mediasFrequencia = await ObterMediasFrequencia();
-
-            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo);
+            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo, request.ConsideraInativo);
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario, request.ConsideraHistorico);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
-
             string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
 
             var notas = await ObterNotasAlunos(codigosAlunos, turmas.Select(t => t.Codigo).ToArray(), request.AnoLetivo, request.Modalidade, request.Semestre);
@@ -50,16 +48,14 @@ namespace SME.SR.Application
             var aulasPrevistas = await mediator.Send(new ObterAulasDadasTurmaBimestreComponenteCurricularQuery(codigosTurma, tipoCalendarioId, codigosDisciplinas));
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
 
-            var boletins = await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
-
-            return new RelatorioBoletimEscolarDto(boletins);
+            return await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
         }
 
         private async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresConclusivos(string dreCodigo, string ueCodigo, IEnumerable<Turma> turmas, int anoLetivo, Modalidade modalidade, int semestre)
         {
             var turmasCodigo = turmas.Select(t => t.Codigo)?.ToArray();
 
-            return await mediator.Send(new ObterPareceresFinaisQuery()
+            return await mediator.Send(new ObterPareceresFinaisConsolidadoQuery()
             {
                 DreCodigo = dreCodigo,
                 UeCodigo = ueCodigo,
@@ -79,6 +75,7 @@ namespace SME.SR.Application
                 case Modalidade.Infantil:
                     modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
                     break;
+
                 case Modalidade.EJA:
                     modalidadeCalendario = ModalidadeTipoCalendario.EJA;
                     break;
@@ -131,12 +128,13 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo)
+        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool trazerAlunosInativos)
         {
             return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
             {
                 CodigosAlunos = alunosCodigo,
-                CodigosTurma = turmasCodigo
+                CodigosTurma = turmasCodigo,
+                TrazerAlunosInativos = trazerAlunosInativos
             });
         }
 
@@ -158,9 +156,9 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string[] codigosTurmas, int anoLetivo, Modalidade modalidade, int semestre)
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestreBoletimSimplesDto>>> ObterNotasAlunos(string[] alunosCodigo, string[] codigosTurmas, int anoLetivo, Modalidade modalidade, int semestre)
         {
-            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, codigosTurmas, anoLetivo, (int)modalidade, semestre));
+            return await mediator.Send(new ObterNotasRelatorioBoletimSimplesQuery(alunosCodigo, codigosTurmas, anoLetivo, (int)modalidade, semestre));
         }
 
         private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
@@ -173,10 +171,10 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterFrequenciaGlobalRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade));
         }
 
-        private async Task<BoletimEscolarDto> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
-                                                             IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasAlunoBimestre>> notasAlunos,
-                                                             IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos, 
-                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal, 
+        private async Task<List<RelatorioBoletimSimplesEscolarDto>> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
+                                                             IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasAlunoBimestreBoletimSimplesDto>> notasAlunos,
+                                                             IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
+                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal,
                                                              IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
         {
             return await mediator.Send(new MontarBoletinsQuery()
@@ -202,7 +200,7 @@ namespace SME.SR.Application
         }
     }
 
-    class ComparadorFrequencia : IEqualityComparer<FrequenciaAluno>
+    internal class ComparadorFrequencia : IEqualityComparer<FrequenciaAluno>
     {
         public bool Equals([AllowNull] FrequenciaAluno x, [AllowNull] FrequenciaAluno y)
             => x.CodigoAluno.Equals(y.CodigoAluno)

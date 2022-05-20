@@ -49,8 +49,8 @@ namespace SME.SR.Application
                     var consideraFrequenciaEspecifica = turma.AnoLetivo.Equals(2020) && request.Bimestre.HasValue;
                     var frequencia = (double)100;
 
-                    if (frequenciaDisciplina.Any())
-                        frequencia = frequenciaDisciplina.Sum(x => consideraFrequenciaEspecifica ? x.PercentualFrequenciaFinal : x.PercentualFrequencia) / frequenciaDisciplina.Count();
+                    if (frequenciaDisciplina.Any() && frequenciaDisciplina.Any(a=> a.PercentualFrequenciaFinal.HasValue))
+                        frequencia = frequenciaDisciplina.Sum(x => consideraFrequenciaEspecifica ? x.PercentualFrequenciaFinal.Value : x.PercentualFrequencia) / frequenciaDisciplina.Count();
 
                     var componenteSemNota = new ComponenteSemNota()
                     {

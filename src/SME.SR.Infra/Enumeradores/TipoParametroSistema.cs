@@ -6,6 +6,7 @@
         CompensacaoAusenciaPercentualFund2 = 11,
         MunicipioAtendimento = 25,
         QuantidadeImagensPercursoTurma = 72,
-        SepararDiarioBordoPorComponente = 85
+        ControlePlanejamentoDiarioInfantilComComponente = 85,
+        Devolutiva = 86,
     }
 }

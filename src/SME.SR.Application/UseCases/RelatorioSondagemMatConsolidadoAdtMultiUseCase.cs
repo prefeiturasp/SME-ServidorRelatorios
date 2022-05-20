@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
+using SME.SR.Application.Queries;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -45,11 +45,14 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
 
-            var dataReferencia = await mediator
-                .Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            var dataReferencia = DateTime.Now;
 
-            var quantidadeTotalAlunosUeAno = await mediator
-                .Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo, filtros.Modalidades));
+            if (filtros.AnoLetivo < 2022 && filtros.Semestre > 0)
+                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            else if (filtros.AnoLetivo >= 2022 && filtros.Bimestre > 0)
+                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
+
+            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo, filtros.Modalidades));
 
             var relatorio = await mediator.Send(new ObterSondagemMatAditMultiConsolidadoQuery()
             {
@@ -57,6 +60,7 @@ namespace SME.SR.Application
                 Dre = dre,
                 Ue = ue,
                 Semestre = filtros.Semestre,
+                Bimestre = filtros.Bimestre,
                 TurmaAno = int.Parse(filtros.Ano),
                 Usuario = usuario,
                 QuantidadeTotalAlunos = quantidadeTotalAlunosUeAno,

@@ -7,7 +7,7 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAcompanhamentoAprendizagemQuery : IRequest<RelatorioAcompanhamentoAprendizagemDto>
     {
-        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemAlunoDto> acompanhamentoAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, long periodoId)
+        public ObterRelatorioAcompanhamentoAprendizagemQuery(Turma turma, IEnumerable<AlunoRetornoDto> alunosEol, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, IEnumerable<AcompanhamentoAprendizagemAlunoDto> acompanhamentoAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias, FiltroRelatorioAcompanhamentoAprendizagemDto filtro, IEnumerable<QuantidadeAulasDadasBimestreDto> quantidadeAulasDadas, long periodoId, bool relatorioEscolaAqui)
         {
             Turma = turma;
             AlunosEol = alunosEol;
@@ -18,6 +18,7 @@ namespace SME.SR.Application
             Filtro = filtro;
             QuantidadeAulasDadas = quantidadeAulasDadas;
             PeriodoId = periodoId;
+            RelatorioEscolaAqui = relatorioEscolaAqui;
         }
 
         public Turma Turma { get; set; }
@@ -29,6 +30,7 @@ namespace SME.SR.Application
         public FiltroRelatorioAcompanhamentoAprendizagemDto Filtro { get; set; }
         public IEnumerable<QuantidadeAulasDadasBimestreDto> QuantidadeAulasDadas { get; set; }
         public long PeriodoId { get; set; }
+        public bool RelatorioEscolaAqui { get; set; }
 
     }
 }

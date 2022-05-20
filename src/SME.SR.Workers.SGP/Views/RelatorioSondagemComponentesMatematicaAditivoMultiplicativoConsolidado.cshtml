@@ -96,7 +96,7 @@
 
     string MontaCabecalhoSondagem(SME.SR.Infra.RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto perguntaRespostas)
     {
-        var totalPerguntas = perguntaRespostas.ObterIdsDasPerguntas().Count();
+        var totalPerguntas = Model.AnoLetivo < 2022 ? perguntaRespostas.ObterIdsDasPerguntas().Count() : perguntaRespostas.ObterIdsDasPerguntasNovas().Count();
         var widthDescricao = 50 / totalPerguntas;
         var widthPercentual = 16 / totalPerguntas;
 
@@ -136,7 +136,8 @@
                     int numeroLinhas = (perguntaRespostas.Ordem.Count() / 40);
                     int count = 0;
                     int totalRespostas = perguntaRespostas.Respostas.Count;
-                    var perguntaIds = perguntaRespostas.ObterIdsDasPerguntas();
+                    var perguntaIdsAntigas = perguntaRespostas.ObterIdsDasPerguntas();
+                    var perguntasIdsNovas = perguntaRespostas.ObterIdsDasPerguntasNovas();
                     string[] descricaoResposta = new string[totalRespostas];
 
                     if (numeroLinhas > 1)
@@ -149,6 +150,7 @@
                     }
                 }
 
+
                 @foreach (var resposta in perguntaRespostas.Respostas)
                 {
                     descricaoResposta[count] = resposta.Resposta;
@@ -160,12 +162,21 @@
                     <tr>
                         <td class="alinhar-esquerda espaco-esquerda-15">@descricao</td>
 
-                        @foreach (var resposta in perguntaRespostas.Respostas)
+                        @foreach (var pergunta in Model.Perguntas)
                         {
-                            var alunosPercentual = Math.Round(resposta.AlunosPercentual, 2);
-                            var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
-                            if (resposta.Resposta == descricao)
+                            var respostasPergunta = perguntaRespostas.Respostas.Where(a => a.PerguntaId == pergunta.Id);
+                            var resposta = respostasPergunta.FirstOrDefault(c => c.Resposta == descricao);
+
+                            if (resposta == null)
                             {
+                                <td>0</td>
+                                <td>0.00</td>
+                            }
+                            else
+                            {
+                                var alunosPercentual = Math.Round(resposta.AlunosPercentual, 2);
+                                var alunosPercentualAlterado = alunosPercentual.ToString("0.00").Replace(',', '.');
+
                                 <td>@resposta.AlunosQuantidade</td>
                                 <td>@alunosPercentualAlterado</td>
                             }
@@ -176,27 +187,44 @@
                 <tr class="fundo-cinza">
                     <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
 
-                    @foreach (var perguntaId in perguntaIds)
+                    @if (Model.AnoLetivo < 2022)
                     {
-                        double totalQuantidade = 0;
-                        double totalPercentual = 0;
-
-                        @foreach (var resposta in perguntaRespostas.Respostas)
+                        @foreach (var perguntaId in perguntaIdsAntigas)
                         {
+                            double totalQuantidade = 0;
 
-                            if (perguntaId == resposta.PerguntaId)
+                            @foreach (var resposta in perguntaRespostas.Respostas)
                             {
-                                totalQuantidade += resposta.AlunosQuantidade;
-                                totalPercentual += resposta.AlunosPercentual;
+                                if (perguntaId == resposta.PerguntaId)
+                                {
+                                    totalQuantidade += resposta.AlunosQuantidade;
+                                }
+
                             }
+
+                            <td>@totalQuantidade</td>
+                            <td>100</td>
                         }
-
-                        totalPercentual = totalPercentual > 100 ? 100 : Math.Round(totalPercentual, 2);
-                        var totalPercentualAlterado = totalPercentual.ToString("0.00").Replace(',', '.');
-
-                        <td>@totalQuantidade</td>
-                        <td>@totalPercentualAlterado</td>
                     }
+                    else
+                    {
+                        @foreach (var perguntaId in perguntasIdsNovas)
+                        {
+                            double totalQuantidade = 0;
+
+                            @foreach (var resposta in perguntaRespostas.Respostas)
+                            {
+                                if (perguntaId == resposta.PerguntaNovaId)
+                                {
+                                    totalQuantidade += resposta.AlunosQuantidade;
+                                }
+                            }
+
+                            <td>@totalQuantidade</td>
+                            <td>100</td>
+                        }
+                    }
+                    
                 </tr>
             </tbody>
         </table>

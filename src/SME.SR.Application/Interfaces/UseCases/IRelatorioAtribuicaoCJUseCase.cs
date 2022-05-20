@@ -1,10 +1,8 @@
-﻿using SME.SR.Infra;
-using System.Threading.Tasks;
+﻿using SME.SR.Application.Interfaces;
 
 namespace SME.SR.Application
 {
-    public interface IRelatorioAtribuicaoCJUseCase
+    public interface IRelatorioAtribuicaoCJUseCase : IUseCase
     {
-        Task Executar(FiltroRelatorioDto request);
     }
 }
