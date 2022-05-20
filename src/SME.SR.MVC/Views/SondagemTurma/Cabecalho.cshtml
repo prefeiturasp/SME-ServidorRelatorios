@@ -1,0 +1,45 @@
+﻿@using SME.SR.Infra
+
+@model CabecalhoPaginadoDto
+
+<div class='fonte-14 header-pagina'>
+    <table class='tblTopo'>
+        <tbody>
+            <tr>
+                <td class='campo-dre'>DRE: @Model.Dre</td>
+                <td class='campo-ue'>UE: @Model.Ue</td>
+                <td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO LETIVO: @Model.AnoLetivo</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr>
+                <td width='20%' class='espaco-esquerda-15 sem-border-bottom'>ANO: @Model.Ano</td>
+                <td width='23%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: @Model.Turma</td>
+                <td width='57%' class='espaco-esquerda-15 sem-border-bottom'>COMPONENTE CURRICULAR: @Model.ComponenteCurricular</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr>
+                <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>PROFICIÊNCIA: @Model.Proficiencia</td>
+                <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>PERÍODO: @Model.Bimestre</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+            <tr>
+                
+                <td class='campo-usuario'>USUÁRIO: @Model.Usuario</td>
+                <td class='campo-rf-data'>RF: @Model.Rf</td>
+                <td class='campo-rf-data'>DATA: @Model.DataSolicitacao</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

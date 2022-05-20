@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioBoletimEscolarQuery : IRequest<RelatorioBoletimEscolarDto>
+    public class ObterRelatorioBoletimEscolarQuery : IRequest<List<RelatorioBoletimSimplesEscolarDto>>
     {
         public string DreCodigo { get; set; }
 
@@ -22,5 +23,6 @@ namespace SME.SR.Application
 
         public Usuario Usuario { get; set; }
         public bool ConsideraHistorico { get; set; }
+        public bool ConsideraInativo { get; set; }
     }
 }

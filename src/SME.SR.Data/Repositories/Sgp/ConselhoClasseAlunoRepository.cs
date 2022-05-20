@@ -128,5 +128,21 @@ namespace SME.SR.Data
                 return await conexao.QuerySingleOrDefaultAsync<bool>(query, parametros);
             }
         }
+
+        public async Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma)
+        {
+            string sql = @"select distinct ccr.recomendacao, ccr.tipo from conselho_classe_aluno_recomendacao ccar
+                                 inner join conselho_classe_recomendacao ccr on ccr.id = ccar.conselho_classe_recomendacao_id
+                                 inner join conselho_classe_aluno cca on cca.id = ccar.conselho_classe_aluno_id
+                                 inner join conselho_classe cc on cc.id = cca.conselho_classe_id
+                                 inner join fechamento_turma ft on ft.id = cc.fechamento_turma_id
+                                 inner join turma t on t.id = ft.turma_id
+                                    where t.turma_id = @codigoTurma and cca.aluno_codigo = @codigoAluno";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<RecomendacoesAlunoFamiliaDto>(sql, new { codigoAluno, codigoTurma});
+            }
+        }
     }
 }

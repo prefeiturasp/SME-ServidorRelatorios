@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Linq;
@@ -18,7 +19,6 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto filtro)
         {
-
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
 
             var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
@@ -47,11 +47,39 @@ namespace SME.SR.Application
 
             var ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, periodoInicioFim.DataInicio, periodoInicioFim.DataFim));
 
-            var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id));
 
-            await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao));
+            if (filtro.RelatorioEscolaAqui)
+            {
+                var mensagemdados = await MapearDadosParaGerarMensagem(filtro);
+                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: true));
+                filtro.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosRaaEscolaAqui;
+                filtro.RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
+                await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, nomeFila: RotasRabbitSGP.RotaRelatoriosProntosApp, modalidade: turma.ModalidadeCodigo, mensagemDados: mensagemdados));
+            }
+            else
+            {
+                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: false));
+                await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao));
+            }
         }
 
+        private async Task<string> MapearDadosParaGerarMensagem(FiltroRelatorioDto filtro)
+        {
+            var dados = filtro.ObterObjetoFiltro<ObterDadosMensagemEscolaAquiQuery>();
+            dados.Modalidade = ObterModalidade(dados.ModalidadeCodigo);
+            dados.Usuario = await ObterUsuarioLogado(filtro.UsuarioLogadoRF);
+            dados.CodigoArquivo = filtro.CodigoCorrelacao;
+            return UtilJson.ConverterApenasCamposNaoNulos(dados);
+        }
+        private Modalidade ObterModalidade(int modalidadeId)
+        {
+            return Enum.GetValues(typeof(Modalidade))
+            .Cast<Modalidade>().Where(x => (int)x == modalidadeId).FirstOrDefault();
+        }
+        private async Task<Usuario> ObterUsuarioLogado(string usuarioLogadorf)
+        {
+            return await mediator.Send(new ObterUsuarioPorCodigoRfQuery(usuarioLogadorf));
+        }
         private async Task<PeriodoEscolarDto> ObterInicioFimPeriodo(long tipoCalendarioId, int[] bimestres, int semestre)
         {
             var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));

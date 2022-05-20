@@ -16,5 +16,10 @@ namespace SME.SR.Infra
         {
             return Respostas.Select(a => a.PerguntaId).Distinct().ToArray();
         }
+
+        public string[] ObterIdsDasPerguntasNovas()
+        {
+            return Respostas.Select(a => a.PerguntaNovaId).Distinct().ToArray();
+        }
     }
 }

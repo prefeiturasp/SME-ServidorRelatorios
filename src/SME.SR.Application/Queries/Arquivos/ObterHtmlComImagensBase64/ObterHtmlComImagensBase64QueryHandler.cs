@@ -32,13 +32,7 @@ namespace SME.SR.Application
                 {
                     var caminho = img.Attributes["src"].Value;
 
-                    var styleImagem = img.Attributes["style"].Value;
-
-                    var styleRedimencionado = Regex.Replace(styleImagem, @"\d+px", "380px");
-
-                    registroFormatado = registroFormatado.Replace(styleImagem, styleRedimencionado);
-
-                    var arquivoBase64 = await ObterArquivo(caminho);
+                    var arquivoBase64 = await ObterArquivoRemotoBase64(caminho, request.EscalaHorizontal, request.EscalaVertical);
 
                     registroFormatado = registroFormatado.Replace(caminho, arquivoBase64);
                 }
@@ -46,12 +40,12 @@ namespace SME.SR.Application
             return registroFormatado;
         }
 
-        private async Task<string> ObterArquivo(string caminho)
-            => await ObterArquivoRemotoBase64(caminho) ?? await ObterArquivoLocalBase64(caminho);
+        private async Task<string> ObterArquivo(string caminho, float escalaHorizontal, float escalaVertical)
+            => await ObterArquivoRemotoBase64(caminho, escalaHorizontal, escalaVertical) ?? await ObterArquivoLocalBase64(caminho);
 
-        private async Task<string> ObterArquivoRemotoBase64(string url)
+        private async Task<string> ObterArquivoRemotoBase64(string url, float escalaHorizontal, float escalaVertical)
         {
-            return await mediator.Send(new ObterArquivoRemotoBase64Command(url));
+            return await mediator.Send(new ObterArquivoRemotoBase64Command(url, escalaHorizontal, escalaVertical));
         }
 
         private async Task<string> ObterArquivoLocalBase64(string url)

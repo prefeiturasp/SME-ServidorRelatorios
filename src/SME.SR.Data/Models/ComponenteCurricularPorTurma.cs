@@ -21,5 +21,6 @@ namespace SME.SR.Data
         public AreaDoConhecimento AreaDoConhecimento { get; set; }
         public IEnumerable<ComponenteCurricularPorTurmaRegencia> ComponentesCurricularesRegencia { get; set; }
         public string DescricaoInfatil { get; set; }
+        public int? OrdemTerritorioSaber { get; set; }
     }
 }

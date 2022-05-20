@@ -17,10 +17,6 @@ namespace SME.SR.Workers.SGP.Controllers
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
-        public WorkerSGPController()
-        {
-        }
-
         [HttpGet("relatorios/alunos")]
         [Action("relatorios/alunos", typeof(IRelatorioGamesUseCase))]
         public async Task<bool> RelatorioGames([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioGamesUseCase relatorioGamesUseCase)
@@ -90,15 +86,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/boletimescolardetalhado", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
         public async Task<bool> RelatorioBoletimEscolarDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
         {
-            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
-            return true;
-        }
-
-        [HttpGet("relatorios/boletimescolardetalhadoescolaaqui")]
-        [Action("relatorios/boletimescolardetalhadoescolaaqui", typeof(IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase))]
-        public async Task<bool> RelatorioBoletimEscolarDetalhadoEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase relatorioBoletimEscolarDetalhadoUseCase)
-        {
-            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request,false);
             return true;
         }
 
@@ -157,6 +145,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioNotasEConceitosFinaisUseCase.Executar(request);
             return true;
         }
+
         [HttpGet("relatorios/compensacaoausencia")]
         [Action("relatorios/compensacaoausencia", typeof(IRelatorioCompensacaoAusenciaUseCase))]
         public async Task<bool> RelatorioCompensacaoAusencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioCompensacaoAusenciaUseCase relatorioCompensacaoAusenciaUseCase)
@@ -164,6 +153,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioCompensacaoAusenciaUseCase.Executar(request);
             return true;
         }
+
         [HttpGet("relatorios/impressaocalendario")]
         [Action("relatorios/impressaocalendario", typeof(IRelatorioImpressaoCalendarioUseCase))]
         public async Task<bool> RelatorioImpressaoCalendario([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioImpressaoCalendarioUseCase relatorioImpressaoCalendarioUseCase)
@@ -299,6 +289,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioUseCase.Executar(request);
             return true;
         }
+
         [HttpGet("relatorios/conselhoclasseatabimestral")]
         [Action("relatorios/conselhoclasseatabimestral", typeof(IRelatorioConselhoClasseAtaBimestralUseCase))]
         public async Task<bool> RelatorioConselhoClasseAtaBimestralinal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAtaBimestralUseCase relatorioConselhoClasseAtaBimestralUseCase)
@@ -314,6 +305,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
+
         [HttpGet("relatorios/acompanhamento-registrospedagogicos")]
         [Action("relatorios/acompanhamento-registrospedagogicos", typeof(IRelatorioAcompanhamentoRegistrosPedagogicosUseCase))]
         public async Task<bool> RelatorioAcompanhamentoRegistrosPedagogicos([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoRegistrosPedagogicosUseCase relatorioAcompanhamentoRegistrosPedagogicos)
@@ -329,5 +321,31 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/frequencia-global")]
+        [Action("relatorios/frequencia-global", typeof(IRelatorioFrequenciaGlobalUseCase))]
+        public async Task<bool> RelatorioFrequenciaGlobal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaGlobalUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        #region App Escola Aqui
+        [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
+        [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
+        public async Task<bool> AcompanhamentoAprendizagemEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoAprendizagemUseCase relatorioUseCase)
+        {
+            request.RelatorioEscolaAqui = true;
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+        [HttpGet("relatorios/boletimescolardetalhadoescolaaqui")]
+        [Action("relatorios/boletimescolardetalhadoescolaaqui", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
+        public async Task<bool> RelatorioBoletimEscolarDetalhadoEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
+        {
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request, true);
+            return true;
+        }
+        #endregion App Escola Aqui
     }
 }

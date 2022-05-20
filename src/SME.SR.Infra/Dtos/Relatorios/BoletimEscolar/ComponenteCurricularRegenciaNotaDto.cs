@@ -7,28 +7,20 @@ namespace SME.SR.Infra
 {
     public class ComponenteCurricularRegenciaNotaDto
     {
-        [JsonIgnore]
         public string Codigo { get; set; }
 
         [JsonIgnore]
         public bool Nota { get; set; }
-
-        [JsonProperty("nome")]
         public string Nome { get; set; }
 
-        [JsonProperty("notaBimestre1")]
         public string NotaBimestre1 { get; set; }
 
-        [JsonProperty("notaBimestre2")]
         public string NotaBimestre2 { get; set; }
 
-        [JsonProperty("notaBimestre3")]
         public string NotaBimestre3 { get; set; }
 
-        [JsonProperty("notaBimestre4")]
         public string NotaBimestre4 { get; set; }
 
-        [JsonProperty("notaFinal")]
         public string NotaFinal { get; set; }
     }
 }
