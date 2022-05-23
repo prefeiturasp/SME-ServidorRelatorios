@@ -39,9 +39,9 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 string nomeArquivo = string.Empty;
 
                 if (request.RelatorioSincrono)
-                    nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar, request.CodigoCorrelacao.ToString());
+                    nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
                 else
-                    nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar, request.CodigoCorrelacao.ToString());
+                    nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
 
                 await mediator.Send(new SalvarLogViaRabbitCommand($"GerarRelatorioHtmlParaPdfCommand - Caminho arquivo: {nomeArquivo}", LogNivel.Informacao));
 
