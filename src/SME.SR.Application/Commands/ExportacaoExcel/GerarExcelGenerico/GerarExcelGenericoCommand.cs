@@ -11,14 +11,15 @@ namespace SME.SR.Application
         public Guid CodigoCorrelacao { get; set; }
         public bool PossuiNotaRodape { get; set; }
         public string NotaRodape { get; set; }
-
-        public GerarExcelGenericoCommand(IList<object> objetoExportacaoExcel, string nomeWorkSheet, Guid codigoCorrelacao, bool possuiNotaRodape = false, string notaRodape = null)
+        public bool RelatorioFrequenciaGlobal { get; set; }
+        public GerarExcelGenericoCommand(IList<object> objetoExportacaoExcel, string nomeWorkSheet, Guid codigoCorrelacao, bool possuiNotaRodape = false, string notaRodape = null, bool relatorioFrequenciaGlobal =false)
         {
             ObjetoExportacao = objetoExportacaoExcel;
             NomeWorkSheet = nomeWorkSheet;
             CodigoCorrelacao = codigoCorrelacao;
             PossuiNotaRodape = possuiNotaRodape;
             NotaRodape = notaRodape;
+            RelatorioFrequenciaGlobal = relatorioFrequenciaGlobal;
         }
     }
 }

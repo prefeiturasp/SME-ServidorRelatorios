@@ -34,10 +34,12 @@ namespace SME.SR.Application
 
             var turmas = await ObterTurmasPorCodigo(request.TurmasCodigo);
 
-            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.DreCodigo, request.UeCodigo, request.ComponentesCurriculares, request.AnoLetivo, request.TurmasCodigo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.Modalidade, request.Semestre);
+            var dadosRelatorio = await ObterDadosComponentesCurriculares(request.DreCodigo, request.UeCodigo, request.ComponentesCurriculares, request.AnoLetivo, 
+                request.TurmasCodigo, request.ProfessorCodigo, request.ProfessorNome, request.Bimestres, request.Modalidade, request.Semestre);
 
             return await mediator.Send(new MontarRelatorioAcompanhamentoRegistrosPedagogicosQuery(dre, ue, turmas, dadosRelatorio, bimestres, request.UsuarioNome, request.UsuarioRF));
         }
+
         private async Task<Dre> ObterDrePorCodigo(string dreCodigo)
         {
             return await mediator.Send(new ObterDrePorCodigoQuery()

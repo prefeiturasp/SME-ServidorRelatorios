@@ -9,7 +9,9 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Repositories.Cache;
 using SME.SR.Data.Repositories.Sgp;
+using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.JRSClient;
@@ -88,6 +90,7 @@ namespace SME.SR.IoC
             RegistrarRepositorios(services);
             RegistrarUseCase(services);
             RegistrarServicos(services);
+            RegistrarOptions(services, configuration);
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
@@ -95,6 +98,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IExemploRepository, ExemploRepository>();
             services.TryAddScoped(typeof(IAreaDoConhecimentoRepository), typeof(AreaDoConhecimentoRepository));
             services.TryAddScoped(typeof(IAlunoRepository), typeof(AlunoRepository));
+            services.TryAddScoped(typeof(IRepositorioCache), typeof(RepositorioCache));
             services.TryAddScoped(typeof(IAtribuicaoCJRepository), typeof(AtribuicaoCJRepository));
             services.TryAddScoped(typeof(IAulaRepository), typeof(AulaRepository));
             services.TryAddScoped(typeof(ICicloRepository), typeof(CicloRepository));
@@ -141,6 +145,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IMathPoolNumbersRepository), typeof(MathPoolNumbersRepository));
             services.TryAddScoped(typeof(IPerguntasAutoralRepository), typeof(PerguntasAutoralRepository));
             services.TryAddScoped(typeof(ISondagemAutoralRepository), typeof(SondagemAutoralRepository));
+            services.TryAddScoped(typeof(IPerguntasAditMultiNumRepository), typeof(PerguntasAditMultiNumRepository));
             services.TryAddScoped(typeof(IPeriodoSondagemRepository), typeof(PeriodoSondagemRepository));
             services.TryAddScoped(typeof(IAulaPrevistaBimestreRepository), typeof(AulaPrevistaBimestreRepository));
             services.TryAddScoped(typeof(IAtribuicaoEsporadicaRepository), typeof(AtribuicaoEsporadicaRepository));
@@ -149,7 +154,6 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IMathPoolCARepository), typeof(MathPoolCARepository));
             services.TryAddScoped(typeof(IMathPoolCMRepository), typeof(MathPoolCMRepository));
-
 
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
@@ -195,7 +199,6 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioConselhoClasseTurmaUseCase, RelatorioConselhoClasseTurmaUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarUseCase, RelatorioBoletimEscolarUseCase>();
             services.TryAddScoped<IRelatorioBoletimEscolarDetalhadoUseCase, RelatorioBoletimEscolarDetalhadoUseCase>();
-            services.TryAddScoped<IRelatorioBoletimEscolarDetalhadoEscolaAquiUseCase, RelatorioBoletimEscolarDetalhadoEscolaAquiUseCase>();
             services.TryAddScoped<IRelatorioConselhoClasseAtaFinalUseCase, RelatorioConselhoClasseAtaFinalUseCase>();
             services.TryAddScoped<IDownloadRelatorioUseCase, DownloadRelatorioUseCase>();
             services.TryAddScoped<IRelatorioFrequenciasUseCase, RelatorioFrequenciasUseCase>();
@@ -233,6 +236,14 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAcompanhamentoFrequenciaUseCase, RelatorioAcompanhamentoFrequenciaUseCase>();
             services.TryAddScoped<IRelatorioAcompanhamentoRegistrosPedagogicosUseCase, RelatorioAcompanhamentoRegistrosPedagogicosUseCase>();
             services.TryAddScoped<IRelatorioOcorrenciasUseCase, RelatorioOcorrenciasUseCase>();
+            services.TryAddScoped<IRelatorioFrequenciaGlobalUseCase, RelatorioFrequenciaGlobalUseCase>();
+        }
+
+        private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
+        {
+            var telemetriaOptions = new TelemetriaOptions();
+            configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(telemetriaOptions);
         }
     }
 }

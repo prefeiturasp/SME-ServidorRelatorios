@@ -8,7 +8,7 @@ namespace SME.SR.Infra
     {
         public string CodigoDre { get; set; }
         public string CodigoUe { get; set; }
-        public long AnoLetivo { get; set; }
+        public int AnoLetivo { get; set; }
         public Modalidade ModalidadeTurma { get; set; }
         public int Semestre { get; set; }
         public string CodigoTurma { get; set; }

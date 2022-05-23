@@ -28,12 +28,13 @@ namespace SME.SR.Application
             var relatorio = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
             var perguntas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto>();
 
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Usuario.CodigoRf, request.Usuario.Nome);
+            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Bimestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
-            if (request.TurmaAno > 3)
+            if (request.TurmaAno > 3 || request.AnoLetivo >= 2022)
             {
-                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, ComponenteCurricularSondagemEnum.Matematica);
-                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, string.Empty, string.Empty, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+
+                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
                 if (listaPerguntas != null && listaPerguntas.Any())
                 {
@@ -75,11 +76,13 @@ namespace SME.SR.Application
                 AdicionarPergunta(zeroIntercaladosAgrupados, grupo: "Zero intercalado", perguntas, request.QuantidadeTotalAlunos);
             }
 
-            if (perguntas.Any())
+
+            if (perguntas.Any() && request.AnoLetivo < 2022)
             {
                 perguntas.ForEach(pergunta => pergunta.Respostas = pergunta.Respostas.OrderBy(r => r.Resposta).ToList());
-                relatorio.PerguntasRespostas = perguntas;
             }
+
+            relatorio.PerguntasRespostas = perguntas;
 
             TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
             GerarGraficos(relatorio);
@@ -111,7 +114,7 @@ namespace SME.SR.Application
                 }
                 var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
-                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
+                grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(340, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                 grafico.Legendas = legendas;
                 relatorio.GraficosBarras.Add(grafico);
             }
@@ -124,7 +127,7 @@ namespace SME.SR.Application
                 var qntDeAlunosPreencheu = perguntaResposta.Respostas.Sum(a => a.AlunosQuantidade);
                 var diferencaPreencheuNao = quantidadeTotalAlunos - qntDeAlunosPreencheu;
 
-                var percentualNaoPreencheu = (diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
+                var percentualNaoPreencheu = diferencaPreencheuNao == 0 && quantidadeTotalAlunos == 0 ? 0 : ((double)diferencaPreencheuNao / quantidadeTotalAlunos) * 100;
 
                 var existePerguntasSemPreenchimento = perguntaResposta.Respostas.FirstOrDefault(p => p.Resposta == "Sem preenchimento");
 
@@ -141,14 +144,14 @@ namespace SME.SR.Application
             }
         }
 
-        private void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, string rf, string usuario)
+        private void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, int? bimestre, string rf, string usuario)
         {
             relatorio.Ano = anoTurma;
             relatorio.AnoLetivo = anoLetivo;
             relatorio.ComponenteCurricular = "Matemática";
             relatorio.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
             relatorio.Dre = dre != null ? dre.Abreviacao : "Todas";
-            relatorio.Periodo = $"{semestre}º Semestre";
+            relatorio.Periodo = anoLetivo >= 2022 && bimestre > 0 ? $"{bimestre}º Bimestre" : $"{semestre}º Semestre";
             relatorio.Proficiencia = int.Parse(anoTurma) > 3 ? "" : "Números";
             relatorio.RF = rf;
             relatorio.Turma = "Todas";
