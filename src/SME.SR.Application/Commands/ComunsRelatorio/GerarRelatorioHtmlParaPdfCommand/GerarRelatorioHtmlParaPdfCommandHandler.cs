@@ -14,44 +14,53 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
         private readonly IHtmlHelper htmlHelper;
+        private readonly IMediator mediator;
 
         public GerarRelatorioHtmlParaPdfCommandCommandHandler(IConverter converter,
                                                               IServicoFila servicoFila,
-                                                              IHtmlHelper htmlHelper)
+                                                              IHtmlHelper htmlHelper,
+                                                              IMediator mediator)
         {
             this.converter = converter;
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
             this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
-            html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-            html = html.Replace("logo.png", SmeConstants.LogoSme);
-
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            string nomeArquivo;
-
-            if (request.RelatorioSincrono)
-                nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
-            else
-                nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
-
-            PdfGenerator pdfGenerator = new PdfGenerator(converter);
-            pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
-
-            if (request.EnvioPorRabbit)
+            try
             {
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo),
-                    RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
+                html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
+                html = html.Replace("logo.png", SmeConstants.LogoSme);
 
-                return string.Empty;
+                var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+                string nomeArquivo = string.Empty;
+
+                if (request.RelatorioSincrono)
+                    nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
+                else
+                    nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
+
+                await mediator.Send(new SalvarLogViaRabbitCommand($"GerarRelatorioHtmlParaPdfCommand - Caminho arquivo: {nomeArquivo}", LogNivel.Informacao));
+
+                PdfGenerator pdfGenerator = new PdfGenerator(converter);
+                pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
+
+                if (request.EnvioPorRabbit)
+                {
+                    await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                    return string.Empty;
+                }
+                else return request.CodigoCorrelacao.ToString();
             }
-            else
+            catch (Exception ex)
             {
-                return request.CodigoCorrelacao.ToString();
+                await mediator.Send(new SalvarLogViaRabbitCommand(ex.ToString(), LogNivel.Informacao, "GerarRelatorioHtmlParaPdfCommand"));
             }
+
+            return null;
         }
     }
 }
