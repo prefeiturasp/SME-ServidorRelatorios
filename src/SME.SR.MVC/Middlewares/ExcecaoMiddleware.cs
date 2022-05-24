@@ -46,7 +46,7 @@ namespace SME.SR.MVC
                     break;
                 default:
                     Console.WriteLine(context.Exception.Message);
-                    context.Result = new ObjectResult($"Ocorreu um erro interno. {ex}");
+                    context.Result = new ObjectResult("Ocorreu um erro interno.");
                     break;
             }
 
