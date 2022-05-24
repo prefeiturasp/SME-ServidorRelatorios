@@ -2,6 +2,7 @@
 using MediatR;
 using SME.SR.Infra.Utilitarios;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 

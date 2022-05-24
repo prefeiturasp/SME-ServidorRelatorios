@@ -47,6 +47,9 @@ namespace SME.SR.Application
 
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
         {
+            if (bimestres == null)
+                return Enumerable.Empty<int>();
+
             if (bimestres.Count() == 1 && (bimestres.First() == -99))
                 return new List<int>() { 1, 2, 3, 4 };
 
@@ -59,7 +62,7 @@ namespace SME.SR.Application
                 return Enumerable.Empty<long>();
 
             return turmas;
-        }
+        } 
 
         private async Task ObterFiltrosRelatorio(RelatorioDevolutivasDto relatorioDto, FiltroRelatorioDevolutivasDto parametros)
         {

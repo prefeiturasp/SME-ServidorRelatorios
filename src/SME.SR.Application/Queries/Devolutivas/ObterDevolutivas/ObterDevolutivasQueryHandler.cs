@@ -47,18 +47,19 @@ namespace SME.SR.Application
                 .OrderBy(a => a.Key.BimestreComponenteCurricular))
             {
                 var bimestreComponenteCurricular = devolutivasPorBimestre.Key;
+                var descricaoDoBimestre = $"({bimestreComponenteCurricular.DataInicio:dd/MM/yyyy} À {bimestreComponenteCurricular.DataFim:dd/MM/yyyy})";
 
                 yield return new BimestresComponentesCurricularesDevolutivasDto()
                 {
-                    NomeBimestreComponenteCurricular = $"{bimestreComponenteCurricular.BimestreComponenteCurricular}{IncluirComplemento(utilizarLayoutNovo)} ({bimestreComponenteCurricular.DataInicio:dd/MM/yyyy} À {bimestreComponenteCurricular.DataFim:dd/MM/yyyy})",
+                    NomeBimestreComponenteCurricular = $"{bimestreComponenteCurricular.BimestreComponenteCurricular}{IncluirComplemento(utilizarLayoutNovo, descricaoDoBimestre)}",
                     Devolutivas = ObterDevolutivasQuery(devolutivasPorBimestre).ToList()
                 };
             }
         }
 
-        private string IncluirComplemento(bool utilizarLayoutNovo)
+        private string IncluirComplemento(bool utilizarLayoutNovo, string descricaoDoBimestre)
         {
-            return utilizarLayoutNovo ? string.Empty : "º BIMESTRE";
+            return utilizarLayoutNovo ? string.Empty : $"º BIMESTRE {descricaoDoBimestre}";
         }
 
         private IEnumerable<DevolutivaRelatorioDto> ObterDevolutivasQuery(IGrouping<object, DevolutivaDto> devolutivas)

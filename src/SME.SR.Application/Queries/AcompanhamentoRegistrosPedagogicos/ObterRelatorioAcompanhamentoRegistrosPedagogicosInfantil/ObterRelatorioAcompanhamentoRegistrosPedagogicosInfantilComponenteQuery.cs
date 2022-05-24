@@ -4,12 +4,13 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilQuery : IRequest<RelatorioAcompanhamentoRegistrosPedagogicosInfantilDto>
+    public class ObterRelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteQuery : IRequest<RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto>
     {
         private string _dreCodigo;
         private string _ueCodigo;
         private List<int> _bimestres;
         private List<string> _turmasCodigo;
+        private List<long> _componentesCurriculares;
 
         public int AnoLetivo { get; set; }
 
@@ -33,16 +34,22 @@ namespace SME.SR.Application
             get => TodosParaNullTurmas(_turmasCodigo);
             set { _turmasCodigo = value; }
         }
-
         public List<int> Bimestres
         {
             get => TodosParaNullBimestres(_bimestres);
             set { _bimestres = value; }
         }
+
         public string ProfessorCodigo { get; set; }
         public string ProfessorNome { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRF { get; set; }
+
+        public List<long> ComponentesCurriculares
+        {
+            get => TodosParaNullComponentesCurriculares(_componentesCurriculares);
+            set { _componentesCurriculares = value; }
+        }
 
         private string TodosParaNull(string filtro)
         {
@@ -68,7 +75,7 @@ namespace SME.SR.Application
             return filtro;
         }
 
-        private long[] TodosParaNullComponentesCurriculares(long[] filtro)
+        private List<long> TodosParaNullComponentesCurriculares(List<long> filtro)
         {
             if (filtro != null && filtro[0] == -99)
                 return null;

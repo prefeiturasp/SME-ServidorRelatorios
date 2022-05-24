@@ -98,7 +98,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
+                var retorno = await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
                     , (devolutiva, aula, turma, periodoEscolar) =>
                     {
                         aula.Turma = turma;
@@ -108,6 +108,8 @@ namespace SME.SR.Data.Repositories.Sgp
                         return devolutiva;
                     }
                     , new { ueId, turmas, bimestres, ano });
+
+                return retorno;
             }
 
         }
