@@ -33,7 +33,7 @@ namespace SME.SR.Application
 
             relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano, parametros.ComponenteCurricular, utilizarLayoutNovo));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "devolutiva"));
         }
 
         private async Task<bool> UtilizarNovoLayout(long anoLetivo)
