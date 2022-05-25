@@ -31,22 +31,27 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             html = html.Replace("logo.png", SmeConstants.LogoSme);
 
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            string nomeArquivo = string.Empty;
+            string nomeArquivo;
 
-            if (request.RelatorioSincrono)
-                nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar, request.CodigoCorrelacao.ToString());
-            else
-                nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar, request.CodigoCorrelacao.ToString());
+                if (request.RelatorioSincrono)
+                    nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
+                else
+                    nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
 
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
             pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
 
             if (request.EnvioPorRabbit)
             {
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo),
+                    RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+
                 return string.Empty;
             }
-            else return request.CodigoCorrelacao.ToString();
+            else
+            {
+                return request.CodigoCorrelacao.ToString();
+            }
         }
     }
 }

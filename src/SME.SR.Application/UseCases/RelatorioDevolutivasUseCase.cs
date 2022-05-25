@@ -26,15 +26,30 @@ namespace SME.SR.Application
             await ObterFiltrosRelatorio(relatorioDto, parametros);
 
             var turmas = ObterTurmas(parametros.Turmas);
-            var bimestres = ObterBimestresFiltro(parametros.Bimestres);
 
-            relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano));
+            var utilizarLayoutNovo = await UtilizarNovoLayout(parametros.Ano);
+
+            var bimestres = utilizarLayoutNovo ? ObterBimestresFiltro(parametros.Bimestres): null;            
+
+            relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano, parametros.ComponenteCurricular, utilizarLayoutNovo));
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "devolutiva"));
         }
 
+        private async Task<bool> UtilizarNovoLayout(long anoLetivo)
+        {
+            var parametro = await mediator.Send(new VerificarSeParametroEstaAtivoQuery(TipoParametroSistema.Devolutiva));
+            if (anoLetivo >= parametro.Ano && parametro.Ativo)
+                return true;
+            else
+                return false;
+        }
+
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
         {
+            if (bimestres == null)
+                return Enumerable.Empty<int>();
+
             if (bimestres.Count() == 1 && (bimestres.First() == -99))
                 return new List<int>() { 1, 2, 3, 4 };
 
@@ -47,7 +62,7 @@ namespace SME.SR.Application
                 return Enumerable.Empty<long>();
 
             return turmas;
-        }
+        } 
 
         private async Task ObterFiltrosRelatorio(RelatorioDevolutivasDto relatorioDto, FiltroRelatorioDevolutivasDto parametros)
         {

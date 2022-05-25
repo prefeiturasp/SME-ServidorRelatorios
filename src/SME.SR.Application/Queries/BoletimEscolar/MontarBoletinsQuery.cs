@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class MontarBoletinsQuery : IRequest<BoletimEscolarDto>
+    public class MontarBoletinsQuery : IRequest<List<RelatorioBoletimSimplesEscolarDto>>
     {
         public Dre Dre { get; set; }
 
@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
         public IEnumerable<IGrouping<string, Aluno>> AlunosPorTuma { get; set; }
 
-        public IEnumerable<IGrouping<string, NotasAlunoBimestre>> Notas { get; set; }
+        public IEnumerable<IGrouping<string, NotasAlunoBimestreBoletimSimplesDto>> Notas { get; set; }
 
         public IEnumerable<IGrouping<string, FrequenciaAluno>> Frequencias { get; set; }
 

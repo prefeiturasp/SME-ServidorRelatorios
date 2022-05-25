@@ -11,6 +11,6 @@ namespace SME.SR.Data
 
         Task<IEnumerable<PeriodoFechamentoBimestre>> ObterPeriodosFechamento(long ueId, long dreId, int anoLetivo);
 
-        Task<int> ObterBimestrePeriodoFechamentoAtual(long ueId, long dreId, int anoLetivo);
+        Task<int> ObterBimestrePeriodoFechamentoAtual(int anoLetivo);
     }
 }

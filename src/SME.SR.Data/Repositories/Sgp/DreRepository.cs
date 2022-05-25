@@ -49,5 +49,27 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<Dre>(query);
 
         }
+
+        public async Task<DreUe> ObterDreUePorDreUeCodigo(string dreCodigo,string ueCodigo)
+        {
+            var query = @"
+					select
+						dre.id DreId,
+						dre.dre_id DreCodigo,
+						dre.abreviacao DreNome,
+						ue.id UeId,
+						ue.ue_id UeCodigo,
+						concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) UeNome
+					from  turma t
+					inner join ue on ue.id = t.ue_id 
+					inner join dre on ue.dre_id = dre.id 
+					inner join tipo_escola tp on ue.tipo_escola = tp.cod_tipo_escola_eol 
+				   where dre.dre_id = @dreCodigo AND ue.ue_id = @ueCodigo ";
+            var parametros = new { dreCodigo,ueCodigo };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
+        }
     }
 }

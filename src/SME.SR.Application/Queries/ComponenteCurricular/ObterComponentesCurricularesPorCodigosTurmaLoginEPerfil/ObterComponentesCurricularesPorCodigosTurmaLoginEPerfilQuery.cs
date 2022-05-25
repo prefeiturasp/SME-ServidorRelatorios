@@ -10,5 +10,7 @@ namespace SME.SR.Application
         public IEnumerable<ComponenteCurricular> ComponentesCurriculares { get; set; }
         public IEnumerable<ComponenteCurricularGrupoMatriz> GruposMatriz { get; set; }
         public Usuario Usuario { get; set; }
+        public bool ValidarAbrangenciaProfessor { get; set; }
+        public bool EhEJA { get; set; }
     }
 }

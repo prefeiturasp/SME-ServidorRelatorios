@@ -107,7 +107,7 @@
     string MontarTextoDescricao(string descricao)
     {
         int iContadorCaracteres = 0;
-        int contadorMaximoCaracteresPorLinha = descricao.Length > 7000 ? 30 : 350;
+        int contadorMaximoCaracteresPorLinha = descricao.Length > 7000 ? 30 : 250;
 
         @while (iContadorCaracteres != descricao.Length)
         {
@@ -361,7 +361,7 @@
                             if (!ehDescricaoVaziaOuNula)
                             {
                                 int linhasParaEscreverDescricao = 3;
-                                //contadorMaximoLinhasPorPagina = 46;
+                                contadorMaximoLinhasPorPagina = 46;
                                 bool quebraDescricao = VerificaQuebra(linhasParaEscreverDescricao);
 
                                 if (quebraDescricao)

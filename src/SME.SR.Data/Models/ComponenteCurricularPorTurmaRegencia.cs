@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Data
+﻿using System;
+
+namespace SME.SR.Data
 {
     public class ComponenteCurricularPorTurmaRegencia
     {
@@ -13,5 +15,11 @@
         public bool LancaNota { get; set; }
         public bool BaseNacional { get; set; }
         public ComponenteCurricularGrupoMatriz GrupoMatriz { get; set; }
+        public int? OrdemComponenteTerritorioSaber { get; set; }
+        public string ObterDisciplina()
+        {
+            var tamnhoDisciplina = Disciplina.Length;
+            return tamnhoDisciplina > 34 ? $"{Disciplina.Substring(0, 34)}..." : Disciplina;
+        }
     }
 }

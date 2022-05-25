@@ -1,0 +1,12 @@
+@using SME.SR.Infra
+
+@model Pagina
+
+@if (Model.GetType() == typeof(PaginaSubColuna))
+{
+    @await Html.PartialAsync("ConteudoSubColuna.cshtml", Model)
+} 
+else
+{
+    @await Html.PartialAsync("ConteudoColuna.cshtml", Model)
+}

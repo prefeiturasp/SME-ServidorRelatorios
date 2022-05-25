@@ -128,9 +128,12 @@
         //  This function attempts to create a new svg "text" element, chopping
         //  it up into "tspan" pieces, if the caption is too long
         //
+
+		var words = caption.split("||");
+		var FONT_SIZE = words.length > 5 ? 8 : 10;
         var svgSwitch = document.createElementNS('http://www.w3.org/2000/svg', 'switch');
         svgSwitch.setAttributeNS(null, 'transform', 'rotate(-90) translate(' + y + ' , ' + x + ')');
-        svgSwitch.setAttributeNS(null, 'font-size', 10);
+        svgSwitch.setAttributeNS(null, 'font-size', FONT_SIZE);
         svgSwitch.setAttribute('width', 250);
         svgSwitch.setAttribute('height', 200);
 
@@ -142,8 +145,6 @@
 
         //  The following two variables should really be passed as parameters
         var LINE_HEIGHT = 12;
-
-        var words = caption.split("||");
         var line = "";
         var svgDiv = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
 
@@ -281,9 +282,18 @@
 </script>
 @{
 
+    bool temTamanhoFonte = ViewData.ContainsKey("tamanhoFonte");
     <text>
         <div id="chartcontainer_@(Model.IdParaLastro)" style="text-align:left">
-            <h2 style="text-align:center; margin-top: 0; margin-bottom: 5px; font-weight: lighter;">@(Model.Titulo)</h2>
+            @if (temTamanhoFonte)
+            {
+                <h2 style="text-align:center; margin-top: 0; margin-bottom: 5px; font-weight: lighter; font-size :@ViewData["tamanhoFonte"] ">@(Model.Titulo)</h2>
+            }
+            else
+            {
+                <h2 style="text-align:center; margin-top: 0; margin-bottom: 5px; font-weight: lighter; ">@(Model.Titulo)</h2>
+            }
+
             <svg id="svgcontainer_@(Model.IdParaLastro)" height="@Model.EixoYConfiguracao.ValorTotalAltura" width="@(Model.LarguraTotal - 50)">
             </svg>
     </text>

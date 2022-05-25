@@ -16,6 +16,6 @@ namespace SME.SR.Application
         }
 
         public async Task<int> Handle(ObterBimestrePeriodoFechamentoAtualQuery request, CancellationToken cancellationToken)
-            => await periodoFechamentoRepository.ObterBimestrePeriodoFechamentoAtual(request.UeId, request.DreId, request.AnoLetivo);
+            => await periodoFechamentoRepository.ObterBimestrePeriodoFechamentoAtual(request.AnoLetivo);
     }
 }

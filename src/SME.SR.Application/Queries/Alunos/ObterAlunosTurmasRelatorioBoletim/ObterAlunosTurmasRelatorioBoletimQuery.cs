@@ -10,5 +10,6 @@ namespace SME.SR.Application
         public string[] CodigosTurma { get; set; }
 
         public string[] CodigosAlunos { get; set; }
+        public bool TrazerAlunosInativos { get; set; }
     }
 }

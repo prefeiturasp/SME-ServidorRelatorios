@@ -13,7 +13,7 @@ namespace SME.SR.Infra
         public string RegistradoPor { get; set; }
         public string RegistradoRF { get; set; }
         public string Descricao { get; set; }
-
         public DataAulaDto Aula { get; set; }
+        public string ComponenteCurricular { get; set; }
     }
 }

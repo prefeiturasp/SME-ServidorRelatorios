@@ -78,5 +78,42 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ConselhoClasseConsolidadoTurmaDto>(query.ToString(), parametros);
 
         }
+
+        public async Task<IEnumerable<NotasAlunoBimestreBoletimSimplesDto>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre)
+        {
+            var query = new StringBuilder(@"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
+                                 cccatn.componente_curricular_id CodigoComponenteCurricular,
+                                 coalesce(cccatn.bimestre, 0) as Bimestre, coalesce((cast (cccatn.nota as varchar)),cv.valor) as NotaConceito
+                              from consolidado_conselho_classe_aluno_turma cccat 
+                              inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = cccat.id 
+                               left join conceito_valores cv on cv.id = cccatn.conceito_id 
+                              inner join turma t on t.id = cccat.turma_id");
+
+            bool passaPorWhere = alunosCodigos != null || turmasCodigos != null || semestre > 0;
+
+            if (passaPorWhere)
+            {
+                query.AppendLine(" where");
+                if (alunosCodigos != null)
+                    query.AppendLine(" cccat.aluno_codigo = ANY(@alunosCodigos) ");
+
+                if (turmasCodigos != null)
+                    query.AppendLine(" and t.turma_id = ANY(@turmasCodigos)");
+
+                if (semestre > 0)
+                    query.AppendLine(" and t.semestre = @semestre");
+            }
+                
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            var parametros = new { alunosCodigos, turmasCodigos, semestre };
+            try
+            {
+                return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

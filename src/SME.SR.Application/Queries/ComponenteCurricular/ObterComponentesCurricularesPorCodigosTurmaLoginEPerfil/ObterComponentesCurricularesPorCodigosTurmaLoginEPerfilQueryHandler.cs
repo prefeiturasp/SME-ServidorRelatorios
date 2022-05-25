@@ -23,16 +23,19 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> Handle(ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery request, CancellationToken cancellationToken)
         {
-            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma);
+            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma, request.ValidarAbrangenciaProfessor);
 
             await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares, request.ComponentesCurriculares);
 
             await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
+            if (request.EhEJA)
+                componentesCurriculares = componentesCurriculares.Where(w => w.Codigo != 6).ToList();
+
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
         private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
-        {
+        {            
             return componentesCurriculares?.Select(c => MapearParaDto(c, componentesApiEol, grupoMatrizes));
         }
 
@@ -52,7 +55,8 @@ namespace SME.SR.Application
                 Regencia = componenteCurricular.EhRegencia(componentesApiEol) || componenteCurricular.ComponentePlanejamentoRegencia,
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
                 BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
-                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId)
+                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId),
+                OrdemComponenteTerritorioSaber = componenteCurricular.OrdemTerritorioSaber,
             };
         }
 
@@ -125,21 +129,28 @@ namespace SME.SR.Application
                     {
                         var tipoEscola = componentesCurriculares.FirstOrDefault().TipoEscola;
 
+                        territoriosBanco = territoriosBanco.OrderBy(o=> o.CodigoTerritorioSaber).ThenBy(t=> t.CodigoExperienciaPedagogica);
+
                         foreach (var territorio in territoriosBanco.GroupBy(t => t.CodigoTurma))
                         {
                             componentesCurriculares.RemoveAll(c => territoriosBanco.Any(x => x.CodigoComponenteCurricular == c.Codigo && c.CodigoTurma == territorio.Key));
 
                             var territorios = territorio.GroupBy(c => new { c.CodigoTerritorioSaber, c.CodigoExperienciaPedagogica, c.DataInicio });
 
+                            var ordemComponentesTerritorioSaber = 0;
+
                             foreach (var componenteTerritorio in territorios)
                             {
+                                ordemComponentesTerritorioSaber++;
+
                                 componentesCurriculares.Add(new Data.ComponenteCurricular()
                                 {
                                     CodigoTurma = territorio.Key,
-                                    Codigo = componenteTerritorio.FirstOrDefault().ObterCodigoComponenteCurricular(territorio.Key),
+                                    Codigo = componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular, 
                                     Descricao = componenteTerritorio.FirstOrDefault().ObterDescricaoComponenteCurricular(),
                                     TipoEscola = tipoEscola,
-                                    TerritorioSaber = true
+                                    TerritorioSaber = true,
+                                    OrdemTerritorioSaber = ordemComponentesTerritorioSaber,
                                 });
                             }
                         }
@@ -148,7 +159,7 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string[] codigosTurma)
+        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string[] codigosTurma, bool validarAbrangenciaProfessor = true)
         {
             var componentesCurriculares = new List<ComponenteCurricular>();
 
@@ -157,7 +168,7 @@ namespace SME.SR.Application
             var grupoAbrangencia = gruposAbrangenciaApiEol.FirstOrDefault(c => c.GrupoID == idPerfil);
             if (grupoAbrangencia != null)
             {
-                if (grupoAbrangencia.Abrangencia == TipoAbrangencia.Professor)
+                if (grupoAbrangencia.Abrangencia == TipoAbrangencia.Professor && validarAbrangenciaProfessor)
                 {
                     componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesPorTurmasEProfessor(login, codigosTurma));
                 }

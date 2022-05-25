@@ -21,7 +21,7 @@ namespace SME.SR.Data
                 int totalRemotos,
                 int totalPresencas)
         {
-            PercentuaisFrequenciaPorBimestre = new HashSet<(int, double)>();
+            PercentuaisFrequenciaPorBimestre = new HashSet<(int, double?)>();
             Bimestre = bimestre;
             CodigoAluno = codigoAluno;
             TurmaId = turmaId;
@@ -39,7 +39,7 @@ namespace SME.SR.Data
 
         public FrequenciaAluno()
         {
-            PercentuaisFrequenciaPorBimestre = new HashSet<(int, double)>();
+            PercentuaisFrequenciaPorBimestre = new HashSet<(int, double?)>();
         }
 
         public long Id { get; set; }
@@ -76,16 +76,16 @@ namespace SME.SR.Data
         /// <summary>
         /// Lista montada para particularidade de cálculo para o ano de 2020.
         /// </summary>
-        public ICollection<(int, double)> PercentuaisFrequenciaPorBimestre { get; private set; }
+        public ICollection<(int, double?)> PercentuaisFrequenciaPorBimestre { get; private set; }
 
         /// <summary>
         /// Cálculo de percentual final específico para 2020.
         /// </summary>
-        public double PercentualFrequenciaFinal
+        public double? PercentualFrequenciaFinal
         {
             get
             {
-                return PercentuaisFrequenciaPorBimestre.Any() ? Math.Round(PercentuaisFrequenciaPorBimestre.Sum(p => p.Item2) / PercentuaisFrequenciaPorBimestre.Count, 2) : 100;
+                return PercentuaisFrequenciaPorBimestre.Any() && PercentuaisFrequenciaPorBimestre.Any(a=> a.Item2.HasValue) ? Math.Round(PercentuaisFrequenciaPorBimestre.Sum(p => p.Item2.Value) / PercentuaisFrequenciaPorBimestre.Count, 2) : (double?)null;
             }
         }
 
@@ -103,7 +103,7 @@ namespace SME.SR.Data
         /// </summary>
         /// <param name="bimestre">Número do bimestre a ser adicionado na lista.</param>
         /// <param name="percentual">Percentual correspondente ao bimestre.</param>
-        public void AdicionarFrequenciaBimestre(int bimestre, double percentual)
+        public void AdicionarFrequenciaBimestre(int bimestre, double? percentual)
         {
             PercentuaisFrequenciaPorBimestre.Add((bimestre, percentual));
         }

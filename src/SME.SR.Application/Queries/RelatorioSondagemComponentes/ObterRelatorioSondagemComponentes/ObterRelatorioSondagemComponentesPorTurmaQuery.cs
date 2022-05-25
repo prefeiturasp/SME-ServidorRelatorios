@@ -16,6 +16,7 @@ namespace SME.SR.Application
         public ComponenteCurricularSondagemEnum ComponenteCurricular { get; set; }
         public ProficienciaSondagemEnum Proficiencia { get; set; }
         public int Semestre { get; set; }
+        public int Bimestre { get; set; }
         public string UsuarioRF { get; set; }
         public string Ano { get; set; }
     }
