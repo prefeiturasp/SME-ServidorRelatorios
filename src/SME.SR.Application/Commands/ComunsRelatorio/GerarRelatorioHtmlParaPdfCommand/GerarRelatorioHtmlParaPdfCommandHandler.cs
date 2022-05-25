@@ -29,39 +29,30 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
         public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            try
+            var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
+            html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
+            html = html.Replace("logo.png", SmeConstants.LogoSme);
+
+            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
+            string nomeArquivo = string.Empty;
+
+            if (request.RelatorioSincrono)
+                nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
+            else
+                nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
+
+            var pdfGenerator = new PdfGenerator(converter);
+            pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
+
+            if (request.EnvioPorRabbit)
             {
-                var html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, request.Model);
-                html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-                html = html.Replace("logo.png", SmeConstants.LogoSme);
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo),
+                    RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
 
-                var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                string nomeArquivo = string.Empty;
-
-                if (request.RelatorioSincrono)
-                    nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
-                else
-                    nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
-
-                await mediator.Send(new SalvarLogViaRabbitCommand($"GerarRelatorioHtmlParaPdfCommand - Caminho arquivo: {nomeArquivo}", LogNivel.Informacao));
-                Console.WriteLine($">>> Caminho arquivo itinerância: {nomeArquivo}");                
-
-                PdfGenerator pdfGenerator = new PdfGenerator(converter);
-                pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
-
-                if (request.EnvioPorRabbit)
-                {
-                    await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
-                    return string.Empty;
-                }
-                else return request.CodigoCorrelacao.ToString();
+                return string.Empty;
             }
-            catch (Exception ex)
-            {
-                await mediator.Send(new SalvarLogViaRabbitCommand(ex.ToString(), LogNivel.Informacao, "GerarRelatorioHtmlParaPdfCommand"));
-            }
-
-            return null;
+            else
+                return request.CodigoCorrelacao.ToString();
         }
     }
 }
