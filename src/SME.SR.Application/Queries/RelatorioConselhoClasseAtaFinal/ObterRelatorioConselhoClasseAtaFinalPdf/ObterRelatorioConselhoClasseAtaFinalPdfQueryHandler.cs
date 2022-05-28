@@ -838,13 +838,6 @@ namespace SME.SR.Application
         }
 
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade)
-        {
-            return await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery()
-            {
-                CodigosTurma = turmaCodigo,
-                CodigoUe = codigoUe,
-                Modalidade = modalidade
-            });
-        }
+            => await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery(turmaCodigo, codigoUe, modalidade));        
     }
 }
