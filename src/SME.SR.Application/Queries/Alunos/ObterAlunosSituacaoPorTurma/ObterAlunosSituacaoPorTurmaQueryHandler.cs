@@ -4,7 +4,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +11,7 @@ namespace SME.SR.Application
 {
     public class ObterAlunosSituacaoPorTurmaQueryHandler : IRequestHandler<ObterAlunosSituacaoPorTurmaQuery, IEnumerable<AlunoSituacaoDto>>
     {
-        private ITurmaRepository turmaRepository;
+        private readonly ITurmaRepository turmaRepository;
 
         public ObterAlunosSituacaoPorTurmaQueryHandler(ITurmaRepository turmaRepository)
         {
@@ -24,7 +23,7 @@ namespace SME.SR.Application
         {
             var alunos = await turmaRepository.ObterDadosAlunosSituacao(request.TurmaCodigo);
 
-            return alunos.GroupBy(a => a.CodigoAluno).SelectMany(x => x.OrderBy(y => y.CodigoAluno).Take(1));
-        }            
+            return alunos.GroupBy(a => a.CodigoAluno).SelectMany(x => x.OrderByDescending(y => y.DataSituacaoAluno).Take(1));
+        }
     }
 }
