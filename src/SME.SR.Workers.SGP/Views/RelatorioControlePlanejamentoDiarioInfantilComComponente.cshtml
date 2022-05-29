@@ -87,10 +87,10 @@
 
         str += $@"<table class='fixed'>
                     <tr>
-                        <td width='32%' class='td-titulo-dois'>COMPONENTE CURRICULAR</td>
-                        <td width='13%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
+                        <td width='30%' class='td-titulo-dois'>COMPONENTE CURRICULAR</td>
+                        <td width='12%' class='td-titulo-dois'>PLANEJAMENTO REALIZADO</td>
                         <td width='10%' class='td-titulo-dois'>DATA DO REGISTRO</td>
-                        <td width='15%' class='td-titulo-dois'>USUÁRIO</td>
+                        <td width='18%' class='td-titulo-dois'>USUÁRIO</td>
                         <td width='30%' class='td-titulo-dois'>SEÇÕES PREENCHIDAS</td>
                     </tr>
                 </table>";
@@ -135,10 +135,10 @@
         var reposicao = planejamento.EhReposicao ? " - Reposição" : "";
 
         str += $@"<tr>
-                    <td width='32%' class='td-valor-dois'>{planejamento.ComponenteCurricular}{reposicao}</td>
-                    <td width='13%' class='td-valor-dois'>{planejamentoRealizado}</td>
+                    <td width='30%' class='td-valor-dois'>{planejamento.ComponenteCurricular}{reposicao}</td>
+                    <td width='12%' class='td-valor-dois'>{planejamentoRealizado}</td>
                     <td width='10%' class='td-valor-dois'>{planejamento.DateRegistro}</td>
-                    <td width='15%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
+                    <td width='18%' class='td-valor-dois'>{planejamento.Usuario}{cj}</td>
 
                 <td width='30%' class='td-secoes-preenchidas'>{planejamento.SecoesPreenchidas}</td>
                   </tr>";
@@ -622,7 +622,7 @@
                         {
                             var dataAulaAnterior = string.Empty;
 
-                            foreach (var componente in bimestre.Planejamento.OrderByDescending(o => o.DataAula))
+                            foreach (var componente in bimestre.Planejamento.OrderByDescending(o => DateTime.Parse(o.DataAula)))
                             {
                                 var quebra = VerificaQuebra();
                                 @Html.Raw(quebra);
@@ -645,7 +645,7 @@
                                     <table class="tabela-planejamento">
                                         <thead>
                                             <tr>
-                                                <th class="sem-border-bottom">@turma.Nome.ToUpper()</th>
+                                                <th class="sem-border-bottom">@componente.DataAula</th>
                                             </tr>
                                         </thead>
                                     </table>
