@@ -77,41 +77,64 @@
 
     string MontaCabecalhoGrade()
     {
-        return $@"<table class='fixed'>
+        var cabecalho = @"
+            <table class='fixed'>
             <tr>
-                <td width='14%' class='td-titulo'>COMPONENTE</td>
-                <td width='13%' class='td-titulo'>PREVISTAS</td>
-                <td width='22%' colspan='2' class='td-titulo'>CRIADAS</td>
-                <td width='22%' colspan='2' class='td-titulo'>DADAS</td>
-                <td width='14%' class='td-titulo'>REPOSTAS</td>
-                <td width='15%' class='td-titulo'>DIVERGÊNCIAS</td>
+               <td width='14%' class='td-titulo'>COMPONENTE</td>";
+
+        if (!Model.Filtro.EhEducacaoInfantil)
+            cabecalho += @"
+               <td width='13%' class='td-titulo'>PREVISTAS</td>";
+
+        cabecalho += @"
+               <td width='22%' colspan='2' class='td-titulo'>CRIADAS</td>
+               <td width='22%' colspan='2' class='td-titulo'>DADAS</td>
+               <td width='14%' class='td-titulo'>REPOSTAS</td>";
+
+        if (!Model.Filtro.EhEducacaoInfantil)
+            cabecalho += @"
+               <td width='15%' class='td-titulo'>DIVERGÊNCIAS</td>";
+
+        cabecalho += @"
             </tr>
             <tr>
-                <td width='12%' class='td-titulo-2'></td>
-                <td width='12%' class='td-titulo-2'></td>
+                <td width='12%' class='td-titulo-2'></td>";
+
+        if (!Model.Filtro.EhEducacaoInfantil)
+            cabecalho += @"
+                <td width='12%' class='td-titulo-2'></td>";
+
+        cabecalho += @"
                 <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
                 <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
                 <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
                 <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
+                <td width='12.5%' class='td-titulo-2'></td>";
+
+        if (!Model.Filtro.EhEducacaoInfantil)
+            cabecalho += @"
                 <td width='12.5%' class='td-titulo-2'></td>
-                <td width='12.5%' class='td-titulo-2'></td>
-            </tr>"; ;
+            </tr>";
+
+        return cabecalho;
     }
 
     string MontaEstruturaGrade()
     {
         var str = "";
+
         var retornoVerificacao = string.Empty;
 
         var ultimaTurma = Model.Turmas.Any() ? Model.Turmas.Last() : null;
+
         foreach (var turma in Model.Turmas)
         {
             str += $@" <div>
-<table class='fixed'>
-<tr>
-    <td width='100%' class='td-turma-bimestre'>{turma.Nome}</td>
-</tr>
-</table>";
+            <table class='fixed'>
+            <tr>
+                <td width='100%' class='td-turma-bimestre'>{turma.Nome}</td>
+            </tr>
+            </table>";
             contadorQuebrarPagina = contadorQuebrarPagina + 1;
 
             var ultimoBimestre = $"{turma.Nome} - {turma.Bimestres.Last().Descricao}";
@@ -125,18 +148,22 @@
                 foreach (var componente in bimestre.ComponentesCurriculares)
                 {
                     str += $@"<tr>
-                <td width='12.5%' class='td-valor'>{componente.Nome}</td>
-                <td width='12.5%' class='td-valor'>{componente.AulasPrevistas}</td>
-                <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorTitular}</td>
-                <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorSubstituto}</td>
-                <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorTitular}</td>
-                <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorSubstituto}</td>
-                <td width='12.5%' class='td-valor'>{componente.Repostas}</td>
-                <td width='12.5%' class='td-valor'>{componente.Divergencias}</td>
-                </tr>
-            ";
+                    <td width='12.5%' class='td-valor'>{componente.Nome}</td>";
 
-                    //contadorQuebrarPagina = contadorQuebrarPagina + (objetivo.Descricao.Length > 83 ? (int)(objetivo.Descricao.Length / 83) + 1 : 1);
+                    if (!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='12.5%' class='td-valor'>{componente.AulasPrevistas}</td>";
+
+                    str += $@"
+                    <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorTitular}</td>
+                    <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorSubstituto}</td>
+                    <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorTitular}</td>
+                    <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorSubstituto}</td>
+                    <td width='12.5%' class='td-valor'>{componente.Repostas}</td>";
+
+                    if (!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='12.5%' class='td-valor'>{componente.Divergencias}</td>";
+
+                    str += $@"</tr>";
 
                     contadorQuebrarPagina = contadorQuebrarPagina + (componente.Nome.Length > 12 ? (int)(componente.Nome.Length / 12) + 1 : 1);
                     retornoVerificacao = VerificaQuebra();
