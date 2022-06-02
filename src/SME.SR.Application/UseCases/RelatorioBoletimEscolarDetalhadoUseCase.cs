@@ -16,9 +16,9 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task Executar(FiltroRelatorioDto request, bool relatorioEscolaAqui)
+        public async Task Executar(FiltroRelatorioDto request)
         {
-            if (relatorioEscolaAqui)
+            if (request.RelatorioEscolaAqui)
             {
                 request.RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
                 request.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui;

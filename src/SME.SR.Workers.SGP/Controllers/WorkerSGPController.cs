@@ -86,7 +86,8 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/boletimescolardetalhado", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
         public async Task<bool> RelatorioBoletimEscolarDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
         {
-            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request,false);
+            request.RelatorioEscolaAqui = false;
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
             return true;
         }
 
@@ -343,7 +344,8 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/boletimescolardetalhadoescolaaqui", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
         public async Task<bool> RelatorioBoletimEscolarDetalhadoEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
         {
-            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request, true);
+            request.RelatorioEscolaAqui = true;
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
             return true;
         }
         #endregion App Escola Aqui
