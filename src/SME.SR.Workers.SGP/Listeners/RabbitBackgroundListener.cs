@@ -122,6 +122,12 @@ namespace SME.SR.Workers.SGP.Services
                                         filtroRelatorio.Mensagem.ToString());
                                 }
                             }
+                            else
+                            {
+                                var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
+                                var controller = serviceProvider.GetRequiredService<WorkerSGPController>();
+                                await method.InvokeAsync(controller, new object[] { filtroRelatorio, useCase });
+                            }
 
                             canalRabbit.BasicAck(ea.DeliveryTag, false);
                             return;
