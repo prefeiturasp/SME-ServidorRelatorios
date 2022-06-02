@@ -51,13 +51,6 @@ pipeline {
                             sh('rm -f '+"$home"+'/.kube/config')
                         }
                     }
-                    else{
-                        withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
-                            sh('cp $config '+"$home"+'/.kube/config')
-                            sh 'kubectl rollout restart deployment/sme-sr-workers -n sme-relatorios'
-                            sh('rm -f '+"$home"+'/.kube/config')
-                        }
-                    }
                 }
             }           
         }    
