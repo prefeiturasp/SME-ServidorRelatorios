@@ -10,8 +10,11 @@ namespace SME.SR.Application.Commands.RetornarRelatorioPronto
 {
     public class DownloadArquivoLocalQueryHandler : IRequestHandler<DownloadArquivoLocalQuery, byte[]>
     {
-        public DownloadArquivoLocalQueryHandler()
+        private readonly IMediator mediator;
+
+        public DownloadArquivoLocalQueryHandler(IMediator mediator)
         {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<byte[]> Handle(DownloadArquivoLocalQuery request, CancellationToken cancellationToken)
@@ -20,10 +23,9 @@ namespace SME.SR.Application.Commands.RetornarRelatorioPronto
             var nomeArquivo = Path.Combine(request.PastaFisicaCaminho, request.ArquivoNome);
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
 
-            SentrySdk.AddBreadcrumb($"Caminho arquivo para download: {caminhoArquivo}");
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Caminho arquivo para download: {caminhoArquivo}", LogNivel.Informacao));
 
             var arquivo = await File.ReadAllBytesAsync(caminhoArquivo);
-
 
             if (arquivo != null)
                 return arquivo;
