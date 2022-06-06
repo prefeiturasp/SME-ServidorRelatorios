@@ -40,6 +40,9 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
             else
                 nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
+            
+            if (request.NomeTemplate.Equals("RelatorioRegistroItinerancia") || request.NomeTemplate.Equals("RelatorioDevolutivas"))
+                await mediator.Send(new SalvarLogViaRabbitCommand($"GerarRelatorioHtmlParaPdfCommandCommandHandler - Caminho arquivo: {nomeArquivo}", LogNivel.Informacao));
 
             var pdfGenerator = new PdfGenerator(converter);
             pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
