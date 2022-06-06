@@ -2,6 +2,7 @@
 using SME.SR.Application;
 using SME.SR.Workers.SGP.Filters;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP.Controllers
@@ -10,18 +11,24 @@ namespace SME.SR.Workers.SGP.Controllers
     [ApiController]
     public class SgpDownloadController : Controller
     {
-        [HttpGet("pdf/{relatorionome}/{correlacaoId}")]
+        [HttpGet("pdf/{relatorioNome}/{correlacaoId}")]
         public async Task<IActionResult> DownloadPdf(Guid correlacaoId, string relatorioNome,
             [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf", "relatorios"), "application/pdf",
+            var diretorioComplementar = await downloadPdfRelatorioUseCase
+                .ObterDiretorioComplementar(relatorioNome);
+
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf", Path.Combine("relatorios", diretorioComplementar)), "application/pdf",
                 $"{relatorioNome}");
         }
 
-        [HttpGet("pdfsincrono/{relatorionome}/{correlacaoId}")]
-        public async Task<IActionResult> DownloadPdfSincrono(Guid correlacaoId, string relatorioNome,[FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
+        [HttpGet("pdfsincrono/{relatorioNome}/{correlacaoId}")]
+        public async Task<IActionResult> DownloadPdfSincrono(Guid correlacaoId, string relatorioNome, [FromServices] IDownloadRelatorioUseCase downloadPdfRelatorioUseCase)
         {
-            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf", "relatoriossincronos"), "application/pdf",
+            var diretorioComplementar = await downloadPdfRelatorioUseCase
+                .ObterDiretorioComplementar(relatorioNome);
+
+            return File(await downloadPdfRelatorioUseCase.Executar(correlacaoId, ".pdf", Path.Combine("relatoriossincronos", diretorioComplementar)), "application/pdf",
                 $"{relatorioNome}");
         }
 
