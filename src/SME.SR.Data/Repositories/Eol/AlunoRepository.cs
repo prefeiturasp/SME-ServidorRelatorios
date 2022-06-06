@@ -1640,7 +1640,7 @@ namespace SME.SR.Data
 								select*
 								from matriculas
 								where sequencia = 1
-								and CodigoSituacaoMatricula<> 4";
+								and CodigoSituacaoMatricula <> 4";
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {

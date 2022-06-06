@@ -35,6 +35,6 @@ namespace SME.SR.Infra
         public string Estudante { get; set; }
 
         [Display(Description = "% Frequência")]
-        public decimal PercentualFrequencia { get; set; }
+        public decimal? PercentualFrequencia { get; set; }
     }
 }
