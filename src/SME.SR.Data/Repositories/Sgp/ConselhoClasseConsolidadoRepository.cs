@@ -21,11 +21,14 @@ namespace SME.SR.Data
         public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasAsync(string[] turmasCodigo)
         {
             var query = new StringBuilder(@" select c.id, c.dt_atualizacao DataAtualizacao, c.status, c.aluno_codigo AlunoCodigo, 
-                                                    c.parecer_conclusivo_id ParecerConclusivoId, t.turma_id TurmaCodigo, c.bimestre
-                            from consolidado_conselho_classe_aluno_turma c
-                            inner join turma t on c.turma_id = t.id
-                          where not c.excluido 
-                            and t.turma_id = ANY(@turmasCodigo) ");
+                                                    c.parecer_conclusivo_id ParecerConclusivoId, t.turma_id TurmaCodigo, ccn.bimestre
+                                               from consolidado_conselho_classe_aluno_turma c
+                                              inner join turma t on c.turma_id = t.id
+                                              inner join (select distinct consolidado_conselho_classe_aluno_turma_id, bimestre 
+                                                            from consolidado_conselho_classe_aluno_turma_nota cccatn
+                                                         ) as ccn on ccn.consolidado_conselho_classe_aluno_turma_id = c.id
+                                              where not c.excluido 
+                                                and t.turma_id = ANY(@turmasCodigo) ");
 
             var parametros = new { turmasCodigo };
 
