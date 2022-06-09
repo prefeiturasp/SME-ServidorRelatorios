@@ -35,7 +35,7 @@ namespace SME.SR.Application
 
         private async Task<bool> UtilizarNovoLayout(int anoLetivo)
         {
-            return (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(anoLetivo, TipoParametroSistema.Devolutiva))) != null;
+            return (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(anoLetivo, TipoParametroSistema.ControlePlanejamentoDiarioInfantilComComponente))) != null;
         }
 
         private async Task RelatorioSemComponenteCurricular(FiltroRelatorioPlanejamentoDiarioDto parametros, FiltroRelatorioDto request, RelatorioControlePlanejamentoDiarioDto relatorioDto)

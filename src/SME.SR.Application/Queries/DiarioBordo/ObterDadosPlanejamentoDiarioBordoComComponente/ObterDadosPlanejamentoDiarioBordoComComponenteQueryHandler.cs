@@ -38,9 +38,7 @@ namespace SME.SR.Application
             if (aulas == null || !aulas.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var turmas = AgrupaTurma(aulas, request.Parametros.ExibirDetalhamento);
-
-            var sn = turmas.ToList();
+            var turmas = AgrupaTurma(aulas, request.Parametros.ExibirDetalhamento);            
 
             return turmas;
         } 
