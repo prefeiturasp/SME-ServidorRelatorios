@@ -178,6 +178,7 @@ namespace SME.SR.Application
             dto.Filtro.ComponenteCurricular = ObterNomeComponente(filtros, dto);
             dto.Filtro.Usuario = filtros.UsuarioNome;
             dto.Filtro.RF = filtros.UsuarioRf;
+            dto.Filtro.EhEducacaoInfantil = filtros.ModalidadeTurma == Modalidade.Infantil;
         }
 
         private int QuantidadePeriodosPorModalidade(Modalidade modalidade)

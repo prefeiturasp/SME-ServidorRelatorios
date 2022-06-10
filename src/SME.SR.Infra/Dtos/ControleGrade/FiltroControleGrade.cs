@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.SR.Infra
 {
@@ -14,5 +12,6 @@ namespace SME.SR.Infra
         public string Usuario { get; set; }
         public string RF { get; set; }
         public DateTime Data => DateTime.Now;
+        public bool EhEducacaoInfantil { get; set; }
     }
 }
