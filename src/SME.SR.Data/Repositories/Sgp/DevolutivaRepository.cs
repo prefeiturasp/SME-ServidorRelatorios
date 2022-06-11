@@ -90,10 +90,10 @@ namespace SME.SR.Data.Repositories.Sgp
                           {IncluirCondicaoSeparacaoDiarioBordo(utilizarLayoutNovo, componenteCurricular)}  
                         ");
 
-            if (turmas.Any())
+            if (turmas != null && turmas.Any())
                 query.AppendLine(" and t.id = Any(@turmas)");
 
-            if (bimestres.Any())
+            if (bimestres != null && bimestres.Any())
                 query.AppendLine(" and pe.bimestre = Any(@bimestres)");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))

@@ -13,18 +13,15 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
     {
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
-        private readonly IHtmlHelper htmlHelper;
-        private readonly IMediator mediator;
+        private readonly IHtmlHelper htmlHelper;        
 
         public GerarRelatorioHtmlParaPdfCommandCommandHandler(IConverter converter,
                                                               IServicoFila servicoFila,
-                                                              IHtmlHelper htmlHelper,
-                                                              IMediator mediator)
+                                                              IHtmlHelper htmlHelper)
         {
             this.converter = converter;
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
-            this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));            
         }
 
         public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
@@ -41,9 +38,6 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             else
                 nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
             
-            if (request.NomeTemplate.Equals("RelatorioRegistroItinerancia") || request.NomeTemplate.Equals("RelatorioDevolutivas"))
-                await mediator.Send(new SalvarLogViaRabbitCommand($"GerarRelatorioHtmlParaPdfCommandCommandHandler - Caminho arquivo: {nomeArquivo}", LogNivel.Informacao));
-
             var pdfGenerator = new PdfGenerator(converter);
             pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
 
