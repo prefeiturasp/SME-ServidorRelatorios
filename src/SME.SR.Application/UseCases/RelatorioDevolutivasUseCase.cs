@@ -39,7 +39,7 @@ namespace SME.SR.Application
         private async Task<bool> UtilizarNovoLayout(long anoLetivo)
         {
             var parametro = await mediator.Send(new VerificarSeParametroEstaAtivoQuery(TipoParametroSistema.Devolutiva));
-            if (anoLetivo >= parametro.Ano && parametro.Ativo)
+            if (parametro != null && anoLetivo >= parametro.Ano && parametro.Ativo)
                 return true;
             else
                 return false;
@@ -100,11 +100,11 @@ namespace SME.SR.Application
 
             if (turmas.Count() == 1 && !turmas.Any(t => t == -99))
             {
-                var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(turmas.First()));
-                return turmaDto.NomeRelatorio;
+                var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(turmas.First()));                
+                return turmaDto == null ? string.Empty : turmaDto.NomeRelatorio;
             }
 
-            return "";
+            return string.Empty;
         }
     }
 }

@@ -5,7 +5,6 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,7 +63,7 @@ namespace SME.SR.Application
 
         private IEnumerable<DevolutivaRelatorioDto> ObterDevolutivasQuery(IGrouping<object, DevolutivaDto> devolutivas)
         {
-            foreach(var devolutivasPorId in devolutivas
+            foreach (var devolutivasPorId in devolutivas
                 .GroupBy(a => new { a.Id, a.DataInicio })
                 .OrderByDescending(a => a.Key.DataInicio))
             {
