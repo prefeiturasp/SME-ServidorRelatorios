@@ -216,13 +216,17 @@ namespace SME.SR.Application
                         dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
                         dadosSituacaoAluno.ImprimirRelatorio = true;
                     }
+                    else if (itemsMesSelecionado.FirstOrDefault().FirstOrDefault().DataSituacao.Month >= mesSelecionado) 
+                    {
+                        dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
+                        dadosSituacaoAluno.ImprimirRelatorio = true;
+                    }
                     else if (!ativoUltimoDiaMesAnterior)
                     {
                         dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
-                        dadosSituacaoAluno.ImprimirRelatorio = false; 
+                        dadosSituacaoAluno.ImprimirRelatorio = false;
                     }
                 }
-
             }
             else
             {
