@@ -10,16 +10,13 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioFrequenciaGlobalUseCase : IRelatorioFrequenciaGlobalUseCase
+    public class RelatorioFrequenciaGlobalUseCase : AbstractUseCase, IRelatorioFrequenciaGlobalUseCase
     {
-        public delegate Task OpcaoRelatorio(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao);
-
-        public readonly IMediator mediator;
-
-        public RelatorioFrequenciaGlobalUseCase(IMediator mediator)
+        public RelatorioFrequenciaGlobalUseCase(IMediator mediator) : base(mediator)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
+        public delegate Task OpcaoRelatorio(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao);        
 
         public async Task Executar(FiltroRelatorioDto request)
         {
