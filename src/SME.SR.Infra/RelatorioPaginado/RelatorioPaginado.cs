@@ -100,7 +100,7 @@ namespace SME.SR.Infra
                     if (totalDeRegistro >= totalDeLinhas)
                     {
                         pagina++;
-                        totalDeRegistro = 0;
+                        totalDeRegistro = ListaDeAgrupamento.Count - 1;
                         dicionarioValores.Add(pagina, new List<T>());
                     }
                 }
