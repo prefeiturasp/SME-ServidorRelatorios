@@ -122,7 +122,7 @@ namespace SME.SR.Data
             }
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            var parametros = new { alunosCodigos, turmasCodigos, semestre };
+            var parametros = new { alunosCodigos, turmasCodigos, semestre, anoAtual };
             try
             {
                 return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
