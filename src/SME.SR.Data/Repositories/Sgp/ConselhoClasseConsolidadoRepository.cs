@@ -96,7 +96,7 @@ namespace SME.SR.Data
             var query = new StringBuilder(@$"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
                                  cccatn.componente_curricular_id CodigoComponenteCurricular,
                                  coalesce(cccatn.bimestre, 0) as Bimestre, 
-                                 case when (cccatn.nota is not null ) then coalesce((cast (cccatn.nota as varchar)),cv.valor)
+                                 case when (cccatn.nota is not null or cv.valor is not null) then coalesce((cast (cccatn.nota as varchar)),cv.valor)
                                  else
                                  ({obterNotaPosConselho})::varchar
                                  end
