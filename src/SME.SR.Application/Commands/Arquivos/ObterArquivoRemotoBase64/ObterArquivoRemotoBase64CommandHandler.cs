@@ -52,7 +52,7 @@ namespace SME.SR.Application
 
             var escala = Math.Min(escalaV, escalaH);
 
-            if (escala >= 1 || imagem.Width > escalaH)
+            if (escala >= 1 || imagem.Width > escalaHorizontal)
                 return ConverterImagem(imagem);
 
             var width = (int)(imagem.Width * escala);
