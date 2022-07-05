@@ -1,6 +1,6 @@
 ﻿@using SME.SR.Infra
 @using System.Linq
-@model PaginaComColuna
+@model PaginaFrenquenciaMensal
 
 @{
     var listaDres = Model.Valores as List<FrequenciaMensalDto>;
@@ -27,7 +27,7 @@
 
         foreach (var coluna in Model.Colunas)
         {
-            retorno += "<td width='" + coluna.ObtenhaLarguraComUnidade() + "'>" + coluna.Titulo + "</td>";
+            retorno += $"<td {coluna.ObtenhaClasse()} width='" + coluna.ObtenhaLarguraComUnidade() + "'>" + coluna.Titulo + "</td>";
         }
 
         return retorno;
@@ -40,7 +40,7 @@
             var linha = (FrequenciaMensalDto)valor;
 
             retorno += $@"<tr><th>{@linha.NumeroAluno}</th>";
-            retorno += $@"<th>{@linha.NomeAluno}</th>";
+            retorno += $@"<th class='alinhar-esquerda'>{@linha.NomeAluno}</th>";
             retorno += $@"<th>{@linha.ProcentagemFrequencia}</th>";
             retorno += "</tr>";
 
@@ -50,11 +50,13 @@
 
     foreach (var itemDre in listaDresAgrupada.OrderBy(x => x.Key))
     {
-        MontarTable(@itemDre.FirstOrDefault().NomeDre);
+        if (Model.MostrarSecaoDre) MontarTable(@itemDre.FirstOrDefault().NomeDre);
+
         var listaUeAgrupada = itemDre.ToList().GroupBy(x => x.CodigoUe).OrderBy(x => x.FirstOrDefault().NomeUe);
         foreach (var itemUe in listaUeAgrupada)
         {
-            MontarTable(@itemUe.FirstOrDefault().NomeUe);
+            if (Model.MostrarSecaoUe) MontarTable(@itemUe.FirstOrDefault().NomeUe);
+
             var listaTurmaAgrupada = itemUe.ToList().GroupBy(x => x.CodigoTurma).OrderBy(x => x.FirstOrDefault().NomeTurma);
             foreach (var itemTurma in listaTurmaAgrupada)
             {
