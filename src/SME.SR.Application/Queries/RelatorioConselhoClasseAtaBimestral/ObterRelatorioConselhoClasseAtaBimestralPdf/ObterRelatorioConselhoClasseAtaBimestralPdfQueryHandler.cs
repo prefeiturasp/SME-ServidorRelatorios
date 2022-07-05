@@ -541,7 +541,7 @@ namespace SME.SR.Application
                             componentes.Add(new ComponenteCurricularPorTurma()
                             {
                                 CodDisciplina = componenteCurricularRegencia.CodDisciplina,
-                                CodDisciplinaPai = componente.CodDisciplina,
+                                CodDisciplinaPai = componenteCurricularRegencia.CodDisciplinaPai,
                                 LancaNota = componenteCurricularRegencia.LancaNota,
                                 Disciplina = componenteCurricularRegencia.Disciplina,
                                 GrupoMatriz = componente.GrupoMatriz,
