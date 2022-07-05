@@ -473,7 +473,7 @@ namespace SME.SR.Application
 
                         var possuiFrequencia = alunosComRegistroFrequencia.Any(a => a == aluno.CodigoAluno.ToString());
 
-                        if (possuiConselhoParaExibirFrequencias && frequenciaAluno != null)
+                        if ((possuiConselhoParaExibirFrequencias || !componente.LancaNota) && frequenciaAluno != null)
                         {
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.TotalAusencias.ToString(), ++coluna);
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.TotalCompensacoes.ToString(), ++coluna);
@@ -481,9 +481,12 @@ namespace SME.SR.Application
                         }
                         else
                         {
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiConselhoParaExibirFrequencias && possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiConselhoParaExibirFrequencias && possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiConselhoParaExibirFrequencias && possuiFrequencia && componente.Frequencia ? "100" : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, (possuiConselhoParaExibirFrequencias 
+                                && componente.LancaNota) && possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, (possuiConselhoParaExibirFrequencias 
+                                && componente.LancaNota) && possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, (possuiConselhoParaExibirFrequencias 
+                                && componente.LancaNota) && possuiFrequencia && componente.Frequencia ? "100" : "", ++coluna);
                         }
 
                         var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
