@@ -480,9 +480,9 @@ namespace SME.SR.Application
                         }
                         else
                         {
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia ? "0" : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia ? "0" : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia ? "100" : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? "100" : "", ++coluna);
                         }
 
                         var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
@@ -530,6 +530,7 @@ namespace SME.SR.Application
             foreach (var componente in componenteCurricularPorTurmas)
             {
                 if (componente.Regencia)
+                {
                     foreach (var componenteCurricularRegencia in componente.ComponentesCurricularesRegencia)
                     {
                         if (!componentes.Any(a => a.CodDisciplina == componenteCurricularRegencia.CodDisciplina))
@@ -540,9 +541,13 @@ namespace SME.SR.Application
                                 LancaNota = componenteCurricularRegencia.LancaNota,
                                 Disciplina = componenteCurricularRegencia.Disciplina,
                                 GrupoMatriz = componente.GrupoMatriz,
-                                CodigoTurma = componente.CodigoTurma
+                                CodigoTurma = componente.CodigoTurma,
+                                Regencia = componente.Regencia
                             });
                     }
+                    componenteRegencia = componente;
+                }
+                    
                 else
                     componentes.Add(componente);
             }
