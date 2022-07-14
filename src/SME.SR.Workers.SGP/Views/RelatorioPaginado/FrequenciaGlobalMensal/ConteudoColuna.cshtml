@@ -48,23 +48,30 @@
         return retorno;
     }
 
+    void MontaAgrupamento(EnumAgrupamentoFrenquenciaMensal enumAgrupamento, string descricaoAgrupamento)
+    {
+        if (Model.DicionarioApresentacaoAgrupamento[enumAgrupamento]) 
+            MontarTable(descricaoAgrupamento);
+    }
+
     foreach (var itemDre in listaDresAgrupada.OrderBy(x => x.Key))
     {
-        if (Model.MostrarSecaoDre) MontarTable(@itemDre.FirstOrDefault().NomeDre);
+        MontaAgrupamento(EnumAgrupamentoFrenquenciaMensal.DRE, @itemDre.FirstOrDefault().NomeDre);
 
         var listaUeAgrupada = itemDre.ToList().GroupBy(x => x.CodigoUe).OrderBy(x => x.FirstOrDefault().NomeUe);
         foreach (var itemUe in listaUeAgrupada)
         {
-            if (Model.MostrarSecaoUe) MontarTable(@itemUe.FirstOrDefault().NomeUe);
+            MontaAgrupamento(EnumAgrupamentoFrenquenciaMensal.UE, @itemUe.FirstOrDefault().NomeUe);
 
             var listaTurmaAgrupada = itemUe.ToList().GroupBy(x => x.CodigoTurma).OrderBy(x => x.FirstOrDefault().NomeTurma);
             foreach (var itemTurma in listaTurmaAgrupada)
             {
-                MontarTable(@itemTurma.FirstOrDefault().NomeTurma);
+                MontaAgrupamento(EnumAgrupamentoFrenquenciaMensal.TURMA, @itemTurma.FirstOrDefault().NomeTurma);
+
                 var listaMesAgrupada = itemTurma.ToList().GroupBy(x => x.ValorMes).OrderBy(x => x.FirstOrDefault().ValorMes);
                 foreach (var itemMes in listaMesAgrupada)
                 {
-                    MontarTable(@itemMes.FirstOrDefault().NomeMes);
+                    MontaAgrupamento(EnumAgrupamentoFrenquenciaMensal.MES, @itemMes.FirstOrDefault().NomeMes);
                     <table class='tabela-cabecalho'>
                         <thead>
                             <tr>
