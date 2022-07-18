@@ -24,7 +24,7 @@ namespace SME.SR.Application
             {
                 case "Itiner%C3%A2ncias.pdf":
                 case "Itinerâncias.pdf":
-                    return Task.FromResult("itinerancia");                
+                    return Task.FromResult("itinerancia");
                 case "Devolutivas.pdf":
                     return Task.FromResult("devolutiva");
                 default:
