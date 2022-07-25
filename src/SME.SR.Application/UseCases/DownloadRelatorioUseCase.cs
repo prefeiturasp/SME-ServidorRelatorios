@@ -10,7 +10,7 @@ namespace SME.SR.Application
 
         public DownloadRelatorioUseCase(IMediator mediator)
         {
-            this.mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<byte[]> Executar(Guid codigoCorrelacao, string extensao, string diretorio)

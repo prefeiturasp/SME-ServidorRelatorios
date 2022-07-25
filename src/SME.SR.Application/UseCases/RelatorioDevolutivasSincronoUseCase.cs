@@ -36,7 +36,12 @@ namespace SME.SR.Application
                 await ObterFiltrosRelatorio(relatorioDto, parametros, devolutiva.Bimestre, turmaDto.NomeRelatorio);
 
                 relatorioDto.Turmas = await MapearTurma(devolutiva, turmaDto.NomeRelatorio);
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivaSincrono", relatorioDto, request.CodigoCorrelacao, relatorioSincrono: true, diretorioComplementar: "devolutiva"));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivaSincrono",
+                                                                          relatorioDto, 
+                                                                          request.CodigoCorrelacao, 
+                                                                          envioPorRabbit:false,
+                                                                          relatorioSincrono: true, 
+                                                                          diretorioComplementar: "devolutiva"));
             }
             catch (Exception ex)
             {
