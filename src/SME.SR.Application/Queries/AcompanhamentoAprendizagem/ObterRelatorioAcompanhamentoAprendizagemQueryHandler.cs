@@ -43,12 +43,15 @@ namespace SME.SR.Application
         private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(Turma turma, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, FiltroRelatorioAcompanhamentoAprendizagemDto filtro)
         {
             var professoresCabecalho = "";
-
-            int quantidadeProfessoresValidosTurma = professores.Count() - professores.Where(p=> p.NomeProfessor.Contains("Não há professor titular")).Count();
+            int quantidadeProfessoresValidosTurma = 0;
 
             if (professores != null && professores.Any())
+            {
+                quantidadeProfessoresValidosTurma = professores.Count() - professores.Where(p => p.NomeProfessor.Contains("Não há professor titular")).Count();
+
                 professoresCabecalho = quantidadeProfessoresValidosTurma == 0 ?
-                    "Não há professor titular" : String.Join(", ", professores.Where(p=> ! p.NomeProfessor.Contains("Não há professor titular")).Select(a => a.NomeProfessor).ToArray());
+                   "Não há professor titular" : String.Join(", ", professores.Where(p => !p.NomeProfessor.Contains("Não há professor titular")).Select(a => a.NomeProfessor).ToArray());
+            }  
 
             var cabecalho = new RelatorioAcompanhamentoAprendizagemCabecalhoDto
             {
