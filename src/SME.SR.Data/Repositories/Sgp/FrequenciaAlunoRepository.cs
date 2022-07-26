@@ -182,11 +182,18 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorComponentesBimestresTurmas(string[] componentesCurriculares, int[] bimestres, string[] turmasCodigos)
         {
-            var query = new StringBuilder(@"select fa.id Id, fa.codigo_aluno as codigoAluno, fa.bimestre, fa.turma_id as TurmaId, fa.disciplina_id as disciplinaId,
-                                         fa.periodo_escolar_id as periodoEscolarId, fa.periodo_fim as PeriodoFim, fa.periodo_inicio as PeriodoInicio,
-                                         fa.total_aulas as totalAulas, fa.total_compensacoes as totalCompensacoes, fa.tipo, fa.total_ausencias as totalAusencias
-                                         from frequencia_aluno fa 
-                                        where 1=1 ");
+            var query = new StringBuilder(@"select freq.Id as Id, freq.codigoAluno as CodigoAluno, freq.bimestre as Bimestre, 
+                                            freq.TurmaId as TurmaId, freq.disciplinaId as DisciplinaId, freq.periodoEscolarId as PeriodoEscolarId,
+                                            freq.periodoFim as PeriodoFim, freq.PeriodoInicio as PeriodoInicio, freq.totalAulas as TotalAulas,
+                                            freq.totalCompensacoes as TotalCompensacoes, freq.Tipo as Tipo, freq.totalAusencias as TotalAusencias
+                                            from 
+                                            (select fa.id Id, fa.codigo_aluno as codigoAluno, 
+                                            fa.bimestre, fa.turma_id as TurmaId, fa.disciplina_id as disciplinaId,
+                                            fa.periodo_escolar_id as periodoEscolarId, fa.periodo_fim as PeriodoFim, fa.periodo_inicio as PeriodoInicio,
+                                            fa.total_aulas as totalAulas, fa.total_compensacoes as totalCompensacoes, fa.tipo as Tipo, fa.total_ausencias as totalAusencias,
+                                            row_number() over (partition by fa.codigo_aluno, fa.bimestre, fa.disciplina_id order by fa.id desc) as sequencia
+                                            from frequencia_aluno fa 
+                                            where 1=1 ");
 
             if (componentesCurriculares.Any())
                 query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
@@ -196,6 +203,8 @@ namespace SME.SR.Data
 
             if (turmasCodigos.Any())
                 query.AppendLine("and turma_id = any(@turmasCodigos)");
+
+            query.AppendLine(" ) freq where freq.sequencia = 1");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
