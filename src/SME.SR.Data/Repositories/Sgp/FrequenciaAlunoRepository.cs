@@ -191,7 +191,7 @@ namespace SME.SR.Data
                                             fa.bimestre, fa.turma_id as TurmaId, fa.disciplina_id as disciplinaId,
                                             fa.periodo_escolar_id as periodoEscolarId, fa.periodo_fim as PeriodoFim, fa.periodo_inicio as PeriodoInicio,
                                             fa.total_aulas as totalAulas, fa.total_compensacoes as totalCompensacoes, fa.tipo as Tipo, fa.total_ausencias as totalAusencias,
-                                            row_number() over (partition by fa.codigo_aluno, fa.bimestre, fa.disciplina_id order by fa.id desc) as sequencia
+                                            row_number() over (partition by fa.codigo_aluno, fa.turma_id, fa.bimestre, fa.disciplina_id order by fa.id desc) as sequencia
                                             from frequencia_aluno fa 
                                             where 1=1 ");
 
