@@ -26,19 +26,17 @@ namespace SME.SR.Application
                     using (var memoryStream = new MemoryStream(arquivo))
                     {
                         var imagem = new Bitmap(memoryStream);
-                        //var imagem = new Bitmap(FixImageOrientation(imagem));
+                        FixImageOrientation(imagem);
                         var format = imagem.RawFormat;
+
                         var codecs = ImageCodecInfo
                             .GetImageDecoders();
 
-                        var codec = codecs.First(x=> x.FormatID == format.Guid); 
-                        string mimeType = codec.MimeType;
-
-                        var imagemBase64 = RedimencionarImagem(imagem,request.EscalaHorizontal,request.EscalaVertical);
+                        string mimeType = codecs.FirstOrDefault(c=> c.FormatDescription.Equals("BMP")).MimeType;
+                        var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal,request.EscalaVertical);
 
                         return $"data:{mimeType};base64,{imagemBase64}";
                     }
-
                 }
                 catch (Exception e)
                 {
@@ -47,50 +45,46 @@ namespace SME.SR.Application
             }
         }
 
-        private Image FixImageOrientation(Image image)
+        static void FixImageOrientation(Image img)
         {
-            const int exifOrientationId = 0x112;
-            if (!image.PropertyIdList.Contains(exifOrientationId))
-                return image;
-            //Gets the specified property item from the image
-            var property = image.GetPropertyItem(exifOrientationId);
-            var orient = BitConverter.ToInt16(property.Value, 0);
-            //Get the rotated or flipped image
-            image = RotateImageSrc(orient, image);
-            return image;
-        }
+            const int ExifOrientationId = 0x112;
+            // Read orientation tag
+            if (!img.PropertyIdList.Contains(ExifOrientationId)) return;
+            var prop = img.GetPropertyItem(ExifOrientationId);
+            var orient = BitConverter.ToInt16(prop.Value, 0);
+            // Force value to 1
+            prop.Value = BitConverter.GetBytes((short)1);
+            img.SetPropertyItem(prop);
 
-        private Image RotateImageSrc(int orient, Image image)
-        {
+            // Rotate/flip image according to <orient>
             switch (orient)
             {
                 case 1:
-                    image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
-                    return image;
+                    img.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                    break;
                 case 2:
-                    image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                    return image;
+                    img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    break;
                 case 3:
-                    image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    return image;
+                    img.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    break;
                 case 4:
-                    image.RotateFlip(RotateFlipType.Rotate180FlipX);
-                    return image;
+                    img.RotateFlip(RotateFlipType.Rotate180FlipX);
+                    break;
                 case 5:
-                    image.RotateFlip(RotateFlipType.Rotate90FlipX);
-                    return image;
+                    img.RotateFlip(RotateFlipType.Rotate90FlipX);
+                    break;
                 case 6:
-                    image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    return image;
+                    img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
                 case 7:
-                    image.RotateFlip(RotateFlipType.Rotate270FlipX);
-                    return image;
+                    img.RotateFlip(RotateFlipType.Rotate270FlipX);
+                    break;
                 case 8:
-                    image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    return image;
+                    img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    break;
                 default:
-                    image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
-                    return image;
+                    return;
             }
         }
 
