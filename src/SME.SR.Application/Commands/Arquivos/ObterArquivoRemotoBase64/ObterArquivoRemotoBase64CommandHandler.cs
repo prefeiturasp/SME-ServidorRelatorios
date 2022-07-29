@@ -26,22 +26,65 @@ namespace SME.SR.Application
                     using (var memoryStream = new MemoryStream(arquivo))
                     {
                         var imagem = new Bitmap(memoryStream);
+                        FixImageOrientation(imagem);
                         var format = imagem.RawFormat;
-                        var codec = ImageCodecInfo
-                            .GetImageDecoders()
-                            .First(c => c.FormatID == format.Guid);
-                        string mimeType = codec.MimeType;
 
-                        var imagemBase64 = RedimencionarImagem(imagem,request.EscalaHorizontal,request.EscalaVertical);
+                        var codecs = ImageCodecInfo
+                            .GetImageDecoders();
+
+                        string mimeType = codecs.FirstOrDefault(c=> c.FormatDescription.Equals("BMP")).MimeType;
+                        var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal,request.EscalaVertical);
 
                         return $"data:{mimeType};base64,{imagemBase64}";
                     }
-
                 }
                 catch (Exception e)
                 {
                     return "";
                 }            
+            }
+        }
+
+        static void FixImageOrientation(Image img)
+        {
+            const int ExifOrientationId = 0x112;
+            // Read orientation tag
+            if (!img.PropertyIdList.Contains(ExifOrientationId)) return;
+            var prop = img.GetPropertyItem(ExifOrientationId);
+            var orient = BitConverter.ToInt16(prop.Value, 0);
+            // Force value to 1
+            prop.Value = BitConverter.GetBytes((short)1);
+            img.SetPropertyItem(prop);
+
+            // Rotate/flip image according to <orient>
+            switch (orient)
+            {
+                case 1:
+                    img.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                    break;
+                case 2:
+                    img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    break;
+                case 3:
+                    img.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    break;
+                case 4:
+                    img.RotateFlip(RotateFlipType.Rotate180FlipX);
+                    break;
+                case 5:
+                    img.RotateFlip(RotateFlipType.Rotate90FlipX);
+                    break;
+                case 6:
+                    img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
+                case 7:
+                    img.RotateFlip(RotateFlipType.Rotate270FlipX);
+                    break;
+                case 8:
+                    img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    break;
+                default:
+                    return;
             }
         }
 
@@ -52,7 +95,7 @@ namespace SME.SR.Application
 
             var escala = Math.Min(escalaV, escalaH);
 
-            if (escala >= 1)
+            if (escala >= 1 || imagem.Width > escalaH)
                 return ConverterImagem(imagem);
 
             var width = (int)(imagem.Width * escala);

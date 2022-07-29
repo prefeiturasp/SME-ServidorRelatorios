@@ -27,6 +27,17 @@ namespace SME.SR.Infra
             }
         }
 
+        protected virtual Pagina ObtenhaPagina(int indice, int ordenacao, List<T> valores, List<IColuna> colunas)
+        {
+            return new PaginaComColuna()
+            {
+                Indice = indice,
+                Ordenacao = ordenacao,
+                Valores = valores,
+                Colunas = colunas
+            };
+        }
+
         private Dictionary<int, List<IColuna>> ObtenhaColunasPorPagina()
         {
             if (AtingiuLimiteDeColunas())
@@ -91,17 +102,6 @@ namespace SME.SR.Infra
             }
 
             return dicionario;
-        }
-
-        private Pagina ObtenhaPagina(int indice, int ordenacao, List<T> valores, List<IColuna> colunas)
-        {
-            return new PaginaComColuna()
-            {
-                Indice = indice,
-                Ordenacao = ordenacao,
-                Valores = valores,
-                Colunas = colunas
-            };
         }
     }
 }
