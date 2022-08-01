@@ -26,13 +26,15 @@ namespace SME.SR.Application
                     using (var memoryStream = new MemoryStream(arquivo))
                     {
                         var imagem = new Bitmap(memoryStream);
+                        var rawFormat = imagem.RawFormat;
+
                         FixImageOrientation(imagem);
                         var format = imagem.RawFormat;
 
                         var codecs = ImageCodecInfo
                             .GetImageDecoders();
 
-                        string mimeType = codecs.FirstOrDefault(c=> c.FormatDescription.Equals("BMP")).MimeType;
+                        string mimeType = codecs.FirstOrDefault(c=> c.FormatID == rawFormat.Guid).MimeType;
                         var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal,request.EscalaVertical);
 
                         return $"data:{mimeType};base64,{imagemBase64}";
