@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Infra;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -12,6 +13,11 @@ namespace SME.SR.Application
 {
     public class ObterArquivoRemotoBase64CommandHandler : IRequestHandler<ObterArquivoRemotoBase64Command, string>
     {
+        private readonly IMediator mediator;
+        public ObterArquivoRemotoBase64CommandHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
         public async Task<string> Handle(ObterArquivoRemotoBase64Command request, CancellationToken cancellationToken)
         {
             if (request.Url.StartsWith("data:") && request.Url.Contains(";base64,"))
@@ -36,6 +42,9 @@ namespace SME.SR.Application
 
                         string mimeType = codecs.FirstOrDefault(c=> c.FormatID == rawFormat.Guid).MimeType;
                         var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal,request.EscalaVertical);
+                        await mediator.Send(new SalvarLogViaRabbitCommand($"Formato da imagem ao mudar orientação", LogNivel.Informacao, imagem.RawFormat.ToString()));
+                        await mediator.Send(new SalvarLogViaRabbitCommand($"Altura da imagem ao mudar orientação", LogNivel.Informacao, imagem.Height.ToString()));
+                        await mediator.Send(new SalvarLogViaRabbitCommand($"Largura da imagem ao mudar orientação", LogNivel.Informacao, imagem.Height.ToString()));
 
                         return $"data:{mimeType};base64,{imagemBase64}";
                     }
