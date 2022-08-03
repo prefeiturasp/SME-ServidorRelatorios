@@ -44,6 +44,9 @@ namespace SME.SR.Infra
         RemanejadoSaida = 14,
 
         [Display(Name = "Reclassificado")]
-        ReclassificadoSaida = 15
+        ReclassificadoSaida = 15,
+
+        [Display(Name = "Fora do domínio liberado pela PRODAM")]
+        DispensadoEdFisica = 17
     }
 }

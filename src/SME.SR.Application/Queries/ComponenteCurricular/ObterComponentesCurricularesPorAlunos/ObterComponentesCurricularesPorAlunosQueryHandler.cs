@@ -24,6 +24,10 @@ namespace SME.SR.Application
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesPorAlunosQuery request, CancellationToken cancellationToken)
         {
             var componentesDasTurmas = await ObterComponentesPorAlunos(request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
+            var AlunosCod = Array.ConvertAll(request.AlunosCodigos, x => (long)x);
+            var dadosAluno = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(AlunosCod, request.AnoLetivo));
+            var dadosAlunoFiltrado = dadosAluno.Where(x => x.CodigoSituacaoMatricula != SituacaoMatriculaAluno.DispensadoEdFisica && x.AnoLetivo == request.AnoLetivo).Select(y => y.CodigoTurma);
+            componentesDasTurmas = componentesDasTurmas.Where(c => c.CodigoTurma.Contains(dadosAlunoFiltrado.First().ToString()));
 
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
             {
