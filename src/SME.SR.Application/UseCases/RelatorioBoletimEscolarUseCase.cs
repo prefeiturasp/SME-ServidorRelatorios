@@ -26,6 +26,8 @@ namespace SME.SR.Workers.SGP
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples",
                 relatorio, request.CodigoCorrelacao));
+
+            await mediator.Send(new SalvarLogViaRabbitCommand("Boletim enviado", LogNivel.Informacao));
         }
     }
 }
