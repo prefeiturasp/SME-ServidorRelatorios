@@ -115,12 +115,22 @@
 
     string DivideDescricao(string estudante, string descricao, string dataRegistro, string registradoPor)
     {
-        var descricaoDivida = descricao.Substring(0, 3600);
-        var descricaoRetante = descricao.Substring(3601);
+        var descricaoDivida = "";
+        var descricaoRestante = "";
+
+        if (descricao.Length >= 3600)
+        {
+            descricaoDivida = descricao.Substring(0, 3600);
+            descricaoRestante = descricao.Substring(3601);
+        }
+        else
+        {
+            descricaoDivida = descricao.ToString();
+        }
         @Html.Raw(QuebrarLinhas(estudante, 43))
         @Html.Raw(MontarDescricao(dataRegistro, descricaoDivida, registradoPor))
         @Html.Raw(SomaLinhasContador(43))
-        CalcularDescricao(estudante, descricaoRetante, dataRegistro, registradoPor);
+        CalcularDescricao(estudante, descricaoRestante, dataRegistro, registradoPor);
 
         return "";
     }

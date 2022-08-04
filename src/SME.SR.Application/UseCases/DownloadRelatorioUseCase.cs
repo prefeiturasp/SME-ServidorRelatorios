@@ -10,7 +10,7 @@ namespace SME.SR.Application
 
         public DownloadRelatorioUseCase(IMediator mediator)
         {
-            this.mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<byte[]> Executar(Guid codigoCorrelacao, string extensao, string diretorio)
@@ -24,8 +24,8 @@ namespace SME.SR.Application
             {
                 case "Itiner%C3%A2ncias.pdf":
                 case "Itinerâncias.pdf":
-                    return Task.FromResult("itinerancia");
-                case "RelatorioDevolutiva.pdf":
+                    return Task.FromResult("itinerancia");                
+                case "Devolutivas.pdf":
                     return Task.FromResult("devolutiva");
                 default:
                     return Task.FromResult(string.Empty);
