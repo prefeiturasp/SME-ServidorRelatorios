@@ -20,12 +20,19 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
-            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
-            var relatorio = await mediator.Send(relatorioQuery);
+            try
+            {
+                request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
+                var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
+                var relatorio = await mediator.Send(relatorioQuery);
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples",
-                relatorio, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples",
+                    relatorio, request.CodigoCorrelacao));
+            }
+            catch (Exception ex)
+            {
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Boletim - {ex.ToString()}", LogNivel.Critico, "Relatórios - Boletim"));
+            }            
         }
     }
 }
