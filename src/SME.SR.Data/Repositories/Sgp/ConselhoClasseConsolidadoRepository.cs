@@ -91,7 +91,7 @@ namespace SME.SR.Data
 		                                        inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id
 		                                        inner join turma t on t.id = cccat.turma_id
 		                                        where cccat.aluno_codigo = Any(@alunosCodigos) and ccn.componente_curricular_codigo = cccatn.componente_curricular_id
-		                                        and t.turma_id = ANY(@turmasCodigos) and extract (year from cca.criado_em) = @anoAtual limit 1");
+		                                        and t.turma_id = ANY(@turmasCodigos) and extract (year from cca.criado_em) = @anoAtual");
 
             var query = new StringBuilder(@$"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
                                  cccatn.componente_curricular_id CodigoComponenteCurricular,
@@ -123,8 +123,14 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var parametros = new { alunosCodigos, turmasCodigos, semestre, anoAtual };
-
-            return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
+            try
+            {
+                return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }
