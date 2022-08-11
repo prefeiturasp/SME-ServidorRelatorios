@@ -316,7 +316,7 @@ namespace SME.SR.Data
                 ,ano
                 ,turmaCodigo
                 ,turmaNome
-                , Row_number() OVER ( order by id desc) as sequencia
+                ,Row_number() OVER (partition by AlunoCodigo order by Id desc) as sequencia
                 from tmpNotasFinais)
                 select * from lista
                 where sequencia = 1");
