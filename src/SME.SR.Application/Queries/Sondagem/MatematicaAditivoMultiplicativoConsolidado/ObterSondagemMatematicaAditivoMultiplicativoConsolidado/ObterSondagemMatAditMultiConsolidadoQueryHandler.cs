@@ -327,7 +327,7 @@ namespace SME.SR.Application
                         {
                             PerguntaId = 1,
                             Pergunta = "Ideia",
-                            PerguntaNovaId = resposta.PerguntaNovaId,
+                            PerguntaNovaId = resposta != null ? resposta.PerguntaNovaId: "",
                             Resposta = "Sem preenchimento",
                             AlunosQuantidade = diferencaPreencheuNaoIdeia,
                             AlunosPercentual = percentualNaoPreencheuIdeia
@@ -344,7 +344,7 @@ namespace SME.SR.Application
                         {
                             PerguntaId = 2,
                             Pergunta = "Resultado",
-                            PerguntaNovaId = resposta.PerguntaNovaId,
+                            PerguntaNovaId = resposta != null ? resposta.PerguntaNovaId : "",
                             Resposta = "Sem preenchimento",
                             AlunosQuantidade = diferencaPreencheuNaoResultado,
                             AlunosPercentual = percentualNaoPreencheuResultado

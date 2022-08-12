@@ -22,17 +22,17 @@ namespace SME.SR.Data
         {
             StringBuilder query = new StringBuilder();
 
-            query.Append(" select \"CodigoDre\", \"CodigoUe\", \"CodigoTurma\", \"CodigoAluno\", \"NomeAluno\", \"AnoLetivo\", ");
+            query.Append(" select s.\"CodigoDre\", s.\"CodigoUe\", s.\"CodigoTurma\", sa.\"CodigoAluno\", \"NomeAluno\", \"AnoLetivo\", ");
             query.Append(" \"AnoTurma\", \"PerguntaId\", \"RespostaId\"");
             query.Append(" from \"Sondagem\" s inner join \"SondagemAluno\" sa on sa.\"SondagemId\" = s.\"Id\" ");
             query.Append(" inner join \"SondagemAlunoRespostas\" sar on sar.\"SondagemAlunoId\" = sa.\"Id\"  ");
             query.Append(" where 1=1 ");
 
             if (!string.IsNullOrEmpty(codigoDre) && !codigoDre.Equals("0"))
-                query.Append("and \"CodigoDre\" = @codigoDre ");
+                query.Append("and s.\"CodigoDre\" = @codigoDre ");
 
             if (!string.IsNullOrEmpty(codigoUe))
-                query.Append("and \"CodigoUe\" = @codigoUe ");
+                query.Append("and s.\"CodigoUe\" = @codigoUe ");
 
             if (!string.IsNullOrEmpty(grupoId))
                 query.Append("and s.\"GrupoId\" = @grupoId ");
@@ -50,7 +50,7 @@ namespace SME.SR.Data
                 query.Append("and \"AnoLetivo\" = @anoLetivo ");
 
             if (componenteCurricularSondagem != null)
-                query.Append("and \"ComponenteCurricularId\" = @componenteCurricularId ");
+                query.Append("and s.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
             var parametros = new { codigoDre, codigoUe, grupoId, bimestre, periodoId, anoTurma, anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name() };
 
