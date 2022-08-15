@@ -41,7 +41,7 @@ namespace SME.SR.Application
 
             var notas = await ObterNotasAlunos(codigosAlunos, turmas.Select(t => t.Codigo).ToArray(), request.AnoLetivo, request.Modalidade, request.Semestre);
             var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
-            var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre,request.TurmaCodigo);
             var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
             var codigosDisciplinas = componentesCurriculares.SelectMany(cc => cc.Select(cc => cc.CodDisciplina.ToString())).Distinct().ToArray();
@@ -161,9 +161,9 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterNotasRelatorioBoletimSimplesQuery(alunosCodigo, codigosTurmas, anoLetivo, (int)modalidade, semestre));
         }
 
-        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
+        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre, string turmaCodigo)
         {
-            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade, semestre));
+            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade, semestre, turmaCodigo));
         }
 
         private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciaGlobalAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade)
