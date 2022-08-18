@@ -370,5 +370,15 @@ namespace SME.SR.Data
 
             return resultado;
         }
+
+        public async Task<long> ObterGrupoMatrizIdPorComponenteCurricularId(long componenteCurricularId)
+        {
+            string sql = "select grupo_matriz_id from componente_curricular where id = @componenteCurricularId";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<long>(sql, new { componenteCurricularId});
+            }
+        }
     }
 }
