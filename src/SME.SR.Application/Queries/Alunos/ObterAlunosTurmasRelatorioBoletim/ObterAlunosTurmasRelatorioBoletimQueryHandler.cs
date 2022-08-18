@@ -27,12 +27,12 @@ namespace SME.SR.Application
             if (request.CodigosAlunos?.Length > 0)
             {
                 alunos = await alunoRepository.ObterPorCodigosAlunoETurma(request.CodigosTurma, request.CodigosAlunos);
-                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos);
+                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos, request.CodigosTurma);
             }
             else
             {
                 alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurma);
-                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos);
+                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos, request.CodigosTurma);
             }
 
             if (!alunosOrdenadosPorSituacao.Any())
@@ -48,14 +48,14 @@ namespace SME.SR.Application
             return resultadoAlunos;
         }
 
-        private IEnumerable<Aluno> ObterAlunosPorUltimaSituacao(IEnumerable<Aluno> listaAlunos)
+        private IEnumerable<Aluno> ObterAlunosPorUltimaSituacao(IEnumerable<Aluno> listaAlunos, params string[] codigosTurmas)
         {
             var listaTemporaria = new List<Aluno>();
             var listaAlunosOrdenada = new List<Aluno>();
 
             foreach (var item in listaAlunos)
             {
-                listaTemporaria = listaAlunos.Where(x => x.CodigoAluno == item.CodigoAluno).ToList();
+                listaTemporaria = listaAlunos.Where(x => x.CodigoAluno == item.CodigoAluno && codigosTurmas.ToList().Contains(x.CodigoTurma.ToString())).ToList();
                 listaAlunosOrdenada.AddRange(listaTemporaria.OrderByDescending(x => x.DataSituacao).Take(1));
                 listaTemporaria.Clear();
             }
