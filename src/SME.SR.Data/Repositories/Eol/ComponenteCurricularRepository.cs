@@ -347,19 +347,21 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] codigosTurmas, int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
         {
             var query = !consideraHistorico ?
-                ComponenteCurricularConsultas.BuscarPorAlunos :
-                ComponenteCurricularConsultas.BuscarPorAlunosHistorico;
+            ComponenteCurricularConsultas.BuscarPorAlunos :
+            ComponenteCurricularConsultas.BuscarPorAlunosHistorico;
 
+            query += " and te.cd_turma_escola in @codigosTurmas ";
             query += " order by 2";
 
             var parametros = new
             {
                 alunosCodigos,
                 anoLetivo,
-                semestre
+                semestre,
+                codigosTurmas
             };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
