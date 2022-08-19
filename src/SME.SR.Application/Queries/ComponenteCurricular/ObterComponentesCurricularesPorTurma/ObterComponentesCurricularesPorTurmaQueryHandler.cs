@@ -12,10 +12,12 @@ namespace SME.SR.Application
     public class ObterComponentesCurricularesPorTurmaQueryHandler : IRequestHandler<ObterComponentesCurricularesPorTurmaQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
+        private readonly IMediator mediator;
 
-        public ObterComponentesCurricularesPorTurmaQueryHandler(IComponenteCurricularRepository componenteCurricularRepository)
+        public ObterComponentesCurricularesPorTurmaQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorTurmaQuery request, CancellationToken cancellationToken)
@@ -25,6 +27,7 @@ namespace SME.SR.Application
             {
                 var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+                await ObterGrupoMatriz(componentesDaTurma);
 
                 List<ComponenteCurricularPorTurma> componentes = new List<ComponenteCurricularPorTurma>();
 
@@ -50,6 +53,15 @@ namespace SME.SR.Application
             }
 
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
+        }
+
+        public async Task ObterGrupoMatriz (IEnumerable<ComponenteCurricular> componentesCurriculares)
+        {
+            foreach(var componente in componentesCurriculares)
+            {
+                var grupoMatrizId = await mediator.Send(new ObterGrupoMatrizIdPorComponenteCurricularIdQuery(componente.Codigo));
+                componente.GrupoMatrizId = grupoMatrizId;
+            }
         }
     }
 }
