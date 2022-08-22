@@ -102,21 +102,26 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string turmaCodigo)
         {
-            var query = @$"select fa.codigo_aluno CodigoAluno, t.turma_id as TurmaId, t.ano_letivo as AnoTurma, 
-                            t.modalidade_codigo as ModalidadeTurma, fa.tipo, fa.disciplina_id DisciplinaId, 
-                            fa.periodo_inicio PeriodoInicio, fa.periodo_fim PeriodoFim, fa.bimestre, 
-                            sum(fa.total_aulas) TotalAulas, sum(fa.total_ausencias) TotalAusencias, 
-                            sum(fa.total_compensacoes) TotalCompensacoes, fa.periodo_escolar_id PeriodoEscolarId
-                             from frequencia_aluno fa 
-                            inner join turma t on t.turma_id = fa.turma_id
-                            where fa.codigo_aluno = ANY(@codigosAluno)
-                              and fa.tipo = 1
-                              and t.ano_letivo = @anoLetivo
-                              and t.modalidade_codigo = @modalidade
-                              and t.semestre = @semestre
-                              and t.turma_id = @turmaCodigo 
-                            group by fa.codigo_aluno, fa.tipo, fa.disciplina_id, fa.periodo_inicio, 
-                            fa.periodo_fim, fa.bimestre, fa.periodo_escolar_id, t.ano_letivo, t.modalidade_codigo, t.turma_id";
+            var query = @$"select * 
+	                            from( 
+		                            select fa.codigo_aluno CodigoAluno, t.turma_id as TurmaId, t.ano_letivo as AnoTurma, 
+		                                    t.modalidade_codigo as ModalidadeTurma, fa.tipo, fa.disciplina_id DisciplinaId, 
+		                                    fa.periodo_inicio PeriodoInicio, fa.periodo_fim PeriodoFim, fa.bimestre, 
+		                                    fa.total_aulas TotalAulas,
+		                                    fa.total_ausencias TotalAusencias, 
+		                                    fa.total_compensacoes TotalCompensacoes,
+		                                    fa.periodo_escolar_id PeriodoEscolarId,
+		                                    row_number() over (partition by fa.bimestre, fa.disciplina_id order by fa.id desc) sequencia
+		                                     from frequencia_aluno fa 
+		                                    inner join turma t on t.turma_id = fa.turma_id
+			                                where fa.codigo_aluno = ANY(@codigosAluno)
+	                                          and fa.tipo = 1
+	                                          and t.ano_letivo = @anoLetivo
+	                                          and t.modalidade_codigo = @modalidade
+	                                          and t.semestre = @semestre
+	                                          and t.turma_id = @turmaCodigo  
+		                            )rf 
+	                            where rf.sequencia = 1;";
 
             var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigo};
 
