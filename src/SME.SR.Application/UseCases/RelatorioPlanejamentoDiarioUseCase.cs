@@ -18,29 +18,19 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
-                await mediator.Send(new SalvarLogViaRabbitCommand("Processo Finalizado!", LogNivel.Informacao, "RelatorioPlanejamentoDiarioUseCase"));
+            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroControlePlanejamentoDiario;
 
-                request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroControlePlanejamentoDiario;
+            var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
 
-                var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
+            var utilizarLayoutNovo = await UtilizarNovoLayout(parametros.AnoLetivo);
 
-                var utilizarLayoutNovo = await UtilizarNovoLayout(parametros.AnoLetivo);
+            var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF, utilizarLayoutNovo) };
+            
+            if (utilizarLayoutNovo)
+                await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
+            else
+                await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
 
-                var relatorioDto = new RelatorioControlePlanejamentoDiarioDto { Filtro = await ObterFiltroRelatorio(parametros, request.UsuarioLogadoRF, utilizarLayoutNovo) };
-
-                if (utilizarLayoutNovo)
-                    await RelatorioComComponenteCurricular(parametros, request, relatorioDto);
-                else
-                    await RelatorioSemComponenteCurricular(parametros, request, relatorioDto);
-
-                await mediator.Send(new SalvarLogViaRabbitCommand("Processo Finalizado!", LogNivel.Informacao, "RelatorioPlanejamentoDiarioUseCase"));
-            }
-            catch (Exception ex)
-            {
-                await mediator.Send(new SalvarLogViaRabbitCommand(ex.ToString(), LogNivel.Critico, "RelatorioPlanejamentoDiarioUseCase"));
-            }
         }
 
         private async Task<bool> UtilizarNovoLayout(int anoLetivo)
