@@ -550,7 +550,7 @@
             var ultimaTurma = turmaOrdenada.LastOrDefault();
             var bimestreOrdenado = ultimaTurma.Bimestres.OrderBy(o => o.Nome);
             var ultimoBimestre = bimestreOrdenado.LastOrDefault();
-            var planejamentoOrdenado = ultimoBimestre.Planejamento.OrderBy(o => o.DataAula);
+            var planejamentoOrdenado = ultimoBimestre.Planejamento.OrderBy(o => DateTime.Parse(o.DataAula));
             var ultimoPlanejamento = planejamentoOrdenado.LastOrDefault();
             var ultimaAula = ultimoPlanejamento.AulaId;
             var ultimoBimestreNome = ultimoBimestre.Nome;
