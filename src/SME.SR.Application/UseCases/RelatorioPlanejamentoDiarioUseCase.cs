@@ -20,6 +20,8 @@ namespace SME.SR.Application
         {
             try
             {
+                await mediator.Send(new SalvarLogViaRabbitCommand("Processo Finalizado!", LogNivel.Informacao, "RelatorioPlanejamentoDiarioUseCase"));
+
                 request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroControlePlanejamentoDiario;
 
                 var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanejamentoDiarioDto>();
