@@ -362,7 +362,10 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryFirstOrDefaultAsync<bool>(query, new { codigoTurma, componenteCurricularId, anoLetivo });
+            var resultado = await conexao
+                .QueryFirstOrDefaultAsync<int>(query, new { codigoTurma, componenteCurricularId, anoLetivo });
+
+            return resultado == 1;
         }
 
         public async Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorTurmas(string[] codigosturma)
