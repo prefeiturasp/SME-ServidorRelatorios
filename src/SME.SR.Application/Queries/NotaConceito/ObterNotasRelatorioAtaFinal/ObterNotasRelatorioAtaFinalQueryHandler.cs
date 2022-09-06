@@ -12,6 +12,7 @@ namespace SME.SR.Application
     public class ObterNotasRelatorioAtaFinalQueryHandler : IRequestHandler<ObterNotasRelatorioAtaFinalQuery, IEnumerable<IGrouping<string, NotasAlunoBimestre>>>
     {
         private INotaConceitoRepository notasConceitoRepository;
+        private const int ANO_LETIVO_TURMAS_ED_FISICA_2020 = 2020;
 
         public ObterNotasRelatorioAtaFinalQueryHandler(INotaConceitoRepository notasConceitoRepository)
         {
@@ -20,12 +21,22 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> Handle(ObterNotasRelatorioAtaFinalQuery request, CancellationToken cancellationToken)
         {
-            var notas = await notasConceitoRepository.ObterNotasTurmasAlunosParaAtaFinalAsync(request.CodigosAlunos, request.CodigoTurma, request.AnoLetivo, request.Modalidade, request.Semestre, request.TiposTurma);
+            int[] modalidadesAtaFinal = VerificaModalidadeRelatorioAtaFinal(request.AnoLetivo, request.TiposTurma, request.Modalidade);
+
+            var notas = await notasConceitoRepository.ObterNotasTurmasAlunosParaAtaFinalAsync(request.CodigosAlunos, request.CodigoTurma, request.AnoLetivo, modalidadesAtaFinal, request.Semestre, request.TiposTurma);
 
             if (notas == null || !notas.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
 
             return notas.GroupBy(nf => nf.CodigoTurma);
+        }
+
+        public int[] VerificaModalidadeRelatorioAtaFinal(int anoLetivo, int[] tiposTurmas, int modalidade)
+        { 
+            if(anoLetivo == ANO_LETIVO_TURMAS_ED_FISICA_2020 && tiposTurmas.Contains((int)TipoTurma.EdFisica) && (modalidade.Equals(Modalidade.EJA) || modalidade.Equals(Modalidade.Medio)))
+                return new int[] { (int)Modalidade.Fundamental, modalidade};
+            
+            return new int[] { modalidade };
         }
     }
 }
