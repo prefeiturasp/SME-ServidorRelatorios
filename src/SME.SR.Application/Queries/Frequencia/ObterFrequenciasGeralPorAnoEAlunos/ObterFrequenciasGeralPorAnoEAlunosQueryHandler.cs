@@ -23,14 +23,17 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<FrequenciaAluno>> Handle(ObterFrequenciasGeralPorAnoEAlunosQuery request, CancellationToken cancellationToken)
         {
-            var frequenciaTurma = await frequenciaRepository.ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(request.AnoLetivo, request.TipoCalendarioId, request.AlunosCodigo);
+            var frequenciaTurma = await frequenciaRepository
+                .ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(request.AnoLetivo, request.TipoCalendarioId, request.AlunosCodigo);
 
-            var totalAulasComComponentes = await registroFrequenciaRepository.ObterTotalAulasPorDisciplinaETurmaEBimestre(new string[] { request.CodigoTurma }, 
-                                                                                                                          new string[] { }, 
-                                                                                                                          request.TipoCalendarioId, 
-                                                                                                                          new int[] { 1, 2, 3, 4 });
+            var totalAulasComComponentes = await registroFrequenciaRepository
+                .ObterTotalAulasPorDisciplinaETurmaEBimestre(new string[] { request.CodigoTurma },
+                                                             new string[] { }, 
+                                                             request.TipoCalendarioId, 
+                                                             new int[] { 1, 2, 3, 4 });
 
-            int quantidadeTotalAulas = totalAulasComComponentes.Sum(t => t.AulasQuantidade);
+            int quantidadeTotalAulas = totalAulasComComponentes
+                .Sum(t => t.AulasQuantidade);
 ;
             if (frequenciaTurma == null || !frequenciaTurma.Any())
                 return Enumerable.Empty<FrequenciaAluno>();
