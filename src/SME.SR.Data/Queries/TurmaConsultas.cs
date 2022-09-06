@@ -228,12 +228,6 @@ namespace SME.SR.Data
 								   INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							 where mte2.cd_turma_escola = @turmaCodigo
 							   and matr2.cd_aluno = matr.cd_aluno)
-						AND NOT EXISTS(
-							SELECT 1 FROM v_matricula_cotic matr3
-						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola = @turmaCodigo) 
-
 					SELECT
 					CodigoAluno,
 					NomeAluno,
