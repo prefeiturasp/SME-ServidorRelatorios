@@ -32,8 +32,8 @@ namespace SME.SR.Application
         }
 
         public int[] VerificaModalidadeRelatorioAtaFinal(int anoLetivo, int[] tiposTurmas, int modalidade)
-        { 
-            if(anoLetivo == ANO_LETIVO_TURMAS_ED_FISICA_2020 && tiposTurmas.Contains((int)TipoTurma.EdFisica) && (modalidade.Equals(Modalidade.EJA) || modalidade.Equals(Modalidade.Medio)))
+        {
+            if (anoLetivo == ANO_LETIVO_TURMAS_ED_FISICA_2020 && tiposTurmas.Contains((int)TipoTurma.EdFisica) && (modalidade == (int)Modalidade.EJA || modalidade == (int)Modalidade.Medio))
                 return new int[] { (int)Modalidade.Fundamental, modalidade};
             
             return new int[] { modalidade };
