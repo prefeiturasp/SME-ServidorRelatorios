@@ -77,22 +77,22 @@ namespace SME.SR.Application
                     var dadosAlunosEscolas = await mediator.Send(new ObterDadosAlunosEscolaQuery(ue.Codigo, filtro.AnoLetivo,
                         alunos.Select(c => c.CodigoAluno.ToString()).ToArray()));
 
-                    var agrupamento = dadosAlunosEscolas.OrderBy(x => x.CodigoAluno)
+                    var agrupamento = dadosAlunosEscolas.Where(x => filtro.CodigosTurmas.ToList().Contains(x.CodigoTurma.ToString())).ToList().OrderBy(x => x.CodigoAluno)
                         .GroupBy(x => new { x.CodigoAluno, x.NomeAluno, x.CodigoTurma });
 
                     foreach (var turma in turmas)
                     {
                         foreach (var mes in meses)
                         {
-                            var dadosSituacaoAluno = DeveImprimirNoRelatorio(agrupamento, int.Parse(mes));
+                            foreach (var item in agrupamento.SelectMany(c => c))
+                            {                                
+                                var alunoDados = dadosAlunosEscolas.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
+                                    .FirstOrDefault(c => c.CodigoAluno == item.CodigoAluno);
 
-                            if (dadosSituacaoAluno.ImprimirRelatorio)
-                            {
-                                foreach (var item in agrupamento.SelectMany(c => c))
+                                var estaAtivo = SituacoesAtiva.Contains(item.CodigoSituacaoMatricula);
+
+                                if (estaAtivo)
                                 {
-                                    var aluno = dadosAlunosEscolas.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
-                                        .FirstOrDefault(c => c.CodigoAluno == item.CodigoAluno);
-
                                     retornoMapeado.Add(new FrequenciaGlobalDto()
                                     {
                                         SiglaDre = dre.Abreviacao,
@@ -102,19 +102,20 @@ namespace SME.SR.Application
                                         Mes = int.Parse(mes),
                                         TurmaCodigo = turma.Codigo,
                                         Turma = string.Concat(turma.ModalidadeCodigo.GetAttribute<DisplayAttribute>().ShortName, " - ", turma.Nome),
-                                        CodigoEOL = aluno.CodigoAluno.ToString(),
-                                        Estudante = string.IsNullOrEmpty(aluno.NomeSocialAluno) ? aluno.NomeAluno : aluno.NomeSocialAluno,
-                                        NumeroChamadda = aluno.NumeroAlunoChamada,
+                                        CodigoEOL = alunoDados.CodigoAluno.ToString(),
+                                        Estudante = string.IsNullOrEmpty(alunoDados.NomeSocialAluno) ? alunoDados.NomeAluno : alunoDados.NomeSocialAluno,
+                                        NumeroChamadda = alunoDados.NumeroAlunoChamada,
                                         PercentualFrequencia = null
                                     });
                                 }
                             }
                         }
+
                     }
                 }
             }
-
-            var retornoOrdenado = retornoMapeado.OrderBy(c => c.SiglaDre)
+            var retornoOrdenado = retornoMapeado
+                .OrderBy(c => c.SiglaDre)
                 .ThenBy(c => c.UeNome)
                 .ThenBy(c => c.Mes)
                 .ThenBy(c => c.Turma)
