@@ -435,6 +435,7 @@ namespace SME.SR.Application
                 };
 
                 bool possuiComponente = true;
+                bool existeFrequenciaRegistradaTurmaAno = false;
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
@@ -461,6 +462,9 @@ namespace SME.SR.Application
                         var codDisciplina = componente.Regencia ? componente.CodDisciplinaPai : componente.CodDisciplina;
 
                         var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, codDisciplina.ToString(), turma.AnoLetivo));
+
+                        if (turmaPossuiFrequenciaRegistrada && !existeFrequenciaRegistradaTurmaAno)
+                            existeFrequenciaRegistradaTurmaAno = true;
 
                         var matriculadoDepois = !aluno.Inativo ? periodosEscolares.FirstOrDefault(p => aluno.DataMatricula > p.PeriodoFim)?.Bimestre : null;
                         var bimestres = periodosEscolares.OrderBy(p => p.Bimestre).Select(a => a.Bimestre).ToList();
@@ -563,7 +567,7 @@ namespace SME.SR.Application
                     }
                 }
 
-                TrataFrequenciaAnual(aluno, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, linhaDto, turma, qtdeDisciplinasLancamFrequencia);
+                TrataFrequenciaAnual(aluno, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, linhaDto, turma, qtdeDisciplinasLancamFrequencia, existeFrequenciaRegistradaTurmaAno);
 
                 linhas.Add(linhaDto);
             }
@@ -571,7 +575,9 @@ namespace SME.SR.Application
             return linhas;
         }
 
-        private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, ConselhoClasseAtaFinalLinhaDto linhaDto, Turma turma, int qtdeDisciplinasLancamFrequencia = 0)
+        private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, 
+            IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, ConselhoClasseAtaFinalLinhaDto linhaDto, 
+            Turma turma, int qtdeDisciplinasLancamFrequencia = 0, bool turmaExisteFrequenciaRegistrada = false)
         {
             var frequenciaGlobalAluno = frequenciaAlunosGeral
                 .FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno.ToString());
@@ -588,7 +594,7 @@ namespace SME.SR.Application
             if (possuiConselhoFinalParaAnual || aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo)
             {
                 string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequencia.ToString() 
-                                                                                 : ObterPercentualFrequenciaFinal(frequenciasAluno);
+                                                                                 : ObterPercentualFrequenciaFinal(frequenciasAluno, turmaExisteFrequenciaRegistrada);
 
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? "0", 1);
                 linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
@@ -611,13 +617,15 @@ namespace SME.SR.Application
             linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
         }
 
-        private string ObterPercentualFrequenciaFinal(IEnumerable<FrequenciaAluno> frequenciasAluno)
+        private string ObterPercentualFrequenciaFinal(IEnumerable<FrequenciaAluno> frequenciasAluno, bool existeFrequenciaRegistradaTurma)
         {
             var totalAulas = frequenciasAluno == null || frequenciasAluno?.Sum(f => f.TotalAulas) == 0 ? 0 : frequenciasAluno.Sum(f => f.TotalAulas);
             var totalFaltasNaoCompensadas = frequenciasAluno == null ? 0 : frequenciasAluno.Sum(f => f.NumeroFaltasNaoCompensadas);
 
-            if (totalAulas == 0)
+            if (totalAulas == 0 && !existeFrequenciaRegistradaTurma)
                 return string.Empty;
+            else if (totalAulas == 0 && existeFrequenciaRegistradaTurma)
+                return FREQUENCIA_100;
 
             var porcentagemFrequenciaFinal = 100 - ((double)totalFaltasNaoCompensadas / totalAulas) * 100;
 
