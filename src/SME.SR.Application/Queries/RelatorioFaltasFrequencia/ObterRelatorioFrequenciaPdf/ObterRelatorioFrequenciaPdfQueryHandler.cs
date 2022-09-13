@@ -124,7 +124,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 }
 
                                 var alunosSemFrequenciaNaTurma = alunos
-                                    .Where(a => a.Ativo || !a.Ativo && a.DataSituacao.Date >= periodoEscolar.PeriodoInicio.Date)
+                                    .Where(a => a.Ativo && a.DataSituacao.Date <= periodoEscolar.PeriodoInicio.Date 
+                                            || !a.Ativo && a.DataSituacao.Date >= periodoEscolar.PeriodoInicio.Date)
                                     .Where(a => turmasccc.Contains(a.TurmaCodigo))
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
 

@@ -9,5 +9,6 @@ namespace SME.SR.Infra
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
         public AtaFinalTipoVisualizacao? Visualizacao { get; set; }
         public int AnoLetivo { get; set; }
+        public int Semestre { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace SME.SR.Application
             var todosComponentes = await componenteCurricularRepository.ListarComponentes();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
-            var componentesDasTurmas = await ObterComponentesPorAlunos(request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
+            var componentesDasTurmas = await ObterComponentesPorAlunos(request.CodigosTurmas, request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
 
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
 
@@ -147,7 +147,7 @@ namespace SME.SR.Application
                     }).ToList();
         }
 
-        private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
+        private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] codigosTurmas, int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
         {
             var componentes = new List<ComponenteCurricular>();
             int alunosPorPagina = 100;
@@ -159,7 +159,7 @@ namespace SME.SR.Application
                 while (cont < alunosCodigos.Length)
                 {
                     var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
-                    var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(alunosPagina.ToArray(), anoLetivo, semestre, consideraHistorico);
+                    var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(codigosTurmas, alunosPagina.ToArray(), anoLetivo, semestre, consideraHistorico);
                     componentes.AddRange(componentesCurriculares.ToList());
                     cont += alunosPagina.Count();
                     i++;
@@ -168,7 +168,7 @@ namespace SME.SR.Application
             }
             else
             {
-                var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(alunosCodigos, anoLetivo, semestre, consideraHistorico);
+                var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(codigosTurmas, alunosCodigos, anoLetivo, semestre, consideraHistorico);
                 return componentesCurriculares.AsEnumerable();
             }                            
         }

@@ -347,19 +347,21 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] codigosTurmas, int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
         {
             var query = !consideraHistorico ?
-                ComponenteCurricularConsultas.BuscarPorAlunos :
-                ComponenteCurricularConsultas.BuscarPorAlunosHistorico;
+            ComponenteCurricularConsultas.BuscarPorAlunos :
+            ComponenteCurricularConsultas.BuscarPorAlunosHistorico;
 
+            query += " and te.cd_turma_escola in @codigosTurmas ";
             query += " order by 2";
 
             var parametros = new
             {
                 alunosCodigos,
                 anoLetivo,
-                semestre
+                semestre,
+                codigosTurmas
             };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
@@ -369,6 +371,16 @@ namespace SME.SR.Data
                 resultado = await conexao.QueryAsync<ComponenteCurricular>(ComponenteCurricularConsultas.BuscarPorAlunosHistorico, parametros);
 
             return resultado;
+        }
+
+        public async Task<long> ObterGrupoMatrizIdPorComponenteCurricularId(long componenteCurricularId)
+        {
+            string sql = "select grupo_matriz_id from componente_curricular where id = @componenteCurricularId";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<long>(sql, new { componenteCurricularId});
+            }
         }
     }
 }

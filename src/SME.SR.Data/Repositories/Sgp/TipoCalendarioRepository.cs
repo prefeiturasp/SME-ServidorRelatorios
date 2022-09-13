@@ -23,16 +23,12 @@ namespace SME.SR.Data
 
             DateTime dataReferencia = DateTime.MinValue;
             if (modalidade == ModalidadeTipoCalendario.EJA)
-            {
                 dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 7, 1);
-            }
 
             var parametros = new { AnoLetivo = anoLetivo, Modalidade = (int)modalidade, DataReferencia = dataReferencia };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
                 return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
-            }
         }
 
         public async Task<TipoCalendarioDto> ObterPorId(long id)
