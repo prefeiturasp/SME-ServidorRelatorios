@@ -713,7 +713,7 @@ namespace SME.SR.Data
 							{(anoLetivo.HasValue ? $"and matr2.an_letivo = @anoLetivo" : string.Empty)}
 						)
 						OR EXISTS(
-							SELECT * FROM v_matricula_cotic matr3
+							SELECT 1 FROM v_matricula_cotic matr3
 								INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 							WHERE mte.cd_matricula = mte3.cd_matricula
 							AND matr3.cd_aluno in (#codigosAlunos) and matr.cd_aluno in (#codigosAlunos))
