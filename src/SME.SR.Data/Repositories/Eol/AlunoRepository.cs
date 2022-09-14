@@ -712,11 +712,11 @@ namespace SME.SR.Data
 							 WHERE matr2.cd_aluno = matr.cd_aluno
 							{(anoLetivo.HasValue ? $"and matr2.an_letivo = @anoLetivo" : string.Empty)}
 						)
-						AND NOT EXISTS(
-							SELECT 1 FROM v_matricula_cotic matr3
-						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND matr3.cd_aluno in (#codigosAlunos))
+						OR EXISTS(
+							SELECT * FROM v_matricula_cotic matr3
+								INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
+							WHERE mte.cd_matricula = mte3.cd_matricula
+							AND matr3.cd_aluno in (#codigosAlunos) and matr.cd_aluno in (#codigosAlunos))
 					SELECT
 					CodigoAluno,
 					NomeAluno,
