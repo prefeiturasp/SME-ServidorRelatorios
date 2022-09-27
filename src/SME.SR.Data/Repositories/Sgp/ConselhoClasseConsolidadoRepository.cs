@@ -83,24 +83,11 @@ namespace SME.SR.Data
 
         }
 
-        public async Task<IEnumerable<NotasAlunoBimestreBoletimSimplesDto>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre, int anoAtual)
+        public async Task<IEnumerable<NotasAlunoBimestreBoletimSimplesDto>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre)
         {
-            var obterNotaPosConselho = new StringBuilder(@"select ccn.nota as NotaPosConselho 
-		                                        from consolidado_conselho_classe_aluno_turma cccat
-		                                        inner join conselho_classe_aluno cca on cca.aluno_codigo = cccat.aluno_codigo 
-		                                        inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id
-		                                        inner join turma t on t.id = cccat.turma_id
-		                                        where cccat.aluno_codigo = Any(@alunosCodigos) and ccn.componente_curricular_codigo = cccatn.componente_curricular_id
-		                                        and t.turma_id = ANY(@turmasCodigos) and extract (year from cca.criado_em) = @anoAtual");
-
-            var query = new StringBuilder(@$"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
+            var query = new StringBuilder(@"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
                                  cccatn.componente_curricular_id CodigoComponenteCurricular,
-                                 coalesce(cccatn.bimestre, 0) as Bimestre, 
-                                 case when (cccatn.nota is not null or cv.valor is not null) then coalesce((cast (cccatn.nota as varchar)),cv.valor)
-                                 else
-                                 ({obterNotaPosConselho})::varchar
-                                 end
-                                 as NotaConceito
+                                 coalesce(cccatn.bimestre, 0) as Bimestre, coalesce((cast (cccatn.nota as varchar)),cv.valor) as NotaConceito
                               from consolidado_conselho_classe_aluno_turma cccat 
                               inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = cccat.id 
                                left join conceito_valores cv on cv.id = cccatn.conceito_id 
@@ -122,7 +109,7 @@ namespace SME.SR.Data
             }
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            var parametros = new { alunosCodigos, turmasCodigos, semestre, anoAtual };
+            var parametros = new { alunosCodigos, turmasCodigos, semestre };
             try
             {
                 return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
