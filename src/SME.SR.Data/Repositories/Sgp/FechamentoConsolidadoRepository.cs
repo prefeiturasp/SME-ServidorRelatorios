@@ -19,12 +19,15 @@ namespace SME.SR.Data.Repositories.Sgp
 
         public async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmas(string[] turmasCodigo)
         {
-            var query = new StringBuilder(@" select f.id, f.dt_atualizacao DataAtualizacao, f.status, f.componente_curricular_id ComponenteCurricularCodigo,
-                                                    f.professor_nome ProfessorNome, f.professor_rf ProfessorRf, t.turma_id TurmaCodigo, f.bimestre
+            var query = new StringBuilder(@" select * from (
+                                            select f.id, f.dt_atualizacao DataAtualizacao, f.status, f.componente_curricular_id ComponenteCurricularCodigo,
+                                                    f.professor_nome ProfessorNome, f.professor_rf ProfessorRf, t.turma_id TurmaCodigo, f.bimestre,
+                                                    row_number() over (partition by f.professor_rf, f.bimestre order by f.dt_atualizacao desc) sequencia
                                                 from consolidado_fechamento_componente_turma f
                                                 inner join turma t on f.turma_id = t.id
                                                where not f.excluido 
-                                                 and t.turma_id = ANY(@turmasCodigo) ");
+                                                 and t.turma_id = ANY(@turmasCodigo) 
+                                            ) x where x.sequencia = 1");
             var parametros = new { turmasCodigo };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
