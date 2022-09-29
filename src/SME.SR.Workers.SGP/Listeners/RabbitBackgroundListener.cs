@@ -156,6 +156,8 @@ namespace SME.SR.Workers.SGP.Services
 
                 await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, ex, LogNivel.Critico);
 
+                NotificarUsuarioRelatorioComErro(filtroRelatorio, "Não foi possível gerar o relatório solicitado. Solicite novamente mais tarde.");
+
                 transacao.CaptureException(ex);
             }
             finally
