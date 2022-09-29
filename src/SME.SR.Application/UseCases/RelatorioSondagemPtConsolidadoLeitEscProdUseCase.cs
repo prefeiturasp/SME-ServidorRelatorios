@@ -283,7 +283,7 @@ namespace SME.SR.Application
 
                 itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
                 itemRetorno.Quantidade = quantidadeRespostas;
-                itemRetorno.Percentual = Math.Round(((decimal)quantidadeRespostas / (decimal)totalRespostas) * 100, 2);
+                itemRetorno.Percentual = Math.Round(((decimal)quantidadeRespostas / (decimal)alunosPorAno) * 100, 2);
                 itemRetorno.Total = alunosPorAno;
                 respostas.Add(itemRetorno);                
             }            
