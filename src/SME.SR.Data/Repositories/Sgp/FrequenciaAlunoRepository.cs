@@ -38,6 +38,37 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<FrequenciaAluno>(query, parametros);
             }
         }
+        
+        public async Task<FrequenciaAluno> ObterPorAlunoTurmasDisciplinasDataAsync(string codigoAluno, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string turmaCodigo, int bimestre)
+        {
+            var query = new StringBuilder(@"select * 
+	                                        from (select fa.*,
+				                                         row_number() over (partition by fa.bimestre, fa.disciplina_id order by fa.id desc) sequencia
+          	                                        from frequencia_aluno fa
+	                                              where not fa.excluido
+                                                    and codigo_aluno = @codigoAluno
+	       	                                        and tipo = @tipoFrequencia
+	                                                and turma_id = @turmaCodigo
+	                                                and disciplina_id = @disciplinaId");
+
+            query.AppendLine(") rf where rf.sequencia = 1");
+
+            if (bimestre > 0)
+                query.AppendLine(" and rf.bimestre = @bimestre");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                var retorno =  await conexao.QueryFirstOrDefaultAsync<FrequenciaAluno>(query.ToString(), new
+                {
+                    codigoAluno,
+                    tipoFrequencia,
+                    disciplinaId,
+                    turmaCodigo,
+                    bimestre,
+                });
+                return retorno;
+            }
+        }
 
         public async Task<double> ObterFrequenciaGlobal(string codigoTurma, string codigoAluno)
         {

@@ -6,7 +6,7 @@
       "launchUrl": "swagger",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:5011/"
+      "applicationUrl": "https://localhost:5011"
     },
     "Docker": {
       "commandName": "Docker",
