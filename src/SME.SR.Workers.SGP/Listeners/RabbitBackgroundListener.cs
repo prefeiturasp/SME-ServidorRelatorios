@@ -144,9 +144,9 @@ namespace SME.SR.Workers.SGP.Services
             {
                 canalRabbit.BasicAck(ea.DeliveryTag, false);
 
-                await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, nex, LogNivel.Negocio);
-
                 NotificarUsuarioRelatorioComErro(filtroRelatorio, nex.Message);
+
+                await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, nex, LogNivel.Negocio);
 
                 transacao.CaptureException(nex);
             }
@@ -154,9 +154,9 @@ namespace SME.SR.Workers.SGP.Services
             {
                 canalRabbit.BasicReject(ea.DeliveryTag, false);
 
-                await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, ex, LogNivel.Critico);
-
                 NotificarUsuarioRelatorioComErro(filtroRelatorio, "Não foi possível gerar o relatório solicitado. Solicite novamente mais tarde.");
+
+                await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, ex, LogNivel.Critico);
 
                 transacao.CaptureException(ex);
             }
