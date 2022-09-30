@@ -271,6 +271,12 @@ namespace SME.SR.Application
                         var notaFrequenciaComponente = notas?.Where(nf =>
                             nf.CodigoComponenteCurricular == componenteCurricular.Codigo);
 
+                        if (!notaFrequenciaComponente.Any())
+                        {
+                            notaFrequenciaComponente = notas?.Where(nf =>
+                                nf.CodigoComponenteCurricular == boletimEscolar.ComponenteCurricularRegencia.Codigo);
+                        }                           
+
                         componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres,
                             ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 1, periodoAtual);
                         componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres,
