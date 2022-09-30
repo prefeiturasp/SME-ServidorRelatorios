@@ -41,7 +41,10 @@ namespace SME.SR.Data
         
         public async Task<FrequenciaAluno> ObterPorAlunoTurmasDisciplinasDataAsync(string codigoAluno, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string turmaCodigo, int bimestre)
         {
-            var query = new StringBuilder(@"select * 
+            var query = new StringBuilder(@"select id,codigo_aluno codigoaluno, tipo, disciplina_id disciplinaid,periodo_inicio periodoinicio, periodo_fim periodofim, 
+                                                   bimestre,total_aulas totalaulas, total_ausencias totalausencias, criado_em criadoem, criado_por criadopor, alterado_em alteradoem, 
+                                                   alterado_por alteradopor, criado_rf criadorf, alterado_rf alteradorf, excluido, migrado, total_compensacoes totalcompensacoes, 
+                                                   turma_id turmaid, periodo_escolar_id periodoescolarid, total_presencas totalpresencas, total_remotos totalremotos 
 	                                        from (select fa.*,
 				                                         row_number() over (partition by fa.bimestre, fa.disciplina_id order by fa.id desc) sequencia
           	                                        from frequencia_aluno fa
