@@ -38,10 +38,10 @@ namespace SME.SR.Application
         {
             var factory = new ConnectionFactory
             {
-                HostName = configuration.GetSection("configuracaoRabbitOptions:HostName").Value,
-                UserName = configuration.GetSection("configuracaoRabbitOptions:UserName").Value,
-                Password = configuration.GetSection("configuracaoRabbitOptions:Password").Value,
-                VirtualHost = configuration.GetSection("configuracaoRabbitOptions:Virtualhost").Value
+                HostName = configuration.GetSection("ConfiguracaoRabbitLog:HostName").Value,
+                UserName = configuration.GetSection("ConfiguracaoRabbitLog:UserName").Value,
+                Password = configuration.GetSection("ConfiguracaoRabbitLog:Password").Value,
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbitLog:Virtualhost").Value
             };
 
             using (var conexaoRabbit = factory.CreateConnection())
