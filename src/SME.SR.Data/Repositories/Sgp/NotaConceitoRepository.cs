@@ -24,7 +24,7 @@ namespace SME.SR.Data
                             select distinct t.turma_id,
 	   			                            fa.aluno_codigo,
 	   			                            ftd.fechamento_turma_id,
-	   			                            ftd.disciplina_id,	   			
+	   			                            fn.disciplina_id,	   			
 	   			                            ftd.id fechamento_turma_disciplina_id,
 	   			                            pe.bimestre,
 	   			                            pe.periodo_inicio,
