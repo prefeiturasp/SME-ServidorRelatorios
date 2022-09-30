@@ -158,7 +158,7 @@ namespace SME.SR.Data
                 semestre
             };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
                                                 NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
