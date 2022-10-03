@@ -258,21 +258,33 @@ namespace SME.SR.Application
                 Convert.ToInt64(filtros.DreCodigo),
                 filtros.Modalidades));
 
+            // obter todas as turmas lançadas sondagem...
+            var turmasComSondagem = linhasSondagem.GroupBy(q => q.TurmaEolCode).Select(q => q.Key).ToArray();
+
+            if (turmasComSondagem.Any())
+                alunosPorAno = await RetornaTotalAlunosSondagem(turmasComSondagem, dataReferencia);
+
+
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
             var respAgrupado = linhasSondagem
                 .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
 
-            var totalRespostas = respAgrupado.Sum(r => r.Value);
+            var totalRespostas = respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
 
             foreach (var item in respAgrupado)
             {
                 RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
+                int quantidadeRespostas = item.Value;
+
+                if (string.IsNullOrWhiteSpace(item.Label))
+                    quantidadeRespostas = alunosPorAno - respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
+
                 itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
-                itemRetorno.Quantidade = item.Value;
-                itemRetorno.Percentual = Math.Round(((decimal)item.Value / (decimal)totalRespostas) * 100, 2);
-                itemRetorno.Total = totalRespostas;
+                itemRetorno.Quantidade = quantidadeRespostas;
+                itemRetorno.Percentual = Math.Round(((decimal)quantidadeRespostas / (decimal)alunosPorAno) * 100, 2);
+                itemRetorno.Total = alunosPorAno;
                 respostas.Add(itemRetorno);                
             }            
 
@@ -293,6 +305,19 @@ namespace SME.SR.Application
                 respostas = OrdenarRespostasEscrita(respostas);
 
             return respostas;
+        }
+
+
+        public async Task<int> RetornaTotalAlunosSondagem(string[] turmasSondagem, DateTime dataReferencia)
+        {
+            int totalAlunos = 0;
+            foreach (var turma in turmasSondagem)
+            {
+                var alunos = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Convert.ToInt64(turma), dataReferencia));
+                totalAlunos += alunos.Count();
+            }
+
+            return totalAlunos;
         }
 
         private List<RelatorioSondagemPortuguesConsolidadoRespostaDto> OrdenarRespostasEscrita(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> listaRespostas)
