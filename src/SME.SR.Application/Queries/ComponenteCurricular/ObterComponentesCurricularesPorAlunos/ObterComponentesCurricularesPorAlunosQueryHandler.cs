@@ -31,6 +31,10 @@ namespace SME.SR.Application
             var codigoAlunos = alunos.Select(x => long.Parse(x.CodigoAluno.ToString())).ToArray();
             var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos, null));
 
+            var alunos = await alunoRepository.ObterPorCodigosTurma(codigosTurmas);
+            var codigoAlunos = alunos.Select(x => long.Parse(x.CodigoAluno.ToString())).ToArray();
+            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos));
+
             var turmasCodigosFiltrado = turmasAlunos
                 .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.TurmaRegularCodigo != null)
                 .Select(y => int.Parse(y.TurmaCodigo))
