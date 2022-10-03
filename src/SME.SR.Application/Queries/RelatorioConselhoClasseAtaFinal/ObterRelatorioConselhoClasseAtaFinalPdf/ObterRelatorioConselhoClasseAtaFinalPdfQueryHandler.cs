@@ -484,6 +484,8 @@ namespace SME.SR.Application
                                                         && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                         && c.Bimestre == bimestre);
 
+                                ConverterNotaAlunoNumerica(notaConceito);
+
                                 linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                         componente.CodDisciplina,
                                                         possuiComponente ? (componente.LancaNota ?
@@ -566,6 +568,23 @@ namespace SME.SR.Application
             }
 
             return linhas;
+        }
+
+        private void ConverterNotaAlunoNumerica(NotaConceitoBimestreComponente notasAluno)
+        {
+
+            if (notasAluno != null)
+                if (notasAluno.Nota >= 7)
+                {
+                    notasAluno.ConceitoId = 1;
+                }
+                else if (notasAluno.Nota >= 5 && notasAluno.Nota <= 7)
+                {
+                    notasAluno.ConceitoId = 2;
+                }
+                else
+                    notasAluno.ConceitoId = 3;
+
         }
 
         private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, 
