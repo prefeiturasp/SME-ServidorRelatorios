@@ -33,11 +33,17 @@ namespace SME.SR.Application
             var alunos = await alunoRepository.ObterPorCodigosTurma(codigosTurmas);
             var codigoAlunos = alunos.Select(x => long.Parse(x.CodigoAluno.ToString())).ToArray();
             var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos));
-            var TurmasCodigosFiltrado = turmasAlunos.Where(x => 
-                                            request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.TurmaRegularCodigo != null)
-                                    .Select(y => int.Parse(y.TurmaCodigo)).Distinct().ToArray();
 
-            var componentesDasTurmas = await ObterComponentesPorAlunos(TurmasCodigosFiltrado, request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
+            var turmasCodigosFiltrado = turmasAlunos
+                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.TurmaRegularCodigo != null)
+                .Select(y => int.Parse(y.TurmaCodigo))
+                .Distinct()
+                .ToArray();
+
+            if (!turmasCodigosFiltrado.Any())
+                turmasCodigosFiltrado = request.CodigosTurmas;
+
+            var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
 
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
 
