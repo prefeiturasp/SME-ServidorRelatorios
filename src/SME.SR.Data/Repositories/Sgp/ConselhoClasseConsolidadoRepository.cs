@@ -108,6 +108,45 @@ namespace SME.SR.Data
                     query.AppendLine(" and t.semestre = @semestre");
             }
 
+            query.AppendLine("and exists (select 1");
+            query.AppendLine("    from conselho_classe cc");
+            query.AppendLine("   		inner join fechamento_turma ft");
+            query.AppendLine("   			on cc.fechamento_turma_id = ft.id");
+            query.AppendLine("   		inner join periodo_escolar pe");
+            query.AppendLine("   			on ft.periodo_escolar_id = pe.id");
+            query.AppendLine("   		inner join fechamento_turma_disciplina ftd");
+            query.AppendLine("   			on ft.id = ftd.fechamento_turma_id");
+            query.AppendLine("   		inner join fechamento_aluno fa");
+            query.AppendLine("   			on ftd.id = fa.fechamento_turma_disciplina_id");
+            query.AppendLine("   		inner join fechamento_nota fn");
+            query.AppendLine("   			on fa.id = fn.fechamento_aluno_id");
+            query.AppendLine(" where ft.turma_id = t.id");
+            query.AppendLine(" 	and pe.bimestre = cccatn.bimestre");
+            query.AppendLine(" 	and fa.aluno_codigo = cccat.aluno_codigo");
+            query.AppendLine(" 	and fn.disciplina_id = cccatn.componente_curricular_id");
+            query.AppendLine("	and not cc.excluido");
+            query.AppendLine("	and not ft.excluido");
+            query.AppendLine("	and not ftd.excluido");
+            query.AppendLine("	and not fa.excluido");
+            query.AppendLine("	and not fn.excluido");
+            query.AppendLine("union");
+            query.AppendLine("select 1");
+            query.AppendLine("	from conselho_classe cc2");
+            query.AppendLine("		inner join fechamento_turma ft2");
+            query.AppendLine("			on cc2.fechamento_turma_id = ft2.id");
+            query.AppendLine("		inner join conselho_classe_aluno cca");
+            query.AppendLine("			on cc2.id = cca.conselho_classe_id");
+            query.AppendLine("		inner join conselho_classe_nota ccn");
+            query.AppendLine("			on cca.id = ccn.conselho_classe_aluno_id");
+            query.AppendLine("		inner join periodo_escolar pe2");
+            query.AppendLine("			on ft2.periodo_escolar_id = pe2.id");
+            query.AppendLine("where ft2.turma_id = t.id");
+            query.AppendLine(" 	and pe2.bimestre = cccatn.bimestre");
+            query.AppendLine(" 	and cca.aluno_codigo = cccat.aluno_codigo");
+            query.AppendLine(" 	and ccn.componente_curricular_codigo = cccatn.componente_curricular_id");
+            query.AppendLine("	and not cca.excluido");
+            query.AppendLine("	and not ccn.excluido);");
+
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var parametros = new { alunosCodigos, turmasCodigos, semestre };
             try
