@@ -59,8 +59,8 @@ namespace SME.SR.Application
                         else
                         {
                             string nomeProfessor = string.Empty;
-                            string[] nomesProfessores = turma.Select(t => t.NomeProfessor).ToArray();
-                            string[] rfProfessores = turma.Select(t => t.RFProfessor).ToArray();
+                            string[] nomesProfessores = turma.Where(t => !string.IsNullOrEmpty(t.RFProfessor)).Select(t => t.NomeProfessor).Distinct().ToArray();
+                            string[] rfProfessores = turma.Where(t => !string.IsNullOrEmpty(t.RFProfessor)).Select(t => t.RFProfessor).Distinct().ToArray();
                             var dadosTurma = turma.FirstOrDefault();
                             var listaProfessores = new List<string>();
 
