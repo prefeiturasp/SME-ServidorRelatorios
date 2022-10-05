@@ -39,14 +39,11 @@ namespace SME.SR.Data
             query.AppendLine("        inner join fechamento_turma ft");
             query.AppendLine("            on t.id = ft.turma_id");
             query.AppendLine("        inner join fechamento_turma_disciplina ftd");
-            query.AppendLine("            on ft.id = ftd.fechamento_turma_id and");
-            query.AppendLine("               not ftd.excluido");
+            query.AppendLine("            on ft.id = ftd.fechamento_turma_id");            
             query.AppendLine("        inner join fechamento_aluno fa");
-            query.AppendLine("            on ftd.id = fa.fechamento_turma_disciplina_id and");
-            query.AppendLine("               not fa.excluido");
+            query.AppendLine("            on ftd.id = fa.fechamento_turma_disciplina_id");            
             query.AppendLine("        left join fechamento_nota fn");
-            query.AppendLine("            on fa.id = fn.fechamento_aluno_id and");
-            query.AppendLine("               not fn.excluido");
+            query.AppendLine("            on fa.id = fn.fechamento_aluno_id");            
             query.AppendLine("        inner join periodo_escolar pe");
             query.AppendLine("            on ft.periodo_escolar_id = pe.id");
             query.AppendLine("        left join conceito_valores cv");
