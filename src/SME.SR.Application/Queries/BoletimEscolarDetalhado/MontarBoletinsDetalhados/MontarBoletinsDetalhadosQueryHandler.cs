@@ -380,7 +380,7 @@ namespace SME.SR.Application
                     ?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)
                     ?.NotaConceito?.NotaConceito;
 
-            if (bimestre > periodoAtual && String.IsNullOrEmpty(nota))
+            if (bimestre > periodoAtual && String.IsNullOrEmpty(nota) && notasComponente.Any(x => x.PeriodoEscolar.PeriodoInicio.Year == DateTime.Now.Year))
                 nota = "-";
 
             return nota;
