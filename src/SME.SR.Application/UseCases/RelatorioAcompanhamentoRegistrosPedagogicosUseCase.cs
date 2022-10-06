@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
             if (relatorioQuery.Modalidade == Modalidade.Infantil)
             {
-                var utilizarNovoLayout = (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(relatorioQuery.AnoLetivo, TipoParametroSistema.Devolutiva)) != null);
+                var utilizarNovoLayout = (await mediator.Send(new ObterParametroSistemaPorTipoAnoQuery(relatorioQuery.AnoLetivo, TipoParametroSistema.ControlePlanejamentoDiarioInfantilComComponente)) != null);
 
                 if (utilizarNovoLayout)
                 {
