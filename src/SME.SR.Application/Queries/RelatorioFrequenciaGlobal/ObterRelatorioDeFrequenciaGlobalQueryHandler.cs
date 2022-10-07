@@ -134,7 +134,7 @@ namespace SME.SR.Application
 
             foreach (var item in retornoQuery)
             {
-                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol);
+                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol && c.FirstOrDefault().CodigoTurma == item.TurmaCodigo );
                 var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes);
 
                 if (dadosSituacaoAluno.ImprimirRelatorio)
