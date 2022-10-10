@@ -68,7 +68,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesPorAlunosTurmas(string[] codigosAluno, string[] codigosTurma, int anoLetivo, Modalidade? modalidade, int semestre)
         {
-            var query = new StringBuilder(@"select distinct t.turma_id TurmaCodigo, cca.aluno_codigo AlunoCodigo,
+            var query = new StringBuilder(@"select cc.id, t.turma_id TurmaCodigo, cca.aluno_codigo AlunoCodigo,
                                  cca.recomendacoes_aluno RecomendacoesAluno, 
                                  cca.recomendacoes_familia RecomendacoesFamilia,
                                  cca.anotacoes_pedagogicas AnotacoesPedagogicas
@@ -102,6 +102,13 @@ namespace SME.SR.Data
                 dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 7, 1);
             }
 
+            query.Append(@" group by (cc.id, t.turma_id, cca.aluno_codigo,
+                                 cca.recomendacoes_aluno,
+                                 cca.recomendacoes_familia,
+                                 cca.anotacoes_pedagogicas,
+                                 cc.alterado_em, cc.criado_em)
+                            order by coalesce(cc.alterado_em, cc.criado_em) desc");
+
             var parametros = new
             {
                 codigosAluno,
@@ -129,7 +136,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma)
+        public async Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma, int id)
         {
             string sql = @"select distinct ccr.recomendacao, ccr.tipo from conselho_classe_aluno_recomendacao ccar
                                  inner join conselho_classe_recomendacao ccr on ccr.id = ccar.conselho_classe_recomendacao_id
@@ -137,11 +144,12 @@ namespace SME.SR.Data
                                  inner join conselho_classe cc on cc.id = cca.conselho_classe_id
                                  inner join fechamento_turma ft on ft.id = cc.fechamento_turma_id
                                  inner join turma t on t.id = ft.turma_id
-                                    where t.turma_id = @codigoTurma and cca.aluno_codigo = @codigoAluno";
+                                    where t.turma_id = @codigoTurma and cca.aluno_codigo = @codigoAluno
+                                    and cc.id = @id";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<RecomendacoesAlunoFamiliaDto>(sql, new { codigoAluno, codigoTurma});
+                return await conexao.QueryAsync<RecomendacoesAlunoFamiliaDto>(sql, new { codigoAluno, codigoTurma, id});
             }
         }
     }

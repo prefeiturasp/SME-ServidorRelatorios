@@ -17,6 +17,6 @@ namespace SME.SR.Data.Interfaces
         Task<bool> PossuiConselhoClasseCadastrado(long conselhoClasseId, string codigoAluno);
         Task<IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto>> ObterAnotacoesPedagogicasPorConselhoClasseAlunoIdsAsync(long[] conselhoClasseAlunoIds);
 
-        Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma);
+        Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma, int id);
     }
 }
