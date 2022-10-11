@@ -13,14 +13,11 @@ namespace SME.SR.Application
     public class ObterComponentesCurricularesPorAlunosQueryHandler : IRequestHandler<ObterComponentesCurricularesPorAlunosQuery, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
-        private readonly ITurmaEolRepository turmaEolRepository;
         private readonly IMediator mediator;
-        private const string PRIMEIRO_ANO = "1";
 
-        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, ITurmaEolRepository turmaEolRepository, IMediator mediator)
+        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
-            this.turmaEolRepository = turmaEolRepository ?? throw new ArgumentNullException(nameof(turmaEolRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
