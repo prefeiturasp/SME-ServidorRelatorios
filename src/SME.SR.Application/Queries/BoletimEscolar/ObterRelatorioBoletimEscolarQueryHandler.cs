@@ -157,14 +157,6 @@ namespace SME.SR.Application
                 throw new NegocioException("As turmas selecionadas não possuem fechamento.");
             }
         }
-        
-        //private async Task<bool> ValidaPossibilidadeMatricula2TurmasRegularesNovoEM(string turmaCodigo)
-        //{
-        //    var dadosTurmaFiltrada = await mediator.Send(new ObterTurmaPorCodigoQuery(turmaCodigo));
-
-        //    if(dadosTurmaFiltrada != null)
-        //        return dadosTurmaFiltrada.ModalidadeCodigo == Modalidade.Medio && (dadosTurmaFiltrada.AnoLetivo < 2021) 
-        //}
 
         private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool trazerAlunosInativos)
         {
