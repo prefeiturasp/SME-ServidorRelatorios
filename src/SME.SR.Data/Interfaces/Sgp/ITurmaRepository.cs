@@ -42,5 +42,6 @@ namespace SME.SR.Data.Interfaces
         Task<Turma> ObterComDreUePorId(long turmaId);
         Task<IEnumerable<Turma>> ObterTurmasPorCodigosSituacaoConsolidado(string[] codigos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres);
         Task<IEnumerable<TurmaItinerarioEnsinoMedioDto>> ObterTurmasItinerarioEnsinoMedio();
+        Task<IEnumerable<Turma>> ObterTurmasComplementaresPorAlunos(string[] alunosCodigos);
     }
 }
