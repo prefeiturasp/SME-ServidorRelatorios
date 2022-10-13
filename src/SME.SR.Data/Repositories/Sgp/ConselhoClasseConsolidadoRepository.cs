@@ -106,10 +106,11 @@ namespace SME.SR.Data
 
                 if (semestre > 0)
                     query.AppendLine(" and t.semestre = @semestre");
-            }
+            }           
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var parametros = new { alunosCodigos, turmasCodigos, semestre };
+
             try
             {
                 return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
