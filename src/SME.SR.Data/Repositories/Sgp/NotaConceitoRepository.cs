@@ -44,7 +44,7 @@ namespace SME.SR.Data
             query.AppendLine("            on ftd.id = fa.fechamento_turma_disciplina_id");            
             query.AppendLine("        left join fechamento_nota fn");
             query.AppendLine("            on fa.id = fn.fechamento_aluno_id");            
-            query.AppendLine("        inner join periodo_escolar pe");
+            query.AppendLine("        left join periodo_escolar pe");
             query.AppendLine("            on ft.periodo_escolar_id = pe.id");
             query.AppendLine("        left join conceito_valores cv");
             query.AppendLine("            on fn.conceito_id = cv.id");
@@ -92,7 +92,7 @@ namespace SME.SR.Data
             query.AppendLine("            on cca.id = ccn.conselho_classe_aluno_id");
             query.AppendLine("        left join conceito_valores cv");
             query.AppendLine("            on ccn.conceito_id = cv.id");
-            query.AppendLine("        inner join periodo_escolar pe");
+            query.AppendLine("        left join periodo_escolar pe");
             query.AppendLine("            on ft.periodo_escolar_id = pe.id");
             query.AppendLine("        left join tmp_lista_fechamento_conselho ftd");
             query.AppendLine("            on ft.id = ftd.fechamento_turma_id and");
