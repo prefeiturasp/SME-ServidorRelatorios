@@ -119,7 +119,7 @@ namespace SME.SR.Data
 	                                          and t.ano_letivo = @anoLetivo
 	                                          and t.modalidade_codigo = @modalidade
 	                                          and t.semestre = @semestre
-	                                          and t.turma_id = @turmaCodigo  
+                                             {(!string.IsNullOrEmpty(turmaCodigo) ? "and t.turma_id = @turmaCodigo" : string.Empty)}	                                            
 		                            )rf 
 	                            where rf.sequencia = 1;";
 

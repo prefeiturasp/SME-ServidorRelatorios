@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosMensagemEscolaAquiQueryHendler : IRequestHandler<ObterDadosMensagemEscolaAquiQuery, BoletimEscolarDetalhadoEscolaAquiDto>
+    public class ObterDadosMensagemEscolaAquiQueryHandler : IRequestHandler<ObterDadosMensagemEscolaAquiQuery, BoletimEscolarDetalhadoEscolaAquiDto>
     {
         private readonly IMediator mediator;
-        public ObterDadosMensagemEscolaAquiQueryHendler(IMediator mediator)
+        public ObterDadosMensagemEscolaAquiQueryHandler(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
