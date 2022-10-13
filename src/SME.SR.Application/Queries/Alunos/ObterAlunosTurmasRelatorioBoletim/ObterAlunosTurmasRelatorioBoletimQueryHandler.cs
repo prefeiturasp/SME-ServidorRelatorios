@@ -27,12 +27,12 @@ namespace SME.SR.Application
             if (request.CodigosAlunos?.Length > 0)
             {
                 alunos = await alunoRepository.ObterPorCodigosAlunoETurma(request.CodigosTurma, request.CodigosAlunos);
-                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos, request.CodigosTurma);
+                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos, request.ConsideraNovoEM, request.CodigosTurma);
             }
             else
             {
                 alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurma);
-                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos, request.CodigosTurma);
+                alunosOrdenadosPorSituacao = ObterAlunosPorUltimaSituacao(alunos, request.ConsideraNovoEM, request.CodigosTurma);
             }
 
             if (!alunosOrdenadosPorSituacao.Any())
@@ -48,7 +48,7 @@ namespace SME.SR.Application
             return resultadoAlunos;
         }
 
-        private IEnumerable<Aluno> ObterAlunosPorUltimaSituacao(IEnumerable<Aluno> listaAlunos, params string[] codigosTurmas)
+        private IEnumerable<Aluno> ObterAlunosPorUltimaSituacao(IEnumerable<Aluno> listaAlunos, bool consideraNovoEM, params string[] codigosTurmas)
         {
             var listaTemporaria = new List<Aluno>();
             var listaAlunosOrdenada = new List<Aluno>();
@@ -56,11 +56,14 @@ namespace SME.SR.Application
             foreach (var item in listaAlunos)
             {
                 listaTemporaria = listaAlunos.Where(x => x.CodigoAluno == item.CodigoAluno && codigosTurmas.ToList().Contains(x.CodigoTurma.ToString())).ToList();
-                listaAlunosOrdenada.AddRange(listaTemporaria.OrderByDescending(x => x.DataSituacao).Take(1));
+
+                var listaTemporariaParaOrdenada = !consideraNovoEM ? listaTemporaria.OrderByDescending(x => x.DataSituacao).Take(1) : listaTemporaria.OrderByDescending(x => x.DataSituacao);
+
+                listaAlunosOrdenada.AddRange(listaTemporariaParaOrdenada);
                 listaTemporaria.Clear();
             }
 
-            return listaAlunosOrdenada.DistinctBy(x => x.CodigoAluno);
+            return !consideraNovoEM ? listaAlunosOrdenada.DistinctBy(x => x.CodigoAluno) : listaAlunosOrdenada;
         }
     }
 }
