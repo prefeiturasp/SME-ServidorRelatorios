@@ -30,17 +30,26 @@ namespace SME.SR.Application
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var ciclos = await ObterCiclosPorAnoModalidade(request.Modalidade);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
-            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
 
             var mediasFrequencia = await ObterMediasFrequencia();
 
-            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo, request.ConsideraInativo);
+            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, false);
 
             var alunosAPesquisarTurmas = request.AlunosCodigo.Any() ? request.AlunosCodigo : alunosPorTurma.Select(a => a.Key);
-            var turmasComplementaresEM = await RetornaPossibilidadeMatricula2TurmasRegularesNovoEM(Convert.ToInt32(request.TurmaCodigo), request.AlunosCodigo);
 
-            if (request.Modalidade == Modalidade.Medio)
-                turmas = turmasComplementaresEM.Any() ? turmasComplementaresEM : turmas;
+            if (!string.IsNullOrEmpty(request.TurmaCodigo))
+            {
+                var turmasComplementaresEM = await RetornaPossibilidadeMatricula2TurmasRegularesNovoEM(Convert.ToInt32(request.TurmaCodigo), alunosAPesquisarTurmas.ToArray());
+
+                if (request.Modalidade == Modalidade.Medio && turmasComplementaresEM.Any())
+                {
+                    turmas = turmasComplementaresEM;
+                    alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, true);
+                    alunosPorTurma = alunosPorTurma.OrderBy(a => a.Key);
+                }
+            }
+
+            string[] codigosTurma = turmas.Select(t => t.Codigo).ToArray();
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => int.Parse(t.Codigo)).ToArray(), alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
@@ -163,13 +172,14 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool consideraInativo)
+        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool consideraInativo, bool consideraNovoEM)
         {
             return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
             {
                 CodigosAlunos = alunosCodigo,
                 CodigosTurma = turmasCodigo,
-                TrazerAlunosInativos = consideraInativo
+                TrazerAlunosInativos = consideraInativo,
+                ConsideraNovoEM = consideraNovoEM
             });
         }
 

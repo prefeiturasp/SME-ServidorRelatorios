@@ -32,7 +32,7 @@ namespace SME.SR.Application
                 while (cont < alunosCodigos.Length)
                 {
                     var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
-                    var notasAlunosPagina = await notasConceitoRepository.ObterNotasTurmasAlunos(alunosPagina.ToArray(), arrTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+                    var notasAlunosPagina = await notasConceitoRepository.ObterNotasTurmasAlunos(alunosPagina.ToArray(), request.CodigosTurmas, request.AnoLetivo, request.Modalidade, request.Semestre);
                     notasRetorno.AddRange(notasAlunosPagina.ToList());
                     cont += alunosPagina.Count();
                     i++;
