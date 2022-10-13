@@ -31,6 +31,20 @@ namespace SME.SR.Application
 
             if (recomendacoes == null || string.IsNullOrEmpty(recomendacoes.RecomendacoesAluno) || string.IsNullOrEmpty(recomendacoes.RecomendacoesFamilia))
             {
+                var recomendacoesAlunoFamilia = await conselhoClasseAlunoRepository.ObterRecomendacoesAlunoFamiliaPorAlunoEFechamentoTurma(request.FechamentoTurmaId, request.CodigoAluno);
+                if (recomendacoesAlunoFamilia != null && recomendacoesAlunoFamilia.Any())
+                {
+                    var recomendacaoAluno = string.IsNullOrEmpty(recomendacoes?.RecomendacoesAluno ?? "") ? MontaTextUlLis(recomendacoesAlunoFamilia.Where(r => r.Tipo == (int)ConselhoClasseRecomendacaoTipo.Aluno).Select(recomendacao => recomendacao.Recomendacao)) : recomendacoes?.RecomendacoesAluno;
+                    var recomendacaoFamilia = string.IsNullOrEmpty(recomendacoes?.RecomendacoesFamilia ?? "") ? MontaTextUlLis(recomendacoesAlunoFamilia.Where(r => r.Tipo == (int)ConselhoClasseRecomendacaoTipo.Familia).Select(recomendacao => recomendacao.Recomendacao)): recomendacoes?.RecomendacoesFamilia;
+
+                    return new RecomendacaoConselhoClasseAluno
+                    {
+                        RecomendacoesAluno = recomendacaoAluno,
+                        RecomendacoesFamilia = recomendacaoFamilia,
+                        AnotacoesPedagogicas = recomendacoes?.AnotacoesPedagogicas ?? ""
+                    };
+                } 
+
                 var recomendacoesGeral = await conselhoClasseRecomendacaoRepository.ObterTodos();
 
                 return new RecomendacaoConselhoClasseAluno
@@ -38,6 +52,7 @@ namespace SME.SR.Application
                     RecomendacoesAluno = recomendacoes?.RecomendacoesAluno ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Aluno).Select(b => b.Recomendacao)),
                     RecomendacoesFamilia = recomendacoes?.RecomendacoesFamilia ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Familia).Select(b => b.Recomendacao)),
                 };
+
             }
 
             FormatarRecomendacoes(recomendacoes);
