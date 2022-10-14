@@ -135,7 +135,7 @@ namespace SME.SR.Data
             var parametros = new { CodigoTurma = codigoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            
+
             return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
         }
 
@@ -1045,7 +1045,7 @@ namespace SME.SR.Data
         {
             var query = @"select t.turma_id Codigo, t.nome
 			                    , t.modalidade_codigo  ModalidadeCodigo, t.semestre
-                                , t.ano, t.ano_letivo AnoLetivo
+                                , t.ano, t.ano_letivo AnoLetivo, t.tipo_turma TipoTurma
 			                from turma t
 			                where t.turma_id = @turmaCodigo";
 
@@ -1267,6 +1267,16 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
+        }
+
+        public async Task<IEnumerable<TurmaItinerarioEnsinoMedioDto>> ObterTurmasItinerarioEnsinoMedio()
+        {
+            var query = @"select id, nome, serie from turma_tipo_itinerario tti";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
+            {
+                return await conexao.QueryAsync<TurmaItinerarioEnsinoMedioDto>(query);
+            }
         }
     }
 }

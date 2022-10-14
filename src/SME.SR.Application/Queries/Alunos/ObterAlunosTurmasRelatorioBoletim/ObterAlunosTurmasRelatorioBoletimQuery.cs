@@ -11,5 +11,6 @@ namespace SME.SR.Application
 
         public string[] CodigosAlunos { get; set; }
         public bool TrazerAlunosInativos { get; set; }
+        public bool ConsideraNovoEM { get; set; }
     }
 }

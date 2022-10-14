@@ -7,5 +7,6 @@
         public string RecomendacoesAluno { get; set; }
         public string RecomendacoesFamilia { get; set; }
         public string AnotacoesPedagogicas { get; set; }
+        public int Id { get; set; }
     }
 }

@@ -151,7 +151,7 @@ namespace SME.SR.Application
         {
             var componentes = new List<ComponenteCurricular>();
             int alunosPorPagina = 100;
-                       
+
             if (alunosCodigos.Length > alunosPorPagina)
             {
                 int cont = 0;
@@ -172,5 +172,7 @@ namespace SME.SR.Application
                 return componentesCurriculares.AsEnumerable();
             }                            
         }
+
+        
     }
 }
