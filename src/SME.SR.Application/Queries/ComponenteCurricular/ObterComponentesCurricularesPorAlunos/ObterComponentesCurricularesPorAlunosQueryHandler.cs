@@ -14,11 +14,13 @@ namespace SME.SR.Application
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
+        private readonly IAlunoRepository alunoRepository;
 
-        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator)
+        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator, IAlunoRepository alunoRepository)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
         }
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesPorAlunosQuery request, CancellationToken cancellationToken)
@@ -37,6 +39,8 @@ namespace SME.SR.Application
 
             if (!turmasCodigosFiltrado.Any())
                 turmasCodigosFiltrado = request.CodigosTurmas;
+
+            var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
 
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
 
