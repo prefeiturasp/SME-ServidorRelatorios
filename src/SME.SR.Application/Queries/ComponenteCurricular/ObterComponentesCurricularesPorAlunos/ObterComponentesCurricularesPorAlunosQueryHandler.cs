@@ -25,8 +25,18 @@ namespace SME.SR.Application
         {
             var todosComponentes = await componenteCurricularRepository.ListarComponentes();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+            var alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurmas.Select(ct => ct.ToString()));
+            var codigoAlunos = alunos.Select(x => long.Parse(x.CodigoAluno.ToString())).ToArray();
+            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos, null));
 
-            var componentesDasTurmas = await ObterComponentesPorAlunos(request.CodigosTurmas, request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
+            var turmasCodigosFiltrado = turmasAlunos
+                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.TurmaRegularCodigo != null)
+                .Select(y => int.Parse(y.TurmaCodigo))
+                .Distinct()
+                .ToArray();
+
+            if (!turmasCodigosFiltrado.Any())
+                turmasCodigosFiltrado = request.CodigosTurmas;
 
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
 
