@@ -70,7 +70,6 @@ namespace SME.SR.Application
             if (dadosTurma.AnoLetivo >= 2021 && dadosTurma.Ano != PRIMEIRO_ANO)
             {
                 var tiposTurmasParaConsulta = new List<int> { (int)dadosTurma.TipoTurma };
-                tiposTurmasParaConsulta.AddRange(dadosTurma.ObterTiposRegularesDiferentes());
                 tiposTurmasParaConsulta.AddRange(turmasItinerarioEnsinoMedio.Select(t => t.Id));
 
                 var turmasEol = await mediator.Send(new ObterTurmaCodigosAlunoPorAnoLetivoAlunoTipoTurmaQuery(dadosTurma.AnoLetivo, alunosCodigos,

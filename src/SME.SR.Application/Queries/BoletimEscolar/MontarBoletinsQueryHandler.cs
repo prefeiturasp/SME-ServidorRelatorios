@@ -57,8 +57,8 @@ namespace SME.SR.Application
                         {
                             var boletimAluno = new RelatorioBoletimSimplesEscolarDto();
 
-                            if (componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key) == null)
-                                throw new NegocioException($"Aluno: {aluno.Key} não possui componente curricular para gerar o boletim.");
+                            if (!componentesCurriculares.Any(c => c.Key == aluno.Key))
+                                continue;
 
                             var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
 

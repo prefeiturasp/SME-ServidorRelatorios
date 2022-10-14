@@ -73,12 +73,15 @@ namespace SME.SR.Application
                             TipoNota = tipoNota
                         };
 
-                        var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
+                        var componentesAluno = componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key);
                         foreach (var turmaAluno in aluno)
-                        {
-                            await MapearGruposEComponentes(
+                        {                       
+                            if (componentesAluno != null && componentesAluno.Any())
+                            {
+                                await MapearGruposEComponentes(
                                 componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()),
                                 boletimEscolarAlunoDto);
+                            }                            
                         }
 
                         var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
