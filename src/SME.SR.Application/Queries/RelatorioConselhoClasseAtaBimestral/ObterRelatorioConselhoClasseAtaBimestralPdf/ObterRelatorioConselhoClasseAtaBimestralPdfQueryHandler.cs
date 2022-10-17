@@ -418,7 +418,8 @@ namespace SME.SR.Application
                     var componentes = ObterComponentesCurriculares(grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).ToList());
                     var componentesTurmas = ObterComponentesCurriculares(grupoMatriz.ToList());
 
-                    componentesCurricularesTotal += componentesTurmas.Where(c => c.LancaNota).Select(a => a.CodDisciplina).Distinct().Count();
+                    // Desconsiderar o componente 1106 - LINGUA INGLESA COMPARTILHADA para o total de componentes que possuem conselho.
+                    componentesCurricularesTotal += componentesTurmas.Where(c => c.LancaNota && c.CodDisciplina != 1106).Select(a => a.CodDisciplina).Distinct().Count();
 
                     foreach (var componente in componentes.OrderBy(c => c.Disciplina))
                     {
