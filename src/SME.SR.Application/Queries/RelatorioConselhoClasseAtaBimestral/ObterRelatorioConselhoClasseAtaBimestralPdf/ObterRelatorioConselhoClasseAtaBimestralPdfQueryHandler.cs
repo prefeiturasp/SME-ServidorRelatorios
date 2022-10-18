@@ -378,8 +378,7 @@ namespace SME.SR.Application
 
         private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
-            .Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0
-                    && (a.Inativo && a.DataMatricula > periodoEscolar.PeriodoFim))
+            .Where(a => a.Inativo && a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim)
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
@@ -387,7 +386,7 @@ namespace SME.SR.Application
             => alunos
             .Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0
                     && (((a.Inativo) && (a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim))
-                        || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoInicio)))
+                        || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim)))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
