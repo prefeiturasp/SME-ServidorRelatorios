@@ -31,7 +31,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             html = html.Replace("logo.png", SmeConstants.LogoSme);
 
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            string nomeArquivo;
+            string nomeArquivo = string.Empty;
 
             if (request.RelatorioSincrono)
                 nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());

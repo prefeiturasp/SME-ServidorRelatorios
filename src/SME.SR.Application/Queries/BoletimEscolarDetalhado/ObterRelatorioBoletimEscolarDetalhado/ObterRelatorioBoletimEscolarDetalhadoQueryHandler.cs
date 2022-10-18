@@ -29,12 +29,10 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var ciclos = await ObterCiclosPorAnoModalidade(request.Modalidade);
-            var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
-
+            var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);           
             var mediasFrequencia = await ObterMediasFrequencia();
 
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, false);
-
             var alunosAPesquisarTurmas = request.AlunosCodigo.Any() ? request.AlunosCodigo : alunosPorTurma.Select(a => a.Key);
 
             if (!string.IsNullOrEmpty(request.TurmaCodigo))
