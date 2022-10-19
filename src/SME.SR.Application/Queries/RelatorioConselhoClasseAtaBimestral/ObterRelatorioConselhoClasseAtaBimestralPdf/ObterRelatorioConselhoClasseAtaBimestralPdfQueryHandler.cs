@@ -130,7 +130,8 @@ namespace SME.SR.Application
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
                     Sintese = nf.NotaConceito.Sintese,
-                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId
+                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
+                    NotaId = nf.NotaConceito.NotaId
                 }));
             }
 
@@ -490,7 +491,7 @@ namespace SME.SR.Application
                                 && componente.LancaNota) && possuiFrequencia && componente.Frequencia ? "100" : "", ++coluna);
                         }
 
-                        var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                        var notaConceito = notasFinais.OrderByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                 && c.Bimestre == bimestre);
 
