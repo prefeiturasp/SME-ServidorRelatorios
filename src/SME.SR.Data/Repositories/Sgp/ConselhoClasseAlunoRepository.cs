@@ -1,10 +1,14 @@
 ﻿using Dapper;
+using Elastic.Apm.Api;
+using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,14 +59,41 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<RecomendacaoConselhoClasseAluno> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno)
+        public async Task<RecomendacoesConselhoClasse> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno)
         {
             var query = ConselhoClasseAlunoConsultas.Recomendacoes;
             var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryFirstOrDefaultAsync<RecomendacaoConselhoClasseAluno>(query, parametros);
+                var lookup = new Dictionary<long, RecomendacoesConselhoClasse>();
+
+                await conexao.QueryAsync<RecomendacoesConselhoClasse, ConselhoClasseRecomendacao, Dictionary< long, RecomendacoesConselhoClasse > >
+                                            (query.ToString(), (conselhoClasse, ccRecomendacao) =>
+                                            {
+
+                                                RecomendacoesConselhoClasse recomendacoesConselhoClasse;
+
+                                                if (!lookup.TryGetValue(conselhoClasse.ConselhoClasseAlunoId, out recomendacoesConselhoClasse))
+                                                {
+                                                    recomendacoesConselhoClasse = conselhoClasse;
+                                                    lookup.Add(conselhoClasse.ConselhoClasseAlunoId, recomendacoesConselhoClasse);
+                                                }
+
+                                                if (ccRecomendacao != null)
+                                                {
+                                                    if (ccRecomendacao.Tipo == ConselhoClasseRecomendacaoTipo.Familia)
+                                                        recomendacoesConselhoClasse.RecomendacoesPreDefinidasFamilia.Add(ccRecomendacao);
+                                                    else
+                                                    if (ccRecomendacao.Tipo == ConselhoClasseRecomendacaoTipo.Aluno)
+                                                        recomendacoesConselhoClasse.RecomendacoesPreDefinidasAluno.Add(ccRecomendacao);
+                                                }
+
+                                                return lookup;
+                                            }, parametros);
+
+                return lookup.Values.FirstOrDefault();
+
             }
         }
 
@@ -133,22 +164,6 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QuerySingleOrDefaultAsync<bool>(query, parametros);
-            }
-        }
-
-
-        public async Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoEFechamentoTurma(long fechamentoTurmaId, string codigoAluno)
-        {
-            string sql = @"select distinct ccr.recomendacao, ccr.tipo from conselho_classe_aluno_recomendacao ccar
-                                 inner join conselho_classe_recomendacao ccr on ccr.id = ccar.conselho_classe_recomendacao_id
-                                 inner join conselho_classe_aluno cca on cca.id = ccar.conselho_classe_aluno_id
-                                 inner join conselho_classe cc on cc.id = cca.conselho_classe_id
-                                    where cca.aluno_codigo = @codigoAluno
-                                    and cc.fechamento_turma_id = @fechamentoTurmaId";
-
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
-                return await conexao.QueryAsync<RecomendacoesAlunoFamiliaDto>(sql, new { codigoAluno, fechamentoTurmaId });
             }
         }
 
