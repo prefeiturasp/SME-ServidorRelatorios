@@ -17,7 +17,7 @@ namespace SME.SR.Data
 
             if (modalidade == ModalidadeTipoCalendario.EJA)
             {
-                var periodoReferencia = $"periodo_inicio {(semestre == 1 ? "<" : ">")} @dataReferencia";
+                var periodoReferencia = $"periodo_inicio {(semestre == 1 ? "<" : ">=")} @dataReferencia";
                 query.AppendLine($"and exists(select 0 from periodo_escolar p where tipo_calendario_id = t.id and {periodoReferencia})");
                 if (semestre == 2)
                     query.AppendLine("order by id desc");
