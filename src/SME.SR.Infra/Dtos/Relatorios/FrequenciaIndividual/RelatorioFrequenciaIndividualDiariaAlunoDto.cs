@@ -5,9 +5,6 @@ namespace SME.SR.Infra
     public class RelatorioFrequenciaIndividualDiariaAlunoDto
     {
         public long? Id { get; set; }
-
-
-
         public DateTime DataAula { get; set; }
         public long QuantidadeAulas { get; set; }
         public int QuantidadePresenca { get; set; }
