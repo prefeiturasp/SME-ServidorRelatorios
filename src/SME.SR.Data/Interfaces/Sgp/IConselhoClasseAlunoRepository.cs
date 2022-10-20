@@ -11,7 +11,7 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<ConselhoClasseParecerConclusivo>> ObterParecerConclusivoPorTurma(string turmaCodigo);
 
-        Task<RecomendacaoConselhoClasseAluno> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno);
+        Task<RecomendacoesConselhoClasse> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno);
 
         Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesPorAlunosTurmas(string[] codigosAluno, string[] codigosTurma, int anoLetivo, Modalidade? modalidade, int semestre);
 
@@ -19,6 +19,5 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto>> ObterAnotacoesPedagogicasPorConselhoClasseAlunoIdsAsync(long[] conselhoClasseAlunoIds);
 
         Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma, int id);
-        Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoEFechamentoTurma(long fechamentoTurmaId, string codigoAluno);
     }
 }
