@@ -9,7 +9,7 @@ namespace SME.SR.Infra
             Detalhes = new List<string>();
         }
 
-        public long PendenciaId { get; set; }
+        public string PendenciaId { get; set; }
         public string Titulo { get; set; }
         public string Descricao { get; set; }
         public IList<string> Detalhes { get; set; }
