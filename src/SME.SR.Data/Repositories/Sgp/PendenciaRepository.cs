@@ -98,7 +98,7 @@ namespace SME.SR.Data
             }
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            var pendencias = new Dictionary<long, RelatorioPendenciasQueryRetornoDto>();
+            var pendencias = new Dictionary<string, RelatorioPendenciasQueryRetornoDto>();
 
             await conexao.QueryAsync<RelatorioPendenciasQueryRetornoDto, string, RelatorioPendenciasQueryRetornoDto>(query.ToString()
                     , (dto, detalhe) =>
@@ -464,7 +464,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
-                query.AppendLine($" and ftd.disciplina_id = any(@componentesCodigo)");
+                query.AppendLine($" and pp.componente_curricular_id = any(@componentesCodigo)");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");
@@ -543,7 +543,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
-                query.AppendLine($" and ftd.disciplina_id = any(@componentesCodigo)");
+                query.AppendLine($" and pp.componente_curricular_id = any(@componentesCodigo)");
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre");

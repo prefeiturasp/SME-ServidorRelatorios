@@ -39,6 +39,20 @@ namespace SME.SR.Application
                  !ContemRecomendacoesFamilia(recomendacoes))
                )
             {
+                var recomendacoesAlunoFamilia = await conselhoClasseAlunoRepository.ObterRecomendacoesAlunoFamiliaPorAlunoEFechamentoTurma(request.FechamentoTurmaId, request.CodigoAluno);
+                if (recomendacoesAlunoFamilia != null && recomendacoesAlunoFamilia.Any())
+                {
+                    var recomendacaoAluno = string.IsNullOrEmpty(recomendacoes?.RecomendacoesAluno ?? "") ? MontaTextUlLis(recomendacoesAlunoFamilia.Where(r => r.Tipo == (int)ConselhoClasseRecomendacaoTipo.Aluno).Select(recomendacao => recomendacao.Recomendacao)) : recomendacoes?.RecomendacoesAluno;
+                    var recomendacaoFamilia = string.IsNullOrEmpty(recomendacoes?.RecomendacoesFamilia ?? "") ? MontaTextUlLis(recomendacoesAlunoFamilia.Where(r => r.Tipo == (int)ConselhoClasseRecomendacaoTipo.Familia).Select(recomendacao => recomendacao.Recomendacao)): recomendacoes?.RecomendacoesFamilia;
+
+                    return new RecomendacaoConselhoClasseAluno
+                    {
+                        RecomendacoesAluno = recomendacaoAluno,
+                        RecomendacoesFamilia = recomendacaoFamilia,
+                        AnotacoesPedagogicas = recomendacoes?.AnotacoesPedagogicas ?? ""
+                    };
+                } 
+
                 var recomendacoesGeral = await conselhoClasseRecomendacaoRepository.ObterTodos();
 
                 return new RecomendacaoConselhoClasseAluno

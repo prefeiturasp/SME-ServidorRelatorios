@@ -85,6 +85,7 @@ namespace SME.SR.Infra
                 Largura = 86,
                 Titulo = "NOME",
                 Nome = "NomeAluno",
+                NomeClasse = "alinhar-esquerda",
                 UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
             });
             lista.Add(new Coluna<FrequenciaMensalDto>()
