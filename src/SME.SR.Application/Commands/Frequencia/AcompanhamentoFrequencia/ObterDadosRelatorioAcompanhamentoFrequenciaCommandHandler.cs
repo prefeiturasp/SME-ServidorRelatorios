@@ -16,6 +16,7 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IAlunoRepository alunoRepository;
+        private IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto> frequenciasDiarias = null;
         public ObterDadosRelatorioAcompanhamentoFrequenciaCommandHandler(IMediator mediator, IAlunoRepository alunoRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -58,9 +59,13 @@ namespace SME.SR.Application
 
             if (alunosSelecionados != null && alunosSelecionados.Any())
             {
-                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId));
-                               
+                var codigosAlunos = alunosSelecionados.Select(s => s.Codigo).ToArray();
+                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId));           
                 var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
+  
+                if (request.FiltroRelatorio.ImprimirFrequenciaDiaria)
+                    frequenciasDiarias = await mediator.Send(new ObterFrequenciaAlunoDiariaQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.ComponenteCurricularId));
+
                 await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia, turma, periodosEscolares, aulasDadas, int.Parse(request.FiltroRelatorio.Bimestre));
             }
             return relatorio;
@@ -90,6 +95,11 @@ namespace SME.SR.Application
                             TotalPercentualFrequencia = Math.Round(item.TotalPercentualFrequencia, 0).ToString(),
                             TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
                         };
+
+                        if (frequenciasDiarias != null)
+                            bimestre.FrequenciasDiarias = frequenciasDiarias.ToList().FindAll(diaria => 
+                                                                                    diaria.Bimestre == item.Bimestre && 
+                                                                                    diaria.AlunoCodigo == item.CodigoAluno);
 
                         if (ausenciaBimestreDto != null && ausenciaBimestreDto.Any())
                         {
