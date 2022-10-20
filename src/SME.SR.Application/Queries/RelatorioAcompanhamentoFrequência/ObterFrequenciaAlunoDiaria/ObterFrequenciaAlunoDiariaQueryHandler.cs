@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +21,11 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> Handle(ObterFrequenciaAlunoDiariaQuery request, CancellationToken cancellationToken)
         {
-            return await frequenciaAlunoRepository.ObterFrequenciaAlunosDiario(request.CodigosAlunos, request.Bimestre, request.TurmaCodigo, request.ComponenteCurricularId);
+            var frenquenciasDiarias = await frequenciaAlunoRepository.ObterFrequenciaAlunosDiario(request.CodigosAlunos, request.Bimestre, request.TurmaCodigo, request.ComponenteCurricularId);
+
+            frenquenciasDiarias.ToList().ForEach(diaria => diaria.Motivo = UtilHtml.FormatarHtmlParaTexto(diaria.Motivo));
+
+            return frenquenciasDiarias;
         }
     }
 }

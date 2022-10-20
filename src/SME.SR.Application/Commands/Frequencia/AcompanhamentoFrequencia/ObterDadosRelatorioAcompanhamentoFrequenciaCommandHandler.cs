@@ -17,6 +17,7 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
         private readonly IAlunoRepository alunoRepository;
         private IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto> frequenciasDiarias = null;
+        private IEnumerable<AusenciaBimestreDto> dadosAusencia = null;
         public ObterDadosRelatorioAcompanhamentoFrequenciaCommandHandler(IMediator mediator, IAlunoRepository alunoRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -60,18 +61,19 @@ namespace SME.SR.Application
             if (alunosSelecionados != null && alunosSelecionados.Any())
             {
                 var codigosAlunos = alunosSelecionados.Select(s => s.Codigo).ToArray();
-                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId));           
-                var dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
-  
+                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId));
+
                 if (request.FiltroRelatorio.ImprimirFrequenciaDiaria)
                     frequenciasDiarias = await mediator.Send(new ObterFrequenciaAlunoDiariaQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.ComponenteCurricularId));
+                else
+                    dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
 
-                await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, dadosAusencia, turma, periodosEscolares, aulasDadas, int.Parse(request.FiltroRelatorio.Bimestre));
+                await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, turma, periodosEscolares, aulasDadas, int.Parse(request.FiltroRelatorio.Bimestre));
             }
             return relatorio;
         }
 
-        private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, RelatorioFrequenciaIndividualAlunosDto aluno)
+        private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, RelatorioFrequenciaIndividualAlunosDto aluno)
         {
             if (dadosFrequenciaDto != null && dadosFrequenciaDto.Any())
             {
@@ -97,13 +99,15 @@ namespace SME.SR.Application
                         };
 
                         if (frequenciasDiarias != null)
-                            bimestre.FrequenciasDiarias = frequenciasDiarias.ToList().FindAll(diaria => 
-                                                                                    diaria.Bimestre == item.Bimestre && 
-                                                                                    diaria.AlunoCodigo == item.CodigoAluno);
-
-                        if (ausenciaBimestreDto != null && ausenciaBimestreDto.Any())
                         {
-                            foreach (var ausencia in ausenciaBimestreDto)
+                            bimestre.FrequenciasDiarias = frequenciasDiarias.ToList().FindAll(diaria =>
+                                                        diaria.Bimestre == item.Bimestre &&
+                                                        diaria.AlunoCodigo == item.CodigoAluno);
+                        }
+
+                        if (dadosAusencia != null && dadosAusencia.Any())
+                        {
+                            foreach (var ausencia in dadosAusencia)
                             {
                                 if (item.CodigoAluno == ausencia.CodigoAluno && item.Bimestre == ausencia.Bimestre)
                                 {
@@ -147,7 +151,7 @@ namespace SME.SR.Application
         private async Task<string> ObterNomeComponente(string componenteCodigo)
             => await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(Convert.ToInt64(componenteCodigo)));        
 
-        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, IEnumerable<AusenciaBimestreDto> ausenciaBimestreDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares, int aulasDadas, int bimestre)
+        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares, int aulasDadas, int bimestre)
         {
             foreach (var aluno in alunos.OrderBy(x => x.Nome))
             {
@@ -175,7 +179,7 @@ namespace SME.SR.Application
                 {
                     if (relatorio != null)
                     {
-                        MapearBimestre(dadosFrequenciaDto, ausenciaBimestreDto, relatorioFrequenciaIndividualAlunosDto);
+                        MapearBimestre(dadosFrequenciaDto, relatorioFrequenciaIndividualAlunosDto);
                     }
                     relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
                 }
