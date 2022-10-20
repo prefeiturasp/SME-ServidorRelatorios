@@ -40,11 +40,7 @@ namespace SME.SR.Data.Repositories.Sgp
             if (anoTurma <= 3)
                 sql += "and pae.\"Grupo\" = @grupoNumero";
 
-            if (UtilizarPerguntaAnoEscolarBimestre(anoTurma, bimestre))
-                sql += $@" AND paeb.""Bimestre"" = @bimestre";
-            else
-                sql += $@" AND paeb.""Id"" is null";
-
+            sql += $@" and (paeb.""Id"" is null or paeb.""Bimestre"" = @bimestre)";
             sql += " order by pae.\"Ordenacao\"";
 
             var parametros = new { anoLetivo, anoTurma, bimestre, grupoNumero = (int)ProficienciaSondagemEnum.Numeros };
