@@ -131,7 +131,8 @@ namespace SME.SR.Application
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
                     Sintese = nf.NotaConceito.Sintese,
-                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId
+                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
+                    NotaId = nf.NotaConceito.NotaId
                 }));
             }
 
@@ -379,8 +380,7 @@ namespace SME.SR.Application
 
         private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
-            .Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0
-                    && (a.Inativo && a.DataSituacaoAluno > periodoEscolar.PeriodoFim))
+            .Where(a => a.Inativo && a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim)
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
@@ -388,7 +388,7 @@ namespace SME.SR.Application
             => alunos
             .Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0
                     && (((a.Inativo) && (a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim))
-                        || ((a.Ativo) && a.DataMatricula >= periodoEscolar.PeriodoInicio)))
+                        || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim)))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
@@ -492,7 +492,7 @@ namespace SME.SR.Application
                                 && componente.LancaNota) && possuiFrequencia && componente.Frequencia ? "100" : "", ++coluna);
                         }
 
-                        var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                        var notaConceito = notasFinais.OrderByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                 && c.Bimestre == bimestre);
 
