@@ -11,7 +11,6 @@ namespace SME.SR.Infra
         public string NomeBimestre { get; set; }
         public RelatorioFrequenciaIndividualDadosFrequenciasDto DadosFrequencia { get; set; }
         public List<RelatorioFrequenciaIndividualJustificativasDto> Justificativas { get; set; }
-        public IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto> FrequenciasDiarias { get; set; }
     }
 }
 

@@ -39,6 +39,7 @@ namespace SME.SR.Application
             int aulasDadas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(turma.Codigo, tipoCalendarioId, long.Parse(request.FiltroRelatorio.ComponenteCurricularId), int.Parse(request.FiltroRelatorio.Bimestre)));
 
             relatorio.ehTodosBimestre = request.FiltroRelatorio.Bimestre.Equals("-99");
+            relatorio.ImprimirFrequenciaDiaria = request.FiltroRelatorio.ImprimirFrequenciaDiaria;
             if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
             {
                 var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = request.FiltroRelatorio.TurmaCodigo });
@@ -98,12 +99,14 @@ namespace SME.SR.Application
                             TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
                         };
 
-                        if (frequenciasDiarias != null)
-                        {
-                            bimestre.FrequenciasDiarias = frequenciasDiarias.ToList().FindAll(diaria =>
-                                                        diaria.Bimestre == item.Bimestre &&
-                                                        diaria.AlunoCodigo == item.CodigoAluno);
-                        }
+                        //if (frequenciasDiarias != null)
+                        //{
+                        //    bimestre.FrequenciasDiarias = frequenciasDiarias.ToList().FindAll(diaria =>
+                        //                                diaria.Bimestre == item.Bimestre &&
+                        //                                diaria.AlunoCodigo == item.CodigoAluno);
+                        //}
+
+                        bimestre.Justificativas.AddRange(ObterJustificativaFrequenciaDiaria(item.Bimestre, item.CodigoAluno));
 
                         if (dadosAusencia != null && dadosAusencia.Any())
                         {
@@ -113,8 +116,8 @@ namespace SME.SR.Application
                                 {
                                     bimestre.Justificativas.Add(new RelatorioFrequenciaIndividualJustificativasDto
                                     {
-                                        DataAusencia = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
-                                        MotivoAusencia = UtilHtml.FormatarHtmlParaTexto(ausencia.MotivoAusencia),
+                                        DataAula = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
+                                        Justificativa = UtilHtml.FormatarHtmlParaTexto(ausencia.MotivoAusencia),
                                     });
                                 }
                             }
@@ -131,6 +134,28 @@ namespace SME.SR.Application
                 aluno.TituloFinal = $"FINAL - {dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.CodigoAluno).FirstOrDefault().AnoBimestre}";
                 aluno.PercentualFrequenciaFinal = aluno.Bimestres.Average(x => long.Parse(x.DadosFrequencia.TotalPercentualFrequencia));
             }
+        }
+
+        private IEnumerable<RelatorioFrequenciaIndividualJustificativasDto> ObterJustificativaFrequenciaDiaria(int bimestre, string codigoAluno)
+        {
+            if (frequenciasDiarias != null)
+            {
+                var frequenciaDiariaAluno = frequenciasDiarias.ToList().FindAll(diaria =>
+                                            diaria.Bimestre == bimestre &&
+                                            diaria.AlunoCodigo == codigoAluno);
+
+                return frequenciaDiariaAluno.Select(diaria => new RelatorioFrequenciaIndividualJustificativasDto
+                {
+                    DataAula = diaria.DataAula.ToString("dd/MM/yyyy"),
+                    Justificativa = String.IsNullOrEmpty(diaria.Motivo) ? String.Empty : UtilHtml.FormatarHtmlParaTexto(diaria.Motivo),
+                    QuantidadeAulas = diaria.QuantidadeAulas,
+                    QuantidadeAusencia = diaria.QuantidadeAusencia,
+                    QuantidadePresenca = diaria.QuantidadePresenca,
+                    QuantidadeRemoto = diaria.QuantidadeRemoto,
+                });
+            }
+
+            return Enumerable.Empty<RelatorioFrequenciaIndividualJustificativasDto>();
         }
 
         private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio, Turma turma)

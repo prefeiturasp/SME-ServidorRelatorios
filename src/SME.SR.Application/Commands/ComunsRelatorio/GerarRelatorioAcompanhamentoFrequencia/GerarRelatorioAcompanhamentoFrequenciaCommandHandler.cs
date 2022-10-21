@@ -75,7 +75,7 @@ namespace SME.SR.Application
                     {
                         var justificativaAusencia = new RelatorioFrequenciaIndividualJustificativasDto();
 
-                        var motivoAusencia = justificativaDto.MotivoAusencia;
+                        var motivoAusencia = justificativaDto.Justificativa;
                         var tamanhoMotivoAusencia = motivoAusencia.Length;
                         qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia);
 
@@ -88,8 +88,7 @@ namespace SME.SR.Application
                             var ausenciaRemanescente = motivoAusencia.Substring(qtdeCaracteresPermitidos);
                             var numeroPaginasAusencia = (ausenciaRemanescente.Length / limiteCaracteres) + 1;
 
-                            justificativaAusencia.DataAusencia = justificativaDto.DataAusencia;
-                            justificativaAusencia.MotivoAusencia = ausenciaNaPaginaAtual;
+                            MapearJustificativa(justificativaDto, justificativaAusencia, ausenciaNaPaginaAtual);
                             lstJustificativasAusencias.Add(justificativaAusencia);
                             tamanhoMotivoAusencia = ausenciaNaPaginaAtual.Length;
                             qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
@@ -128,13 +127,12 @@ namespace SME.SR.Application
                                     qtdeCaracteresPermitidos = ausenciaNaPaginaAtual.Length;
                                     ausenciaRemanescente = ausenciaRemanescente.Substring(qtdeCaracteresPermitidos);
                                     gerarPagina = true;
-                                }      
+                                }
 
-                                lstJustificativasAusencias.Add(new RelatorioFrequenciaIndividualJustificativasDto
-                                {
-                                    DataAusencia = justificativaDto.DataAusencia,
-                                    MotivoAusencia = ausenciaNaPaginaAtual
-                                });
+                                var justificativaPagina = new RelatorioFrequenciaIndividualJustificativasDto();
+                                MapearJustificativa(justificativaDto, justificativaPagina, ausenciaNaPaginaAtual);
+
+                                lstJustificativasAusencias.Add(justificativaPagina);
 
                                 relatorio.Alunos.FirstOrDefault().Bimestres.Add(new RelatorioFrequenciaIndividualBimestresDto() { Justificativas = lstJustificativasAusencias });
 
@@ -151,7 +149,7 @@ namespace SME.SR.Application
                                 else
                                 {
                                     possuiJustificativaParaAdicionar = true;
-                                    tamanhoMotivoAusencia = lstJustificativasAusencias.LastOrDefault().MotivoAusencia.Length;
+                                    tamanhoMotivoAusencia = lstJustificativasAusencias.LastOrDefault().Justificativa.Length;
                                     qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
                                 }
                                     
@@ -159,11 +157,10 @@ namespace SME.SR.Application
                         }
                         else
                         {
-                            justificativaAusencia.DataAusencia = justificativaDto.DataAusencia;
-                            justificativaAusencia.MotivoAusencia = justificativaDto.MotivoAusencia;
+                            MapearJustificativa(justificativaAusencia, justificativaDto);
                             lstJustificativasAusencias.Add(justificativaAusencia);
                             possuiJustificativaParaAdicionar = true;
-                            tamanhoMotivoAusencia = justificativaDto.MotivoAusencia.Length;
+                            tamanhoMotivoAusencia = justificativaDto.Justificativa.Length;
                             qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
                         }
                     }
@@ -199,6 +196,19 @@ namespace SME.SR.Application
             pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Registro Individual");
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+        }
+
+        private void MapearJustificativa(
+                        RelatorioFrequenciaIndividualJustificativasDto justificativasOrigem, 
+                        RelatorioFrequenciaIndividualJustificativasDto justificativasDestino,
+                        string justificativa = "")
+        {
+            justificativasOrigem.DataAula = justificativasDestino.DataAula;
+            justificativasOrigem.Justificativa = string.IsNullOrEmpty(justificativa) ? justificativasDestino.Justificativa : justificativa;
+            justificativasOrigem.QuantidadePresenca = justificativasDestino.QuantidadePresenca;
+            justificativasOrigem.QuantidadeAusencia = justificativasDestino.QuantidadeAusencia;
+            justificativasOrigem.QuantidadeAulas = justificativasDestino.QuantidadeAulas;
+            justificativasOrigem.QuantidadeRemoto = justificativasDestino.QuantidadeRemoto;
         }
 
         private RelatorioFrequenciaIndividualDto MapearRelatorio(GerarRelatorioAcompanhamentoFrequenciaCommand request)

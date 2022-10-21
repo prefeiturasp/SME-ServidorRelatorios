@@ -21,11 +21,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> Handle(ObterFrequenciaAlunoDiariaQuery request, CancellationToken cancellationToken)
         {
-            var frenquenciasDiarias = await frequenciaAlunoRepository.ObterFrequenciaAlunosDiario(request.CodigosAlunos, request.Bimestre, request.TurmaCodigo, request.ComponenteCurricularId);
-
-            frenquenciasDiarias.ToList().ForEach(diaria => diaria.Motivo = UtilHtml.FormatarHtmlParaTexto(diaria.Motivo));
-
-            return frenquenciasDiarias;
+            return await frequenciaAlunoRepository.ObterFrequenciaAlunosDiario(request.CodigosAlunos, request.Bimestre, request.TurmaCodigo, request.ComponenteCurricularId);
         }
     }
 }
