@@ -31,16 +31,22 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             var numeracaoNaDescricaoDaQuestao = ExibirNumeroDaQuestao(anoTurma, bimestre) ? $@" 'Questão '|| pae.""Ordenacao""|| ': ' || p.""Descricao"" as ""Pergunta""  " : $@" p.""Descricao"" as ""Pergunta"" ";
             var sql = $@"select pae.""Ordenacao"" as ""PerguntaId"", {numeracaoNaDescricaoDaQuestao}
-					from ""PerguntaAnoEscolar"" pae
-                    inner join ""Pergunta"" p on p.""Id"" = pae.""PerguntaId""
-                    left join  ""PerguntaAnoEscolarBimestre"" paeb ON paeb.""PerguntaAnoEscolarId"" = pae.""Id"" 
-					where pae.""AnoEscolar"" = @anoTurma 
-                    and(pae.""FimVigencia"" is null and extract(year from pae.""InicioVigencia"") <= @anoLetivo)";
+            from ""PerguntaAnoEscolar"" pae
+                           inner join ""Pergunta"" p on p.""Id"" = pae.""PerguntaId""
+                           left join  ""PerguntaAnoEscolarBimestre"" paeb ON paeb.""PerguntaAnoEscolarId"" = pae.""Id"" 
+            where pae.""AnoEscolar"" = @anoTurma 
+                           and(pae.""FimVigencia"" is null and extract(year from pae.""InicioVigencia"") <= @anoLetivo)";
 
             if (anoTurma <= 3)
                 sql += "and pae.\"Grupo\" = @grupoNumero";
 
-            sql += $@" and (paeb.""Id"" is null or paeb.""Bimestre"" = @bimestre)";
+            sql += $@" and (paeb.""Id"" is null
+                       and not exists(select 1 from ""PerguntaAnoEscolar"" pae 
+                                      inner join  ""PerguntaAnoEscolarBimestre"" paeb ON paeb.""PerguntaAnoEscolarId"" = pae.""Id""
+                                      where pae.""AnoEscolar"" = @anoTurma 
+                                      and (pae.""FimVigencia"" is null and extract(year from pae.""InicioVigencia"") <= @anoLetivo) 
+                                      and paeb.""Bimestre"" = @bimestre)
+                        or paeb.""Bimestre"" = @bimestre)";
             sql += " order by pae.\"Ordenacao\"";
 
             var parametros = new { anoLetivo, anoTurma, bimestre, grupoNumero = (int)ProficienciaSondagemEnum.Numeros };
