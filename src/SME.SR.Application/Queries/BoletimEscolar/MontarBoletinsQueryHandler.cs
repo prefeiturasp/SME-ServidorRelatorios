@@ -5,6 +5,7 @@ using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace SME.SR.Application
                 var relatorioBoletimSimplesEscolar = new List<RelatorioBoletimSimplesEscolarDto>();
                 foreach (var aluno in alunos)
                 {
-                    if (turmas.Any(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo)))
+                    if (turmas.Any(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo || a.CodigoTurma.ToString() == t.RegularCodigo)))
                     {
                         var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
@@ -236,13 +237,13 @@ namespace SME.SR.Application
                     {
                         var notaFrequenciaComponente = notas?.Where(nf => nf.CodigoComponenteCurricular == componenteCurricular.Codigo);
 
-                        componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 1, periodoAtual);
-                        componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 2, periodoAtual);
-                        componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 3, periodoAtual);
-                        componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 4, periodoAtual);
+                        componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 1);
+                        componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 2);
+                        componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 3);
+                        componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 4);
 
-                        componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 0, periodoAtual);
-                    }
+                        componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 0);
+                  }
                 }
             }
 
@@ -250,6 +251,7 @@ namespace SME.SR.Application
             {
                 foreach (var componenteCurricular in boletim.ComponentesCurriculares)
                 {
+                    var transformarNotaEmConceito = componenteCurricular.Nota && !boletim.ComponentesCurriculares.All(cc => cc.Nota);
                     var frequenciasAlunoComponente = frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
                     var frequenciasTurmaComponente = frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
 
@@ -257,17 +259,15 @@ namespace SME.SR.Application
                     {
                         var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
 
-                        componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 1, periodoAtual);
-                        componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 2, periodoAtual);
-                        componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 3, periodoAtual);
-                        componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 4, periodoAtual);
+                        componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 1, transformarNotaEmConceito);
+                        componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 2, transformarNotaEmConceito);
+                        componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 3, transformarNotaEmConceito);
+                        componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 4, transformarNotaEmConceito);
 
-                        componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 0, periodoAtual);
+                        componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 0, transformarNotaEmConceito);
                     }
                     else
-                    {
                         componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
-                    }
 
                     if (componenteCurricular.Frequencia)
                     {
@@ -285,10 +285,13 @@ namespace SME.SR.Application
             }
         }
 
-        private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, int periodoAtual)
+        private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)
         {
             var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
                 notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre)?.NotaConceito;
+
+            retorno = transformarNotaEmConceito && decimal.TryParse(retorno, out decimal valor) ? 
+                TransformarNotaEmConceito(decimal.Parse(retorno, CultureInfo.InvariantCulture)) : retorno;
 
             return String.IsNullOrEmpty(retorno) ? String.Empty : retorno;
         }
@@ -369,6 +372,17 @@ namespace SME.SR.Application
                 return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualRegenciaClasse).Media;
             else
                 return mediaFrequencias.FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualFund2).Media;
+        }
+
+        private string TransformarNotaEmConceito(decimal valorNota)
+        {
+            if (valorNota < 5)
+                return "NS";
+
+            if (valorNota < 7)
+                return "S";
+
+            return "P";
         }
     }
 }

@@ -3,6 +3,7 @@ using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -495,6 +496,13 @@ namespace SME.SR.Application
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                 && c.Bimestre == bimestre);
 
+                        if (!notasFinais.All(nf => nf.Nota.HasValue) && decimal.TryParse(notaConceito?.NotaConceito, out decimal valor))
+                        {
+                            var valorConvertido = ConverterNotaParaConceito(decimal.Parse(notaConceito.NotaConceito, CultureInfo.InvariantCulture));
+                            notaConceito.ConceitoId = valorConvertido.conceitoId;
+                            notaConceito.Conceito = valorConvertido.conceito;
+                        }
+
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
                                                 possuiConselhoParaExibirFrequencias && possuiComponente ? (componente.LancaNota ?
@@ -705,5 +713,16 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade)
             => await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery(turmaCodigo, codigoUe, modalidade));
+
+        private (long conceitoId, string conceito) ConverterNotaParaConceito(decimal nota)
+        {
+            if (nota < 5)
+                return (3, "NS");
+
+            if (nota < 7)
+                return (2, "S");
+
+            return (1, "P");
+        }
     }
 }

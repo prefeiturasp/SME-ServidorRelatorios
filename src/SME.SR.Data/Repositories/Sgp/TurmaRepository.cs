@@ -278,7 +278,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasRegulares;
                         select 
 	                        t.turma_id as TurmaCodigo,
-                            null as TurmaRegularCodigo,
+                            null as RegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
@@ -309,7 +309,7 @@ namespace SME.SR.Data
                         drop table if exists tempAlunosTurmasComplementares;
                         select 
 	                        t.turma_id as TurmaCodigo,
-                            tr.turma_id as TurmaRegularCodigo,
+                            tr.turma_id as RegularCodigo,
 	                        t.modalidade_codigo Modalidade,
 	                        t1.AlunoCodigo,
 	                        t.ano,
