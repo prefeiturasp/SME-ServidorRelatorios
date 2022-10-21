@@ -28,11 +28,11 @@ namespace SME.SR.Application
             var todosComponentes = await componenteCurricularRepository.ListarComponentes();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
             var alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurmas.Select(ct => ct.ToString()));
-            var codigoAlunos = alunos.Select(x => long.Parse(x.CodigoAluno.ToString())).ToArray();
-            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos, null));
+            var codigoAlunos = alunos.Select(x => int.Parse(x.CodigoAluno.ToString())).ToArray();
+            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos.Select(ca => (long)ca).ToArray(), null));
 
             var turmasCodigosFiltrado = turmasAlunos
-                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.TurmaRegularCodigo != null)
+                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.RegularCodigo != null)
                 .Select(y => int.Parse(y.TurmaCodigo))
                 .Distinct()
                 .ToArray();
@@ -40,18 +40,13 @@ namespace SME.SR.Application
             if (!turmasCodigosFiltrado.Any())
                 turmasCodigosFiltrado = request.CodigosTurmas;
 
-            var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
-
+            var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, codigoAlunos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
-
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesId));
-
             var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId));
-
             var componentesCurricularesCompletos = await ObterComponentesCurriculares(request, todosComponentes, gruposMatriz, componentesDasTurmas);
-
             var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental);
-
+            
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
             
             if(request.Modalidade == Modalidade.EJA)
