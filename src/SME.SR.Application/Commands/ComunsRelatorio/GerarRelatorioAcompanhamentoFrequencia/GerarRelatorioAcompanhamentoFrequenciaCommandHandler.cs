@@ -221,7 +221,8 @@ namespace SME.SR.Application
                 RF = request.Relatorio.RF,
                 ehInfantil = request.Relatorio.ehInfantil,
                 TurmaNome = request.Relatorio.TurmaNome,
-                ComponenteNome = request.Relatorio.ComponenteNome
+                ComponenteNome = request.Relatorio.ComponenteNome,
+                ImprimirFrequenciaDiaria = request.Relatorio.ImprimirFrequenciaDiaria
             };
         }
 
