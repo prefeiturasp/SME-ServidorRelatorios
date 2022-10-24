@@ -34,9 +34,9 @@ namespace SME.SR.Data
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and a.tipo_calendario_id = @tipoCalendarioId ");
-            if (bimestres.Length > 0)
+            if (bimestres != null && bimestres.Length > 0)
                 query.AppendLine(" and p.bimestre = any(@bimestres) ");
-            if (componentesCurricularesId.Length > 0)
+            if (componentesCurricularesId != null && componentesCurricularesId.Length > 0)
                 query.AppendLine("and a.disciplina_id = any(@componentesCurricularesId) ");
 
             query.AppendLine("and a.turma_id = any(@turmasCodigo) group by a.disciplina_id, a.turma_id, p.bimestre");
