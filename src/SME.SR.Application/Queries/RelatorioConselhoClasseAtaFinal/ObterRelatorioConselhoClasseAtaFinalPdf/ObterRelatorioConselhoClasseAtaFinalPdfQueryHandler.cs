@@ -89,6 +89,10 @@ namespace SME.SR.Application
 
             var cabecalho = await ObterCabecalho(turma.Codigo);
             var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
+          
+            var informacoesAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray(), turma.AnoLetivo));
+            informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x=> x.Codigo == i.CodigoTurma.ToString()) && i.SituacaoMatricula == "Ativo");
+            notas = notas.Where(x => informacoesAlunos.Select(j => j.CodigoTurma.ToString()).ToList().Contains(x.Key));
             var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
             var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
