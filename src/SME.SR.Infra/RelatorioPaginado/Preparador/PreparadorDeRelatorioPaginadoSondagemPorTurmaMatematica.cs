@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace SME.SR.Infra
 {
@@ -70,7 +71,8 @@ namespace SME.SR.Infra
                 relatorioPaginado = new RelatorioPaginadoSubColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>(parametro, ObtenhaDicionarioSubColuna());
             } else
             {
-                relatorioPaginado = new RelatorioPaginadoColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>(parametro, ObtenhaDicionarioColuna());
+                parametro.Fonte = new Font("Roboto Mono", 10);
+                relatorioPaginado = new RelatorioPaginadoSondagemTurma(parametro, ObtenhaDicionarioColuna());
             }
 
             return relatorioPaginado.Paginas();
