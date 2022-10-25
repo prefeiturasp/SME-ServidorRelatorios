@@ -388,7 +388,7 @@ namespace SME.SR.Application
             => alunos
             .Where(a => int.Parse(a.NumeroAlunoChamada ?? "0") > 0
                     && (((a.Inativo) && (a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim))
-                        || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim)))
+                        || ((a.Ativo) && a.DataMatricula >= periodoEscolar.PeriodoInicio)))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
@@ -712,8 +712,7 @@ namespace SME.SR.Application
             => await mediator.Send(new ObterNotasRelatorioAtaBimestralQuery(alunosCodigo, anoLetivo, (int)modalidade, semestre, tiposTurma, bimestre));
 
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade,int[] bimestres = null)
-            => await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery(turmaCodigo, codigoUe, modalidade, bimestres));
-
+            => await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery(turmaCodigo, codigoUe, modalidade, bimestres));      
 
         private (long conceitoId, string conceito) ConverterNotaParaConceito(decimal nota)
         {

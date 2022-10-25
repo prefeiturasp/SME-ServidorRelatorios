@@ -161,9 +161,9 @@ namespace SME.SR.Application
         {
             var componentesTurmaComAreaOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Ordem).ThenBy(b => b.AreaDoConhecimento.Id).ThenBy(d => d.Disciplina).ToList();
             var componentesTurmaComAreaSemOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && !w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(b => b.AreaDoConhecimento.Nome).ThenBy(b => b.Disciplina).ToList();
-           
+
             var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null && !w.TerritorioSaber).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
-            var componentesTerritorioSaber = componentesCurricularesPorTurma.Where(w => w.TerritorioSaber).OrderBy(o=> o.OrdemTerritorioSaber).ToList();
+            var componentesTerritorioSaber = componentesCurricularesPorTurma.Where(w => w.TerritorioSaber).OrderBy(o => o.OrdemTerritorioSaber).ToList();
             var componentesTurma = componentesTurmaComAreaOrdem.Concat(componentesTurmaSemArea).Concat(componentesTerritorioSaber).Concat(componentesTurmaComAreaSemOrdem);
 
             foreach (var componente in componentesTurma)
@@ -243,7 +243,7 @@ namespace SME.SR.Application
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 4);
 
                         componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notaFrequenciaComponente, 0);
-                  }
+                    }
                 }
             }
 
@@ -251,7 +251,9 @@ namespace SME.SR.Application
             {
                 foreach (var componenteCurricular in boletim.ComponentesCurriculares)
                 {
-                    var transformarNotaEmConceito = componenteCurricular.Nota && !boletim.ComponentesCurriculares.All(cc => cc.Nota);
+                    var transformarNotaEmConceito = !notas.Where(n => !string.IsNullOrEmpty(n.NotaConceito))
+                        .All(n => n.NotaConceito.ToCharArray().Where(c => c != '.').All(c => char.IsDigit(c)));
+
                     var frequenciasAlunoComponente = frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
                     var frequenciasTurmaComponente = frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
 
@@ -290,7 +292,7 @@ namespace SME.SR.Application
             var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
                 notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre)?.NotaConceito;
 
-            retorno = transformarNotaEmConceito && decimal.TryParse(retorno, out decimal valor) ? 
+            retorno = transformarNotaEmConceito && decimal.TryParse(retorno, out decimal valor) ?
                 TransformarNotaEmConceito(decimal.Parse(retorno, CultureInfo.InvariantCulture)) : retorno;
 
             return String.IsNullOrEmpty(retorno) ? String.Empty : retorno;
