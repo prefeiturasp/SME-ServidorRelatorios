@@ -27,10 +27,12 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
             var turma = await mediator.Send(new ObterTurmasPorCodigoQuery(request.CodigosTurma));
             var tipoCalendarioId = await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma.FirstOrDefault()));
+            var totalAulasSemFrequencia = await mediator.Send(new ObterTotalAlunosSemFrequenciaPorTurmaBimestreQuery(componentesDasTurmas.Select(x => x.Codigo.ToString()).ToArray(), request.CodigosTurma, request.Bimestres));
 
             var aulasDaTurma = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.CodigosTurma,tipoCalendarioId,componentesDasTurmas.Select(x=>x.Codigo.ToString()).ToArray(), request.Bimestres));
             var componentesComAula = aulasDaTurma.Select(a => a.ComponenteCurricularCodigo).ToList();
-            componentesDasTurmas = componentesDasTurmas.Where(x => componentesComAula.Contains(x.Codigo.ToString()));
+            componentesDasTurmas = componentesDasTurmas.Where(x => componentesComAula.Contains(x.Codigo.ToString())
+            || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.Codigo.ToString())));
 
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));
 
