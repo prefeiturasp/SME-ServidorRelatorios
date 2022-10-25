@@ -57,7 +57,7 @@ namespace SME.SR.Infra
 
         private void CarreguePaginaPorQuebraDeLinha(List<IColuna> listaDeColunas)
         {
-            var dicionario = ObtenhaDicionarioPorQuantidade();
+            var dicionario = ObtenhaDicionarioPorQuantidade(listaDeColunas);
             var paginaAtual = this.ObtenhaIndicePaginaAtual();
 
             foreach (var indicePagina in dicionario.Keys)
@@ -102,6 +102,11 @@ namespace SME.SR.Infra
             }
 
             return dicionario;
+        }
+
+        protected override string ObtenhaValorDaColunaCustom(IColuna coluna, T valor)
+        {
+            return string.Empty;
         }
     }
 }
