@@ -74,5 +74,15 @@ namespace SME.SR.Infra
                 Valores = valores
             };
         }
+
+        protected override bool RelatorioPorQuantidadeDeLinha()
+        {
+            return true;
+        }
+
+        protected override Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidadeSemAgrupamentoCalculado(List<IColuna> listaDeColunas)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

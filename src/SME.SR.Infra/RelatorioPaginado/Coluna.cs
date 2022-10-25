@@ -40,5 +40,10 @@ namespace SME.SR.Infra
         {
             return string.IsNullOrEmpty(NomeClasse) ? string.Empty : $"class='{NomeClasse}'";
         }
+
+        public bool ContemPropriedade()
+        {
+            return Propriedade != null;
+        }
     }
 }
