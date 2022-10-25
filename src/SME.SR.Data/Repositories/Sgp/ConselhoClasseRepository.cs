@@ -57,5 +57,28 @@ namespace SME.SR.Data
 
             return await conexao.QueryAsync<long>(query, parametros);
         }
+        public async Task<IEnumerable<TotalAulasTurmaDisciplinaDto>> ObterTotalAulasSemFrequenciaPorTurmaBismetre(string[] discplinasId, string[] codigoTurma, int[] bimestres)
+        {
+            var query = @" select a.disciplina_id as ComponenteCurricularId,
+                                  a.turma_id as TurmaCodigo,
+                                  COALESCE(SUM(quantidade), 0) as totalAulas 
+                            from aula a
+                            join  componente_curricular cc on cc.id = a.disciplina_id::int8 
+                            join  periodo_escolar pe on pe.tipo_calendario_id = a.tipo_calendario_id::int8  
+                            where cc.permite_registro_frequencia  = false 
+                            and a.turma_id = any(@codigoTurma)
+                            and not a.excluido 
+                            and a.disciplina_id = any(@discplinasId) 
+                            and pe.bimestre = any(@bimestres) 
+                            and pe.periodo_inicio <= a.data_aula and pe.periodo_fim >= a.data_aula
+                        group by a.disciplina_id,a.turma_id,a.quantidade"
+            ;
+
+            var parametros = new {  codigoTurma, discplinasId, bimestres };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryAsync<TotalAulasTurmaDisciplinaDto>(query, parametros);
+        }
     }
 }
