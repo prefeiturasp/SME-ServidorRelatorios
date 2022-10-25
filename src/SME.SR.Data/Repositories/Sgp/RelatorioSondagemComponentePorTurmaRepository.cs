@@ -91,12 +91,14 @@ namespace SME.SR.Data.Repositories.Sgp
             sql.AppendLine(" s.\"CodigoTurma\", ");
             sql.AppendLine(" pae.\"Ordenacao\" as PerguntaId, ");
             sql.AppendLine(" p.\"Descricao\" as Pergunta, ");
-            sql.AppendLine(" r.\"Descricao\" as Resposta ");
+            sql.AppendLine(" r.\"Descricao\" as Resposta, ");
+            sql.AppendLine(" pr.\"Ordenacao\" as OrdenacaoResposta ");
             sql.AppendLine(" from \"SondagemAlunoRespostas\" sar ");
             sql.AppendLine(" inner join \"SondagemAluno\" sa on sa.\"Id\" = sar.\"SondagemAlunoId\" ");
             sql.AppendLine(" inner join \"Sondagem\" s on s.\"Id\" = sa.\"SondagemId\" ");
             sql.AppendLine(" inner join \"Pergunta\" p on p.\"Id\" = sar.\"PerguntaId\" ");
             sql.AppendLine(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" ");
+            sql.AppendLine(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\" and pr.\"RespostaId\" = sar.\"RespostaId\"");
             sql.AppendLine(" inner join \"Resposta\" r on r.\"Id\" = sar.\"RespostaId\" ");
             sql.AppendLine(" where s.\"AnoLetivo\" = @anoLetivo ");
             sql.AppendLine(" and s.\"CodigoTurma\" = @turmaCodigo");
