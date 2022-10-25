@@ -34,5 +34,14 @@ namespace SME.SR.Infra
             return Largura.ToString() + unidade;
         }
 
+        public string ObtenhaClasse()
+        {
+            return string.IsNullOrEmpty(NomeClasse) ? string.Empty : $"class='{NomeClasse}'";
+        }
+
+        public bool ContemPropriedade()
+        {
+            return Propriedade != null;
+        }
     }
 }
