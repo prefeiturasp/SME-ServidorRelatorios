@@ -31,5 +31,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre, string codigoUe, Modalidade modalidade,
             int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe);
         Task<IEnumerable<FrequenciaAlunoConsolidadoRelatorioDto>> ObterFrequenciaAlunosRelatorio(string[] turmasCodigo, string bimestre, string componenteCurricularId);
+        Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(string[] codigosAlunos, string bimestre, string turmaCodigo, string componenteCurricularId);
     }
 }
