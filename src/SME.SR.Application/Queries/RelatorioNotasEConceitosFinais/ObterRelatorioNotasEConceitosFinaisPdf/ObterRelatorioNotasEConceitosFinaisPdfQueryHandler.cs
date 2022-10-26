@@ -183,7 +183,7 @@ namespace SME.SR.Application
 
                 var turmaAssociada = turmasAssociadasObj.FirstOrDefault(t => t.Codigo == associacao.TurmaComplementarId.ToString());
 
-                nota.TurmaCodigo = turmaAssociada.turma_id;
+                nota.TurmaCodigo = turmaAssociada.Codigo;
                 nota.TurmaNome = turmaAssociada.Nome;
                 nota.Ano = turmaAssociada.Ano;
             }

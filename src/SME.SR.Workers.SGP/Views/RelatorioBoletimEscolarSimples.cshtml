@@ -92,7 +92,7 @@
                 
                       MontarComponenteCurriculares(f.Select(s=> s));
 
-                      if (f.Key == 1 && aluno.EhRegencia)
+                      if (f.Key == 1 && aluno.EhRegencia && !ehEJA)
                           MontarComponenteCurricularesRegencia(aluno);
               });
           }

@@ -65,14 +65,9 @@ namespace SME.SR.Application
                     if ((filtro.CodigosTurmas.Count() == 0) || filtro.CodigosTurmas.Contains("-99"))
                         turmas = (await mediator.Send(new ObterTurmasPorUeEAnoLetivoQuery(ue.Codigo, filtro.AnoLetivo))).ToList();
                     else
-                    {
                         turmas = (await mediator.Send(new ObterTurmasPorCodigoQuery(filtro.CodigosTurmas.Select(c => c).ToArray()))).ToList();
 
-                        //-> Foi necessário fazer isso, pois, a query acima retorna no campo código.
-                        turmas.ForEach(c => c.turma_id = c.Codigo);
-                    }
-
-                    var alunos = await mediator.Send(new ObterAlunosPorTurmasQuery(turmas.Select(c => long.Parse(c.turma_id))));
+                    var alunos = await mediator.Send(new ObterAlunosPorTurmasQuery(turmas.Select(c => long.Parse(c.Codigo))));
 
                     var dadosAlunosEscolas = await mediator.Send(new ObterDadosAlunosEscolaQuery(ue.Codigo, filtro.AnoLetivo,
                         alunos.Select(c => c.CodigoAluno.ToString()).ToArray()));
@@ -134,7 +129,7 @@ namespace SME.SR.Application
 
             foreach (var item in retornoQuery)
             {
-                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol);
+                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol && c.FirstOrDefault().CodigoTurma == item.TurmaCodigo );
                 var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes);
 
                 if (dadosSituacaoAluno.ImprimirRelatorio)
