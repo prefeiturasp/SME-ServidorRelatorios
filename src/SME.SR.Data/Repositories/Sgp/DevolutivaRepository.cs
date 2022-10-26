@@ -75,7 +75,7 @@ namespace SME.SR.Data.Repositories.Sgp
 	                        , pe.id, pe.periodo_inicio as DataInicio, pe.periodo_fim as DataFim, pe.bimestre
                             {IncluirCampoSeparacaoDiarioBordo(utilizarLayoutNovo)}
                           from devolutiva d 
-                         inner join diario_bordo db on d.id = db.devolutiva_id 
+                         inner join diario_bordo db on d.id = db.devolutiva_id and not db.excluido
                          {IncluirJuncaoSeparacaoDiarioBordo(utilizarLayoutNovo)}
                          inner join aula a on a.id = db.aula_id 
                          inner join turma t on t.turma_id = a.turma_id 
