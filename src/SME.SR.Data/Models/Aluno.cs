@@ -39,6 +39,8 @@ namespace SME.SR.Data
 
         public bool EstaAtivo(DateTime dataBase) => SituacoesAtiva.Contains(CodigoSituacaoMatricula) || dataBase.Date <= DataSituacao.Date;
 
+        public bool Ativo => SituacoesAtiva.Contains(CodigoSituacaoMatricula);
+
         private SituacaoMatriculaAluno[] SituacoesEspeciais => new[] { SituacaoMatriculaAluno.Transferido,
                         SituacaoMatriculaAluno.RemanejadoSaida,
                         SituacaoMatriculaAluno.ReclassificadoSaida,
