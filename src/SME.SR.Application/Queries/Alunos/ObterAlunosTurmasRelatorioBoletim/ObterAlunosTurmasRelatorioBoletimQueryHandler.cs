@@ -48,8 +48,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível localizar os alunos");
 
             var resultadoAlunos = request.TrazerAlunosInativos ? alunosOrdenadosPorSituacao.OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString())
-                                                : alunosOrdenadosPorSituacao.Where(al => al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Ativo
-                                                    || al.CodigoSituacaoMatricula == SituacaoMatriculaAluno.Concluido)
+                                                : alunosOrdenadosPorSituacao.Where(al => al.Ativo)
                                                     .OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString());
             if (!resultadoAlunos.Any())
                 throw new NegocioException("Não foi possível localizar alunos com os filtros definidos.");
