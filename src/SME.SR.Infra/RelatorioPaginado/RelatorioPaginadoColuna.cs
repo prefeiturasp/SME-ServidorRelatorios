@@ -62,9 +62,9 @@ namespace SME.SR.Infra
 
             foreach (var indicePagina in dicionario.Keys)
             {
-                var novaPagina = paginaAtual + indicePagina;
+                paginaAtual += 1;
 
-                this.AdicionePagina(this.ObtenhaPagina(novaPagina, indicePagina, dicionario[indicePagina], listaDeColunas));
+                this.AdicionePagina(this.ObtenhaPagina(paginaAtual, paginaAtual, dicionario[indicePagina], listaDeColunas));
             }
         }
 
