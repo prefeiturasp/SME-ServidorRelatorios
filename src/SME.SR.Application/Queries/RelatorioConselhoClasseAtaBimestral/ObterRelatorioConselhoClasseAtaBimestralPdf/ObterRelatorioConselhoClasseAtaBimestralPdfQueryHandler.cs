@@ -496,7 +496,7 @@ namespace SME.SR.Application
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                 && c.Bimestre == bimestre);
 
-                        if (!notasFinais.All(nf => nf.Nota.HasValue) && decimal.TryParse(notaConceito?.NotaConceito, out decimal valor))
+                        if (turma.RegularCodigo != null && !notasFinais.All(nf => nf.Nota.HasValue) && decimal.TryParse(notaConceito?.NotaConceito, out decimal valor))
                         {
                             var valorConvertido = ConverterNotaParaConceito(decimal.Parse(notaConceito.NotaConceito, CultureInfo.InvariantCulture));
                             notaConceito.ConceitoId = valorConvertido.conceitoId;
