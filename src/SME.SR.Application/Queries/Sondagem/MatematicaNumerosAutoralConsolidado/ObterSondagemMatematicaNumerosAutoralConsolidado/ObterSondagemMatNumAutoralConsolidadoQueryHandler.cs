@@ -32,7 +32,7 @@ namespace SME.SR.Application
 
             if (request.TurmaAno > 3 || request.AnoLetivo >= 2022)
             {
-                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, request.AnoLetivo, request.Bimestre, ComponenteCurricularSondagemEnum.Matematica);
 
                 var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
 
