@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SME.SR.Data.Extensions;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -360,14 +361,14 @@ namespace SME.SR.Data
 										FROM lista ");
             }
 
-            var parametros = new { dreCodigo, ueCodigo, anoTurma, anoLetivo, dataFim = dataReferencia };
+			var parametros = new { dreCodigo, ueCodigo, anoTurma = anoTurma.ToDbChar(1), anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
             return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString().Replace("@modalidades", string.Join(',', modalidades)), parametros, commandTimeout: 600);
         }
 
-        public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
+		public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
         {
             var query = AlunoConsultas.DadosAluno;
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
