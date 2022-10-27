@@ -334,7 +334,7 @@ namespace SME.SR.Application
                 foreach (var componenteCurricular in componentesRegenciaFiltro)
                 {
                     MapearComponentesRegencia(componenteCurricular.CodDisciplina.ToString(),
-                                              turmas.Where(t => t.Codigo == componenteCurricular.CodigoTurma),
+                                              turmas,
                                               componenteCurricular.ComponentesCurricularesRegencia.Where(r => areasDoConhecimentos.Select(a => a.CodigoComponenteCurricular).Contains(r.CodDisciplina)),
                                               notas,
                                               frequencia.Where(f => f.DisciplinaId == componenteCurricular.CodDisciplina.ToString()),

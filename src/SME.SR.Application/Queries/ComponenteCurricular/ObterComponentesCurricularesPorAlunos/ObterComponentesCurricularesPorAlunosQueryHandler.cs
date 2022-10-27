@@ -14,30 +14,39 @@ namespace SME.SR.Application
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
+        private readonly IAlunoRepository alunoRepository;
 
-        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator)
+        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator, IAlunoRepository alunoRepository)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
         }
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesPorAlunosQuery request, CancellationToken cancellationToken)
         {
             var todosComponentes = await componenteCurricularRepository.ListarComponentes();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+            var alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurmas.Select(ct => ct.ToString()));
+            var codigoAlunos = alunos.Select(x => int.Parse(x.CodigoAluno.ToString())).ToArray();
+            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos.Select(ca => (long)ca).ToArray(), null));           
 
-            var componentesDasTurmas = await ObterComponentesPorAlunos(request.CodigosTurmas, request.AlunosCodigos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
+            var turmasCodigosFiltrado = turmasAlunos
+                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.RegularCodigo != null)
+                .Select(y => int.Parse(y.TurmaCodigo))
+                .Distinct()
+                .ToArray();
 
+            if (!turmasCodigosFiltrado.Any())
+                turmasCodigosFiltrado = request.CodigosTurmas;
+
+            var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, codigoAlunos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
-
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesId));
-
             var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId));
-
             var componentesCurricularesCompletos = await ObterComponentesCurriculares(request, todosComponentes, gruposMatriz, componentesDasTurmas);
-
             var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental);
-
+            
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
 
             var componentesRegencia = ObterCodigosComponentesRegenciaClasse(todosComponentes, componentesDasTurmas);
@@ -151,7 +160,7 @@ namespace SME.SR.Application
         {
             var componentes = new List<ComponenteCurricular>();
             int alunosPorPagina = 100;
-                       
+
             if (alunosCodigos.Length > alunosPorPagina)
             {
                 int cont = 0;
@@ -172,5 +181,7 @@ namespace SME.SR.Application
                 return componentesCurriculares.AsEnumerable();
             }                            
         }
+
+        
     }
 }

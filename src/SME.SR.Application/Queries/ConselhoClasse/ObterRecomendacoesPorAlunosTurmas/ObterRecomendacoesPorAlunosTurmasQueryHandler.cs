@@ -46,7 +46,7 @@ namespace SME.SR.Application
         {
             foreach (var recomendacao in recomendacoesConselho)
             {
-                var recomendacoesDoAluno = await conselhoClasseAlunoRepository.ObterRecomendacoesAlunoFamiliaPorAlunoETurma(recomendacao.AlunoCodigo, recomendacao.TurmaCodigo);
+                var recomendacoesDoAluno = await conselhoClasseAlunoRepository.ObterRecomendacoesAlunoFamiliaPorAlunoETurma(recomendacao.AlunoCodigo, recomendacao.TurmaCodigo, recomendacao.Id);
 
                 var concatenaRecomendacaoAluno = new StringBuilder();
                 foreach (var aluno in recomendacoesDoAluno.Where(r => r.Tipo == (int)ConselhoClasseRecomendacaoTipo.Aluno).ToList())

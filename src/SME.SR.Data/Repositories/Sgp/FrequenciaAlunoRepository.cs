@@ -100,7 +100,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string turmaCodigo)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos)
         {
             var query = @$"select * 
 	                            from( 
@@ -111,7 +111,7 @@ namespace SME.SR.Data
 		                                    fa.total_ausencias TotalAusencias, 
 		                                    fa.total_compensacoes TotalCompensacoes,
 		                                    fa.periodo_escolar_id PeriodoEscolarId,
-		                                    row_number() over (partition by fa.bimestre, fa.disciplina_id order by fa.id desc) sequencia
+		                                    row_number() over (partition by fa.codigo_aluno, fa.disciplina_id, fa.periodo_escolar_id order by fa.id desc) sequencia
 		                                     from frequencia_aluno fa 
 		                                    inner join turma t on t.turma_id = fa.turma_id
 			                                where fa.codigo_aluno = ANY(@codigosAluno)
@@ -119,11 +119,11 @@ namespace SME.SR.Data
 	                                          and t.ano_letivo = @anoLetivo
 	                                          and t.modalidade_codigo = @modalidade
 	                                          and t.semestre = @semestre
-	                                          and t.turma_id = @turmaCodigo  
+	                                          {(turmaCodigos?.Length > 0 ? "and t.turma_id = ANY(@turmaCodigos)" : string.Empty)}
 		                            )rf 
 	                            where rf.sequencia = 1;";
 
-            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigo};
+            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos};
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {

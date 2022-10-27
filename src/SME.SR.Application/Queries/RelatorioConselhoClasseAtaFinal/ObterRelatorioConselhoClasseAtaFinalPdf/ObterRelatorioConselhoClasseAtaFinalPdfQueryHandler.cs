@@ -89,6 +89,10 @@ namespace SME.SR.Application
 
             var cabecalho = await ObterCabecalho(turma.Codigo);
             var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
+          
+            var informacoesAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray(), turma.AnoLetivo));
+            informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x=> x.Codigo == i.CodigoTurma.ToString()) && (i.CodigoSituacaoMatricula != SituacaoMatriculaAluno.RemanejadoSaida));
+            notas = notas.Where(x => informacoesAlunos.Select(j => j.CodigoTurma.ToString()).ToList().Contains(x.Key));
             var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
             var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
@@ -429,6 +433,7 @@ namespace SME.SR.Application
 
                 bool possuiComponente = true;
                 bool existeFrequenciaRegistradaTurmaAno = false;
+                bool possuiConselhoUltimoBimestreAtivo = false;
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
@@ -490,6 +495,9 @@ namespace SME.SR.Application
                                                             notaConceito?.NotaConceito ?? "" :
                                                             notaConceito?.Sintese) : "-",
                                                         ++coluna);
+
+                                if(ultimoBimestreAtivo > 0)
+                                    possuiConselhoUltimoBimestreAtivo = bimestre == ultimoBimestreAtivo;
                                 continue;
                             }
 
@@ -508,18 +516,18 @@ namespace SME.SR.Application
         
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            possuiComponente && aluno.Ativo ? (componente.LancaNota ?
+                                            possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (componente.LancaNota ?
                                                 notaConceitofinal?.NotaConceito ?? "" :
                                                 notaConceitofinal?.Sintese ?? sintese) : "-",
                                             ++coluna);
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            possuiComponente && aluno.Ativo ? (frequenciaAluno?.TotalAusencias.ToString() ?? "0") : "-",
+                                            possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalAusencias.ToString() ?? "0") : "-",
                                             ++coluna);
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                                    possuiComponente && aluno.Ativo ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
+                                                    possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
                                                 ++coluna);
 
                         var frequencia = "-";                            
@@ -537,7 +545,7 @@ namespace SME.SR.Application
                                         ?
                                         "100"
                                         :
-                                        frequenciaAluno != null && aluno.Ativo
+                                        frequenciaAluno != null && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo)
                                         ?
                                         frequenciaAluno.PercentualFrequencia.ToString()
                                         :

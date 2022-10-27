@@ -37,32 +37,70 @@ namespace SME.SR.Application
                         var turma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaDto();
                         turma.Nome = $"{turmas.FirstOrDefault().NomeTurmaFormatado}";
 
-                        foreach (var compCurricular in turmas.OrderBy(c=> c.ComponenteCurricularNome))
+                        var turmasComponenteAgrupados = turmas.GroupBy(t => t.ComponenteCurricularId);
+
+                        foreach (var turmaComponentes in turmasComponenteAgrupados)
                         {
-                            string nomeComponente = compCurricular.RFProfessor == "" ? $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor}"
+                            bool existeConsolidacaoSemProfessorEComProfessor = turmasComponenteAgrupados.Any(t => t.Any(c => string.IsNullOrEmpty(c.RFProfessor))) && turmaComponentes.Count() > 1;
+                            if (existeConsolidacaoSemProfessorEComProfessor)
+                            {
+                                var compCurricular = turmaComponentes.Where(t => !string.IsNullOrEmpty(t.RFProfessor)).FirstOrDefault();
+
+                                string nomeComponente = compCurricular.RFProfessor == "" ? $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor}"
                                                                                      : $"{compCurricular.ComponenteCurricularNome} - {compCurricular.NomeProfessor} ({compCurricular.RFProfessor}) ";
 
-                            if (compCurricular.CJ)
-                                nomeComponente = $"{nomeComponente} - CJ";
+                                if (compCurricular.CJ)
+                                    nomeComponente = $"{nomeComponente} - CJ";
 
-                            string dataUltimoRegistroFrequencia = compCurricular.DataUltimaFrequencia != null ?
-                                                                  compCurricular.DataUltimaFrequencia?.ToString("dd/MM/yyyy HH:mm:ss")
-                                                                  : "";
-                            string dataUltimoRegistroPlanoAula = compCurricular.DataUltimoPlanoAula != null ?
-                                                                  compCurricular.DataUltimoPlanoAula?.ToString("dd/MM/yyyy HH:mm:ss")
-                                                                  : "";
+                                string dataUltimoRegistroFrequencia = turmaComponentes.Any(c => c.DataUltimaFrequencia != null) ?
+                                                                      turmaComponentes.Max(t => t.DataUltimaFrequencia)?.ToString("dd/MM/yyyy HH:mm:ss")
+                                                                      : "";
+                                string dataUltimoRegistroPlanoAula = turmaComponentes.Any(t => t.DataUltimoPlanoAula != null) ?
+                                                                      turmaComponentes.Max(t => t.DataUltimoPlanoAula)?.ToString("dd/MM/yyyy HH:mm:ss")
+                                                                      : "";
 
-                            var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
+                                var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
+                                {
+                                    Nome = nomeComponente.ToUpper(),
+                                    QuantidadeAulas = turmaComponentes.Sum(t => t.QuantidadeAulas),
+                                    FrequenciasPendentes = turmaComponentes.Sum(t => t.FrequenciasPendentes),
+                                    DataUltimoRegistroFrequencia = dataUltimoRegistroFrequencia,
+                                    PlanosAulaPendentes = turmaComponentes.Sum(t => t.PlanoAulaPendentes),
+                                    DataUltimoRegistroPlanoAula = dataUltimoRegistroPlanoAula
+                                };
+                                turma.ComponentesCurriculares.Add(componente);
+                            }
+                            else
                             {
-                                Nome = nomeComponente.ToUpper(),
-                                QuantidadeAulas = compCurricular.QuantidadeAulas,
-                                FrequenciasPendentes = compCurricular.FrequenciasPendentes,
-                                DataUltimoRegistroFrequencia = dataUltimoRegistroFrequencia,
-                                PlanosAulaPendentes = compCurricular.PlanoAulaPendentes,
-                                DataUltimoRegistroPlanoAula = dataUltimoRegistroPlanoAula
-                            };
-                            turma.ComponentesCurriculares.Add(componente);
+                                foreach (var valorTurma in turmaComponentes)
+                                {
+                                    string nomeComponente = valorTurma.RFProfessor == "" ? $"{valorTurma.ComponenteCurricularNome} - {valorTurma.NomeProfessor}"
+                                                                                   : $"{valorTurma.ComponenteCurricularNome} - {valorTurma.NomeProfessor} ({valorTurma.RFProfessor}) ";
+
+                                    if (valorTurma.CJ)
+                                        nomeComponente = $"{nomeComponente} - CJ";
+
+                                    string dataUltimoRegistroFrequencia = valorTurma.DataUltimaFrequencia != null ?
+                                                                          valorTurma.DataUltimaFrequencia?.ToString("dd/MM/yyyy HH:mm:ss")
+                                                                          : "";
+                                    string dataUltimoRegistroPlanoAula = valorTurma.DataUltimoPlanoAula != null ?
+                                                                          valorTurma.DataUltimoPlanoAula?.ToString("dd/MM/yyyy HH:mm:ss")
+                                                                          : "";
+
+                                    var componente = new RelatorioAcompanhamentoRegistrosPedagogicosCompCurricularesDto()
+                                    {
+                                        Nome = nomeComponente.ToUpper(),
+                                        QuantidadeAulas = valorTurma.QuantidadeAulas,
+                                        FrequenciasPendentes = valorTurma.FrequenciasPendentes,
+                                        DataUltimoRegistroFrequencia = dataUltimoRegistroFrequencia,
+                                        PlanosAulaPendentes = valorTurma.PlanoAulaPendentes,
+                                        DataUltimoRegistroPlanoAula = dataUltimoRegistroPlanoAula
+                                    };
+                                    turma.ComponentesCurriculares.Add(componente);
+                                }
+                            }
                         }
+                        turma.ComponentesCurriculares = turma.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
                         bimestre.Turmas.Add(turma);
                     }
                     bimestres.Add(bimestre);

@@ -25,36 +25,53 @@ namespace SME.SR.Application
             this.conselhoClasseRecomendacaoRepository = conselhoClasseRecomendacaoRepository ?? throw new ArgumentNullException(nameof(conselhoClasseRecomendacaoRepository));
         }
 
+        private bool ContemRecomendacoesAluno(RecomendacoesConselhoClasse recomendacoes) =>
+                (!string.IsNullOrEmpty(recomendacoes.RecomendacoesAluno) || recomendacoes.RecomendacoesPreDefinidasAluno.Any());
+        private bool ContemRecomendacoesFamilia(RecomendacoesConselhoClasse recomendacoes) =>
+            (!string.IsNullOrEmpty(recomendacoes.RecomendacoesFamilia) || recomendacoes.RecomendacoesPreDefinidasFamilia.Any());
+
         public async Task<RecomendacaoConselhoClasseAluno> Handle(ObterRecomendacoesPorFechamentoQuery request, CancellationToken cancellationToken)
         {
             var recomendacoes = await conselhoClasseAlunoRepository.ObterRecomendacoesPorFechamento(request.FechamentoTurmaId, request.CodigoAluno);
 
-            if (recomendacoes == null || string.IsNullOrEmpty(recomendacoes.RecomendacoesAluno) || string.IsNullOrEmpty(recomendacoes.RecomendacoesFamilia))
+            if (recomendacoes == null || 
+                (!ContemRecomendacoesAluno(recomendacoes) &&
+                 !ContemRecomendacoesFamilia(recomendacoes))
+               )
             {
                 var recomendacoesGeral = await conselhoClasseRecomendacaoRepository.ObterTodos();
 
                 return new RecomendacaoConselhoClasseAluno
                 {
-                    RecomendacoesAluno = recomendacoes?.RecomendacoesAluno ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Aluno).Select(b => b.Recomendacao)),
-                    RecomendacoesFamilia = recomendacoes?.RecomendacoesFamilia ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Familia).Select(b => b.Recomendacao)),
+                    RecomendacoesAluno = MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Aluno).Select(b => b.Recomendacao)),
+                    RecomendacoesFamilia = MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Familia).Select(b => b.Recomendacao)),
                 };
             }
 
-            FormatarRecomendacoes(recomendacoes);
-
-            return recomendacoes;
+            return FormatarRecomendacoes(recomendacoes);
         }
 
-        private void FormatarRecomendacoes(RecomendacaoConselhoClasseAluno recomendacaoConselho)
+        private RecomendacaoConselhoClasseAluno FormatarRecomendacoes(RecomendacoesConselhoClasse recomendacaoConselho)
         {
-            recomendacaoConselho.AnotacoesPedagogicas =
-               Formatar(recomendacaoConselho.AnotacoesPedagogicas);
+            var RecomendacoesAlunoLst = recomendacaoConselho.RecomendacoesPreDefinidasAluno.Select(recomendacao => Formatar(recomendacao.Recomendacao)).ToList();
+            var RecomendacoesFamiliaLst = recomendacaoConselho.RecomendacoesPreDefinidasFamilia.Select(recomendacao => Formatar(recomendacao.Recomendacao)).ToList();
 
-            recomendacaoConselho.RecomendacoesAluno =
-                Formatar(recomendacaoConselho.RecomendacoesAluno);
+            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesAluno))
+                RecomendacoesAlunoLst.Insert(0, Formatar(recomendacaoConselho.RecomendacoesAluno));
 
-            recomendacaoConselho.RecomendacoesFamilia =
-                Formatar(recomendacaoConselho.RecomendacoesFamilia);
+            if (!string.IsNullOrEmpty(recomendacaoConselho.RecomendacoesFamilia))
+                RecomendacoesFamiliaLst.Insert(0, Formatar(recomendacaoConselho.RecomendacoesFamilia));
+
+            var RecomendacoesAluno = string.Join("\r\n", RecomendacoesAlunoLst);
+            var RecomendacoesFamilia = string.Join("\r\n", RecomendacoesFamiliaLst);
+            var AnotacoesPedagogicas = Formatar(recomendacaoConselho.AnotacoesPedagogicas);
+
+            return new RecomendacaoConselhoClasseAluno()
+            {
+                RecomendacoesAluno = RecomendacoesAluno,
+                RecomendacoesFamilia = RecomendacoesFamilia,
+                AnotacoesPedagogicas = AnotacoesPedagogicas
+            };
         }
 
         private string Formatar(string recomendacao)

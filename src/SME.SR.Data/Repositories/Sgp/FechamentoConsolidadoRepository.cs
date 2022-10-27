@@ -17,15 +17,20 @@ namespace SME.SR.Data.Repositories.Sgp
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmas(string[] turmasCodigo)
+        public async Task<IEnumerable<FechamentoConsolidadoComponenteTurmaDto>> ObterFechamentoConsolidadoPorTurmas(string[] turmasCodigo, int[] semestres, int[] bimestres)
         {
-            var query = new StringBuilder(@" select f.id, f.dt_atualizacao DataAtualizacao, f.status, f.componente_curricular_id ComponenteCurricularCodigo,
-                                                    f.professor_nome ProfessorNome, f.professor_rf ProfessorRf, t.turma_id TurmaCodigo, f.bimestre
+            var query = new StringBuilder(@$" select * from (
+                                            select f.id, f.dt_atualizacao DataAtualizacao, f.status, f.componente_curricular_id ComponenteCurricularCodigo,
+                                                    f.professor_nome ProfessorNome, f.professor_rf ProfessorRf, t.turma_id TurmaCodigo, f.bimestre,
+                                                    row_number() over (partition by f.componente_curricular_id, f.bimestre order by f.dt_atualizacao desc) sequencia
                                                 from consolidado_fechamento_componente_turma f
                                                 inner join turma t on f.turma_id = t.id
                                                where not f.excluido 
-                                                 and t.turma_id = ANY(@turmasCodigo) ");
-            var parametros = new { turmasCodigo };
+                                                 and t.turma_id = ANY(@turmasCodigo) 
+                                                 {(semestres != null? " and t.semestre = ANY(@semestres)":"")}
+                                                 {(bimestres != null? " and f.bimestre = ANY(@bimestres)":"")}
+                                            ) x where x.sequencia = 1");
+            var parametros = new { turmasCodigo, semestres, bimestres };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<FechamentoConsolidadoComponenteTurmaDto>(query.ToString(), parametros);
