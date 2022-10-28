@@ -161,7 +161,7 @@ namespace SME.SR.Application
                     CodigoAluno = aluno.Codigo
                 };
 
-                if (dadosFrequenciaDto != null && dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
+                if (dadosFrequenciaDto != null && dadosFrequenciaDto.Any(x => x.CodigoAluno == aluno.Codigo))
                 {
                     if (relatorio != null)
                     {
@@ -169,24 +169,7 @@ namespace SME.SR.Application
                     }
                     relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
                 }
-                else
-                {
-                    var NomeBimestre = bimestre == 0 ? "Bimestre Final" : $"{bimestre}º Bimestre";
-                    relatorioFrequenciaIndividualAlunosDto.Bimestres.Add(new RelatorioFrequenciaIndividualBimestresDto()
-                    {
-                        NomeBimestre = NomeBimestre,
-                        DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto()
-                        {
-                            TotalAulasDadas = aulasDadas,
-                            TotalPresencas = 0,
-                            TotalRemoto = 0,
-                            TotalAusencias = 0,
-                            TotalCompensacoes = 0,
-                            TotalPercentualFrequencia = "",
-                        }
-                    }); ;
-                    relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
-                }
+                
             }
         }
 
