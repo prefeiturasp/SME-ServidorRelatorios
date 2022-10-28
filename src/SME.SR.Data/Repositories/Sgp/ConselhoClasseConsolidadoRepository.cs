@@ -106,7 +106,9 @@ namespace SME.SR.Data
 
                 if (semestre > 0)
                     query.AppendLine(" and t.semestre = @semestre");
-            }           
+            }
+
+            query.AppendLine("order by cccatn.id desc;");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var parametros = new { alunosCodigos, turmasCodigos, semestre };
