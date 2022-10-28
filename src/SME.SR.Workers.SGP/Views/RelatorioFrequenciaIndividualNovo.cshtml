@@ -82,9 +82,12 @@
             @if (!Model.ehInfantil)
             {
                 <td width="16%" class="fundo-cinza">COMPENSAÇÕES</td>
+                <td width="20%" class="fundo-cinza">% DE FREQUÊNCIA</td>
             }
-
-            <td width="20%" class="fundo-cinza">% DE FREQUÊNCIA</td>
+            else
+            {
+                <td width="20%" colspan="2" class="fundo-cinza">% DE FREQUÊNCIA</td>
+            }
         </tr>
     }
 
@@ -99,9 +102,12 @@
             @if (!Model.ehInfantil)
             {
                 <td>@dadosFrequencia.TotalCompensacoes</td>
+                <td>@dadosFrequencia.TotalPercentualFrequencia</td>
             }
-
-            <td>@dadosFrequencia.TotalPercentualFrequencia</td>
+            else
+            {
+                <td colspan="2">@dadosFrequencia.TotalPercentualFrequencia</td>
+            }
         </tr>
     }
 
@@ -148,9 +154,12 @@
             @if (!Model.ehInfantil)
             {
                 <td>@dadosBimestreFinal.TotalCompensacoesFinal</td>
+                <td>@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
             }
-
-            <td>@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
+            else
+            {
+                <td colspan="2">@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
+            }
         </tr>
     }
 
@@ -289,7 +298,7 @@
                 <table class="tabela-cabecalho">
 
                     @{
-                        int numeroColSpan = Model.ehInfantil ? 6 : 7;
+                        int numeroColSpan = 7;
 
                         if (!string.IsNullOrEmpty(aluno.NomeAluno))
                             MontarTituloAlunoOuBimestre(aluno.NomeAluno, numeroColSpan);
