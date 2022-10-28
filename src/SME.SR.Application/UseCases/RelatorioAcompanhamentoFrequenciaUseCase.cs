@@ -17,18 +17,8 @@ namespace SME.SR.Application
         {
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAcompanhamentoFrequencia;
 
-            // var filtroRelatorio = request.ObterObjetoFiltro<FiltroAcompanhamentoFrequenciaJustificativaDto>();
-            var filtroRelatorio = new FiltroAcompanhamentoFrequenciaJustificativaDto()
-            {
-                AlunosCodigos = new List<string> { "-99" },
-                Bimestre = "-99",
-                ComponenteCurricularId = "7",
-                DreCodigo = "108800",
-                ImprimirFrequenciaDiaria = true,
-                TurmaCodigo = "2497183",
-                UeCodigo = "092819"
-            };
-
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroAcompanhamentoFrequenciaJustificativaDto>();
+            
             var retornoRelatorio = await mediator.Send(new ObterDadosRelatorioAcompanhamentoFrequenciaCommand(filtroRelatorio));
 
             await mediator.Send(new GerarRelatorioAcompanhamentoFrequenciaCommand(retornoRelatorio, request.CodigoCorrelacao));
