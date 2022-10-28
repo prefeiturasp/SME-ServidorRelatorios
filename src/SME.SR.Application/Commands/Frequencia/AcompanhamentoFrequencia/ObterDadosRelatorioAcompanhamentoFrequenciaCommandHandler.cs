@@ -62,14 +62,20 @@ namespace SME.SR.Application
             if (alunosSelecionados != null && alunosSelecionados.Any())
             {
                 var codigosAlunos = alunosSelecionados.Select(s => s.Codigo).ToArray();
-                var dadosFrequencia = await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId));
+                var dadosFrequencia = (await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId))).ToList();
 
-                if (request.FiltroRelatorio.ImprimirFrequenciaDiaria)
+               if (request.FiltroRelatorio.ImprimirFrequenciaDiaria)
                     frequenciasDiarias = await mediator.Send(new ObterFrequenciaAlunoDiariaQuery(request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.ComponenteCurricularId));
                 else
                     dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.Bimestre));
 
-                await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, turma, periodosEscolares, aulasDadas, int.Parse(request.FiltroRelatorio.Bimestre));
+               var bimestre = int.Parse(request.FiltroRelatorio.Bimestre);
+               
+               var ehPorBimestre = bimestre > 0;
+            
+               var bimestres =  ehPorBimestre ? new[] { bimestre } : turma.ModalidadeCodigo == Modalidade.EJA ? new [] { 1, 2 } : new [] { 1, 2, 3, 4 };
+
+               await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, turma, periodosEscolares, aulasDadas, bimestres);
             }
             return relatorio;
         }
@@ -176,7 +182,7 @@ namespace SME.SR.Application
         private async Task<string> ObterNomeComponente(string componenteCodigo)
             => await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(Convert.ToInt64(componenteCodigo)));        
 
-        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares, int aulasDadas, int bimestre)
+        private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, List<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares, int aulasDadas, int[] bimestres)
         {
             foreach (var aluno in alunos.OrderBy(x => x.Nome))
             {
@@ -200,6 +206,18 @@ namespace SME.SR.Application
                     CodigoAluno = aluno.Codigo
                 };
 
+                foreach (var bimestre in bimestres)
+                {
+                    if (!dadosFrequenciaDto.Any(a => a.Bimestre == bimestre && a.CodigoAluno.Equals(aluno.Codigo)))
+                    {
+                        dadosFrequenciaDto.Add(new FrequenciaAlunoConsolidadoDto()
+                        {
+                            Bimestre = bimestre, CodigoAluno = aluno.Codigo, AnoBimestre = turma.AnoLetivo.ToString(),
+                            TotalAula = 0, TotalPresencas = 0, TotalRemotos = 0, TotalAusencias = 0, TotalCompensacoes = 0
+                        });
+                    }
+                }
+
                 if (dadosFrequenciaDto != null && dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
                 {
                     if (relatorio != null)
@@ -210,7 +228,7 @@ namespace SME.SR.Application
                 }
                 else
                 {
-                    var NomeBimestre = bimestre == 0 ? "Bimestre Final" : $"{bimestre}º Bimestre";
+                    var NomeBimestre = $"{bimestres.FirstOrDefault()}º Bimestre";
                     relatorioFrequenciaIndividualAlunosDto.Bimestres.Add(new RelatorioFrequenciaIndividualBimestresDto()
                     {
                         NomeBimestre = NomeBimestre,

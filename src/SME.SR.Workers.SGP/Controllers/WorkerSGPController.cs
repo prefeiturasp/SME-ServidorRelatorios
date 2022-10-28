@@ -303,6 +303,12 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/acompanhamento-frequencia", typeof(IRelatorioAcompanhamentoFrequenciaUseCase))]
         public async Task<bool> AcompanhamentoFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoFrequenciaUseCase useCase)
         {
+            request = new FiltroRelatorioDto
+            {
+                CodigoCorrelacao = new Guid("4ba6694e-45c9-4099-b375-a8c75300213e"),
+                UsuarioLogadoRF = "7510039",
+                RelatorioEscolaAqui = false,
+            };
             await useCase.Executar(request);
             return true;
         }
