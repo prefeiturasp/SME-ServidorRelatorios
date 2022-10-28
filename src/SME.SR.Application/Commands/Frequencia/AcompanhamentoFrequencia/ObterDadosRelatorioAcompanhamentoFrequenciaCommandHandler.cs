@@ -160,13 +160,6 @@ namespace SME.SR.Application
                             TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
                         };
 
-                        //if (frequenciasDiarias != null)
-                        //{
-                        //    bimestre.FrequenciasDiarias = frequenciasDiarias.ToList().FindAll(diaria =>
-                        //                                diaria.Bimestre == item.Bimestre &&
-                        //                                diaria.AlunoCodigo == item.CodigoAluno);
-                        //}
-
                         bimestre.FrequenciaDiaria.AddRange(ObterJustificativaFrequenciaDiaria(item.Bimestre, item.CodigoAluno));
 
                         if (dadosAusencia != null && dadosAusencia.Any())

@@ -50,6 +50,7 @@ namespace SME.SR.Application
 
                 var relatorio = MapearRelatorio(request);
                 var aluno = MapearAluno(alunoDto);
+                relatorio.ehTodosBimestre = ehTodosOsBimestres;
 
                 qtdeCaracteresPagina = qtdeCaracteresPorLinha * (request.Relatorio.ImprimirFrequenciaDiaria ? 10 : 5);
 
@@ -196,9 +197,7 @@ namespace SME.SR.Application
 
                     paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
                 }
-
-                relatorio.ehTodosBimestre = ehTodosOsBimestres;
-
+               
                 var ultimaPagina = paginasAluno.LastOrDefault().Pagina;
                 
                 paginasAluno.ForEach(f=> f.Total = ultimaPagina);
