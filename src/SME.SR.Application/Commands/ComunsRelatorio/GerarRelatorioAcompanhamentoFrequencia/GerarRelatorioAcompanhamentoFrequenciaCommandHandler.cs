@@ -68,7 +68,8 @@ namespace SME.SR.Application
                         relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
                     }
 
-                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * 3;
+                    var quantidadelinhasCabecalho = request.Relatorio.ImprimirFrequenciaDiaria && bimestreDto.FrequenciaDiaria.Any() ? 5 : 3;
+                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * quantidadelinhasCabecalho;
 
                     var possuiJustificativaParaAdicionar = true;
                     var lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
@@ -88,7 +89,7 @@ namespace SME.SR.Application
                         }
 
                         if (tamanhoMotivoAusencia > 0)
-                            tamanhoMotivoAusencia += qtdeCaracteresPorLinha;
+                            tamanhoMotivoAusencia += qtdeCaracteresPorLinha * 2;
 
                         qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia);
 
