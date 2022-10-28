@@ -25,6 +25,7 @@ namespace SME.SR.Data
         public DateTime DataSituacao { get; set; }
         public string NumeroAlunoChamada { get; set; }
         public bool PossuiDeficiencia { get; set; }
+        public DateTime DataMatricula { get; set; }
 
         public string SituacaoRelatorio =>
             $"{SituacaoMatricula} em {DataSituacao:dd/MM/yyyy}".ToUpper();
@@ -38,6 +39,19 @@ namespace SME.SR.Data
              $"{(SituacaoEspecial ? $"({CodigoSituacaoMatricula.GetAttribute<DisplayAttribute>().Name})" : "")}";
 
         public bool EstaAtivo(DateTime dataBase) => SituacoesAtiva.Contains(CodigoSituacaoMatricula) || dataBase.Date <= DataSituacao.Date;
+
+        public bool PossuiSituacaoAtiva()
+        {
+            return SituacoesAtiva.Contains(CodigoSituacaoMatricula);
+        }
+
+        public bool DeveMostrarNaChamada(DateTime dataAula, DateTime periodoInicio)
+        {
+            return MatriculaAtiva(dataAula) || (!PossuiSituacaoAtiva() && DataSituacao.Date > periodoInicio.Date);
+        }
+
+        public bool MatriculaAtiva(DateTime dataBase) => (SituacoesAtiva.Contains(CodigoSituacaoMatricula) && DataMatricula.Date <= dataBase.Date) ||
+                                                        (!SituacoesAtiva.Contains(CodigoSituacaoMatricula) && DataSituacao.Date >= dataBase.Date); 
 
         private SituacaoMatriculaAluno[] SituacoesEspeciais => new[] { SituacaoMatriculaAluno.Transferido,
                         SituacaoMatriculaAluno.RemanejadoSaida,
@@ -66,5 +80,6 @@ namespace SME.SR.Data
         }
 
         private bool SituacaoEspecial => !SituacoesAtiva.Contains(CodigoSituacaoMatricula) || SituacoesEspeciais.Contains(CodigoSituacaoMatricula);
+
     }
 }

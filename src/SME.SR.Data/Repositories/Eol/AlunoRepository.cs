@@ -19,7 +19,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMaricula(long turmaCodigo, DateTime dataReferencia)
+        public async Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMariculaParaSondagem(long turmaCodigo, DateTime dataReferencia)
         {
             var query = @"
 					SELECT

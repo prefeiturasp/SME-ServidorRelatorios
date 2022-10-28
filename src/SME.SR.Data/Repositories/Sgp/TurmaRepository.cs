@@ -1268,6 +1268,17 @@ namespace SME.SR.Data
 
             return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
         }
+
+        public async Task<IEnumerable<Aluno>> ObterDadosAlunosPorTurmaDataMatricula(string codigoTurma, DateTime dataMatricula)
+        {
+            var query = TurmaConsultas.DadosAlunosDataMatricula;
+            var parametros = new { CodigoTurma = codigoTurma, dataMatricula };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<Aluno>(query, parametros);
+            }
+        }
     }
 }
 
