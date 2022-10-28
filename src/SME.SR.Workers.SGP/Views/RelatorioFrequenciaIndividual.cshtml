@@ -194,8 +194,7 @@
     void MontarJustificativas(SME.SR.Infra.RelatorioFrequenciaIndividualBimestresDto bimestres, string nomeAluno, int numeroColSpan)
     {
         int contadorJustificativas = 0;
-        @foreach (var justificativas in bimestres.Justificativas)
-        {
+        @foreach (var justificativas in bimestres.JustFrequenciaDiaria       {
             bool quebra = VerificaQuebra();
 
             if (quebra)
