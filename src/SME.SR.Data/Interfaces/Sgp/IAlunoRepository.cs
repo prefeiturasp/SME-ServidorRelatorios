@@ -25,7 +25,7 @@ namespace SME.SR.Data.Interfaces
         
         Task<IEnumerable<AlunoNomeDto>> ObterNomesAlunosPorCodigos(string[] codigos);
         
-        Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMaricula(long turmaCodigo, DateTime dataReferencia);
+        Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMariculaParaSondagem(long turmaCodigo, DateTime dataReferencia);
         Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades);
         Task<IEnumerable<AlunoResponsavelAdesaoAEDto>> ObterAlunosResponsaveisPorTurmasCodigoParaRelatorioAdesao(long[] turmasCodigo, int anoLetivo);
         Task<IEnumerable<AlunoReduzidoDto>> ObterAlunosReduzidosPorTurmaEAluno(long turmaCodigo, long? alunoCodigo);
