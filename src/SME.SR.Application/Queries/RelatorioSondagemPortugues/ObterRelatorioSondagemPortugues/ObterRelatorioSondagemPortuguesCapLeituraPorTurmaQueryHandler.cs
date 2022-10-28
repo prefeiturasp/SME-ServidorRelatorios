@@ -49,7 +49,7 @@ namespace SME.SR.Application
 
             var perguntas = await perguntasAutoralRepository.ObterPerguntasPorGrupo(GrupoSondagemEnum.CapacidadeLeitura, ComponenteCurricularSondagemEnum.Portugues);
 
-            var alunosEol = await alunoRepository.ObterAlunosPorTurmaDataSituacaoMaricula(request.TurmaCodigo, dataDoPeriodo);
+            var alunosEol = await alunoRepository.ObterAlunosPorTurmaDataSituacaoMariculaParaSondagem(request.TurmaCodigo, dataDoPeriodo);
 
             ObterPerguntas(relatorio, perguntas);
 

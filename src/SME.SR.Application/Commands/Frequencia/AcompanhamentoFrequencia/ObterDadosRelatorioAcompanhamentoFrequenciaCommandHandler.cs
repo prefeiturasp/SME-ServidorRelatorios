@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -7,6 +8,7 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,7 +44,12 @@ namespace SME.SR.Application
             relatorio.ImprimirFrequenciaDiaria = request.FiltroRelatorio.ImprimirFrequenciaDiaria;
             if (request.FiltroRelatorio.AlunosCodigos.Contains("-99"))
             {
-                var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery() { TurmaCodigo = request.FiltroRelatorio.TurmaCodigo });
+                var periodo = periodosEscolares.Where(periodoEscolar => periodoEscolar.Bimestre == int.Parse(request.FiltroRelatorio.Bimestre)).FirstOrDefault();
+                var alunos = await mediator.Send(new ObterAlunosTurmaPorTurmaDataSituacaoMatriculaQuery(request.FiltroRelatorio.TurmaCodigo, periodo.PeriodoFim));
+
+                if (turma.AnoLetivo == DateTime.Now.Year)
+                    alunos = alunos.Where(a => a.DeveMostrarNaChamada(periodo.PeriodoFim, periodo.PeriodoInicio));
+                
                 if (alunos == null && !alunos.Any())
                     throw new NegocioException("Alunos não encontrados.");
 
