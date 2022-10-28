@@ -308,12 +308,12 @@
 
                             }
 
-                            if (bimestre.Justificativas.Count() > 0)
+                            if (bimestre.FrequenciaDiaria.Count() > 0)
                             {
                                 if (Model.ImprimirFrequenciaDiaria)
                                 {
                                     MontarTituloFrequenciasDiarias();
-                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    @foreach (var justificativa in bimestre.FrequenciaDiaria)
                                     {
                                         MontarLinhaFrequenciaDiaria(justificativa);
                                     }
@@ -321,7 +321,7 @@
                                 else
                                 {
                                     MontarTituloJustificativas();
-                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    @foreach (var justificativa in bimestre.FrequenciaDiaria)
                                     {
                                         MontarLinhaJustificativa(justificativa, aluno.NomeAluno, bimestre.NomeBimestre, numeroColSpan);
                                     }                                    

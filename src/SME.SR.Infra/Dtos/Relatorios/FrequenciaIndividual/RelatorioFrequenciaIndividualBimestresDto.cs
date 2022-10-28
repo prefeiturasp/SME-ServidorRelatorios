@@ -6,11 +6,11 @@ namespace SME.SR.Infra
     {
         public RelatorioFrequenciaIndividualBimestresDto()
         {
-            Justificativas = new List<RelatorioFrequenciaIndividualJustificativasDto>();
+            FrequenciaDiaria = new List<RelatorioFrequenciaIndividualJustificativasDto>();
         }
         public string NomeBimestre { get; set; }
         public RelatorioFrequenciaIndividualDadosFrequenciasDto DadosFrequencia { get; set; }
-        public List<RelatorioFrequenciaIndividualJustificativasDto> Justificativas { get; set; }
+        public List<RelatorioFrequenciaIndividualJustificativasDto> FrequenciaDiaria { get; set; }
     }
 }
 

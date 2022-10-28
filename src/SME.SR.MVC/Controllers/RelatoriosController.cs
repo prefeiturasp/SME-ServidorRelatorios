@@ -7638,7 +7638,7 @@ namespace SME.SR.MVC.Controllers
                 {
                     NomeBimestre = (i + 1) + "º bimestre - 2020",
                     DadosFrequencia = dadosFrequencia,
-                    Justificativas = justificativas,
+                    FrequenciaDiaria = justificativas,
                 };
                 bimestres.Add(bimestre);
             }
