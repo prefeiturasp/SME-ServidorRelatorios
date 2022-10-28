@@ -38,7 +38,7 @@ namespace SME.SR.Application
             var qtdeAlunos = request.Relatorio.Alunos.Count();
             var paginaAluno = 0;
             var ehTodosOsBimestres = false;
-            var maximoCaracteresPorJustificativa = 500;
+            var maximoCaracteresPorJustificativa = 437;
 
             foreach (var alunoDto in request.Relatorio.Alunos)
             {
@@ -58,7 +58,8 @@ namespace SME.SR.Application
                 {
                     var bimestreAluno = MapearBimestre(bimestreDto);
 
-                    var qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (qtdeCaracteresPorLinha * 3);
+                    var quantidadelinhasCabecalho = request.Relatorio.ImprimirFrequenciaDiaria && bimestreDto.FrequenciaDiaria.Any() ? 5 : 3;
+                    var qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (qtdeCaracteresPorLinha * quantidadelinhasCabecalho);
 
                     if (qtdeCaracteresPaginaProposta > limiteCaracteres)
                     {
@@ -68,10 +69,8 @@ namespace SME.SR.Application
                         relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
                     }
 
-                    var quantidadelinhasCabecalho = request.Relatorio.ImprimirFrequenciaDiaria && bimestreDto.FrequenciaDiaria.Any() ? 5 : 3;
                     qtdeCaracteresPagina += qtdeCaracteresPorLinha * quantidadelinhasCabecalho;
 
-                    var possuiJustificativaParaAdicionar = true;
                     var lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
                     foreach (var frequenciaDiariaDto in bimestreDto.FrequenciaDiaria)
                     {
@@ -156,13 +155,11 @@ namespace SME.SR.Application
                                     paginaAluno++;
                                     relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
                                     lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-                                    possuiJustificativaParaAdicionar = false;
                                     gerarPagina = false;
                                     qtdeCaracteresPagina = qtdeCaracteresPorLinha;
                                 }
                                 else
                                 {
-                                    possuiJustificativaParaAdicionar = true;
                                     tamanhoMotivoAusencia = lstJustificativasAusencias.LastOrDefault().Justificativa.Length;
                                     qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
                                 }
@@ -173,18 +170,15 @@ namespace SME.SR.Application
                         {
                             MapearFrequenciaDiaria(frequenciaDiariaDto, frequenciaDiaria);
                             lstJustificativasAusencias.Add(frequenciaDiaria);
-                            possuiJustificativaParaAdicionar = true;
                             tamanhoMotivoAusencia = frequenciaDiariaDto.Justificativa.Length;
                             qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
                         }
                     }
-                    if (possuiJustificativaParaAdicionar)
-                    {
-                        if (lstJustificativasAusencias.Any())
-                            bimestreAluno.FrequenciaDiaria.AddRange(lstJustificativasAusencias);
 
-                        lstBimestresAluno.Add(bimestreAluno);
-                    }
+                    if (lstJustificativasAusencias.Any())
+                        bimestreAluno.FrequenciaDiaria.AddRange(lstJustificativasAusencias);
+
+                    lstBimestresAluno.Add(bimestreAluno);
                 }
                 aluno.Bimestres = lstBimestresAluno;
 
