@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -138,6 +139,7 @@ namespace SME.SR.Application
         {
             if (dadosFrequenciaDto != null && dadosFrequenciaDto.Any())
             {
+
                 foreach (var item in dadosFrequenciaDto)
                 {
                     if (aluno.CodigoAluno == item.CodigoAluno)
@@ -157,8 +159,15 @@ namespace SME.SR.Application
                             TotalPercentualFrequencia = Math.Round(item.TotalPercentualFrequencia, 0).ToString(),
                             TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
                         };
-                      
-                        bimestre.Justificativas.AddRange(ObterJustificativaFrequenciaDiaria(item.Bimestre, item.CodigoAluno));
+
+                        //if (frequenciasDiarias != null)
+                        //{
+                        //    bimestre.FrequenciasDiarias = frequenciasDiarias.ToList().FindAll(diaria =>
+                        //                                diaria.Bimestre == item.Bimestre &&
+                        //                                diaria.AlunoCodigo == item.CodigoAluno);
+                        //}
+
+                        bimestre.FrequenciaDiaria.AddRange(ObterJustificativaFrequenciaDiaria(item.Bimestre, item.CodigoAluno));
 
                         if (dadosAusencia != null && dadosAusencia.Any())
                         {
@@ -166,7 +175,7 @@ namespace SME.SR.Application
                             {
                                 if (item.CodigoAluno == ausencia.CodigoAluno && item.Bimestre == ausencia.Bimestre)
                                 {
-                                    bimestre.Justificativas.Add(new RelatorioFrequenciaIndividualJustificativasDto
+                                    bimestre.FrequenciaDiaria.Add(new RelatorioFrequenciaIndividualJustificativasDto
                                     {
                                         DataAula = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
                                         Justificativa = UtilHtml.FormatarHtmlParaTexto(ausencia.MotivoAusencia),

@@ -115,16 +115,16 @@
         </tr>
     }
 
-    void MontarLinhaFrequenciaDiaria(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto justificativas)
+    void MontarLinhaFrequenciaDiaria(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto frequenciaDiaria)
     {
-        var temJustificativa = !string.IsNullOrEmpty(justificativas.Justificativa);
+        var temJustificativa = !string.IsNullOrEmpty(frequenciaDiaria.Justificativa);
         var rowspanDataAula = temJustificativa ? "3" : "1";
         <tr>
-            <td rowspan=@rowspanDataAula colspan="3">@justificativas.DataAula</td>
-            <td>@justificativas.QuantidadeAulas</td>
-            <td>@justificativas.QuantidadePresenca</td>
-            <td>@justificativas.QuantidadeRemoto</td>
-            <td>@justificativas.QuantidadeAusencia</td>
+            <td rowspan=@rowspanDataAula colspan="3">@frequenciaDiaria.DataAula</td>
+            <td>@frequenciaDiaria.QuantidadeAulas</td>
+            <td>@frequenciaDiaria.QuantidadePresenca</td>
+            <td>@frequenciaDiaria.QuantidadeRemoto</td>
+            <td>@frequenciaDiaria.QuantidadeAusencia</td>
         </tr>
         @if (temJustificativa)
         {
@@ -132,7 +132,7 @@
                 <td width="100%" colspan="4" class="fundo-cinza">JUSTIFICATIVA</td>
             </tr>
             <tr>
-                <td colspan="4">@justificativas.Justificativa</td>
+                <td colspan="4">@frequenciaDiaria.Justificativa</td>
             </tr>
         }
     }
@@ -308,20 +308,20 @@
 
                             }
 
-                            if (bimestre.Justificativas.Count() > 0)
+                            if (bimestre.FrequenciaDiaria.Count() > 0)
                             {
                                 if (Model.ImprimirFrequenciaDiaria)
                                 {
                                     MontarTituloFrequenciasDiarias();
-                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    @foreach (var frequenciaDiaria in bimestre.FrequenciaDiaria)
                                     {
-                                        MontarLinhaFrequenciaDiaria(justificativa);
+                                        MontarLinhaFrequenciaDiaria(frequenciaDiaria);
                                     }
                                 } 
                                 else
                                 {
                                     MontarTituloJustificativas();
-                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    @foreach (var justificativa in bimestre.FrequenciaDiaria)
                                     {
                                         MontarLinhaJustificativa(justificativa, aluno.NomeAluno, bimestre.NomeBimestre, numeroColSpan);
                                     }                                    
