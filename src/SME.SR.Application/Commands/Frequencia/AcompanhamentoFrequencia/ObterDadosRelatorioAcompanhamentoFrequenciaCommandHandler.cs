@@ -103,8 +103,35 @@ namespace SME.SR.Application
                 }
             }
 
-            var retorno = relatorio.Alunos.OrderBy(o => o.CodigoAluno);
-            return relatorio;
+            var relatorioFinal = new RelatorioFrequenciaIndividualDto()
+            {
+                ehInfantil = relatorio.ehInfantil,
+                Usuario = relatorio.Usuario,
+                ComponenteNome = relatorio.ComponenteNome,
+                DreNome = relatorio.DreNome,
+                ehTodosBimestre = relatorio.ehTodosBimestre,
+                RF = relatorio.RF,
+                TurmaNome = relatorio.TurmaNome,
+                UeNome = relatorio.UeNome,
+                ImprimirFrequenciaDiaria = relatorio.ImprimirFrequenciaDiaria,
+                Alunos = new List<RelatorioFrequenciaIndividualAlunosDto>(),
+            };
+            
+            var agrupamentoAlunos = relatorio.Alunos.OrderBy(p=> p.NomeAluno).GroupBy(o => o.CodigoAluno);
+            foreach (var agrupamentoAluno in agrupamentoAlunos)
+            {
+                var dadosFrequencia = agrupamentoAluno.FirstOrDefault();
+                dadosFrequencia.PercentualFrequenciaFinal =  agrupamentoAluno.Sum(s => s.PercentualFrequenciaFinal);
+                dadosFrequencia.TotalAusenciasFinal = agrupamentoAluno.Sum(s => s.TotalAusenciasFinal);
+                dadosFrequencia.TotalCompensacoesFinal = agrupamentoAluno.Sum(s => s.TotalCompensacoesFinal);
+                dadosFrequencia.TotalPresencasFinal = agrupamentoAluno.Sum(s => s.TotalPresencasFinal);
+                dadosFrequencia.TotalRemotoFinal = agrupamentoAluno.Sum(s => s.TotalRemotoFinal);
+                dadosFrequencia.TotalAulasDadasFinal = agrupamentoAluno.Sum(s => s.TotalAulasDadasFinal);
+                dadosFrequencia.Bimestres = agrupamentoAluno.SelectMany(s => s.Bimestres).ToList();
+                relatorioFinal.Alunos.Add(dadosFrequencia);
+            }
+            
+            return relatorioFinal;
         }
 
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, RelatorioFrequenciaIndividualAlunosDto aluno)
