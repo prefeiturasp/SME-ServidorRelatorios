@@ -1,0 +1,346 @@
+﻿@model SME.SR.Infra.RelatorioFrequenciaIndividualDto;
+
+@{
+    double contadorQuebrarPagina = 0;
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE REGISTRO INDIVIDUAL</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.DreNome</td>
+                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.UeNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='sem-border-top espaco-esquerda-15'>Turma: @Model.TurmaNome</td>
+                        <td width='80%' class='sem-border-top espaco-esquerda-15'>Componente Curricular: @Model.ComponenteNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Usuario</td>
+                        <td width='18%' class='sem-border-top espaco-esquerda-15'>RF: @Model.RF</td>
+                        <td width='22%' class='sem-border-top espaco-esquerda-15'>DATA: @Model.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+
+    void MontarTituloJustificativas()
+    {
+        int numeroColSpan = Model.ehInfantil ? 6 : 7;
+        <tr>
+            <td width="25%" class="fundo-cinza">DATA DA AUSÊNCIA</td>
+            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">JUSTIFICATIVA</td>
+        </tr>
+    }
+
+    void MontarTituloFrequenciasDiarias()
+    {        
+        <tr>
+            <td width="100%" class="fundo-cinza" colspan="7">FREQUÊNCIAS DIÁRIAS</td>
+        </tr>
+        <tr>
+            <td class="fundo-cinza" colspan="3" width="32%">DATA DA AULA</td>
+            <td class="fundo-cinza">AULAS DADAS</td>
+            <td class="fundo-cinza">PRESENÇAS</td>
+            <td class="fundo-cinza">REMOTO</td>
+            <td class="fundo-cinza">AUSÊNCIAS</td>
+        </tr>
+    }
+
+    void MontarTituloAlunoOuBimestre(string nome, int colspan)
+    {
+        <tr>
+            <td colspan="@colspan" class="fundo-cinza">@nome</td>
+        </tr>
+    }
+
+    void MontarTituloFrequenciaBimestre()
+    {        
+        <tr>
+            <td width="16%" class="fundo-cinza">AULAS DADAS</td>
+            <td width="16%" colspan="2" class="fundo-cinza">PRESENÇAS</td>
+            <td width="16%" class="fundo-cinza">REMOTO</td>
+            <td width="16%" class="fundo-cinza">AUSÊNCIAS</td>
+
+            @if (!Model.ehInfantil)
+            {
+                <td width="16%" class="fundo-cinza">COMPENSAÇÕES</td>
+            }
+
+            <td width="20%" class="fundo-cinza">% DE FREQUÊNCIA</td>
+        </tr>
+    }
+
+    void MontarLinhaFrequenciaBimestre(SME.SR.Infra.RelatorioFrequenciaIndividualDadosFrequenciasDto dadosFrequencia)
+    {
+        <tr>
+            <td>@dadosFrequencia.TotalAulasDadas</td>
+            <td colspan="2">@dadosFrequencia.TotalPresencas</td>
+            <td>@dadosFrequencia.TotalRemoto</td>
+            <td>@dadosFrequencia.TotalAusencias</td>
+
+            @if (!Model.ehInfantil)
+            {
+                <td>@dadosFrequencia.TotalCompensacoes</td>
+            }
+
+            <td>@dadosFrequencia.TotalPercentualFrequencia</td>
+        </tr>
+    }
+
+    void MontarLinhaJustificativa(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto justificativas, string nomeAluno, string nomeBimestre, int numeroColSpan)
+    {
+        int numeroColSpanJustificativa = Model.ehInfantil ? 6 : 7;
+
+        <tr>
+            <td width="10%">@justificativas.DataAula</td>
+            <td width="90%" colspan="@numeroColSpan" class="alinhar-esquerda espaco-esquerda-15">@justificativas.Justificativa</td>
+        </tr>
+    }
+
+    void MontarLinhaFrequenciaDiaria(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto justificativas)
+    {
+        var temJustificativa = !string.IsNullOrEmpty(justificativas.Justificativa);
+        var rowspanDataAula = temJustificativa ? "3" : "1";
+        <tr>
+            <td rowspan=@rowspanDataAula colspan="3">@justificativas.DataAula</td>
+            <td>@justificativas.QuantidadeAulas</td>
+            <td>@justificativas.QuantidadePresenca</td>
+            <td>@justificativas.QuantidadeRemoto</td>
+            <td>@justificativas.QuantidadeAusencia</td>
+        </tr>
+        @if (temJustificativa)
+        {
+            <tr>
+                <td width="100%" colspan="4" class="fundo-cinza">JUSTIFICATIVA</td>
+            </tr>
+            <tr>
+                <td colspan="4">@justificativas.Justificativa</td>
+            </tr>
+        }
+    }
+
+    void MontarLinhaBimestreFinal(SME.SR.Infra.RelatorioFrequenciaIndividualAlunosDto dadosBimestreFinal)
+    {
+        <tr>
+            <td>@dadosBimestreFinal.TotalAulasDadasFinal</td>
+            <td colspan="2">@dadosBimestreFinal.TotalPresencasFinal</td>
+            <td>@dadosBimestreFinal.TotalRemotoFinal</td>
+            <td>@dadosBimestreFinal.TotalAusenciasFinal</td>
+
+            @if (!Model.ehInfantil)
+            {
+                <td>@dadosBimestreFinal.TotalCompensacoesFinal</td>
+            }
+
+            <td>@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
+        </tr>
+    }
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Registro de frequência Individual</title>
+    </head>
+    <body class="body-relatorio">
+        <style>
+
+            .tblTopo th, td {
+                padding: 3px 0;
+                text-align: left;
+            }
+
+            .body-relatorio {
+                margin: 0.5cm auto;
+                font-family: Roboto Mono;
+                width: 21cm;
+                min-height: 29.7cm;
+                background: white;
+                color: #42474a;
+            }
+
+            .titulo-sgp {
+                text-align: right;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .titulo-relatorio {
+                text-align: right;
+                font-size: 14.5px;
+                margin-top: 7px;
+            }
+
+            .subtitulo-relatorio {
+                text-align: right;
+                font-size: 12.5px;
+                margin-top: 7px;
+            }
+
+            .header-pagina {
+                margin-top: 33px;
+                margin-bottom: 22px;
+            }
+
+                .header-pagina td {
+                    text-align: left;
+                }
+
+            table {
+                display: table;
+                width: 100%;
+                border-color: #42474a;
+                empty-cells: show;
+                border: none;
+                border-collapse: collapse;
+            }
+
+            thead {
+                background-color: #f3f3f3;
+            }
+
+            th {
+                border: 1px solid #42474a;
+                font-weight: normal;
+            }
+
+            td {
+                border: 1px solid #42474a;
+                text-align: center;
+            }
+
+            .tabela-cabecalho tr {
+                font-size: 12px;
+                height: 24px;
+            }
+
+            .mt-25 {
+                margin-top: 25px;
+            }
+
+            .fonte-14 {
+                font-size: 14px !important;
+            }
+
+            .alinhar-esquerda {
+                text-align: left;
+            }
+
+            .espaco-esquerda-15 {
+                padding-left: 15px;
+            }
+
+            .fundo-cinza {
+                background-color: #f3f3f3;
+            }
+
+            .negrito {
+                font-weight: bold;
+            }
+
+            .sem-border-bottom {
+                border-bottom: 0;
+            }
+
+            .sem-border-top {
+                border-top: 0;
+            }
+
+            .thLimpo {
+                background-color: #ffffff;
+                border: 0;
+                height: 22px;
+            }
+
+            .img-logo-sgp {
+                height: 64px;
+                float: left;
+            }
+
+            .centralizar {
+                text-align: center;
+            }
+        </style>
+        <div>
+
+            @foreach (var aluno in Model.Alunos)
+            {
+                MontarCabecalho();
+
+                <table class="tabela-cabecalho">
+
+                    @{
+                        int numeroColSpan = Model.ehInfantil ? 6 : 7;
+
+                        if (!string.IsNullOrEmpty(aluno.NomeAluno))
+                            MontarTituloAlunoOuBimestre(aluno.NomeAluno, numeroColSpan);
+                    }
+
+                    <tbody>
+                        @foreach (var bimestre in @aluno.Bimestres)
+                        {
+                            if (!string.IsNullOrEmpty(bimestre.NomeBimestre))
+                            {
+                                MontarTituloAlunoOuBimestre(bimestre.NomeBimestre, numeroColSpan);
+
+                                MontarTituloFrequenciaBimestre();
+
+                                MontarLinhaFrequenciaBimestre(bimestre.DadosFrequencia);
+
+                            }
+
+                            if (bimestre.Justificativas.Count() > 0)
+                            {
+                                if (Model.ImprimirFrequenciaDiaria)
+                                {
+                                    MontarTituloFrequenciasDiarias();
+                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    {
+                                        MontarLinhaFrequenciaDiaria(justificativa);
+                                    }
+                                } 
+                                else
+                                {
+                                    MontarTituloJustificativas();
+                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    {
+                                        MontarLinhaJustificativa(justificativa, aluno.NomeAluno, bimestre.NomeBimestre, numeroColSpan);
+                                    }                                    
+                                }
+                            }
+                        }
+                    </tbody>
+
+                    @{
+                        if (Model.ehTodosBimestre)
+                        {
+                            MontarTituloAlunoOuBimestre(aluno.TituloFinal, numeroColSpan);
+                            MontarTituloFrequenciaBimestre();
+                            MontarLinhaBimestreFinal(aluno);
+                        }
+                    }
+                </table>
+            }
+        </div>
+    </body>
+</html>
+}

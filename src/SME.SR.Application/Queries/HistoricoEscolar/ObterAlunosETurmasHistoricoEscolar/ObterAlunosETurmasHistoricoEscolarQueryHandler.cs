@@ -51,7 +51,7 @@ namespace SME.SR.Application
                             ModalidadeCodigo = turmaDoAluno.Modalidade,
                             EtapaEJA = turmaDoAluno.EtapaEJA,
                             TipoTurma = turmaDoAluno.TipoTurma,
-                            RegularCodigo = turmaDoAluno.TurmaRegularCodigo
+                            RegularCodigo = turmaDoAluno.RegularCodigo
                         });
                     }
 
@@ -95,7 +95,7 @@ namespace SME.SR.Application
                                 ModalidadeCodigo = turmaDoAluno.Modalidade,
                                 EtapaEJA = turmaDoAluno.EtapaEJA,
                                 TipoTurma = turmaDoAluno.TipoTurma,
-                                RegularCodigo = turmaDoAluno.TurmaRegularCodigo
+                                RegularCodigo = turmaDoAluno.RegularCodigo
                             });
                         }
 

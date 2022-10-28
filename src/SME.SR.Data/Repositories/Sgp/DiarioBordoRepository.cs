@@ -36,7 +36,7 @@ namespace SME.SR.Data
                         inner join turma t on t.turma_id = a.turma_id 
                         inner join ue on ue.id = t.ue_id 
                         inner join componente_curricular cc on cc.Id = a.disciplina_id::bigint
-                         left join diario_bordo db on db.aula_id  = a.id
+                         left join diario_bordo db on db.aula_id  = a.id and not db.excluido
                          left join tipo_calendario tc on tc.ano_letivo = @anoLetivo and tc.modalidade = @modalidadeCalendario and not tc.excluido
                          left join periodo_escolar pe on pe.tipo_calendario_id = tc.id and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                         where t.ano_letivo = @anoLetivo
@@ -116,7 +116,7 @@ namespace SME.SR.Data
                                 , a.tipo_aula  as TipoAula
                             from componentesCurricularesDatas cc
                             join aulas a on a.aula_id = cc.aula_id
-                            left join diario_bordo db on db.aula_id  = a.aula_id and db.componente_curricular_id = cc.componente_curricular_id 
+                            left join diario_bordo db on db.aula_id  = a.aula_id and db.componente_curricular_id = cc.componente_curricular_id and not db.excluido 
                             order by a.data_aula,ComponenteCurricular ";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
@@ -139,7 +139,7 @@ namespace SME.SR.Data
             var query = @"select max(d.criado_em)
                           from aula a 
                           inner join diario_bordo d on d.aula_id = a.id
-                         where not a.excluido
+                         where not a.excluido and not d.excluido
                            and a.professor_rf = @professorRf";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);

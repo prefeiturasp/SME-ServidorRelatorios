@@ -23,13 +23,13 @@ namespace SME.SR.Application
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesEolPorIdsQuery request, CancellationToken cancellationToken)
         {
             var lstComponentes = await componenteCurricularRepository.ListarComponentes();
-
+        
             lstComponentes = lstComponentes
                    .Where(w => request.ComponentesCurricularesIds.Contains(w.Codigo))
                    .ToList();
 
             var componenteIds = request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray();
-            var componentesTS = lstComponentes.Where(c => c.TerritorioSaber && (string.IsNullOrEmpty(c.Descricao)))
+            var componentesTS = lstComponentes.Where(c => c.TerritorioSaber)
                                 .Select(c => c.Codigo.ToString()).ToArray();
 
             IEnumerable<ComponenteCurricular> componentesTerritorioSaber = null;

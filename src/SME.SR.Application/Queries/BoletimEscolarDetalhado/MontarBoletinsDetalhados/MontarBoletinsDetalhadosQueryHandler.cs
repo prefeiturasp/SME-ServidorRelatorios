@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,12 +75,15 @@ namespace SME.SR.Application
                             TipoNota = tipoNota
                         };
 
-                        var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
+                        var componentesAluno = componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key);
                         foreach (var turmaAluno in aluno)
-                        {
-                            await MapearGruposEComponentes(
+                        {                       
+                            if (componentesAluno != null && componentesAluno.Any())
+                            {
+                                await MapearGruposEComponentes(
                                 componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()),
                                 boletimEscolarAlunoDto);
+                            }                            
                         }
 
                         var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
@@ -271,23 +276,27 @@ namespace SME.SR.Application
                         var notaFrequenciaComponente = notas?.Where(nf =>
                             nf.CodigoComponenteCurricular == componenteCurricular.Codigo);
 
+                        var notaFrequenciaComponenteComPeriodo = notaFrequenciaComponente
+                            .Where(nf => nf.PeriodoEscolar != null);
+
                         if (!notaFrequenciaComponente.Any())
                         {
                             notaFrequenciaComponente = notas?.Where(nf =>
                                 nf.CodigoComponenteCurricular == boletimEscolar.ComponenteCurricularRegencia.Codigo);
-                        }                           
+                        }
 
                         componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres,
-                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 1, periodoAtual);
+                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponenteComPeriodo, 1, periodoAtual);
                         componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres,
-                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 2, periodoAtual);
+                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponenteComPeriodo, 2, periodoAtual);
                         componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres,
-                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 3, periodoAtual);
+                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponenteComPeriodo, 3, periodoAtual);
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres,
-                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponente, 4, periodoAtual);
+                            ultimoBimestrePeriodoFechamento, notaFrequenciaComponenteComPeriodo, 4, periodoAtual);
 
                         componenteCurricular.NotaFinal =
                             ObterNotaBimestreFinal(conselhoClasseBimestres, notaFrequenciaComponente);
+
                         if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
                             boletimEscolar.PossuiNotaFinalRegencia = true;
                     }
@@ -311,14 +320,19 @@ namespace SME.SR.Application
                             var notasComponente =
                                 notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
 
+                            var notasComponenteComPeriodoEscolar =
+                                notasComponente?.Where(n => n.PeriodoEscolar != null) ?? null;
+
+                            bool transformarNotaEmConceito = !notasComponente.All(nc => nc.NotaConceito.Nota.HasValue);
+
                             componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres,
-                                ultimoBimestrePeriodoFechamento, notasComponente, 1, periodoAtual);
+                                 ultimoBimestrePeriodoFechamento, notasComponenteComPeriodoEscolar, 1, periodoAtual, transformarNotaEmConceito);
                             componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres,
-                                ultimoBimestrePeriodoFechamento, notasComponente, 2, periodoAtual);
+                                ultimoBimestrePeriodoFechamento, notasComponenteComPeriodoEscolar, 2, periodoAtual, transformarNotaEmConceito);
                             componenteCurricular.NotaBimestre3 = ObterNotaBimestre(conselhoClasseBimestres,
-                                ultimoBimestrePeriodoFechamento, notasComponente, 3, periodoAtual);
+                                ultimoBimestrePeriodoFechamento, notasComponenteComPeriodoEscolar, 3, periodoAtual, transformarNotaEmConceito);
                             componenteCurricular.NotaBimestre4 = ObterNotaBimestre(conselhoClasseBimestres,
-                                ultimoBimestrePeriodoFechamento, notasComponente, 4, periodoAtual);
+                                ultimoBimestrePeriodoFechamento, notasComponenteComPeriodoEscolar, 4, periodoAtual, transformarNotaEmConceito);
 
                             componenteCurricular.NotaFinal =
                                 ObterNotaBimestreFinal(conselhoClasseBimestres, notasComponente);
@@ -326,10 +340,7 @@ namespace SME.SR.Application
                                 boletimEscolar.PossuiNotaFinal = true;
                         }
                         else
-                        {
-                            componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia,
-                                false, false);
-                        }
+                            componenteCurricular.NotaFinal = ObterSintese(frequenciasAlunoComponente, mediasFrequencia, false, false);
 
                         if (componenteCurricular.Frequencia)
                         {
@@ -370,7 +381,7 @@ namespace SME.SR.Application
         }
 
         private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, int ultimoBimestrePeriodoFechamento,
-            IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre, int periodoAtual)
+            IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre, int periodoAtual, bool transformarNotaEmConceito = false)
         {
             var possuiConselho = VerificaPossuiConselho(conselhoClassBimestres, bimestre);
 
@@ -380,8 +391,10 @@ namespace SME.SR.Application
                     ?.FirstOrDefault(nf => nf.PeriodoEscolar != null && nf.PeriodoEscolar.Bimestre == bimestre)
                     ?.NotaConceito?.NotaConceito;
 
-            if (bimestre > periodoAtual && String.IsNullOrEmpty(nota) && notasComponente.Any(x => x.PeriodoEscolar.PeriodoInicio.Year == DateTime.Now.Year))
+            if (bimestre > periodoAtual && string.IsNullOrEmpty(nota) && notasComponente.Any(x => x.PeriodoEscolar.PeriodoInicio.Year == DateTime.Now.Year))
                 nota = "-";
+            else if (transformarNotaEmConceito && decimal.TryParse(nota, out decimal valor))
+                nota = ConverterNotaParaConceito(decimal.Parse(nota, CultureInfo.InvariantCulture)).conceito;
 
             return nota;
         }
@@ -392,7 +405,13 @@ namespace SME.SR.Application
             if (!VerificaPossuiConselho(conselhoClassBimestres, 0))
                 return "";
 
-            var nota = notasComponente?.FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito;
+            var nota = notasComponente
+                .OrderByDescending(nf => nf.fechamentoDisciplina)?
+                .FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito;
+
+            if (!notasComponente.All(nc => nc.NotaConceito.Nota.HasValue) && decimal.TryParse(nota, out decimal valor))
+                nota = ConverterNotaParaConceito(decimal.Parse(nota)).conceito;
+
             return !string.IsNullOrEmpty(nota) ? nota : "-";
         }
 
@@ -500,6 +519,17 @@ namespace SME.SR.Application
             else
                 return mediaFrequencias
                     .FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualFund2).Media;
+        }
+
+        private (int conceitoId, string conceito) ConverterNotaParaConceito(decimal nota)
+        {
+            if (nota < 5)
+                return (3, "NS");
+
+            if (nota < 7)
+                return (2, "S");
+
+            return (1, "P");
         }
     }
 }

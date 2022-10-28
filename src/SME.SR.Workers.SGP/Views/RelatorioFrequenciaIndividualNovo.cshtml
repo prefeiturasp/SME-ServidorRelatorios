@@ -10,7 +10,7 @@
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
         </div>
         <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-        <div class='titulo-relatorio'>RELATÓRIO DE REGISTRO INDIVIDUAL</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE FREQUÊNCIA INDIVIDUAL</div>
         <div class='fonte-14 header-pagina'>
             <table class='tblTopo'>
                 <tbody>
@@ -46,7 +46,21 @@
         int numeroColSpan = Model.ehInfantil ? 6 : 7;
         <tr>
             <td width="25%" class="fundo-cinza">DATA DA AUSÊNCIA</td>
-            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">MOTIVO</td>
+            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">JUSTIFICATIVA</td>
+        </tr>
+    }
+
+    void MontarTituloFrequenciasDiarias()
+    {        
+        <tr>
+            <td width="100%" class="fundo-cinza" colspan="7">FREQUÊNCIAS DIÁRIAS</td>
+        </tr>
+        <tr>
+            <td class="fundo-cinza" colspan="3" width="32%">DATA DA AULA</td>
+            <td class="fundo-cinza">AULAS DADAS</td>
+            <td class="fundo-cinza">PRESENÇAS</td>
+            <td class="fundo-cinza">REMOTO</td>
+            <td class="fundo-cinza">AUSÊNCIAS</td>
         </tr>
     }
 
@@ -58,7 +72,7 @@
     }
 
     void MontarTituloFrequenciaBimestre()
-    {
+    {        
         <tr>
             <td width="16%" class="fundo-cinza">AULAS DADAS</td>
             <td width="16%" colspan="2" class="fundo-cinza">PRESENÇAS</td>
@@ -96,9 +110,31 @@
         int numeroColSpanJustificativa = Model.ehInfantil ? 6 : 7;
 
         <tr>
-            <td width="10%">@justificativas.DataAusencia</td>
-            <td width="90%" colspan="@numeroColSpan" class="alinhar-esquerda espaco-esquerda-15">@justificativas.MotivoAusencia</td>
+            <td width="10%">@justificativas.DataAula</td>
+            <td width="90%" colspan="@numeroColSpan" class="alinhar-esquerda espaco-esquerda-15">@justificativas.Justificativa</td>
         </tr>
+    }
+
+    void MontarLinhaFrequenciaDiaria(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto justificativas)
+    {
+        var temJustificativa = !string.IsNullOrEmpty(justificativas.Justificativa);
+        var rowspanDataAula = temJustificativa ? "3" : "1";
+        <tr>
+            <td rowspan=@rowspanDataAula colspan="3">@justificativas.DataAula</td>
+            <td>@justificativas.QuantidadeAulas</td>
+            <td>@justificativas.QuantidadePresenca</td>
+            <td>@justificativas.QuantidadeRemoto</td>
+            <td>@justificativas.QuantidadeAusencia</td>
+        </tr>
+        @if (temJustificativa)
+        {
+            <tr>
+                <td width="100%" colspan="4" class="fundo-cinza">JUSTIFICATIVA</td>
+            </tr>
+            <tr>
+                <td colspan="4">@justificativas.Justificativa</td>
+            </tr>
+        }
     }
 
     void MontarLinhaBimestreFinal(SME.SR.Infra.RelatorioFrequenciaIndividualAlunosDto dadosBimestreFinal)
@@ -273,11 +309,23 @@
                             }
 
                             if (bimestre.Justificativas.Count() > 0)
-                                MontarTituloJustificativas();
-
-                            @foreach (var justificativa in bimestre.Justificativas)
                             {
-                                MontarLinhaJustificativa(justificativa, aluno.NomeAluno, bimestre.NomeBimestre, numeroColSpan);
+                                if (Model.ImprimirFrequenciaDiaria)
+                                {
+                                    MontarTituloFrequenciasDiarias();
+                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    {
+                                        MontarLinhaFrequenciaDiaria(justificativa);
+                                    }
+                                } 
+                                else
+                                {
+                                    MontarTituloJustificativas();
+                                    @foreach (var justificativa in bimestre.Justificativas)
+                                    {
+                                        MontarLinhaJustificativa(justificativa, aluno.NomeAluno, bimestre.NomeBimestre, numeroColSpan);
+                                    }                                    
+                                }
                             }
                         }
                     </tbody>
