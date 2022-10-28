@@ -1278,6 +1278,9 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryAsync<Aluno>(query, parametros);
 
+            }
+        }
+
         public async Task<IEnumerable<TurmaItinerarioEnsinoMedioDto>> ObterTurmasItinerarioEnsinoMedio()
         {
             var query = @"select id, nome, serie from turma_tipo_itinerario tti";
