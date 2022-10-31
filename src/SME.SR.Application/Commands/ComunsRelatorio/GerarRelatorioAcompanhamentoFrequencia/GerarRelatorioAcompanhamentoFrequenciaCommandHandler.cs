@@ -207,6 +207,10 @@ namespace SME.SR.Application
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
+
+            if (paginas?.Any() != true)
+                throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+            
             pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Registro Individual");
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
