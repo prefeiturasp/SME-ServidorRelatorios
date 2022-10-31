@@ -50,6 +50,7 @@ namespace SME.SR.Application
 
                 var relatorio = MapearRelatorio(request);
                 var aluno = MapearAluno(alunoDto);
+                relatorio.ehTodosBimestre = ehTodosOsBimestres;
 
                 qtdeCaracteresPagina = qtdeCaracteresPorLinha * (request.Relatorio.ImprimirFrequenciaDiaria ? 10 : 5);
 
@@ -87,7 +88,6 @@ namespace SME.SR.Application
                             frequenciaDiariaDto.Justificativa = motivoAusencia;
                             tamanhoMotivoAusencia = motivoAusencia.Length;
                         }
-
                         if (tamanhoMotivoAusencia > 0)
                             tamanhoMotivoAusencia += qtdeCaracteresPorLinha * 2;
 
@@ -186,17 +186,18 @@ namespace SME.SR.Application
                         lstBimestresAluno.Add(bimestreAluno);
                     }
                 }
-                aluno.Bimestres = lstBimestresAluno;
+                if (lstBimestresAluno.Any())
+                {
+                    aluno.Bimestres = lstBimestresAluno;
 
-                if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
-                    relatorio.Alunos.Add(aluno);
-                else
-                    relatorio.Alunos[0] = aluno;
+                    if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
+                        relatorio.Alunos.Add(aluno);
+                    else
+                        relatorio.Alunos[0] = aluno;
 
-                relatorio.ehTodosBimestre = ehTodosOsBimestres;
-
-                paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
-
+                    paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
+                }
+               
                 var ultimaPagina = paginasAluno.LastOrDefault().Pagina;
                 
                 paginasAluno.ForEach(f=> f.Total = ultimaPagina);
@@ -213,8 +214,8 @@ namespace SME.SR.Application
         }
 
         private void MapearFrequenciaDiaria(                        
-                        RelatorioFrequenciaIndividualJustificativasDto frequenciaDiariaOrigem,
-                        RelatorioFrequenciaIndividualJustificativasDto frequenciaDiariaDestino,
+            RelatorioFrequenciaIndividualJustificativasDto frequenciaDiariaOrigem,
+            RelatorioFrequenciaIndividualJustificativasDto frequenciaDiariaDestino,
                         string justificativa = "")
         {
             var descJustificativa = frequenciaDiariaOrigem.Justificativa ?? "";
