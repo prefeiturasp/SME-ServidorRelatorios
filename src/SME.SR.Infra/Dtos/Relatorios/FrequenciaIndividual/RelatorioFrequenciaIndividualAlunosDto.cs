@@ -19,5 +19,6 @@ namespace SME.SR.Infra
         public double PercentualFrequenciaFinal { get; set; }
         public string TituloFinal { get; set; }
         public List<RelatorioFrequenciaIndividualBimestresDto> Bimestres { get; set; }
+        public string DescricaoUltimoBimestre { get; set; }
     }
 }
