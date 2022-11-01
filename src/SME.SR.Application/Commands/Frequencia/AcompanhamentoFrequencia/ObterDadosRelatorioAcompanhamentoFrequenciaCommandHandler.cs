@@ -122,7 +122,7 @@ namespace SME.SR.Application
             foreach (var agrupamentoAluno in agrupamentoAlunos)
             {
                 var dadosFrequencia = agrupamentoAluno.FirstOrDefault();
-                dadosFrequencia.PercentualFrequenciaFinal =  agrupamentoAluno.Sum(s => s.PercentualFrequenciaFinal);
+                dadosFrequencia.PercentualFrequenciaFinal =  agrupamentoAluno.Average(s => s.PercentualFrequenciaFinal);
                 dadosFrequencia.TotalAusenciasFinal = agrupamentoAluno.Sum(s => s.TotalAusenciasFinal);
                 dadosFrequencia.TotalCompensacoesFinal = agrupamentoAluno.Sum(s => s.TotalCompensacoesFinal);
                 dadosFrequencia.TotalPresencasFinal = agrupamentoAluno.Sum(s => s.TotalPresencasFinal);
@@ -138,56 +138,56 @@ namespace SME.SR.Application
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, RelatorioFrequenciaIndividualAlunosDto aluno)
         {
             if (dadosFrequenciaDto != null && dadosFrequenciaDto.Any())
-            {
-
-                foreach (var item in dadosFrequenciaDto)
                 {
-                    if (aluno.CodigoAluno == item.CodigoAluno)
+
+                    foreach (var item in dadosFrequenciaDto)
                     {
-                        var bimestre = new RelatorioFrequenciaIndividualBimestresDto
+                        if (aluno.CodigoAluno == item.CodigoAluno)
                         {
-                            NomeBimestre = item.BimestreFormatado,
-                        };
-
-                        bimestre.DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto
-                        {
-                            TotalAulasDadas = item.TotalAula,
-                            TotalPresencas = item.TotalPresencas,
-                            TotalRemoto = item.TotalRemotos,
-                            TotalAusencias = item.TotalAusencias,
-                            TotalCompensacoes = item.TotalCompensacoes,
-                            TotalPercentualFrequencia = Math.Round(item.TotalPercentualFrequencia, 0).ToString(),
-                            TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
-                        };
-
-                        bimestre.FrequenciaDiaria.AddRange(ObterJustificativaFrequenciaDiaria(item.Bimestre, item.CodigoAluno));
-
-                        if (dadosAusencia != null && dadosAusencia.Any())
-                        {
-                            foreach (var ausencia in dadosAusencia)
+                            var bimestre = new RelatorioFrequenciaIndividualBimestresDto
                             {
-                                if (item.CodigoAluno == ausencia.CodigoAluno && item.Bimestre == ausencia.Bimestre)
+                                NomeBimestre = item.BimestreFormatado,
+                            };
+
+                            bimestre.DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto
+                            {
+                                TotalAulasDadas = item.TotalAula,
+                                TotalPresencas = item.TotalPresencas,
+                                TotalRemoto = item.TotalRemotos,
+                                TotalAusencias = item.TotalAusencias,
+                                TotalCompensacoes = item.TotalCompensacoes,
+                                TotalPercentualFrequencia = Math.Round(item.TotalPercentualFrequencia, 0).ToString(),
+                                TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
+                            };
+
+                            bimestre.FrequenciaDiaria.AddRange(ObterJustificativaFrequenciaDiaria(item.Bimestre, item.CodigoAluno));
+
+                            if (dadosAusencia != null && dadosAusencia.Any())
+                            {
+                                foreach (var ausencia in dadosAusencia)
                                 {
-                                    bimestre.FrequenciaDiaria.Add(new RelatorioFrequenciaIndividualJustificativasDto
+                                    if (item.CodigoAluno == ausencia.CodigoAluno && item.Bimestre == ausencia.Bimestre)
                                     {
-                                        DataAula = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
-                                        Justificativa = UtilHtml.FormatarHtmlParaTexto(ausencia.MotivoAusencia),
-                                    });
+                                        bimestre.FrequenciaDiaria.Add(new RelatorioFrequenciaIndividualJustificativasDto
+                                        {
+                                            DataAula = ausencia.DataAusencia.ToString("dd/MM/yyyy"),
+                                            Justificativa = UtilHtml.FormatarHtmlParaTexto(ausencia.MotivoAusencia),
+                                        });
+                                    }
                                 }
                             }
+                            aluno.Bimestres.Add(bimestre);
                         }
-                        aluno.Bimestres.Add(bimestre);
-                    }
 
+                    }
+                    aluno.TotalAulasDadasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAulasDadas);
+                    aluno.TotalAusenciasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAusencias);
+                    aluno.TotalCompensacoesFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalCompensacoes);
+                    aluno.TotalPresencasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalPresencas);
+                    aluno.TotalRemotoFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalRemoto);
+                    aluno.TituloFinal = $"FINAL - {dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.CodigoAluno).FirstOrDefault().AnoBimestre}";
+                    aluno.PercentualFrequenciaFinal = aluno.Bimestres.Average(x => long.Parse(x.DadosFrequencia.TotalPercentualFrequencia));
                 }
-                aluno.TotalAulasDadasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAulasDadas);
-                aluno.TotalAusenciasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalAusencias);
-                aluno.TotalCompensacoesFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalCompensacoes);
-                aluno.TotalPresencasFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalPresencas);
-                aluno.TotalRemotoFinal = aluno.Bimestres.Sum(x => x.DadosFrequencia.TotalRemoto);
-                aluno.TituloFinal = $"FINAL - {dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.CodigoAluno).FirstOrDefault().AnoBimestre}";
-                aluno.PercentualFrequenciaFinal = aluno.Bimestres.Average(x => long.Parse(x.DadosFrequencia.TotalPercentualFrequencia));
-            }
         }
 
         private IEnumerable<RelatorioFrequenciaIndividualJustificativasDto> ObterJustificativaFrequenciaDiaria(int bimestre, string codigoAluno)
@@ -233,63 +233,63 @@ namespace SME.SR.Application
         private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, List<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares, int aulasDadas, int bimestre)
         {
             foreach (var aluno in alunos.OrderBy(x => x.Nome))
-            {
-                var descricaoSituacaoAluno = string.Empty;
-
-                var situacaoAluno = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo));
-
-                if (situacaoAluno != null && situacaoAluno.Any())
                 {
-                    var dataUltimaSituacao = situacaoAluno.Max(a => a.DataSituacao);
+                    var descricaoSituacaoAluno = string.Empty;
 
-                    var ultimaSituacaoAluno = situacaoAluno.Where(x => x.DataSituacao == dataUltimaSituacao).FirstOrDefault();
+                    var situacaoAluno = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo));
 
-                    var ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
-
-                    descricaoSituacaoAluno = ultimaSituacaoAluno.Ativo ? string.Empty : await ObterSituacao(ultimaSituacaoAluno, ehInfantil, periodosEscolares, turma);
-                }
-                var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
-                {
-                    NomeAluno = $"{aluno.Nome} ({aluno.Codigo}) {descricaoSituacaoAluno}",
-                    CodigoAluno = aluno.Codigo
-                };
-
-                if (!dadosFrequenciaDto.Any(a => a.Bimestre == bimestre && a.CodigoAluno.Equals(aluno.Codigo)))
-                {
-                    dadosFrequenciaDto.Add(new FrequenciaAlunoConsolidadoDto()
+                    if (situacaoAluno != null && situacaoAluno.Any())
                     {
-                        Bimestre = bimestre, CodigoAluno = aluno.Codigo, AnoBimestre = turma.AnoLetivo.ToString(),
-                        TotalAula = 0, TotalPresencas = 0, TotalRemotos = 0, TotalAusencias = 0, TotalCompensacoes = 0
-                    });
-                }
+                        var dataUltimaSituacao = situacaoAluno.Max(a => a.DataSituacao);
 
-                if (dadosFrequenciaDto != null && dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
-                {
-                    if (relatorio != null)
-                    {
-                        MapearBimestre(dadosFrequenciaDto, relatorioFrequenciaIndividualAlunosDto);
+                        var ultimaSituacaoAluno = situacaoAluno.Where(x => x.DataSituacao == dataUltimaSituacao).FirstOrDefault();
+
+                        var ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
+
+                        descricaoSituacaoAluno = ultimaSituacaoAluno.Ativo ? string.Empty : await ObterSituacao(ultimaSituacaoAluno, ehInfantil, periodosEscolares, turma);
                     }
-                    relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
-                }
-                else
-                {
-                    var NomeBimestre = $"{bimestre}º Bimestre";
-                    relatorioFrequenciaIndividualAlunosDto.Bimestres.Add(new RelatorioFrequenciaIndividualBimestresDto()
+                    var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                     {
-                        NomeBimestre = NomeBimestre,
-                        DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto()
+                        NomeAluno = $"{aluno.Nome} ({aluno.Codigo}) {descricaoSituacaoAluno}",
+                        CodigoAluno = aluno.Codigo
+                    };
+
+                    if (!dadosFrequenciaDto.Any(a => a.Bimestre == bimestre && a.CodigoAluno.Equals(aluno.Codigo)))
+                    {
+                        dadosFrequenciaDto.Add(new FrequenciaAlunoConsolidadoDto()
                         {
-                            TotalAulasDadas = aulasDadas,
-                            TotalPresencas = 0,
-                            TotalRemoto = 0,
-                            TotalAusencias = 0,
-                            TotalCompensacoes = 0,
-                            TotalPercentualFrequencia = "",
+                            Bimestre = bimestre, CodigoAluno = aluno.Codigo, AnoBimestre = turma.AnoLetivo.ToString(),
+                            TotalAula = 0, TotalPresencas = 0, TotalRemotos = 0, TotalAusencias = 0, TotalCompensacoes = 0
+                        });
+                    }
+
+                    if (dadosFrequenciaDto != null && dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
+                    {
+                        if (relatorio != null)
+                        {
+                            MapearBimestre(dadosFrequenciaDto, relatorioFrequenciaIndividualAlunosDto);
                         }
-                    }); ;
-                    relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
+                        relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
+                    }
+                    else
+                    {
+                        var NomeBimestre = $"{bimestre}º Bimestre";
+                        relatorioFrequenciaIndividualAlunosDto.Bimestres.Add(new RelatorioFrequenciaIndividualBimestresDto()
+                        {
+                            NomeBimestre = NomeBimestre,
+                            DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto()
+                            {
+                                TotalAulasDadas = aulasDadas,
+                                TotalPresencas = 0,
+                                TotalRemoto = 0,
+                                TotalAusencias = 0,
+                                TotalCompensacoes = 0,
+                                TotalPercentualFrequencia = "",
+                            }
+                        }); ;
+                        relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
+                    }
                 }
-            }
         }
 
         private async Task<string> ObterSituacao(AlunoRetornoDto ultimaSituacaoAluno, bool ehInfantil, IEnumerable<PeriodoEscolar> periodosEscolares, Turma turma)
@@ -337,7 +337,7 @@ namespace SME.SR.Application
         private async Task<AlunoPorTurmaRespostaDto> ObterAluno(AlunoRetornoDto ultimaSituacaoAluno, Turma turma)
         {
             var alunos = await mediator.Send(new ObterAlunosPorTurmaEDataMatriculaQuery(turma.Codigo, ultimaSituacaoAluno.DataSituacao));
-            var aluno = alunos.SingleOrDefault(s => s.CodigoAluno.Equals(ultimaSituacaoAluno.AlunoCodigo.ToString()));
+            var aluno = alunos.OrderByDescending(o=> o.DataSituacao).FirstOrDefault(s => s.CodigoAluno.Equals(ultimaSituacaoAluno.AlunoCodigo.ToString()));
             return aluno;
         }
 

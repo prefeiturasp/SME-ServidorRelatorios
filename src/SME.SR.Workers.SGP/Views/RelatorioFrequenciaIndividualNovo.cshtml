@@ -2,7 +2,7 @@
 
 @{
     double contadorQuebrarPagina = 0;
-
+    
     void MontarCabecalho()
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 8;
@@ -305,6 +305,7 @@
                     }
 
                     <tbody>
+                        
                         @foreach (var bimestre in @aluno.Bimestres)
                         {
                             if (!string.IsNullOrEmpty(bimestre.NomeBimestre))
@@ -336,17 +337,17 @@
                                     }                                    
                                 }
                             }
+
+                            if (aluno.DescricaoUltimoBimestre.Equals(bimestre.NomeBimestre) && Model.ehTodosBimestre)
+                            {
+                                MontarTituloAlunoOuBimestre(aluno.TituloFinal, numeroColSpan);
+                                MontarTituloFrequenciaBimestre();
+                                MontarLinhaBimestreFinal(aluno); 
+                            }
                         }
                     </tbody>
 
-                    @{
-                        if (Model.ehTodosBimestre)
-                        {
-                            MontarTituloAlunoOuBimestre(aluno.TituloFinal, numeroColSpan);
-                            MontarTituloFrequenciaBimestre();
-                            MontarLinhaBimestreFinal(aluno);
-                        }
-                    }
+
                 </table>
             }
         </div>

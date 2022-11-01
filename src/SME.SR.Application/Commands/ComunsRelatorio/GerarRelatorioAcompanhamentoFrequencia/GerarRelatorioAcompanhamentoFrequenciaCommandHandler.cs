@@ -29,10 +29,11 @@ namespace SME.SR.Application
 
 
         protected override async Task Handle(GerarRelatorioAcompanhamentoFrequenciaCommand request, CancellationToken cancellationToken)
-        {
+        {          
+
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-            var limiteCaracteres = 4500;
+            var limiteCaracteres = 4700;
             var qtdeCaracteresPorLinha = 110;
             var qtdeCaracteresPagina = 0;
             var qtdeAlunos = request.Relatorio.Alunos.Count();
@@ -50,11 +51,15 @@ namespace SME.SR.Application
 
                 var relatorio = MapearRelatorio(request);
                 var aluno = MapearAluno(alunoDto);
+
                 relatorio.ehTodosBimestre = ehTodosOsBimestres;
 
                 qtdeCaracteresPagina = qtdeCaracteresPorLinha * (request.Relatorio.ImprimirFrequenciaDiaria ? 10 : 5);
 
                 var lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
+                
+                aluno.DescricaoUltimoBimestre = alunoDto.Bimestres.LastOrDefault().NomeBimestre;
+                
                 foreach (var bimestreDto in alunoDto.Bimestres)
                 {
                     var bimestreAluno = MapearBimestre(bimestreDto);
@@ -63,10 +68,14 @@ namespace SME.SR.Application
 
                     if (qtdeCaracteresPaginaProposta > limiteCaracteres)
                     {
+                        aluno.Bimestres = lstBimestresAluno;
+                        AdicionarAluno(relatorio, alunoDto, aluno);
                         paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
                         paginaAluno++;
                         relatorio.Alunos.FirstOrDefault().NomeAluno = string.Empty;
                         relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
+                        lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
+                        qtdeCaracteresPagina = qtdeCaracteresPorLinha * 3;
                     }
 
                     var quantidadelinhasCabecalho = request.Relatorio.ImprimirFrequenciaDiaria && bimestreDto.FrequenciaDiaria.Any() ? 5 : 3;
@@ -112,10 +121,7 @@ namespace SME.SR.Application
                             lstBimestresAluno.Add(bimestreAluno);
                             aluno.Bimestres = lstBimestresAluno;
 
-                            if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
-                                relatorio.Alunos.Add(aluno);
-                            else
-                                relatorio.Alunos[0] = aluno;
+                            AdicionarAluno(relatorio, alunoDto, aluno);
 
                             paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
                             paginaAluno++;
@@ -183,7 +189,8 @@ namespace SME.SR.Application
                         if (lstJustificativasAusencias.Any())
                             bimestreAluno.FrequenciaDiaria.AddRange(lstJustificativasAusencias);
 
-                        lstBimestresAluno.Add(bimestreAluno);
+                        if (!string.IsNullOrEmpty(bimestreAluno.NomeBimestre))
+                            lstBimestresAluno.Add(bimestreAluno);
                     }
                 }
                 if (lstBimestresAluno.Any())
@@ -197,7 +204,7 @@ namespace SME.SR.Application
 
                     paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
                 }
-               
+
                 var ultimaPagina = paginasAluno.LastOrDefault().Pagina;
                 
                 paginasAluno.ForEach(f=> f.Total = ultimaPagina);
@@ -211,6 +218,16 @@ namespace SME.SR.Application
             pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Registro Individual");
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+            
+        }
+
+        private static void AdicionarAluno(RelatorioFrequenciaIndividualDto relatorio,
+            RelatorioFrequenciaIndividualAlunosDto alunoDto, RelatorioFrequenciaIndividualAlunosDto aluno)
+        {
+            if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
+                relatorio.Alunos.Add(aluno);
+            else
+                relatorio.Alunos[0] = aluno;
         }
 
         private void MapearFrequenciaDiaria(                        
