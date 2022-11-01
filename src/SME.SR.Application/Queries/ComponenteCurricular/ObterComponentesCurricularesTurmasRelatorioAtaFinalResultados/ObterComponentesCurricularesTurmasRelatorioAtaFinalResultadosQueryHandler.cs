@@ -29,7 +29,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             var tipoCalendarioId = await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma.FirstOrDefault()));
             var totalAulasSemFrequencia = await mediator.Send(new ObterTotalAlunosSemFrequenciaPorTurmaBimestreQuery(componentesDasTurmas.Select(x => x.Codigo.ToString()).ToArray(), request.CodigosTurma, request.Bimestres));
 
-            var aulasDaTurma = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.CodigosTurma,tipoCalendarioId,componentesDasTurmas.Select(x=>x.Codigo.ToString()).ToArray(), request.Bimestres));
+            var aulasDaTurma = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.CodigosTurma, tipoCalendarioId, componentesDasTurmas.Select(x => x.Codigo.ToString()).ToArray(), request.Bimestres));
             var componentesComAula = aulasDaTurma.Select(a => a.ComponenteCurricularCodigo).ToList();
             componentesDasTurmas = componentesDasTurmas.Where(x => componentesComAula.Contains(x.Codigo.ToString())
             || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.Codigo.ToString())));
