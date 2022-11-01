@@ -77,7 +77,7 @@ namespace SME.SR.Application
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
 
-            List<int> tiposTurma = new List<int>() { (int)turma.TipoTurma };
+            var tiposTurma = new List<int>() { (int)turma.TipoTurma };
             if (turma.TipoTurma == TipoTurma.Regular)
                 tiposTurma.Add((int)TipoTurma.EdFisica);
             else
@@ -85,7 +85,8 @@ namespace SME.SR.Application
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, filtro.Semestre, tiposTurma.ToArray());
             if (notas == null || !notas.Any())
-                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();            
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
+
             var cabecalho = await ObterCabecalho(turma.Codigo);
             var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
           
@@ -93,7 +94,6 @@ namespace SME.SR.Application
             informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x=> x.Codigo == i.CodigoTurma.ToString()) && (i.CodigoSituacaoMatricula != SituacaoMatriculaAluno.RemanejadoSaida));
             notas = notas.Where(x => informacoesAlunos.Select(j => j.CodigoTurma.ToString()).ToList().Contains(x.Key));
             var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
-
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
             var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
 
@@ -101,10 +101,9 @@ namespace SME.SR.Application
             listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
 
             var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
-
             listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
 
-            List<ConselhoClasseParecerConclusivo> pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
+            var pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
 
             if (turma.TipoTurma == TipoTurma.Itinerarios2AAno)
             {
@@ -115,22 +114,16 @@ namespace SME.SR.Application
                 }
             }
             else
-            {
                 pareceresConclusivos.AddRange(await ObterPareceresConclusivos(turma.Codigo));
-            }
 
             var componentesDaTurma = componentesCurriculares.SelectMany(cc => cc).ToList();
             var componentesCurricularesPorTurma = ObterComponentesCurricularesTurma(componentesDaTurma);
-
             var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
-
             var frequenciaAlunos = await ObterFrequenciaComponente(listaTurmas.ToArray(), componentesCurricularesPorTurma, bimestres, tipoCalendarioId);
-
             var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
-
             var ordenacaoGrupoArea = await ObterOrdenacaoAreasConhecimento(componentesCurriculares, areasDoConhecimento);
 
-            List<NotaConceitoBimestreComponente> notasFinais = new List<NotaConceitoBimestreComponente>();
+            var notasFinais = new List<NotaConceitoBimestreComponente>();
             foreach (var nota in notas)
             {
                 notasFinais.AddRange(nota.Select(nf => new NotaConceitoBimestreComponente()
@@ -142,7 +135,8 @@ namespace SME.SR.Application
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
                     Sintese = nf.NotaConceito.Sintese,
-                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId
+                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
+                    CodigoTurma = nf.CodigoTurma
                 }));
             }
 
@@ -427,6 +421,8 @@ namespace SME.SR.Application
                                                                                   double compensacaoAusenciaPercentualFund2 = 0)
         {
             List<ConselhoClasseAtaFinalLinhaDto> linhas = new List<ConselhoClasseAtaFinalLinhaDto>();
+            var alunosCodigos = alunos.Select(a => a.CodigoAluno.ToString()).ToArray();
+            var turmaComplementar = await ObterTurmasComplementares(alunosCodigos,turma);
             for (var i = 0; i < alunos.Count(); i++)
             {
                 var aluno = alunos.ElementAt(i);
@@ -493,8 +489,10 @@ namespace SME.SR.Application
                             if (possuiConselho)
                             {
                                 var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                                        && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                        && c.Bimestre == bimestre);
+                                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                                            && c.Bimestre == bimestre);
+                                if (turmaComplementar != null && turmaComplementar.EhEja && turmaComplementar.RegularCodigo != null && componente.CodDisciplina == 6)
+                                    ConverterNotaAlunoNumerica(notaConceito);
 
                                 linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                         componente.CodDisciplina,
@@ -515,12 +513,28 @@ namespace SME.SR.Application
                         var frequenciaAluno = ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, componentesTurmas);
 
                         var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
-                        var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                                && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
-                                                aluno.Ativo);
 
-        
+                        var notaConceitofinal = new NotaConceitoBimestreComponente();
+
+                        if (turmaComplementar != null && turmaComplementar.EhEja && turmaComplementar.RegularCodigo != null && componente.CodDisciplina == 6)
+                        {
+                            notaConceitofinal = notasFinais.FirstOrDefault(c => c.CodigoTurma == turmaComplementar.Codigo
+                                            && c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) 
+                                            && aluno.Ativo);
+                            ConverterNotaAlunoNumerica(notaConceitofinal);
+                        }
+                        else
+                        {
+                            notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                            && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
+                                            aluno.Ativo);
+
+                        }
+
+
+
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
                                             possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (componente.LancaNota ?
@@ -581,6 +595,37 @@ namespace SME.SR.Application
             }
 
             return linhas;
+        }
+
+        private async Task<Turma> ObterTurmasComplementares(string[] alunosCodigos,Turma turma)
+        {
+            var turmasComplementares = await mediator.Send(new ObterTurmasComplementaresPorAlunosQuery(alunosCodigos));
+            var turmasComplementaresFiltrada = new Turma(); 
+            if (turmasComplementares != null)
+            {
+                turmasComplementaresFiltrada = turmasComplementares.FirstOrDefault(t => t.RegularCodigo == turma.Codigo && t.Semestre == turma.Semestre);
+            }
+            return turmasComplementaresFiltrada;
+        }
+
+        private void ConverterNotaAlunoNumerica(NotaConceitoBimestreComponente notasAluno)
+        {
+            if (notasAluno != null)
+                if (notasAluno.Nota >= 7)
+                {
+                    notasAluno.ConceitoId = 1;
+                    notasAluno.Conceito = "P";
+                }
+                else if (notasAluno.Nota >= 5 && notasAluno.Nota <= 7)
+                {
+                    notasAluno.ConceitoId = 2;
+                    notasAluno.Conceito = "S";
+                }
+                else
+                { 
+                    notasAluno.ConceitoId = 3;
+                    notasAluno.Conceito = "NS";
+                }
         }
 
         private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, 

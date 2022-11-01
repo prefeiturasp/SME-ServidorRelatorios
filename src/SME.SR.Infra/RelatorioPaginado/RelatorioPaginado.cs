@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace SME.SR.Infra
@@ -11,6 +12,8 @@ namespace SME.SR.Infra
         protected List<Pagina> ListaDePaginas { get; private set; }
 
         protected List<Func<T, object>> ListaDeAgrupamento { get; set; }
+
+        protected int TotalDeAgrupamentoOculto { get; set; }
 
         public List<Pagina> Paginas()
         {
@@ -30,6 +33,10 @@ namespace SME.SR.Infra
 
         protected abstract int ObtenhaQuantidadeDeLinha();
 
+        protected abstract bool RelatorioPorQuantidadeDeLinha();
+
+        protected abstract Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidadeSemAgrupamentoCalculado(List<IColuna> listaDeColunas);
+
         protected int ObtenhaIndicePaginaAtual()
         {
             return this.ListaDePaginas.Any() ? this.ListaDePaginas.Max(x => x.Indice) : 0;
@@ -42,15 +49,30 @@ namespace SME.SR.Infra
 
         protected Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidade()
         {
+            return ObtenhaDicionarioPorQuantidade(null);
+        }
+
+        protected Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidade(List<IColuna> listaDeColunas)
+        {
             if (ListaDeAgrupamento.Any())
             {
                 return ObtenhaDicionarioPorQuantidadePorAgrupamento();
             }
 
-            return ObtenhaDicionarioPorQuantidadeSemAgrupamento();
+            return ObtenhaDicionarioPorQuantidadeSemAgrupamento(listaDeColunas);
         }
 
-        protected Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidadeSemAgrupamento()
+        protected Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidadeSemAgrupamento(List<IColuna> listaDeColunas)
+        {
+            if (RelatorioPorQuantidadeDeLinha())
+            {
+                return ObtenhaDicionarioPorQuantidadeSemAgrupamentoPorLinha();
+            }
+
+            return ObtenhaDicionarioPorQuantidadeSemAgrupamentoCalculado(listaDeColunas);
+        }
+
+        protected Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidadeSemAgrupamentoPorLinha()
         {
             Dictionary<int, List<T>> dicionarioValores = new Dictionary<int, List<T>>();
             var totalDeLinhas = ObtenhaQuantidadeDeLinha();
@@ -74,7 +96,6 @@ namespace SME.SR.Infra
 
             return dicionarioValores;
         }
-
 
         protected Dictionary<int, List<T>> ObtenhaDicionarioPorQuantidadePorAgrupamento()
         {
@@ -100,7 +121,7 @@ namespace SME.SR.Infra
                     if (totalDeRegistro >= totalDeLinhas)
                     {
                         pagina++;
-                        totalDeRegistro = ListaDeAgrupamento.Count - 1;
+                        totalDeRegistro = ListaDeAgrupamento.Count - TotalDeAgrupamentoOculto;
                         dicionarioValores.Add(pagina, new List<T>());
                     }
                 }

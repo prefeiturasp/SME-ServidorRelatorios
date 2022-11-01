@@ -19,6 +19,8 @@ namespace SME.SR.Infra
 
         public List<string> ListaDeAtributos { get; set; }
 
+        public string NomeClasse { get; set; }
+
         public string ObtenhaValorDaPropriedade(object objeto)
         {
             if (Propriedade != null)
@@ -34,5 +36,14 @@ namespace SME.SR.Infra
             return Largura.ToString() + unidade;
         }
 
+        public string ObtenhaClasse()
+        {
+            return string.IsNullOrEmpty(NomeClasse) ? string.Empty : $"class='{NomeClasse}'";
+        }
+
+        public bool ContemPropriedade()
+        {
+            return Propriedade != null;
+        }
     }
 }

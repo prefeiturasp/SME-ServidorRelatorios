@@ -41,11 +41,13 @@ namespace SME.SR.Application
             if (request.PeriodoEscolar != null)
             {
                 // Frequencia do bimestre
-                frequenciaAluno = await frequenciaRepository.ObterPorAlunoDataDisciplina(request.CodigoAluno,
-                                                                                    request.PeriodoEscolar.PeriodoFim,
-                                                                                    TipoFrequenciaAluno.PorDisciplina,
-                                                                                    request.ComponenteCurricularCodigo,
-                                                                                    request.Turma.Codigo);
+                frequenciaAluno = await frequenciaRepository.ObterPorAlunoTurmasDisciplinasDataAsync(request.CodigoAluno,
+                    TipoFrequenciaAluno.PorDisciplina,
+                    request.ComponenteCurricularCodigo,
+                    request.Turma.Codigo,
+                    request.PeriodoEscolar.Bimestre);
+                
+                
                 if (frequenciaAluno != null)
                     return frequenciaAluno;
 
@@ -72,11 +74,11 @@ namespace SME.SR.Application
 
                 foreach (var periodoEscolarTurma in periodosEscolaresTurma)
                 {
-                    var frequenciaAlunoPeriodo = await frequenciaRepository.ObterPorAlunoBimestreAsync(request.CodigoAluno,
-                                                                                    periodoEscolarTurma.Bimestre,
-                                                                                    TipoFrequenciaAluno.PorDisciplina,
-                                                                                    request.ComponenteCurricularCodigo,
-                                                                                    request.Turma.Codigo);
+                    var frequenciaAlunoPeriodo = await frequenciaRepository.ObterPorAlunoTurmasDisciplinasDataAsync(request.CodigoAluno,
+                        TipoFrequenciaAluno.PorDisciplina,
+                        request.ComponenteCurricularCodigo,
+                        request.Turma.Codigo,
+                        request.PeriodoEscolar.Bimestre);
 
                     frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolarTurma.Bimestre, frequenciaAlunoPeriodo != null ? frequenciaAlunoPeriodo.PercentualFrequencia : 100);
 
