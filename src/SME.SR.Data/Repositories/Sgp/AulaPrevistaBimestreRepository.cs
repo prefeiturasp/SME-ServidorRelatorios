@@ -32,9 +32,10 @@ namespace SME.SR.Data
                  inner join turma t on t.id = @turmaId
                  inner join componente_curricular cc on cc.id = @componenteCurricularId
                   left join (
-  	                select ap.tipo_calendario_id, ap.disciplina_id, ap.turma_id, apb.bimestre, apb.aulas_previstas
+  	                select distinct ap.tipo_calendario_id, ap.disciplina_id, ap.turma_id, apb.bimestre, apb.aulas_previstas
   	                  from aula_prevista ap
   	                 inner join aula_prevista_bimestre apb on apb.aula_prevista_id = ap.id
+                     where not ap.excluido and not apb.excluido
                   ) pv on pv.tipo_calendario_id = p.tipo_calendario_id
                      and pv.bimestre = p.bimestre
                      and pv.disciplina_id = cc.id::text
