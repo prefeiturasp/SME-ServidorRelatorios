@@ -17,6 +17,11 @@ namespace SME.SR.Application
         private readonly IConverter converter;
         private readonly IHtmlHelper htmlHelper;
         private readonly IServicoFila servicoFila;
+        private const int LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO = 4;
+        private const int LINHAS_CABECALHO_FREQUENCIA_DIARIA = 2;
+        private const int LINHAS_CABECALHO_BIMESTRE = 3;
+        private const int QUANTIDADE_CARACTERES_POR_LINHA_JUSTIFICATIVA = 80;
+        private const int QUANTIDADE_LINHAS_JUSTIFICATIVA = 7;
 
         public GerarRelatorioAcompanhamentoFrequenciaCommandHandler(IConverter converter,
                                                        IHtmlHelper htmlHelper,
@@ -63,7 +68,7 @@ namespace SME.SR.Application
                 {
                     var bimestreAluno = MapearBimestre(bimestreDto);
 
-                    var qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (qtdeCaracteresPorLinha * 3);
+                    var qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (qtdeCaracteresPorLinha * LINHAS_CABECALHO_BIMESTRE);
 
                     if (qtdeCaracteresPaginaProposta > limiteCaracteres)
                     {
@@ -74,13 +79,13 @@ namespace SME.SR.Application
                         relatorio.Alunos.FirstOrDefault().NomeAluno = string.Empty;
                         relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
                         lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
-                        qtdeCaracteresPagina = qtdeCaracteresPorLinha * 4; //cabeçalho padrão + linha em branco
+                        qtdeCaracteresPagina = qtdeCaracteresPorLinha * LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO;
                     }
 
-                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * 3; //linhas do bimestre
+                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * LINHAS_CABECALHO_BIMESTRE;
                     
                     var quantidadelinhasCabecalho = request.Relatorio.ImprimirFrequenciaDiaria && bimestreDto.FrequenciaDiaria.Any() ? 2 : 0;
-                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * quantidadelinhasCabecalho; //linhas da frequência diária
+                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * quantidadelinhasCabecalho;
 
                     var possuiFrequenciaDiariaParaAdicionar = true;
                     var lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
@@ -101,7 +106,7 @@ namespace SME.SR.Application
 
                         if (tamanhoJustificativaAusencia > 0)
                         {
-                            tamanhoJustificativaAusencia += 80 * 7;
+                            tamanhoJustificativaAusencia += QUANTIDADE_CARACTERES_POR_LINHA_JUSTIFICATIVA * QUANTIDADE_LINHAS_JUSTIFICATIVA;
                             qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + tamanhoJustificativaAusencia;
                         }
                         else
@@ -138,7 +143,7 @@ namespace SME.SR.Application
                             bimestreAluno = new RelatorioFrequenciaIndividualBimestresDto();
                             lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
                             lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-                            qtdeCaracteresPagina  = qtdeCaracteresPorLinha * 4; //Cabeçalho padrão + linha em branco
+                            qtdeCaracteresPagina  = qtdeCaracteresPorLinha * LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO;
                             
                             if (!string.IsNullOrEmpty(ausenciaRemanescente))
                             {
@@ -147,7 +152,7 @@ namespace SME.SR.Application
                                 qtdeCaracteresPagina += (int)Math.Round(decimal.Parse(ausenciaRemanescente.Length.ToString()) / qtdeCaracteresPorLinha,MidpointRounding.ToEven);
                             }
                             
-                            qtdeCaracteresPagina  += qtdeCaracteresPorLinha * 2; //Cabeçalho da frequência diária                           
+                            qtdeCaracteresPagina  += qtdeCaracteresPorLinha * LINHAS_CABECALHO_FREQUENCIA_DIARIA;                           
                         }
                         else
                         {
@@ -191,9 +196,8 @@ namespace SME.SR.Application
             pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Registro Individual");
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
-
         }
-
+        
         private static void AdicionarAluno(RelatorioFrequenciaIndividualDto relatorio,
             RelatorioFrequenciaIndividualAlunosDto alunoDto, RelatorioFrequenciaIndividualAlunosDto aluno)
         {
