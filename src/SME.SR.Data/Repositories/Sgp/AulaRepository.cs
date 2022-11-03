@@ -291,7 +291,7 @@ namespace SME.SR.Data
 
         public async Task<int> ObterDiasAulaCriadasPeriodoInicioEFim(long turmaId, long componenteCurricularId, DateTime dataInicio, DateTime dataFim)
         {
-            var query = @"select coalesce(count(a.quantidade),0) from aula a
+            var query = @"select coalesce(sum(a.quantidade),0) from aula a
 	                        inner join turma t on a.turma_id = t.turma_id 
 	                        where 
 		                        disciplina_id = @componenteCurricularId::varchar and 
