@@ -19,6 +19,8 @@ namespace SME.SR.Infra
 
         public List<string> ListaDeAtributos { get; set; }
 
+        public string NomeClasse { get; set; }
+
         public string ObtenhaValorDaPropriedade(object objeto)
         {
             if (Propriedade != null)
@@ -28,7 +30,8 @@ namespace SME.SR.Infra
 
             return string.Empty;
         }
-        public string ObtenhaLarguraComUnidade() {
+        public string ObtenhaLarguraComUnidade()
+        {
             var unidade = UnidadeDeTamanho == EnumUnidadeDeTamanho.PERCENTUAL ? "%" : "px";
 
             return Largura.ToString() + unidade;
