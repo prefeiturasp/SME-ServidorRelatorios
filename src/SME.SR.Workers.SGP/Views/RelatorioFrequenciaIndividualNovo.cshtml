@@ -154,11 +154,11 @@
             @if (!Model.ehInfantil)
             {
                 <td>@dadosBimestreFinal.TotalCompensacoesFinal</td>
-                <td>@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
+                <td>@Math.Round(dadosBimestreFinal.PercentualFrequenciaFinal,0).ToString() %</td>
             }
             else
             {
-                <td colspan="2">@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
+                <td colspan="2">@Math.Round(dadosBimestreFinal.PercentualFrequenciaFinal,0).ToString() %</td>
             }
         </tr>
     }
@@ -337,14 +337,14 @@
                                     }                                    
                                 }
                             }
-
-                            if (aluno.DescricaoUltimoBimestre.Equals(bimestre.NomeBimestre) && Model.ehTodosBimestre)
+                            if (bimestre.ExibirFinal)
                             {
                                 MontarTituloAlunoOuBimestre(aluno.TituloFinal, numeroColSpan);
                                 MontarTituloFrequenciaBimestre();
                                 MontarLinhaBimestreFinal(aluno); 
-                            }
+                            } 
                         }
+
                     </tbody>
 
 
