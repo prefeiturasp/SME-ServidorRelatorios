@@ -404,7 +404,7 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntasAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            var listaPerguntas = (await relatorioSondagemComponentePorTurmaRepository.ObterPerguntas(request.AnoLetivo, int.Parse(request.Ano))).Distinct();
+            var listaPerguntas = (await relatorioSondagemComponentePorTurmaRepository.ObterPerguntas(request.AnoLetivo, int.Parse(request.Ano), request.Bimestre)).Distinct();
 
             var retorno = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>();
 
