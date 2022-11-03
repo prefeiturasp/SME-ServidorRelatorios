@@ -5,7 +5,7 @@ namespace SME.SR.Application
 {
     public class ObterTotalAlunosPorUeAnoSondagemQuery : IRequest<int>
     {
-        public ObterTotalAlunosPorUeAnoSondagemQuery(string ano, string ueCodigo, int anoLetivo, DateTime dataReferencia, long dreCodigo, int[] modalidades)
+        public ObterTotalAlunosPorUeAnoSondagemQuery(string ano, string ueCodigo, int anoLetivo, DateTime dataReferencia, long dreCodigo, int[] modalidades, bool consideraHistorico = false)
         {
             Ano = ano;
             UeCodigo = ueCodigo;
@@ -13,6 +13,7 @@ namespace SME.SR.Application
             DataReferencia = dataReferencia;
             DreCodigo = dreCodigo;
             Modalidades = modalidades;
+            ConsideraHistorico = consideraHistorico;
         }
 
         public string Ano { get; set; }
@@ -21,5 +22,6 @@ namespace SME.SR.Application
         public int AnoLetivo { get; internal set; }
         public DateTime DataReferencia { get; set; }
         public int[] Modalidades { get; set; }
+        public bool ConsideraHistorico { get; set; }
     }
 }

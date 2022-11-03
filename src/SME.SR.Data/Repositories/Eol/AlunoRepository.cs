@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SME.SR.Data.Extensions;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -294,43 +295,21 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
 
         }
-        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades)
+        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades, bool consideraHistorico = false)
         {
             StringBuilder query = new StringBuilder();
             if (anoLetivo < DateTime.Now.Date.Year)
             {
-                query.AppendLine($@"
-									WITH lista AS (
-									SELECT DISTINCT mte.cd_turma_escola,
-									m.cd_aluno
-									FROM v_historico_matricula_cotic m
-									INNER JOIN historico_matricula_turma_escola mte
-									ON m.cd_matricula = mte.cd_matricula
-									INNER JOIN turma_escola te
-									ON mte.cd_turma_escola = te.cd_turma_escola
-									INNER JOIN serie_turma_escola ste
-									ON te.cd_turma_escola = ste.cd_turma_escola
-									INNER JOIN serie_turma_grade stg
-									ON ste.cd_serie_ensino = stg.cd_serie_ensino
-									INNER JOIN serie_ensino se
-									ON stg.cd_serie_ensino = se.cd_serie_ensino
-									INNER JOIN etapa_ensino ee
-									ON se.cd_etapa_ensino = ee.cd_etapa_ensino
-									INNER JOIN v_cadastro_unidade_educacao ue
-									ON te.cd_escola = ue.cd_unidade_educacao
-									WHERE te.an_letivo = @anoLetivo AND
-									te.cd_tipo_turma = 1 AND
-									mte.cd_situacao_aluno in (5, 10) AND
-									se.sg_resumida_serie = @anoTurma AND
-									ee.cd_etapa_ensino in (@modalidades)
-									{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
-									{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})
-						SELECT COUNT(DISTINCT cd_aluno) 
-								FROM lista ");
+				query.AppendLine("WITH lista AS(");
+				query.AppendLine(ObtenhaQueryAlunosPorTurmasHistorico(dreCodigo, ueCodigo));
+				query.AppendLine(")");
+				query.AppendLine("SELECT COUNT(DISTINCT cd_aluno) FROM lista");
             }
             else
             {
-                query.AppendLine($@" WITH lista AS (
+				var queryHistorica = consideraHistorico ? " UNION " + ObtenhaQueryAlunosPorTurmasHistorico(dreCodigo, ueCodigo) : string.Empty; 
+
+				query.AppendLine($@" WITH lista AS (
 										SELECT DISTINCT mte.cd_turma_escola,
 										m.cd_aluno
 										FROM v_matricula_cotic m
@@ -355,19 +334,20 @@ namespace SME.SR.Data
 										se.sg_resumida_serie = @anoTurma AND
 										ee.cd_etapa_ensino in (@modalidades)
 										{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
-										{ (!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})
+										{ (!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}
+										{queryHistorica})
 										SELECT COUNT(DISTINCT cd_aluno)
 										FROM lista ");
             }
 
-            var parametros = new { dreCodigo, ueCodigo, anoTurma, anoLetivo, dataFim = dataReferencia };
+			var parametros = new { dreCodigo, ueCodigo, anoTurma = anoTurma.ToDbChar(1), anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
             return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString().Replace("@modalidades", string.Join(',', modalidades)), parametros, commandTimeout: 600);
         }
 
-        public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
+		public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
         {
             var query = AlunoConsultas.DadosAluno;
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
@@ -1646,5 +1626,33 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'"), new { codigoEscola, anoLetivo });
             }
         }
-    }
+
+		private string ObtenhaQueryAlunosPorTurmasHistorico(long dreCodigo, string ueCodigo)
+		{
+			return $@" SELECT DISTINCT mte.cd_turma_escola,
+									m.cd_aluno
+									FROM v_historico_matricula_cotic m
+									INNER JOIN historico_matricula_turma_escola mte
+									ON m.cd_matricula = mte.cd_matricula
+									INNER JOIN turma_escola te
+									ON mte.cd_turma_escola = te.cd_turma_escola
+									INNER JOIN serie_turma_escola ste
+									ON te.cd_turma_escola = ste.cd_turma_escola
+									INNER JOIN serie_turma_grade stg
+									ON ste.cd_serie_ensino = stg.cd_serie_ensino
+									INNER JOIN serie_ensino se
+									ON stg.cd_serie_ensino = se.cd_serie_ensino
+									INNER JOIN etapa_ensino ee
+									ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+									INNER JOIN v_cadastro_unidade_educacao ue
+									ON te.cd_escola = ue.cd_unidade_educacao
+									WHERE te.an_letivo = @anoLetivo AND
+									te.cd_tipo_turma = 1 AND
+									mte.cd_situacao_aluno in (5, 10) AND
+									se.sg_resumida_serie = @anoTurma AND
+									ee.cd_etapa_ensino in (@modalidades)
+									{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
+									{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}";
+		}
+	}
 }
