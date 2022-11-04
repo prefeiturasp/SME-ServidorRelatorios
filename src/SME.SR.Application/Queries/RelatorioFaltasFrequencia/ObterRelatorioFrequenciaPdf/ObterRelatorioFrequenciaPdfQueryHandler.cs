@@ -421,7 +421,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             }
             else
             {
-                componente.Alunos = componente.Alunos.OrderBy(a => a.CodigoAluno).ToList();
                 componente.Alunos = (from a in componente.Alunos select a)
                                  .Where(a => !string.IsNullOrWhiteSpace(a.NomeAluno) && !string.IsNullOrWhiteSpace(a.NumeroChamada))
                                  .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))  
