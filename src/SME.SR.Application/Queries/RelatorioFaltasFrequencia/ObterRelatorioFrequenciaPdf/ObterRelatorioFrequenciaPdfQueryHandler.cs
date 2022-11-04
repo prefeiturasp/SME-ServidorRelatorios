@@ -125,7 +125,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 var alunosSemFrequenciaNaTurma = alunos
                                     .Where(a => a.Ativo && a.DataSituacao.Date <= periodoEscolar.PeriodoInicio.Date 
-                                            || !a.Ativo && a.DataSituacao.Date >= periodoEscolar.PeriodoInicio.Date)
+                                            || (!a.Ativo && a.DataSituacao.Date >= periodoEscolar.PeriodoInicio.Date 
+                                                && a.SituacaoMatricula != SituacaoMatriculaAluno.VinculoIndevido))
                                     .Where(a => turmasccc.Contains(a.TurmaCodigo))
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
 
@@ -411,6 +412,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                      :
                                         operacao[filtro.Condicao](a.TotalAusencias, filtro.QuantidadeAusencia))
                                      select a)
+                                     .Where(a => !string.IsNullOrWhiteSpace(a.NomeAluno) && !string.IsNullOrWhiteSpace(a.NumeroChamada))
                                      .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
                                      .ThenBy(c => c.NomeTurma)
                                      .ThenBy(c => c.NomeAluno)
@@ -419,7 +421,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             }
             else
             {
-                componente.Alunos = (from a in componente.Alunos select a).OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
+                componente.Alunos = componente.Alunos.OrderBy(a => a.CodigoAluno).ToList();
+                componente.Alunos = (from a in componente.Alunos select a)
+                                 .Where(a => !string.IsNullOrWhiteSpace(a.NomeAluno) && !string.IsNullOrWhiteSpace(a.NumeroChamada))
+                                 .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))  
                                  .ThenBy(c => c.NomeTurma)
                                  .ThenBy(c => c.NomeAluno)
                                  .DistinctBy(c => c.CodigoAluno)

@@ -989,7 +989,7 @@ namespace SME.SR.Data
 												ON         matr2.cd_matricula = mte2.cd_matricula
 												WHERE      mte2.cd_turma_escola IN ({codigo})
 												AND        matr2.cd_aluno = matr.cd_aluno)
-						AND        NOT EXISTS
+						{(codigosTurma.Count() > 1 ? $@"AND        NOT EXISTS
 									(
 												SELECT     1
 												FROM       v_matricula_cotic matr3
@@ -997,7 +997,7 @@ namespace SME.SR.Data
 												ON         matr3.cd_matricula = mte3.cd_matricula
 												WHERE      mte.cd_matricula = mte3.cd_matricula
 												AND        mte.cd_turma_escola IN ({codigo})
-									)
+									)" : string.Empty)}
 				)
 
 						SELECT   codigoturma,
