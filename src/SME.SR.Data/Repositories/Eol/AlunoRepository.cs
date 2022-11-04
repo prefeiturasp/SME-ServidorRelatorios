@@ -976,7 +976,7 @@ namespace SME.SR.Data
 												INNER JOIN matricula_turma_escola mte3
 												ON         matr3.cd_matricula = mte3.cd_matricula
 												WHERE      mte.cd_matricula = mte3.cd_matricula
-												AND        mte.cd_turma_escola IN ({codigo})
+												AND        mte3.cd_turma_escola IN ({codigo})
 									)
 				)
 
