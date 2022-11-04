@@ -30,7 +30,8 @@ namespace SME.SR.Infra
 
             return string.Empty;
         }
-        public string ObtenhaLarguraComUnidade() {
+        public string ObtenhaLarguraComUnidade()
+        {
             var unidade = UnidadeDeTamanho == EnumUnidadeDeTamanho.PERCENTUAL ? "%" : "px";
 
             return Largura.ToString() + unidade;
