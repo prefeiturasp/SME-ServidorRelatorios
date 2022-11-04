@@ -989,15 +989,15 @@ namespace SME.SR.Data
 												ON         matr2.cd_matricula = mte2.cd_matricula
 												WHERE      mte2.cd_turma_escola IN ({codigo})
 												AND        matr2.cd_aluno = matr.cd_aluno)
-						{(codigosTurma.Count() > 1 ? $@"AND        NOT EXISTS
+						AND        NOT EXISTS
 									(
 												SELECT     1
 												FROM       v_matricula_cotic matr3
 												INNER JOIN matricula_turma_escola mte3
 												ON         matr3.cd_matricula = mte3.cd_matricula
 												WHERE      mte.cd_matricula = mte3.cd_matricula
-												AND        mte.cd_turma_escola IN ({codigo})
-									)" : string.Empty)}
+												AND        mte3.cd_turma_escola IN ({codigo})
+									)
 				)
 
 						SELECT   codigoturma,
