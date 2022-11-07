@@ -4,7 +4,11 @@ namespace SME.SR.Infra
 {
     public class RelatorioFrequenciaIndividualJustificativasDto
     {
-        public string DataAusencia { get; set; }
-        public string MotivoAusencia { get; set; }
+        public string DataAula { get; set; }
+        public long QuantidadeAulas { get; set; }
+        public int QuantidadePresenca { get; set; }
+        public int QuantidadeRemoto { get; set; }
+        public long QuantidadeAusencia { get; set; }
+        public string Justificativa { get; set; }
     }
 }
