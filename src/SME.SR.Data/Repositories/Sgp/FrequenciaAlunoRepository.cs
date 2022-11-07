@@ -253,13 +253,15 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(int anoTurma, long tipoCalendarioId, string[] alunosCodigo)
         {
-            var query = new StringBuilder($@"select fa.id Id
+            var query = new StringBuilder($@"with lista as (
+                           select fa.id Id
                                 , fa.codigo_aluno as CodigoAluno
                                 , fa.turma_id as TurmaId
                                 , fa.total_aulas as TotalAulas
                                 , fa.total_ausencias as TotalAusencias
                                 , fa.total_compensacoes as TotalCompensacoes
                                 {(tipoCalendarioId > 0 ? ", pe.bimestre Bimestre" : string.Empty)}
+                                , row_number() over (partition by fa.codigo_aluno, fa.periodo_escolar_id, fa.tipo, fa.disciplina_id order by fa.id) sequencia
                             from frequencia_aluno fa
                             inner join turma t on fa.turma_id = t.turma_id ");
 
@@ -273,6 +275,9 @@ namespace SME.SR.Data
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
+
+            query.AppendLine(")");
+            query.AppendLine("select * from lista where sequencia = 1;");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {

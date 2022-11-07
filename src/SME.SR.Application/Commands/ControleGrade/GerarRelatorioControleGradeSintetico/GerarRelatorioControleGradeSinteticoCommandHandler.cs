@@ -29,15 +29,27 @@ namespace SME.SR.Application
                                                 ModalidadeTipoCalendario.EJA : request.Filtros.ModalidadeTurma == Modalidade.Infantil ?
                                                     ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.Filtros.AnoLetivo, modalidadeCalendario, request.Filtros.Semestre));
+
             foreach (long turmaId in request.Filtros.Turmas)
             {
                 var aulasPrevistasTurma = new List<AulaPrevistaBimestreQuantidade>();
                 foreach (long componenteCurricularId in request.Filtros.ComponentesCurriculares)
                 {
+
+                    var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
+                    var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares, turma.Codigo);
+
                     var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
 
                     if (aulasPrevistasBimestresComponente.Any())
-                        aulasPrevistasTurma.AddRange(aulasPrevistasBimestresComponente);
+                    {
+                        foreach(var aula in aulasPrevistasBimestresComponente)
+                        {
+                            var componenteAula = componentesCurriculares.Where(c => c.CodDisciplina == aula.ComponenteCurricularId).FirstOrDefault();
+                            aula.ComponenteCurricularNome = componenteAula.Disciplina;
+                            aulasPrevistasTurma.Add(aula);
+                        }
+                    }
                 }
 
                 if (aulasPrevistasTurma.Any())
@@ -55,9 +67,10 @@ namespace SME.SR.Application
             return turmas;
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<long> componentesCurriculares)
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<long> componentesCurriculares, string turmaId)
         {
-            var componentes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurriculares.ToArray()));
+            string[] turmaCodigo = {turmaId};
+            var componentes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurriculares.ToArray(), turmaCodigo));
             return componentes;
         }
 

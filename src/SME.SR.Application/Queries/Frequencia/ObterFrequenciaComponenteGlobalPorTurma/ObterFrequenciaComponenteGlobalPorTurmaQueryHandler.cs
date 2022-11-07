@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,16 +24,20 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<FrequenciaAluno>> Handle(ObterFrequenciaComponenteGlobalPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            var componentesCurricularesId = request.ComponentesCurricularesPorTurma.Select(cc => cc.ComponenteCurricularId.ToString()).Distinct().ToArray();
+            var componentesCurricularesId = request.ComponentesCurricularesPorTurma
+                .Select(cc => cc.ComponenteCurricularId.ToString())
+                .Distinct().ToArray();
 
-            var frequenciaTurma = await frequenciaAlunoRepository.ObterFrequenciaDisciplinaGlobalPorTurma(request.TurmasCodigo, componentesCurricularesId, request.TipoCalendarioId);
+            var frequenciaTurma = await frequenciaAlunoRepository
+                .ObterFrequenciaDisciplinaGlobalPorTurma(request.TurmasCodigo, componentesCurricularesId, request.TipoCalendarioId);
 
-            var totalAulas = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.TurmasCodigo, request.TipoCalendarioId, componentesCurricularesId, new int[] { }));
+            var aulas = await mediator
+                .Send(new ObterAulasPorTurmasComponentesTipoCalendarioBimestresQuery(request.TurmasCodigo, request.TipoCalendarioId, componentesCurricularesId, new int[] { }));
 
-            return await TratarFrequenciaAnualAluno(frequenciaTurma, request.Bimestres, request.ComponentesCurricularesPorTurma, request.TipoCalendarioId, totalAulas);
+            return await TratarFrequenciaAnualAluno(frequenciaTurma, request.Bimestres, request.ComponentesCurricularesPorTurma, aulas, request.AlunosDatasMatricula);
         }
 
-        private async Task<IEnumerable<FrequenciaAluno>> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, int[] bimestres, IEnumerable<(string CodigoTurma, long ComponenteCurricularId)> componentesCurricularesPorTurma, long tipoCalendarioId, IEnumerable<Infra.TurmaComponenteQtdAulasDto> totalAulas)
+        private async Task<IEnumerable<FrequenciaAluno>> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, int[] bimestres, IEnumerable<(string CodigoTurma, long ComponenteCurricularId)> componentesCurricularesPorTurma, IEnumerable<TurmaComponenteDataAulaQuantidadeDto> aulas, IEnumerable<(string codigoAluno, DateTime dataMatricula, DateTime? dataSituacao)> alunosDatasMatriculas)
         {
             var frequenciaGlobalAlunos = new List<FrequenciaAluno>();
 
@@ -45,6 +50,7 @@ namespace SME.SR.Application
                     DisciplinaId = alunoComponente.Key.DisciplinaId
                 };
 
+                var dadosMatricula = alunosDatasMatriculas.SingleOrDefault(a => a.codigoAluno.Equals(alunoComponente.Key.CodigoAluno));
                 var turmaCodigo = componentesCurricularesPorTurma.FirstOrDefault(cc => cc.ComponenteCurricularId.ToString() == alunoComponente.Key.DisciplinaId).CodigoTurma;
                 var turma = await mediator.Send(new ObterTurmaQuery(turmaCodigo));
 
@@ -53,8 +59,24 @@ namespace SME.SR.Application
                     var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
                     var disciplinaId = !string.IsNullOrEmpty(frequenciaAluno.DisciplinaId) ? Convert.ToInt64(frequenciaAluno.DisciplinaId) : 0;
 
-                    if (totalAulas.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()) != null)
-                        frequenciaAluno.TotalAulas += totalAulas.FirstOrDefault(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()).AulasQuantidade;
+                    if (aulas.Any(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()))
+                    {
+                        var aulasPorMatricula = aulas
+                            .Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString());
+
+                        if (!string.IsNullOrEmpty(dadosMatricula.codigoAluno))
+                        {
+                            aulasPorMatricula = aulasPorMatricula
+                                .Where(a => a.DataAula.Date >= dadosMatricula.dataMatricula.Date);
+
+                            if (dadosMatricula.dataSituacao.HasValue)
+                                aulasPorMatricula = aulasPorMatricula
+                                    .Where(a => a.DataAula.Date < dadosMatricula.dataSituacao.Value.Date);
+                        }
+
+                        frequenciaAluno.TotalAulas += aulasPorMatricula                            
+                            .Sum(a => a.QuantidadeAula);
+                    }
 
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                     frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;

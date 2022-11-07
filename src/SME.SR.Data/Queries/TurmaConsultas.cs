@@ -334,7 +334,7 @@ namespace SME.SR.Data
 						    END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mte.dt_situacao_aluno DataSituacaoAluno,
-						matr.dt_status_matricula DataMatricula
+						(select MIN(dt_situacao_aluno) from historico_matricula_turma_escola where cd_matricula = matr.cd_matricula) DataMatricula
 					FROM v_aluno_cotic aluno
 					INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
