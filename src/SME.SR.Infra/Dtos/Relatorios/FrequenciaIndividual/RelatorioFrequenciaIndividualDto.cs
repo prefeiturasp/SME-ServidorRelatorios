@@ -16,10 +16,11 @@ namespace SME.SR.Infra
         public string ComponenteNome { get; set; }
         public string RF { get; set; }
         public string Data => DateTime.Now.ToString("dd/MM/yyyy");
-        public bool ehInfantil{ get; set; }
-        public bool ehTodosBimestre{ get; set; }
+        public bool ehInfantil { get; set; }
+        public bool ehTodosBimestre { get; set; }
         public int QtdeCaracteres => DreNome.Length + UeNome.Length + Usuario.Length + TurmaNome.Length + ComponenteNome.Length + RF.Length + Data.Length;
 
         public List<RelatorioFrequenciaIndividualAlunosDto> Alunos { get; set; }
+        public bool ImprimirFrequenciaDiaria { get; set; }
     }
 }

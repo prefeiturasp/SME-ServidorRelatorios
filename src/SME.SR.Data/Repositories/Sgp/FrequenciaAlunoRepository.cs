@@ -660,5 +660,54 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<FrequenciaAlunoMensalConsolidadoDto>(query, parametros);
         }
+
+        public async Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(
+                                                                    string[] codigosAlunos, 
+                                                                    string bimestre, 
+                                                                    string turmaCodigo, 
+                                                                    string componenteCurricularId)
+        {
+            var condicaoBimestre = string.Empty;
+
+            if (bimestre != "-99")
+                condicaoBimestre = " AND pe.bimestre = @bimestre";
+
+            var query = @$"SELECT count(rfa.id) AS QuantidadeAulas,
+	                        a.data_aula AS DataAula,
+	                        a.id AS AulasId,
+	                        rfa.codigo_aluno AS AlunoCodigo,
+	                        an.id AS AnotacaoId,
+                            count(distinct(rfa.registro_frequencia_id*rfa.numero_aula)) filter (WHERE rfa.valor = 1) AS QuantidadePresenca,
+                            count(distinct(rfa.registro_frequencia_id*rfa.numero_aula)) filter (WHERE rfa.valor = 2) AS QuantidadeAusencia,
+                            count(distinct(rfa.registro_frequencia_id*rfa.numero_aula)) filter (WHERE rfa.valor = 3) AS QuantidadeRemoto,
+                            coalesce(ma.descricao, an.anotacao) as Motivo,
+                            pe.bimestre AS Bimestre
+                        FROM registro_frequencia_aluno rfa 
+                        INNER JOIN registro_frequencia rf ON rfa.registro_frequencia_id = rf.id
+                        INNER JOIN aula a ON rf.aula_id = a.id
+                        INNER JOIN turma t ON t.turma_id = a.turma_id
+                        INNER JOIN periodo_escolar pe ON a.tipo_calendario_id = pe.tipo_calendario_id AND a.data_aula BETWEEN pe.periodo_inicio AND pe.periodo_fim {condicaoBimestre}
+                        LEFT JOIN anotacao_frequencia_aluno an ON a.id = an.aula_id AND an.codigo_aluno  = rfa.codigo_aluno AND an.excluido = false
+                        LEFT JOIN motivo_ausencia ma ON an.motivo_ausencia_id = ma.id
+                        WHERE NOT rfa.excluido 
+                            AND NOT rf.excluido 
+                            AND NOT a.excluido
+	                        AND rfa.codigo_aluno = any(@codigosAlunos)
+	                        AND t.turma_id = @turmaCodigo 
+                            AND a.disciplina_id = @componenteCurricularId
+ 						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.valor, rfa.codigo_aluno, pe.bimestre
+                        ORDER BY pe.bimestre, rfa.codigo_aluno, a.data_aula desc";
+
+            var parametros = new
+            {
+                codigosAlunos,
+                bimestre = int.Parse(bimestre),
+                turmaCodigo,
+                componenteCurricularId
+            };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            return await conexao.QueryAsync<RelatorioFrequenciaIndividualDiariaAlunoDto>(query, parametros);
+        }
     }
 }

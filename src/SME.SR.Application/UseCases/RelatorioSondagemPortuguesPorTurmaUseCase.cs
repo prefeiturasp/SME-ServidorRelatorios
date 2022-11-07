@@ -332,6 +332,7 @@ namespace SME.SR.Application
                 foreach (var pergunta in perguntas)
                 {
                     var resposta = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString() && a.PerguntaId == pergunta.Id);
+
                     switch (resposta.Resposta)
                     {
                         case "Nivel1":
@@ -355,6 +356,7 @@ namespace SME.SR.Application
                                 break;
                             }
                     }
+
                     respostasDto.Add(new RelatorioSondagemPortuguesPorTurmaRespostaDto()
                     {
                         PerguntaId = pergunta.Id,
