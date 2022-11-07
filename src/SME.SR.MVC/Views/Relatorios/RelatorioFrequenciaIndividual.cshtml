@@ -159,15 +159,15 @@
     {
         int numeroColSpanJustificativa = Model.ehInfantil ? 4 : 5;
         <tr>
-            <td colspan="2">@justificativas.DataAusencia</td>
-            <td colspan="@numeroColSpanJustificativa" class="alinhar-esquerda espaco-esquerda-15">@{MontarDescricaoJustificativa(justificativas.MotivoAusencia, justificativas.DataAusencia, nomeAluno, nomeBimestre, numeroColSpan);}</td>
+            <td colspan="2">@justificativas.DataAula</td>
+            <td colspan="@numeroColSpanJustificativa" class="alinhar-esquerda espaco-esquerda-15">@{MontarDescricaoJustificativa(justificativas.Justificativa, justificativas.DataAula, nomeAluno, nomeBimestre, numeroColSpan);}</td>
         </tr>
     }
 
     void MontarJustificativas(SME.SR.Infra.RelatorioFrequenciaIndividualBimestresDto bimestres, string nomeAluno, int numeroColSpan)
     {
         int contadorJustificativas = 0;
-        @foreach (var justificativas in bimestres.Justificativas)
+        @foreach (var justificativas in bimestres.FrequenciaDiaria)
         {
             bool quebra = VerificaQuebra();
 

@@ -17,6 +17,11 @@ namespace SME.SR.Application
         private readonly IConverter converter;
         private readonly IHtmlHelper htmlHelper;
         private readonly IServicoFila servicoFila;
+        private const int LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO = 4;
+        private const int LINHAS_CABECALHO_FREQUENCIA_DIARIA = 2;
+        private const int LINHAS_CABECALHO_BIMESTRE = 3;
+        private const int QUANTIDADE_CARACTERES_POR_LINHA_JUSTIFICATIVA = 80;
+        private const int QUANTIDADE_LINHAS_JUSTIFICATIVA = 7;
 
         public GerarRelatorioAcompanhamentoFrequenciaCommandHandler(IConverter converter,
                                                        IHtmlHelper htmlHelper,
@@ -32,12 +37,13 @@ namespace SME.SR.Application
         {
             var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
 
-            var limiteCaracteres = 4500;
+            var limiteCaracteres = 5200;
             var qtdeCaracteresPorLinha = 110;
             var qtdeCaracteresPagina = 0;
             var qtdeAlunos = request.Relatorio.Alunos.Count();
             var paginaAluno = 0;
             var ehTodosOsBimestres = false;
+            var maximoCaracteresPorJustificativa = 500;
 
             foreach (var alunoDto in request.Relatorio.Alunos)
             {
@@ -50,141 +56,132 @@ namespace SME.SR.Application
                 var relatorio = MapearRelatorio(request);
                 var aluno = MapearAluno(alunoDto);
 
+                relatorio.ehTodosBimestre = ehTodosOsBimestres;
+
                 qtdeCaracteresPagina = qtdeCaracteresPorLinha * 5;
 
                 var lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
+                
+                aluno.DescricaoUltimoBimestre = alunoDto.Bimestres.LastOrDefault().NomeBimestre;
+                
                 foreach (var bimestreDto in alunoDto.Bimestres)
                 {
                     var bimestreAluno = MapearBimestre(bimestreDto);
 
-                    var qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (qtdeCaracteresPorLinha * 3);
+                    var qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (qtdeCaracteresPorLinha * LINHAS_CABECALHO_BIMESTRE);
 
                     if (qtdeCaracteresPaginaProposta > limiteCaracteres)
                     {
+                        aluno.Bimestres = lstBimestresAluno;
+                        AdicionarAluno(relatorio, alunoDto, aluno);
                         paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
                         paginaAluno++;
                         relatorio.Alunos.FirstOrDefault().NomeAluno = string.Empty;
                         relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
+                        lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
+                        qtdeCaracteresPagina = qtdeCaracteresPorLinha * LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO;
                     }
 
-                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * 3;
+                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * LINHAS_CABECALHO_BIMESTRE;
+                    
+                    var quantidadelinhasCabecalho = request.Relatorio.ImprimirFrequenciaDiaria && bimestreDto.FrequenciaDiaria.Any() ? 2 : 0;
+                    qtdeCaracteresPagina += qtdeCaracteresPorLinha * quantidadelinhasCabecalho;
 
-                    var possuiJustificativaParaAdicionar = true;
+                    var possuiFrequenciaDiariaParaAdicionar = true;
                     var lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-                    foreach (var justificativaDto in bimestreDto.Justificativas)
+                    foreach (var frequenciaDiariaDto in bimestreDto.FrequenciaDiaria)
                     {
-                        var justificativaAusencia = new RelatorioFrequenciaIndividualJustificativasDto();
+                        var frequenciaDiaria = new RelatorioFrequenciaIndividualJustificativasDto();
+                        
+                        var justificativaAusencia = frequenciaDiariaDto.Justificativa;
+                        var tamanhoJustificativaAusencia = justificativaAusencia.Length;
 
-                        var motivoAusencia = justificativaDto.MotivoAusencia;
-                        var tamanhoMotivoAusencia = motivoAusencia.Length;
-                        qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + (tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia);
+                        if (tamanhoJustificativaAusencia > maximoCaracteresPorJustificativa)
+                        {
+                            justificativaAusencia = justificativaAusencia.Substring(0, maximoCaracteresPorJustificativa);
+                            justificativaAusencia += "...";
+                            frequenciaDiariaDto.Justificativa = justificativaAusencia;
+                            tamanhoJustificativaAusencia = justificativaAusencia.Length;
+                        }
+
+                        if (tamanhoJustificativaAusencia > 0)
+                        {
+                            tamanhoJustificativaAusencia += QUANTIDADE_CARACTERES_POR_LINHA_JUSTIFICATIVA * QUANTIDADE_LINHAS_JUSTIFICATIVA;
+                            qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + tamanhoJustificativaAusencia;
+                        }
+                        else
+                            qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + qtdeCaracteresPorLinha;
 
                         if (qtdeCaracteresPaginaProposta > limiteCaracteres) 
                         {
-                            var qtdeCaracteresPermitidos = (limiteCaracteres - qtdeCaracteresPagina);
-                            var ausenciaNaPaginaAtualAux = motivoAusencia.Substring(0, qtdeCaracteresPermitidos);
-                            var ausenciaNaPaginaAtual = ausenciaNaPaginaAtualAux.Substring(0, Math.Min(ausenciaNaPaginaAtualAux.Length, ausenciaNaPaginaAtualAux.LastIndexOf(" ")));
-                            qtdeCaracteresPermitidos = ausenciaNaPaginaAtual.Length;
-                            var ausenciaRemanescente = motivoAusencia.Substring(qtdeCaracteresPermitidos);
-                            var numeroPaginasAusencia = (ausenciaRemanescente.Length / limiteCaracteres) + 1;
+                            var qtdeCaracteresPermitidosPagina = (limiteCaracteres - qtdeCaracteresPagina);
+                            var qtdeCaracteresPermitidosJustificativa = justificativaAusencia.Length > qtdeCaracteresPermitidosPagina 
+                                ? qtdeCaracteresPermitidosPagina : justificativaAusencia.Length;
+                            
+                            var ausenciaNaPaginaAtualAux = string.IsNullOrEmpty(justificativaAusencia)
+                                ? justificativaAusencia
+                                : justificativaAusencia.Substring(0,qtdeCaracteresPermitidosJustificativa);
+                            
+                            var ausenciaNaPaginaAtual = string.IsNullOrEmpty(ausenciaNaPaginaAtualAux) ? ausenciaNaPaginaAtualAux : ausenciaNaPaginaAtualAux.Substring(0, Math.Min(ausenciaNaPaginaAtualAux.Length, ausenciaNaPaginaAtualAux.LastIndexOf(" ")));
+                            var ausenciaRemanescente = string.IsNullOrEmpty(justificativaAusencia) ? justificativaAusencia : justificativaAusencia.Substring(ausenciaNaPaginaAtual.Length);
 
-                            justificativaAusencia.DataAusencia = justificativaDto.DataAusencia;
-                            justificativaAusencia.MotivoAusencia = ausenciaNaPaginaAtual;
-                            lstJustificativasAusencias.Add(justificativaAusencia);
-                            tamanhoMotivoAusencia = ausenciaNaPaginaAtual.Length;
-                            qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
+                            MapearFrequenciaDiaria(frequenciaDiariaDto, frequenciaDiaria, ausenciaNaPaginaAtual);
+                            lstJustificativasAusencias.Add(frequenciaDiaria);
 
                             //Encerrando as listas para gerar página
-                            bimestreAluno.Justificativas.AddRange(lstJustificativasAusencias);
+                            bimestreAluno.FrequenciaDiaria.AddRange(lstJustificativasAusencias);
                             lstBimestresAluno.Add(bimestreAluno);
                             aluno.Bimestres = lstBimestresAluno;
 
-                            if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
-                                relatorio.Alunos.Add(aluno);
-                            else
-                                relatorio.Alunos[0] = aluno;
+                            AdicionarAluno(relatorio, alunoDto, aluno);
 
                             paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
                             paginaAluno++;
-                            qtdeCaracteresPagina = qtdeCaracteresPorLinha;
 
                             relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
                             relatorio.Alunos.FirstOrDefault().NomeAluno = string.Empty;
                             bimestreAluno = new RelatorioFrequenciaIndividualBimestresDto();
                             lstBimestresAluno = new List<RelatorioFrequenciaIndividualBimestresDto>();
                             lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-
-                            var gerarPagina = false;
-                            for (int noPagina = 1; noPagina <= numeroPaginasAusencia; noPagina++)
+                            qtdeCaracteresPagina  = qtdeCaracteresPorLinha * LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO;
+                            
+                            if (!string.IsNullOrEmpty(ausenciaRemanescente))
                             {
-                                qtdeCaracteresPermitidos = Math.Min(ausenciaRemanescente.Length, limiteCaracteres);
-
-                                ausenciaNaPaginaAtual = ausenciaRemanescente;
-
-                                if (ausenciaRemanescente.Length >= limiteCaracteres)
-                                {
-                                    var ausenciaAux = ausenciaRemanescente.Substring(0, (qtdeCaracteresPermitidos));
-                                    ausenciaNaPaginaAtual = ausenciaAux.Substring(0, Math.Min(ausenciaAux.Length, ausenciaAux.LastIndexOf(" ")));
-                                    qtdeCaracteresPermitidos = ausenciaNaPaginaAtual.Length;
-                                    ausenciaRemanescente = ausenciaRemanescente.Substring(qtdeCaracteresPermitidos);
-                                    gerarPagina = true;
-                                }      
-
-                                lstJustificativasAusencias.Add(new RelatorioFrequenciaIndividualJustificativasDto
-                                {
-                                    DataAusencia = justificativaDto.DataAusencia,
-                                    MotivoAusencia = ausenciaNaPaginaAtual
-                                });
-
-                                relatorio.Alunos.FirstOrDefault().Bimestres.Add(new RelatorioFrequenciaIndividualBimestresDto() { Justificativas = lstJustificativasAusencias });
-
-                                if (gerarPagina)
-                                {
-                                    paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
-                                    paginaAluno++;
-                                    relatorio.Alunos.FirstOrDefault().Bimestres = new List<RelatorioFrequenciaIndividualBimestresDto>();
-                                    lstJustificativasAusencias = new List<RelatorioFrequenciaIndividualJustificativasDto>();
-                                    possuiJustificativaParaAdicionar = false;
-                                    gerarPagina = false;
-                                    qtdeCaracteresPagina = qtdeCaracteresPorLinha;
-                                }
-                                else
-                                {
-                                    possuiJustificativaParaAdicionar = true;
-                                    tamanhoMotivoAusencia = lstJustificativasAusencias.LastOrDefault().MotivoAusencia.Length;
-                                    qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
-                                }
-                                    
+                                MapearFrequenciaDiaria(frequenciaDiariaDto, frequenciaDiaria, ausenciaRemanescente);
+                                lstJustificativasAusencias.Add(frequenciaDiaria);
+                                qtdeCaracteresPagina += (int)Math.Round(decimal.Parse(ausenciaRemanescente.Length.ToString()) / qtdeCaracteresPorLinha,MidpointRounding.ToEven);
                             }
+                            
+                            qtdeCaracteresPagina  += qtdeCaracteresPorLinha * LINHAS_CABECALHO_FREQUENCIA_DIARIA;                           
                         }
                         else
                         {
-                            justificativaAusencia.DataAusencia = justificativaDto.DataAusencia;
-                            justificativaAusencia.MotivoAusencia = justificativaDto.MotivoAusencia;
-                            lstJustificativasAusencias.Add(justificativaAusencia);
-                            possuiJustificativaParaAdicionar = true;
-                            tamanhoMotivoAusencia = justificativaDto.MotivoAusencia.Length;
-                            qtdeCaracteresPagina += tamanhoMotivoAusencia == 0 ? qtdeCaracteresPorLinha : tamanhoMotivoAusencia;
+                            MapearFrequenciaDiaria(frequenciaDiariaDto, frequenciaDiaria);
+                            lstJustificativasAusencias.Add(frequenciaDiaria);
+                            possuiFrequenciaDiariaParaAdicionar = true;
+                            qtdeCaracteresPagina += qtdeCaracteresPorLinha;
                         }
                     }
-                    if (possuiJustificativaParaAdicionar)
+                    if (possuiFrequenciaDiariaParaAdicionar)
                     {
                         if (lstJustificativasAusencias.Any())
-                            bimestreAluno.Justificativas.AddRange(lstJustificativasAusencias);
-
-                        lstBimestresAluno.Add(bimestreAluno);
+                            bimestreAluno.FrequenciaDiaria.AddRange(lstJustificativasAusencias);
+                        
+                            lstBimestresAluno.Add(bimestreAluno);
                     }
                 }
-                aluno.Bimestres = lstBimestresAluno;
+                if (lstBimestresAluno.Any())
+                {
+                    aluno.Bimestres = lstBimestresAluno;
 
-                if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
-                    relatorio.Alunos.Add(aluno);
-                else
-                    relatorio.Alunos[0] = aluno;
+                    if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
+                        relatorio.Alunos.Add(aluno);
+                    else
+                        relatorio.Alunos[0] = aluno;
 
-                relatorio.ehTodosBimestre = ehTodosOsBimestres;
-
-                paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
+                    aluno.Bimestres.LastOrDefault().ExibirFinal = ehTodosOsBimestres;
+                    paginasAluno.Add(await GerarPagina(paginasAluno, relatorio, qtdeAlunos, paginaAluno));
+                }
 
                 var ultimaPagina = paginasAluno.LastOrDefault().Pagina;
                 
@@ -196,9 +193,33 @@ namespace SME.SR.Application
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Registro Individual");
+            pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Frequência Individual");
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+        }
+        
+        private static void AdicionarAluno(RelatorioFrequenciaIndividualDto relatorio,
+            RelatorioFrequenciaIndividualAlunosDto alunoDto, RelatorioFrequenciaIndividualAlunosDto aluno)
+        {
+            if (!relatorio.Alunos.Any(a => a.CodigoAluno.Equals(alunoDto.CodigoAluno)))
+                relatorio.Alunos.Add(aluno);
+            else
+                relatorio.Alunos[0] = aluno;
+        }
+
+        private void MapearFrequenciaDiaria(                        
+            RelatorioFrequenciaIndividualJustificativasDto frequenciaDiariaOrigem,
+            RelatorioFrequenciaIndividualJustificativasDto frequenciaDiariaDestino,
+                        string justificativa = "")
+        {
+            var descJustificativa = frequenciaDiariaOrigem.Justificativa ?? "";
+
+            frequenciaDiariaDestino.DataAula = frequenciaDiariaOrigem.DataAula;
+            frequenciaDiariaDestino.Justificativa = string.IsNullOrEmpty(justificativa) ? descJustificativa : justificativa;
+            frequenciaDiariaDestino.QuantidadePresenca = frequenciaDiariaOrigem.QuantidadePresenca;
+            frequenciaDiariaDestino.QuantidadeAusencia = frequenciaDiariaOrigem.QuantidadeAusencia;
+            frequenciaDiariaDestino.QuantidadeAulas = frequenciaDiariaOrigem.QuantidadeAulas;
+            frequenciaDiariaDestino.QuantidadeRemoto = frequenciaDiariaOrigem.QuantidadeRemoto;
         }
 
         private RelatorioFrequenciaIndividualDto MapearRelatorio(GerarRelatorioAcompanhamentoFrequenciaCommand request)
@@ -211,7 +232,8 @@ namespace SME.SR.Application
                 RF = request.Relatorio.RF,
                 ehInfantil = request.Relatorio.ehInfantil,
                 TurmaNome = request.Relatorio.TurmaNome,
-                ComponenteNome = request.Relatorio.ComponenteNome
+                ComponenteNome = request.Relatorio.ComponenteNome,
+                ImprimirFrequenciaDiaria = request.Relatorio.ImprimirFrequenciaDiaria
             };
         }
 
