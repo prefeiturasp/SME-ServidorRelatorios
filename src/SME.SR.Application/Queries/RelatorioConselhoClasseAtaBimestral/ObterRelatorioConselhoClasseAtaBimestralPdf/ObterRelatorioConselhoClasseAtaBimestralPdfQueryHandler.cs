@@ -520,7 +520,7 @@ namespace SME.SR.Application
         private string TrataConselhoRegistrado(long codigoAluno, List<(long, long, bool)> alunoComponenteConselhoClasse, int componentesCurricularesTotal, IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto> anotacoes)
         {
             var componentesConselhosDoAluno = alunoComponenteConselhoClasse
-                .Where(a => a.Item1 == codigoAluno && a.Item3 == true)
+                .Where(a => a.Item1 == codigoAluno && a.Item3 == true && a.Item2 != 1106)
                 .Select(a => a.Item2)
                 .Count();
 
