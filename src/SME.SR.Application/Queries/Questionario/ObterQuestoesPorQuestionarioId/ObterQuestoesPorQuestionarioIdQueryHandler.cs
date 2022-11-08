@@ -26,13 +26,13 @@ namespace SME.SR.Application
             var questoes = (await questionarioRepository.ObterQuestoesPorQuestionarioId(request.QuestionarioId)).ToList();
 
             var questoesComplementares = questoes
-                .Where(dq => dq.OpcoesRespostas.Any(a => a.QuestoesComplementares.Any()))
-                .SelectMany(dq => dq.OpcoesRespostas.Where(c => c.QuestoesComplementares.Any()).SelectMany(a => a.QuestoesComplementares.Select(q => q.QuestaoComplementarId)))
+                .Where(q => q.OpcoesRespostas.Any(a => a.QuestoesComplementares.Any()))
+                .SelectMany(q => q.OpcoesRespostas.Where(c => c.QuestoesComplementares.Any()).SelectMany(a => a.QuestoesComplementares.Select(qc => qc.QuestaoComplementarId)))
                 .Distinct();
-
+            
             return questoes
-                .Where(dq => !questoesComplementares.Contains(dq.Id))
-                .Select(dq => ObterQuestao(dq.Id, questoes, request.ObterRespostas))
+                .Where(q => !questoesComplementares.Contains(q.Id))
+                .Select(q => ObterQuestao(q.Id, questoes, request.ObterRespostas))
                 .OrderBy(q => q.Ordem)
                 .ToArray();
         }
@@ -47,7 +47,7 @@ namespace SME.SR.Application
             var questao = dadosQuestionario.FirstOrDefault(c => c.Id == questaoId);
 
             if (questao == null)
-                return null;
+                return new QuestaoDto();
 
             return new QuestaoDto
             {
