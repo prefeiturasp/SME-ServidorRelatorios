@@ -39,5 +39,7 @@ namespace SME.SR.Application
 
         public IEnumerable<IGrouping<string, FrequenciaAluno>> FrequenciasGlobal { get; set; }
         public int AnoLetivo { get; set; }
+        public bool ExibirRecomendacao { get; set; }
+        public Modalidade Modalidade { get; set; }
     }
 }

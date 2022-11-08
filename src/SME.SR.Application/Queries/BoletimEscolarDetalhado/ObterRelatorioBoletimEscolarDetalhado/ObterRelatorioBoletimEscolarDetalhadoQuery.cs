@@ -25,5 +25,9 @@ namespace SME.SR.Application
         public bool ConsideraHistorico { get; set; }
 
         public bool ConsideraInativo { get; set; }
+
+        public int QuantidadePorPagina { get; set; }
+
+        public bool ExibirRecomentacoes { get { return QuantidadePorPagina == 1; } }
     }
 }

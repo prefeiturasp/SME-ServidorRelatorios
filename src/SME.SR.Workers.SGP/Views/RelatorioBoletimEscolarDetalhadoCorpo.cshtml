@@ -300,13 +300,16 @@
 }
 
 
-@Html.Raw(ComponentesCurriculares(Model.Grupos, Model.ComponenteCurricularRegencia))
+    @Html.Raw(ComponentesCurriculares(Model.Grupos, Model.ComponenteCurricularRegencia))
 
-@if (Model.ParecerConclusivo != String.Empty)
-{
-    @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo));
-}
-
-@Html.Raw(NovaRecomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
-@Html.Raw(NovaRecomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
-@Html.Raw(Anotacoes())
+    @if (Model.ParecerConclusivo != String.Empty)
+    {
+        @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo))
+        ;
+    }
+    @if (Model.ExibirRecomendacoes)
+    {
+        @Html.Raw(NovaRecomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
+        @Html.Raw(NovaRecomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
+    }
+    @Html.Raw(Anotacoes())

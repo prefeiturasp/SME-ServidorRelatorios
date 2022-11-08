@@ -59,8 +59,8 @@ namespace SME.SR.Application
             var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequencias = await ObterFrequenciasAlunos(alunosAPesquisarTurmas, request.AnoLetivo, request.Modalidade, request.Semestre, turmas.Select(t => t.Codigo).ToArray());
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(alunosAPesquisarTurmas, request.AnoLetivo, request.Modalidade);
-            var recomendacoes = await ObterRecomendacoesAlunosTurma(alunosAPesquisarTurmas, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
-            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo);
+            var recomendacoes = await ObterRecomendacoesAlunosTurma(alunosAPesquisarTurmas, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre, request.ExibirRecomentacoes);
+            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo, request.ExibirRecomentacoes, request.Modalidade);
 
             return new BoletimEscolarDetalhadoEscolaAquiDto(boletins);
         }
@@ -92,9 +92,12 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(anoLetivo));
         }
 
-        private async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesAlunosTurma(string[] codigosAlunos, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre)
+        private async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesAlunosTurma(string[] codigosAlunos, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre, bool exibirRecomendacao)
         {
-            return await mediator.Send(new ObterRecomendacoesPorAlunosTurmasQuery(codigosAlunos, codigosTurma, anoLetivo, modalidade, semestre));
+            if (exibirRecomendacao)
+                return await mediator.Send(new ObterRecomendacoesPorAlunosTurmasQuery(codigosAlunos, codigosTurma, anoLetivo, modalidade, semestre));
+
+            return Enumerable.Empty<RecomendacaoConselhoClasseAluno>();
         }
 
         private async Task<IEnumerable<AlunoFotoArquivoDto>> ObterFotosAlunos(string[] codigosAluno)
@@ -219,7 +222,9 @@ namespace SME.SR.Application
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
                                                              IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias,
                                                              IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal,
-                                                             int anoLetivo)
+                                                             int anoLetivo,
+                                                             bool exibirRecomendacao,
+                                                             Modalidade modalidade)
         {
             return await mediator.Send(new MontarBoletinsDetalhadosQuery()
             {
@@ -238,7 +243,8 @@ namespace SME.SR.Application
                 PareceresConclusivos = pareceresConclusivos,
                 FrequenciasGlobal = frequenciaGlobal,
                 RecomendacoesAlunos = recomendacoes,
-                AnoLetivo = anoLetivo
+                AnoLetivo = anoLetivo,
+                ExibirRecomendacao = exibirRecomendacao
             });
         }
 
