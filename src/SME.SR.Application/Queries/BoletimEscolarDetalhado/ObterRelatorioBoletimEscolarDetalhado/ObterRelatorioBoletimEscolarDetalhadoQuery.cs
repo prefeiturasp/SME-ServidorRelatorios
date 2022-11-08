@@ -26,8 +26,8 @@ namespace SME.SR.Application
 
         public bool ConsideraInativo { get; set; }
 
-        public int QuantidadePorPagina { get; set; }
+        public int QuantidadeBoletimPorPagina { get; set; }
 
-        public bool ExibirRecomentacoes { get { return QuantidadePorPagina == 1; } }
+        public bool ExibirRecomentacoes { get { return QuantidadeBoletimPorPagina == 1; } }
     }
 }
