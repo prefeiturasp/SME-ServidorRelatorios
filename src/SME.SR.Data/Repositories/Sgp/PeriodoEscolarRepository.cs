@@ -43,5 +43,14 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<PeriodoEscolar>(query, parametros);
             }
         }
+
+        public async Task<PeriodoEscolar> ObterPeriodoEscolarPorId(long idPeriodoEscolar)
+        {
+            const string query = PeriodoEscolarConsultas.ObterPorId;
+            var parametros = new { idPeriodoEscolar };
+
+            await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoEscolar>(query, parametros);
+        }
     }
 }

@@ -23,6 +23,13 @@ namespace SME.SR.Data
 										pa.situacao as situacaoplano,
 										pa.aluno_codigo as alunocodigo,
 										pa.aluno_nome as alunonome,
+										pa.parecer_coordenacao as parecercoordenacao,
+										pa.responsavel_paai_id as responsavelpaaiid,
+										u2.nome as responsavelpaainome,
+										coalesce(u2.login, u2.rf_codigo) as responsavelpaailoginrf,
+										pa.responsavel_id as responsavelid,
+										u3.nome as responsavelnome,
+										coalesce(u3.login, u3.rf_codigo) as responsavelloginrf,
 										t.nome as turmanome,
 										t.ano_letivo as anoletivo,
 										t.modalidade_codigo as modalidade,
@@ -34,7 +41,9 @@ namespace SME.SR.Data
 										inner join plano_aee pa on pa.id = pav.plano_aee_id 
 										inner join turma t on t.id = pa.turma_id
 										inner join ue u on u.id = t.ue_id 
-										inner join dre d on d.id = u.dre_id 
+										inner join dre d on d.id = u.dre_id
+										left join usuario u2 on u2.id = pa.responsavel_paai_id
+										left join usuario u3 on u3.id = pa.responsavel_id
 									where pav.id = @versaoPlanoId";
 	        
 	        await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);

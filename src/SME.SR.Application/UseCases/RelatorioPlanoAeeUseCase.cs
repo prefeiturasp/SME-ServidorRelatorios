@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Newtonsoft.Json;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -26,35 +26,110 @@ namespace SME.SR.Application
             var filtroRelatorio = new FiltroRelatorioPlanoAeeDto()
             {
                 VersaoPlanoId = 38532
-            };            
+            }; 
+            
+            var planoAee = await mediator.Send(new ObterPlanoAEEPorVersaoPlanoIdQuery(filtroRelatorio.VersaoPlanoId));
+
+            if (planoAee == null)
+                throw new NegocioException("Plano AEE não localizado para a impressão.");
 
             var relatorioPlanoAee = new RelatorioPlanoAeeDto();
-            await ObterCabecalho(filtroRelatorio.VersaoPlanoId, relatorioPlanoAee);
+            ObterCabecalho(planoAee, relatorioPlanoAee);
+            await ObterCadastro(planoAee, relatorioPlanoAee);
+            ObterParecer(planoAee, relatorioPlanoAee);
 
-            var questoes = await mediator.Send(new ObterQuestoesPlanoAEEPorVersaoPlanoIdQuery(filtroRelatorio.VersaoPlanoId));
-            Console.WriteLine(questoes.ToString());
-            //relatorioPlanoAee.Questoes = questoes;
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAee", relatorioPlanoAee, request.CodigoCorrelacao, diretorioComplementar: "planoaee"));
         }
 
-        private async Task ObterCabecalho(long versaoPlanoId, RelatorioPlanoAeeDto relatorioPlanoAee)
+        private static void ObterCabecalho(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
         {
-            var dadosPlanoAee = await mediator.Send(new ObterPlanoAEEPorVersaoPlanoIdQuery(versaoPlanoId));
-
-            var descricaoModalidade = dadosPlanoAee.Modalidade.ShortName();
-            var descricaoTipoEscola = dadosPlanoAee.TipoEscola.ShortName();
-
             relatorioPlanoAee.Cabecalho = new CabecalhoPlanoAeeDto
             {
-                AlunoCodigo = dadosPlanoAee.AlunoCodigo,
-                AlunoNome = dadosPlanoAee.AlunoNome,
-                AnoLetivo = dadosPlanoAee.AnoLetivo,
-                DreNome = dadosPlanoAee.DreAbreviacao,
-                SituacaoPlano = dadosPlanoAee.SituacaoPlano.Name(),
-                TurmaNome = string.Concat(descricaoModalidade, " ", dadosPlanoAee.UeNome),
-                UeNome = string.Concat(descricaoTipoEscola, " ", dadosPlanoAee.UeNome),
-                VersaoPlano = string.Concat("v", dadosPlanoAee.VersaoPlano.ToString(), " - ", dadosPlanoAee.DataVersaoPlano.ToString("dd/MM/yyyy"))
+                AlunoCodigo = planoAee.AlunoCodigo,
+                AlunoNome = planoAee.AlunoNome,
+                AnoLetivo = planoAee.AnoLetivo,
+                DreNome = planoAee.DreAbreviacao,
+                SituacaoPlano = planoAee.SituacaoPlano.Name(),
+                TurmaNome = $"{planoAee.Modalidade.ShortName()} {planoAee.TurmaNome}",
+                UeNome = $"{planoAee.TipoEscola.ShortName()} {planoAee.UeNome}",
+                VersaoPlano = $"v{planoAee.VersaoPlano} - {planoAee.DataVersaoPlano:dd/MM/yyyy}"
             };
+        }
+
+        private async Task ObterCadastro(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
+        {
+            relatorioPlanoAee.Cadastro = new CadastroPlanoAeeDto
+            {
+                Responsavel = $"{planoAee.ResponsavelNome} ({planoAee.ResponsavelLoginRf})"
+            };
+            
+            var questoes = await mediator.Send(new ObterQuestoesPlanoAEEPorVersaoPlanoIdQuery(planoAee.VersaoPlano));
+
+            var questoesRelatorio = new List<QuestaoPlanoAeeDto>();
+
+            foreach (var questao in questoes)
+            {
+                var questaoRelatorio = new QuestaoPlanoAeeDto
+                {
+                    Questao = questao.Nome,
+                    Ordem = questao.Ordem,
+                    QuestaoId = questao.Id,
+                    TipoQuestao = questao.Tipo
+                };
+
+                var respostaQuestao = questao.Respostas.FirstOrDefault(c => c.QuestaoId == questao.Id);
+
+                if (respostaQuestao == null) 
+                    continue;
+
+                var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
+                    c.Id == respostaQuestao.OpcaoRespostaId);                
+                
+                questaoRelatorio.RespostaId = respostaQuestao.OpcaoRespostaId;
+                questaoRelatorio.Resposta = respostaQuestao.Texto;
+
+                questaoRelatorio.Resposta = questao.Tipo switch
+                {
+                    TipoQuestao.Radio => "",
+                    TipoQuestao.PeriodoEscolar => await ObterRespostaQuestaoPeriodoEscolar(respostaQuestao, relatorioPlanoAee),
+                    _ => respostaQuestao.Texto
+                };
+
+                if (questao.Tipo == TipoQuestao.FrequenciaEstudanteAEE)
+                {
+                    var respostasFrequencias = JsonConvert.DeserializeObject<IEnumerable<RespostaFrequenciaAlunoPlanoAeeDto>>(respostaQuestao.Texto);
+                    
+                    var frequenciasAluno = respostasFrequencias.Select(respostaFrequencia =>
+                        new FrequenciaAlunoPlanoAeeDto
+                        {
+                            DiaDaSemana = respostaFrequencia.DiaSemana,
+                            Inicio = respostaFrequencia.HorarioInicio.ToString("HH:mm"),
+                            Termino = respostaFrequencia.HorarioTermino.ToString("HH:mm")
+                        }).ToList();
+
+                    questaoRelatorio.FrequenciaAluno = frequenciasAluno;
+                }
+                
+                questoesRelatorio.Add(questaoRelatorio);
+            }
+
+            relatorioPlanoAee.Cadastro.Questoes = questoesRelatorio;
+        }
+
+        private static void ObterParecer(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
+        {
+            relatorioPlanoAee.Parecer = new ParecerPlanoAeeDto
+            {
+                Coordenacao = planoAee.ParecerCoordenacao,
+                PaaiResponsavel = $"{planoAee.ResponsavelPaaiNome} ({planoAee.ResponsavelPaaiLoginRf})"
+            };            
+        }
+
+        private async Task<string> ObterRespostaQuestaoPeriodoEscolar(RespostaQuestaoDto respostaQuestao, RelatorioPlanoAeeDto relatorioPlanoAee)
+        {
+            var idPeriodoEscolar = long.Parse(respostaQuestao.Texto);
+            var periodoEscolar = await mediator.Send(new ObterPeriodoEscolarPorIdQuery(idPeriodoEscolar));
+            return $"{periodoEscolar.Bimestre}º BIMESTRE - {relatorioPlanoAee.Cabecalho.AnoLetivo}";            
         }
     }
 }
