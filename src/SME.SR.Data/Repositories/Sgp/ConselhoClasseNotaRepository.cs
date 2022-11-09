@@ -147,8 +147,9 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterNotasFinaisRelatorioNotasConceitosFinais(string[] dresCodigos, string[] uesCodigos, int? semestre, int modalidade, string[] anos, int anoLetivo, int[] bimestres, long[] componentesCurricularesCodigos)
         {
 
-            var query = new StringBuilder(@$"select distinct * from (
-                select fa.aluno_codigo as AlunoCodigo
+            var query = new StringBuilder(@$"with tmpNotasFinais as (
+                select distinct * from (
+                select coalesce(ccn.id,fn.id) as id, fa.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
                 	, fn.disciplina_id as ComponenteCurricularCodigo
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
@@ -220,7 +221,7 @@ namespace SME.SR.Data
                 query.AppendLine(@" and fn.disciplina_id = ANY(@componentesCurricularesCodigos) ");
 
             query.AppendLine(@$"union all 
-                select cca.aluno_codigo as AlunoCodigo
+                select coalesce(ccn.id,fn.id) as id, cca.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
                 	, ccn.componente_curricular_codigo as ComponenteCurricularCodigo
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
@@ -290,7 +291,35 @@ namespace SME.SR.Data
             if (componentesCurricularesCodigos != null && componentesCurricularesCodigos.Length > 0)
                 query.AppendLine(@" and ccn.componente_curricular_codigo = ANY(@componentesCurricularesCodigos) ");
 
-            query.AppendLine(@") x ");
+            query.AppendLine(@") x 
+                ), lista as (
+                select AlunoCodigo
+	                   ,bimestre
+                       ,ComponenteCurricularCodigo      
+                       ,ConceitoId
+	                   ,Conceito
+                ,		Nota
+                ,notaConceitoEmAprovacao
+                ,notaConceitoPosConselhoEmAprovacao
+                ,conselhoClasseNotaId
+                ,EhNotaConceitoFechamento
+                ,ConselhoClasseAlunoId
+                ,PossuiTurmaAssociada
+                ,SinteseId
+                ,Sintese
+                ,dreNome
+                ,dreCodigo
+                ,dreAbreviacao
+                ,ueCodigo
+                ,ueNome
+                ,tipoEscola
+                ,ano
+                ,turmaCodigo
+                ,turmaNome
+                ,Row_number() OVER (partition by AlunoCodigo order by Id desc) as sequencia
+                from tmpNotasFinais)
+                select * from lista
+                where sequencia = 1");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<RetornoNotaConceitoBimestreComponenteDto>(query.ToString(), new { bimestres, dresCodigos, uesCodigos, semestre, modalidade, anos, anoLetivo, componentesCurricularesCodigos });

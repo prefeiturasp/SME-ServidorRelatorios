@@ -1,9 +1,7 @@
-﻿using Dapper;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,12 +18,19 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaAlunoDto>> ObterConselhosClasseConsolidadoPorTurmasAsync(string[] turmasCodigo)
         {
-            var query = new StringBuilder(@" select c.id, c.dt_atualizacao DataAtualizacao, c.status, c.aluno_codigo AlunoCodigo, 
-                                                    c.parecer_conclusivo_id ParecerConclusivoId, t.turma_id TurmaCodigo, c.bimestre
-                            from consolidado_conselho_classe_aluno_turma c
-                            inner join turma t on c.turma_id = t.id
-                          where not c.excluido 
-                            and t.turma_id = ANY(@turmasCodigo) ");
+            var query = new StringBuilder(@" select distinct 
+	                                                c.id,
+	                                                c.dt_atualizacao DataAtualizacao,
+	                                                c.status,
+	                                                c.aluno_codigo AlunoCodigo,
+	                                                c.parecer_conclusivo_id ParecerConclusivoId,
+	                                                t.turma_id TurmaCodigo,
+	                                                cccatn.bimestre
+                                                from
+	                                                consolidado_conselho_classe_aluno_turma c inner join turma t on c.turma_id = t.id
+                                                inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = c.id
+                                                where not c.excluido 
+                                                and t.turma_id = ANY(@turmasCodigo) ");
 
             var parametros = new { turmasCodigo };
 
@@ -35,32 +40,31 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ConselhoClasseConsolidadoTurmaDto>> ObterConselhosClasseConsolidadoPorTurmasTodasUesAsync(string dreCodigo, int modalidade, int[] bimestres, SituacaoConselhoClasse? situacao, int anoLetivo, int semestre, bool exibirHistorico)
         {
-            var query = new StringBuilder(@"select
-                                            u.ue_id as UeCodigo,
-                                            t.turma_id TurmaCodigo,
-                                            u.nome as NomeUe,
-                                            t.nome as NomeTurma,
-                                            cccat.bimestre,
-                                            t.modalidade_codigo as ModalidadeCodigo,
-                                            count(cccat.id) filter(where cccat.status = 0) as NaoIniciado,
-                                            count(cccat.id) filter(where cccat.status = 1) as EmAndamento,
-                                            count(cccat.id) filter(where cccat.status = 2) as Concluido
-                                            from consolidado_conselho_classe_aluno_turma cccat
-                                            inner join turma t
-                                            on t.id = cccat.turma_id
-                                            inner join ue u
-                                            on u.id = t.ue_id
+            var query = new StringBuilder(@" select distinct
+	                                            u.ue_id as UeCodigo,
+	                                            t.turma_id TurmaCodigo,
+	                                            u.nome as NomeUe,
+	                                            t.nome as NomeTurma,
+	                                            cccatn.bimestre,
+	                                            t.modalidade_codigo as ModalidadeCodigo,
+	                                            count(cccat.id) filter(where cccat.status = 0) as NaoIniciado,
+	                                            count(cccat.id) filter(where cccat.status = 1) as EmAndamento,
+	                                            count(cccat.id) filter(where cccat.status = 2) as Concluido
+                                            from
+	                                            consolidado_conselho_classe_aluno_turma cccat
+                                            inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = cccat.id
+                                            inner join turma t on t.id = cccat.turma_id
+                                            inner join ue u on u.id = t.ue_id
                                             inner join dre d on d.id = u.dre_id
-                                            where t.ano_letivo = @anoLetivo
-                                            and d.dre_id = @dreCodigo
-                                            and t.modalidade_codigo = @modalidade
-                                            and not cccat.excluido
-                                            ");
+                                            where t.ano_letivo =@anoLetivo
+                                              and d.dre_id = @dreCodigo
+                                              and t.modalidade_codigo = @modalidade
+                                              and not cccat.excluido ");
 
             if (bimestres != null)
-                query.AppendLine(" and cccat.bimestre = ANY(@bimestres) ");
+                query.AppendLine(" and cccatn.bimestre = ANY(@bimestres) ");
 
-            if(semestre > 0)
+            if (semestre > 0)
                 query.AppendLine(" and t.semestre = @semestre ");
 
             if (situacao != null)
@@ -69,8 +73,8 @@ namespace SME.SR.Data
             if (!exibirHistorico)
                 query.AppendLine(" and not t.historica ");
 
-            query.AppendLine(@" group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cccat.bimestre, t.modalidade_codigo
-                                order by u.nome, t.nome, cccat.bimestre;");
+            query.AppendLine(@" group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cccatn.bimestre, t.modalidade_codigo
+                                order by u.nome, t.nome, cccatn.bimestre;");
 
             var parametros = new { dreCodigo, modalidade, bimestres, situacao, anoLetivo, semestre };
 
@@ -103,14 +107,17 @@ namespace SME.SR.Data
                 if (semestre > 0)
                     query.AppendLine(" and t.semestre = @semestre");
             }
-                
+
+            query.AppendLine("order by cccatn.id desc;");
+
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var parametros = new { alunosCodigos, turmasCodigos, semestre };
+
             try
             {
                 return await conexao.QueryAsync<NotasAlunoBimestreBoletimSimplesDto>(query.ToString(), parametros);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }

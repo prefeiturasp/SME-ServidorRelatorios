@@ -43,10 +43,15 @@ namespace SME.SR.Application
         private RelatorioAcompanhamentoAprendizagemCabecalhoDto MontarCabecalho(Turma turma, IEnumerable<ProfessorTitularComponenteCurricularDto> professores, FiltroRelatorioAcompanhamentoAprendizagemDto filtro)
         {
             var professoresCabecalho = "";
+            int quantidadeProfessoresValidosTurma = 0;
 
             if (professores != null && professores.Any())
-                professoresCabecalho = professores.FirstOrDefault().NomeProfessor.Contains("Não há professor titular") ?
-                    "Não há professor titular" : String.Join(", ", professores.Select(p => p.NomeProfessor).ToArray());
+            {
+                quantidadeProfessoresValidosTurma = professores.Count() - professores.Where(p => p.NomeProfessor.Contains("Não há professor titular")).Count();
+
+                professoresCabecalho = quantidadeProfessoresValidosTurma == 0 ?
+                   "Não há professor titular" : String.Join(", ", professores.Where(p => !p.NomeProfessor.Contains("Não há professor titular")).Select(a => a.NomeProfessor).ToArray());
+            }  
 
             var cabecalho = new RelatorioAcompanhamentoAprendizagemCabecalhoDto
             {
@@ -126,9 +131,11 @@ namespace SME.SR.Application
             {
                 int totalAulasInfantil = 0;
                 double somaFrequencia = 0;
+                double valorFrequencia = 0;
                 double mediaFrequencia = 0;
                 int totalAusencias = 0;
                 int quantidadeAulas = 0;
+                bool existeBimestreSemFrequencia = false;
 
                 foreach (var bimestre in bimestres.OrderBy(b => b))
                 {
@@ -144,10 +151,17 @@ namespace SME.SR.Application
 
                     totalAulasInfantil += frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas;
                     totalAusencias += frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias;
-                    somaFrequencia += frequenciaAluno != null ? frequenciaAluno.PercentualFrequencia : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? 100 : 0;
+                    valorFrequencia = frequenciaAluno != null ? frequenciaAluno.PercentualFrequencia : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? 100 : 0;
+
+                    if (valorFrequencia == 0)
+                        existeBimestreSemFrequencia = true;
+
+                    somaFrequencia += valorFrequencia;
                 }
 
-                mediaFrequencia = somaFrequencia / 2;
+                mediaFrequencia = existeBimestreSemFrequencia ? somaFrequencia : (somaFrequencia / 2);
+
+                mediaFrequencia = Math.Round(mediaFrequencia, 2);
 
                 var frequenciaRelatorio = new RelatorioAcompanhamentoAprendizagemAlunoFrequenciaDto
                 {

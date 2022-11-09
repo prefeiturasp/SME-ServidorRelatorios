@@ -56,10 +56,9 @@ namespace SME.SR.Data
                 if (TotalAulas == 0)
                     return 0;
 
-                var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
+                var porcentagem = 100 - (((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100);
 
                 return Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
-
             }
         }
         public long? PeriodoEscolarId { get; set; }

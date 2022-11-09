@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace SME.SR.Infra
 {
@@ -58,7 +59,7 @@ namespace SME.SR.Infra
         {
             var parametro = new ParametroRelatorioPaginadoPorColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
             {
-                AlturaDaLinha = 60,
+                AlturaDaLinha = 30,
                 TipoDePapel = TipoPapel.A4,
                 UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL,
                 Valores = this._dtoSondagemTurma.Planilha.Linhas
@@ -70,7 +71,8 @@ namespace SME.SR.Infra
                 relatorioPaginado = new RelatorioPaginadoSubColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>(parametro, ObtenhaDicionarioSubColuna());
             } else
             {
-                relatorioPaginado = new RelatorioPaginadoColuna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>(parametro, ObtenhaDicionarioColuna());
+                parametro.Fonte = new Font("Roboto Mono", 10);
+                relatorioPaginado = new RelatorioPaginadoSondagemTurma(parametro, ObtenhaDicionarioColuna());
             }
 
             return relatorioPaginado.Paginas();
@@ -125,7 +127,7 @@ namespace SME.SR.Infra
                     {
                         lista.Add(new Coluna<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>()
                         {
-                            Largura = 17,
+                            Largura = 8,
                             Titulo = perguntas.Nome,
                             Nome = perguntas.PerguntaId,
                             UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL

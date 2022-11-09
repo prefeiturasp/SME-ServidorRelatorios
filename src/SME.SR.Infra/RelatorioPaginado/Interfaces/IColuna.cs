@@ -17,5 +17,9 @@ namespace SME.SR.Infra
         public string ObtenhaValorDaPropriedade(object objeto);
 
         public string ObtenhaLarguraComUnidade();
+
+        public string ObtenhaClasse();
+
+        public bool ContemPropriedade();
     }
 }

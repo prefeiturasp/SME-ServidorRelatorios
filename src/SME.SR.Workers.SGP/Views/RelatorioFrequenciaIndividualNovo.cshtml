@@ -2,7 +2,7 @@
 
 @{
     double contadorQuebrarPagina = 0;
-
+    
     void MontarCabecalho()
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 8;
@@ -10,7 +10,7 @@
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
         </div>
         <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-        <div class='titulo-relatorio'>RELATÓRIO DE REGISTRO INDIVIDUAL</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE FREQUÊNCIA INDIVIDUAL</div>
         <div class='fonte-14 header-pagina'>
             <table class='tblTopo'>
                 <tbody>
@@ -46,7 +46,21 @@
         int numeroColSpan = Model.ehInfantil ? 6 : 7;
         <tr>
             <td width="25%" class="fundo-cinza">DATA DA AUSÊNCIA</td>
-            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">MOTIVO</td>
+            <td width="75%" colspan="@numeroColSpan" class="fundo-cinza">JUSTIFICATIVA</td>
+        </tr>
+    }
+
+    void MontarTituloFrequenciasDiarias()
+    {        
+        <tr>
+            <td width="100%" class="fundo-cinza" colspan="7">FREQUÊNCIAS DIÁRIAS</td>
+        </tr>
+        <tr>
+            <td class="fundo-cinza" colspan="3" width="32%">DATA DA AULA</td>
+            <td class="fundo-cinza">AULAS DADAS</td>
+            <td class="fundo-cinza">PRESENÇAS</td>
+            <td class="fundo-cinza">REMOTO</td>
+            <td class="fundo-cinza">AUSÊNCIAS</td>
         </tr>
     }
 
@@ -58,7 +72,7 @@
     }
 
     void MontarTituloFrequenciaBimestre()
-    {
+    {        
         <tr>
             <td width="16%" class="fundo-cinza">AULAS DADAS</td>
             <td width="16%" colspan="2" class="fundo-cinza">PRESENÇAS</td>
@@ -68,9 +82,12 @@
             @if (!Model.ehInfantil)
             {
                 <td width="16%" class="fundo-cinza">COMPENSAÇÕES</td>
+                <td width="20%" class="fundo-cinza">% DE FREQUÊNCIA</td>
             }
-
-            <td width="20%" class="fundo-cinza">% DE FREQUÊNCIA</td>
+            else
+            {
+                <td width="20%" colspan="2" class="fundo-cinza">% DE FREQUÊNCIA</td>
+            }
         </tr>
     }
 
@@ -85,9 +102,12 @@
             @if (!Model.ehInfantil)
             {
                 <td>@dadosFrequencia.TotalCompensacoes</td>
+                <td>@dadosFrequencia.TotalPercentualFrequencia</td>
             }
-
-            <td>@dadosFrequencia.TotalPercentualFrequencia</td>
+            else
+            {
+                <td colspan="2">@dadosFrequencia.TotalPercentualFrequencia</td>
+            }
         </tr>
     }
 
@@ -96,9 +116,31 @@
         int numeroColSpanJustificativa = Model.ehInfantil ? 6 : 7;
 
         <tr>
-            <td width="10%">@justificativas.DataAusencia</td>
-            <td width="90%" colspan="@numeroColSpan" class="alinhar-esquerda espaco-esquerda-15">@justificativas.MotivoAusencia</td>
+            <td width="10%">@justificativas.DataAula</td>
+            <td width="90%" colspan="@numeroColSpan" class="alinhar-esquerda espaco-esquerda-15">@justificativas.Justificativa</td>
         </tr>
+    }
+
+    void MontarLinhaFrequenciaDiaria(SME.SR.Infra.RelatorioFrequenciaIndividualJustificativasDto frequenciaDiaria)
+    {
+        var temJustificativa = !string.IsNullOrEmpty(frequenciaDiaria.Justificativa);
+        var rowspanDataAula = temJustificativa ? "3" : "1";
+        <tr>
+            <td rowspan=@rowspanDataAula colspan="3">@frequenciaDiaria.DataAula</td>
+            <td>@frequenciaDiaria.QuantidadeAulas</td>
+            <td>@frequenciaDiaria.QuantidadePresenca</td>
+            <td>@frequenciaDiaria.QuantidadeRemoto</td>
+            <td>@frequenciaDiaria.QuantidadeAusencia</td>
+        </tr>
+        @if (temJustificativa)
+        {
+            <tr>
+                <td width="100%" colspan="4" class="fundo-cinza">JUSTIFICATIVA</td>
+            </tr>
+            <tr>
+                <td colspan="4">@frequenciaDiaria.Justificativa</td>
+            </tr>
+        }
     }
 
     void MontarLinhaBimestreFinal(SME.SR.Infra.RelatorioFrequenciaIndividualAlunosDto dadosBimestreFinal)
@@ -112,9 +154,12 @@
             @if (!Model.ehInfantil)
             {
                 <td>@dadosBimestreFinal.TotalCompensacoesFinal</td>
+                <td>@Math.Round(dadosBimestreFinal.PercentualFrequenciaFinal,0).ToString() %</td>
             }
-
-            <td>@dadosBimestreFinal.PercentualFrequenciaFinal%</td>
+            else
+            {
+                <td colspan="2">@Math.Round(dadosBimestreFinal.PercentualFrequenciaFinal,0).ToString() %</td>
+            }
         </tr>
     }
 
@@ -253,13 +298,14 @@
                 <table class="tabela-cabecalho">
 
                     @{
-                        int numeroColSpan = Model.ehInfantil ? 6 : 7;
+                        int numeroColSpan = 7;
 
                         if (!string.IsNullOrEmpty(aluno.NomeAluno))
                             MontarTituloAlunoOuBimestre(aluno.NomeAluno, numeroColSpan);
                     }
 
                     <tbody>
+                        
                         @foreach (var bimestre in @aluno.Bimestres)
                         {
                             if (!string.IsNullOrEmpty(bimestre.NomeBimestre))
@@ -272,24 +318,36 @@
 
                             }
 
-                            if (bimestre.Justificativas.Count() > 0)
-                                MontarTituloJustificativas();
-
-                            @foreach (var justificativa in bimestre.Justificativas)
+                            if (bimestre.FrequenciaDiaria.Count() > 0)
                             {
-                                MontarLinhaJustificativa(justificativa, aluno.NomeAluno, bimestre.NomeBimestre, numeroColSpan);
+                                if (Model.ImprimirFrequenciaDiaria)
+                                {
+                                    MontarTituloFrequenciasDiarias();
+                                    @foreach (var frequenciaDiaria in bimestre.FrequenciaDiaria)
+                                    {
+                                        MontarLinhaFrequenciaDiaria(frequenciaDiaria);
+                                    }
+                                } 
+                                else
+                                {
+                                    MontarTituloJustificativas();
+                                    @foreach (var justificativa in bimestre.FrequenciaDiaria)
+                                    {
+                                        MontarLinhaJustificativa(justificativa, aluno.NomeAluno, bimestre.NomeBimestre, numeroColSpan);
+                                    }                                    
+                                }
                             }
+                            if (bimestre.ExibirFinal)
+                            {
+                                MontarTituloAlunoOuBimestre(aluno.TituloFinal, numeroColSpan);
+                                MontarTituloFrequenciaBimestre();
+                                MontarLinhaBimestreFinal(aluno); 
+                            } 
                         }
+
                     </tbody>
 
-                    @{
-                        if (Model.ehTodosBimestre)
-                        {
-                            MontarTituloAlunoOuBimestre(aluno.TituloFinal, numeroColSpan);
-                            MontarTituloFrequenciaBimestre();
-                            MontarLinhaBimestreFinal(aluno);
-                        }
-                    }
+
                 </table>
             }
         </div>

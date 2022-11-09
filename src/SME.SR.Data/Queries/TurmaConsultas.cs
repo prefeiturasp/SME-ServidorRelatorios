@@ -1,4 +1,5 @@
 ﻿using SME.SR.Infra;
+using System.Security.Cryptography.Xml;
 
 namespace SME.SR.Data
 {
@@ -39,6 +40,8 @@ namespace SME.SR.Data
 							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
@@ -73,6 +76,8 @@ namespace SME.SR.Data
 							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
 						mte.dt_situacao_aluno DataSituacao,
@@ -120,6 +125,123 @@ namespace SME.SR.Data
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
+
+        internal static string DadosAlunosDataMatricula = @"with tmpAlunosDadosAtuais as (
+											SELECT  aluno.cd_aluno CodigoAluno,
+													aluno.nm_aluno NomeAluno,
+													aluno.dt_nascimento_aluno DataNascimento,
+													aluno.nm_social_aluno NomeSocialAluno,
+													mte.cd_situacao_aluno CodigoSituacaoMatricula,
+													CASE
+														WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+														WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+														WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+														WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+														WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+														WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+														WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+														WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+														WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+														WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+														WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+														WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+														WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+														WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+														WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+														WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
+														ELSE 'Fora do domínio liberado pela PRODAM'
+														END SituacaoMatricula,
+													mte.dt_situacao_aluno DataSituacao,
+													matr.dt_status_matricula DataMatricula,
+													mte.nr_chamada_aluno NumeroAlunoChamada,
+													CASE
+														WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
+														ELSE 1
+													END PossuiDeficiencia,
+													LTRIM(RTRIM(nm_responsavel)) NomeResponsavel,
+													ra.tp_pessoa_responsavel TipoResponsavel,
+													concat(LTRIM(RTRIM(ra.cd_ddd_celular_responsavel)), LTRIM(RTRIM(ra.nr_celular_responsavel))) CelularResponsavel,
+													ra.dt_atualizacao_tabela DataAtualizacaoContato,
+													matr.cd_matricula CodigoMatricula
+												FROM v_aluno_cotic aluno
+													INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+													INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+													LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+													LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
+												WHERE mte.cd_turma_escola = @CodigoTurma
+													UNION
+												SELECT
+													aluno.cd_aluno CodigoAluno,
+													aluno.nm_aluno NomeAluno,
+													aluno.dt_nascimento_aluno DataNascimento,
+													aluno.nm_social_aluno NomeSocialAluno,
+													mte.cd_situacao_aluno CodigoSituacaoMatricula,
+													CASE
+														WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+														WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+														WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+														WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+														WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+														WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+														WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+														WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+														WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+														WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+														WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+														WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+														WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+														WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+														WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+														WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
+														ELSE 'Fora do domínio liberado pela PRODAM'
+														END SituacaoMatricula,
+													mte.dt_situacao_aluno DataSituacao,
+													matr.dt_status_matricula DataMatricula,
+													mte.nr_chamada_aluno NumeroAlunoChamada,
+													CASE WHEN nea.tp_necessidade_especial IS NULL
+														THEN 0
+														ELSE 1
+													END PossuiDeficiencia,
+													LTRIM(RTRIM(nm_responsavel)) NomeResponsavel,
+													ra.tp_pessoa_responsavel TipoResponsavel,
+													concat(LTRIM(RTRIM(ra.cd_ddd_celular_responsavel)), LTRIM(RTRIM(ra.nr_celular_responsavel))) CelularResponsavel,
+													ra.dt_atualizacao_tabela DataAtualizacaoContato,
+													matr.cd_matricula CodigoMatricula
+												FROM v_aluno_cotic aluno
+												INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
+												INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+												INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
+												LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
+												LEFT JOIN responsavel_aluno ra ON aluno.cd_aluno = ra.cd_aluno and ra.dt_fim is null
+												WHERE mte.cd_turma_escola = @CodigoTurma
+												and matr.an_letivo = te.an_letivo
+								), lista as (
+									select
+									CodigoAluno,
+									NomeAluno,
+									NomeSocialAluno,
+									DataNascimento,
+									CodigoSituacaoMatricula,
+									SituacaoMatricula,
+									DataSituacao,
+									NumeroAlunoChamada,
+									PossuiDeficiencia,
+									NomeResponsavel,
+									TipoResponsavel,
+									CelularResponsavel,
+									DataAtualizacaoContato,
+									CodigoMatricula,
+									DataMatricula,
+									row_number() over (partition by CodigoAluno order by DataSituacao desc) sequencia
+									from tmpAlunosDadosAtuais
+									where ((CONVERT(date, DataSituacao) <= CONVERT(date, @DataMatricula) and CodigoSituacaoMatricula not in (1,5,6,10,13)) 
+									or (CONVERT(date, DataMatricula) <= CONVERT(date, @DataMatricula))))
+
+							select * from lista
+							where sequencia = 1
+							and CodigoSituacaoMatricula <> 4
+							order by NomeAluno;";
+
         internal static string DadosAlunosSituacao = @"
 					IF OBJECT_ID('tempdb..#tmpAlunosSituacao') IS NOT NULL
 						DROP TABLE #tmpAlunosSituacao
@@ -165,6 +287,8 @@ namespace SME.SR.Data
 							WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 							WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 							WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 							ELSE 'Fora do domínio liberado pela PRODAM'
 							END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
@@ -204,11 +328,13 @@ namespace SME.SR.Data
 						    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
 						    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
 						    ELSE 'Fora do domínio liberado pela PRODAM'
 						    END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mte.dt_situacao_aluno DataSituacaoAluno,
-						matr.dt_status_matricula DataMatricula
+						(select MIN(dt_situacao_aluno) from historico_matricula_turma_escola where cd_matricula = matr.cd_matricula) DataMatricula
 					FROM v_aluno_cotic aluno
 					INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
@@ -220,12 +346,6 @@ namespace SME.SR.Data
 								   INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							 where mte2.cd_turma_escola = @turmaCodigo
 							   and matr2.cd_aluno = matr.cd_aluno)
-						AND NOT EXISTS(
-							SELECT 1 FROM v_matricula_cotic matr3
-						INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-						WHERE mte.cd_matricula = mte3.cd_matricula
-							AND mte.cd_turma_escola = @turmaCodigo) 
-
 					SELECT
 					CodigoAluno,
 					NomeAluno,

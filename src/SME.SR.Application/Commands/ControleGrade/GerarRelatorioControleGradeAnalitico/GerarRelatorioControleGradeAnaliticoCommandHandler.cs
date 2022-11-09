@@ -34,10 +34,19 @@ namespace SME.SR.Application
                 var aulasPrevistasTurma = new List<AulaPrevistaBimestreQuantidade>();
                 foreach (long componenteCurricularId in request.Filtros.ComponentesCurriculares)
                 {
+                    var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
+                    var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares, turma.Codigo);
                     var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
 
                     if (aulasPrevistasBimestresComponente.Any())
-                        aulasPrevistasTurma.AddRange(aulasPrevistasBimestresComponente);
+                    {
+                        foreach (var aula in aulasPrevistasBimestresComponente)
+                        {
+                            var componenteAula = componentesCurriculares.Where(c => c.CodDisciplina == aula.ComponenteCurricularId).FirstOrDefault();
+                            aula.ComponenteCurricularNome = componenteAula.Disciplina;
+                            aulasPrevistasTurma.Add(aula);
+                        }
+                    }                        
                 }
 
                 if (aulasPrevistasTurma.Any())
@@ -67,6 +76,7 @@ namespace SME.SR.Application
         private async Task<BimestreControleGradeDto> MapearParaBimestreDto(int bimestre, List<AulaPrevistaBimestreQuantidade> aulasPrevistasTurma, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma)
         {
             var aulasPrevistasBimestre = aulasPrevistasTurma.Where(c => c.Bimestre == bimestre);
+            bool ehEja = modalidadeTurma == Modalidade.EJA;
 
             var dataInicio = aulasPrevistasBimestre.FirstOrDefault().DataInicio;
             var dataFim = aulasPrevistasBimestre.FirstOrDefault().DataFim;
@@ -78,13 +88,13 @@ namespace SME.SR.Application
 
             foreach (var aulasPrevistasComponente in aulasPrevistasBimestre.OrderBy(c => c.ComponenteCurricularNome))
             {
-                bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(aulasPrevistasComponente, turmaId, tipoCalendarioId, modalidadeTurma, bimestre, dataInicio, dataFim));
+                bimestreDto.ComponentesCurriculares.Add(await MapearParaComponenteDto(aulasPrevistasComponente, turmaId, tipoCalendarioId, modalidadeTurma, bimestre, dataInicio, dataFim, ehEja));
             }
 
             return bimestreDto;
         }
 
-        private async Task<ComponenteCurricularControleGradeDto> MapearParaComponenteDto(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma, int bimestre, DateTime dataInicio, DateTime dataFim)
+        private async Task<ComponenteCurricularControleGradeDto> MapearParaComponenteDto(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, Modalidade modalidadeTurma, int bimestre, DateTime dataInicio, DateTime dataFim, bool ehEja)
         {
             var componenteDto = new ComponenteCurricularControleGradeDto();
 
@@ -104,7 +114,7 @@ namespace SME.SR.Application
             detalhamentoDivergencias.AulasTitularCJ = await ObterAulasTitularCJ(aulasPrevistasComponente, turmaId, tipoCalendarioId, bimestre);
             detalhamentoDivergencias.AulasDuplicadas = await mediator.Send(new DetalharAulasDuplicadasPorTurmaComponenteEBimestreQuery(turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Bimestre));
             componenteDto.DetalhamentoDivergencias = detalhamentoDivergencias;
-            componenteDto.VisaoSemanal = await ObterSessaoVisaoSemanal(dataInicio, dataFim, turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId);
+            componenteDto.VisaoSemanal = await ObterSessaoVisaoSemanal(dataInicio, dataFim, turmaId, aulasPrevistasComponente.ComponenteCurricularId, tipoCalendarioId, aulasPrevistasComponente.Regencia, ehEja);
             detalhamentoDivergencias.AulasDiasNaoLetivos = await ObterAulasDiasNaoLetivos(turmaId, tipoCalendarioId, aulasPrevistasComponente.ComponenteCurricularId, bimestre, dataInicio, dataFim);
 
             return componenteDto;
@@ -141,10 +151,17 @@ namespace SME.SR.Application
             return aulasDiasNaoLetivos;
         }
 
-        private async Task<IEnumerable<VisaoSemanalControleGradeSinteticoDto>> ObterSessaoVisaoSemanal(DateTime dataInicio, DateTime dataFim, long turmaId, long componenteCurricularId, long tipoCalendarioId)
+        private async Task<IEnumerable<VisaoSemanalControleGradeSinteticoDto>> ObterSessaoVisaoSemanal(DateTime dataInicio, DateTime dataFim, long turmaId, long componenteCurricularId, long tipoCalendarioId, bool regencia, bool ehEja)
         {
             var visaoSemanal = new List<VisaoSemanalControleGradeSinteticoDto>();
             var quantidadeGrade = await mediator.Send(new ObterQuantidadeDeAulaGradeQuery(turmaId, componenteCurricularId));
+
+            if (quantidadeGrade == 0 && regencia)
+                quantidadeGrade = 5;
+            
+            if (quantidadeGrade == 0 && ehEja)
+                quantidadeGrade = 25;
+
             var eventosCadastrados = await mediator.Send(new ObterEventosPorTipoCalendarioIdEPeriodoInicioEFimQuery(tipoCalendarioId, dataInicio, dataFim, turmaId));
 
             var dataSegundaFeira = ObterUltimaSegundaFeira(dataInicio);
@@ -215,6 +232,12 @@ namespace SME.SR.Application
         {
             return data.DayOfWeek == DayOfWeek.Monday;
 
+        }
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<long> componentesCurriculares, string turmaId)
+        {
+            string[] turmaCodigo = { turmaId };
+            var componentes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurriculares.ToArray(), turmaCodigo));
+            return componentes;
         }
 
         private async Task<List<AulaTitularCJDataControleGradeDto>> ObterAulasTitularCJ(AulaPrevistaBimestreQuantidade aulasPrevistasComponente, long turmaId, long tipoCalendarioId, int bimestre)
@@ -323,7 +346,8 @@ namespace SME.SR.Application
             dto.Filtro.ComponenteCurricular = ObterNomeComponente(filtros, dto);
             dto.Filtro.Usuario = filtros.UsuarioNome;
             dto.Filtro.RF = filtros.UsuarioRf;
-        }
+            dto.Filtro.EhEducacaoInfantil = filtros.ModalidadeTurma == Modalidade.Infantil;  
+    }
 
         private int QuantidadePeriodosPorModalidade(Modalidade modalidade)
             => modalidade == Modalidade.EJA ? 2 : 4;

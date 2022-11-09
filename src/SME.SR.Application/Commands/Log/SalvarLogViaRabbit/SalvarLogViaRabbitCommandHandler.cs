@@ -6,15 +6,18 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SME.SR.Application
 {
     public class SalvarLogViaRabbitCommandHandler : AsyncRequestHandler<SalvarLogViaRabbitCommand>
     {
         private readonly ConfiguracaoRabbitLogOptions configuracaoRabbitOptions;
-        public SalvarLogViaRabbitCommandHandler(ConfiguracaoRabbitLogOptions configuracaoRabbitOptions)
+        private readonly IConfiguration configuration;
+        public SalvarLogViaRabbitCommandHandler(ConfiguracaoRabbitLogOptions configuracaoRabbitOptions, IConfiguration configuration)
         {
             this.configuracaoRabbitOptions = configuracaoRabbitOptions ?? throw new ArgumentNullException(nameof(configuracaoRabbitOptions));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         protected override Task Handle(SalvarLogViaRabbitCommand request, CancellationToken cancellationToken)
@@ -26,19 +29,19 @@ namespace SME.SR.Application
 
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            PublicarMensagem(body);
+            PublicarMensagem(body, configuration);
 
             return Task.CompletedTask;
         }
 
-        private void PublicarMensagem(byte[] body)
+        private void PublicarMensagem(byte[] body, IConfiguration configuration)
         {
             var factory = new ConnectionFactory
             {
-                HostName = configuracaoRabbitOptions.HostName,
-                UserName = configuracaoRabbitOptions.UserName,
-                Password = configuracaoRabbitOptions.Password,
-                VirtualHost = configuracaoRabbitOptions.VirtualHost
+                HostName = configuration.GetSection("ConfiguracaoRabbitLog:HostName").Value,
+                UserName = configuration.GetSection("ConfiguracaoRabbitLog:UserName").Value,
+                Password = configuration.GetSection("ConfiguracaoRabbitLog:Password").Value,
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbitLog:Virtualhost").Value
             };
 
             using (var conexaoRabbit = factory.CreateConnection())

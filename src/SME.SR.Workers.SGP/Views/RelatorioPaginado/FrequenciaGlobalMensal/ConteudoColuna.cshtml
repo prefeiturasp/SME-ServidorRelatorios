@@ -1,0 +1,82 @@
+﻿@using SME.SR.Infra
+@using System.Linq
+@model PaginaFrenquenciaMensal
+
+@{
+    var listaDres = Model.Valores as List<FrequenciaMensalDto>;
+    var listaDresAgrupada = listaDres.GroupBy(x => x.CodigoDre)
+                                     .Distinct().ToList();
+
+    void MontarTable(string nomeTurma)
+    {
+        var retorno = string.Empty;
+        retorno += $@"<table class='tabela-cabecalho-conteudo'>";
+        retorno += $@"    <thead>";
+        retorno += $@"        <tr>";
+        retorno += $@"            <th>{nomeTurma}</th>";
+        retorno += $@"        </tr>";
+        retorno += $@"    </thead>";
+        retorno += $@"</table>";
+
+        @Html.Raw(retorno)
+        ;
+    }
+    string ObterCabecalho()
+    {
+        var retorno = string.Empty;
+
+        foreach (var coluna in Model.Colunas)
+        {
+            retorno += "<td width='" + coluna.ObtenhaLarguraComUnidade() + "'>" + coluna.Titulo + "</td>";
+        }
+
+        return retorno;
+    }
+    string ObterConteudo(List<FrequenciaMensalDto> lista)
+    {
+        var retorno = string.Empty;
+        foreach (var valor in lista.OrderBy(x => x.NomeAluno))
+        {
+            var linha = (FrequenciaMensalDto)valor;
+
+            retorno += $@"<tr><th>{@linha.NumeroAluno}</th>";
+            retorno += $@"<th class='alinhar-esquerda'>{@linha.NomeAluno}</th>";
+            retorno += $@"<th>{@linha.ProcentagemFrequencia}</th>";
+            retorno += "</tr>";
+
+        }
+        return retorno;
+    }
+
+    foreach (var itemDre in listaDresAgrupada.OrderBy(x => x.Key))
+    {
+        if (Model.MostrarSecaoDre) MontarTable(@itemDre.FirstOrDefault().NomeDre);
+
+        var listaUeAgrupada = itemDre.ToList().GroupBy(x => x.CodigoUe).OrderBy(x => x.FirstOrDefault().NomeUe);
+        foreach (var itemUe in listaUeAgrupada)
+        {
+            if (Model.MostrarSecaoUe) MontarTable(@itemUe.FirstOrDefault().NomeUe);
+
+            var listaTurmaAgrupada = itemUe.ToList().GroupBy(x => x.CodigoTurma).OrderBy(x => x.FirstOrDefault().NomeTurma);
+            foreach (var itemTurma in listaTurmaAgrupada)
+            {
+                MontarTable(@itemTurma.FirstOrDefault().NomeTurma);
+                var listaMesAgrupada = itemTurma.ToList().GroupBy(x => x.ValorMes).OrderBy(x => x.FirstOrDefault().ValorMes);
+                foreach (var itemMes in listaMesAgrupada)
+                {
+                    MontarTable(@itemMes.FirstOrDefault().NomeMes);
+                    <table class='tabela-cabecalho'>
+                        <thead>
+                            <tr>
+                                @(Html.Raw(ObterCabecalho()))
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @(Html.Raw(ObterConteudo(itemMes.ToList())))
+                        </tbody>
+                    </table>
+                }
+            }
+        }
+    }
+}

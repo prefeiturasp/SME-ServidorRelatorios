@@ -103,33 +103,51 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
                 {
                     str += MontaCabecalhoTurmaOuBimestre(componente.Nome);
                     str += $@"<table class='fixed' >
-                        <tr>
-                            <td width='13%' class='td-titulo'>PREVISTAS</td>
+                        <tr>";
+
+                    if(!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='13%' class='td-titulo'>PREVISTAS</td>";
+
+                    str += $@"
                             <td width='22%' colspan='2' class='td-titulo'>CRIADAS</td>
                             <td width='22%' colspan='2' class='td-titulo'>DADAS</td>
-                            <td width='14%' class='td-titulo'>REPOSTAS</td>
-                            <td width='15%' class='td-titulo'>DIVERGÊNCIAS</td>
-                        </tr>
-                        <tr>
-                            <td width='12%' class='td-titulo-2'></td>
+                            <td width='14%' class='td-titulo'>REPOSTAS</td>";
+
+                    if(!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='15%' class='td-titulo'>DIVERGÊNCIAS</td>";
+
+                    str += $@"</tr>
+                        <tr>";
+
+                    if(!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='12%' class='td-titulo-2'></td>";
+
+                    str += $@"
                             <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
                             <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
                             <td width='12.5%' class='td-titulo-2'>PROF. TIT.</td>
                             <td width='12.5%' class='td-titulo-2'>PROF. SUBST.</td>
-                            <td width='12.5%' class='td-titulo-2'></td>
-                            <td width='12.5%' class='td-titulo-2'></td>
+                            <td width='12.5%' class='td-titulo-2'></td>";
+
+                    if(!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='12.5%' class='td-titulo-2'></td>
                         </tr>";
                     contadorQuebrarPagina = contadorQuebrarPagina + 3;
-                    str += $@"<tr>
-                        <td width='12.5%' class='td-valor'>{componente.AulasPrevistas}</td>
-                        <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorTitular}</td>
+                    str += $@"<tr>";
+
+                    if (!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='12.5%' class='td-valor'>{componente.AulasPrevistas}</td>";
+
+                    str += $@"<td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorTitular}</td>
                         <td width='12.5%' class='td-valor'>{componente.AulasCriadasProfessorSubstituto}</td>
                         <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorTitular}</td>
                         <td width='12.5%' class='td-valor'>{componente.AulasDadasProfessorSubstituto}</td>
-                        <td width='12.5%' class='td-valor'>{componente.Repostas}</td>
-                        <td width='12.5%' class='td-valor'>{componente.Divergencias}</td>
-                        </tr></table>
-                        ";
+                        <td width='12.5%' class='td-valor'>{componente.Repostas}</td>";
+
+                    if (!Model.Filtro.EhEducacaoInfantil)
+                        str += $@"<td width='12.5%' class='td-valor'>{componente.Divergencias}</td>";
+
+                    str += $@"</tr></table>";
                     contadorQuebrarPagina += 1;
 
                     retornoVerificacao = VerificaQuebra();
@@ -471,40 +489,51 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
     string MontaCabecalhoDivergenciasAulasCriadasXPrevistas()
     {
         var str = $@"<table class='fixed'>
-  <tr>
-    <td width='100%' class='td-turma-bimestre'>
-      VISÃO POR SEMANA DE AULAS CRIADAS X PREVISTO NA MATRIZ CURRICULAR
-    </td>
-  </tr>
-</table>";
+                          <tr>
+                            <td width='100%' class='td-turma-bimestre'>
+                              VISÃO POR SEMANA DE AULAS CRIADAS X PREVISTO NA MATRIZ CURRICULAR
+                            </td>
+                          </tr>
+                        </table>";
 
         if(contadorQuebrarPagina >= 8)
         {
             contadorQuebrarPagina = contadorQuebrarPagina + 3;
-            return $@"{str}
-<table class='fixed' style='margin-bottom: 22px;'>
-  <tr>
-    <td width='20%' class='td-titulo'>SEMANA</td>
-    <td width='20%' class='td-titulo'>DIAS LETIVOS</td>
-    <td width='20%' class='td-titulo'>AULAS GRADE</td>
-    <td width='20%' class='td-titulo'>AULAS CRIADAS</td>
-    <td width='20%' class='td-titulo'>DIFERENÇA</td>
-  </tr>";
+            str += $@"<table class='fixed' style='margin-bottom: 22px;'>
+                          <tr>
+                            <td width='20%' class='td-titulo'>SEMANA</td>
+                            <td width='20%' class='td-titulo'>DIAS LETIVOS</td>";
+
+            if(!Model.Filtro.EhEducacaoInfantil)
+                str += $@"<td width='20%' class='td-titulo'>AULAS GRADE</td>";
+
+            str += $@"<td width='20%' class='td-titulo'>AULAS CRIADAS</td>";
+
+            if(!Model.Filtro.EhEducacaoInfantil)
+                str += $@"<td width='20%' class='td-titulo'>DIFERENÇA</td>";
+
+            str += $@"</tr>";
         } else
         {
             contadorQuebrarPagina = contadorQuebrarPagina + 2;
-            return $@"{str}
-<table class='fixed'>
-  <tr>
-    <td width='20%' class='td-titulo'>SEMANA</td>
-    <td width='20%' class='td-titulo'>DIAS LETIVOS</td>
-    <td width='20%' class='td-titulo'>AULAS GRADE</td>
-    <td width='20%' class='td-titulo'>AULAS CRIADAS</td>
-    <td width='20%' class='td-titulo'>DIFERENÇA</td>
-  </tr>";
+            str += $@"<table class='fixed'>
+                          <tr>
+                            <td width='20%' class='td-titulo'>SEMANA</td>
+                            <td width='20%' class='td-titulo'>DIAS LETIVOS</td>";
+
+            if(!Model.Filtro.EhEducacaoInfantil)
+                str += $@"<td width='20%' class='td-titulo'>AULAS GRADE</td>";
+
+
+            str += $@"<td width='20%' class='td-titulo'>AULAS CRIADAS</td>";
+
+            if (!Model.Filtro.EhEducacaoInfantil)
+                str += $@"<td width='20%' class='td-titulo'>DIFERENÇA</td>";
+
+            str += $@"</tr>";
         }
 
-
+        return str;
     }
 
     string MontaDivergenciasAulasCriadasXPPrevistas(IEnumerable<SME.SR.Infra.VisaoSemanalControleGradeSinteticoDto> aulas)
@@ -521,11 +550,17 @@ COMPONENTE CURRICULAR: {Model.Filtro.ComponenteCurricular}
             }
             str += $@"<tr>
                     <td width='20%' class='td-valor'>{aula.Data}</td>
-                    <td width='20%' class='td-valor'>{aula.DiasLetivo}</td>
-                    <td width='20%' class='td-valor'>{aula.QuantidadeGrade}</td>
-                    <td width='20%' class='td-valor'>{aula.AulasCriadas}</td>
-                    <td width='20%' class='td-valor'>{aula.Diferenca}</td>
-                  </tr>";
+                    <td width='20%' class='td-valor'>{aula.DiasLetivo}</td>";
+
+            if (!Model.Filtro.EhEducacaoInfantil)
+                str += $@"<td width='20%' class='td-valor'>{aula.QuantidadeGrade}</td>";
+
+            str += $@"<td width='20%' class='td-valor'>{aula.AulasCriadas}</td>";
+
+            if (!Model.Filtro.EhEducacaoInfantil)
+                str += $@"<td width='20%' class='td-valor'>{aula.Diferenca}</td>";
+
+            str += $@"</tr>";
 
             if(aula.Data == "09/03/2020")
             {

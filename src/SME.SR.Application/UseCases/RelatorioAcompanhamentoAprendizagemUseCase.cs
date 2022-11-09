@@ -19,7 +19,6 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto filtro)
         {
-
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
 
             var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
@@ -45,7 +44,6 @@ namespace SME.SR.Application
             var quantidadeAulasDadas = await mediator.Send(new ObterQuantiaddeAulasDadasPorTurmaEBimestreQuery(turma.Codigo, tipoCalendarioId, bimestres));
 
             var frequenciaAlunos = await mediator.Send(new ObterFrequenciaGeralAlunosPorTurmaEBimestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), bimestres));
-
 
             var ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, periodoInicioFim.DataInicio, periodoInicioFim.DataFim));
 

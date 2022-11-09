@@ -5,7 +5,6 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,23 +46,24 @@ namespace SME.SR.Application
                 .OrderBy(a => a.Key.BimestreComponenteCurricular))
             {
                 var bimestreComponenteCurricular = devolutivasPorBimestre.Key;
+                var descricaoDoBimestre = $"({bimestreComponenteCurricular.DataInicio:dd/MM/yyyy} À {bimestreComponenteCurricular.DataFim:dd/MM/yyyy})";
 
                 yield return new BimestresComponentesCurricularesDevolutivasDto()
                 {
-                    NomeBimestreComponenteCurricular = $"{bimestreComponenteCurricular.BimestreComponenteCurricular}{IncluirComplemento(utilizarLayoutNovo)} ({bimestreComponenteCurricular.DataInicio:dd/MM/yyyy} À {bimestreComponenteCurricular.DataFim:dd/MM/yyyy})",
+                    NomeBimestreComponenteCurricular = $"{bimestreComponenteCurricular.BimestreComponenteCurricular}{IncluirComplemento(utilizarLayoutNovo, descricaoDoBimestre)}",
                     Devolutivas = ObterDevolutivasQuery(devolutivasPorBimestre).ToList()
                 };
             }
         }
 
-        private string IncluirComplemento(bool utilizarLayoutNovo)
+        private string IncluirComplemento(bool utilizarLayoutNovo, string descricaoDoBimestre)
         {
-            return utilizarLayoutNovo ? string.Empty : "º BIMESTRE";
+            return utilizarLayoutNovo ? string.Empty : $"º BIMESTRE {descricaoDoBimestre}";
         }
 
         private IEnumerable<DevolutivaRelatorioDto> ObterDevolutivasQuery(IGrouping<object, DevolutivaDto> devolutivas)
         {
-            foreach(var devolutivasPorId in devolutivas
+            foreach (var devolutivasPorId in devolutivas
                 .GroupBy(a => new { a.Id, a.DataInicio })
                 .OrderByDescending(a => a.Key.DataInicio))
             {

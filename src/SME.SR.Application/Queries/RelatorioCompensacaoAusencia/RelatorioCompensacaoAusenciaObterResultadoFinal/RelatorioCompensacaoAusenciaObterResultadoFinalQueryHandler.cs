@@ -16,9 +16,9 @@ namespace SME.SR.Application
 
             MontaCabecalho(request.Filtros, request.Ue, request.Dre, request.Compensacoes, request.ComponentesCurriculares, result);
 
-            var dreParaAdicionar = new RelatorioCompensacaoAusenciaDreDto() { Codigo = request.Dre.DreCodigo, Nome = request.Dre.Nome };
+            var dreParaAdicionar = new RelatorioCompensacaoAusenciaDreDto() { Codigo = request.Dre.Codigo, Nome = request.Dre.Nome };
 
-            var ueParaAdicionar = new RelatorioCompensacaoAusenciaUeDto() { Codigo = request.Ue.UeCodigo, Nome = request.Ue.Nome };
+            var ueParaAdicionar = new RelatorioCompensacaoAusenciaUeDto() { Codigo = request.Ue.Codigo, Nome = request.Ue.Nome };
 
             foreach (var compensacoesTurma in request.Compensacoes.GroupBy(a => a.TurmaNome))
             {

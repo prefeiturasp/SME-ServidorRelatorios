@@ -33,13 +33,13 @@ namespace SME.SR.Application
 
             relatorioDto.Turmas = await mediator.Send(new ObterDevolutivasQuery(parametros.UeId, turmas, bimestres, parametros.Ano, parametros.ComponenteCurricular, utilizarLayoutNovo));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivas", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "devolutiva"));
         }
 
         private async Task<bool> UtilizarNovoLayout(long anoLetivo)
         {
             var parametro = await mediator.Send(new VerificarSeParametroEstaAtivoQuery(TipoParametroSistema.Devolutiva));
-            if (anoLetivo >= parametro.Ano && parametro.Ativo)
+            if (parametro != null && anoLetivo >= parametro.Ano && parametro.Ativo)
                 return true;
             else
                 return false;
@@ -47,6 +47,9 @@ namespace SME.SR.Application
 
         private IEnumerable<int> ObterBimestresFiltro(IEnumerable<int> bimestres)
         {
+            if (bimestres == null)
+                return Enumerable.Empty<int>();
+
             if (bimestres.Count() == 1 && (bimestres.First() == -99))
                 return new List<int>() { 1, 2, 3, 4 };
 
@@ -59,7 +62,7 @@ namespace SME.SR.Application
                 return Enumerable.Empty<long>();
 
             return turmas;
-        }
+        } 
 
         private async Task ObterFiltrosRelatorio(RelatorioDevolutivasDto relatorioDto, FiltroRelatorioDevolutivasDto parametros)
         {
@@ -97,11 +100,11 @@ namespace SME.SR.Application
 
             if (turmas.Count() == 1 && !turmas.Any(t => t == -99))
             {
-                var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(turmas.First()));
-                return turmaDto.NomeRelatorio;
+                var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(turmas.First()));                
+                return turmaDto == null ? string.Empty : turmaDto.NomeRelatorio;
             }
 
-            return "";
+            return string.Empty;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -17,7 +18,7 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroAcompanhamentoFrequencia;
 
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroAcompanhamentoFrequenciaJustificativaDto>();
-
+            
             var retornoRelatorio = await mediator.Send(new ObterDadosRelatorioAcompanhamentoFrequenciaCommand(filtroRelatorio));
 
             await mediator.Send(new GerarRelatorioAcompanhamentoFrequenciaCommand(retornoRelatorio, request.CodigoCorrelacao));

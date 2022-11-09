@@ -12,5 +12,6 @@ namespace SME.SR.Infra
         public string UsuarioNome { get; set; }
         public string ComponenteCurricularId { get; set; }
         public List<string> AlunosCodigos { get; set; }
+        public bool ImprimirFrequenciaDiaria { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
             // Dres
             List<Dre> dres = await AplicarFiltroPorDre(filtros);
-            var dresCodigos = dres.Select(d => d.DreCodigo).ToArray();
+            var dresCodigos = dres.Select(d => d.Codigo).ToArray();
 
             // Ues
             string[] uesCodigos;
@@ -183,7 +183,7 @@ namespace SME.SR.Application
 
                 var turmaAssociada = turmasAssociadasObj.FirstOrDefault(t => t.Codigo == associacao.TurmaComplementarId.ToString());
 
-                nota.TurmaCodigo = turmaAssociada.turma_id;
+                nota.TurmaCodigo = turmaAssociada.Codigo;
                 nota.TurmaNome = turmaAssociada.Nome;
                 nota.Ano = turmaAssociada.Ano;
             }

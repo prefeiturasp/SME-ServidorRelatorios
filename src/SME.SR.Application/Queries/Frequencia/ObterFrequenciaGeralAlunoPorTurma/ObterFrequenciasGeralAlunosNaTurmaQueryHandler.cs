@@ -4,7 +4,6 @@ using SME.SR.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,11 +12,9 @@ namespace SME.SR.Application
     public class ObterFrequenciasGeralAlunosNaTurmaQueryHandler : IRequestHandler<ObterFrequenciasGeralAlunosNaTurmaQuery, IEnumerable<FrequenciaAluno>>
     {
         private readonly IFrequenciaAlunoRepository frequenciaRepository;
-        private readonly IMediator mediator;
 
-        public ObterFrequenciasGeralAlunosNaTurmaQueryHandler(IMediator mediator, IFrequenciaAlunoRepository frequenciaRepository)
+        public ObterFrequenciasGeralAlunosNaTurmaQueryHandler(IFrequenciaAlunoRepository frequenciaRepository)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.frequenciaRepository = frequenciaRepository ?? throw new ArgumentNullException(nameof(frequenciaRepository));
         }
 
@@ -35,20 +32,16 @@ namespace SME.SR.Application
         {
             var frequenciaGlobalAlunos = new List<FrequenciaAluno>();
 
-            var agrupamentoAluno = frequenciaTurma.GroupBy(g => (g.CodigoAluno));
-            foreach (var aluno in agrupamentoAluno)
+            foreach (var aluno in frequenciaTurma.GroupBy(g => (g.CodigoAluno)))
             {
-                var frequenciaAluno = new FrequenciaAluno()
+                frequenciaGlobalAlunos.Add(new FrequenciaAluno()
                 {
                     CodigoAluno = aluno.Key,
                     TotalAulas = aluno.Sum(s => s.TotalAulas),
                     TotalAusencias = aluno.Sum(s => s.TotalAusencias),
                     TotalCompensacoes = aluno.Sum(s => s.TotalCompensacoes)
-                };
-
-                frequenciaGlobalAlunos.Add(frequenciaAluno);
+                });
             }
-
             return frequenciaGlobalAlunos;
         }
     }

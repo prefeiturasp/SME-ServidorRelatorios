@@ -86,7 +86,8 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/boletimescolardetalhado", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
         public async Task<bool> RelatorioBoletimEscolarDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
         {
-            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request,false);
+            request.RelatorioEscolaAqui = false;
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
             return true;
         }
 
@@ -101,7 +102,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpPost("relatorios/frequencia")]
         [Action("relatorios/frequencia", typeof(IRelatorioFrequenciasUseCase))]
         public async Task<bool> RelatorioFrequencias([FromBody] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
-        {
+       {
             await relatorioFaltasFrequenciasUseCase.Executar(request);
             return true;
         }
@@ -330,6 +331,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/frequencia-global")]
+        [Action("relatorios/frequencia-global", typeof(IRelatorioFrequenciaGlobalUseCase))]
+        public async Task<bool> RelatorioFrequenciaGlobal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaGlobalUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
@@ -343,7 +352,8 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/boletimescolardetalhadoescolaaqui", typeof(IRelatorioBoletimEscolarDetalhadoUseCase))]
         public async Task<bool> RelatorioBoletimEscolarDetalhadoEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBoletimEscolarDetalhadoUseCase relatorioBoletimEscolarDetalhadoUseCase)
         {
-            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request, true);
+            request.RelatorioEscolaAqui = true;
+            await relatorioBoletimEscolarDetalhadoUseCase.Executar(request);
             return true;
         }
         #endregion App Escola Aqui

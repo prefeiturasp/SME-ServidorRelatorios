@@ -1,10 +1,14 @@
 ﻿using Dapper;
+using Elastic.Apm.Api;
+using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,20 +59,47 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<RecomendacaoConselhoClasseAluno> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno)
+        public async Task<RecomendacoesConselhoClasse> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno)
         {
             var query = ConselhoClasseAlunoConsultas.Recomendacoes;
             var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryFirstOrDefaultAsync<RecomendacaoConselhoClasseAluno>(query, parametros);
+                var lookup = new Dictionary<long, RecomendacoesConselhoClasse>();
+
+                await conexao.QueryAsync<RecomendacoesConselhoClasse, ConselhoClasseRecomendacao, Dictionary< long, RecomendacoesConselhoClasse > >
+                                            (query.ToString(), (conselhoClasse, ccRecomendacao) =>
+                                            {
+
+                                                RecomendacoesConselhoClasse recomendacoesConselhoClasse;
+
+                                                if (!lookup.TryGetValue(conselhoClasse.ConselhoClasseAlunoId, out recomendacoesConselhoClasse))
+                                                {
+                                                    recomendacoesConselhoClasse = conselhoClasse;
+                                                    lookup.Add(conselhoClasse.ConselhoClasseAlunoId, recomendacoesConselhoClasse);
+                                                }
+
+                                                if (ccRecomendacao != null)
+                                                {
+                                                    if (ccRecomendacao.Tipo == ConselhoClasseRecomendacaoTipo.Familia)
+                                                        recomendacoesConselhoClasse.RecomendacoesPreDefinidasFamilia.Add(ccRecomendacao);
+                                                    else
+                                                    if (ccRecomendacao.Tipo == ConselhoClasseRecomendacaoTipo.Aluno)
+                                                        recomendacoesConselhoClasse.RecomendacoesPreDefinidasAluno.Add(ccRecomendacao);
+                                                }
+
+                                                return lookup;
+                                            }, parametros);
+
+                return lookup.Values.FirstOrDefault();
+
             }
         }
 
         public async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesPorAlunosTurmas(string[] codigosAluno, string[] codigosTurma, int anoLetivo, Modalidade? modalidade, int semestre)
         {
-            var query = new StringBuilder(@"select distinct t.turma_id TurmaCodigo, cca.aluno_codigo AlunoCodigo,
+            var query = new StringBuilder(@"select cc.id, t.turma_id TurmaCodigo, cca.aluno_codigo AlunoCodigo,
                                  cca.recomendacoes_aluno RecomendacoesAluno, 
                                  cca.recomendacoes_familia RecomendacoesFamilia,
                                  cca.anotacoes_pedagogicas AnotacoesPedagogicas
@@ -102,6 +133,13 @@ namespace SME.SR.Data
                 dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 7, 1);
             }
 
+            query.Append(@" group by (cc.id, t.turma_id, cca.aluno_codigo,
+                                 cca.recomendacoes_aluno,
+                                 cca.recomendacoes_familia,
+                                 cca.anotacoes_pedagogicas,
+                                 cc.alterado_em, cc.criado_em)
+                            order by coalesce(cc.alterado_em, cc.criado_em) desc");
+
             var parametros = new
             {
                 codigosAluno,
@@ -126,6 +164,23 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QuerySingleOrDefaultAsync<bool>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma, int id)
+        {
+            string sql = @"select distinct ccr.recomendacao, ccr.tipo from conselho_classe_aluno_recomendacao ccar
+                                 inner join conselho_classe_recomendacao ccr on ccr.id = ccar.conselho_classe_recomendacao_id
+                                 inner join conselho_classe_aluno cca on cca.id = ccar.conselho_classe_aluno_id
+                                 inner join conselho_classe cc on cc.id = cca.conselho_classe_id
+                                 inner join fechamento_turma ft on ft.id = cc.fechamento_turma_id
+                                 inner join turma t on t.id = ft.turma_id
+                                    where t.turma_id = @codigoTurma and cca.aluno_codigo = @codigoAluno
+                                    and cc.id = @id";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<RecomendacoesAlunoFamiliaDto>(sql, new { codigoAluno, codigoTurma, id});
             }
         }
     }

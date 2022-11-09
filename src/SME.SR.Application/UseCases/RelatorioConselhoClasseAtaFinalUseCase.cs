@@ -24,7 +24,7 @@ namespace SME.SR.Application
             var mensagensErro = new StringBuilder();
             var relatoriosTurmas = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalPdfQuery(filtros));
 
-            if (!relatoriosTurmas.Any())
+            if (relatoriosTurmas == null || !relatoriosTurmas.Any())
                 throw new NegocioException("Não há dados para o relatório de Ata Final de Resultados.");
 
             switch (filtros.TipoFormatoRelatorio)

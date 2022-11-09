@@ -75,7 +75,7 @@ namespace SME.SR.Data.Repositories.Sgp
 	                        , pe.id, pe.periodo_inicio as DataInicio, pe.periodo_fim as DataFim, pe.bimestre
                             {IncluirCampoSeparacaoDiarioBordo(utilizarLayoutNovo)}
                           from devolutiva d 
-                         inner join diario_bordo db on d.id = db.devolutiva_id 
+                         inner join diario_bordo db on d.id = db.devolutiva_id and not db.excluido
                          {IncluirJuncaoSeparacaoDiarioBordo(utilizarLayoutNovo)}
                          inner join aula a on a.id = db.aula_id 
                          inner join turma t on t.turma_id = a.turma_id 
@@ -90,15 +90,15 @@ namespace SME.SR.Data.Repositories.Sgp
                           {IncluirCondicaoSeparacaoDiarioBordo(utilizarLayoutNovo, componenteCurricular)}  
                         ");
 
-            if (turmas.Any())
+            if (turmas != null && turmas.Any())
                 query.AppendLine(" and t.id = Any(@turmas)");
 
-            if (bimestres.Any())
+            if (bimestres != null && bimestres.Any())
                 query.AppendLine(" and pe.bimestre = Any(@bimestres)");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
+                var retorno = await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
                     , (devolutiva, aula, turma, periodoEscolar) =>
                     {
                         aula.Turma = turma;
@@ -108,6 +108,8 @@ namespace SME.SR.Data.Repositories.Sgp
                         return devolutiva;
                     }
                     , new { ueId, turmas, bimestres, ano });
+
+                return retorno;
             }
 
         }

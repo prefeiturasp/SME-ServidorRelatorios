@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,19 +22,21 @@ namespace SME.SR.Application
 
         public async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>> Handle(ObterDadosPedagogicosTurmaQuery request, CancellationToken cancellationToken)
         {
-            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicosInfantil(request.DreCodigo, request.UeCodigo, request.AnoLetivo, request.ProfessorCodigo, request.Bimestres, request.TurmasId);
+            var consolidacoesFiltradas = await registrosPedagogicosRepository.ObterDadosConsolidacaoRegistrosPedagogicosInfantil(request.DreCodigo, request.UeCodigo,
+                request.AnoLetivo, request.ProfessorCodigo, request.Bimestres, request.TurmasId);
+
             var bimestres = new List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto>();
 
             if (consolidacoesFiltradas.Any())
             {
-                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre).Distinct())
+                foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf => cf.Bimestre).GroupBy(cf => cf.Bimestre).Distinct())
                 {
                     var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreInfantilDto();
                     bimestre.Bimestre = !consolidacoes.FirstOrDefault().Bimestre.Equals("0") ? $"{consolidacoes.FirstOrDefault().Bimestre}º BIMESTRE" : "FINAL";
 
-                    foreach (var turma in consolidacoes.OrderBy(t=> t.TurmaNome).GroupBy(t=> t.TurmaId))
+                    foreach (var turma in consolidacoes.OrderBy(t => t.TurmaNome).GroupBy(t => t.TurmaId))
                     {
-                        if(turma.Count() == 1)
+                        if (turma.Count() == 1)
                         {
                             var dadosTurma = turma.FirstOrDefault();
                             string nomeTurmaComplementar = dadosTurma.RFProfessor == "" ? $"{dadosTurma.NomeProfessor}"
@@ -57,15 +60,27 @@ namespace SME.SR.Application
                         else
                         {
                             string nomeProfessor = string.Empty;
-                            string[] nomesProfessores = turma.Select(t => t.NomeProfessor).ToArray();
-                            string[] rfProfessores = turma.Select(t => t.RFProfessor).ToArray();
+                            var nomesProfessores = new string[] { };
+                            var rfProfessores = new string[] { };
+
+                            if (turma.Where(t => !string.IsNullOrEmpty(t.RFProfessor)).Count() > 0)
+                            {
+                                nomesProfessores = turma.Where(t => !string.IsNullOrEmpty(t.RFProfessor)).DistinctBy(t => t.RFProfessor).Select(p => p.NomeProfessor).ToArray();
+                                rfProfessores = turma.Where(t => !string.IsNullOrEmpty(t.RFProfessor)).DistinctBy(t => t.RFProfessor).Select(t => t.RFProfessor).ToArray();
+                            }
+
                             var dadosTurma = turma.FirstOrDefault();
                             var listaProfessores = new List<string>();
 
-                            for (int i=0; i<2; i++)
+                            if (!nomesProfessores.Any())
+                                listaProfessores.Add("Não há professor titular");
+                            else
                             {
-                                nomeProfessor = $"{nomesProfessores[i]} - ({rfProfessores[i]})";
-                                listaProfessores.Add(nomeProfessor);
+                                for (int i = 0; i < nomesProfessores.Count(); i++)
+                                {
+                                    nomeProfessor = $"{nomesProfessores[i]} - ({rfProfessores[i]})";
+                                    listaProfessores.Add(nomeProfessor);
+                                }
                             }
 
                             var registroTurma = new RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilDto()
@@ -81,7 +96,7 @@ namespace SME.SR.Application
 
                             bimestre.TurmasInfantil.Add(registroTurma);
                         }
-                        
+
                     }
                     bimestres.Add(bimestre);
                 }

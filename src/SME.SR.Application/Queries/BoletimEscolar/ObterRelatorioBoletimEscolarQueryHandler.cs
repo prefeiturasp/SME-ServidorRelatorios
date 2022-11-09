@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +15,7 @@ namespace SME.SR.Application
     public class ObterRelatorioBoletimEscolarQueryHandler : IRequestHandler<ObterRelatorioBoletimEscolarQuery, List<RelatorioBoletimSimplesEscolarDto>>
     {
         private readonly IMediator mediator;
+        private const string PRIMEIRO_ANO = "1";
 
         public ObterRelatorioBoletimEscolarQueryHandler(IMediator mediator)
         {
@@ -30,25 +30,58 @@ namespace SME.SR.Application
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
-
-            string[] codigosTurma = turmas.OrderBy(tb => tb.Nome).Select(t => t.Codigo).ToArray();
+            var codigosTurma = turmas.OrderBy(tb => tb.Nome).Select(t => t.Codigo).ToArray();
             var mediasFrequencia = await ObterMediasFrequencia();
             var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo, request.ConsideraInativo);
+            var alunosAPesquisarTurmas = request.AlunosCodigo.Any() ? request.AlunosCodigo : alunosPorTurma.Select(a => a.Key);
+            var turmasComplementaresEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(codigosTurma, alunosAPesquisarTurmas.ToArray()));
 
-            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario, request.ConsideraHistorico);
+            codigosTurma = codigosTurma.Concat(turmasComplementaresEdFisica.Select(tcf => tcf.Codigo).ToArray()).ToArray();
+
+            if (!string.IsNullOrEmpty(request.TurmaCodigo))
+            {
+                var turmasComplementaresEM = await RetornaPossibilidadeMatricula2TurmasRegularesNovoEM(Convert.ToInt32(request.TurmaCodigo), alunosAPesquisarTurmas.ToArray());
+
+                if (request.Modalidade == Modalidade.Medio)
+                    turmas = turmasComplementaresEM.Any() ? turmasComplementaresEM : turmas;
+            }
+
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => int.Parse(t.Codigo)).ToArray(), alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario, request.ConsideraHistorico);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
-            string[] codigosAlunos = alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno.ToString())).ToArray();
+            string[] codigosAlunos = componentesCurriculares.Select(cc => cc.Key).ToArray();
 
-            var pareceresConclusivos = await ObterPareceresConclusivos(dre.DreCodigo, ue.UeCodigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
-            var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var notas = await ObterNotasAlunos(codigosAlunos, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre, codigosTurma);
             var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
             var codigosDisciplinas = componentesCurriculares.SelectMany(cc => cc.Select(cc => cc.CodDisciplina.ToString())).Distinct().ToArray();
             var aulasPrevistas = await mediator.Send(new ObterAulasDadasTurmaBimestreComponenteCurricularQuery(codigosTurma, tipoCalendarioId, codigosDisciplinas));
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade);
-            var notas = await ObterNotasAlunos(codigosAlunos, turmas.Select(t => t.Codigo).ToArray(), request.AnoLetivo, request.Modalidade, request.Semestre);
 
-            return await MontarBoletins(dre, ue, turmas, componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
+            return await MontarBoletins(dre, ue, turmas.Union(turmasComplementaresEdFisica).Distinct(), componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
+        }
+
+        private async Task<IEnumerable<Turma>> RetornaPossibilidadeMatricula2TurmasRegularesNovoEM(int codigoTurma, string[] alunosCodigos)
+        {
+            var dadosTurma = await mediator.Send(new ObterTurmaPorCodigoQuery(codigoTurma.ToString()));
+            var turmasItinerarioEnsinoMedio = (await mediator.Send(new ObterTurmaItinerarioEnsinoMedioQuery())).ToList();
+
+            if (dadosTurma.AnoLetivo >= 2021 && dadosTurma.Ano != PRIMEIRO_ANO)
+            {
+                var tiposTurmasParaConsulta = new List<int> { (int)dadosTurma.TipoTurma };
+                tiposTurmasParaConsulta.AddRange(turmasItinerarioEnsinoMedio.Select(t => t.Id));
+
+                var turmasEol = await mediator.Send(new ObterTurmaCodigosAlunoPorAnoLetivoAlunoTipoTurmaQuery(dadosTurma.AnoLetivo, alunosCodigos,
+                   tiposTurmasParaConsulta, dadosTurma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year, DateTimeExtension.HorarioBrasilia()));
+
+                var turmasRetorno = await mediator.Send(new ObterTurmasPorCodigoQuery(turmasEol.Select(t => t.ToString()).ToArray()));
+
+                if (turmasRetorno.Any())
+                    return turmasRetorno;
+            }
+
+            return new List<Turma>() { };
         }
 
         private async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresConclusivos(string dreCodigo, string ueCodigo, IEnumerable<Turma> turmas, int anoLetivo, Modalidade modalidade, int semestre)
@@ -75,6 +108,7 @@ namespace SME.SR.Application
                 case Modalidade.Infantil:
                     modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
                     break;
+
                 case Modalidade.EJA:
                     modalidadeCalendario = ModalidadeTipoCalendario.EJA;
                     break;
@@ -126,7 +160,7 @@ namespace SME.SR.Application
                 throw new NegocioException("As turmas selecionadas não possuem fechamento.");
             }
         }
-
+       
         private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool trazerAlunosInativos)
         {
             return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
@@ -137,9 +171,9 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(int[] codigosAlunos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario, bool consideraHistorico = false)
+        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(int[] codigosTurmas, int[] codigosAlunos, int anoLetivo, int semestre, string codigoUe, Modalidade modalidade, Usuario usuario, bool consideraHistorico = false)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorAlunosQuery(codigosAlunos, anoLetivo, semestre, codigoUe, modalidade, usuario, consideraHistorico));
+            return await mediator.Send(new ObterComponentesCurricularesPorAlunosQuery(codigosTurmas, codigosAlunos, anoLetivo, semestre, codigoUe, modalidade, usuario, consideraHistorico));
         }
 
         private async Task<IDictionary<string, string>> ObterTiposNotaRelatorio(int anoLetivo, long dreId, long ueId, int semestre, Modalidade modalidade, IEnumerable<Turma> turmas)
@@ -160,9 +194,9 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterNotasRelatorioBoletimSimplesQuery(alunosCodigo, codigosTurmas, anoLetivo, (int)modalidade, semestre));
         }
 
-        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre)
+        private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre, string[] turmaCodigo)
         {
-            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade, semestre));
+            return await mediator.Send(new ObterFrequenciasRelatorioBoletimQuery(alunosCodigo, anoLetivo, modalidade, semestre, turmaCodigo));
         }
 
         private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciaGlobalAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade)
@@ -172,8 +206,8 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioBoletimSimplesEscolarDto>> MontarBoletins(Dre dre, Ue ue, IEnumerable<Turma> turmas, IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurriculares,
                                                              IEnumerable<IGrouping<string, Aluno>> alunosPorTurma, IEnumerable<IGrouping<string, NotasAlunoBimestreBoletimSimplesDto>> notasAlunos,
-                                                             IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos, 
-                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal, 
+                                                             IEnumerable<RelatorioParecerConclusivoRetornoDto> pareceresConclusivos, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciasAlunos,
+                                                             IDictionary<string, string> tiposNota, IEnumerable<MediaFrequencia> mediasFrequencias, IEnumerable<IGrouping<string, FrequenciaAluno>> frequenciaGlobal,
                                                              IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
         {
             return await mediator.Send(new MontarBoletinsQuery()
@@ -196,10 +230,10 @@ namespace SME.SR.Application
         private async Task<IEnumerable<MediaFrequencia>> ObterMediasFrequencia()
         {
             return await mediator.Send(new ObterParametrosMediaFrequenciaQuery());
-        }
+        }        
     }
 
-    class ComparadorFrequencia : IEqualityComparer<FrequenciaAluno>
+    internal class ComparadorFrequencia : IEqualityComparer<FrequenciaAluno>
     {
         public bool Equals([AllowNull] FrequenciaAluno x, [AllowNull] FrequenciaAluno y)
             => x.CodigoAluno.Equals(y.CodigoAluno)

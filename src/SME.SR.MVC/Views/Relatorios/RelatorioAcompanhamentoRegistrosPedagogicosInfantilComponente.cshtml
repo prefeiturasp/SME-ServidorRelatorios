@@ -1,0 +1,385 @@
+﻿@model SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosInfantilComponenteDto
+
+@{
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 55;
+    bool montouDescLinhaDiarioBordo = false;
+
+    void MontarCabecalho()
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 8;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE ACOMPANHAMENTO DOS REGISTROS <br/>PEDAGÓGICOS</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td width='20%' class='espaco-esquerda-15'>DRE: @Model.Cabecalho.Dre</td>
+                        <td width='80%' class='espaco-esquerda-15'>UE: @Model.Cabecalho.Ue</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='40%' class='sem-border-top espaco-esquerda-15'>TURMA: @Model.Cabecalho.Turma</td>
+                        <td width='60%' class='sem-border-top espaco-esquerda-15'>BIMESTRE: @Model.Cabecalho.Bimestre</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width='53%' class='sem-border-top espaco-esquerda-15'>USUÁRIO: @Model.Cabecalho.UsuarioNome</td>
+                        <td width='15%' class='sem-border-top espaco-esquerda-15'>RF: @Model.Cabecalho.UsuarioRF</td>
+                        <td width='32%' class='sem-border-top espaco-esquerda-15'>DATA DA IMPRESSÃO: @Model.Cabecalho.Data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    string InformacoesQuebra()
+    {
+        @Html.Raw("</tbody></table>");
+        @Html.Raw("<div style='page-break-before:always'></div>");
+
+        return "";
+    }
+
+    void ImprimirQuebra(bool quebra)
+    {
+        if (quebra)
+        {
+            InformacoesQuebra();
+            MontarCabecalho();
+            @Html.Raw("<table class='tabela-cabecalho'>");
+        }
+    }
+
+    bool VerificaQuebra(double contadorComparacao)
+    {
+        if (contadorComparacao >= contadorMaximoLinhasPorPagina)
+        {
+            contadorQuebrarPagina = 0;
+            return true;
+        }
+        return false;
+
+    }
+
+    void MontarCabecalhoFrequencia()
+    {
+        <tr>
+            <td class="fundo-cinza" colspan="4">FREQUÊNCIA</td>
+        </tr>
+        <tr>
+            <td width="33%" class="fundo-cinza alinhar-esquerda espaco-esquerda-8">TURMA</td>
+            <td width="6%" class="fundo-cinza">AULAS</td>
+            <td width="12%" class="fundo-cinza">FREQUÊNCIAS <br />PENDENTES</td>
+            <td width="15%" class="fundo-cinza">ÚLTIMO REGISTRO <br />DE FREQUÊNCIA</td>
+        </tr>
+
+        contadorQuebrarPagina += 2.5;
+    }
+
+    void MontarCabecalhoDiarioBordo(string turmaNome)
+    {
+        <tr>
+            <td class="fundo-cinza" colspan="4">@turmaNome</td>
+        </tr>
+        <tr>
+            <td width="67%" class="fundo-cinza alinhar-esquerda espaco-esquerda-8">COMPONENTES CURRICULARES</td>
+            <td width="6%" class="fundo-cinza">AULAS</td>
+            <td width="12%" class="fundo-cinza">DIÁRIOS <br />PENDENTES</td>
+            <td width="15%" class="fundo-cinza">ÚLTIMO REGISTRO <br />DE DIÁRIO</td>
+        </tr>
+
+        contadorQuebrarPagina += montouDescLinhaDiarioBordo ? 3.5 : 2.5;
+    }
+
+    void MontarLinhaTabelaFrequencia(SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosTurmaInfantilComponenteDto turma,bool temBimestre, string bimestreNome)
+    {        
+        double qtdLinhasFuturo = contadorQuebrarPagina + 1;
+        bool quebra = VerificaQuebra(qtdLinhasFuturo);
+        ImprimirQuebra(quebra);
+        if(quebra)
+        {
+            MontarBimestre(temBimestre, bimestreNome);
+            MontarCabecalhoFrequencia();
+        }
+
+        <tr>
+            <td class="alinhar-esquerda espaco-esquerda-8">
+                @turma.Nome 
+            </td>
+            <td>@turma.Aulas</td>
+            <td>@turma.FrequenciasPendentes</td>
+            <td>@turma.DataUltimoRegistroFrequencia</td>
+        </tr>
+
+        contadorQuebrarPagina++;
+    }
+
+    void MontarLinhaTabelaDiarioBordo(SME.SR.Infra.RelatorioAcompanhamentoRegistrosPedagogicosDiarioBordoComponenteDto componenteDiarioBordo,bool temBimestre, string bimestreNome, string turmaNome, int qtdAulas)
+    {
+        double qtdLinhasFuturo = contadorQuebrarPagina + 1;
+        bool quebra = VerificaQuebra(qtdLinhasFuturo);
+        ImprimirQuebra(quebra);
+
+        if(quebra)
+        {
+            MontarBimestre(temBimestre, bimestreNome);
+            <tr>
+                <td class="fundo-cinza" colspan="4">DIÁRIO DE BORDO</td>
+            </tr>
+            montouDescLinhaDiarioBordo = true;
+            MontarCabecalhoDiarioBordo(turmaNome);
+            montouDescLinhaDiarioBordo = false;
+        }
+
+        <tr>
+            <td class="alinhar-esquerda espaco-esquerda-8">
+                @componenteDiarioBordo.NomeComponente 
+            </td>
+            <td>@qtdAulas</td>
+            <td>@componenteDiarioBordo.DiarioBordoPendentes</td>
+            <td>@componenteDiarioBordo.DataUltimoRegistroDiarioBordo</td>
+        </tr>
+
+        contadorQuebrarPagina++;
+    }
+
+    void MontarBimestre(bool temBimestre, string bimestreNome)
+    {
+        if (temBimestre)
+        {
+            double qtdLinhasFuturo = contadorQuebrarPagina + 5;
+            bool quebra = VerificaQuebra(qtdLinhasFuturo);
+            ImprimirQuebra(quebra);
+
+            <tr>
+                <td class="fundo-cinza" colspan="4">@bimestreNome</td>
+            </tr>
+
+            contadorQuebrarPagina++;
+        }
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE ACOMPANHAMENTO DO FECHAMENTO</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: 'Roboto Mono';
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .subtitulo-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .espaco-esquerda-8 {
+            padding-left: 8px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .linha-pendencias {
+            height: 17px !important;
+            font-size: 12px !important;
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            <table class="tabela-cabecalho">
+                @foreach (var bimestres in Model.Bimestres)
+                {
+                    var bimestreNome = bimestres.Bimestre;
+                    bool temBimestre = !String.IsNullOrWhiteSpace(bimestreNome);
+                    
+                    MontarBimestre(temBimestre,bimestreNome);
+                    MontarCabecalhoFrequencia();
+
+                    @foreach (var turmas in bimestres.TurmasInfantilComponente)
+                    {
+                        MontarLinhaTabelaFrequencia(turmas, temBimestre, bimestreNome);
+                    }
+
+                    bool temDiarios = bimestres.TurmasInfantilDiarioBordoComponente != null;
+
+                    if (temDiarios)
+                    {
+
+                        double qtdLinhasFuturo = contadorQuebrarPagina + 5;
+                        bool quebra = VerificaQuebra(qtdLinhasFuturo);
+                        ImprimirQuebra(quebra);
+
+                        if(quebra)
+                        {
+                            MontarBimestre(temBimestre, bimestreNome);
+                            <tr>
+                               <td class="fundo-cinza" colspan="4">DIÁRIO DE BORDO</td>
+                            </tr>
+                            montouDescLinhaDiarioBordo = true;
+                        }
+                          else
+                        { 
+                            <tr>
+                               <td class="fundo-cinza" colspan="4">DIÁRIO DE BORDO</td>
+                            </tr>
+                            montouDescLinhaDiarioBordo = true;
+                        }
+
+                        @foreach (var turmasDiario in bimestres.TurmasInfantilDiarioBordoComponente)
+                        {                         
+
+                            double qtdLinhasF = contadorQuebrarPagina + 4;
+                            bool quebrar = VerificaQuebra(qtdLinhasF);
+                            ImprimirQuebra(quebrar);
+
+                            if(quebrar)
+                            {
+                                MontarBimestre(temBimestre, bimestreNome);
+                                <tr>
+                                    <td class="fundo-cinza" colspan="4">DIÁRIO DE BORDO</td>
+                                </tr>
+                                montouDescLinhaDiarioBordo = true;
+                                MontarCabecalhoDiarioBordo(turmasDiario.NomeTurma);
+                                montouDescLinhaDiarioBordo = false;
+                            } 
+                              else
+                            {
+                              MontarCabecalhoDiarioBordo(turmasDiario.NomeTurma);
+                              montouDescLinhaDiarioBordo = false;
+                            }
+
+                            @foreach (var componente in turmasDiario.Componentes)
+                            {
+                                MontarLinhaTabelaDiarioBordo(componente, temBimestre, bimestreNome, turmasDiario.NomeTurma, turmasDiario.Aulas);
+                            }
+                        }
+                    }
+                 }
+            </table>
+        }
+    </div>
+</body>
+</html>

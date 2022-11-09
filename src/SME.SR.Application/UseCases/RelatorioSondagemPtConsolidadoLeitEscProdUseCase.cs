@@ -131,7 +131,8 @@ namespace SME.SR.Application
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
+                Convert.ToInt64(filtros.DreCodigo),
+                filtros.Modalidades
                 ));
 
             var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(filtros.Bimestre, TipoPeriodoSondagem.Bimestre));
@@ -246,35 +247,46 @@ namespace SME.SR.Application
                 Proficiencia = filtros.ProficienciaId
             });
 
-            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
+            var dataReferencia = await mediator
+                .Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
                 dataReferencia,
-                Convert.ToInt64(filtros.DreCodigo), new int[] { 5, 13 }
-                ));
+                Convert.ToInt64(filtros.DreCodigo),
+                filtros.Modalidades));
+
+            // obter todas as turmas lançadas sondagem...
+            var turmasComSondagem = linhasSondagem.GroupBy(q => q.TurmaEolCode).Select(q => q.Key).ToArray();
+
+            if (turmasComSondagem.Any())
+                alunosPorAno = await RetornaTotalAlunosSondagem(turmasComSondagem, dataReferencia);
+
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
-            var respAgrupado = linhasSondagem.GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
+            var respAgrupado = linhasSondagem
+                .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
+
+            var totalRespostas = respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
 
             foreach (var item in respAgrupado)
             {
-                if (!string.IsNullOrEmpty(item.Label))
-                {
-                    RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+                RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
-                    itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
-                    itemRetorno.Quantidade = item.Value;
-                    itemRetorno.Percentual = Math.Round(((decimal)item.Value / (decimal)alunosPorAno) * 100, 2);
-                    itemRetorno.Total = alunosPorAno;
-                    respostas.Add(itemRetorno);
-                }
-            }
+                int quantidadeRespostas = item.Value;
 
-            var totalRespostas = respostas.Sum(r => r.Quantidade);
+                if (string.IsNullOrWhiteSpace(item.Label))
+                    quantidadeRespostas = alunosPorAno - respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
+
+                itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
+                itemRetorno.Quantidade = quantidadeRespostas;
+                itemRetorno.Percentual = Math.Round(((decimal)quantidadeRespostas / (decimal)alunosPorAno) * 100, 2);
+                itemRetorno.Total = alunosPorAno;
+                respostas.Add(itemRetorno);                
+            }            
 
             if (alunosPorAno > totalRespostas)
             {
@@ -289,7 +301,48 @@ namespace SME.SR.Application
                 respostas.Add(itemRetorno);
             }
 
+            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Escrita)
+                respostas = OrdenarRespostasEscrita(respostas);
+
             return respostas;
+        }
+
+
+        public async Task<int> RetornaTotalAlunosSondagem(string[] turmasSondagem, DateTime dataReferencia)
+        {
+            int totalAlunos = 0;
+            foreach (var turma in turmasSondagem)
+            {
+                var alunos = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Convert.ToInt64(turma), dataReferencia));
+                totalAlunos += alunos.Count();
+            }
+
+            return totalAlunos;
+        }
+
+        private List<RelatorioSondagemPortuguesConsolidadoRespostaDto> OrdenarRespostasEscrita(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> listaRespostas)
+        {
+            var listaOrdenadaRespostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
+
+            var opcao1 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Pré-Silábico");
+            listaOrdenadaRespostas.Add(opcao1);
+
+            var opcao2 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico sem valor");
+            listaOrdenadaRespostas.Add(opcao2);
+
+            var opcao3 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico com valor");
+            listaOrdenadaRespostas.Add(opcao3);
+
+            var opcao4 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico alfabético");
+            listaOrdenadaRespostas.Add(opcao4);
+
+            var opcao5 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Alfabético");
+            listaOrdenadaRespostas.Add(opcao5);
+
+            var opcao6 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Sem Preenchimento");
+            listaOrdenadaRespostas.Add(opcao6);
+
+            return listaOrdenadaRespostas;
         }
 
         private string MontarTextoProficiencia(string proficiencia)

@@ -24,7 +24,7 @@ namespace SME.SR.Application
             {
                 var parametros = request.ObterObjetoFiltro<FiltroRelatorioDevolutivasSincronoDto>();
                 var relatorioDto = new RelatorioDevolutivasSincronoDto();
-                
+
                 var devolutiva = await devolutivaRepository.ObterDevolutiva(parametros.DevolutivaId);
                 if (devolutiva == null)
                     new NegocioException("Devolutiva não encontrada!!");
@@ -36,7 +36,12 @@ namespace SME.SR.Application
                 await ObterFiltrosRelatorio(relatorioDto, parametros, devolutiva.Bimestre, turmaDto.NomeRelatorio);
 
                 relatorioDto.Turmas = await MapearTurma(devolutiva, turmaDto.NomeRelatorio);
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivaSincrono", relatorioDto, request.CodigoCorrelacao, relatorioSincrono: true));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioDevolutivaSincrono",
+                                                                          relatorioDto, 
+                                                                          request.CodigoCorrelacao, 
+                                                                          envioPorRabbit:false,
+                                                                          relatorioSincrono: true, 
+                                                                          diretorioComplementar: "devolutiva"));
             }
             catch (Exception ex)
             {
@@ -97,7 +102,7 @@ namespace SME.SR.Application
                     new NegocioException("DRE não encontrada!!");
 
                 relatorioDto.Dre = dre.Abreviacao;
-                relatorioDto.Ue = $"{ue.UeCodigo} - {ue.NomeComTipoEscola}";
+                relatorioDto.Ue = $"{ue.Codigo} - {ue.NomeComTipoEscola}";
                 relatorioDto.Turma = nomeTurma;
                 relatorioDto.Bimestre = $"{bimestre}º";
                 relatorioDto.Usuario = parametros.UsuarioNome;

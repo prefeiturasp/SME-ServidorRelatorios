@@ -38,7 +38,7 @@
 <tbody>
 <tr>
 <td width='50%' class='espaco-esquerda-15 sem-border-bottom'>TURMA: {Model.Turma}</td>
-<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>BIMESTRE: {Model.Bimestre}</td>
+<td  width='50%' class='espaco-esquerda-15 sem-border-bottom'>{ExibirBimestre(Model.Bimestre)}</td>
 </tr>
 </tbody>
 </table>
@@ -55,6 +55,11 @@
 ";
 
         return str;
+    }
+
+    string ExibirBimestre(string bimestre)
+    {
+        return !string.IsNullOrEmpty(bimestre) ? $"BIMESTRE: {Model.Bimestre}" : string.Empty;
     }
 
     string EspacoEmBranco(bool exibeConteudo)
@@ -89,6 +94,37 @@
         contadorQuebrarPagina = contadorQuebrarPagina + 3;
 
         return "";
+    }
+
+    void MontarDescricaoDevolutivas(string descricao)
+    {
+        int iContadorCaracteres = 0;
+        int contadorMaximoCaracteresPorLinha = 250;
+
+        @while (iContadorCaracteres != descricao.Length)
+        {
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 0;
+                @Html.Raw("</td ></tr>");
+                @Html.Raw("</tbody></table>");
+                @Html.Raw("<div style='page-break-before:always'></div>");
+                @Html.Raw(MontarCabecalho())
+                @Html.Raw("<table class='tabela-cabecalho'>");
+                @Html.Raw("<tr><td colspan='4'>")
+            }
+            else
+            {
+                int diminuirCaracteres = descricao.Length - iContadorCaracteres;
+                var qntCaracteresParaBuscar = diminuirCaracteres < contadorMaximoCaracteresPorLinha? diminuirCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                <span>
+                    @Html.Raw(textParaExibir)
+                </span>
+            }
+            contadorQuebrarPagina++;
+        }
     }
 
     <!DOCTYPE html>
@@ -242,6 +278,7 @@
                             @Html.Raw("<div style='page-break-before:always'></div>");
                             @Html.Raw(MontarCabecalho())
                             @Html.Raw("<table class='tabela-cabecalho'>");
+
                             bimestreIndex = 0;
                         }
 
@@ -262,7 +299,6 @@
                                 var numeroLinhasRegistradoPor = valores.ResgistradoPor.Length / 70;
                                 var numeroLinhasDescricao = valores.Descricao.Length / 125;
                                 var numeroLinhas = numeroLinhasDiasIntervalo > numeroLinhasRegistradoPor ? numeroLinhasDiasIntervalo : numeroLinhasRegistradoPor;
-
 
                                 <tr>
                                     <td>@valores.IntervaloDatas</td>
@@ -316,28 +352,14 @@
 
                                 @if (exibeConteudoDevolutivas)
                                 {
-
-                                     <tr>
-                                        <td colspan="4" class="alinhar-esquerda" 
-                                            >
-                                            <div style="word-break: break-all !important; width: auto !important; height: auto !important; max-width: 768px !important; padding: 3px !important; ">
-                                                @Html.Raw(valores.Descricao)
-                                            </div>
-                                        </td>
+                                    <tr>
+                                        <td colspan="4" class="alinhar-esquerda td-descricao">@{MontarDescricaoDevolutivas(valores.Descricao);}</td>
                                     </tr>
-
-                                    if (numeroLinhasDescricao > 1)
-                                    {
-                                        contadorQuebrarPagina = contadorQuebrarPagina + numeroLinhasDescricao;
-                                    }
-                                    else
-                                    {
-                                        contadorQuebrarPagina++;
-                                    }
 
                                     if (valoresIndex < bimestre.Devolutivas.Count() - 1 && !(contadorQuebrarPagina + numeroLinhasAtual >= contadorMaximoLinhasPorPagina))
                                     {
                                         @Html.Raw(EspacoEmBranco(exibeConteudoDevolutivas));
+                                        contadorQuebrarPagina++;
                                         contadorEspaçosExtras++;
                                     }
 

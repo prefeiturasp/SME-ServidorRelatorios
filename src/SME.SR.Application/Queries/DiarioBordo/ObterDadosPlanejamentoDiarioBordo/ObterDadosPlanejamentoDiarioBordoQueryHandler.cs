@@ -72,13 +72,11 @@ namespace SME.SR.Application
         private IEnumerable<ComponenteCurricularPlanejamentoDiarioDto> AgrupaAulasComponentes(IGrouping<int?, AulaDiarioBordoDto> aulasBimestre, bool exibirDetalhamento)
         {
             foreach (var agrupamentoComponente in aulasBimestre.GroupBy(c => c.ComponenteCurricular))
-            {
-                var componente = new ComponenteCurricularPlanejamentoDiarioDto();
-
-                componente.Nome = agrupamentoComponente.Key;
-                componente.PlanejamentoDiarioInfantil = ObterDadosAulasComponente(agrupamentoComponente, exibirDetalhamento);
-                yield return componente;
-            }
+                yield return new ComponenteCurricularPlanejamentoDiarioDto
+                {
+                    Nome = agrupamentoComponente.Key,
+                    PlanejamentoDiarioInfantil = ObterDadosAulasComponente(agrupamentoComponente, exibirDetalhamento),
+                };
         }
 
         private IEnumerable<PlanejamentoDiarioInfantilDto> ObterDadosAulasComponente(IGrouping<string, AulaDiarioBordoDto> aulasComponenteCurricular, bool exibirDetalhamento)
@@ -111,9 +109,6 @@ namespace SME.SR.Application
 
             if (!string.IsNullOrEmpty(aula.Planejamento))
                 secoes += "- Planejamento<br/>";
-
-            if (!string.IsNullOrEmpty(aula.Reflexoes))
-                secoes += "- Reflexões e Replanejamento<br/>";
 
             if (aula.DevolutivaId.HasValue)
                 secoes += "- Devolutiva<br/>";

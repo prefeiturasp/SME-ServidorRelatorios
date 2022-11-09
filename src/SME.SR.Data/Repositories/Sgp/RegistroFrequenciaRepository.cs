@@ -16,11 +16,11 @@ namespace SME.SR.Data
         public RegistroFrequenciaRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
-        }
+        }       
 
         public async Task<IEnumerable<TurmaComponenteQtdAulasDto>> ObterTotalAulasPorDisciplinaETurmaEBimestre(string[] turmasCodigo, string[] componentesCurricularesId, long tipoCalendarioId, int[] bimestres)
         {
-            StringBuilder query = new StringBuilder();
+            var query = new StringBuilder();
             query.AppendLine(@"select a.disciplina_id as ComponenteCurricularCodigo, a.turma_id as TurmaCodigo, p.bimestre as Bimestre, 
                 COALESCE(SUM(a.quantidade),0) AS AulasQuantidade from 
             aula a 
@@ -34,17 +34,41 @@ namespace SME.SR.Data
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and a.tipo_calendario_id = @tipoCalendarioId ");
-            if (bimestres.Length > 0)
+            if (bimestres != null && bimestres.Length > 0)
                 query.AppendLine(" and p.bimestre = any(@bimestres) ");
-            if (componentesCurricularesId.Length > 0)
+            if (componentesCurricularesId != null && componentesCurricularesId.Length > 0)
                 query.AppendLine("and a.disciplina_id = any(@componentesCurricularesId) ");
 
             query.AppendLine("and a.turma_id = any(@turmasCodigo) group by a.disciplina_id, a.turma_id, p.bimestre");
             
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
                 return await conexao.QueryAsync<TurmaComponenteQtdAulasDto>(query.ToString(), new { turmasCodigo, componentesCurricularesId, tipoCalendarioId, bimestres });
-            }
+        }
+
+        public async Task<IEnumerable<TurmaComponenteDataAulaQuantidadeDto>> ObterAulasPorTurmasComponentesTipoCalendarioBimestres(string[] turmasCodigo, string[] componentesCurricularesId, long tipoCalendarioId, int[] bimestres)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"select distinct a.data_aula DataAula, a.disciplina_id as ComponenteCurricularCodigo, a.turma_id as TurmaCodigo, p.bimestre as Bimestre, 
+                a.quantidade AS QuantidadeAula from 
+            aula a 
+            inner join registro_frequencia rf on 
+            rf.aula_id = a.id 
+            inner join periodo_escolar p on 
+            a.tipo_calendario_id = p.tipo_calendario_id 
+            where not a.excluido 
+            and a.data_aula between p.periodo_inicio and p.periodo_fim");
+
+            if (tipoCalendarioId > 0)
+                query.AppendLine(" and a.tipo_calendario_id = @tipoCalendarioId ");
+            if (bimestres != null && bimestres.Length > 0)
+                query.AppendLine(" and p.bimestre = any(@bimestres) ");
+            if (componentesCurricularesId != null && componentesCurricularesId.Length > 0)
+                query.AppendLine("and a.disciplina_id = any(@componentesCurricularesId) ");
+
+            query.AppendLine("and a.turma_id = any(@turmasCodigo);");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+                return await conexao.QueryAsync<TurmaComponenteDataAulaQuantidadeDto>(query.ToString(), new { turmasCodigo, componentesCurricularesId, tipoCalendarioId, bimestres });
         }
     }
 }

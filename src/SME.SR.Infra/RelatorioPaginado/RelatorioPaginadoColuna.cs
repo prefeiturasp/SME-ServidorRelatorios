@@ -27,6 +27,17 @@ namespace SME.SR.Infra
             }
         }
 
+        protected virtual Pagina ObtenhaPagina(int indice, int ordenacao, List<T> valores, List<IColuna> colunas)
+        {
+            return new PaginaComColuna()
+            {
+                Indice = indice,
+                Ordenacao = ordenacao,
+                Valores = valores,
+                Colunas = colunas
+            };
+        }
+
         private Dictionary<int, List<IColuna>> ObtenhaColunasPorPagina()
         {
             if (AtingiuLimiteDeColunas())
@@ -46,14 +57,14 @@ namespace SME.SR.Infra
 
         private void CarreguePaginaPorQuebraDeLinha(List<IColuna> listaDeColunas)
         {
-            var dicionario = ObtenhaDicionarioPorQuantidade();
+            var dicionario = ObtenhaDicionarioPorQuantidade(listaDeColunas);
             var paginaAtual = this.ObtenhaIndicePaginaAtual();
 
             foreach (var indicePagina in dicionario.Keys)
             {
-                var novaPagina = paginaAtual + indicePagina;
+                paginaAtual += 1;
 
-                this.AdicionePagina(this.ObtenhaPagina(novaPagina, indicePagina, dicionario[indicePagina], listaDeColunas));
+                this.AdicionePagina(this.ObtenhaPagina(paginaAtual, paginaAtual, dicionario[indicePagina], listaDeColunas));
             }
         }
 
@@ -93,15 +104,9 @@ namespace SME.SR.Infra
             return dicionario;
         }
 
-        private Pagina ObtenhaPagina(int indice, int ordenacao, List<T> valores, List<IColuna> colunas)
+        protected override string ObtenhaValorDaColunaCustom(IColuna coluna, T valor)
         {
-            return new PaginaComColuna()
-            {
-                Indice = indice,
-                Ordenacao = ordenacao,
-                Valores = valores,
-                Colunas = colunas
-            };
+            return string.Empty;
         }
     }
 }

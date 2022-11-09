@@ -13,7 +13,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
     {
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
-        private readonly IHtmlHelper htmlHelper;
+        private readonly IHtmlHelper htmlHelper;        
 
         public GerarRelatorioHtmlParaPdfCommandCommandHandler(IConverter converter,
                                                               IServicoFila servicoFila,
@@ -21,7 +21,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         {
             this.converter = converter;
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
-            this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
+            this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));            
         }
 
         public async Task<string> Handle(GerarRelatorioHtmlParaPdfCommand request, CancellationToken cancellationToken)
@@ -34,11 +34,11 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             string nomeArquivo;
 
             if (request.RelatorioSincrono)
-                nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.CodigoCorrelacao.ToString());
+                nomeArquivo = Path.Combine(caminhoBase, "relatoriossincronos", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
             else
-                nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.CodigoCorrelacao.ToString());
-
-            PdfGenerator pdfGenerator = new PdfGenerator(converter);
+                nomeArquivo = Path.Combine(caminhoBase, "relatorios", request.DiretorioComplementar ?? "", request.CodigoCorrelacao.ToString());
+            
+            var pdfGenerator = new PdfGenerator(converter);
             pdfGenerator.Converter(html, nomeArquivo, request.TituloRelatorioRodape, request.GerarPaginacao);
 
             if (request.EnvioPorRabbit)
@@ -49,9 +49,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                 return string.Empty;
             }
             else
-            {
                 return request.CodigoCorrelacao.ToString();
-            }
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.Sondagem;
 using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,26 +34,27 @@ namespace SME.SR.Application
 
             if (request.TurmaAno > 3 || request.AnoLetivo >= 2022)
             {
-                var listaPerguntas = await perguntasAutoralRepository.ObterPerguntasPorComponenteAnoTurma(request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
+                var totalDeAlunos = request.QuantidadeTotalAlunos;
+                var listaPeguntaResposta = await sondagemAutoralRepository.ObterSondagemPerguntaRespostaConsolidadoBimestre(request.Dre?.Codigo, request.Ue?.Codigo, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica.Name());
+                var relatorioAgrupado = listaPeguntaResposta.GroupBy(p => p.PerguntaId).ToList();
 
-                var listaAlunos = await sondagemAutoralRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, string.Empty, string.Empty, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica);
-
-                if (listaPerguntas != null && listaPerguntas.Any())
+                relatorioAgrupado.ForEach(x =>
                 {
-                    var perguntasAgrupado = listaPerguntas.GroupBy(g => g.PerguntaId);
-                    var respostasAgrupado = listaAlunos.GroupBy(g => g.PerguntaId);
+                    var pergunta = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto();
+                    var totalRespostas = x.Where(y => y.PerguntaId == x.Key).Sum(q => q.QtdRespostas);
+                    totalDeAlunos = totalRespostas > totalDeAlunos ? totalRespostas : totalDeAlunos;
 
-                    foreach (var pergunta in perguntasAgrupado)
-                    {
-                        var respostas = respostasAgrupado.FirstOrDefault(a => a.Key == pergunta.Key);
+                    CalculaPercentualTotalPergunta(totalDeAlunos, x.Where(y => y.PerguntaId == x.Key).First().PerguntaDescricao, pergunta);
 
-                        AdicionarPergunta(pergunta, pergunta.Key, respostas, perguntas, request.QuantidadeTotalAlunos);
-                    }
-                }
+                    var listaPr = x.Where(y => y.PerguntaId == x.Key).ToList();
+                    CalculaPercentualRespostas(totalDeAlunos, pergunta, listaPr, totalRespostas);
+
+                    perguntas.Add(pergunta);
+                });
             }
             else
             {
-                var listaAlunos = await mathPoolNumbersRepository.ObterPorFiltros(request.Dre?.DreCodigo, request.Ue?.UeCodigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
+                var listaAlunos = await mathPoolNumbersRepository.ObterPorFiltros(request.Dre?.Codigo, request.Ue?.Codigo, request.TurmaAno, request.AnoLetivo, request.Semestre);
 
                 var familiaresAgrupados = listaAlunos.GroupBy(fu => fu.Familiares);
 
@@ -253,6 +256,38 @@ namespace SME.SR.Application
                 return respostas;
             else
                 return null;
+        }
+
+        private void CalculaPercentualTotalPergunta(int totalDeAlunos, string descricaoPergunta, RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto pergunta)
+        {
+            pergunta.Pergunta = descricaoPergunta;
+            pergunta.Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>();
+        }
+
+        private void CalculaPercentualRespostas(int totalDeAlunos, RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto pergunta, List<PerguntasRespostasDTO> listaPr, int totalRespostas)
+        {
+            foreach (var item in listaPr)
+            {
+                pergunta.Respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                {
+                    Resposta = item.RespostaDescricao,
+                    AlunosQuantidade = item.QtdRespostas,
+                    AlunosPercentual = item.QtdRespostas > 0 ? ((double)item.QtdRespostas / totalDeAlunos) * 100 : 0
+                });
+            }
+
+            var respostaSempreenchimento = CriaRespostaSemPreenchimento(totalDeAlunos, totalRespostas);
+            pergunta.Respostas.Add(respostaSempreenchimento);
+        }
+
+        private RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto CriaRespostaSemPreenchimento(int totalDeAlunos, int quantidadeTotalRespostasPergunta)
+        {
+            var respostaSemPreenchimento = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto();
+            var quantidade = totalDeAlunos - quantidadeTotalRespostasPergunta;
+            respostaSemPreenchimento.Resposta = "Sem preenchimento";
+            respostaSemPreenchimento.AlunosQuantidade = quantidade >= 0 ? quantidade : 0;
+            respostaSemPreenchimento.AlunosPercentual = (respostaSemPreenchimento.AlunosQuantidade > 0 ? (respostaSemPreenchimento.AlunosQuantidade * 100) / (Double)totalDeAlunos : 0);
+            return respostaSemPreenchimento;
         }
     }
 
