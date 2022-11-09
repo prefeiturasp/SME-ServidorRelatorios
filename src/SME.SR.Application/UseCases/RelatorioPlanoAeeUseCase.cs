@@ -38,7 +38,7 @@ namespace SME.SR.Application
             await ObterCadastro(planoAee, relatorioPlanoAee);
             ObterParecer(planoAee, relatorioPlanoAee);
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAee", relatorioPlanoAee, request.CodigoCorrelacao, diretorioComplementar: "planoaee"));
+            await mediator.Send(new GerarRelatorioHtmlPDFPlanoAeeCommand(relatorioPlanoAee, request.CodigoCorrelacao));
         }
 
         private static void ObterCabecalho(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
