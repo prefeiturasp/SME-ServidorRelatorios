@@ -10,6 +10,7 @@ namespace SME.SR.Infra
         public string AlunoCodigo { get; set; }
         public string AlunoNome { get; set; }
         public string ParecerCoordenacao { get; set; }
+        public string ParecerPaai { get; set; }
         public long ResponsavelPaaiId { get; set; }
         public string ResponsavelPaaiNome { get; set; }
         public string ResponsavelPaaiLoginRf { get; set; }

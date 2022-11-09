@@ -24,6 +24,7 @@ namespace SME.SR.Data
 										pa.aluno_codigo as alunocodigo,
 										pa.aluno_nome as alunonome,
 										pa.parecer_coordenacao as parecercoordenacao,
+										pa.parecer_paai as parecerpaai,
 										pa.responsavel_paai_id as responsavelpaaiid,
 										u2.nome as responsavelpaainome,
 										coalesce(u2.login, u2.rf_codigo) as responsavelpaailoginrf,

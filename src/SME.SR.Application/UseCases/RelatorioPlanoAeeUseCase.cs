@@ -121,6 +121,7 @@ namespace SME.SR.Application
             relatorioPlanoAee.Parecer = new ParecerPlanoAeeDto
             {
                 Coordenacao = planoAee.ParecerCoordenacao,
+                Cefai = planoAee.ParecerPaai,
                 PaaiResponsavel = $"{planoAee.ResponsavelPaaiNome} ({planoAee.ResponsavelPaaiLoginRf})"
             };            
         }
