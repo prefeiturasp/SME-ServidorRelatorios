@@ -29,9 +29,11 @@
                 </tr>
                 <tr>
                     <td class='espaco-esquerda-15 width-25 espacamento10'><strong>CODIGO EOL:</strong> @Model.Cabecalho.AlunoCodigo</td>
-                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>SITUAÇÃO:</strong> @Model.Cabecalho.SituacaoPlano</td>
                     <td class='espaco-esquerda-15 width-25 espacamento10'><strong>VERSÃO:</strong> @Model.Cabecalho.VersaoPlano</td>
-                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+                    <td class='espaco-esquerda-15 width-25 espacamento10' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="4"><strong>SITUAÇÃO:</strong> @Model.Cabecalho.SituacaoPlano</td>    
                 </tr>
                 </tbody>
             </table>

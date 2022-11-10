@@ -17,7 +17,7 @@ namespace SME.SR.Application
         private readonly IConverter converter;
         private readonly IHtmlHelper htmlHelper;
         private readonly IServicoFila servicoFila;
-        private const int LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO = 4;
+        private const int LINHAS_CABECALHO_PADRAO_LINHA_EM_BRANCO = 5;
         private const int LINHAS_PARECER_COORDENACAO_CEFAI = 3;
         private const int ADICIONAR_1_LINHA = 1;
 
