@@ -4,6 +4,11 @@ namespace SME.SR.Infra
 {
     public class QuestaoPlanoAeeDto
     {
+        public QuestaoPlanoAeeDto()
+        {
+            FrequenciaAluno = new List<FrequenciaAlunoPlanoAeeDto>();
+        }
+
         public string Questao { get; set; }
         public long QuestaoId { get; set; }
         public string Resposta { get; set; }

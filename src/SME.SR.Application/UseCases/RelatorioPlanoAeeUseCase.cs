@@ -21,13 +21,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-//            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanoAeeDto>();
-
-            var filtroRelatorio = new FiltroRelatorioPlanoAeeDto()
-            {
-                //VersoesPlanosIds = new long[] { 38532, 132, 160, 38533, 39189 }
-                VersoesPlanosIds = new long[] { 39189 }
-            }; 
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanoAeeDto>();
 
             var relatoriosPlanoAee = new List<RelatorioPlanoAeeDto>();
             
@@ -95,11 +89,16 @@ namespace SME.SR.Application
                 {
                     TipoQuestao.Radio => opcaoRespostaQuestao?.Nome,
                     TipoQuestao.PeriodoEscolar => await ObterRespostaQuestaoPeriodoEscolar(respostaQuestao, relatorioPlanoAee),
-                    _ => respostaQuestao.Texto
+                    _ => UtilRegex.RemoverTagsHtml(respostaQuestao.Texto)
                 };
 
                 questaoRelatorio.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
-                questaoRelatorio.FrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
+                
+                var respostaFrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
+                
+                if (respostaFrequenciaAluno != null)
+                    questaoRelatorio.FrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
+                
                 questoesRelatorio.Add(questaoRelatorio);
             }
 
@@ -108,8 +107,8 @@ namespace SME.SR.Application
 
         private static void ObterParecer(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
         {
-            relatorioPlanoAee.Parecer.Coordenacao = planoAee.ParecerCoordenacao;
-            relatorioPlanoAee.Parecer.Cefai = planoAee.ParecerPaai;
+            relatorioPlanoAee.Parecer.Coordenacao = UtilRegex.RemoverTagsHtml(planoAee.ParecerCoordenacao);
+            relatorioPlanoAee.Parecer.Cefai = UtilRegex.RemoverTagsHtml(planoAee.ParecerPaai);
             relatorioPlanoAee.Parecer.PaaiResponsavel = $"{planoAee.ResponsavelPaaiNome} ({planoAee.ResponsavelPaaiLoginRf})";
         }
 
@@ -130,7 +129,7 @@ namespace SME.SR.Application
             var respostaQuestaoComplementar =
                 questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
 
-            return respostaQuestaoComplementar?.Texto;            
+            return UtilRegex.RemoverTagsHtml(respostaQuestaoComplementar?.Texto);            
         }
 
         private static IEnumerable<FrequenciaAlunoPlanoAeeDto> ObterRespostaFrequenciaAluno(TipoQuestao tipoQuestao, RespostaQuestaoDto respostaQuestao)

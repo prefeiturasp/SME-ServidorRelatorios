@@ -121,7 +121,7 @@ namespace SME.SR.Application
             if (!(cadastro.TipoQuestao == TipoQuestao.PeriodoEscolar || cadastro.TipoQuestao == TipoQuestao.FrequenciaEstudanteAEE))
                 qtdeCaracteres += CalcularQtdeLinhas(qtdeCaracteresPorLinha, cadastro.Resposta.Length);
 
-            if (cadastro.TipoQuestao == TipoQuestao.FrequenciaEstudanteAEE)
+            if (cadastro.TipoQuestao == TipoQuestao.FrequenciaEstudanteAEE && cadastro.FrequenciaAluno.Any())
                 qtdeCaracteres += cadastro.FrequenciaAluno.Count() + 1;
 
             if (!string.IsNullOrEmpty(cadastro.Justificativa))

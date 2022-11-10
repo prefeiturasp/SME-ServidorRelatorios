@@ -5,15 +5,13 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
-using System;
 using System.Threading.Tasks;
-
 
 namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ChaveIntegracaoSrApi]
+    [ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -335,13 +333,6 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/planoaee", typeof(IRelatorioFrequenciaGlobalUseCase))]
         public async Task<bool> RelatorioPlanoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAeeUseCase useCase)
         {
-            request = new FiltroRelatorioDto
-            {
-                CodigoCorrelacao = new Guid("4ba6694e-45c9-4099-b375-a8c75300213e"),
-                UsuarioLogadoRF = "7510039",
-                RelatorioEscolaAqui = false,
-            };
-            
             await useCase.Executar(request);
             return true;
         }        

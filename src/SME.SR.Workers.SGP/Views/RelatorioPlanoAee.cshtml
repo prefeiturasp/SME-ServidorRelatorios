@@ -19,18 +19,18 @@
             <table class='tblTopo'>
                 <tbody>
                 <tr>
-                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>ANO LETIVO:</strong> @Model.Cabecalho.AnoLetivo</td>
-                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>DRE:</strong> @Model.Cabecalho.DreNome</td>
-                    <td class='espaco-esquerda-15 width-25 espacamento10' colspan="2"><strong>UNIDADE ESCOLAR (UE):</strong> @Model.Cabecalho.UeNome</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>ANO LETIVO:</strong> @Model.Cabecalho.AnoLetivo</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>DRE:</strong> @Model.Cabecalho.DreNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>UE:</strong> @Model.Cabecalho.UeNome</td>
                 </tr>
                 <tr>
-                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>TURMA:</strong> @Model.Cabecalho.TurmaNome</td>
-                    <td class='espaco-esquerda-15 width-25 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @Model.Cabecalho.AlunoNome</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>TURMA:</strong> @Model.Cabecalho.TurmaNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @Model.Cabecalho.AlunoNome</td>
                 </tr>
                 <tr>
-                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>CODIGO EOL:</strong> @Model.Cabecalho.AlunoCodigo</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>CODIGO EOL:</strong> @Model.Cabecalho.AlunoCodigo</td>
                     <td class='espaco-esquerda-15 width-25 espacamento10'><strong>VERSÃO:</strong> @Model.Cabecalho.VersaoPlano</td>
-                    <td class='espaco-esquerda-15 width-25 espacamento10' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
                 </tr>
                 <tr>
                     <td class='espaco-esquerda-15 espacamento10' colspan="4"><strong>SITUAÇÃO:</strong> @Model.Cabecalho.SituacaoPlano</td>    
@@ -60,14 +60,7 @@
         <tr >
             <td class="alinhamentoEsquerda espacamento10" colspan="7"><strong>@titulo.ToUpper():</strong> @descricao</td>
         </tr>
-    }
-    
-    void MontarResponsavel(string nomeResponsavel)
-    {
-        <tr>
-            <td colspan="7" class="alinhamentoEsquerda espacamento10"><strong>RESPONSÁVEL:</strong> @nomeResponsavel</td>
-        </tr>
-    }
+    }    
     
     void MontarQuestaoFrequencia(QuestaoPlanoAeeDto questao)
     {
@@ -96,7 +89,7 @@
     void MontarTituloNegritoLinhaTexto(string titulo, string resposta)
     {
         <tr>
-            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
+            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo.ToUpper()</td>
         </tr>
         <tr>
             <td colspan="7" class="alinhamentoEsquerda espacamento10">@resposta</td>
@@ -284,6 +277,14 @@
             height: 63px;
             float: left;
         }
+        
+        .width-22 {
+          width: 22%;
+        }
+        
+        .width-25 {
+          width: 25%;
+        }                
 
         .width-33 {
           width: 33%;
