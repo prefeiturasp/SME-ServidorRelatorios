@@ -10,7 +10,6 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Cache;
-using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -22,6 +21,7 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
+using SME.SR.Data.Repositories.Sgp;
 
 namespace SME.SR.IoC
 {
@@ -170,7 +170,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IItineranciaRepository), typeof(ItineranciaRepository));
             services.TryAddScoped(typeof(IAcompanhamentoAprendizagemRepository), typeof(AcompanhamentoAprendizagemRepository));
             services.TryAddScoped(typeof(IRegistroIndividualRepository), typeof(RegistroIndividualRepository));
-            services.TryAddScoped(typeof(Data.Interfaces.IOcorrenciaRepository), typeof(Data.OcorrenciaRepository));
+            services.TryAddScoped(typeof(IOcorrenciaRepository), typeof(OcorrenciaRepository));
             services.TryAddScoped(typeof(IUeEolRepository), typeof(UeEolRepository));
             services.TryAddScoped(typeof(IArquivoRepository), typeof(ArquivoRepository));
 
@@ -182,6 +182,10 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRegistroFrequenciaAlunoRepository), typeof(RegistroFrequenciaAlunoRepository));
 
             services.TryAddScoped(typeof(IRegistrosPedagogicosRepository), typeof(RegistrosPedagogicosRepository));
+            
+            services.TryAddScoped(typeof(IQuestionarioRepository), typeof(QuestionarioRepository));
+            services.TryAddScoped(typeof(IPlanoAeeRespostaRepository), typeof(PlanoAeeRespostaRepository));
+            services.TryAddScoped(typeof(IPlanoAeeVersaoRepository), typeof(PlanoAeeVersaoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -237,6 +241,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAcompanhamentoRegistrosPedagogicosUseCase, RelatorioAcompanhamentoRegistrosPedagogicosUseCase>();
             services.TryAddScoped<IRelatorioOcorrenciasUseCase, RelatorioOcorrenciasUseCase>();
             services.TryAddScoped<IRelatorioFrequenciaGlobalUseCase, RelatorioFrequenciaGlobalUseCase>();
+            services.TryAddScoped<IRelatorioPlanoAeeUseCase, RelatorioPlanoAeeUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
