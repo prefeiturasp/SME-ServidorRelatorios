@@ -26,28 +26,28 @@ namespace SME.SR.Application
             var questoes = (await questionarioRepository.ObterQuestoesPorQuestionarioId(request.QuestionarioId)).ToList();
 
             var questoesComplementares = questoes
-                .Where(dq => dq.OpcoesRespostas.Any(a => a.QuestoesComplementares.Any()))
-                .SelectMany(dq => dq.OpcoesRespostas.Where(c => c.QuestoesComplementares.Any()).SelectMany(a => a.QuestoesComplementares.Select(q => q.QuestaoComplementarId)))
+                .Where(q => q.OpcoesRespostas.Any(a => a.QuestoesComplementares.Any()))
+                .SelectMany(q => q.OpcoesRespostas.Where(c => c.QuestoesComplementares.Any()).SelectMany(a => a.QuestoesComplementares.Select(qc => qc.QuestaoComplementarId)))
                 .Distinct();
 
             return questoes
-                .Where(dq => !questoesComplementares.Contains(dq.Id))
-                .Select(dq => ObterQuestao(dq.Id, questoes, request.ObterRespostas))
+                .Where(q => !questoesComplementares.Contains(q.Id))
+                .Select(q => ObterQuestao(q.Id, questoes, request.ObterRespostas))
                 .OrderBy(q => q.Ordem)
                 .ToArray();
         }
         
-        private IEnumerable<QuestaoDto> ObterQuestoes(IEnumerable<OpcaoQuestaoComplementar> questoesComplementares, IReadOnlyCollection<Questao> dadosQuestionario, ObterRespostasFunc obterRespostas)
+        private IEnumerable<QuestaoDto> ObterQuestoes(IEnumerable<OpcaoQuestaoComplementar> questoesComplementares, IReadOnlyCollection<Questao> questoes, ObterRespostasFunc obterRespostas)
         {
-            return questoesComplementares.Select(questaoComplementar => ObterQuestao(questaoComplementar.QuestaoComplementarId, dadosQuestionario, obterRespostas));
+            return questoesComplementares.Select(questaoComplementar => ObterQuestao(questaoComplementar.QuestaoComplementarId, questoes, obterRespostas));
         }
 
-        private QuestaoDto ObterQuestao(long questaoId, IReadOnlyCollection<Questao> dadosQuestionario, ObterRespostasFunc obterRespostas)
+        private QuestaoDto ObterQuestao(long questaoId, IReadOnlyCollection<Questao> questoes, ObterRespostasFunc obterRespostas)
         {
-            var questao = dadosQuestionario.FirstOrDefault(c => c.Id == questaoId);
+            var questao = questoes.FirstOrDefault(c => c.Id == questaoId);
 
             if (questao == null)
-                return null;
+                return new QuestaoDto();
 
             return new QuestaoDto
             {
@@ -64,7 +64,7 @@ namespace SME.SR.Application
                             Nome = opcaoResposta.Nome,
                             Ordem = opcaoResposta.Ordem,
                             QuestoesComplementares = opcaoResposta.QuestoesComplementares != null ?
-                                ObterQuestoes(opcaoResposta.QuestoesComplementares, dadosQuestionario, obterRespostas)
+                                ObterQuestoes(opcaoResposta.QuestoesComplementares, questoes, obterRespostas)
                                     .OrderBy(a => a.Ordem)
                                     .ToList() :
                                 null

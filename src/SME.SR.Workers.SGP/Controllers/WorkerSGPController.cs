@@ -13,7 +13,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -330,6 +330,21 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
+        
+        [HttpGet("relatorios/planoaee")]
+        [Action("relatorios/planoaee", typeof(IRelatorioFrequenciaGlobalUseCase))]
+        public async Task<bool> RelatorioPlanoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAeeUseCase useCase)
+        {
+            request = new FiltroRelatorioDto
+            {
+                CodigoCorrelacao = new Guid("4ba6694e-45c9-4099-b375-a8c75300213e"),
+                UsuarioLogadoRF = "7510039",
+                RelatorioEscolaAqui = false,
+            };
+            
+            await useCase.Executar(request);
+            return true;
+        }        
 
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]

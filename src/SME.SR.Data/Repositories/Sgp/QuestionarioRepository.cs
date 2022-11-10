@@ -7,7 +7,7 @@ using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 
-namespace SME.SR.Data.Repositories.Sgp
+namespace SME.SR.Data
 {
     public class QuestionarioRepository : IQuestionarioRepository
     {
@@ -37,14 +37,15 @@ namespace SME.SR.Data.Repositories.Sgp
                                         op.id,
                                         op.questao_id as questaoid,
                                         op.ordem,
-                                        op.nome, 
+                                        op.nome,
+                                        oqc.id,
                                         oqc.opcao_resposta_id as opcaorespostaid,
                                         oqc.questao_complementar_id as questaocomplementarid
                                     from questao q 
                                         left join opcao_resposta op on op.questao_id = q.id
                                         left join opcao_questao_complementar oqc on oqc.opcao_resposta_id = op.id
                                     where q.questionario_id = @questionarioId 
-                                    order by q.id, op.id";
+                                    order by q.id, op.id";            
 
             var lookup = new Dictionary<long, Questao>();
             
