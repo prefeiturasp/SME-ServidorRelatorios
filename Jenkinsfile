@@ -48,20 +48,13 @@ pipeline {
                                 input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: "${aprovadores}"
                             }
                         }
-
-                        withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
-                            sh('cp $config '+"$home"+'/.kube/config')
-                            sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
-                            sh('rm -f '+"$home"+'/.kube/config')
-                        }
                     }
-                    else{
-                        withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
-                            sh('cp $config '+"$home"+'/.kube/config')
-                            sh 'kubectl rollout restart deployment/sme-sr-workers-r2 -n sme-relatorios'
-                            sh('rm -f '+"$home"+'/.kube/config')
-                        }
-                    }
+					
+					withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
+						sh('cp $config '+"$home"+'/.kube/config')
+						sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
+						sh('rm -f '+"$home"+'/.kube/config')
+					}
                 }
             }           
         }    
