@@ -25,7 +25,8 @@ namespace SME.SR.Application
 
             var filtroRelatorio = new FiltroRelatorioPlanoAeeDto()
             {
-                VersoesPlanosIds = new long[] { 38532 }
+                //VersoesPlanosIds = new long[] { 38532, 132, 160, 38533, 39189 }
+                VersoesPlanosIds = new long[] { 39189 }
             }; 
 
             var relatoriosPlanoAee = new List<RelatorioPlanoAeeDto>();
@@ -138,8 +139,8 @@ namespace SME.SR.Application
                 return null;
             
             var respostasFrequencias = JsonConvert.DeserializeObject<IEnumerable<RespostaFrequenciaAlunoPlanoAeeDto>>(respostaQuestao.Texto);
-                    
-            return respostasFrequencias.Select(respostaFrequencia =>
+
+            return respostasFrequencias?.Select(respostaFrequencia =>
                 new FrequenciaAlunoPlanoAeeDto
                 {
                     DiaDaSemana = respostaFrequencia.DiaSemana,
