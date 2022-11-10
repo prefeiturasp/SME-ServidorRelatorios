@@ -115,6 +115,7 @@ namespace SME.SR.Application
                             : null;
                         boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
                         boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
+                        boletimEscolarAlunoDto.ExibirRecomendacoes = request.ExibirRecomendacao;
                         boletinsAlunos.Add(boletimEscolarAlunoDto);
                     }
                 }
@@ -122,7 +123,7 @@ namespace SME.SR.Application
                 if (!boletinsAlunos.Any())
                     throw new NegocioException("Não foram encontradas informações para geração do boletim");
 
-                return await Task.FromResult(new BoletimEscolarDetalhadoDto(boletinsAlunos));
+                return await Task.FromResult(new BoletimEscolarDetalhadoDto(boletinsAlunos, request.ExibirRecomendacao));
             }
             catch (Exception ex)
             {
