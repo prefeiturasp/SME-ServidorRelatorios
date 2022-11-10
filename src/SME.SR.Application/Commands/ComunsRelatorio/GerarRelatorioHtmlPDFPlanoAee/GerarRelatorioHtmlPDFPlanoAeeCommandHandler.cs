@@ -37,55 +37,61 @@ namespace SME.SR.Application
             var qtdeCaracteresPorLinha = 200;
             var qtdeCaracteresPagina = 0;
             var relatorioPlanoAeeDtos = new List<RelatorioPlanoAeeDto>();
-            var relatorio = ObterRelatorioPlanoAeeDto(request);
+            var paginasPlanoAee = new List<PaginaParaRelatorioPaginacaoSoloDto>();
+            var relatorio = new RelatorioPlanoAeeDto();
             var listaQuestoes = new List<QuestaoPlanoAeeDto>();
             var qtdeCaracteresPaginaProposta = 0;
-            
-            qtdeCaracteresPagina = ObterQtdeCaracteresPaginaCabecalho(qtdeCaracteresPorLinha);
-            relatorio.Cadastro.Responsavel = request.Relatorio.Cadastro.Responsavel;
-            qtdeCaracteresPagina += qtdeCaracteresPorLinha * ADICIONAR_1_LINHA;
-            
-            foreach (var questao in request.Relatorio.Cadastro.Questoes)
-            {
-                var tmQuestao = TamanhoQuestaoRespostaJustificativa(questao, qtdeCaracteresPorLinha);
-                qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + tmQuestao;
 
-                if (qtdeCaracteresPaginaProposta > limiteCaracteres)
+            foreach (var relatorioPlanoAeeDto in request.Relatorios)
+            {
+                relatorio = ObterRelatorioPlanoAeeDto(relatorioPlanoAeeDto);
+                qtdeCaracteresPagina = ObterQtdeCaracteresPaginaCabecalho(qtdeCaracteresPorLinha);
+                relatorio.Cadastro.Responsavel = relatorioPlanoAeeDto.Cadastro.Responsavel;
+                qtdeCaracteresPagina += qtdeCaracteresPorLinha * ADICIONAR_1_LINHA;
+                
+                foreach (var questao in relatorioPlanoAeeDto.Cadastro.Questoes)
                 {
-                    relatorio.Cadastro.Questoes = listaQuestoes;
-                    relatorioPlanoAeeDtos.Add(relatorio);
-                    qtdeCaracteresPagina = ObterQtdeCaracteresPaginaCabecalho(qtdeCaracteresPorLinha);
-                    relatorio = ObterRelatorioPlanoAeeDto(request);
-                    listaQuestoes = new List<QuestaoPlanoAeeDto>(); 
-                }
-                qtdeCaracteresPagina += tmQuestao;
-                listaQuestoes.Add(questao);
-            }
-            
-            relatorio.Cadastro.Questoes = listaQuestoes;
-            
-            qtdeCaracteresPagina += qtdeCaracteresPorLinha * LINHAS_PARECER_COORDENACAO_CEFAI;
-            var tmParecer = TamanhoParecer(request.Relatorio.Parecer, qtdeCaracteresPorLinha);
-            qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + tmParecer;
-            
-            if (qtdeCaracteresPaginaProposta >= limiteCaracteres)
-            {
-                relatorioPlanoAeeDtos.Add(relatorio);
-                relatorio = ObterRelatorioPlanoAeeDto(request);
-            }
-            relatorio.Parecer = request.Relatorio.Parecer;
-            relatorioPlanoAeeDtos.Add(relatorio);
+                    var tmQuestao = TamanhoQuestaoRespostaJustificativa(questao, qtdeCaracteresPorLinha);
+                    qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + tmQuestao;
 
-            var paginaPlanoAee = 0;
-            var paginasTotais = relatorioPlanoAeeDtos.Count;
-            var paginasPlanoAee = new List<PaginaParaRelatorioPaginacaoSoloDto>();
-            
-            foreach (var relatorioPlanoAee in relatorioPlanoAeeDtos)
-            {
-                paginaPlanoAee++;
-                paginasPlanoAee.Add(await GerarPagina(paginasPlanoAee, relatorioPlanoAee, paginaPlanoAee,paginasTotais ));
+                    if (qtdeCaracteresPaginaProposta > limiteCaracteres)
+                    {
+                        relatorio.Cadastro.Questoes = listaQuestoes;
+                        relatorioPlanoAeeDtos.Add(relatorio);
+                        qtdeCaracteresPagina = ObterQtdeCaracteresPaginaCabecalho(qtdeCaracteresPorLinha);
+                        relatorio = ObterRelatorioPlanoAeeDto(relatorioPlanoAeeDto);
+                        listaQuestoes = new List<QuestaoPlanoAeeDto>(); 
+                    }
+                    qtdeCaracteresPagina += tmQuestao;
+                    listaQuestoes.Add(questao);
+                }
+                
+                relatorio.Cadastro.Questoes = listaQuestoes;
+                
+                qtdeCaracteresPagina += qtdeCaracteresPorLinha * LINHAS_PARECER_COORDENACAO_CEFAI;
+                var tmParecer = TamanhoParecer(relatorioPlanoAeeDto.Parecer, qtdeCaracteresPorLinha);
+                qtdeCaracteresPaginaProposta = qtdeCaracteresPagina + tmParecer;
+                
+                if (qtdeCaracteresPaginaProposta >= limiteCaracteres)
+                {
+                    relatorioPlanoAeeDtos.Add(relatorio);
+                    relatorio = ObterRelatorioPlanoAeeDto(relatorioPlanoAeeDto);
+                }
+                relatorio.Parecer = relatorioPlanoAeeDto.Parecer;
+                relatorioPlanoAeeDtos.Add(relatorio);
+
+                var paginaPlanoAee = 0;
+                var paginasTotais = relatorioPlanoAeeDtos.Count;
+                
+                foreach (var relatorioPlanoAee in relatorioPlanoAeeDtos)
+                {
+                    paginaPlanoAee++;
+                    paginasPlanoAee.Add(await GerarPagina(paginasPlanoAee, relatorioPlanoAee, paginaPlanoAee,paginasTotais ));
+                }
+
+                relatorioPlanoAeeDtos = new List<RelatorioPlanoAeeDto>();                
             }
-            
+
             var pdfGenerator = new PdfGenerator(converter);
             
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
@@ -94,9 +100,9 @@ namespace SME.SR.Application
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
 
-        private static RelatorioPlanoAeeDto ObterRelatorioPlanoAeeDto(GerarRelatorioHtmlPDFPlanoAeeCommand request)
+        private static RelatorioPlanoAeeDto ObterRelatorioPlanoAeeDto(RelatorioPlanoAeeDto relatorioPlanoAeeDto)
         {
-            var relatorio = new RelatorioPlanoAeeDto() { Cabecalho = request.Relatorio.Cabecalho };
+            var relatorio = new RelatorioPlanoAeeDto() { Cabecalho = relatorioPlanoAeeDto.Cabecalho };
             return relatorio;
         }
 

@@ -115,6 +115,56 @@
             <td colspan="7" class="sem-border-top alinhamentoEsquerda sem-border-top espacamento10"><strong>Justificativa:</strong> @questao.Justificativa</td>
         </tr>
     }
+
+    void GerarParecer(ParecerPlanoAeeDto parecerPlanoAeeDto)
+    {
+        if (!string.IsNullOrEmpty(@Model.Parecer.Coordenacao) || !string.IsNullOrEmpty(@Model.Parecer.Cefai))
+        {
+            <div class="marginTop20">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER</td>
+                    </tr>
+                    @{
+                        GerarParecerCoordenacao(Model.Parecer.Coordenacao);
+                        GerarParecerCefaiResponsavel(Model.Parecer);
+                    }
+                    </tbody>
+                </table>
+            
+            </div> 
+        }
+    }
+
+    void GerarParecerCoordenacao(string parecerCoordenacao)
+    {
+        if (!string.IsNullOrEmpty(parecerCoordenacao))
+        {
+            <tr>
+                <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_COORDENACAO</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Coordenacao</td>
+            </tr>
+        }
+    }
+
+    void GerarParecerCefaiResponsavel(ParecerPlanoAeeDto parecerCefaiResponsavel)
+    {
+        if (!string.IsNullOrEmpty(@Model.Parecer.Cefai))
+        {
+            <tr>
+                <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_CEFAI</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Cefai</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="alinhamentoEsquerda espacamento10"><strong>PAAI RESPONSÁVEL:</strong> @Model.Parecer.PaaiResponsavel</td>
+            </tr>
+        }
+    }
 }
 
 <!DOCTYPE html>
@@ -273,37 +323,8 @@
                 }
                 </tbody>
             </table>
-            
-            
-            @if (!string.IsNullOrEmpty(@Model.Parecer.Coordenacao) || !string.IsNullOrEmpty(@Model.Parecer.Cefai))
-            {
-                <div class="marginTop20">
-                    <table>
-                        <tbody>
-                        <tr>
-                            <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_COORDENACAO</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Coordenacao</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_CEFAI</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Cefai</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" class="alinhamentoEsquerda espacamento10"><strong>PAAI RESPONSÁVEL:</strong> @Model.Parecer.PaaiResponsavel</td>
-                        </tr>
-                        </tbody>
-                    </table>
-            
-                </div> 
-            }
-            
+
+            GerarParecer(Model.Parecer);
         }
     </div>
 </body>
