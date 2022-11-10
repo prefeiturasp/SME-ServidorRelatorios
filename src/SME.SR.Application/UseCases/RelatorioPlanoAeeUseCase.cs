@@ -21,14 +21,12 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanoAeeDto>();
+//            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanoAeeDto>();
 
-            /* TODO
             var filtroRelatorio = new FiltroRelatorioPlanoAeeDto()
             {
-                VersaoPlanoId = 38532
+                VersoesPlanosIds = new long[] { 38532 }
             }; 
-            */
 
             var relatoriosPlanoAee = new List<RelatorioPlanoAeeDto>();
             
@@ -53,26 +51,20 @@ namespace SME.SR.Application
 
         private static void ObterCabecalho(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
         {
-            relatorioPlanoAee.Cabecalho = new CabecalhoPlanoAeeDto
-            {
-                AlunoCodigo = planoAee.AlunoCodigo,
-                AlunoNome = planoAee.AlunoNome,
-                AnoLetivo = planoAee.AnoLetivo,
-                DreNome = planoAee.DreAbreviacao,
-                SituacaoPlano = planoAee.SituacaoPlano.Name(),
-                TurmaNome = $"{planoAee.Modalidade.ShortName()} {planoAee.TurmaNome}",
-                UeNome = $"{planoAee.TipoEscola.ShortName()} {planoAee.UeNome}",
-                VersaoPlano = $"v{planoAee.VersaoPlano} - {planoAee.DataVersaoPlano:dd/MM/yyyy}"
-            };
+            relatorioPlanoAee.Cabecalho.AlunoCodigo = planoAee.AlunoCodigo;
+            relatorioPlanoAee.Cabecalho.AlunoNome = planoAee.AlunoNome;
+            relatorioPlanoAee.Cabecalho.AnoLetivo = planoAee.AnoLetivo;
+            relatorioPlanoAee.Cabecalho.DreNome = planoAee.DreAbreviacao;
+            relatorioPlanoAee.Cabecalho.SituacaoPlano = planoAee.SituacaoPlano.Name();
+            relatorioPlanoAee.Cabecalho.TurmaNome = $"{planoAee.Modalidade.ShortName()} {planoAee.TurmaNome}";
+            relatorioPlanoAee.Cabecalho.UeNome = $"{planoAee.TipoEscola.ShortName()} {planoAee.UeNome}";
+            relatorioPlanoAee.Cabecalho.VersaoPlano = $"v{planoAee.VersaoPlano} - {planoAee.DataVersaoPlano:dd/MM/yyyy}";
         }
 
         private async Task ObterCadastro(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
         {
-            relatorioPlanoAee.Cadastro = new CadastroPlanoAeeDto
-            {
-                Responsavel = $"{planoAee.ResponsavelNome} ({planoAee.ResponsavelLoginRf})"
-            };
-            
+            relatorioPlanoAee.Cadastro.Responsavel = $"{planoAee.ResponsavelNome} ({planoAee.ResponsavelLoginRf})";
+
             var questoes = await mediator.Send(new ObterQuestoesPlanoAEEPorVersaoPlanoIdQuery(planoAee.VersaoPlano));
 
             var questoesRelatorio = new List<QuestaoPlanoAeeDto>();
@@ -115,12 +107,9 @@ namespace SME.SR.Application
 
         private static void ObterParecer(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
         {
-            relatorioPlanoAee.Parecer = new ParecerPlanoAeeDto
-            {
-                Coordenacao = planoAee.ParecerCoordenacao,
-                Cefai = planoAee.ParecerPaai,
-                PaaiResponsavel = $"{planoAee.ResponsavelPaaiNome} ({planoAee.ResponsavelPaaiLoginRf})"
-            };            
+            relatorioPlanoAee.Parecer.Coordenacao = planoAee.ParecerCoordenacao;
+            relatorioPlanoAee.Parecer.Cefai = planoAee.ParecerPaai;
+            relatorioPlanoAee.Parecer.PaaiResponsavel = $"{planoAee.ResponsavelPaaiNome} ({planoAee.ResponsavelPaaiLoginRf})";
         }
 
         private async Task<string> ObterRespostaQuestaoPeriodoEscolar(RespostaQuestaoDto respostaQuestao, RelatorioPlanoAeeDto relatorioPlanoAee)
