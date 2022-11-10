@@ -330,7 +330,7 @@ namespace SME.SR.Workers.SGP.Controllers
         }
         
         [HttpGet("relatorios/planoaee")]
-        [Action("relatorios/planoaee", typeof(IRelatorioFrequenciaGlobalUseCase))]
+        [Action("relatorios/planoaee", typeof(IRelatorioPlanoAeeUseCase))]
         public async Task<bool> RelatorioPlanoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAeeUseCase useCase)
         {
             await useCase.Executar(request);
