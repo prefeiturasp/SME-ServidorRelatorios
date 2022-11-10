@@ -21,12 +21,14 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            //var parametros = request.ObterObjetoFiltro<FiltroRelatorioPlanoAeeDto>();
-            
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanoAeeDto>();
+
+            /* TODO
             var filtroRelatorio = new FiltroRelatorioPlanoAeeDto()
             {
                 VersaoPlanoId = 38532
             }; 
+            */
             
             var planoAee = await mediator.Send(new ObterPlanoAEEPorVersaoPlanoIdQuery(filtroRelatorio.VersaoPlanoId));
 
@@ -34,6 +36,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Plano AEE não localizado para a impressão.");
 
             var relatorioPlanoAee = new RelatorioPlanoAeeDto();
+
             ObterCabecalho(planoAee, relatorioPlanoAee);
             await ObterCadastro(planoAee, relatorioPlanoAee);
             ObterParecer(planoAee, relatorioPlanoAee);
@@ -82,34 +85,21 @@ namespace SME.SR.Application
                 if (respostaQuestao == null) 
                     continue;
 
-                var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
-                    c.Id == respostaQuestao.OpcaoRespostaId);                
-                
                 questaoRelatorio.RespostaId = respostaQuestao.OpcaoRespostaId;
                 questaoRelatorio.Resposta = respostaQuestao.Texto;
-
+                
+                var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
+                    c.Id == respostaQuestao.OpcaoRespostaId);
+                
                 questaoRelatorio.Resposta = questao.Tipo switch
                 {
-                    TipoQuestao.Radio => "",
+                    TipoQuestao.Radio => opcaoRespostaQuestao?.Nome,
                     TipoQuestao.PeriodoEscolar => await ObterRespostaQuestaoPeriodoEscolar(respostaQuestao, relatorioPlanoAee),
                     _ => respostaQuestao.Texto
                 };
 
-                if (questao.Tipo == TipoQuestao.FrequenciaEstudanteAEE)
-                {
-                    var respostasFrequencias = JsonConvert.DeserializeObject<IEnumerable<RespostaFrequenciaAlunoPlanoAeeDto>>(respostaQuestao.Texto);
-                    
-                    var frequenciasAluno = respostasFrequencias.Select(respostaFrequencia =>
-                        new FrequenciaAlunoPlanoAeeDto
-                        {
-                            DiaDaSemana = respostaFrequencia.DiaSemana,
-                            Inicio = respostaFrequencia.HorarioInicio.ToString("HH:mm"),
-                            Termino = respostaFrequencia.HorarioTermino.ToString("HH:mm")
-                        }).ToList();
-
-                    questaoRelatorio.FrequenciaAluno = frequenciasAluno;
-                }
-                
+                questaoRelatorio.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
+                questaoRelatorio.FrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
                 questoesRelatorio.Add(questaoRelatorio);
             }
 
@@ -131,6 +121,35 @@ namespace SME.SR.Application
             var idPeriodoEscolar = long.Parse(respostaQuestao.Texto);
             var periodoEscolar = await mediator.Send(new ObterPeriodoEscolarPorIdQuery(idPeriodoEscolar));
             return $"{periodoEscolar.Bimestre}º BIMESTRE - {relatorioPlanoAee.Cabecalho.AnoLetivo}";            
+        }
+
+        private static string ObterJustificativaQuestao(OpcaoRespostaDto opcaoResposta)
+        {
+            if (opcaoResposta?.QuestoesComplementares == null)
+                return string.Empty;
+            
+            var questaoComplementar = opcaoResposta.QuestoesComplementares.FirstOrDefault();
+
+            var respostaQuestaoComplementar =
+                questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
+
+            return respostaQuestaoComplementar?.Texto;            
+        }
+
+        private static IEnumerable<FrequenciaAlunoPlanoAeeDto> ObterRespostaFrequenciaAluno(TipoQuestao tipoQuestao, RespostaQuestaoDto respostaQuestao)
+        {
+            if (tipoQuestao != TipoQuestao.FrequenciaEstudanteAEE)
+                return null;
+            
+            var respostasFrequencias = JsonConvert.DeserializeObject<IEnumerable<RespostaFrequenciaAlunoPlanoAeeDto>>(respostaQuestao.Texto);
+                    
+            return respostasFrequencias.Select(respostaFrequencia =>
+                new FrequenciaAlunoPlanoAeeDto
+                {
+                    DiaDaSemana = respostaFrequencia.DiaSemana,
+                    Inicio = respostaFrequencia.HorarioInicio.ToString("HH:mm"),
+                    Termino = respostaFrequencia.HorarioTermino.ToString("HH:mm")
+                }).ToList();
         }
     }
 }
