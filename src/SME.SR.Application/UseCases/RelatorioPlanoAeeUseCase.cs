@@ -29,19 +29,26 @@ namespace SME.SR.Application
                 VersaoPlanoId = 38532
             }; 
             */
+
+            var relatoriosPlanoAee = new List<RelatorioPlanoAeeDto>();
             
-            var planoAee = await mediator.Send(new ObterPlanoAEEPorVersaoPlanoIdQuery(filtroRelatorio.VersaoPlanoId));
+            foreach (var versaoPlanoId in filtroRelatorio.VersoesPlanosIds)
+            {
+                var planoAee = await mediator.Send(new ObterPlanoAEEPorVersaoPlanoIdQuery(versaoPlanoId));
 
-            if (planoAee == null)
-                throw new NegocioException("Plano AEE não localizado para a impressão.");
+                if (planoAee == null)
+                    throw new NegocioException("Plano AEE não localizado para a impressão.");
 
-            var relatorioPlanoAee = new RelatorioPlanoAeeDto();
+                var relatorioPlanoAee = new RelatorioPlanoAeeDto();
 
-            ObterCabecalho(planoAee, relatorioPlanoAee);
-            await ObterCadastro(planoAee, relatorioPlanoAee);
-            ObterParecer(planoAee, relatorioPlanoAee);
+                ObterCabecalho(planoAee, relatorioPlanoAee);
+                await ObterCadastro(planoAee, relatorioPlanoAee);
+                ObterParecer(planoAee, relatorioPlanoAee); 
+                
+                relatoriosPlanoAee.Add(relatorioPlanoAee);
+            }
 
-            await mediator.Send(new GerarRelatorioHtmlPDFPlanoAeeCommand(relatorioPlanoAee, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlPDFPlanoAeeCommand(relatoriosPlanoAee, request.CodigoCorrelacao));
         }
 
         private static void ObterCabecalho(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
