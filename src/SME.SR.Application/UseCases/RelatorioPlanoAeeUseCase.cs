@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
             var relatoriosPlanoAee = new List<RelatorioPlanoAeeDto>();
             
-            foreach (var versaoPlanoId in filtroRelatorio.VersoesPlanosIds)
+            foreach (var versaoPlanoId in filtroRelatorio.VersoesIds)
             {
                 var planoAee = await mediator.Send(new ObterPlanoAEEPorVersaoPlanoIdQuery(versaoPlanoId));
 

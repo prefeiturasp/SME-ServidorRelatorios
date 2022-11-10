@@ -2,6 +2,6 @@ namespace SME.SR.Infra
 {
     public class FiltroRelatorioPlanoAeeDto
     {
-        public long[] VersoesPlanosIds { get; set; }
+        public long[] VersoesIds { get; set; }
     }
 }
