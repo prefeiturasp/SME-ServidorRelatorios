@@ -40,7 +40,11 @@ namespace SME.SR.Application
 
         private async Task MapearCabecalho(RelatorioRegistroOcorrenciasDto relatorio, FiltroImpressaoOcorrenciaDto filtroOcorrencia)
         {
-            var dadosDreUe = await ObterNomeDreUe(filtroOcorrencia.TurmaId);
+            DreUe dadosDreUe;
+            if (filtroOcorrencia.TurmaId != 0)
+                dadosDreUe = await ObterNomeDreUe(filtroOcorrencia.TurmaId);
+            else
+                dadosDreUe = await mediator.Send(new ObterDreUePorDreCodigoQuery(filtroOcorrencia.DreCodigo, filtroOcorrencia.UeCodigo));
 
             var ueCodigoConvertido = Convert.ToInt64(dadosDreUe.UeCodigo);
 
