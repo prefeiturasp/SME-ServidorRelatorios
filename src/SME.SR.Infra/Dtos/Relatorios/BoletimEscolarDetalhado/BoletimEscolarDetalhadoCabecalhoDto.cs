@@ -12,5 +12,6 @@
         public string FrequenciaGlobal { get; set; }
         public string Ciclo { get; set; }
         public int AnoLetivo { get; set; }
+        public string NomeAluno { get; set; }
     }
 }
