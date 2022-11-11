@@ -35,7 +35,7 @@ namespace SME.SR.Application
                 var relatorioPlanoAee = new RelatorioPlanoAeeDto();
 
                 ObterCabecalho(planoAee, relatorioPlanoAee);
-                await ObterCadastro(planoAee, relatorioPlanoAee);
+                await ObterCadastro(planoAee, relatorioPlanoAee,versaoPlanoId);
                 ObterParecer(planoAee, relatorioPlanoAee); 
                 
                 relatoriosPlanoAee.Add(relatorioPlanoAee);
@@ -56,11 +56,11 @@ namespace SME.SR.Application
             relatorioPlanoAee.Cabecalho.VersaoPlano = $"v{planoAee.VersaoPlano} - {planoAee.DataVersaoPlano:dd/MM/yyyy}";
         }
 
-        private async Task ObterCadastro(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee)
+        private async Task ObterCadastro(PlanoAeeDto planoAee, RelatorioPlanoAeeDto relatorioPlanoAee, long versaoPlanoId)
         {
             relatorioPlanoAee.Cadastro.Responsavel = $"{planoAee.ResponsavelNome} ({planoAee.ResponsavelLoginRf})";
 
-            var questoes = await mediator.Send(new ObterQuestoesPlanoAEEPorVersaoPlanoIdQuery(planoAee.VersaoPlano));
+            var questoes = await mediator.Send(new ObterQuestoesPlanoAEEPorVersaoPlanoIdQuery(versaoPlanoId));
 
             var questoesRelatorio = new List<QuestaoPlanoAeeDto>();
 
