@@ -5,9 +5,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
-using System;
 using System.Threading.Tasks;
-
 
 namespace SME.SR.Workers.SGP.Controllers
 {
@@ -330,6 +328,14 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
+        
+        [HttpGet("relatorios/planoaee")]
+        [Action("relatorios/planoaee", typeof(IRelatorioPlanoAeeUseCase))]
+        public async Task<bool> RelatorioPlanoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAeeUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }        
 
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]

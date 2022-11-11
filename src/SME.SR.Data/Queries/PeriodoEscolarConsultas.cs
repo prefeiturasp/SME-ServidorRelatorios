@@ -29,6 +29,10 @@ namespace SME.SR.Data
             query.AppendLine("limit 1");
 
             return query.ToString();
-        } 
+        }
+
+        internal const string ObterPorId = @"select id, bimestre, periodo_fim PeriodoFim, 
+                                                    periodo_inicio PeriodoInicio
+                                                from periodo_escolar where id = @idPeriodoEscolar ";
     }
 }
