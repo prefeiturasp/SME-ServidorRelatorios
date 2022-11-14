@@ -34,6 +34,7 @@ namespace SME.SR.Data
 										t.nome as turmanome,
 										t.ano_letivo as anoletivo,
 										t.modalidade_codigo as modalidade,
+										u.ue_id as uecodigo,
 										u.nome as uenome,
 										u.tipo_escola as tipoescola,
 										d.nome as drenome,

@@ -20,6 +20,7 @@ namespace SME.SR.Infra
         public string TurmaNome { get; set; }
         public int AnoLetivo { get; set; }
         public Modalidade Modalidade { get; set; }
+        public string UeCodigo { get; set; }
         public string UeNome { get; set; }
         public TipoEscola TipoEscola { get; set; }
         public string DreNome { get; set; }
