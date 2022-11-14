@@ -51,8 +51,8 @@ namespace SME.SR.Application
             relatorioPlanoAee.Cabecalho.AnoLetivo = planoAee.AnoLetivo;
             relatorioPlanoAee.Cabecalho.DreNome = planoAee.DreAbreviacao;
             relatorioPlanoAee.Cabecalho.SituacaoPlano = planoAee.SituacaoPlano.Name();
-            relatorioPlanoAee.Cabecalho.TurmaNome = $"{planoAee.Modalidade.ShortName()} {planoAee.TurmaNome}";
-            relatorioPlanoAee.Cabecalho.UeNome = $"{planoAee.TipoEscola.ShortName()} {planoAee.UeNome}";
+            relatorioPlanoAee.Cabecalho.TurmaNome = $"{planoAee.Modalidade.ShortName()} - {planoAee.TurmaNome}";
+            relatorioPlanoAee.Cabecalho.UeNome = $"{planoAee.UeCodigo} - {planoAee.TipoEscola.ShortName()} {planoAee.UeNome}";
             relatorioPlanoAee.Cabecalho.VersaoPlano = $"v{planoAee.VersaoPlano} - {planoAee.DataVersaoPlano:dd/MM/yyyy}";
         }
 
