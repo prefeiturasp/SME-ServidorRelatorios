@@ -100,13 +100,15 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         private async Task CarreguePaginasSemExibicaoDeRecomendacao(BoletimEscolarDetalhadoDto boletimDto, Modalidade modalidade)
         {
             var boletinsPorPagina = ObterBoletinsPorPagina(boletimDto, modalidade);
+            var iNumPagina = 1;
 
             foreach (var pagina in boletinsPorPagina)
             {
                 var html = await htmlHelper.RenderRazorViewToString("RelatorioBoletimEscolarDetalhadoLista", pagina);
 
                 html = ObterHtmlComLogo(html);
-                paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(html, 1, 1));
+                paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(html, iNumPagina, boletinsPorPagina.Count));
+                iNumPagina++;
             }
         }
 
