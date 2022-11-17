@@ -1,5 +1,6 @@
 ﻿@model SME.SR.Infra.RelatorioControlePlanejamentoDiarioDto
 @using SME.SR.Infra.Utilitarios;
+@using System.Globalization
 
 @{
     int contadorQuebrarPagina = 0;
@@ -625,7 +626,7 @@
                             {
                                 var dataAulaAnterior = string.Empty;
 
-                                foreach (var componente in bimestre.Planejamento.OrderByDescending(o => DateTime.Parse(o.DataAula, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"))))
+                                foreach (var componente in bimestre.Planejamento.OrderByDescending(o => DateTime.Parse(o.DataAula, CultureInfo.CreateSpecificCulture("pt-BR"))))
                                 {
                                     var quebra = VerificaQuebra();
                                     @Html.Raw(quebra)
