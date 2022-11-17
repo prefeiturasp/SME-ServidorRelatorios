@@ -64,20 +64,25 @@
     
     void MontarQuestaoFrequencia(QuestaoPlanoAeeDto questao)
     {
-        MontarTituloPadrao(questao.Questao);
-        <tr>
-            <td class="fundo-cinza width-33 negrito espacamento10">Dia da semana</td>
-            <td class="fundo-cinza width-33 negrito espacamento10">Horário de início</td>
-            <td class="fundo-cinza width-34 negrito espacamento10">Horário de término</td>
-        </tr>
         
-        foreach (var diaHorario in questao.FrequenciaAluno)
+        if (questao.FrequenciaAluno.Any())
         {
+            MontarTituloPadrao(questao.Questao);
+            
             <tr>
-                <td class="espacamento10">@diaHorario.DiaDaSemana</td>
-                <td class="espacamento10">@diaHorario.Inicio</td>
-                <td class="espacamento10">@diaHorario.Termino</td>
-            </tr>       
+                <td class="fundo-cinza width-33 negrito espacamento10">Dia da semana</td>
+                <td class="fundo-cinza width-33 negrito espacamento10">Horário de início</td>
+                <td class="fundo-cinza width-34 negrito espacamento10">Horário de término</td>
+            </tr>
+        
+            foreach (var diaHorario in questao.FrequenciaAluno)
+            {
+                <tr>
+                    <td class="espacamento10">@diaHorario.DiaDaSemana</td>
+                    <td class="espacamento10">@diaHorario.Inicio</td>
+                    <td class="espacamento10">@diaHorario.Termino</td>
+                </tr>       
+            }            
         }
     }
     
