@@ -485,7 +485,7 @@ namespace SME.SR.Application
 
                             if (possuiConselho)
                             {
-                                var notaConceito = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                var notaConceito = notasFinais.OrderByDescending(n=> n.NotaConceito).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                         && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                         && c.Bimestre == bimestre);
 
@@ -546,8 +546,9 @@ namespace SME.SR.Application
                                         "100"
                                         :
                                         frequenciaAluno != null && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo)
-                                        ?
-                                        frequenciaAluno.PercentualFrequencia.ToString()
+                                        ? 
+                                        frequenciaAluno.PercentualFrequencia > 0 ?
+                                        frequenciaAluno.PercentualFrequencia.ToString() : "0"
                                         :
                                         "";
                         }
