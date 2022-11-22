@@ -134,6 +134,7 @@ namespace SME.SR.Application
                     ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
+                    NotaId = nf.NotaConceito.NotaId,
                     Sintese = nf.NotaConceito.Sintese,
                     ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
                     CodigoTurma = nf.CodigoTurma
@@ -497,11 +498,11 @@ namespace SME.SR.Application
                                 else
                                 {
                                     notaConceito = tipoNota.TipoNota == TipoNota.Nota
-                                        ? notasFinais.OrderByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                        ? notasFinais.OrderByDescending(n => n.ConselhoClasseAlunoId).ThenByDescending(n=> n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                              && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                              && c.Bimestre == bimestre)
                                         : tipoNota.TipoNota == TipoNota.Conceito
-                                            ? notasFinais.OrderByDescending(n => n.ConceitoId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                            ? notasFinais.OrderByDescending(n => n.ConselhoClasseAlunoId).ThenByDescending(n => n.ConceitoId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                              && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                              && c.Bimestre == bimestre)
                                             : RetornaValorPadraoNotaAtaFinal(notasFinais, aluno, componente, bimestre);
