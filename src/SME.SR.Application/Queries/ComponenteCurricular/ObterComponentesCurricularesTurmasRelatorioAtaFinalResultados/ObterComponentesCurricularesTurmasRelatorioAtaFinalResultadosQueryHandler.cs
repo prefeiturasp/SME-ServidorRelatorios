@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +69,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     Regencia = c.EhRegencia(componentes),
                     TerritorioSaber = c.TerritorioSaber,
                     TipoEscola = c.TipoEscola,
-                });
+                }).DistinctBy(c => c.Disciplina);
 
                 if (componentesMapeados.Any(c => c.Regencia))
                 {
