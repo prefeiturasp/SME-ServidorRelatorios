@@ -626,11 +626,10 @@
                             {
                                 var dataAulaAnterior = string.Empty;
 
-                                foreach (var componente in bimestre.Planejamento.OrderByDescending(o => DateTime.Parse(o.DataAula, CultureInfo.CreateSpecificCulture("pt-BR"))))
-                                {
-                                    var quebra = VerificaQuebra();
-                                    @Html.Raw(quebra)
-                                    ;
+                            foreach (var componente in bimestre.Planejamento.OrderByDescending(o => DateTime.Parse(o.DataAula, CultureInfo.CreateSpecificCulture("pt-BR"))))
+                            {
+                                var quebra = VerificaQuebra();
+                                @Html.Raw(quebra);
 
                                     var countComponente = contadorQuebrarPagina + 4;
                                     if (countComponente >= contadorMaximoLinhasPorPagina)
