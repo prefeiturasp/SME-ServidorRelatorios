@@ -421,6 +421,8 @@ namespace SME.SR.Application
                                                                                   double compensacaoAusenciaPercentualFund2 = 0)
         {
             List<ConselhoClasseAtaFinalLinhaDto> linhas = new List<ConselhoClasseAtaFinalLinhaDto>();
+            var tipoNota = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, turma.AnoLetivo));
+
             var alunosCodigos = alunos.Select(a => a.CodigoAluno.ToString()).ToArray();
             var turmaComplementar = await ObterTurmasComplementares(alunosCodigos,turma);
             for (var i = 0; i < alunos.Count(); i++)
@@ -488,9 +490,22 @@ namespace SME.SR.Application
 
                             if (possuiConselho)
                             {
-                                var notaConceito = notasFinais.OrderByDescending(n=> n.NotaConceito).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                                        && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                        && c.Bimestre == bimestre);
+                                var notaConceito = new NotaConceitoBimestreComponente();
+
+                                if (tipoNota == null)
+                                    notaConceito = RetornaValorPadraoNotaAtaFinal(notasFinais, aluno, componente, bimestre);
+                                else
+                                {
+                                    notaConceito = tipoNota.TipoNota == TipoNota.Nota
+                                        ? notasFinais.OrderByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                                             && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                                             && c.Bimestre == bimestre)
+                                        : tipoNota.TipoNota == TipoNota.Conceito
+                                            ? notasFinais.OrderByDescending(n => n.ConceitoId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                                             && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                                             && c.Bimestre == bimestre)
+                                            : RetornaValorPadraoNotaAtaFinal(notasFinais, aluno, componente, bimestre);
+                                }                                       
 
                                 if (turmaComplementar != null && turmaComplementar.EhEja && turmaComplementar.RegularCodigo != null && componente.CodDisciplina == 6)
                                     ConverterNotaAlunoNumerica(notaConceito);
@@ -629,6 +644,12 @@ namespace SME.SR.Application
                     notasAluno.Conceito = "NS";
                 }
         }
+
+        private NotaConceitoBimestreComponente RetornaValorPadraoNotaAtaFinal(IEnumerable<NotaConceitoBimestreComponente> notasFinais, AlunoSituacaoAtaFinalDto aluno, 
+                                                                                ComponenteCurricularPorTurma componente, int bimestre)
+            => notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                                            && c.Bimestre == bimestre);
 
         private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, 
             IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, ConselhoClasseAtaFinalLinhaDto linhaDto, 
