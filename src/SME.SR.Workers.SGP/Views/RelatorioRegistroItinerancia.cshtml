@@ -358,7 +358,7 @@
                             @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasAS))
                             @Html.Raw(MontarSecoes("ACOMPANHAMENTO DA SITUAÇÃO", acompanhamentoSituacao))
 
-                            @{ int numeroLinhasEncaminhamentos = CalcularLinhas(encaminhamentos.Length); }
+                            @{ int numeroLinhasEncaminhamentos = CalcularLinhas(!string.IsNullOrEmpty(encaminhamentos) ? encaminhamentos.Length : 0); }
                             @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasEncaminhamentos))
                             @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", encaminhamentos))
 
