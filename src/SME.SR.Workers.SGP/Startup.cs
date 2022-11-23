@@ -74,7 +74,7 @@ namespace SME.SR.Workers.SGP
                .AddPostgres(Configuration)
                .AddRabbitMQ(Configuration)
                .AddRabbitMQLog(Configuration);
-            //services.AddHealthChecksUI();
+            services.AddHealthChecksUI();
         }
 
 
@@ -148,7 +148,7 @@ namespace SME.SR.Workers.SGP
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
-            //app.UseHealthChecksUI();
+            app.UseHealthChecksUI();
         }
     }
 }
