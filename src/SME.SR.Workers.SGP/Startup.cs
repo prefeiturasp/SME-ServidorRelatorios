@@ -75,9 +75,13 @@ namespace SME.SR.Workers.SGP
                .AddPostgresConsultas(Configuration)
                .AddRabbitMQ(Configuration)
                .AddRabbitMQLog(Configuration);
-            services.AddHealthChecksUI();
+            services.AddHealthChecksUI("healthchecksdb", options =>
+            {
+                options.SetEvaluationTimeInSeconds(5);
+                options.AddHealthCheckEndpoint("Health-API Indicadores", "/healthz");
+            });
         }
-
+        
 
         private void ConfiguraRabbitParaLogs(IServiceCollection services)
         {
