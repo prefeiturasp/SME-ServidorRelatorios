@@ -122,6 +122,14 @@
     string MontarDadosTabela(List<SME.SR.Infra.AlunosAlteracaoNotasDto> alunosAlteracaoNotas, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
     {
         var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
+        
+        alunosAlteracaoNotas.Sort((x, y) =>
+        {
+            var ret = x.Nome.CompareTo(y.Nome);
+            if (ret == 0) ret = DateTime.Parse(x.DataAlteracao).CompareTo(DateTime.Parse(y.DataAlteracao));
+            return ret;
+        });
+
         for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
         {
             var aluno = alunosAlteracaoNotas[i];
