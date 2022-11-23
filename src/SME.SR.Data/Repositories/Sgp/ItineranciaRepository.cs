@@ -96,7 +96,6 @@ namespace SME.SR.Data.Interfaces
                           from itinerancia_questao iq 
                          inner join questao q on q.id = iq.questao_id 
                          where not iq.excluido 
-                           and q.tipo not in(6)
                            and iq.itinerancia_id = ANY(@ids)";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
