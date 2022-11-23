@@ -1,21 +1,31 @@
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
+using HealthChecks.UI.Client;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.IoC;
 using SME.SR.Workers.SGP.Filters;
 using SME.SR.Workers.SGP.Middlewares;
 using SME.SR.Workers.SGP.Services;
+using System;
 using System.Linq;
+using System.Net.Mime;
+using System.Text.Json;
+using System.Web;
 
 namespace SME.SR.Workers.SGP
 {
@@ -58,7 +68,15 @@ namespace SME.SR.Workers.SGP
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SME - Servidor de relatórios", Version = "v1" });
                 c.OperationFilter<FiltroIntegracao>();
             });
+
+
+            services.AddHealthChecks()
+               .AddPostgres(Configuration)
+               .AddRabbitMQ(Configuration)
+               .AddRabbitMQLog(Configuration);
+            //services.AddHealthChecksUI();
         }
+
 
         private void ConfiguraRabbitParaLogs(IServiceCollection services)
         {
@@ -124,6 +142,13 @@ namespace SME.SR.Workers.SGP
             });
 
             app.UsePathBase("/worker-relatorios");
+
+            app.UseHealthChecks("/healthz", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            //app.UseHealthChecksUI();
         }
     }
 }
