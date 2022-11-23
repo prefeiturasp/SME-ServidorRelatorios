@@ -72,6 +72,7 @@ namespace SME.SR.Workers.SGP
 
             services.AddHealthChecks()
                .AddPostgres(Configuration)
+               .AddPostgresConsultas(Configuration)
                .AddRabbitMQ(Configuration)
                .AddRabbitMQLog(Configuration);
             services.AddHealthChecksUI();

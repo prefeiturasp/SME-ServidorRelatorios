@@ -22,7 +22,7 @@ namespace SME.SR.Infra.Extensions
 
             string connectionString = $"amqp://{userName}:{password}@{hostName}/{vHost}";
             return builder.AddRabbitMQ(connectionString,
-            name: "RabbitMQLog",
+            name: "RabbitMQ Log",
             failureStatus: HealthStatus.Unhealthy);
         }
 
