@@ -14,30 +14,26 @@ namespace SME.SR.Infra.Extensions
 
         public static IHealthChecksBuilder AddRabbitMQLog(this IHealthChecksBuilder builder, IConfiguration configuration)
         {
-            var configurationSection = "ConfiguracaoRabbitLog";
-            var userName = HttpUtility.UrlEncode(configuration.GetSection(configurationSection + ":Username").Value);
-            var password = HttpUtility.UrlEncode(configuration.GetSection(configurationSection + ":Password").Value);
-            var hostName = configuration.GetSection(configurationSection+":Hostname").Value;
-            var vHost = HttpUtility.UrlEncode(configuration.GetSection(configurationSection+":Virtualhost").Value);
-
-            string connectionString = $"amqp://{userName}:{password}@{hostName}/{vHost}";
-            return builder.AddRabbitMQ(connectionString,
-            name: "RabbitMQ Log",
-            failureStatus: HealthStatus.Unhealthy);
+            return builder.AddRabbitMQ(ObterStringConexao(configuration, "ConfiguracaoRabbitLog"),
+                                       name: "RabbitMQ Log",
+                                       failureStatus: HealthStatus.Unhealthy);
         }
 
         public static IHealthChecksBuilder AddRabbitMQ(this IHealthChecksBuilder builder, IConfiguration configuration)
         {
-            var configurationSection = "ConfiguracaoRabbit";
-            var userName = HttpUtility.UrlEncode(configuration.GetSection(configurationSection + ":Username").Value);
-            var password = HttpUtility.UrlEncode(configuration.GetSection(configurationSection + ":Password").Value);
-            var hostName = configuration.GetSection(configurationSection + ":Hostname").Value;
-            var vHost = HttpUtility.UrlEncode(configuration.GetSection(configurationSection + ":Virtualhost").Value);
+            return builder.AddRabbitMQ(ObterStringConexao(configuration, "ConfiguracaoRabbit"),
+                                       name: "RabbitMQ",
+                                       failureStatus: HealthStatus.Unhealthy);
+        }
 
-            string connectionString = $"amqp://{userName}:{password}@{hostName}/{vHost}";
-            return builder.AddRabbitMQ(connectionString,
-            name: "RabbitMQ",
-            failureStatus: HealthStatus.Unhealthy);
+        private static string ObterStringConexao(IConfiguration configuration, string configSection)
+        {
+            var userName = HttpUtility.UrlEncode(configuration.GetSection(configSection + ":Username").Value);
+            var password = HttpUtility.UrlEncode(configuration.GetSection(configSection + ":Password").Value);
+            var hostName = configuration.GetSection(configSection + ":Hostname").Value;
+            var vHost = HttpUtility.UrlEncode(configuration.GetSection(configSection + ":Virtualhost").Value);
+
+            return $"amqp://{userName}:{password}@{hostName}/{vHost}";
         }
 
     }
