@@ -70,16 +70,7 @@ namespace SME.SR.Workers.SGP
             });
 
 
-            services.AddHealthChecks()
-               .AddPostgres(Configuration)
-               .AddPostgresConsultas(Configuration)
-               .AddRabbitMQ(Configuration)
-               .AddRabbitMQLog(Configuration);
-            services.AddHealthChecksUI("healthchecksdb", options =>
-            {
-                options.SetEvaluationTimeInSeconds(5);
-                options.AddHealthCheckEndpoint("Health-API Indicadores", "/healthz");
-            });
+            services.AddHealthChecksGen(Configuration);
         }
         
 
@@ -148,12 +139,7 @@ namespace SME.SR.Workers.SGP
 
             app.UsePathBase("/worker-relatorios");
 
-            app.UseHealthChecks("/healthz", new HealthCheckOptions()
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-            app.UseHealthChecksUI();
+            app.UseHealthChecksGen();
         }
     }
 }
