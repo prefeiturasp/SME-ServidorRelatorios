@@ -7,6 +7,6 @@ namespace SME.SR.Data.Interfaces
     public interface IFechamentoNotaRepository
     {
         Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasAlunoBimestre(long fechamentoTurmaId, string codigoAluno);
-        Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId, long tipocalendarioId);
+        Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId, long tipocalendarioId, int[] bimestres, long[] componentes);
     }
 }
