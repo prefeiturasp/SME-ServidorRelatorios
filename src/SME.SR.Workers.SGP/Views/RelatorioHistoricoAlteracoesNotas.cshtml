@@ -1,4 +1,6 @@
-﻿@model SME.SR.Infra.RelatorioAlteracaoNotasDto
+﻿@using System.Globalization
+
+@model SME.SR.Infra.RelatorioAlteracaoNotasDto
 
 @{
 
@@ -126,7 +128,7 @@
         alunosAlteracaoNotas.Sort((x, y) =>
         {
             var ret = x.Nome.CompareTo(y.Nome);
-            if (ret == 0) ret = DateTime.Parse(x.DataAlteracao).CompareTo(DateTime.Parse(y.DataAlteracao));
+            if (ret == 0) ret = DateTime.Parse(x.DataAlteracao, CultureInfo.CreateSpecificCulture("pt-BR")).CompareTo(DateTime.Parse(y.DataAlteracao, CultureInfo.CreateSpecificCulture("pt-BR")));
             return ret;
         });
 
