@@ -145,7 +145,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
                                 {
-                                    var turmaAlunos = turmas.FirstOrDefault(a => a.Codigo == alunosSemFrequenciaNaTurma.FirstOrDefault().TurmaCodigo);
+                                    var turmaAlunos = await mediator.Send(new ObterTurmaPorCodigoQuery(alunosSemFrequenciaNaTurma.FirstOrDefault().TurmaCodigo));
                                     var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFrequenciaAlunoDto
                                     {
                                         CodigoAluno = c.CodigoAluno,
@@ -187,37 +187,42 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         final.Componentes.Add(componenteAtual);
                                     }
 
-                                    for (int a = 0; a < componente.Alunos.Count; a++)
+                                    if (componente.Alunos.Any())
                                     {
-                                        var aluno = componente.Alunos[a];
-                                        var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
-                                        var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorFiltroQuery(aluno.CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
+                                        var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorFiltroQuery(componente.Alunos.FirstOrDefault().CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
 
-                                        if (frequencias != null && frequencias.Any())
-                                            frequenciaAluno = frequencias.Where(f => f.AlunoCodigo == aluno.CodigoAluno.ToString()).ToList();
-
-                                        var totalPresenca = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
-                                        var totalRemoto = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
-
-                                        var codigoAluno = aluno.CodigoAluno;
-                                        var alunoAtual = componenteAtual.Alunos.FirstOrDefault(c => c.CodigoAluno == codigoAluno);
-                                        if (alunoAtual == null)
+                                        for (int a = 0; a < componente.Alunos.Count; a++)
                                         {
-                                            alunoAtual = new RelatorioFrequenciaAlunoDto();
-                                            alunoAtual.CodigoAluno = aluno.CodigoAluno;
+                                            var aluno = componente.Alunos[a];
+                                            var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
+
+                                            if (frequencias != null && frequencias.Any())
+                                                frequenciaAluno = frequencias.Where(f => f.AlunoCodigo == aluno.CodigoAluno.ToString()).ToList();
+
+                                            var totalPresenca = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
+                                            var totalRemoto = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
+
+                                            var codigoAluno = aluno.CodigoAluno;
+                                            var alunoAtual = componenteAtual.Alunos.FirstOrDefault(c => c.CodigoAluno == codigoAluno);
+                                            if (alunoAtual == null)
+                                            {
+                                                alunoAtual = new RelatorioFrequenciaAlunoDto();
+                                                alunoAtual.CodigoAluno = aluno.CodigoAluno;
+                                                alunoAtual.NomeAluno = aluno.NomeAluno;
+                                                alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
+                                                componenteAtual.Alunos.Add(alunoAtual);
+                                            }
+                                            alunoAtual.TotalAulas += aluno.TotalAulas;
+                                            alunoAtual.TotalAusencias += aluno.TotalAusencias;
+                                            alunoAtual.TotalCompensacoes += aluno.TotalCompensacoes;
                                             alunoAtual.NomeAluno = aluno.NomeAluno;
+                                            alunoAtual.NomeTurma = aluno.NomeTurma;
                                             alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
-                                            componenteAtual.Alunos.Add(alunoAtual);
+                                            alunoAtual.TotalPresenca = aluno.TotalPresenca;
+                                            alunoAtual.TotalRemoto = aluno.TotalRemoto;
                                         }
-                                        alunoAtual.TotalAulas += aluno.TotalAulas;
-                                        alunoAtual.TotalAusencias += aluno.TotalAusencias;
-                                        alunoAtual.TotalCompensacoes += aluno.TotalCompensacoes;
-                                        alunoAtual.NomeAluno = aluno.NomeAluno;
-                                        alunoAtual.NomeTurma = aluno.NomeTurma;
-                                        alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
-                                        alunoAtual.TotalPresenca = aluno.TotalPresenca; 
-                                        alunoAtual.TotalRemoto = aluno.TotalRemoto; 
                                     }
+                                    
                                 }
                             }
                             ano.Bimestres.Add(final);
