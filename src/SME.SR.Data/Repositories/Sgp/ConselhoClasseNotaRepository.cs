@@ -325,9 +325,9 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<RetornoNotaConceitoBimestreComponenteDto>(query.ToString(), new { bimestres, dresCodigos, uesCodigos, semestre, modalidade, anos, anoLetivo, componentesCurricularesCodigos });
         }
 
-        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(long turmaId, long tipocalendarioId)
+        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(long turmaId, long tipocalendarioId, int[] bimestres, long[] componentes)
         {
-            var query = @"select cca.aluno_codigo as codigoAluno,
+            var query = new StringBuilder(@$"select distinct cca.aluno_codigo as codigoAluno,
                                  hn.nota_anterior as notaAnterior,
                                  hn.nota_nova as notaAtribuida,
                                  hn.conceito_anterior_id as conceitoAnteriorId,
@@ -347,15 +347,26 @@ namespace SME.SR.Data
                              inner join conselho_classe cc on cca.conselho_classe_id = cc.id 
                              inner join fechamento_turma ft on cc.fechamento_turma_id = ft.id
                              inner join fechamento_turma_disciplina ftd on ft.id = ftd.fechamento_turma_id 
-                             inner join periodo_escolar pe on ft.periodo_escolar_id = pe.id
+                             left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
                              inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id 
                              left join wf_aprovacao_nota_conselho wanc on wanc.conselho_classe_nota_id  = ccn.id
-                             where ft.turma_id = @turmaId
-                               and pe.tipo_calendario_id = @tipocalendarioId";
+                             where ft.turma_id = @turmaId");
+
+            if (bimestres.Contains(0))
+                query.AppendLine(@" and ft.periodo_escolar_id is null ");
+
+            if (bimestres.Contains(-99))
+                query.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY('{1,2,3,4}') ");
+
+            if (!bimestres.Contains(-99) && !bimestres.Contains(0))
+                query.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY(@bimestres) ");
+
+            if (componentes.Length > 0)
+                query.AppendLine(@" and ftd.disciplina_id = ANY(@componentes)");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query, new { turmaId, tipocalendarioId });
+                return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query.ToString(), new { turmaId, tipocalendarioId, bimestres, componentes });
             }
         }
     }
