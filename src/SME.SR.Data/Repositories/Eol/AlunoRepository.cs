@@ -327,10 +327,12 @@ namespace SME.SR.Data
 										ON se.cd_etapa_ensino = ee.cd_etapa_ensino
 										INNER JOIN v_cadastro_unidade_educacao ue
 										ON te.cd_escola = ue.cd_unidade_educacao
+										INNER JOIN alunos_matriculas_norm aln 
+										ON aln.CodigoAluno = m.cd_aluno
 										WHERE te.an_letivo = @anoLetivo AND
 										te.cd_tipo_turma = 1 AND
 										mte.cd_situacao_aluno in (1, 6, 10, 13, 5) AND
-										mte.dt_situacao_aluno < @dataFim AND
+										(mte.dt_situacao_aluno < @dataFim or (aln.DataMatricula < @dataFim and aln.AnoLetivo = @anoLetivo)) AND
 										se.sg_resumida_serie = @anoTurma AND
 										ee.cd_etapa_ensino in (@modalidades)
 										{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
