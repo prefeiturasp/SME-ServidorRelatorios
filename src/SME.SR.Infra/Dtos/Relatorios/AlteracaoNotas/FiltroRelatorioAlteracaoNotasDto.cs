@@ -12,8 +12,8 @@ namespace SME.SR.Infra
         public Modalidade ModalidadeTurma { get; set; }
         public int Semestre { get; set; }
         public IEnumerable<long> Turma { get; set; }
-        public IEnumerable<long> ComponentesCurriculares { get; set; }
-        public IEnumerable<int> Bimestres { get; set; }
+        public long[] ComponentesCurriculares { get; set; }
+        public int[] Bimestres { get; set; }
         public TipoAlteracaoNota TipoAlteracaoNota { get; set; }
         public string NomeUsuario { get; set; }
     }

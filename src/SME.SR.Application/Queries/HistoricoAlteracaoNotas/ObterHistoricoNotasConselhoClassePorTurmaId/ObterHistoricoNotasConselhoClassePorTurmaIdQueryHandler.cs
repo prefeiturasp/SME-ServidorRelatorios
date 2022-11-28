@@ -18,6 +18,6 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> Handle(ObterHistoricoNotasConselhoClassePorTurmaIdQuery request, CancellationToken cancellationToken)
-                => await conselhoClasseNotaRepository.ObterHistoricoAlteracaoNotasConselhoClasse(request.TurmaId, request.TipoCalendarioId);
+                => await conselhoClasseNotaRepository.ObterHistoricoAlteracaoNotasConselhoClasse(request.TurmaId, request.TipoCalendarioId, request.Bimestres, request.Componentes);
     }
 }
