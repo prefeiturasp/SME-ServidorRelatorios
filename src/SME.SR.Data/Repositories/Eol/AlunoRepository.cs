@@ -63,9 +63,9 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo
-					and (matr.st_matricula in (1, 6, 10, 13, 5)
-					or (matr.st_matricula not in (1, 6, 10, 13, 5)
-					and matr.dt_status_matricula > @dataReferencia))
+					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+					and mte.dt_situacao_aluno > @dataReferencia))
 				UNION
 				SELECT
 					aluno.cd_aluno CodigoAluno,
