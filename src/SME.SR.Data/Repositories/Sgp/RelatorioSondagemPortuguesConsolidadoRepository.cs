@@ -16,7 +16,7 @@ namespace SME.SR.Data.Repositories.Sgp
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, GrupoSondagemEnum grupo)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, GrupoSondagemEnum grupo, string periodoId)
         {
             var queryRelatorio = @"
                                    select
@@ -79,8 +79,8 @@ namespace SME.SR.Data.Repositories.Sgp
             if (ueCodigo != null && ueCodigo != String.Empty)
                 queryRelatorio +=@" and ""CodigoUe"" =  @ueCodigo";
 
-            queryRelatorio +=@"
-                                            AND per.""Descricao"" = @periodo
+            queryRelatorio += @"
+                                            AND s.""PeriodoId"" = @periodoId
                                    			and s.""AnoLetivo"" = @anoLetivo
                                    			and s.""AnoTurma"" = @anoTurma
                                    		        ) ) as tabela on
@@ -106,9 +106,7 @@ namespace SME.SR.Data.Repositories.Sgp
 
             var componenteCurricularId = ComponenteCurricularSondagemEnum.Portugues.Name();
 
-            var periodo = $"{ bimestre }° Bimestre";
-
-            var parametros = new { grupoId = grupo.Name(), componenteCurricularId, periodo, dreCodigo, ueCodigo, anoLetivo, anoTurma };
+            var parametros = new { grupoId = grupo.Name(), componenteCurricularId, periodoId, dreCodigo, ueCodigo, anoLetivo, anoTurma };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
