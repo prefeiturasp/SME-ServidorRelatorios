@@ -92,33 +92,6 @@ namespace SME.SR.Application
                     return;
             }
         }
-
-        Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
-        }
-
         private string RedimencionarImagem(Bitmap imagem, float escalaHorizontal, float escalaVertical)
         {
             var escalaH = escalaHorizontal / imagem.Width;
@@ -143,16 +116,5 @@ namespace SME.SR.Application
             return Convert.ToBase64String(arquivoConvertido);
         }
 
-        //public Bitmap ReduzirTamanhoImagem(Bitmap imagem)
-        //{
-        //    if (imagem.Size.Width > 2000 || imagem.Size.Height > 2000)
-        //    {
-        //        var tamanhoASerReduzidoAltura = (int)(imagem.Size.Height - (0.8 * imagem.Size.Height));
-        //        var tamanhoASerReduzidoLargura = (int)(imagem.Size.Width - (0.8 * imagem.Size.Width));
-        //        imagem = ResizeImage(imagem, tamanhoASerReduzidoLargura, tamanhoASerReduzidoAltura);
-
-        //    }
-        //    return imagem;
-        //}
     }
 }
