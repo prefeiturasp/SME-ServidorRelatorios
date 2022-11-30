@@ -2,6 +2,7 @@
 using SME.SR.Infra;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -25,34 +26,27 @@ namespace SME.SR.Application
 
             using (var client = new WebClient())
             {
-                try
+                var arquivo = client.DownloadData(new Uri(request.Url));
+
+                using (var memoryStream = new MemoryStream(arquivo))
                 {
-                    var arquivo = client.DownloadData(new Uri(request.Url));
+                    var imagem = new Bitmap(memoryStream);
 
-                    using (var memoryStream = new MemoryStream(arquivo))
-                    {
-                        var imagem = new Bitmap(memoryStream);
-                        var rawFormat = imagem.RawFormat;
+                    var rawFormat = imagem.RawFormat;
 
-                        FixImageOrientation(imagem);
-                        var format = imagem.RawFormat;
+                    if(imagem.Size.Width > 2000 || imagem.Size.Height > 2000)
+                        imagem.RotateFlip(RotateFlipType.Rotate90FlipX);
 
-                        var codecs = ImageCodecInfo
-                            .GetImageDecoders();
+                    var format = imagem.RawFormat;
 
-                        string mimeType = codecs.FirstOrDefault(c=> c.FormatID == rawFormat.Guid).MimeType;
-                        var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal,request.EscalaVertical);
-                        await mediator.Send(new SalvarLogViaRabbitCommand($"Formato da imagem ao mudar orientação", LogNivel.Informacao, imagem.RawFormat.ToString()));
-                        await mediator.Send(new SalvarLogViaRabbitCommand($"Altura da imagem ao mudar orientação", LogNivel.Informacao, imagem.Height.ToString()));
-                        await mediator.Send(new SalvarLogViaRabbitCommand($"Largura da imagem ao mudar orientação", LogNivel.Informacao, imagem.Height.ToString()));
+                    var codecs = ImageCodecInfo
+                        .GetImageDecoders();
 
-                        return $"data:{mimeType};base64,{imagemBase64}";
-                    }
+                    string mimeType = codecs.FirstOrDefault(c => c.FormatID == rawFormat.Guid).MimeType;
+                    var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal, request.EscalaVertical);
+
+                    return $"data:{mimeType};base64,{imagemBase64}";
                 }
-                catch (Exception e)
-                {
-                    return "";
-                }            
             }
         }
 
@@ -99,6 +93,32 @@ namespace SME.SR.Application
             }
         }
 
+        Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
+
         private string RedimencionarImagem(Bitmap imagem, float escalaHorizontal, float escalaVertical)
         {
             var escalaH = escalaHorizontal / imagem.Width;
@@ -122,5 +142,17 @@ namespace SME.SR.Application
             var arquivoConvertido = (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
             return Convert.ToBase64String(arquivoConvertido);
         }
+
+        //public Bitmap ReduzirTamanhoImagem(Bitmap imagem)
+        //{
+        //    if (imagem.Size.Width > 2000 || imagem.Size.Height > 2000)
+        //    {
+        //        var tamanhoASerReduzidoAltura = (int)(imagem.Size.Height - (0.8 * imagem.Size.Height));
+        //        var tamanhoASerReduzidoLargura = (int)(imagem.Size.Width - (0.8 * imagem.Size.Width));
+        //        imagem = ResizeImage(imagem, tamanhoASerReduzidoLargura, tamanhoASerReduzidoAltura);
+
+        //    }
+        //    return imagem;
+        //}
     }
 }
