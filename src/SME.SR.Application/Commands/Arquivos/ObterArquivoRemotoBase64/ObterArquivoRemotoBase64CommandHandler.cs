@@ -34,8 +34,7 @@ namespace SME.SR.Application
 
                     var rawFormat = imagem.RawFormat;
 
-                    if(imagem.Size.Width > 2000 || imagem.Size.Height > 2000)
-                        imagem.RotateFlip(RotateFlipType.Rotate90FlipX);
+                    FixImageOrientation(imagem);
 
                     var format = imagem.RawFormat;
 
@@ -57,9 +56,6 @@ namespace SME.SR.Application
             if (!img.PropertyIdList.Contains(ExifOrientationId)) return;
             var prop = img.GetPropertyItem(ExifOrientationId);
             var orient = BitConverter.ToInt16(prop.Value, 0);
-            // Force value to 1
-            prop.Value = BitConverter.GetBytes((short)1);
-            img.SetPropertyItem(prop);
 
             // Rotate/flip image according to <orient>
             switch (orient)
