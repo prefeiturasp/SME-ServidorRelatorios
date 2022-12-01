@@ -577,7 +577,7 @@ namespace SME.SR.Application
                                     ?
                                     "100"
                                     :
-                                    frequenciaAluno.PercentualFrequencia.ToString();
+                                    frequenciaAluno.PercentualFrequenciaFinal.ToString();
                             else
                                 frequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                                         ?
