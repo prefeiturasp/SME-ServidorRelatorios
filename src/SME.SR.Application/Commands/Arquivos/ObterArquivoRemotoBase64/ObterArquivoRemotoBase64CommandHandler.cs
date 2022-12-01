@@ -46,16 +46,15 @@ namespace SME.SR.Application
                 }
             }
         }
-
-        private Image FixImageOrientation(Image img)
+        public Image FixImageOrientation(Image img)
         {
             const int ExifOrientationId = 0x112;
-            // Read orientation tag
             if (!img.PropertyIdList.Contains(ExifOrientationId)) return img;
             var prop = img.GetPropertyItem(ExifOrientationId);
-            var orient = BitConverter.ToInt16(prop.Value, 0);
-
-            // Rotate/flip image according to <orient>
+            if (prop == null || prop.Value?.Length == 0)
+                return img;
+            //Em ambientes não windows, a primeira posição do Array vem zero nas amostras encontradas, então é necessários ignora-los
+            var orient = prop.Value?.ToList().FirstOrDefault(x => x > 0);
             switch (orient)
             {
                 case 1:
@@ -85,7 +84,6 @@ namespace SME.SR.Application
                 default:
                     return img;
             }
-
             return img;
         }
         private string RedimencionarImagem(Bitmap imagem, float escalaHorizontal, float escalaVertical)
