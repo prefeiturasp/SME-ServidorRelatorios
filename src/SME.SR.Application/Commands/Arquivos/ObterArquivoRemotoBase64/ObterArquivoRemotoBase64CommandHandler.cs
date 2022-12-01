@@ -34,9 +34,7 @@ namespace SME.SR.Application
 
                     var rawFormat = imagem.RawFormat;
 
-                    FixImageOrientation(imagem);
-
-                    var format = imagem.RawFormat;
+                    imagem = (Bitmap) FixImageOrientation(imagem);
 
                     var codecs = ImageCodecInfo
                         .GetImageDecoders();
@@ -49,11 +47,11 @@ namespace SME.SR.Application
             }
         }
 
-        static void FixImageOrientation(Image img)
+        private Image FixImageOrientation(Image img)
         {
             const int ExifOrientationId = 0x112;
             // Read orientation tag
-            if (!img.PropertyIdList.Contains(ExifOrientationId)) return;
+            if (!img.PropertyIdList.Contains(ExifOrientationId)) return img;
             var prop = img.GetPropertyItem(ExifOrientationId);
             var orient = BitConverter.ToInt16(prop.Value, 0);
 
@@ -85,8 +83,10 @@ namespace SME.SR.Application
                     img.RotateFlip(RotateFlipType.Rotate270FlipNone);
                     break;
                 default:
-                    return;
+                    return img;
             }
+
+            return img;
         }
         private string RedimencionarImagem(Bitmap imagem, float escalaHorizontal, float escalaVertical)
         {
