@@ -357,13 +357,13 @@ namespace SME.SR.Application
                                     break;
                                 }
                         }
-
-                        respostasDto.Add(new RelatorioSondagemPortuguesPorTurmaRespostaDto()
-                        {
-                            PerguntaId = pergunta.Id,
-                            Resposta = resposta?.Resposta
-                        });
+                        
                     }
+                    respostasDto.Add(new RelatorioSondagemPortuguesPorTurmaRespostaDto()
+                    {
+                        PerguntaId = pergunta.Id,
+                        Resposta = resposta?.Resposta
+                    });
                 }
 
 
