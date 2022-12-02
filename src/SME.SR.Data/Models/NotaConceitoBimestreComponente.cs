@@ -15,5 +15,6 @@ namespace SME.SR.Data
         public long ConselhoClasseAlunoId { get; set; }
         public string CodigoTurma { get; set; }
         public int NotaId { get; set; }
+        public bool Aprovado { get; set; }
     }
 }

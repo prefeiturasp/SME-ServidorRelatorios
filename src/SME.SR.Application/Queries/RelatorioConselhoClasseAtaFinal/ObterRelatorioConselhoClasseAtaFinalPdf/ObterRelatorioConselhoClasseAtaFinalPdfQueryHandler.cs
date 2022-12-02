@@ -137,7 +137,7 @@ namespace SME.SR.Application
                     NotaId = nf.NotaConceito.NotaId,
                     Sintese = nf.NotaConceito.Sintese,
                     ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
-                    CodigoTurma = nf.CodigoTurma
+                    Aprovado = nf.Aprovado
                 }));
             }
 
@@ -176,7 +176,7 @@ namespace SME.SR.Application
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
 
-            var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });
+            var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });            
             if (notas == null || !notas.Any()) return default;
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
@@ -228,7 +228,8 @@ namespace SME.SR.Application
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
                     Sintese = nf.NotaConceito.Sintese,
-                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId
+                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
+                    Aprovado = nf.Aprovado
                 }));
             }
 
@@ -531,26 +532,10 @@ namespace SME.SR.Application
 
                         var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
 
-                        var notaConceitofinal = new NotaConceitoBimestreComponente();
-
-                        if (turmaComplementar != null && turmaComplementar.EhEja && turmaComplementar.RegularCodigo != null && componente.CodDisciplina == 6)
-                        {
-                            notaConceitofinal = notasFinais.FirstOrDefault(c => c.CodigoTurma == turmaComplementar.Codigo
-                                            && c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) 
-                                            && aluno.Ativo);
-                            ConverterNotaAlunoNumerica(notaConceitofinal);
-                        }
-                        else
-                        {
-                            notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
-                                            && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                            && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
-                                            aluno.Ativo);
-
-                        }
-
-
+                        var notaConceitofinal = notasFinais.OrderByDescending(n => n.Aprovado).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                                                && c.ComponenteCurricularCodigo == componente.CodDisciplina
+                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
+                                                aluno.Ativo);
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
