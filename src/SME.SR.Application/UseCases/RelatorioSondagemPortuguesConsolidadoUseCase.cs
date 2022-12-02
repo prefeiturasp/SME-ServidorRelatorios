@@ -33,7 +33,8 @@ namespace SME.SR.Application
                 filtros.AnoLetivo,
                 dataReferencia,
                 Convert.ToInt64(filtros.DreCodigo),
-                filtros.Modalidades));
+                filtros.Modalidades,
+                true));
 
             RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
@@ -153,6 +154,8 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>> ObterPlanilhas(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros, int alunosPorAno, GrupoSondagemEnum grupoSondagemEnum = GrupoSondagemEnum.CapacidadeLeitura)
         {
+            var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(filtros.Bimestre, TipoPeriodoSondagem.Bimestre));
+
             IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto> linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery()
             {
                 DreCodigo = filtros.DreCodigo,
@@ -161,7 +164,8 @@ namespace SME.SR.Application
                 AnoLetivo = filtros.AnoLetivo,
                 AnoTurma = filtros.Ano,
                 Bimestre = filtros.Bimestre,
-                Grupo = grupoSondagemEnum
+                Grupo = grupoSondagemEnum, 
+                PeriodoId = periodo.Id
             });
 
             var planilhas = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>();

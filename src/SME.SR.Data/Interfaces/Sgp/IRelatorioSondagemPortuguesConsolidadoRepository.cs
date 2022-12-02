@@ -6,6 +6,6 @@ namespace SME.SR.Data
 {
     public interface IRelatorioSondagemPortuguesConsolidadoRepository
     {
-        public Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, GrupoSondagemEnum grupo);
+        public Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> ObterPlanilha(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, GrupoSondagemEnum grupo, string periodoId);
     }
 }
