@@ -176,6 +176,9 @@ namespace SME.SR.Data
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 query.AppendLine(" and usu.login = @usuarioRf ");
 
+            if (bimestre > 0)
+                query.AppendLine(" and pe.bimestre = @bimestre ");
+
             query.AppendLine(" union all  ");
 
             query.AppendLine(@"select distinct 
@@ -192,7 +195,7 @@ namespace SME.SR.Data
 	                        '' as TurmaNome,
                             '' as TurmaCodigo,
 	                        0 as DisciplinaId,
-	                        0 as bimestre,
+	                        pe.bimestre,
                             usu.nome as criador,
                             usu.login as criadorRf,
 	                        p.alterado_por as aprovador,
@@ -216,6 +219,8 @@ namespace SME.SR.Data
 	                        on u.dre_id  = d.id 
 	                    inner join tipo_calendario tc
 		                    on pcu.tipo_calendario_id  = tc.id 
+                        inner join periodo_escolar pe
+		                    on pe.tipo_calendario_id = tc.id 
                         inner join pendencia_usuario pu 
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
@@ -228,6 +233,9 @@ namespace SME.SR.Data
 
             if (!String.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
                 query.AppendLine(" and usu.login = @usuarioRf ");
+
+            if (bimestre > 0)
+                query.AppendLine(" and pe.bimestre = @bimestre ");
 
             query.AppendLine(" union all  ");
 
@@ -304,7 +312,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo)");
 
             if (bimestre > 0)
-                query.AppendLine($" and pe.bimestre  = @bimestre");
+                query.AppendLine($" and pe.bimestre  = @bimestre and a.data_aula between pe.periodo_inicio and pe.periodo_fim");
 
             return query.ToString();
         }

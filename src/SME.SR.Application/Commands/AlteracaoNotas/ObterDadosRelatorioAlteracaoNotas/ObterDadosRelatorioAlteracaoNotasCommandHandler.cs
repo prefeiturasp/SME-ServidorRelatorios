@@ -42,13 +42,14 @@ namespace SME.SR.Application
                     if (!turma.Ano.Equals("0"))
                     {
                         var notaTipoValor = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, request.FiltroRelatorio.AnoLetivo));
+                        var consultaTurma = await mediator.Send(new ObterTurmaPorIdQuery(long.Parse(turma.Codigo)));
 
                         var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery()
                         {
-                            TurmaCodigo = turma.Codigo
+                            TurmaCodigo = consultaTurma.Codigo
                         });
 
-                        var historicoAlteracaoNotas = await ObterHistoricoAlteracaoNotas(turma.Codigo, tipoCalendarioId, request.FiltroRelatorio.TipoAlteracaoNota);
+                        var historicoAlteracaoNotas = await ObterHistoricoAlteracaoNotas(turma.Codigo, tipoCalendarioId, request.FiltroRelatorio.TipoAlteracaoNota, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.ComponentesCurriculares);
 
                         var nomeTurma = turma.NomeRelatorio;
 
@@ -81,7 +82,7 @@ namespace SME.SR.Application
             {
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
             }
-            return listaTurmaAlteracaoNotasDto;
+            return listaTurmaAlteracaoNotasDto.OrderBy(x => x.Nome).ToList();
         }
 
         private async Task<IEnumerable<Turma>> ObterTurmas(IEnumerable<long> FiltroTurmas, string codigoUe, long anoLetivo)
@@ -101,36 +102,36 @@ namespace SME.SR.Application
             return turmas;
         }
 
-        private async Task<List<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotas(string turmaCodigo, long tipoCalendarioId, TipoAlteracaoNota tipoNota)
+        private async Task<List<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotas(string turmaCodigo, long tipoCalendarioId, TipoAlteracaoNota tipoNota, int[] bimestres, long[] componentes)
         {
             var historicoAlteracaoNotas = new List<HistoricoAlteracaoNotasDto>();
 
             if (tipoNota == TipoAlteracaoNota.Fechamento)
             {
-                historicoAlteracaoNotas.AddRange(await ObterHistoricoAlteracaoNotasFechamento(turmaCodigo, tipoCalendarioId));
+                historicoAlteracaoNotas.AddRange(await ObterHistoricoAlteracaoNotasFechamento(turmaCodigo, tipoCalendarioId, bimestres, componentes));
                 return historicoAlteracaoNotas;
 
             }
 
             if (tipoNota == TipoAlteracaoNota.ConselhoClasse)
             {
-                historicoAlteracaoNotas.AddRange(await ObterHistoricoAlteracaoNotasConselhoClasse(turmaCodigo, tipoCalendarioId));
+                historicoAlteracaoNotas.AddRange(await ObterHistoricoAlteracaoNotasConselhoClasse(turmaCodigo, tipoCalendarioId, bimestres, componentes));
                 return historicoAlteracaoNotas;
             }
 
-            var historicoAlteracaoNotasFechamento = await ObterHistoricoAlteracaoNotasFechamento(turmaCodigo, tipoCalendarioId);
+            var historicoAlteracaoNotasFechamento = await ObterHistoricoAlteracaoNotasFechamento(turmaCodigo, tipoCalendarioId, bimestres, componentes);
             historicoAlteracaoNotas.AddRange(historicoAlteracaoNotasFechamento);
 
-            var historicoAlteracaoNotasConselhoClasse = await ObterHistoricoAlteracaoNotasConselhoClasse(turmaCodigo, tipoCalendarioId);
+            var historicoAlteracaoNotasConselhoClasse = await ObterHistoricoAlteracaoNotasConselhoClasse(turmaCodigo, tipoCalendarioId, bimestres, componentes);
             historicoAlteracaoNotas.AddRange(historicoAlteracaoNotasConselhoClasse);
 
             return historicoAlteracaoNotas;
         }
-        private async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(string turmaCodigo, long tipoCalendarioId)
-                 => await mediator.Send(new ObterHistoricoNotasFechamentoPorTurmaIdQuery(long.Parse(turmaCodigo), tipoCalendarioId));
+        private async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(string turmaCodigo, long tipoCalendarioId, int[] bimestres, long[] componentes)
+                 => await mediator.Send(new ObterHistoricoNotasFechamentoPorTurmaIdQuery(long.Parse(turmaCodigo), tipoCalendarioId, bimestres, componentes));
 
-        private async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(string turmaCodigo, long tipoCalendarioId)
-                 => await mediator.Send(new ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long.Parse(turmaCodigo), tipoCalendarioId));
+        private async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasConselhoClasse(string turmaCodigo, long tipoCalendarioId, int[] bimestres, long[] componentes)
+                 => await mediator.Send(new ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long.Parse(turmaCodigo), tipoCalendarioId, bimestres, componentes));
 
 
         private async Task<TurmaAlteracaoNotasDto> MapearParaTurmaDto(List<HistoricoAlteracaoNotasDto> historicoAlteracaoNotas, IEnumerable<int> bimestres, int anoLetivo, TipoNota tiponota)

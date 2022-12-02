@@ -4,6 +4,8 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -28,9 +30,9 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId, long tipocalendarioId)
+        public async Task<IEnumerable<HistoricoAlteracaoNotasDto>> ObterHistoricoAlteracaoNotasFechamento(long turmaId, long tipocalendarioId, int[] bimestres, long[] componentes)
         {
-            var query = @"select distinct 
+            var query = new StringBuilder(@$"select distinct 
                              fa.aluno_codigo as codigoAluno,
                              hn.nota_anterior as notaAnterior,
                              hn.nota_nova as notaAtribuida,
@@ -48,24 +50,38 @@ namespace SME.SR.Data
                              u.nome as usuarioaprovacao,
                              u.rf_codigo as rfaprovacao
                         from historico_nota hn 
-                       inner join historico_nota_fechamento hnf on hn.id = hnf.historico_nota_id 
-                       inner join fechamento_nota fn on hnf.fechamento_nota_id = fn.id
-                        left join wf_aprovacao_nivel wan on wan.wf_aprovacao_id = hnf.wf_aprovacao_id 
-                        left join wf_aprovacao_nivel_notificacao wann on wann.wf_aprovacao_nivel_id = wan.id
-                        left join notificacao n on n.id = wann.notificacao_id 
-                        left join usuario u on u.id = n.usuario_id
-                       inner join fechamento_aluno fa on fn.fechamento_aluno_id = fa.id 
-                       inner join fechamento_turma_disciplina ftd on fa.fechamento_turma_disciplina_id = ftd.id 
-                       inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id 
-                       inner join periodo_escolar pe on ft.periodo_escolar_id = pe.id
-                       inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id
-                       left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id
-                           where ft.turma_id = @turmaId
-                             and (hnf.wf_aprovacao_id is null or wan.id = (select id from wf_aprovacao_nivel wan2 where wan2.wf_aprovacao_id = wan.wf_aprovacao_id order by wan2.nivel desc limit 1))";
+                           inner join historico_nota_fechamento hnf on hn.id = hnf.historico_nota_id 
+                           inner join fechamento_nota fn on hnf.fechamento_nota_id = fn.id
+                           left join wf_aprovacao_nivel wan on wan.wf_aprovacao_id = hnf.wf_aprovacao_id 
+                           left join wf_aprovacao_nivel_notificacao wann on wann.wf_aprovacao_nivel_id = wan.id                                                 
+                           inner join fechamento_aluno fa on fn.fechamento_aluno_id = fa.id 
+                           inner join fechamento_turma_disciplina ftd on fa.fechamento_turma_disciplina_id = ftd.id 
+                           inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id                        
+                           inner join turma t on ft.turma_id = t.id 
+                           left join notificacao n on n.id = wann.notificacao_id and n.turma_id = t.turma_id
+                           left join usuario u on u.id = n.usuario_id
+                           left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
+                           inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id
+                           left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id
+                           where ft.turma_id = @turmaId ");
+
+            if (bimestres.Contains(0))
+                query.AppendLine(@" and ft.periodo_escolar_id is null ");
+
+            if (bimestres.Contains(-99))
+                query.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY('{1,2,3,4}') ");
+
+            if (!bimestres.Contains(-99) && !bimestres.Contains(0))
+                query.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY(@bimestres) ");
+            
+            if (componentes.Length > 0)
+                query.AppendLine(@" and ftd.disciplina_id = ANY(@componentes)");
+
+            query.AppendLine(@" and (hnf.wf_aprovacao_id is null or wan.id = (select id from wf_aprovacao_nivel wan2 where wan2.wf_aprovacao_id = wan.wf_aprovacao_id order by wan2.nivel desc limit 1)) ");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query, new { turmaId, tipocalendarioId });
+                return await conexao.QueryAsync<HistoricoAlteracaoNotasDto>(query.ToString(), new { turmaId, tipocalendarioId, bimestres, componentes });
             }
         }
     }
