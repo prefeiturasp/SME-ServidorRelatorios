@@ -184,19 +184,20 @@
             {
                 if (mostrarAgrupamento)
                 {
+                    <br/>
                     <table class="tabela-cabecalho margem-fim-10">
                         <tbody>
-                            <tr>
-                                @if (mostrarDre) 
-                                {
-                                    <td class='fundo-cinza espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @agrupamento.DreNome</td>
-                                }
+                        <tr>
+                            @if (mostrarDre) 
+                            {
+                                <td class='fundo-cinza espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @agrupamento.DreNome</td>
+                            }
                                     
-                                @if (mostrarUe)
-                                {
-                                    <td class='fundo-cinza espaco-esquerda-15 espacamento7' @(mostrarDre ? "colspan='2'" : "")><strong>UE:</strong> @agrupamento.UeNome</td>
-                                }
-                            </tr>
+                            @if (mostrarUe)
+                            {
+                                <td class='fundo-cinza espaco-esquerda-15 espacamento7' @(mostrarDre ? "colspan='2'" : "")><strong>UE:</strong> @agrupamento.UeNome</td>
+                            }
+                        </tr>
                         </tbody>
                     </table>
                 }
@@ -224,6 +225,7 @@
                         </tbody>
                     </table>
                 }
+                <br/>
             }
         }
     </div>

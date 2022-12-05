@@ -68,7 +68,7 @@ namespace SME.SR.Data
 								from plano_aee pa 
 									join plano_aee_versao pav on pa.id = pav.plano_aee_id
 							)
-							select 	pa.id, d.nome as dreNome,
+							select 	pa.id, d.dre_id dreId, d.nome as dreNome,
 								d.abreviacao as dreAbreviacao,
 								u.ue_id as ueCodigo,
 								u.nome as ueNome,
@@ -121,6 +121,8 @@ namespace SME.SR.Data
 									      
 	        if (filtro.Semestre > 0)
 		        query += " and t.semestre = @semestre ";
+	        
+	        query += " order by d.dre_id ";
 	        
 	        await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 

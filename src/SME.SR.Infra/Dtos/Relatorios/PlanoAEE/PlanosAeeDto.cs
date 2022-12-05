@@ -4,6 +4,7 @@ namespace SME.SR.Infra
 {
     public class PlanosAeeDto
     {
+        public long DreId { get; set; }
         public string DreNome { get; set; }
         public string DreAbreviacao { get; set; }
         public string UeCodigo { get; set; }

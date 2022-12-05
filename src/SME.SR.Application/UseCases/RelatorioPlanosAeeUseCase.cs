@@ -25,11 +25,21 @@ namespace SME.SR.Application
             var filtroRelatorio = new FiltroRelatorioPlanosAeeDto()
             {
                 AnoLetivo = 2022,
+                //DreCodigo = "109200",
                 DreCodigo = "-99",
+                // UeCodigo = "099792",
                 UeCodigo = "-99",
                 Modalidade = -99,
-                Semestre = 0,
+                //Semestre = 1,
+                //CodigosTurma = new []{"2476297","2355626","2355676"},
                 CodigosTurma = new []{"-99"},
+                //ExibirEncerrados = true,
+                //Situacao = 9,
+                // CodigosResponsavel = new []{"8030308","7941331"},
+                // CodigosResponsavel = new []{"6943314"},
+                // PAAIResponsavel = "8150168",
+                UsuarioNome = "Vinícius Nyari",
+                UsuarioRf = "97910201087"
             };
 
             var planosAee = await mediator.Send(new ObterPlanosAEEQuery(filtroRelatorio));
@@ -48,11 +58,11 @@ namespace SME.SR.Application
                         Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
                         Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}",
                         Situacao = ((SituacaoPlanoAee)s.SituacaoPlano).Name(),
-                        Responsavel = $"{s.ResponsavelNome} ({s.ResponsavelLoginRf})",
+                        Responsavel = !string.IsNullOrEmpty(s.ResponsavelNome) ? $"{s.ResponsavelNome} ({s.ResponsavelLoginRf})" : string.Empty,
                         Versao = $"v{s.VersaoPlano} - {s.DataVersaoPlano:dd/MM/yyyy}",
-                        ResponsavelPAAI = $"{s.ResponsavelPaaiNome} ({s.ResponsavelPaaiLoginRf})",
-                    }).ToList()
-                }).ToList();
+                        ResponsavelPAAI = !string.IsNullOrEmpty(s.ResponsavelPaaiNome) ? $"{s.ResponsavelPaaiNome} ({s.ResponsavelPaaiLoginRf})" : string.Empty,
+                    }).OrderBy(oAluno=> oAluno.Aluno).ToList()
+                }).OrderBy(oUe=> oUe.UeNome).ToList();
 
             var relatorioPlanosAEE = new RelatorioPlanosAeeDto()
             {
