@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 
 namespace SME.SR.Data
 {
@@ -56,6 +58,10 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<PlanosAeeDto>> ObterPlanoAEE(FiltroRelatorioPlanosAeeDto filtro)
         {
+	        try
+	        {
+
+	        
 	        string query = @"with planosAtuais as
 							(
 								select distinct pa.id plano_aee_id, Max(pav.id) over (partition by pa.id) plano_aee_versao_id 
@@ -69,7 +75,7 @@ namespace SME.SR.Data
 								u.tipo_escola as tipoEscola,
 								pa.aluno_codigo as alunoCodigo,
 								pa.aluno_nome as alunoNome,
-								t.turma_id as turmaCodigo
+								t.turma_id as turmaCodigo,
 								t.nome as turmaNome,
 								t.ano_letivo as anoLetivo,
 								t.modalidade_codigo as modalidade,
@@ -88,36 +94,50 @@ namespace SME.SR.Data
 								inner join dre d on d.id = u.dre_id
 								left join usuario u2 on u2.id = pa.responsavel_paai_id
 								left join usuario u3 on u3.id = pa.responsavel_id
-							where t.ano_letivo = @anoLetivo	
-								  and d.dre_id = @dreCodigo 
-								  and t.modalidade_codigo = @modalidade ";
+							where t.ano_letivo = @anoLetivo	";
 
-	        if (!string.IsNullOrEmpty(filtro.UeCodigo))
+	        if (!filtro.DreCodigo.EstaFiltrandoTodas())
+		        query += " and d.dre_id = @dreCodigo ";
+	        
+	        if (!filtro.Modalidade.EstaFiltrandoTodas())
+		        query += " and t.modalidade_codigo = @modalidade ";
+	        
+	        if (!filtro.UeCodigo.EstaFiltrandoTodas())
 		        query += " and u.ue_id = @ueCodigo ";
 										  
 	        if (filtro.ExibirEncerrados)
 		        query += " and pa.situacao = 7 ";
-	        
-	        if (filtro.Situacao > 0)
+	        else if (filtro.Situacao > 0)
 		        query += " and pa.situacao = @situacao ";
 	        
-	        if (filtro.CodigosResponsavel != null)
+	        if (!filtro.CodigosTurma.EstaFiltrandoTodas())
+		        query += " and t.turma_id = ANY(@codigosTurma) ";
+	        
+	        if (filtro.CodigosResponsavel != null && filtro.CodigosResponsavel.Any())
 		        query += " and coalesce(u3.login, u3.rf_codigo) = ANY(@codigosResponsavel) ";
 	        
-	        if (!string.IsNullOrEmpty(filtro.UeCodigo))
+	        if (!string.IsNullOrEmpty(filtro.PAAIResponsavel))
 		        query += " and coalesce(u2.login, u2.rf_codigo) = @pAAIResponsavel ";	
 									      
-	        if (filtro.Situacao > 0)
+	        if (filtro.Semestre > 0)
 		        query += " and t.semestre = @semestre ";
 	        
 	        await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-	        return await conexao.QueryAsync<PlanosAeeDto>(query, new
+	        var retorno = await conexao.QueryAsync<PlanosAeeDto>(query, new
 	        {
 		        anoLetivo = filtro.AnoLetivo, dreCodigo = filtro.DreCodigo, modalidade = filtro.Modalidade, ueCodigo = filtro.UeCodigo,
 		        situacao = filtro.Situacao, codigosResponsavel = filtro.CodigosResponsavel, pAAIResponsavel = filtro.PAAIResponsavel,
-		        semestre = filtro.Semestre
-	        }); 
+		        semestre = filtro.Semestre, codigosTurma = filtro.CodigosTurma
+	        });
+
+	        return retorno;
+	        }
+	        catch (Exception e)
+	        {
+		        Console.WriteLine(e);
+		        throw;
+	        }
         }
     }
 }
