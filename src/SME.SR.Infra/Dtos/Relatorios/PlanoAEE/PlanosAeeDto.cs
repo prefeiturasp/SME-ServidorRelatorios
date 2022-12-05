@@ -14,7 +14,7 @@ namespace SME.SR.Infra
         public string TurmaCodigo { get; set; }
         public string TurmaNome { get; set; }
         public int AnoLetivo { get; set; }
-        public int Modalidade { get; set; }
+        public Modalidade Modalidade { get; set; }
         public int SituacaoPlano { get; set; }
         public string ResponsavelNome { get; set; }
         public string ResponsavelLoginRf { get; set; }

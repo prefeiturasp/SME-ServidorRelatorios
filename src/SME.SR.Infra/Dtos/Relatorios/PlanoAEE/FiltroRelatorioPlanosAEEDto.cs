@@ -12,5 +12,7 @@ namespace SME.SR.Infra
         public bool ExibirEncerrados { get; set; }
         public string[] CodigosResponsavel { get; set; }
         public string PAAIResponsavel { get; set; }
+        public string UsuarioNome { get; set; }
+        public string UsuarioRf { get; set; }
     }
 }

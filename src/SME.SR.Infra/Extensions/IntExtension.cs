@@ -13,5 +13,10 @@
             }
             return numero;
         }
+        
+        public static bool EstaFiltrandoTodas(this int filtro)
+        {
+            return filtro == -99;
+        }
     }
 }
