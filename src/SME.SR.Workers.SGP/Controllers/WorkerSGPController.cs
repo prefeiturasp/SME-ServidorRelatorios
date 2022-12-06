@@ -106,6 +106,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpPost("relatorios/frequenciamensal")]
+        [Action("relatorios/frequenciamensal", typeof(IRelatorioFrequenciaMensalUseCase))]
+        public async Task<bool> RelatorioFrequenciaMensal([FromBody] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaMensalUseCase relatorioFrequenciaMensalUseCase)
+        {
+            await relatorioFrequenciaMensalUseCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/historicoescolarfundamental")]
         [Action("relatorios/historicoescolarfundamental", typeof(IRelatorioHistoricoEscolarUseCase))]
         public async Task<bool> RelatorioHistoricoEscolar([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioHistoricoEscolarUseCase relatorioHistoricoEscolarUseCase)
