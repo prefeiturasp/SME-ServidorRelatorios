@@ -58,10 +58,6 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<PlanosAeeDto>> ObterPlanoAEE(FiltroRelatorioPlanosAeeDto filtro)
         {
-	        try
-	        {
-
-	        
 	        string query = @"with planosAtuais as
 							(
 								select distinct pa.id plano_aee_id, Max(pav.id) over (partition by pa.id) plano_aee_versao_id 
@@ -94,7 +90,7 @@ namespace SME.SR.Data
 								inner join dre d on d.id = u.dre_id
 								left join usuario u2 on u2.id = pa.responsavel_paai_id
 								left join usuario u3 on u3.id = pa.responsavel_id
-							where t.ano_letivo = @anoLetivo	";
+							where 1 = 1	";
 
 	        if (!filtro.DreCodigo.EstaFiltrandoTodas())
 		        query += " and d.dre_id = @dreCodigo ";
@@ -128,18 +124,12 @@ namespace SME.SR.Data
 
 	        var retorno = await conexao.QueryAsync<PlanosAeeDto>(query, new
 	        {
-		        anoLetivo = filtro.AnoLetivo, dreCodigo = filtro.DreCodigo, modalidade = filtro.Modalidade, ueCodigo = filtro.UeCodigo,
+		        dreCodigo = filtro.DreCodigo, modalidade = filtro.Modalidade, ueCodigo = filtro.UeCodigo,
 		        situacao = filtro.Situacao, codigosResponsavel = filtro.CodigosResponsavel, pAAIResponsavel = filtro.PAAIResponsavel,
 		        semestre = filtro.Semestre, codigosTurma = filtro.CodigosTurma
 	        });
 
 	        return retorno;
-	        }
-	        catch (Exception e)
-	        {
-		        Console.WriteLine(e);
-		        throw;
-	        }
         }
     }
 }
