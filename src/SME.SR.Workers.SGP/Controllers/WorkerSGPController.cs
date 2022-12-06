@@ -12,7 +12,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [ChaveIntegracaoSrApi]
+    [ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -342,13 +342,6 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/planosaee", typeof(IRelatorioPlanosAeeUseCase))]
         public async Task<bool> RelatorioPlanosAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanosAeeUseCase useCase)
         {
-            request = new FiltroRelatorioDto()
-            {
-                Action = "relatorio/planosaee",
-                UsuarioLogadoRF = "6769195",
-                CodigoCorrelacao = new Guid("AF3A5649-E805-4CB3-B73E-5191C445DE19")
-            };
-            
             await useCase.Executar(request);
             return true;
         }          

@@ -21,27 +21,8 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            // var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanosAeeDto>();
-            var filtroRelatorio = new FiltroRelatorioPlanosAeeDto()
-            {
-                AnoLetivo = 2022,
-                //DreCodigo = "109200",
-                DreCodigo = "-99",
-                // UeCodigo = "099792",
-                UeCodigo = "-99",
-                Modalidade = -99,
-                //Semestre = 1,
-                //CodigosTurma = new []{"2476297","2355626","2355676"},
-                CodigosTurma = new []{"-99"},
-                //ExibirEncerrados = true,
-                //Situacao = 9,
-                // CodigosResponsavel = new []{"8030308","7941331"},
-                // CodigosResponsavel = new []{"6943314"},
-                // PAAIResponsavel = "8150168",
-                UsuarioNome = "Vinícius Nyari",
-                UsuarioRf = "97910201087"
-            };
-
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanosAeeDto>();
+            
             var planosAee = await mediator.Send(new ObterPlanosAEEQuery(filtroRelatorio));
 
             var planosAgrupados = planosAee.GroupBy(g => new
@@ -75,7 +56,9 @@ namespace SME.SR.Application
                 AgrupamentosDreUe = planosAgrupados
             };
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanosAEE", relatorioPlanosAEE, request.CodigoCorrelacao, "", "Relatório do Plano AEE", true));
+            //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanosAEE", relatorioPlanosAEE, request.CodigoCorrelacao, "", "Relatório do Plano AEE", true));
+            
+            await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioPlanosAEE", relatorioPlanosAEE, request.CodigoCorrelacao, "", "Relatório do Plano AEE", true));
         }
     }
 }
