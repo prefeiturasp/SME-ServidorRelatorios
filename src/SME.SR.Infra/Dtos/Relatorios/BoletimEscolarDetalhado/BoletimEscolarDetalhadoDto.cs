@@ -17,7 +17,8 @@ namespace SME.SR.Infra
         public BoletimEscolarDetalhadoDto(List<BoletimEscolarDetalhadoAlunoDto> boletins, bool exibirRecomendacao)
         {
             if (boletins != null && boletins.Any())
-                this.Boletins = boletins;
+                this.Boletins = boletins.OrderBy(boletim => boletim.Cabecalho.NomeTurma)
+                                        .ThenBy(boletim => boletim.Cabecalho.NomeAluno).ToList();
 
             this.ExibirRecomendacao = exibirRecomendacao;
         }

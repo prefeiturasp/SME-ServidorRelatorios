@@ -48,6 +48,7 @@ namespace SME.SR.Application
                 qtdeCaracteresPagina = ObterQtdeCaracteresPaginaCabecalho(qtdeCaracteresPorLinha);
                 relatorio.Cadastro.Responsavel = relatorioPlanoAeeDto.Cadastro.Responsavel;
                 qtdeCaracteresPagina += qtdeCaracteresPorLinha * ADICIONAR_1_LINHA;
+                listaQuestoes = new List<QuestaoPlanoAeeDto>(); 
                 
                 foreach (var questao in relatorioPlanoAeeDto.Cadastro.Questoes)
                 {

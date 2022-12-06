@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
@@ -343,7 +344,15 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             await useCase.Executar(request);
             return true;
-        }        
+        }   
+        
+        [HttpGet("relatorios/planosaee")]
+        [Action("relatorios/planosaee", typeof(IRelatorioPlanosAeeUseCase))]
+        public async Task<bool> RelatorioPlanosAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanosAeeUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }          
 
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]

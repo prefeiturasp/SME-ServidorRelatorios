@@ -57,7 +57,7 @@ namespace SME.SR.Application
                     await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(request.AnoLetivo));
 
                 var boletinsAlunos = new List<BoletimEscolarDetalhadoAlunoDto>();
-
+   
                 foreach (var aluno in alunos)
                 {
                     // verifica PossuiConselho bimestre
@@ -109,7 +109,7 @@ namespace SME.SR.Application
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                            aluno.FirstOrDefault().NomeRelatorio, $"{percentualFrequenciaGlobal}%", request.AnoLetivo);
+                            aluno.FirstOrDefault().NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal}%", request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0)
                             ? (parecerConclusivo?.ParecerConclusivo ?? "")
                             : null;
@@ -132,7 +132,7 @@ namespace SME.SR.Application
         }
 
         private BoletimEscolarDetalhadoCabecalhoDto ObterCabecalhoInicial(Dre dre, Ue ue, TipoCiclo ciclo, Turma turma,
-            string alunoCodigo, AlunoFotoArquivoDto foto, string nome, string frequenciaGlobal, int anoLetivo)
+            string alunoCodigo, AlunoFotoArquivoDto foto, string nome, string nomeAluno, string frequenciaGlobal, int anoLetivo)
         {
             return new BoletimEscolarDetalhadoCabecalhoDto()
             {
@@ -145,7 +145,8 @@ namespace SME.SR.Application
                 FrequenciaGlobal = frequenciaGlobal,
                 Ciclo = ciclo.Descricao,
                 Foto = foto?.FotoBase64,
-                AnoLetivo = anoLetivo
+                AnoLetivo = anoLetivo,
+                NomeAluno = nomeAluno
             };
         }
 
