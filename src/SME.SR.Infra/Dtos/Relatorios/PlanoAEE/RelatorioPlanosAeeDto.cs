@@ -12,5 +12,5 @@ namespace SME.SR.Infra
         
         public CabecalhoPlanosAeeDto Cabecalho { get; set; }
 
-        public IEnumerable<AgrupamentoDreUeDto> AgrupamentosDreUe { get; set; } }
+        public List<AgrupamentoDreUeDto> AgrupamentosDreUe { get; set; } }
 }

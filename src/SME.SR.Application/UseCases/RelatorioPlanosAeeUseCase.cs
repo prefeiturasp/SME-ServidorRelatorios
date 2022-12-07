@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SME.SR.Application.Interfaces;
+using SME.SR.HtmlPdf;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos;
+using SME.SR.Infra.RelatorioPaginado;
 using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Application
@@ -21,29 +25,8 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            // var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanosAeeDto>();
-            var filtroRelatorio = new FiltroRelatorioPlanosAeeDto()
-            {
-                AnoLetivo = 2022,
-                //DreCodigo = "109200",
-                DreCodigo = "-99",
-                // UeCodigo = "099792",
-                UeCodigo = "-99",
-                Modalidade = -99,
-                //Semestre = 1,
-                //CodigosTurma = new []{"2476297","2355626","2355676"},
-                CodigosTurma = new []{"-99"},
-                //ExibirEncerrados = true,
-                //Situacao = 9,
-                // CodigosResponsavel = new []{"8030308","7941331"},
-                // CodigosResponsavel = new []{"6943314"},
-                // PAAIResponsavel = "8150168",
-                UsuarioNome = "Vinícius Nyari",
-                UsuarioRf = "97910201087"
-            };
-
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanosAeeDto>();
             var planosAee = await mediator.Send(new ObterPlanosAEEQuery(filtroRelatorio));
-
             var planosAgrupados = planosAee.GroupBy(g => new
             { 
                 DreNome = g.DreAbreviacao, 
@@ -64,25 +47,14 @@ namespace SME.SR.Application
                     }).OrderBy(oAluno=> oAluno.Aluno).ToList()
                 }).OrderBy(oUe=> oUe.UeNome).ToList();
 
-            var relatorioPlanosAEE = new RelatorioPlanosAeeDto()
+            var cabecalho = new CabecalhoPlanosAeeDto()
             {
-                Cabecalho = new CabecalhoPlanosAeeDto()
-                {
-                    DreNome = filtroRelatorio.DreCodigo.Equals("-99") ? "TODAS" : planosAgrupados.FirstOrDefault().DreNome,
-                    UeNome = filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : planosAgrupados.FirstOrDefault().UeNome,
-                    UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
-                },
-                AgrupamentosDreUe = planosAgrupados
+                DreNome = filtroRelatorio.DreCodigo.Equals("-99") ? "TODAS" : planosAgrupados.FirstOrDefault().DreNome,
+                UeNome = filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : planosAgrupados.FirstOrDefault().UeNome,
+                UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
 
-             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanosAEE", relatorioPlanosAEE, request.CodigoCorrelacao, "", "Relatório do Plano AEE", true));
-
-            //await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioPlanosAEE", relatorioPlanosAEE, request.CodigoCorrelacao, "", "Relatório do Plano AEE", true));
-        }
-
-        private List<RelatorioPlanosAeeDto> ObterRelatorioPaginado(CabecalhoPlanosAeeDto cabecalho, AgrupamentoDreUeDto agrupamento)
-        {
-            return new List<RelatorioPlanosAeeDto>();
+            await mediator.Send(new GerarRelatorioHtmlPDFPlanosAeeCommand(cabecalho, planosAgrupados, request.CodigoCorrelacao));
         }
     }
 }
