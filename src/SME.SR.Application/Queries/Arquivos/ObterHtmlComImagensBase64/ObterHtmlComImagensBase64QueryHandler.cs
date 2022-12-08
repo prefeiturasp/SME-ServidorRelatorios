@@ -11,6 +11,9 @@ namespace SME.SR.Application
     public class ObterHtmlComImagensBase64QueryHandler : IRequestHandler<ObterHtmlComImagensBase64Query, string>
     {
         private readonly IMediator mediator;
+        private const string REFERENCIA_IMAGEM_URL_SGP = "novosgp";
+        private const string PROTOCOLO_HTTP = "http:";
+        private const string PROTOCOLO_HTTPS = "https:";
 
         public ObterHtmlComImagensBase64QueryHandler(IMediator mediator)
         {
@@ -32,7 +35,7 @@ namespace SME.SR.Application
                 {
                     var caminho = img.Attributes["src"].Value;
 
-                    var arquivoBase64 = await ObterArquivoRemotoBase64(caminho, request.EscalaHorizontal, request.EscalaVertical);
+                    var arquivoBase64 = FormatoAceitoParaImpressaoImagem(caminho) ? await ObterArquivoRemotoBase64(caminho, request.EscalaHorizontal, request.EscalaVertical) : string.Empty;
 
                     registroFormatado = registroFormatado.Replace(caminho, arquivoBase64);
                 }
@@ -53,6 +56,11 @@ namespace SME.SR.Application
             var posicao = url.IndexOf("/Arquivos/");
             var caminho = url.Substring(posicao, url.Length - posicao);
             return await mediator.Send(new ObterArquivoLocalBase64Command(caminho));
-        }        
+        }
+        private bool FormatoAceitoParaImpressaoImagem(string url)
+         => (url.Contains(PROTOCOLO_HTTP) || url.Contains(PROTOCOLO_HTTPS)) 
+                ? url.Contains(REFERENCIA_IMAGEM_URL_SGP)
+                : true;
+        
     }
 }
