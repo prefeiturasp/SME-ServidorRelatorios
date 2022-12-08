@@ -58,13 +58,8 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterArquivoLocalBase64Command(caminho));
         }
         private bool FormatoAceitoParaImpressaoImagem(string url)
-        {
-            if(url.Contains(PROTOCOLO_HTTP) || url.Contains(PROTOCOLO_HTTPS))
-            {
-                return url.Contains(REFERENCIA_IMAGEM_URL_SGP);
-            }
-
-            return true;
-        }
+         => (url.Contains(PROTOCOLO_HTTP) || url.Contains(PROTOCOLO_HTTPS))
+                ? url.Contains(REFERENCIA_IMAGEM_URL_SGP)
+                : true;
     }
 }
