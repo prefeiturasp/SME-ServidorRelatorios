@@ -14,6 +14,7 @@ namespace SME.SR.Application
         private const string REFERENCIA_IMAGEM_URL_SGP = "novosgp";
         private const string PROTOCOLO_HTTP = "http:";
         private const string PROTOCOLO_HTTPS = "https:";
+        private const string NOME_PASTA_TEMPORARIA = "temp";
 
         public ObterHtmlComImagensBase64QueryHandler(IMediator mediator)
         {
@@ -58,8 +59,12 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterArquivoLocalBase64Command(caminho));
         }
         private bool FormatoAceitoParaImpressaoImagem(string url)
-         => (url.Contains(PROTOCOLO_HTTP) || url.Contains(PROTOCOLO_HTTPS))
-                ? url.Contains(REFERENCIA_IMAGEM_URL_SGP)
-                : true;
+        {
+            if (url.Contains(PROTOCOLO_HTTP) || url.Contains(PROTOCOLO_HTTPS))
+                if (!url.Contains(REFERENCIA_IMAGEM_URL_SGP) || (url.Contains(REFERENCIA_IMAGEM_URL_SGP) && url.Contains(NOME_PASTA_TEMPORARIA)))
+                    return false;
+
+            return true;
+        }
     }
 }
