@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,37 +15,51 @@ namespace SME.SR.Application
 {
     public class ObterArquivoRemotoBase64CommandHandler : IRequestHandler<ObterArquivoRemotoBase64Command, string>
     {
+        private const string PROTOCOLO_HTTP = "http";
+        private const string PROTOCOLO_HTTPS = "https";
+
         private readonly IMediator mediator;
+
         public ObterArquivoRemotoBase64CommandHandler(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
         public async Task<string> Handle(ObterArquivoRemotoBase64Command request, CancellationToken cancellationToken)
         {
             if (request.Url.StartsWith("data:") && request.Url.Contains(";base64,"))
                 return request.Url;
 
-            using (var client = new WebClient())
+            if(request.Url.StartsWith(PROTOCOLO_HTTP) || request.Url.StartsWith(PROTOCOLO_HTTPS))
             {
-                var arquivo = client.DownloadData(new Uri(request.Url));
-
-                using (var memoryStream = new MemoryStream(arquivo))
+                using (var client = new HttpClient())
                 {
-                    var imagem = new Bitmap(memoryStream);
+                    HttpResponseMessage arquivo = await client.GetAsync(request.Url);
 
-                    var rawFormat = imagem.RawFormat;
+                    if (arquivo.IsSuccessStatusCode)
+                    {
+                        using (var memoryStream = new MemoryStream(await arquivo.Content.ReadAsByteArrayAsync()))
+                        {
+                            var imagem = new Bitmap(memoryStream);
+                            var rawFormat = imagem.RawFormat;
 
-                    imagem = (Bitmap) FixImageOrientation(imagem);
+                            imagem = (Bitmap)FixImageOrientation(imagem);
 
-                    var codecs = ImageCodecInfo
-                        .GetImageDecoders();
+                            var codecs = ImageCodecInfo
+                                .GetImageDecoders();
 
-                    string mimeType = codecs.FirstOrDefault(c => c.FormatID == rawFormat.Guid).MimeType;
-                    var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal, request.EscalaVertical);
+                            string mimeType = codecs.FirstOrDefault(c => c.FormatID == rawFormat.Guid).MimeType;
+                            var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal, request.EscalaVertical);
 
-                    return $"data:{mimeType};base64,{imagemBase64}";
+                            return $"data:{mimeType};base64,{imagemBase64}";
+                        }
+                    }
+                    else
+                        return string.Empty;
                 }
             }
+            return string.Empty;
+
         }
         public Image FixImageOrientation(Image img)
         {
