@@ -6,7 +6,7 @@ namespace SME.SR.Infra
     {
         public string DreNome { get; set; }
         public string UeNome { get; set; }
-        public IEnumerable<DetalhePlanosAeeDto> Detalhes { get; set; }
+        public List<DetalhePlanosAeeDto> Detalhes { get; set; }
 
         public AgrupamentoDreUeDto()
         {
