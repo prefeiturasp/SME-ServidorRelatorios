@@ -103,8 +103,8 @@ namespace SME.SR.Data
 										  
 	        if (filtro.ExibirEncerrados)
 		        query += " and pa.situacao = 7 ";
-	        else if (filtro.Situacao > 0)
-		        query += " and pa.situacao = @situacao ";
+	        else if (filtro.SituacaoIds != null && filtro.SituacaoIds.Any())
+		        query += " and pa.situacao = ANY(@situacaoIds) ";
 	        
 	        if (!filtro.CodigosTurma.EstaFiltrandoTodas())
 		        query += " and t.turma_id = ANY(@codigosTurma) ";
@@ -112,8 +112,8 @@ namespace SME.SR.Data
 	        if (filtro.CodigosResponsavel != null && filtro.CodigosResponsavel.Any())
 		        query += " and coalesce(u3.login, u3.rf_codigo) = ANY(@codigosResponsavel) ";
 	        
-	        if (!string.IsNullOrEmpty(filtro.PAAIResponsavel))
-		        query += " and coalesce(u2.login, u2.rf_codigo) = @pAAIResponsavel ";	
+	        if (filtro.CodigosPAAIResponsavel != null && filtro.CodigosPAAIResponsavel.Any())
+		        query += " and coalesce(u2.login, u2.rf_codigo) = ANY(@codigosPAAIResponsavel) ";	
 									      
 	        if (filtro.Semestre > 0)
 		        query += " and t.semestre = @semestre ";
@@ -125,7 +125,8 @@ namespace SME.SR.Data
 	        var retorno = await conexao.QueryAsync<PlanosAeeDto>(query, new
 	        {
 		        dreCodigo = filtro.DreCodigo, modalidade = filtro.Modalidade, ueCodigo = filtro.UeCodigo,
-		        situacao = filtro.Situacao, codigosResponsavel = filtro.CodigosResponsavel, pAAIResponsavel = filtro.PAAIResponsavel,
+		        situacaoIds = filtro.SituacaoIds, codigosResponsavel = filtro.CodigosResponsavel,
+		        codigosPAAIResponsavel = filtro.CodigosPAAIResponsavel,
 		        semestre = filtro.Semestre, codigosTurma = filtro.CodigosTurma
 	        });
 
