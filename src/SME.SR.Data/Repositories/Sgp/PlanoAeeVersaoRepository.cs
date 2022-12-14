@@ -115,16 +115,16 @@ namespace SME.SR.Data
 										  
 	        if (filtro.ExibirEncerrados)
 		        query.AppendLine(" and pa.situacao = 7 ");
-	        else if (filtro.SituacaoIds != null && filtro.SituacaoIds.Any())
+	        else if (!filtro.SituacaoIds.EstaFiltrandoTodas())
 		        query.AppendLine(" and pa.situacao = ANY(@situacaoIds) ");
 	        
 	        if (!filtro.CodigosTurma.EstaFiltrandoTodas())
 		        query.AppendLine(" and t.turma_id = ANY(@codigosTurma) ");
 	        
-	        if (filtro.CodigosResponsavel != null && filtro.CodigosResponsavel.Any())
+	        if (!filtro.CodigosResponsavel.EstaFiltrandoTodas())
 		        query.AppendLine(" and coalesce(u3.login, u3.rf_codigo) = ANY(@codigosResponsavel) ");
 	        
-	        if (filtro.CodigosPAAIResponsavel != null && filtro.CodigosPAAIResponsavel.Any())
+	        if (!filtro.CodigosPAAIResponsavel.EstaFiltrandoTodas())
 		        query.AppendLine(" and coalesce(u2.login, u2.rf_codigo) = ANY(@codigosPAAIResponsavel) ");	
 									      
 	        if (filtro.Semestre > 0)

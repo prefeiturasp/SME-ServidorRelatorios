@@ -6,7 +6,7 @@ namespace SME.SR.Infra
     {
         public static bool EstaFiltrandoTodas(this string[] array)
         {
-            return array != null && array.Any(s => s.Equals("-99"));
+            return (array != null && array.Any(s => s.Equals("-99"))) || array == null;
         }
     }
 }
