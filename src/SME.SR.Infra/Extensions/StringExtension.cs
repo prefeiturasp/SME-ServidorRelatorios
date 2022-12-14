@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using System.Runtime.CompilerServices;
+using HtmlAgilityPack;
 
 namespace SME.SR.Infra.Extensions
 {
@@ -21,6 +22,11 @@ namespace SME.SR.Infra.Extensions
             string sentence = input.ToLower();
             return sentence[0].ToString().ToUpper() +
                sentence.Substring(1);
+        }
+        
+        public static bool EstaFiltrandoTodas(this string filtro)
+        {
+            return filtro.Equals("-99");
         }
     }
 }
