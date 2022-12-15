@@ -6,7 +6,7 @@ namespace SME.SR.Infra.RelatorioPaginado
 {
     public class RelatorioPaginadoPlanoAee
     {
-        private const int TOTAL_LINHAS = 36;
+        private const int TOTAL_LINHAS = 35;
         private readonly CabecalhoPlanosAeeDto Cabecalho;
         private readonly List<AgrupamentoDreUeDto> Agrupamentos;
         private List<RelatorioPlanosAeeDto> RelatorioPaginado;
@@ -119,7 +119,7 @@ namespace SME.SR.Infra.RelatorioPaginado
                 {Colunas.CRIANCA_ESTUDANTE, 47},
                 {Colunas.SITUACAO, 30},
                 {Colunas.RESPONSAVEL, 46},
-                {Colunas.PAAI_RESPONSAVEL, 42}
+                {Colunas.PAAI_RESPONSAVEL, 41}
             };
         }
 
