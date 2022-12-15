@@ -27,6 +27,10 @@ namespace SME.SR.Application
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanosAeeDto>();
             var planosAee = await mediator.Send(new ObterPlanosAEEQuery(filtroRelatorio));
+            
+            if (planosAee == null || !planosAee.Any())
+                throw new NegocioException("Nenhuma informação para os filtros informados.");            
+            
             var planosAgrupados = planosAee.GroupBy(g => new
             { 
                 DreNome = g.DreAbreviacao, 
