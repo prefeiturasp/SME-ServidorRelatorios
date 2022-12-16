@@ -45,7 +45,7 @@ namespace SME.SR.Application
                         Versao = $"v{s.VersaoPlano} - {s.DataVersaoPlano:dd/MM/yyyy}",
                         ResponsavelPAAI = !string.IsNullOrEmpty(s.ResponsavelPaaiNome) ? $"{s.ResponsavelPaaiNome} ({s.ResponsavelPaaiLoginRf})" : string.Empty,
                     }).OrderBy(oAluno=> oAluno.Aluno).ToList()
-                }).OrderBy(oUe=> oUe.UeNome).ToList();
+                }).OrderBy(oDre=> oDre.DreNome).ThenBy(oUe=> oUe.UeNome).ToList();
 
             var cabecalho = new CabecalhoPlanosAeeDto()
             {
