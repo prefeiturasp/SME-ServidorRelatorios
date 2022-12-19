@@ -295,7 +295,7 @@ namespace SME.SR.Data
                                 , fa.total_ausencias as TotalAusencias
                                 , fa.total_compensacoes as TotalCompensacoes
                                 {(tipoCalendarioId > 0 ? ", pe.bimestre Bimestre" : string.Empty)}
-                                , row_number() over (partition by fa.codigo_aluno, fa.periodo_escolar_id, fa.tipo, fa.disciplina_id order by fa.id) sequencia
+                                , row_number() over (partition by fa.codigo_aluno, fa.periodo_escolar_id, fa.tipo, fa.disciplina_id order by fa.id desc) sequencia
                             from frequencia_aluno fa
                             inner join turma t on fa.turma_id = t.turma_id ");
 
