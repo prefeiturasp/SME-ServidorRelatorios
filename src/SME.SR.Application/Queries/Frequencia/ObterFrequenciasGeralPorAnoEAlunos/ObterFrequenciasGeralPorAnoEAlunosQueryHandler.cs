@@ -49,11 +49,16 @@ namespace SME.SR.Application
 
             foreach (var aluno in agrupamentoAluno)
             {
+                int totalAulasNaTurma = aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalAulas);
+                int totalAusencias = aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalAusencias) > totalAulasNaTurma
+                    ? totalAulasNaTurma
+                    : aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalAusencias);
+
                 var frequenciaAluno = new FrequenciaAluno()
                 {
                     CodigoAluno = aluno.Key,
-                    TotalAulas = totalAulas,
-                    TotalAusencias = aluno.Where(a=> a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalAusencias),
+                    TotalAulas = totalAulasNaTurma,
+                    TotalAusencias = totalAusencias,
                     TotalCompensacoes = aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalCompensacoes),
                 };
 
@@ -62,5 +67,6 @@ namespace SME.SR.Application
 
             return frequenciaGlobalAlunos;
         }
+
     }
 }
