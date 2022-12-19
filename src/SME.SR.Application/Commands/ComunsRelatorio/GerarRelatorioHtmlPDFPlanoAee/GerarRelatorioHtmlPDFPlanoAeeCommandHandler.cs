@@ -96,7 +96,7 @@ namespace SME.SR.Application
             var pdfGenerator = new PdfGenerator(converter);
             
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasPlanoAee, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório do Plano Aee");
+            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasPlanoAee, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Plano Aee");
             
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
