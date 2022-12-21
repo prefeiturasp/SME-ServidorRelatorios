@@ -307,10 +307,10 @@ namespace SME.SR.Application
         private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, IEnumerable<FrequenciaAluno> frequenciasTurmaComponente, int bimestre, IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual)
         {
             var possuiFrequenciaTurma = aulasCadastradas?.Any(nf => nf.Bimestre == bimestre);
-
+            
             var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
                 frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ??
-                (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
+                (frequenciasAlunoComponente.Any(fa =>fa.Bimestre ==bimestre) && possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
 
             return String.IsNullOrEmpty(frequencia) ? String.Empty : frequencia;
         }
@@ -323,11 +323,9 @@ namespace SME.SR.Application
                 return frequenciasAluno.FirstOrDefault(nf => nf.PeriodoEscolarId == null).PercentualFrequencia.ToString();
             else
             {
-                var bimestresAlunoComFrequencia = frequenciasAluno.Select(fa => fa.Bimestre).Distinct();
-                var somaAulasBimestresSemFrequencia = registroFrequencia.Where(rf => !bimestresAlunoComFrequencia.Contains(rf.Bimestre)).Sum(rf => rf.AulasQuantidade);
                 var frequenciaFinal = new FrequenciaAluno()
                 {
-                    TotalAulas = frequenciasAluno.Sum(f => f.TotalAulas) + somaAulasBimestresSemFrequencia,
+                    TotalAulas = frequenciasAluno.Sum(f => f.TotalAulas),
                     TotalAusencias = frequenciasAluno.Sum(f => f.TotalAusencias),
                     TotalCompensacoes = frequenciasAluno.Sum(f => f.TotalCompensacoes)
                 };
