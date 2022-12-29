@@ -67,17 +67,18 @@ namespace SME.SR.Application
             retorno.Usuario = filtros.UsuarioNome;
             retorno.RF = filtros.UsuarioRf;
             retorno.ExibeDetalhamento = filtros.ExibirDetalhamento;
-            retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            retorno.Semestre = filtros.Semestre.ToString();
+            retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");            
             retorno.Ano = filtros.AnoLetivo.ToString();
 
-
+            if (filtros.Semestre.ToString() != "")
+                retorno.Semestre = filtros.Semestre.ToString();
+            else retorno.Semestre = "Todos";
 
             if (filtros.TurmasCodigo.Any(t => t != "-99" && t != null))
                 retorno.TurmaNome = modalidade.shortName.ToUpper() + " - " + retornoLinearParaCabecalho.TurmaNome.ToUpper();
             else retorno.TurmaNome = "Todas";
 
-            if (filtros.ComponentesCurriculares?.Count() == 1)
+            if (filtros.ComponentesCurriculares?.Count() == 1 && filtros.ComponentesCurriculares.Any(c => c != -99))
                 retorno.ComponenteCurricular = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares.FirstOrDefault())?.Disciplina;
             else retorno.ComponenteCurricular = "Todos";
 
