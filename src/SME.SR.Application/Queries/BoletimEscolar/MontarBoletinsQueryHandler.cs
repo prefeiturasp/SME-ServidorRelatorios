@@ -271,7 +271,7 @@ namespace SME.SR.Application
                         componenteCurricular.NotaFinal = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, 0, transformarNotaEmConceito);
                     }
                     else
-                        componenteCurricular.NotaFinal = !string.IsNullOrEmpty(frequenciaFinal) && frequenciaFinal.ToCharArray().All(f => char.IsDigit(f)) ? ObterSintese(double.Parse(frequenciaFinal ?? "0"), mediasFrequencia, false, false) : frequenciaFinal;
+                        componenteCurricular.NotaFinal = frequenciaFinal.ToCharArray().Where(c => c != ',').All(f => char.IsDigit(f)) ? ObterSintese(double.Parse(frequenciaFinal ?? "0"), mediasFrequencia, false, false) : frequenciaFinal;
 
                     if (componenteCurricular.Frequencia)
                     {
