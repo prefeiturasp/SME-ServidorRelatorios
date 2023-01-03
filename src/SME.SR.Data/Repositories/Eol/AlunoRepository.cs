@@ -45,14 +45,11 @@ namespace SME.SR.Data
 						WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
 						WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
-						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
+						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					case when mte.nr_chamada_aluno is null then '0'
-						when mte.nr_chamada_aluno = 'NULL' then '0'
-						else mte.nr_chamada_aluno
-						end as NumeroAlunoChamada
+					coalesce(mte.nr_chamada_aluno,'0') NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_matricula_cotic matr ON
@@ -62,7 +59,7 @@ namespace SME.SR.Data
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola = @turmaCodigo
+					mte.cd_turma_escola = @turmaCodigo 
 					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
 					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					and mte.dt_situacao_aluno > @dataReferencia))
@@ -89,14 +86,11 @@ namespace SME.SR.Data
 						WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
 						WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
-						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
+						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					case when mte.nr_chamada_aluno is null then '0'
-						when mte.nr_chamada_aluno = 'NULL' then '0'
-						else mte.nr_chamada_aluno
-						end as NumeroAlunoChamada
+					mte.nr_chamada_aluno NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -107,6 +101,8 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo
+					and mte.nr_chamada_aluno <> '0'
+					and mte.nr_chamada_aluno is not null
 					and mte.dt_situacao_aluno = (
 					select
 						max(mte2.dt_situacao_aluno)
