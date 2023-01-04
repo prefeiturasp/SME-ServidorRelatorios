@@ -288,7 +288,7 @@ namespace SME.SR.Application
                 respostas.Add(itemRetorno);                
             }            
 
-            if (alunosPorAno > totalRespostas)
+            if (alunosPorAno > totalRespostas && !respostas.Any(x => x.Percentual == 100))
             {
                 var totalSemPreenchimento = alunosPorAno - totalRespostas;
 
