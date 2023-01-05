@@ -286,7 +286,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(int anoTurma, long tipoCalendarioId, string[] alunosCodigo)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(int anoTurma, long tipoCalendarioId, string[] alunosCodigo, string turmaCodigo)
         {
             var query = new StringBuilder($@"with lista as (
                            select fa.id Id
@@ -306,7 +306,8 @@ namespace SME.SR.Data
             query.AppendLine(@" where fa.tipo = 2 
                                       and t.ano_letivo = @anoTurma 
                                       and fa.codigo_aluno = any(@alunosCodigo)
-                                      and t.tipo_turma in(1,2,7) ");
+                                      and t.tipo_turma in(1,2,7) 
+                                      and t.turma_id = @turmaCodigo");
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
@@ -321,7 +322,8 @@ namespace SME.SR.Data
                 {
                     anoTurma,
                     tipoCalendarioId,
-                    alunosCodigo
+                    alunosCodigo,
+                    turmaCodigo
                 });
             }
         }
