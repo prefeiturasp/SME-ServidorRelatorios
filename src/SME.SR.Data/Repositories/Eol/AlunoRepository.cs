@@ -45,14 +45,11 @@ namespace SME.SR.Data
 						WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
 						WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
-						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
+						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					case when mte.nr_chamada_aluno is null then '0'
-						when mte.nr_chamada_aluno = 'NULL' then '0'
-						else mte.nr_chamada_aluno
-						end as NumeroAlunoChamada
+					coalesce(mte.nr_chamada_aluno,'0') NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_matricula_cotic matr ON
@@ -62,7 +59,7 @@ namespace SME.SR.Data
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola = @turmaCodigo
+					mte.cd_turma_escola = @turmaCodigo 
 					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
 					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					and mte.dt_situacao_aluno > @dataReferencia))
@@ -89,14 +86,11 @@ namespace SME.SR.Data
 						WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
 						WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
 						WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
-						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
+						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
 						ELSE 'Fora do domínio liberado pela PRODAM'
 					END SituacaoMatricula,
 					mte.dt_situacao_aluno DataSituacao,
-					case when mte.nr_chamada_aluno is null then '0'
-						when mte.nr_chamada_aluno = 'NULL' then '0'
-						else mte.nr_chamada_aluno
-						end as NumeroAlunoChamada
+					mte.nr_chamada_aluno NumeroAlunoChamada
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -107,6 +101,8 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo
+					and mte.nr_chamada_aluno <> '0'
+					and mte.nr_chamada_aluno is not null
 					and mte.dt_situacao_aluno = (
 					select
 						max(mte2.dt_situacao_aluno)
@@ -298,49 +294,43 @@ namespace SME.SR.Data
         public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades, bool consideraHistorico = false)
         {
             StringBuilder query = new StringBuilder();
-            if (anoLetivo < DateTime.Now.Date.Year)
-            {
-				query.AppendLine("WITH lista AS(");
-				query.AppendLine(ObtenhaQueryAlunosPorTurmasHistorico(dreCodigo, ueCodigo));
-				query.AppendLine(")");
-				query.AppendLine("SELECT COUNT(DISTINCT cd_aluno) FROM lista");
-            }
-            else
-            {
-				var queryHistorica = consideraHistorico ? " UNION " + ObtenhaQueryAlunosPorTurmasHistorico(dreCodigo, ueCodigo) : string.Empty; 
+			if (anoLetivo < DateTime.Now.Date.Year)
+				consideraHistorico = true;
+			
+			var queryHistorica = consideraHistorico ? " UNION " + ObtenhaQueryAlunosPorTurmasHistorico(dreCodigo, ueCodigo) : string.Empty; 
 
-				query.AppendLine($@" WITH lista AS (
-										SELECT DISTINCT mte.cd_turma_escola,
-										m.cd_aluno
-										FROM v_matricula_cotic m
-										INNER JOIN matricula_turma_escola mte
-										ON m.cd_matricula = mte.cd_matricula
-										INNER JOIN turma_escola te
-										ON mte.cd_turma_escola = te.cd_turma_escola
-										INNER JOIN serie_turma_escola ste
-										ON te.cd_turma_escola = ste.cd_turma_escola
-										INNER JOIN serie_turma_grade stg
-										ON ste.cd_serie_ensino = stg.cd_serie_ensino
-										INNER JOIN serie_ensino se
-										ON stg.cd_serie_ensino = se.cd_serie_ensino
-										INNER JOIN etapa_ensino ee
-										ON se.cd_etapa_ensino = ee.cd_etapa_ensino
-										INNER JOIN v_cadastro_unidade_educacao ue
-										ON te.cd_escola = ue.cd_unidade_educacao
-										INNER JOIN alunos_matriculas_norm aln 
-										ON aln.CodigoAluno = m.cd_aluno
-										WHERE te.an_letivo = @anoLetivo AND
-										te.cd_tipo_turma = 1 AND
-										mte.cd_situacao_aluno in (1, 6, 10, 13, 5) AND
-										(mte.dt_situacao_aluno < @dataFim or (aln.DataMatricula < @dataFim and aln.AnoLetivo = @anoLetivo)) AND
-										se.sg_resumida_serie = @anoTurma AND
-										ee.cd_etapa_ensino in (@modalidades)
-										{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
-										{ (!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}
-										{queryHistorica})
-										SELECT COUNT(DISTINCT cd_aluno)
-										FROM lista ");
-            }
+			query.AppendLine($@" WITH lista AS (
+									SELECT DISTINCT mte.cd_turma_escola,
+									m.cd_aluno
+									FROM v_matricula_cotic m
+									INNER JOIN matricula_turma_escola mte
+									ON m.cd_matricula = mte.cd_matricula
+									INNER JOIN turma_escola te
+									ON mte.cd_turma_escola = te.cd_turma_escola
+									INNER JOIN serie_turma_escola ste
+									ON te.cd_turma_escola = ste.cd_turma_escola
+									INNER JOIN serie_turma_grade stg
+									ON ste.cd_serie_ensino = stg.cd_serie_ensino
+									INNER JOIN serie_ensino se
+									ON stg.cd_serie_ensino = se.cd_serie_ensino
+									INNER JOIN etapa_ensino ee
+									ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+									INNER JOIN v_cadastro_unidade_educacao ue
+									ON te.cd_escola = ue.cd_unidade_educacao
+									INNER JOIN alunos_matriculas_norm aln 
+									ON aln.CodigoAluno = m.cd_aluno
+									WHERE te.an_letivo = @anoLetivo AND
+									te.cd_tipo_turma = 1 AND
+									mte.cd_situacao_aluno in (1, 6, 10, 13, 5) AND
+									(mte.dt_situacao_aluno < @dataFim or (aln.DataMatricula < @dataFim and aln.AnoLetivo = @anoLetivo)) AND
+									se.sg_resumida_serie = @anoTurma AND
+									ee.cd_etapa_ensino in (@modalidades)
+									{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
+									{ (!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}
+									{queryHistorica})
+									SELECT COUNT(DISTINCT cd_aluno)
+									FROM lista ");
+            
 
 			var parametros = new { dreCodigo, ueCodigo, anoTurma = anoTurma.ToDbChar(1), anoLetivo, dataFim = dataReferencia };
 
