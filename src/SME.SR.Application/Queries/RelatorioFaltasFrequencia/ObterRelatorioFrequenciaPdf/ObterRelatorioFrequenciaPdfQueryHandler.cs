@@ -167,7 +167,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         {
                             var final = new RelatorioFrequenciaBimestreDto
                             {
-                                NomeBimestre = "FINAL",
+                                NomeBimestre = "Final",
                             };
 
                             var componentesFinal = ano.Bimestres.SelectMany(c => c.Componentes).DistinctBy(c => c.CodigoComponente).ToList();
