@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class EncaminhamentoAEEQueryHandler : IRequestHandler<EncaminhamentoAEEQuery, IEnumerable<EncaminhamentoAeeDto>>
+    public class ObterEncaminhamentosAEEQueryHandler : IRequestHandler<ObterEncaminhamentosAEEQuery, IEnumerable<EncaminhamentoAeeDto>>
     {
         private readonly IEncaminhamentoAeeRepository encaminhamentoAeeRepository;
 
-        public EncaminhamentoAEEQueryHandler(IEncaminhamentoAeeRepository encaminhamentoAeeRepository)
+        public ObterEncaminhamentosAEEQueryHandler(IEncaminhamentoAeeRepository encaminhamentoAeeRepository)
         {
             this.encaminhamentoAeeRepository = encaminhamentoAeeRepository ?? throw new ArgumentNullException(nameof(encaminhamentoAeeRepository));
         }
 
-        public Task<IEnumerable<EncaminhamentoAeeDto>> Handle(EncaminhamentoAEEQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<EncaminhamentoAeeDto>> Handle(ObterEncaminhamentosAEEQuery request, CancellationToken cancellationToken)
         {
-            return encaminhamentoAeeRepository.ObterEncaminhamentoAEE(request.Filtro);   
+            return encaminhamentoAeeRepository.ObterEncaminhamentosAEE(request.Filtro);   
         }
     }
 }

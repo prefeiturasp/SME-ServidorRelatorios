@@ -6,6 +6,6 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IEncaminhamentoAeeRepository
     {
-        Task<IEnumerable<EncaminhamentoAeeDto>> ObterEncaminhamentoAEE(FiltroRelatorioEncaminhamentoAeeDto filtro);
+        Task<IEnumerable<EncaminhamentoAeeDto>> ObterEncaminhamentosAEE(FiltroRelatorioEncaminhamentoAeeDto filtro);
     }
 }

@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<EncaminhamentoAeeDto>> ObterEncaminhamentoAEE(FiltroRelatorioEncaminhamentoAeeDto filtro)
+        public async Task<IEnumerable<EncaminhamentoAeeDto>> ObterEncaminhamentosAEE(FiltroRelatorioEncaminhamentoAeeDto filtro)
         {
             var query = new StringBuilder();
 
@@ -34,8 +34,8 @@ namespace SME.SR.Data
 			        t.ano_letivo as anoLetivo,
 			        t.modalidade_codigo as modalidade,
 			        ea.situacao as situacao,
-			        responsavel.nome as responsavelNome,
-			        coalesce(responsavel.login, responsavel.rf_codigo) as responsavelLoginRf
+			        responsavel.nome as ResponsavelPaaiNome,
+			        coalesce(responsavel.login, responsavel.rf_codigo) as ResponsavelPaaiLoginRf
 		        from encaminhamento_aee ea
 		        inner join turma t on t.id = ea.turma_id
 					inner join ue u on u.id = t.ue_id 
@@ -79,15 +79,15 @@ namespace SME.SR.Data
         private string ObterCodicaoSituacao(FiltroRelatorioEncaminhamentoAeeDto filtro)  
         {
             if (filtro.ExibirEncerrados)
-                return " and pa.situacao = 7 ";
+                return $" and ea.situacao = {(int)SituacaoEncaminhamentoAEE.EncerradoAutomaticamente}";
             else if (!filtro.SituacaoIds.EstaFiltrandoTodas())
-                return " and pa.situacao = ANY(@situacaoIds) ";
+                return " and ea.situacao = ANY(@situacaoIds) ";
 
             return string.Empty;
         }
 
         private string ObterCodicaoPAAI(FiltroRelatorioEncaminhamentoAeeDto filtro) =>
-        	       !filtro.CodigosPAAIResponsavel.EstaFiltrandoTodas() ? " and coalesce(u2.login, u2.rf_codigo) = ANY(@codigosPAAIResponsavel) " : string.Empty;
+        	       !filtro.CodigosPAAIResponsavel.EstaFiltrandoTodas() ? " and coalesce(responsavel.login, responsavel.rf_codigo) = ANY(@codigosPAAIResponsavel) " : string.Empty;
 
         private string ObterCondicao(FiltroRelatorioEncaminhamentoAeeDto filtro)
         {
