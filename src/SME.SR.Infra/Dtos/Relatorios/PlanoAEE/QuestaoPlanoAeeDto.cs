@@ -1,3 +1,4 @@
+using SME.SR.Infra.Dtos.Relatorios.PlanoAEE;
 using System.Collections.Generic;
 
 namespace SME.SR.Infra
@@ -17,5 +18,6 @@ namespace SME.SR.Infra
         public TipoQuestao TipoQuestao { get; set; }
         public int Ordem { get; set; }
         public IEnumerable<FrequenciaAlunoPlanoAeeDto> FrequenciaAluno { get; set; }        
+        public IEnumerable<DadosSrmPlanoAeeDto> InformacoesSrm { get; set; }        
     }
 }
