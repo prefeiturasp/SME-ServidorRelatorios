@@ -13,6 +13,7 @@ namespace SME.SR.Infra
         ComboMultiplaEscolha = 9,
         Periodo = 10,
         FrequenciaEstudanteAEE = 11,
-        PeriodoEscolar = 12  
+        PeriodoEscolar = 12 ,
+        InformacoesSrm = 20
     }
 }

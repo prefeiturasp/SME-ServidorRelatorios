@@ -1,4 +1,5 @@
 ﻿@using SME.SR.Infra
+@using SME.SR.Infra.Dtos.Relatorios.PlanoAEE;
 @model SME.SR.Infra.RelatorioPlanoAeeDto
 
 @{
@@ -81,6 +82,29 @@
                     <td class="espacamento10">@diaHorario.DiaDaSemana</td>
                     <td class="espacamento10">@diaHorario.Inicio</td>
                     <td class="espacamento10">@diaHorario.Termino</td>
+                </tr>       
+            }            
+        }
+    }    
+    void MontarQuestaoSrm(QuestaoPlanoAeeDto questao)
+    {
+        
+        if (questao.InformacoesSrm.Any())
+        {
+            MontarTituloPadrao(questao.Questao);
+            
+            <tr>
+                <td class="fundo-cinza width-40 negrito espacamento10">DRE - UE</td>
+                <td class="fundo-cinza width-40 negrito espacamento10">Turma - Turno</td>
+                <td class="fundo-cinza width-20 negrito espacamento10">Componente curricular</td>
+            </tr>
+        
+            foreach (var srm in questao.InformacoesSrm)
+            {
+                <tr>
+                    <td class="espacamento10">@srm.DreUe</td>
+                    <td class="espacamento10">@srm.TurmaTurno</td>
+                    <td class="espacamento10">@srm.ComponenteCurricular</td>
                 </tr>       
             }            
         }
@@ -318,6 +342,8 @@
                     switch (questao.TipoQuestao)
                     {
                         case TipoQuestao.PeriodoEscolar : MontarTextoComPrefixoNegrito(questao.Questao, questao.Resposta);
+                            break;
+                            case TipoQuestao.InformacoesSrm:MontarQuestaoSrm(questao);
                             break;
                         case TipoQuestao.Radio: MontarQuestaoRadio(questao);
                             break;
