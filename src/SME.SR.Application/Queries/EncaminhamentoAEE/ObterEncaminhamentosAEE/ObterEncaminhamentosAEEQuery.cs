@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class EncaminhamentoAEEQuery : IRequest<IEnumerable<EncaminhamentoAeeDto>>
+    public class ObterEncaminhamentosAEEQuery : IRequest<IEnumerable<EncaminhamentoAeeDto>>
     {
-        public EncaminhamentoAEEQuery(FiltroRelatorioEncaminhamentoAeeDto filtro)
+        public ObterEncaminhamentosAEEQuery(FiltroRelatorioEncaminhamentoAeeDto filtro)
         {
             Filtro = filtro;
         }

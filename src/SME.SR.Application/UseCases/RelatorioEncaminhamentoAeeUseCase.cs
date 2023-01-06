@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
@@ -20,18 +21,20 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoAeeDto>();
-            var encaminhamentosAee = await mediator.Send(new EncaminhamentoAEEQuery(filtroRelatorio));
+            var encaminhamentosAee = await mediator.Send(new ObterEncaminhamentosAEEQuery(filtroRelatorio));
 
             if (encaminhamentosAee == null || !encaminhamentosAee.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var planosAgrupados = encaminhamentosAee.GroupBy(g => new
+            var encaminhamentosAgrupados = encaminhamentosAee.GroupBy(g => new
             {
+                DreId = g.DreId,
                 DreNome = g.DreAbreviacao,
                 UeNome = $"{g.UeCodigo} - {g.TipoEscola.ShortName()} {g.UeNome}",
             }, (key, group) =>
             new AgrupamentoEncaminhamentoAeeDreUeDto()
             {
+                DreId = key.DreId,
                 DreNome = key.DreNome,
                 UeNome = key.UeNome,
                 Detalhes = group.Select(s =>
@@ -39,14 +42,19 @@ namespace SME.SR.Application
                 {
                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
                     Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}",
-                    Situacao = ((SituacaoPlanoAee)s.Situacao).Name(),
+                    Situacao = ((SituacaoEncaminhamentoAEE)s.Situacao).Name(),
                     ResponsavelPAAI = !string.IsNullOrEmpty(s.ResponsavelPaaiNome) ? $"{s.ResponsavelPaaiNome} ({s.ResponsavelPaaiLoginRf})" : string.Empty,
-                }).OrderBy(oAluno => oAluno.Aluno).ThenBy(oAluno => oAluno.Turma).ToList()
-            }).OrderBy(oDre => oDre.DreNome).ThenBy(oUe => oUe.UeNome).ToList();
-            
+                }).OrderBy(oAluno => oAluno.Aluno).ToList()
+            }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeNome).ToList();
 
+            var cabecalho = new CabecalhoEncaminhamentoAeeDto()
+            {
+                DreNome = filtroRelatorio.DreCodigo.Equals("-99") ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
+                UeNome = filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().UeNome,
+                UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
+            };
 
-            throw new NotImplementedException();
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));
         }
     }
 }

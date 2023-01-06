@@ -1,0 +1,229 @@
+﻿@using SME.SR.Infra;
+
+@model RelatorioEncaminhamentoAeeDto
+@{
+    const string TODAS = "TODAS";
+
+    var mostrarDre = Model.Cabecalho.DreNome == TODAS;
+    var mostrarUe = Model.Cabecalho.UeNome == TODAS;
+    var mostrarAgrupamento = mostrarDre || mostrarUe;
+
+    void MontarCabecalho()
+    {
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DO ENCAMINHAMENTO AEE</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td class='espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @Model.Cabecalho.DreNome</td>
+                        <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>Unidade Escolar (UE):</strong> @Model.Cabecalho.UeNome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td class='espaco-esquerda-15 width-70 espacamento7 sem-border-top'><strong>USUÁRIO:</strong> @Model.Cabecalho.UsuarioNome</td>
+                        <td class='espaco-esquerda-15 espacamento7 sem-border-top' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE PLANO AEE</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            margin-top: 5px;
+            padding: 3px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 43px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        .alinhamentoEsquerda {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+            td span {
+                font-size: 12px;
+            }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .margem-fim-10 {
+            margin-bottom: 10px;
+        }
+
+        .margem-fim-5 {
+            margin-bottom: 5px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .espacamento7 {
+            padding: 7px;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .marginTop20 {
+            margin-top: 20px;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .img-logo-sgp {
+            height: 63px;
+            float: left;
+        }
+
+        .width-22 {
+            width: 22%;
+        }
+
+        .width-25 {
+            width: 25%;
+        }
+
+        .width-38 {
+            width: 38%;
+        }
+
+        .width-70 {
+            width: 70%;
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            foreach (var agrupamento in Model.AgrupamentosDreUe)
+            {
+                if (mostrarAgrupamento)
+                {
+                    <br />
+                    <table class="tabela-cabecalho">
+                        <tbody>
+                            <tr>
+                                @if (mostrarDre)
+                                {
+                                    <td class='fundo-cinza espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @agrupamento.DreNome</td>
+                                }
+
+                                @if (mostrarUe)
+                                {
+                                    <td class='fundo-cinza espaco-esquerda-15 espacamento7' @(mostrarDre ? "colspan='2'" : "")><strong>Unidade Escolar (UE):</strong> @agrupamento.UeNome</td>
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+
+                foreach (var detalhe in agrupamento.Detalhes)
+                {
+                    <table class="tabela-cabecalho">
+                        <tbody>
+                            <tr>
+                                <td class='fundo-cinza espaco-esquerda-15 width-70 espacamento7 @(mostrarAgrupamento ? "sem-border-top" : "")'><strong>CRIANÇA/ESTUDANTE:</strong> @detalhe.Aluno</td>
+                                <td class='espaco-esquerda-15 espacamento7 @(mostrarAgrupamento ? "sem-border-top" : "")' colspan="2"><strong>TURMA:</strong> @detalhe.Turma</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="tabela-cabecalho">
+                        <tbody>
+                            <tr>
+                                <td class='espaco-esquerda-15 width-38 espacamento7 sem-border-top'><strong>SITUAÇÃO:</strong> @detalhe.Situacao</td>
+                                <td class='espaco-esquerda-15 espacamento7 sem-border-top' colspan="2"><strong>PAAI RESPONSÁVEL:</strong> @detalhe.ResponsavelPAAI</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                <br />
+            }
+        }
+    </div>
+</body>
+</html>
