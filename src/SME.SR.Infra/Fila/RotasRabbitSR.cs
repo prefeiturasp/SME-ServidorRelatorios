@@ -76,5 +76,6 @@
         public const string RotaRelatoriosSolicitadosOcorrencias = "sr.relatorios.solicitados.ocorrencias";
         public const string RotaRelatoriosSolicitatosPlanoAee = "sr.relatorios.solicitados.planoaee";
         public const string RotaRelatoriosSolicitatosPlanosAee = "sr.relatorios.solicitados.planosaee";
+        public const string RotaRelatoriosSolicitadosEncaminhamentoAee = "sr.relatorios.solicitados.encaminhamentoaee";
     }
 }
