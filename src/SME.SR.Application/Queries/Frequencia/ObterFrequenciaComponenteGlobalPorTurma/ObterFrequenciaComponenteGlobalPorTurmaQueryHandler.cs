@@ -59,29 +59,9 @@ namespace SME.SR.Application
                     var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
                     var disciplinaId = !string.IsNullOrEmpty(frequenciaAluno.DisciplinaId) ? Convert.ToInt64(frequenciaAluno.DisciplinaId) : 0;
 
-                    if (aulas.Any(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString()))
-                    {
-                        var aulasPorMatricula = aulas
-                            .Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestre && a.ComponenteCurricularCodigo == disciplinaId.ToString());
-
-                        if (!string.IsNullOrEmpty(dadosMatricula.codigoAluno))
-                        {
-                            aulasPorMatricula = aulasPorMatricula
-                                .Where(a => a.DataAula.Date >= dadosMatricula.dataMatricula.Date);
-
-                            if (dadosMatricula.dataSituacao.HasValue)
-                                aulasPorMatricula = aulasPorMatricula
-                                    .Where(a => a.DataAula.Date < dadosMatricula.dataSituacao.Value.Date);
-                        }
-
-                        frequenciaAluno.TotalAulas += aulasPorMatricula                            
-                            .Sum(a => a.QuantidadeAula);
-                    }
-
+                    frequenciaAluno.TotalAulas += frequenciaBimestre?.TotalAulas ?? 0;
                     frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
-                    frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;
-
-                    frequenciaAluno.TotalAulas += frequenciaAluno.TotalAulas == 0 ? frequenciaBimestre?.TotalAulas ?? 0 : 0;
+                    frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;                    
 
                     // Particularidade de cálculo de frequência para 2020.
                     if (turma.AnoLetivo.Equals(2020))

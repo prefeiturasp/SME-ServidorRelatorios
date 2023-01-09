@@ -332,37 +332,38 @@ namespace SME.SR.Application
                 foreach (var pergunta in perguntas)
                 {
                     var resposta = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString() && a.PerguntaId == pergunta.Id);
-
-                    switch (resposta.Resposta)
+                    if (resposta != null)
                     {
-                        case "Nivel1":
-                            {
-                                resposta.Resposta = "Nível 1";
-                                break;
-                            }
-                        case "Nivel2":
-                            {
-                                resposta.Resposta = "Nível 2";
-                                break;
-                            }
-                        case "Nivel3":
-                            {
-                                resposta.Resposta = "Nível 3";
-                                break;
-                            }
-                        case "Nivel4":
-                            {
-                                resposta.Resposta = "Nível 4";
-                                break;
-                            }
+                        switch (resposta.Resposta)
+                        {
+                            case "Nivel1":
+                                {
+                                    resposta.Resposta = "Nível 1";
+                                    break;
+                                }
+                            case "Nivel2":
+                                {
+                                    resposta.Resposta = "Nível 2";
+                                    break;
+                                }
+                            case "Nivel3":
+                                {
+                                    resposta.Resposta = "Nível 3";
+                                    break;
+                                }
+                            case "Nivel4":
+                                {
+                                    resposta.Resposta = "Nível 4";
+                                    break;
+                                }
+                        }
+                        
                     }
-
                     respostasDto.Add(new RelatorioSondagemPortuguesPorTurmaRespostaDto()
                     {
                         PerguntaId = pergunta.Id,
                         Resposta = resposta?.Resposta
                     });
-
                 }
 
 

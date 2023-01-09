@@ -352,7 +352,15 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             await useCase.Executar(request);
             return true;
-        }          
+        }
+
+        [HttpGet("relatorios/encaminhamentoaee")]
+        [Action("relatorios/encaminhamentoaee", typeof(IRelatorioEncaminhamentoAeeUseCase))]
+        public async Task<bool> RelatorioEncaminhamentoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentoAeeUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
 
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]

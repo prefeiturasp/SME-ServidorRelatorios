@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class GerarRelatorioHtmlPDFPlanosAeeCommandHandler : AsyncRequestHandler<GerarRelatorioHtmlPDFPlanosAeeCommand>
+    public class GerarRelatorioHtmlPDFEncaminhamentoAeeCommandHandler : AsyncRequestHandler<GerarRelatorioHtmlPDFEncaminhamentoAeeCommand>
     {
         private readonly IConverter converter;
         private readonly IHtmlHelper htmlHelper;
         private readonly IServicoFila servicoFila;
 
-        public GerarRelatorioHtmlPDFPlanosAeeCommandHandler(
+        public GerarRelatorioHtmlPDFEncaminhamentoAeeCommandHandler(
                                                            IConverter converter,
                                                            IHtmlHelper htmlHelper,
                                                            IServicoFila servicoFila)
@@ -29,9 +29,9 @@ namespace SME.SR.Application
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
-        protected override async Task Handle(GerarRelatorioHtmlPDFPlanosAeeCommand request, CancellationToken cancellationToken)
+        protected override async Task Handle(GerarRelatorioHtmlPDFEncaminhamentoAeeCommand request, CancellationToken cancellationToken)
         {
-            var relatorioPaginado = new RelatorioPaginadoPlanoAee(request.Cabecalho, request.Agrupamentos);
+            var relatorioPaginado = new RelatorioPaginadoEncaminhamentoAee(request.Cabecalho, request.Agrupamentos);
             var paginasSolo = new List<PaginaParaRelatorioPaginacaoSoloDto>();
             var paginas = relatorioPaginado.ObterRelatorioPaginado();
             var indicePagina = 0;
@@ -45,18 +45,18 @@ namespace SME.SR.Application
             var pdfGenerator = new PdfGenerator(converter);
 
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório dos Planos AEE");
+            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório dos Encaminhamentos AEE");
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
 
-        private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(RelatorioPlanosAeeDto relatorio, int paginaPlanoAee, int totalPaginas)
+        private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(RelatorioEncaminhamentoAeeDto relatorio, int pagina, int totalPaginas)
         {
-            var html = await htmlHelper.RenderRazorViewToString("RelatorioPlanosAEE", relatorio);
+            var html = await htmlHelper.RenderRazorViewToString("RelatorioEncaminhamentoAEE", relatorio);
             html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
             html = html.Replace("logo.png", SmeConstants.LogoSme);
 
-            return new PaginaParaRelatorioPaginacaoSoloDto(html, paginaPlanoAee, totalPaginas);
+            return new PaginaParaRelatorioPaginacaoSoloDto(html, pagina, totalPaginas);
         }
     }
 }

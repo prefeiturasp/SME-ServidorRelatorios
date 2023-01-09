@@ -27,6 +27,10 @@ namespace SME.SR.Application
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioPlanosAeeDto>();
             var planosAee = await mediator.Send(new ObterPlanosAEEQuery(filtroRelatorio));
+            
+            if (planosAee == null || !planosAee.Any())
+                throw new NegocioException("Nenhuma informação para os filtros informados.");            
+            
             var planosAgrupados = planosAee.GroupBy(g => new
             { 
                 DreNome = g.DreAbreviacao, 
@@ -45,7 +49,7 @@ namespace SME.SR.Application
                         Versao = $"v{s.VersaoPlano} - {s.DataVersaoPlano:dd/MM/yyyy}",
                         ResponsavelPAAI = !string.IsNullOrEmpty(s.ResponsavelPaaiNome) ? $"{s.ResponsavelPaaiNome} ({s.ResponsavelPaaiLoginRf})" : string.Empty,
                     }).OrderBy(oAluno=> oAluno.Aluno).ToList()
-                }).OrderBy(oUe=> oUe.UeNome).ToList();
+                }).OrderBy(oDre=> oDre.DreNome).ThenBy(oUe=> oUe.UeNome).ToList();
 
             var cabecalho = new CabecalhoPlanosAeeDto()
             {

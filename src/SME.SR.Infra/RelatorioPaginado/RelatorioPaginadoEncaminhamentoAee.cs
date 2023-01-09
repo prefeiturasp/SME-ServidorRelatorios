@@ -4,29 +4,29 @@ using System.Linq;
 
 namespace SME.SR.Infra.RelatorioPaginado
 {
-    public class RelatorioPaginadoPlanoAee
+    public class RelatorioPaginadoEncaminhamentoAee
     {
         private const int TOTAL_LINHAS = 35;
-        private readonly CabecalhoPlanosAeeDto Cabecalho;
-        private readonly List<AgrupamentoDreUeDto> Agrupamentos;
-        private List<RelatorioPlanosAeeDto> RelatorioPaginado;
+        private readonly CabecalhoEncaminhamentoAeeDto Cabecalho;
+        private readonly List<AgrupamentoEncaminhamentoAeeDreUeDto> Agrupamentos;
+        private List<RelatorioEncaminhamentoAeeDto> RelatorioPaginado;
         private Dictionary<Colunas, int> DicColunaPorQtdeCaracteres;
 
-        public RelatorioPaginadoPlanoAee(CabecalhoPlanosAeeDto cabecalho, List<AgrupamentoDreUeDto> agrupamentos)
+        public RelatorioPaginadoEncaminhamentoAee(CabecalhoEncaminhamentoAeeDto cabecalho, List<AgrupamentoEncaminhamentoAeeDreUeDto> agrupamentos)
         {
             Cabecalho = cabecalho;
             Agrupamentos = agrupamentos;
             DicColunaPorQtdeCaracteres = ObterColunasPorQtdeCaracteres();
-            RelatorioPaginado = new List<RelatorioPlanosAeeDto>();
+            RelatorioPaginado = new List<RelatorioEncaminhamentoAeeDto>();
         }
 
-        public IEnumerable<RelatorioPlanosAeeDto> ObterRelatorioPaginado()
+        public IEnumerable<RelatorioEncaminhamentoAeeDto> ObterRelatorioPaginado()
         {
             ExecutarPaginacao();
             return RelatorioPaginado;
         }
 
-        private void AdicionarPagina(RelatorioPlanosAeeDto pagina)
+        private void AdicionarPagina(RelatorioEncaminhamentoAeeDto pagina)
         {
             RelatorioPaginado.Add(pagina);
         }
@@ -41,7 +41,7 @@ namespace SME.SR.Infra.RelatorioPaginado
                 var agrupamentoAtual = ObterAgrupamento(grupo);
                 pagina.AgrupamentosDreUe.Add(agrupamentoAtual);
 
-                foreach(var detalhe in grupo.Detalhes)
+                foreach (var detalhe in grupo.Detalhes)
                 {
                     var linhasPorDetalhe = ObterLinhasDeQuebra(detalhe);
 
@@ -62,12 +62,12 @@ namespace SME.SR.Infra.RelatorioPaginado
 
                 linhas += 2;
             }
-            
+
             if (linhas > 0 && RelatorioPaginado.Count == 0)
                 AdicionarPagina(pagina);
         }
 
-        private void RemoveAgrupamentoSemDetalhe(RelatorioPlanosAeeDto pagina)
+        private void RemoveAgrupamentoSemDetalhe(RelatorioEncaminhamentoAeeDto pagina)
         {
             var grupo = pagina.AgrupamentosDreUe.LastOrDefault();
 
@@ -75,38 +75,37 @@ namespace SME.SR.Infra.RelatorioPaginado
                 pagina.AgrupamentosDreUe.Remove(grupo);
         }
 
-        private AgrupamentoDreUeDto ObterAgrupamento(AgrupamentoDreUeDto grupo)
+        private AgrupamentoEncaminhamentoAeeDreUeDto ObterAgrupamento(AgrupamentoEncaminhamentoAeeDreUeDto grupo)
         {
-            return new AgrupamentoDreUeDto()
+            return new AgrupamentoEncaminhamentoAeeDreUeDto()
             {
                 UeNome = grupo.UeNome,
-                DreNome= grupo.DreNome,
-                Detalhes = new List<DetalhePlanosAeeDto>()    
+                DreNome = grupo.DreNome,
+                Detalhes = new List<DetalheEncaminhamentoAeeDto>()
             };
         }
 
-        private RelatorioPlanosAeeDto ObterPagina()
+        private RelatorioEncaminhamentoAeeDto ObterPagina()
         {
-            return new RelatorioPlanosAeeDto()
+            return new RelatorioEncaminhamentoAeeDto()
             {
                 Cabecalho = Cabecalho,
-                AgrupamentosDreUe = new List<AgrupamentoDreUeDto>()
+                AgrupamentosDreUe = new List<AgrupamentoEncaminhamentoAeeDreUeDto>()
             };
         }
 
-        private int ObterLinhasDeQuebra(DetalhePlanosAeeDto detalhe)
+        private int ObterLinhasDeQuebra(DetalheEncaminhamentoAeeDto detalhe)
         {
             var funcoesLimiteCaracteres = ObterFuncoesLimiteCaracteres();
-            return 3 + funcoesLimiteCaracteres.Count(funcao => !funcao(detalhe));
+            return 2 + funcoesLimiteCaracteres.Count(funcao => !funcao(detalhe));
         }
 
-        private IEnumerable<Func<DetalhePlanosAeeDto, bool>> ObterFuncoesLimiteCaracteres()
+        private IEnumerable<Func<DetalheEncaminhamentoAeeDto, bool>> ObterFuncoesLimiteCaracteres()
         {
-            var funcoesLimiteCaracteres = new List<Func<DetalhePlanosAeeDto, bool>>
+            var funcoesLimiteCaracteres = new List<Func<DetalheEncaminhamentoAeeDto, bool>>
             {
-                detalhe => detalhe.Situacao.Length <= DicColunaPorQtdeCaracteres[Colunas.SITUACAO] && detalhe.Responsavel.Length <= DicColunaPorQtdeCaracteres[Colunas.RESPONSAVEL],
-                detalhe => detalhe.Aluno.Length <= DicColunaPorQtdeCaracteres[Colunas.CRIANCA_ESTUDANTE],
-                detalhe => detalhe.ResponsavelPAAI.Length <= DicColunaPorQtdeCaracteres[Colunas.PAAI_RESPONSAVEL]
+                detalhe => detalhe.Situacao.Length <= DicColunaPorQtdeCaracteres[Colunas.SITUACAO] && detalhe.ResponsavelPAAI.Length <= DicColunaPorQtdeCaracteres[Colunas.PAAI_RESPONSAVEL],
+                detalhe => detalhe.Aluno.Length <= DicColunaPorQtdeCaracteres[Colunas.CRIANCA_ESTUDANTE]
             };
 
             return funcoesLimiteCaracteres;
@@ -118,7 +117,6 @@ namespace SME.SR.Infra.RelatorioPaginado
             {
                 {Colunas.CRIANCA_ESTUDANTE, 47},
                 {Colunas.SITUACAO, 30},
-                {Colunas.RESPONSAVEL, 46},
                 {Colunas.PAAI_RESPONSAVEL, 41}
             };
         }
@@ -127,7 +125,6 @@ namespace SME.SR.Infra.RelatorioPaginado
         {
             CRIANCA_ESTUDANTE,
             SITUACAO,
-            RESPONSAVEL,
             PAAI_RESPONSAVEL
         }
     }

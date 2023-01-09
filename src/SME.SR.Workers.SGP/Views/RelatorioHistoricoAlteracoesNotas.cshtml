@@ -1,4 +1,6 @@
-﻿@model SME.SR.Infra.RelatorioAlteracaoNotasDto
+﻿@using System.Globalization
+
+@model SME.SR.Infra.RelatorioAlteracaoNotasDto
 
 @{
 
@@ -122,6 +124,14 @@
     string MontarDadosTabela(List<SME.SR.Infra.AlunosAlteracaoNotasDto> alunosAlteracaoNotas, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
     {
         var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
+        
+        alunosAlteracaoNotas.Sort((x, y) =>
+        {
+            var ret = x.Nome.CompareTo(y.Nome);
+            if (ret == 0) ret = DateTime.Parse(x.DataAlteracao, CultureInfo.CreateSpecificCulture("pt-BR")).CompareTo(DateTime.Parse(y.DataAlteracao, CultureInfo.CreateSpecificCulture("pt-BR")));
+            return ret;
+        });
+
         for (int i = 0; i < alunosAlteracaoNotas.Count; i++)
         {
             var aluno = alunosAlteracaoNotas[i];

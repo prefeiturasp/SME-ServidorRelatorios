@@ -1,6 +1,6 @@
 ﻿@using SME.SR.Infra;
 
-@model RelatorioPlanosAeeDto
+@model RelatorioEncaminhamentoAeeDto
 @{
     const string TODAS = "TODAS";
 
@@ -14,13 +14,13 @@
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
         </div>
         <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-        <div class='titulo-relatorio'>RELATÓRIO DE PLANO AEE</div>
+        <div class='titulo-relatorio'>RELATÓRIO DO ENCAMINHAMENTO AEE</div>
         <div class='fonte-14 header-pagina'>
             <table class='tblTopo'>
                 <tbody>
                     <tr>
                         <td class='espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @Model.Cabecalho.DreNome</td>
-                        <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>UE:</strong> @Model.Cabecalho.UeNome</td>
+                        <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>Unidade Escolar (UE):</strong> @Model.Cabecalho.UeNome</td>
                     </tr>
                 </tbody>
             </table>
@@ -76,9 +76,9 @@
             margin-bottom: 22px;
         }
 
-        .header-pagina td {
-            text-align: left;
-        }
+            .header-pagina td {
+                text-align: left;
+            }
 
         .alinhamentoEsquerda {
             text-align: left;
@@ -106,9 +106,9 @@
             border: 1px solid #42474a;
         }
 
-        td span {
-            font-size: 12px;
-        }
+            td span {
+                font-size: 12px;
+            }
 
         .tabela-cabecalho tr {
             font-size: 14px;
@@ -184,20 +184,20 @@
             {
                 if (mostrarAgrupamento)
                 {
-                    <br/>
+                    <br />
                     <table class="tabela-cabecalho">
                         <tbody>
-                        <tr>
-                            @if (mostrarDre) 
-                            {
-                                <td class='fundo-cinza espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @agrupamento.DreNome</td>
-                            }
-                                    
-                            @if (mostrarUe)
-                            {
-                                <td class='fundo-cinza espaco-esquerda-15 espacamento7' @(mostrarDre ? "colspan='2'" : "")><strong>UE:</strong> @agrupamento.UeNome</td>
-                            }
-                        </tr>
+                            <tr>
+                                @if (mostrarDre)
+                                {
+                                    <td class='fundo-cinza espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @agrupamento.DreNome</td>
+                                }
+
+                                @if (mostrarUe)
+                                {
+                                    <td class='fundo-cinza espaco-esquerda-15 espacamento7' @(mostrarDre ? "colspan='2'" : "")><strong>Unidade Escolar (UE):</strong> @agrupamento.UeNome</td>
+                                }
+                            </tr>
                         </tbody>
                     </table>
                 }
@@ -207,25 +207,21 @@
                     <table class="tabela-cabecalho">
                         <tbody>
                             <tr>
-                                <td class='fundo-cinza espaco-esquerda-15 width-70 espacamento7'><strong>CRIANÇA/ESTUDANTE:</strong> @detalhe.Aluno</td>
-                                <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>TURMA:</strong> @detalhe.Turma</td>
+                                <td class='fundo-cinza espaco-esquerda-15 width-70 espacamento7 @(mostrarAgrupamento ? "sem-border-top" : "")'><strong>CRIANÇA/ESTUDANTE:</strong> @detalhe.Aluno</td>
+                                <td class='espaco-esquerda-15 espacamento7 @(mostrarAgrupamento ? "sem-border-top" : "")' colspan="2"><strong>TURMA:</strong> @detalhe.Turma</td>
                             </tr>
                         </tbody>
                     </table>
                     <table class="tabela-cabecalho">
                         <tbody>
-                             <tr>
-                                <td class='espaco-esquerda-15 width-38 espacamento7 sem-border-top'><strong>SITUAÇÃO:</strong> @detalhe.Situacao</td>
-                                <td class='espaco-esquerda-15 espacamento7 sem-border-top' colspan="2"><strong>RESPONSÁVEL:</strong> @detalhe.Responsavel</td>
-                            </tr>
                             <tr>
-                                <td class='espaco-esquerda-15 width-38 espacamento7'><strong>VERSÃO:</strong> @detalhe.Versao</td>
-                                <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>PAAI RESPONSÁVEL:</strong> @detalhe.ResponsavelPAAI</td>
+                                <td class='espaco-esquerda-15 width-38 espacamento7 sem-border-top'><strong>SITUAÇÃO:</strong> @detalhe.Situacao</td>
+                                <td class='espaco-esquerda-15 espacamento7 sem-border-top' colspan="2"><strong>PAAI RESPONSÁVEL:</strong> @detalhe.ResponsavelPAAI</td>
                             </tr>
                         </tbody>
                     </table>
                 }
-                <br/>
+                <br />
             }
         }
     </div>

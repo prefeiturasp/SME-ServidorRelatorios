@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using SME.SR.Infra;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -19,32 +21,66 @@ namespace SME.SR.Application
 
             using (var client = new WebClient())
             {
-                try
+                var arquivo = client.DownloadData(new Uri(request.Url));
+
+                using (var memoryStream = new MemoryStream(arquivo))
                 {
-                    var arquivo = client.DownloadData(new Uri(request.Url));
+                    var imagem = new Bitmap(memoryStream);
 
-                    using (var memoryStream = new MemoryStream(arquivo))
-                    {
-                        var imagem = new Bitmap(memoryStream);
-                        var format = imagem.RawFormat;
-                        var codec = ImageCodecInfo
-                            .GetImageDecoders()
-                            .First(c => c.FormatID == format.Guid);
-                        string mimeType = codec.MimeType;
+                    var rawFormat = imagem.RawFormat;
 
-                        var imagemBase64 = RedimencionarImagem(imagem,request.EscalaHorizontal,request.EscalaVertical);
+                    imagem = (Bitmap) FixImageOrientation(imagem);
 
-                        return $"data:{mimeType};base64,{imagemBase64}";
-                    }
+                    var codecs = ImageCodecInfo
+                        .GetImageDecoders();
 
+                    string mimeType = codecs.FirstOrDefault(c => c.FormatID == rawFormat.Guid).MimeType;
+                    var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal, request.EscalaVertical);
+
+                    return $"data:{mimeType};base64,{imagemBase64}";
                 }
-                catch (Exception e)
-                {
-                    return "";
-                }            
             }
         }
-
+        public Image FixImageOrientation(Image img)
+        {
+            const int ExifOrientationId = 0x112;
+            if (!img.PropertyIdList.Contains(ExifOrientationId)) return img;
+            var prop = img.GetPropertyItem(ExifOrientationId);
+            if (prop == null || prop.Value?.Length == 0)
+                return img;
+            //Em ambientes não windows, a primeira posição do Array vem zero nas amostras encontradas, então é necessários ignora-los
+            var orient = prop.Value?.ToList().FirstOrDefault(x => x > 0);
+            switch (orient)
+            {
+                case 1:
+                    img.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                    break;
+                case 2:
+                    img.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    break;
+                case 3:
+                    img.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    break;
+                case 4:
+                    img.RotateFlip(RotateFlipType.Rotate180FlipX);
+                    break;
+                case 5:
+                    img.RotateFlip(RotateFlipType.Rotate90FlipX);
+                    break;
+                case 6:
+                    img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
+                case 7:
+                    img.RotateFlip(RotateFlipType.Rotate270FlipX);
+                    break;
+                case 8:
+                    img.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    break;
+                default:
+                    return img;
+            }
+            return img;
+        }
         private string RedimencionarImagem(Bitmap imagem, float escalaHorizontal, float escalaVertical)
         {
             var escalaH = escalaHorizontal / imagem.Width;
@@ -68,5 +104,6 @@ namespace SME.SR.Application
             var arquivoConvertido = (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
             return Convert.ToBase64String(arquivoConvertido);
         }
+
     }
 }
