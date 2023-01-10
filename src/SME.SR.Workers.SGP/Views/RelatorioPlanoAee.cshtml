@@ -1,0 +1,337 @@
+﻿@using SME.SR.Infra
+@model SME.SR.Infra.RelatorioPlanoAeeDto
+
+@{
+    const string CADASTRO_DE_PLANO = "CADASTRO DE PLANO";
+    const string PARECER = "PARECER";
+    const string RESPONSAVEL = "RESPONSÁVEL";
+    const string PARECER_COORDENACAO = "PARECER COORDENAÇÃO";
+    const string PARECER_CEFAI = "PARECER CEFAI";
+   
+    void MontarCabecalho()
+    {
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE PLANO AEE</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                <tr>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>ANO LETIVO:</strong> @Model.Cabecalho.AnoLetivo</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>DRE:</strong> @Model.Cabecalho.DreNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>UE:</strong> @Model.Cabecalho.UeNome</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>TURMA:</strong> @Model.Cabecalho.TurmaNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @Model.Cabecalho.AlunoNome</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>CODIGO EOL:</strong> @Model.Cabecalho.AlunoCodigo</td>
+                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>VERSÃO:</strong> @Model.Cabecalho.VersaoPlano</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="4"><strong>SITUAÇÃO:</strong> @Model.Cabecalho.SituacaoPlano</td>    
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+ 
+    void MontarTituloPadrao(string titulo)
+    {
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo.ToUpper()</td>
+        </tr>
+    }
+    
+    void MontarQuestaoRadio(QuestaoPlanoAeeDto questao)
+    {
+        if (string.IsNullOrEmpty(questao.Justificativa))
+            MontarTextoComPrefixoNegrito(questao.Questao, questao.Resposta);
+        else
+            MontarQuestaoComRespostaJustificativa(questao);
+    }
+    
+    void MontarTextoComPrefixoNegrito(string titulo, string descricao)
+    {
+        <tr >
+            <td class="alinhamentoEsquerda espacamento10" colspan="7"><strong>@titulo.ToUpper():</strong> @descricao</td>
+        </tr>
+    }    
+    
+    void MontarQuestaoFrequencia(QuestaoPlanoAeeDto questao)
+    {
+        
+        if (questao.FrequenciaAluno.Any())
+        {
+            MontarTituloPadrao(questao.Questao);
+            
+            <tr>
+                <td class="fundo-cinza width-33 negrito espacamento10">Dia da semana</td>
+                <td class="fundo-cinza width-33 negrito espacamento10">Horário de início</td>
+                <td class="fundo-cinza width-34 negrito espacamento10">Horário de término</td>
+            </tr>
+        
+            foreach (var diaHorario in questao.FrequenciaAluno)
+            {
+                <tr>
+                    <td class="espacamento10">@diaHorario.DiaDaSemana</td>
+                    <td class="espacamento10">@diaHorario.Inicio</td>
+                    <td class="espacamento10">@diaHorario.Termino</td>
+                </tr>       
+            }            
+        }
+    }
+    
+    void MontarQuestaoTexto(QuestaoPlanoAeeDto questao)
+    {
+        MontarTituloNegritoLinhaTexto(@questao.Questao, @questao.Resposta);
+    }
+    
+    void MontarTituloNegritoLinhaTexto(string titulo, string resposta)
+    {
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo.ToUpper()</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="alinhamentoEsquerda espacamento10">@resposta</td>
+        </tr>
+    } 
+    
+    void MontarQuestaoComRespostaJustificativa(QuestaoPlanoAeeDto questao)
+    {
+        <tr>
+            <td colspan="7" class="negrito espacamento10 fundo-cinza">@questao.Questao.ToUpper()</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="alinhamentoEsquerda sem-border-top sem-border-bottom espacamento10"><strong>Resposta:</strong> @questao.Resposta</td>
+        </tr>
+        <tr>
+            <td colspan="7" class="sem-border-top alinhamentoEsquerda sem-border-top espacamento10"><strong>Justificativa:</strong> @questao.Justificativa</td>
+        </tr>
+    }
+
+    void GerarParecer(ParecerPlanoAeeDto parecerPlanoAeeDto)
+    {
+        if (!string.IsNullOrEmpty(@Model.Parecer.Coordenacao) || !string.IsNullOrEmpty(@Model.Parecer.Cefai))
+        {
+            <div class="marginTop20">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER</td>
+                    </tr>
+                    @{
+                        GerarParecerCoordenacao(Model.Parecer.Coordenacao);
+                        GerarParecerCefaiResponsavel(Model.Parecer);
+                    }
+                    </tbody>
+                </table>
+            
+            </div> 
+        }
+    }
+
+    void GerarParecerCoordenacao(string parecerCoordenacao)
+    {
+        if (!string.IsNullOrEmpty(parecerCoordenacao))
+        {
+            <tr>
+                <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_COORDENACAO</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Coordenacao</td>
+            </tr>
+        }
+    }
+
+    void GerarParecerCefaiResponsavel(ParecerPlanoAeeDto parecerCefaiResponsavel)
+    {
+        if (!string.IsNullOrEmpty(@Model.Parecer.Cefai))
+        {
+            <tr>
+                <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_CEFAI</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Cefai</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="alinhamentoEsquerda espacamento10"><strong>PAAI RESPONSÁVEL:</strong> @Model.Parecer.PaaiResponsavel</td>
+            </tr>
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE PLANO AEE</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            margin-top: 5px;
+            padding: 3px;
+            text-align: left;
+        }        
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 43px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+        
+        .alinhamentoEsquerda {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        td span {
+            font-size: 12px;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+        
+        .espacamento10 {
+            padding: 10px;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+        
+        .marginTop20 {
+            margin-top:20px;
+        }
+        
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .img-logo-sgp {
+            height: 63px;
+            float: left;
+        }
+        
+        .width-22 {
+          width: 22%;
+        }
+        
+        .width-25 {
+          width: 25%;
+        }                
+
+        .width-33 {
+          width: 33%;
+        }
+        
+        .width-34 {
+          width: 34%;
+        }   
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            <table class="tabela-cabecalho">
+                <tbody>
+                @{
+                    if (!string.IsNullOrEmpty(Model.Cadastro.Responsavel))
+                    {
+                        MontarTituloPadrao(CADASTRO_DE_PLANO);
+                        MontarTextoComPrefixoNegrito(RESPONSAVEL,Model.Cadastro.Responsavel);    
+                    }
+                }
+
+                @foreach (var questao in Model.Cadastro.Questoes.OrderBy(o=> o.Ordem))
+                {
+                    switch (questao.TipoQuestao)
+                    {
+                        case TipoQuestao.PeriodoEscolar : MontarTextoComPrefixoNegrito(questao.Questao, questao.Resposta);
+                            break;
+                        case TipoQuestao.Radio: MontarQuestaoRadio(questao);
+                            break;
+                        case TipoQuestao.FrequenciaEstudanteAEE: MontarQuestaoFrequencia(questao);
+                            break;
+                        case TipoQuestao.Texto: MontarQuestaoTexto(questao);
+                            break;
+                    }
+                }
+                </tbody>
+            </table>
+
+            GerarParecer(Model.Parecer);
+        }
+    </div>
+</body>
+</html>

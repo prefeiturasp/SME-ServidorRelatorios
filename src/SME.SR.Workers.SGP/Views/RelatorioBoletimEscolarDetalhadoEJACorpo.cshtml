@@ -296,7 +296,9 @@
     @Html.Raw(ParecerConclusivo(Model.ParecerConclusivo));
 }
 
-
-@Html.Raw(NovaRecomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
-@Html.Raw(NovaRecomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
+@if (Model.ExibirRecomendacoes)
+{
+    @Html.Raw(NovaRecomendacoes(Model.RecomendacoesEstudante, "Recomendações ao estudante"))
+    @Html.Raw(NovaRecomendacoes(Model.RecomendacoesFamilia, "Recomendações a família"))
+}
 @Html.Raw(Anotacoes())

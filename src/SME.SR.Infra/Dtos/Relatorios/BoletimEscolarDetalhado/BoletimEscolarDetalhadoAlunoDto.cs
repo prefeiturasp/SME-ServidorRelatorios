@@ -19,6 +19,8 @@ namespace SME.SR.Infra
 
         public string RecomendacoesFamilia { get; set; }
 
+        public bool ExibirRecomendacoes { get; set; }
+
         public BoletimEscolarDetalhadoAlunoDto()
         {
             Cabecalho = new BoletimEscolarDetalhadoCabecalhoDto();

@@ -17,6 +17,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         private readonly IServicoFila servicoFila;
         private readonly IHtmlHelper htmlHelper;
         private readonly IReportConverter reportConverter;
+        private List<PaginaParaRelatorioPaginacaoSoloDto> paginas;
 
         public GerarRelatorioHtmlPDFBoletimDetalhadoCommandHandler(IConverter converter,
                                                               IServicoFila servicoFila,
@@ -25,25 +26,54 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
             this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
             this.reportConverter = reportConverter ?? throw new ArgumentNullException(nameof(reportConverter));
+            this.paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
         }
 
         public async Task<string> Handle(GerarRelatorioHtmlPDFBoletimDetalhadoCommand request, CancellationToken cancellationToken)
         {
-            var paginas = new List<PaginaParaRelatorioPaginacaoSoloDto>();
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-
             var model = (BoletimEscolarDetalhadoEscolaAquiDto)request.Model;
 
-            const string nomeTemplateCabecalho = "RelatorioBoletimEscolarDetalhadoCabecalho";
-            var nomeTemplateCorpo = request.Modalidade == Modalidade.EJA ? "RelatorioBoletimEscolarDetalhadoEJACorpo" : "RelatorioBoletimEscolarDetalhadoCorpo";
+            if (model.BoletimEscolarDetalhado.ExibirRecomendacao)
+            {
+                await CarreguePaginasComExibicaoDeRecomendacao(model.BoletimEscolarDetalhado, request.Modalidade);
+            }
+            else
+            {
+                await CarreguePaginasSemExibicaoDeRecomendacao(model.BoletimEscolarDetalhado, request.Modalidade);
+            }
 
-            foreach (var boletim in model.BoletimEscolarDetalhado.Boletins.OrderBy(a => a.Cabecalho.NomeTurma))
+            var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
+
+            reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), DateTime.Now.ToString("dd/MM/yyyy"));
+
+            if (request.EnvioPorRabbit)
+            {
+                var filaRabbit = !string.IsNullOrEmpty(request.MensagemDados) ? RotasRabbitSGP.RotaRelatoriosProntosApp : RotasRabbitSGP.RotaRelatoriosProntosSgp;
+                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo, request.MensagemDados), filaRabbit, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                return string.Empty;
+            }
+
+            return request.CodigoCorrelacao.ToString();
+        }
+
+        private string ObterHtmlComLogo(string html)
+        {
+            return html.Replace("logoMono.png", SmeConstants.LogoSmeMono)
+                       .Replace("logo.png", SmeConstants.LogoSme)
+                       .Replace("#PASTACSS", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets/css"))
+                       .Replace("#PASTAFONTS", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets/fonts"));
+        }
+
+        private async Task CarreguePaginasComExibicaoDeRecomendacao(BoletimEscolarDetalhadoDto boletimDto, Modalidade modalidade)
+        {
+            const string nomeTemplateCabecalho = "RelatorioBoletimEscolarDetalhadoCabecalho";
+            var nomeTemplateCorpo = modalidade == Modalidade.EJA ? "RelatorioBoletimEscolarDetalhadoEJACorpo" : "RelatorioBoletimEscolarDetalhadoCorpo";
+
+            foreach (var boletim in boletimDto.Boletins.OrderBy(a => a.Cabecalho.NomeTurma))
             {
                 var htmlCabecalho = await htmlHelper.RenderRazorViewToString(nomeTemplateCabecalho, boletim.Cabecalho);
-                htmlCabecalho = htmlCabecalho.Replace("logoMono.png", SmeConstants.LogoSmeMono);
-                htmlCabecalho = htmlCabecalho.Replace("logo.png", SmeConstants.LogoSme);
-                htmlCabecalho = htmlCabecalho.Replace("#PASTACSS", Path.Combine(caminhoBase, "assets/css"));
-                htmlCabecalho = htmlCabecalho.Replace("#PASTAFONTS", Path.Combine(caminhoBase, "assets/fonts"));
+                htmlCabecalho = ObterHtmlComLogo(htmlCabecalho);
 
                 var htmlCorpo = await htmlHelper.RenderRazorViewToString(nomeTemplateCorpo, boletim);
 
@@ -65,19 +95,29 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
                     paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(htmlParaIncluir, iNumPagina, paginasDoAluno.Length));
                 }
             }
+        }
 
-            var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
+        private async Task CarreguePaginasSemExibicaoDeRecomendacao(BoletimEscolarDetalhadoDto boletimDto, Modalidade modalidade)
+        {
+            var boletinsPorPagina = ObterBoletinsPorPagina(boletimDto, modalidade);
+            var iNumPagina = 1;
 
-            reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), DateTime.Now.ToString("dd/MM/yyyy"));
-
-            if (request.EnvioPorRabbit)
+            foreach (var pagina in boletinsPorPagina)
             {
-                var filaRabbit = !string.IsNullOrEmpty(request.MensagemDados) ? RotasRabbitSGP.RotaRelatoriosProntosApp : RotasRabbitSGP.RotaRelatoriosProntosSgp;
-                await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, request.MensagemTitulo, request.MensagemDados), filaRabbit, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
-                return string.Empty;
-            }
+                var html = await htmlHelper.RenderRazorViewToString("RelatorioBoletimEscolarDetalhadoLista", pagina);
 
-            return request.CodigoCorrelacao.ToString();
+                html = ObterHtmlComLogo(html);
+                paginas.Add(new PaginaParaRelatorioPaginacaoSoloDto(html, iNumPagina, boletinsPorPagina.Count));
+                iNumPagina++;
+            }
+        }
+
+        private  List<BoletimEscolarDetalhadoDto> ObterBoletinsPorPagina(BoletimEscolarDetalhadoDto boletimDto, Modalidade modalidade)
+        {
+            return boletimDto.Boletins.Select((boletim, i) => new { Index = i, Value = boletim })
+                .GroupBy(boletim => boletim.Index / 2)
+                .Select(boletim => new BoletimEscolarDetalhadoDto { Boletins = boletim.Select(v => v.Value).ToList(), Modalidade = modalidade })
+                .ToList();
         }
     }
 }

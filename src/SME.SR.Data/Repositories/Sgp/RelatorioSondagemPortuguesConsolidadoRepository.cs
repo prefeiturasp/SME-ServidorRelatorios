@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.SR.Data.Repositories.Sgp
+namespace SME.SR.Data
 {
     public class RelatorioSondagemPortuguesConsolidadoRepository : IRelatorioSondagemPortuguesConsolidadoRepository
     {
