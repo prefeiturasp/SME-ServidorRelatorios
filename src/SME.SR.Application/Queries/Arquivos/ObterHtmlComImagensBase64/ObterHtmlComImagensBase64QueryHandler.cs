@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using MediatR;
 using SME.SR.Infra.Utilitarios;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -31,9 +32,7 @@ namespace SME.SR.Application
                 foreach (var img in nodes)
                 {
                     var caminho = img.Attributes["src"].Value;
-
                     var arquivoBase64 = await ObterArquivoRemotoBase64(caminho, request.EscalaHorizontal, request.EscalaVertical);
-
                     registroFormatado = registroFormatado.Replace(caminho, arquivoBase64);
                 }
 
@@ -53,6 +52,6 @@ namespace SME.SR.Application
             var posicao = url.IndexOf("/Arquivos/");
             var caminho = url.Substring(posicao, url.Length - posicao);
             return await mediator.Send(new ObterArquivoLocalBase64Command(caminho));
-        }        
+        }
     }
 }
