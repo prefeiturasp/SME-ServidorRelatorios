@@ -64,9 +64,11 @@ namespace SME.SR.Data
 						inner join ocorrencia_tipo ot on ot.id = o.ocorrencia_tipo_id 
 						inner join ocorrencia_aluno oa on oa.ocorrencia_id = o.id 
                         where not o.excluido 
-                        	and o.id = any(@ocorrenciaIds)
-                        	and o.turma_id = @turmaId
- 					    order by o.data_ocorrencia desc";
+                        	and o.id = any(@ocorrenciaIds)";
+
+            if (turmaId != 0)
+                query += " and o.turma_id = @turmaId ";
+            query += " order by o.data_ocorrencia desc";
 
             var parametros = new
             {

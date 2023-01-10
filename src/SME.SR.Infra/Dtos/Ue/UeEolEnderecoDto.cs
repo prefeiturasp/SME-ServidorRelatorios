@@ -12,7 +12,8 @@
         public string Endereco
             => $"{TipoLogradouro.Trim()} {Logradouro.Trim()}, {Numero.Trim()}{ObterComplementoEndereco()} - {Bairro}.".ToUpper();
         public string TelefoneFormatado
-            => $"({Telefone.Substring(0,2)}) {Telefone.Substring(3,4)}-{Telefone.Substring(7, 4)}";
+           => !string.IsNullOrEmpty(Telefone) ? $"({Telefone.Substring(0,2)}) {Telefone.Substring(3,4)}-{Telefone.Substring(7, 4)}" : "";
+   
 
         private string ObterComplementoEndereco()
         {

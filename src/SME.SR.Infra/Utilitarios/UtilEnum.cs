@@ -42,7 +42,17 @@ namespace SME.SR.Infra.Utilitarios
 
 
         public static string ShortName(this Enum enumValue)
-            => enumValue.GetAttribute<DisplayAttribute>().ShortName;
+        {
+            try
+            {
+                return enumValue.GetAttribute<DisplayAttribute>().ShortName;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
         public static string Description(this Enum enumValue)
             => enumValue.GetAttribute<DisplayAttribute>().Description;
 

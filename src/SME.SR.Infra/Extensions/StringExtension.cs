@@ -6,7 +6,7 @@ namespace SME.SR.Infra.Extensions
     {
         public static string LimparFormatacaoHtml(this string str)
         {
-            HtmlDocument htmlDoc = new HtmlDocument();
+            var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(str);            
             str = htmlDoc.DocumentNode.InnerText;
             str = str.Replace("&gt;", "");
@@ -18,9 +18,14 @@ namespace SME.SR.Infra.Extensions
             if (input.Length < 1)
                 return input;
 
-            string sentence = input.ToLower();
+            var sentence = input.ToLower();
             return sentence[0].ToString().ToUpper() +
                sentence.Substring(1);
+        }
+        
+        public static bool EstaFiltrandoTodas(this string filtro)
+        {
+            return filtro is "-99" || string.IsNullOrEmpty(filtro);
         }
     }
 }

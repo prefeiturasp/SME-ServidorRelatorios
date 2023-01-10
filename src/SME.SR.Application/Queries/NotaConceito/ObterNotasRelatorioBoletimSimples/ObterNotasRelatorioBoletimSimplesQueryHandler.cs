@@ -23,20 +23,16 @@ namespace SME.SR.Application
             var notasRetorno = new List<NotasAlunoBimestreBoletimSimplesDto>();
             var alunosCodigos = request.CodigosAlunos;
             int alunosPorPagina = 100;
+            int cont = 0;
+            int i = 0;
 
-            foreach (string codTurma in request.CodigosTurmas)
+            while (cont < alunosCodigos.Length)
             {
-                var arrTurma = new string[] { codTurma };
-                int cont = 0;
-                int i = 0;
-                while (cont < alunosCodigos.Length)
-                {
-                    var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
-                    var notasAlunosPagina = await conselhoClasseConsolidadoRepository.ObterNotasBoletimPorAlunoTurma(alunosCodigos, request.CodigosTurmas, request.Semestre);
-                    notasRetorno.AddRange(notasAlunosPagina.ToList());
-                    cont += alunosPagina.Count();
-                    i++;
-                }
+                var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToArray();
+                var notasAlunosPagina = await conselhoClasseConsolidadoRepository.ObterNotasBoletimPorAlunoTurma(alunosPagina, request.CodigosTurmas, request.Semestre);
+                notasRetorno.AddRange(notasAlunosPagina.ToList());
+                cont += alunosPagina.Count();
+                i++;
             }
 
             if (notasRetorno == null || !notasRetorno.Any())

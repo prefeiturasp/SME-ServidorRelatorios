@@ -11,7 +11,7 @@
     var ehEnsinoMedio = Model.Count > 0 && Model[0].ModalidadeTurma == SME.SR.Infra.Modalidade.Medio;
     var ehEJA = Model.Count > 0 && Model[0].ModalidadeTurma == SME.SR.Infra.Modalidade.EJA;
 
-    var heightBoletim = @ehEnsinoMedio ? "1345px" : "445px";
+    var heightBoletim = @ehEnsinoMedio ? "670px" : "450px";
     var topFooter = @ehEnsinoMedio ? "1295px" : "405px";
 
     void MontarCabecalho(BoletimEscolarCabecalhoDto cabecalho)

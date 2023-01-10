@@ -92,7 +92,7 @@ namespace SME.SR.Data.Interfaces
 
         public async Task<IEnumerable<ItineranciaQuestaoDto>> ObterQuestoesPorItineranciaIds(long[] ids)
         {
-            var query = @"select iq.itinerancia_id as ItineranciaId, q.ordem, q.nome, iq.resposta
+            var query = @"select iq.itinerancia_id as ItineranciaId, q.ordem, q.nome, iq.resposta,q.tipo as TipoQuestao
                           from itinerancia_questao iq 
                          inner join questao q on q.id = iq.questao_id 
                          where not iq.excluido 
