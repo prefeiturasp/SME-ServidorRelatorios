@@ -27,7 +27,7 @@ namespace SME.SR.Application
 
             var itinerancias = await itineranciaRepository.ObterComUEDREPorIds(ids);
             var objetivos = await itineranciaRepository.ObterObjetivosPorItineranciaIds(ids);
-            var questoesItinerancias = await itineranciaRepository.ObterQuestoesPorItineranciaIds(ids);
+            var questoesItinerancias = (await itineranciaRepository.ObterQuestoesPorItineranciaIds(ids)).Where(x => x.TipoQuestao != TipoQuestao.Upload);
             var alunosItinerancias = await itineranciaRepository.ObterAlunosPorItineranciaIds(ids);
             var nomesAlunos = await mediator.Send(new ObterNomesAlunosPorCodigosQuery(alunosItinerancias.Select(a => a.AlunoCodigo).ToArray()));
 

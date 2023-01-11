@@ -8,5 +8,6 @@ namespace SME.SR.Data.Interfaces
     {
         Task<IEnumerable<PeriodoEscolar>> ObterPeriodosEscolaresPorTipoCalendario(long tipoCalendarioId);
         Task<PeriodoEscolar> ObterUltimoPeriodoAsync(int anoLetivo, ModalidadeTipoCalendario modalidadeTipoCalendario, int semestre);
+        Task<PeriodoEscolar> ObterPeriodoEscolarPorId(long idPeriodoEscolar);
     }
 }

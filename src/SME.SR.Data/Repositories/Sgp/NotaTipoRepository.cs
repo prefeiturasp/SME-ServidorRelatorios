@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SME.SR.Data.Repositories.Sgp
+namespace SME.SR.Data
 {
     public class NotaTipoRepository : INotaTipoRepository
     {

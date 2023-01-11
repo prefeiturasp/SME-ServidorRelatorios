@@ -1,0 +1,225 @@
+﻿@using SME.SR.Infra;
+
+@model RelatorioPlanosAeeDto
+@{
+    const string TODAS = "TODAS";
+
+    var mostrarDre = Model.Cabecalho.DreNome == TODAS;
+    var mostrarUe = Model.Cabecalho.UeNome == TODAS;
+
+    var tdTheadPrincipal = "borda-padrao alinhar-esquerda padding-left-15";
+    var tdTheadPadrao = "borda-padrao background-color-thead";
+    var tdTheadInterno = tdTheadPadrao + " alinhar-esquerda";
+
+    void MontarCabecalho()
+    {
+        <div>
+            <img class='img-logo-sgp' src=@SME.SR.HtmlPdf.SmeConstants.LogoSmeMono alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE PLANO AEE</div>
+
+        <table class="estilo-tabela campos-header-principal-pagina">
+            <tbody>
+                <tr>
+                    <td class='@tdTheadPrincipal width-40'><strong>DRE:</strong> @Model.Cabecalho.DreNome</td>
+                    <td class='@tdTheadPrincipal width-60' colspan="2"><strong>UE:</strong> @Model.Cabecalho.UeNome</td>
+                </tr>
+                <tr>
+                    <td class='@tdTheadPrincipal width-60' colspan="2"><strong>USUÁRIO:</strong> @Model.Cabecalho.UsuarioNome</td>
+                    <td class='@tdTheadPrincipal width-40'><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE PLANO AEE</title>
+    <style>
+        .container-conteudo {
+            font-family: 'Roboto Mono';
+            background: white;
+            color: #42474a;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+            font-weight: normal;
+        }
+
+        .titulo-sub-relatorio {
+            text-align: right;
+            font-size: 12.5px;
+            margin-top: 7px;
+            font-weight: normal;
+        }
+
+        .campos-header-principal-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+            font-size: 14px !important;
+        }
+
+        .th-header-principal {
+            background-color: white;
+            position: relative;
+        }
+
+        .width-20 {
+            width: 20%;
+        }
+
+        .width-80 {
+            width: 80%;
+        }
+
+        .padding-left-15 {
+            padding-left: 15px;
+        }
+
+        .with-70 {
+            width: 70%;
+        }
+
+        .with-60 {
+            width: 60%;
+        }
+
+        .with-40 {
+            width: 40%;
+        }
+
+        .with-30 {
+            width: 30%;
+        }
+
+        .estilo-tabela {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        .borda-padrao {
+            border: 1px solid #42474a;
+        }
+
+        .background-color-thead {
+            background-color: #f3f3f3;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .border-top-none {
+            border-top: none;
+        }
+
+        .quebra-conteudo-editor table {
+            page-break-inside: avoid;
+        }
+
+        .quebra-conteudo-editor img {
+            padding-top: 5px !important;
+        }
+
+        .padding-conteudo-editor {
+            padding-left: 25px !important;
+            padding-right: 25px !important;
+        }
+    </style>
+</head>
+<body class="container-conteudo">
+
+    <div>
+        @{
+            <table style='page-break-inside:avoid'>
+                <thead>
+                    <tr>
+                        <th class="th-header-principal">
+                            @{
+                                MontarCabecalho();
+                            }
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var agrupamento in Model.AgrupamentosDreUe)
+                    {
+                        <tr>
+                            <td class="td-tabela-principal">
+                                <table class='estilo-tabela' style="page-break-inside: avoid">
+                                    <thead>
+                                        <tr>
+                                            @if (mostrarDre && mostrarUe)
+                                            {
+                                                <td class='@tdTheadInterno with-40'><strong>DRE:</strong> @agrupamento.DreNome</td>
+                                                <td class='@tdTheadInterno with-60'><strong>UE:</strong> @agrupamento.UeNome</td>
+                                            }
+                                            else
+                                            {
+                                                @if (mostrarUe)
+                                                {
+                                                    <td class='@tdTheadInterno' colspan='2'><strong>UE:</strong> @agrupamento.UeNome</td>
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan='2'>
+                                                @foreach (var detalhe in agrupamento.Detalhes)
+                                                {
+                                                    <table class='estilo-tabela' style="page-break-inside: avoid">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class='@tdTheadInterno with-70' colspan="2"><strong>CRIANÇA/ESTUDANTE:</strong> @detalhe.Aluno</td>
+                                                                <td class='@tdTheadInterno with-30'><strong>TURMA:</strong> @detalhe.Turma</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class='@tdTheadInterno with-40'><strong>SITUAÇÃO:</strong> @detalhe.Situacao</td>
+                                                                <td class='@tdTheadInterno with-60' colspan="2"><strong>RESPONSÁVEL:</strong> @detalhe.Responsavel</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class='@tdTheadInterno with-30'><strong>VERSÃO:</strong> @detalhe.Versao</td>
+                                                                <td class='@tdTheadInterno with-70' colspan="2"><strong>PAAI RESPONSÁVEL:</strong> @detalhe.ResponsavelPAAI</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                                <br />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</body>
+</html>

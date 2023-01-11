@@ -1,4 +1,3 @@
-using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Infra;
 using System.Threading.Tasks;
 using Xunit;
