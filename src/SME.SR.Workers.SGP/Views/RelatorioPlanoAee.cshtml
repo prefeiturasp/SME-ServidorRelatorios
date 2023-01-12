@@ -89,7 +89,7 @@
     void MontarQuestaoSrm(QuestaoPlanoAeeDto questao)
     {
         
-        if (questao.InformacoesSrm.Any())
+        if (questao.InformacoesSrm != null && questao.InformacoesSrm.Any())
         {
             MontarTituloPadrao(questao.Questao);
             
