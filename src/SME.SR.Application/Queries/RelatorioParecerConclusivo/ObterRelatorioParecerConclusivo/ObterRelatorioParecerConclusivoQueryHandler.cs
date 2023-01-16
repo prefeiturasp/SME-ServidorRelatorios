@@ -197,7 +197,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
             if (request.filtroRelatorioParecerConclusivoDto.Ciclo == 0)
                 retorno.Ciclo = "Todos";
             else
-                retorno.Ciclo = parecesParaTratar.FirstOrDefault(a => a.CicloId == request.filtroRelatorioParecerConclusivoDto.Ciclo).Ciclo;
+                retorno.Ciclo = parecesParaTratar.FirstOrDefault(a => a.CicloId == request.filtroRelatorioParecerConclusivoDto.Ciclo)?.Ciclo;
 
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
 
