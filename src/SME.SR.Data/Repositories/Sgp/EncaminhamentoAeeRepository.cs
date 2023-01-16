@@ -78,12 +78,14 @@ namespace SME.SR.Data
 
         private string ObterCodicaoSituacao(FiltroRelatorioEncaminhamentoAeeDto filtro)  
         {
-            if (!filtro.ExibirEncerrados)
-                return $" and ea.situacao <> {(int)SituacaoEncaminhamentoAEE.EncerradoAutomaticamente}";
-            else if (!filtro.SituacaoIds.EstaFiltrandoTodas())
-                return " and ea.situacao = ANY(@situacaoIds) ";
+            var condicao = string.Empty;
 
-            return string.Empty;
+            if (!filtro.ExibirEncerrados)
+                condicao += $" and ea.situacao <> {(int)SituacaoEncaminhamentoAEE.EncerradoAutomaticamente}";
+            if (!filtro.SituacaoIds.EstaFiltrandoTodas())
+                condicao += " and ea.situacao = ANY(@situacaoIds) ";
+
+            return condicao;
         }
 
         private string ObterCodicaoPAAI(FiltroRelatorioEncaminhamentoAeeDto filtro) =>
