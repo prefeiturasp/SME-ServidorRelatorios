@@ -41,7 +41,7 @@ namespace SME.SR.Data
 					inner join ue u on u.id = t.ue_id 
 					inner join dre d on d.id = u.dre_id
 					left join usuario responsavel on responsavel.id = ea.responsavel_id
-                where 1 = 1	");
+                where not ea.excluido ");
 
             query.AppendLine(ObterCondicao(filtro));
 
@@ -78,8 +78,8 @@ namespace SME.SR.Data
 
         private string ObterCodicaoSituacao(FiltroRelatorioEncaminhamentoAeeDto filtro)  
         {
-            if (filtro.ExibirEncerrados)
-                return $" and ea.situacao = {(int)SituacaoEncaminhamentoAEE.EncerradoAutomaticamente}";
+            if (!filtro.ExibirEncerrados)
+                return $" and ea.situacao <> {(int)SituacaoEncaminhamentoAEE.EncerradoAutomaticamente}";
             else if (!filtro.SituacaoIds.EstaFiltrandoTodas())
                 return " and ea.situacao = ANY(@situacaoIds) ";
 
