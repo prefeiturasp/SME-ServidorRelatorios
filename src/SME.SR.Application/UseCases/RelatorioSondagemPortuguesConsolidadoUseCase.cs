@@ -212,23 +212,25 @@ namespace SME.SR.Application
 
                     var respostas = linhasSondagem.Where(o => o.Ordem == ordem.Ordem && o.Pergunta == pergunta.Pergunta).ToList();
                     var totalRespostas = respostas.Sum(o => o.Quantidade);
+                    var totalAlunos = alunosPorAno >= totalRespostas ? alunosPorAno : totalRespostas;
+
                     foreach (var resposta in respostas)
                     {
                         respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                         {
                             Resposta = resposta.Resposta,
                             Quantidade = resposta.Quantidade,
-                            Total = alunosPorAno,
-                            Percentual = Decimal.Divide(resposta.Quantidade, alunosPorAno)
+                            Total = totalAlunos,
+                            Percentual = Decimal.Divide(resposta.Quantidade, totalAlunos)
                         });
                     }
 
                     respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
                     {
                         Resposta = "Sem preenchimento",
-                        Quantidade = alunosPorAno - totalRespostas,
+                        Quantidade = totalAlunos - totalRespostas,
                         Total = alunosPorAno,
-                        Percentual = Decimal.Divide(alunosPorAno - totalRespostas, alunosPorAno)
+                        Percentual = Decimal.Divide(totalAlunos - totalRespostas, totalAlunos)
                     });
 
                     perguntasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
