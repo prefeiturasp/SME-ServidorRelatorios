@@ -155,6 +155,8 @@ namespace SME.SR.Application
                 return string.Empty;
 
             var questaoComplementar = opcaoResposta.QuestoesComplementares.FirstOrDefault();
+            if (questaoComplementar.Tipo != TipoQuestao.Texto && questaoComplementar.Tipo != TipoQuestao.Frase)
+                return string.Empty;
 
             var respostaQuestaoComplementar =
                 questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
