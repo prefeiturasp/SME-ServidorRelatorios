@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Infra;
@@ -64,27 +66,21 @@ namespace SME.SR.Application
         private async Task ObterQuestoesSecoes(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
         {
             var questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_INFORMACOES_ESCOLARES));
-            var questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.InformacoesEscolares = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_INFORMACOES_ESCOLARES, Questoes = questoesRelatorio } ;
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.InformacoesEscolares = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_INFORMACOES_ESCOLARES);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_DESCRICAO_ENCAMINHAMENTO));
-            questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.DescricaoEncaminhamento = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_DESCRICAO_ENCAMINHAMENTO, Questoes = questoesRelatorio };
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.DescricaoEncaminhamento = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_DESCRICAO_ENCAMINHAMENTO);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_COORDENACAO));
-            questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerCoordenacao = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_PARECER_COORDENACAO, Questoes = questoesRelatorio };
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerCoordenacao = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_PARECER_COORDENACAO);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_AEE));
-            questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerAee = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_PARECER_AEE, Questoes = questoesRelatorio };
-
-
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerAee = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_PARECER_AEE);
         }
 
-        private async Task<List<QuestaoEncaminhamentoAeeDto>> ObterQuestoesQuestionario(List<QuestaoDto> questoes)
+        private async Task<SecaoQuestoesEncaminhamentoAeeDto> ObterQuestoesQuestionario(List<QuestaoDto> questoes, string nomeComponenteSecao)
         {
-            var questoesRelatorio = new List<QuestaoEncaminhamentoAeeDto>();
+            var secao = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = nomeComponenteSecao };
 
             foreach (var questao in questoes)
             {
@@ -96,42 +92,70 @@ namespace SME.SR.Application
                     TipoQuestao = questao.Tipo
                 };
 
-                var respostaQuestao = questao.Respostas.FirstOrDefault(c => c.QuestaoId == questao.Id);
-
-                if (respostaQuestao == null)
+                if (questao.Respostas == null || !questao.Respostas.Any())
                     continue;
 
-                questaoRelatorio.RespostaId = respostaQuestao.OpcaoRespostaId;
-                questaoRelatorio.Resposta = respostaQuestao.Texto;
-
-                var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
-                    c.Id == respostaQuestao.OpcaoRespostaId);
-
-                questaoRelatorio.Resposta = questao.Tipo switch
+                foreach (var resposta in questao.Respostas)
                 {
-                    TipoQuestao.Radio => opcaoRespostaQuestao?.Nome,
-                };
+                    var respostaEncaminhamento = new RespostaEncaminhamentoAeeDto()
+                                                            {
+                                                                RespostaId = resposta.OpcaoRespostaId,
+                                                                Resposta = resposta.Texto,
+                                                            };
 
-                /*
-                 
-                   questaoRelatorio.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
-                
-                var respostaFrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
-                
-                if (respostaFrequenciaAluno != null)
-                    questaoRelatorio.FrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
+                    var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
+                                                c.Id == resposta.OpcaoRespostaId);
 
-                
-                var respostaSrm =  ObterRespostaInformacoesSrm(questao.Tipo,respostaQuestao);
+                    respostaEncaminhamento.Resposta = questao.Tipo 
+                                                        switch {
+                                                                    TipoQuestao.Radio => opcaoRespostaQuestao?.Nome,
+                                                                };
+                    respostaEncaminhamento.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
 
-                if (respostaSrm != null)
-                    questaoRelatorio.InformacoesSrm = respostaSrm;
+                    questaoRelatorio.Respostas.Add(respostaEncaminhamento);
+                }
 
-                 */
-                questoesRelatorio.Add(questaoRelatorio);
+                if (questao.Tipo == TipoQuestao.AtendimentoClinico) {
+                    var respostaAtendimentoClinicoAluno = ObterRespostaAtendimentoClinicoAluno(questao.Respostas.FirstOrDefault());
+                    if (respostaAtendimentoClinicoAluno != null)
+                        secao.AtendimentoClinico = respostaAtendimentoClinicoAluno;
+                }
+                else if (questao.Tipo == TipoQuestao.InformacoesEscolares)
+                {
+                    var respostaInformacaoEscolarAluno = ObterRespostaInformacaoEscolarAluno(questao.Respostas.FirstOrDefault());
+                    if (respostaInformacaoEscolarAluno != null)
+                        secao.InformacaoEscolar = respostaInformacaoEscolarAluno;
+                }
+
+                secao.Questoes.Add(questaoRelatorio);
             }
 
-            return questoesRelatorio;
+            return secao;
+        }
+
+        private static List<AtendimentoClinicoAlunoDto> ObterRespostaAtendimentoClinicoAluno(RespostaQuestaoDto respostaQuestao)
+        {
+            var resposta = JsonConvert.DeserializeObject<List<AtendimentoClinicoAlunoDto>>(respostaQuestao.Texto);
+            return resposta;
+        }
+
+        private static List<InformacaoEscolarAlunoDto> ObterRespostaInformacaoEscolarAluno(RespostaQuestaoDto respostaQuestao)
+        {
+            var resposta = JsonConvert.DeserializeObject<List<InformacaoEscolarAlunoDto>>(respostaQuestao.Texto);
+            return resposta;
+        }
+
+        private static string ObterJustificativaQuestao(OpcaoRespostaDto opcaoResposta)
+        {
+            if (opcaoResposta?.QuestoesComplementares == null)
+                return string.Empty;
+
+            var questaoComplementar = opcaoResposta.QuestoesComplementares.FirstOrDefault();
+
+            var respostaQuestaoComplementar =
+                questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
+
+            return UtilRegex.RemoverTagsHtml(respostaQuestaoComplementar?.Texto);
         }
     }
 }
