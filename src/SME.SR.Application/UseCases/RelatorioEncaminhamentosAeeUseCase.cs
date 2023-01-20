@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioEncaminhamentoAeeUseCase : IRelatorioEncaminhamentoAeeUseCase
+    public class RelatorioEncaminhamentosAeeUseCase : IRelatorioEncaminhamentosAeeUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioEncaminhamentoAeeUseCase(IMediator mediator)
+        public RelatorioEncaminhamentosAeeUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }

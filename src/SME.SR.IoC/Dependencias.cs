@@ -244,7 +244,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioFrequenciaGlobalUseCase, RelatorioFrequenciaGlobalUseCase>();
             services.TryAddScoped<IRelatorioPlanoAeeUseCase, RelatorioPlanoAeeUseCase>();
             services.TryAddScoped<IRelatorioPlanosAeeUseCase, RelatorioPlanosAeeUseCase>();
-            services.TryAddScoped<IRelatorioEncaminhamentoAeeUseCase, RelatorioEncaminhamentoAeeUseCase>();
+            services.TryAddScoped<IRelatorioEncaminhamentosAeeUseCase, RelatorioEncaminhamentosAeeUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
