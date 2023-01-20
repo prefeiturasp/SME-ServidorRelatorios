@@ -7,6 +7,8 @@ using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SME.SR.Data;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
@@ -362,9 +364,32 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorio/Teste")]
+        public async Task<IActionResult> RelatorioConselhoClasseAlunoTeste([FromServices] IRelatorioEncaminhamentoAeeDetalhadoUseCase relatorio)
+        {
+            var filtroRelatorioDto = new FiltroRelatorioDto()
+            {
+                Action = "relatorio/encaminhamentoaeedetalhado",
+                UsuarioLogadoRF = "6769195",
+                CodigoCorrelacao = new Guid("AF3A5649-E805-4CB3-B73E-5191C445DE19"),
+            };
+
+            var filtro = new FiltroRelatorioEncaminhamentoAeeDetalhadoDto()
+            {
+                EncaminhamentosAeeId = new long[] { 4357 } 
+            };
+            var mensagem = JsonConvert.SerializeObject(filtro, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            filtroRelatorioDto.Mensagem = mensagem;
+
+            await relatorio.Executar(filtroRelatorioDto);
+            return Ok();
+        }
+
+        
 
         #region App Escola Aqui
-        [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
+                [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
         public async Task<bool> AcompanhamentoAprendizagemEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoAprendizagemUseCase relatorioUseCase)
         {
