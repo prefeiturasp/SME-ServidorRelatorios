@@ -108,16 +108,19 @@ namespace SME.SR.Application
                         if (questao.Tipo == TipoQuestao.Radio || questao.Tipo == TipoQuestao.ComboMultiplaEscolha)
                             respostaEncaminhamento.Resposta = opcaoRespostaQuestao.Nome;
                         respostaEncaminhamento.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
+
+                        var atendimentoClinico = ObterAtencimentoClinicoQuestao(opcaoRespostaQuestao);
+                        if (atendimentoClinico!=null)
+                        {
+                            var respostaAtendimentoClinicoAluno = ObterRespostaAtendimentoClinicoAluno(atendimentoClinico);
+                            if (respostaAtendimentoClinicoAluno != null)
+                                secao.AtendimentoClinico = respostaAtendimentoClinicoAluno;
+                        }
                     }
                     questaoRelatorio.Respostas.Add(respostaEncaminhamento);
                 }
 
-                if (questao.Tipo == TipoQuestao.AtendimentoClinico) {
-                    var respostaAtendimentoClinicoAluno = ObterRespostaAtendimentoClinicoAluno(questao.Respostas.FirstOrDefault());
-                    if (respostaAtendimentoClinicoAluno != null)
-                        secao.AtendimentoClinico = respostaAtendimentoClinicoAluno;
-                }
-                else if (questao.Tipo == TipoQuestao.InformacoesEscolares)
+                if (questao.Tipo == TipoQuestao.InformacoesEscolares)
                 {
                     var respostaInformacaoEscolarAluno = ObterRespostaInformacaoEscolarAluno(questao.Respostas.FirstOrDefault());
                     if (respostaInformacaoEscolarAluno != null)
@@ -157,6 +160,21 @@ namespace SME.SR.Application
                 questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
 
             return UtilRegex.RemoverTagsHtml(respostaQuestaoComplementar?.Texto);
+        }
+
+        private static RespostaQuestaoDto ObterAtencimentoClinicoQuestao(OpcaoRespostaDto opcaoResposta)
+        {
+            if (opcaoResposta?.QuestoesComplementares == null)
+                return null;
+
+            var questaoComplementar = opcaoResposta.QuestoesComplementares.FirstOrDefault();
+            if (questaoComplementar.Tipo != TipoQuestao.AtendimentoClinico)
+                return null;
+
+            var respostaQuestaoComplementar =
+                questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
+
+            return respostaQuestaoComplementar;
         }
     }
 }

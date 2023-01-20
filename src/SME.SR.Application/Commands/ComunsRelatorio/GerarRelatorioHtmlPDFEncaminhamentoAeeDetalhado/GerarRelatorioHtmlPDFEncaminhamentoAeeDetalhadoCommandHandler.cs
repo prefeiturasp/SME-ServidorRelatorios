@@ -57,7 +57,7 @@ namespace SME.SR.Application
         }
 
 
-        private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(RelatorioEncaminhamentoAeeDto relatorio, int pagina, int totalPaginas)
+        private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(RelatorioEncaminhamentoAeeDetalhadoDto relatorio, int pagina, int totalPaginas)
         {
             var html = await htmlHelper.RenderRazorViewToString("RelatorioEncaminhamentoAEEDetalhado", relatorio);
             html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
