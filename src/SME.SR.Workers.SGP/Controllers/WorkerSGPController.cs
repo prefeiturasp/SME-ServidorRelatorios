@@ -354,21 +354,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        /*[HttpGet("relatorios/encaminhamentoaeedetalhado")]
+        [HttpGet("relatorios/encaminhamentoaeedetalhado")]
         [Action("relatorios/encaminhamentoaeedetalhado", typeof(IRelatorioEncaminhamentoAeeDetalhadoUseCase))]
         public async Task<bool> RelatorioEncaminhamentoAeeDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentoAeeDetalhadoUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
-        }*/
-
-        [HttpGet("relatorios/encaminhamentoaeedetalhado2")]
-        [Action("relatorios/encaminhamentoaeedetalhado2", typeof(IRelatorioEncaminhamentoAeeDetalhadoUseCase))]
-        public async Task<bool> RelatorioEncaminhamentoAeeDetalhado2([FromQuery] long[] ids, [FromServices] IRelatorioEncaminhamentoAeeDetalhadoUseCase useCase)
-        {
-            await useCase.Executar(ids);
-            return true;
         }
+
 
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]

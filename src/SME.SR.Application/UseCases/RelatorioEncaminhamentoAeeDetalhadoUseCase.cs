@@ -20,12 +20,11 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task Executar(long []ids)//FiltroRelatorioEncaminhamentoAeeDetalhadoDto request)
+        public async Task Executar(FiltroRelatorioDto request)
         {
-            //var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoAeeDetalhadoDto>();
-            //var encaminhamentosAee = await mediator.Send(new ObterEncaminhamentosAEEPorIdQuery(filtroRelatorio));
-            var encaminhamentosAee = await mediator.Send(new ObterEncaminhamentosAEEPorIdQuery(new ids));
-
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoAeeDetalhadoDto>();
+            var encaminhamentosAee = await mediator.Send(new ObterEncaminhamentosAEEPorIdQuery(filtroRelatorio));
+            
             if (encaminhamentosAee == null || !encaminhamentosAee.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 

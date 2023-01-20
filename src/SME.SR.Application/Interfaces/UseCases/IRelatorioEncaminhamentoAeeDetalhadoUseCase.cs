@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Interfaces
 {
-    public interface IRelatorioEncaminhamentoAeeDetalhadoUseCase //: IUseCase
-    {
-        Task Executar(FiltroRelatorioEncaminhamentoAeeDetalhadoDto request);
-    }
+    public interface IRelatorioEncaminhamentoAeeDetalhadoUseCase : IUseCase
+   {}
 }
