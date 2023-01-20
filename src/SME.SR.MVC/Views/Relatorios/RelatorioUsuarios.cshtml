@@ -74,10 +74,10 @@
                     foreach (var usuario in perfil.Usuarios)
                     {
                         str += $@"<tr>
-                <td width='20%' class='td-valor'>{usuario.Login}</td>
-                <td width='30%' class='td-valor'>{usuario.Nome}</td>
-                <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                <td width='auto' class='td-valor'>{usuario.Login}</td>
+                <td width='auto' class='td-valor'>{usuario.Nome}</td>
+                <td width='auto' class='td-valor'>{usuario.Situacao}</td>
+                <td width='auto' class='td-valor'>{usuario.UltimoAcesso}</td>
               </tr>";
 
                         contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 35 ? (int)(usuario.Nome.Length / 35) + 1 : 1);
@@ -115,10 +115,10 @@
                         foreach (var usuario in perfil.Usuarios)
                         {
                             str += $@"<tr>
-                                <td width='20%' class='td-valor'>{usuario.Login}</td>
-                                <td width='30%' class='td-valor'>{usuario.Nome}</td>
-                                <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                                <td width='30%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                                <td width='auto' class='td-valor'>{usuario.Login}</td>
+                                <td width='auto' class='td-valor'>{usuario.Nome}</td>
+                                <td width='auto' class='td-valor'>{usuario.Situacao}</td>
+                                <td width='auto' class='td-valor'>{usuario.UltimoAcesso}</td>
                               </tr>";
 
                             contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 16 ? (int)(usuario.Nome.Length / 16) + 1 : 1);
