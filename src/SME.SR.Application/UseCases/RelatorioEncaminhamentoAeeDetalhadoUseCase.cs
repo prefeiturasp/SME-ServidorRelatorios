@@ -14,6 +14,10 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private const string SECAO_INFORMACOES_ESCOLARES = "INFORMACOES_ESCOLARES";
+        private const string SECAO_DESCRICAO_ENCAMINHAMENTO = "DESCRICAO_ENCAMINHAMENTO";
+        private const string SECAO_PARECER_COORDENACAO = "PARECER_COORDENACAO";
+        private const string SECAO_PARECER_AEE = "PARECER_AEE";
+
 
         public RelatorioEncaminhamentoAeeDetalhadoUseCase(IMediator mediator)
         {
@@ -35,39 +39,12 @@ namespace SME.SR.Application
                 var relatorio = new RelatorioEncaminhamentoAeeDetalhadoDto();
 
                 ObterCabecalho(encaminhamentoAee, relatorio);
-                await ObterCadastro(encaminhamentoAee, relatorio);
-                //ObterParecer(planoAee, relatorioPlanoAee);
+                await ObterQuestoesSecoes(encaminhamentoAee, relatorio);
 
                 relatorios.Add(relatorio);
             }
 
-            /* var encaminhamentosAgrupados = encaminhamentosAee.GroupBy(g => new
-             {
-                 DreId = g.DreId,
-                 DreNome = g.DreAbreviacao,
-                 UeNome = $"{g.UeCodigo} - {g.TipoEscola.ShortName()} {g.UeNome}",
-             }, (key, group) =>
-             new AgrupamentoEncaminhamentoAeeDreUeDto()
-             {
-                 DreId = key.DreId,
-                 DreNome = key.DreNome,
-                 UeNome = key.UeNome,
-                 Detalhes = group.Select(s =>
-                 new DetalheEncaminhamentoAeeDto()
-                 {
-                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
-                     Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}",
-                     Situacao = ((SituacaoEncaminhamentoAEE)s.Situacao).Name(),
-                     ResponsavelPAAI = !string.IsNullOrEmpty(s.ResponsavelPaaiNome) ? $"{s.ResponsavelPaaiNome} ({s.ResponsavelPaaiLoginRf})" : string.Empty,
-                 }).OrderBy(oAluno => oAluno.Aluno).ToList()
-             }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeNome).ToList();
-
-             var cabecalho = new CabecalhoEncaminhamentoAeeDto()
-             {
-                 DreNome = filtroRelatorio.DreCodigo.Equals("-99") ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
-                 UeNome = filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().UeNome,
-                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
-             };
+           /*
 
              await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));*/
         }
@@ -84,10 +61,29 @@ namespace SME.SR.Application
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.DataCriacao = encaminhamentoAee.CriadoEm;
         }
 
-        private async Task ObterCadastro(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
+        private async Task ObterQuestoesSecoes(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
         {
             var questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_INFORMACOES_ESCOLARES));
+            var questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.InformacoesEscolares = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_INFORMACOES_ESCOLARES, Questoes = questoesRelatorio } ;
 
+            questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_DESCRICAO_ENCAMINHAMENTO));
+            questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.DescricaoEncaminhamento = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_DESCRICAO_ENCAMINHAMENTO, Questoes = questoesRelatorio };
+
+            questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_COORDENACAO));
+            questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerCoordenacao = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_PARECER_COORDENACAO, Questoes = questoesRelatorio };
+
+            questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_AEE));
+            questoesRelatorio = await ObterQuestoesQuestionario(questoes.ToList());
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerAee = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = SECAO_PARECER_AEE, Questoes = questoesRelatorio };
+
+
+        }
+
+        private async Task<List<QuestaoEncaminhamentoAeeDto>> ObterQuestoesQuestionario(List<QuestaoDto> questoes)
+        {
             var questoesRelatorio = new List<QuestaoEncaminhamentoAeeDto>();
 
             foreach (var questao in questoes)
@@ -114,28 +110,28 @@ namespace SME.SR.Application
                 questaoRelatorio.Resposta = questao.Tipo switch
                 {
                     TipoQuestao.Radio => opcaoRespostaQuestao?.Nome,
-                    /*TipoQuestao.PeriodoEscolar => await ObterRespostaQuestaoPeriodoEscolar(respostaQuestao, relatorioPlanoAee),
-                    _ => UtilRegex.RemoverTagsHtml(respostaQuestao.Texto)*/
                 };
+
                 /*
-                questaoRelatorio.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
-
+                 
+                   questaoRelatorio.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
+                
                 var respostaFrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
-
+                
                 if (respostaFrequenciaAluno != null)
                     questaoRelatorio.FrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
 
-
-                var respostaSrm = ObterRespostaInformacoesSrm(questao.Tipo, respostaQuestao);
+                
+                var respostaSrm =  ObterRespostaInformacoesSrm(questao.Tipo,respostaQuestao);
 
                 if (respostaSrm != null)
-                    questaoRelatorio.InformacoesSrm = respostaSrm;*/
+                    questaoRelatorio.InformacoesSrm = respostaSrm;
 
-
+                 */
                 questoesRelatorio.Add(questaoRelatorio);
             }
 
-            relatorioEncaminhamentoAeeDetalhado.DetalheQuestoes.Questoes = questoesRelatorio;
+            return questoesRelatorio;
         }
     }
 }
