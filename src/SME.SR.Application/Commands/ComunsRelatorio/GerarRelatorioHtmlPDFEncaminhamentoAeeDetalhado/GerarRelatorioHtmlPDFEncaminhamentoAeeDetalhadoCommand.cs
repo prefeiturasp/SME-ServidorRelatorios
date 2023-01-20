@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class GerarRelatorioHtmlPDFEncaminhamentoAeeCommand : IRequest
+    public class GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand : IRequest
     {
-        public GerarRelatorioHtmlPDFEncaminhamentoAeeCommand(CabecalhoEncaminhamentoAeeDto cabecalho, List<AgrupamentoEncaminhamentoAeeDreUeDto> agrupamentos, Guid codigoCorrelacao)
+        public GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(CabecalhoEncaminhamentoAeeDto cabecalho, List<AgrupamentoEncaminhamentoAeeDreUeDto> agrupamentos, Guid codigoCorrelacao)
         {
             Cabecalho = cabecalho;
             Agrupamentos = agrupamentos;

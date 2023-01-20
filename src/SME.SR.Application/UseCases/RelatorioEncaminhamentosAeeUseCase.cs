@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class RelatorioEncaminhamentoAeeUseCase : IRelatorioEncaminhamentoAeeUseCase
+    public class RelatorioEncaminhamentosAeeUseCase : IRelatorioEncaminhamentosAeeUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioEncaminhamentoAeeUseCase(IMediator mediator)
+        public RelatorioEncaminhamentosAeeUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoAeeDto>();
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentosAeeDto>();
             var encaminhamentosAee = await mediator.Send(new ObterEncaminhamentosAEEQuery(filtroRelatorio));
 
             if (encaminhamentosAee == null || !encaminhamentosAee.Any())
@@ -54,7 +54,7 @@ namespace SME.SR.Application
                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
 
-            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentosAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));
         }
     }
 }
