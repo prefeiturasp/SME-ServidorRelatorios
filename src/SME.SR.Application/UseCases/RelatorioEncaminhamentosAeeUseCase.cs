@@ -20,7 +20,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoAeeDto>();
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentosAeeDto>();
             var encaminhamentosAee = await mediator.Send(new ObterEncaminhamentosAEEQuery(filtroRelatorio));
 
             if (encaminhamentosAee == null || !encaminhamentosAee.Any())
@@ -54,7 +54,7 @@ namespace SME.SR.Application
                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
 
-            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentosAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));
         }
     }
 }

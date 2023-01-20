@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class GerarRelatorioHtmlPDFEncaminhamentoAeeCommandHandler : AsyncRequestHandler<GerarRelatorioHtmlPDFEncaminhamentoAeeCommand>
+    public class GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommandHandler : AsyncRequestHandler<GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand>
     {
         private readonly IConverter converter;
         private readonly IHtmlHelper htmlHelper;
         private readonly IServicoFila servicoFila;
 
-        public GerarRelatorioHtmlPDFEncaminhamentoAeeCommandHandler(
+        public GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommandHandler(
                                                            IConverter converter,
                                                            IHtmlHelper htmlHelper,
                                                            IServicoFila servicoFila)
@@ -29,7 +29,7 @@ namespace SME.SR.Application
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
         }
 
-        protected override async Task Handle(GerarRelatorioHtmlPDFEncaminhamentoAeeCommand request, CancellationToken cancellationToken)
+        protected override async Task Handle(GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand request, CancellationToken cancellationToken)
         {
             var relatorioPaginado = new RelatorioPaginadoEncaminhamentoAee(request.Cabecalho, request.Agrupamentos);
             var paginasSolo = new List<PaginaParaRelatorioPaginacaoSoloDto>();
@@ -52,7 +52,7 @@ namespace SME.SR.Application
 
         private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(RelatorioEncaminhamentoAeeDto relatorio, int pagina, int totalPaginas)
         {
-            var html = await htmlHelper.RenderRazorViewToString("RelatorioEncaminhamentoAEE", relatorio);
+            var html = await htmlHelper.RenderRazorViewToString("RelatorioEncaminhamentoAEEDetalhado", relatorio);
             html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
             html = html.Replace("logo.png", SmeConstants.LogoSme);
 

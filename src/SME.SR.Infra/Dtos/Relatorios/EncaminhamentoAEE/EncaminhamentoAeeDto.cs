@@ -1,7 +1,10 @@
-﻿namespace SME.SR.Infra
+﻿using System;
+
+namespace SME.SR.Infra
 {
     public class EncaminhamentoAeeDto
     {
+        public long Id { get; set; }    
         public long DreId { get; set; }
         public string DreAbreviacao { get; set; }
         public string UeCodigo { get; set; }
@@ -15,5 +18,7 @@
         public Modalidade Modalidade { get; set; }
         public string ResponsavelPaaiNome { get; set; }
         public string ResponsavelPaaiLoginRf { get; set; }
+        public DateTime CriadoEm { get; set; }
+        public int AnoLetivo { get; set; }
     }
 }
