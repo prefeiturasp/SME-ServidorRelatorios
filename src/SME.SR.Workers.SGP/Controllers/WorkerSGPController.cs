@@ -348,7 +348,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorios/encaminhamentosaee")]
         [Action("relatorios/encaminhamentosaee", typeof(IRelatorioEncaminhamentosAeeUseCase))]
-        public async Task<bool> RelatorioEncaminhamentoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosAeeUseCase useCase)
+        public async Task<bool> RelatorioEncaminhamentosAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosAeeUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
