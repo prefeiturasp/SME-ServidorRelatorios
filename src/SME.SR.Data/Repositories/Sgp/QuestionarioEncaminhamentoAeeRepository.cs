@@ -16,7 +16,7 @@ namespace SME.SR.Data
 
         public async Task<long> ObterQuestionarioIdPorTipoESecao(int tipoQuestionario, string nomeComponenteSecao)
         {
-            const string query = @"select id 
+            const string query = @"select q.id 
                                     from questionario q
                                     inner join secao_encaminhamento_aee sea on sea.questionario_id = q.id
                                     where q.tipo = @tipoQuestionario and sea.nome_componente = @nomeComponenteSecao ";

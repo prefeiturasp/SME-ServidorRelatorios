@@ -46,9 +46,7 @@ namespace SME.SR.Application
                 relatorios.Add(relatorio);
             }
 
-           /*
-
-             await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));*/
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(relatorios,  request.CodigoCorrelacao));
         }
 
         private static void ObterCabecalho(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
@@ -106,12 +104,11 @@ namespace SME.SR.Application
                     var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
                                                 c.Id == resposta.OpcaoRespostaId);
 
-                    respostaEncaminhamento.Resposta = questao.Tipo 
-                                                        switch {
-                                                                    TipoQuestao.Radio => opcaoRespostaQuestao?.Nome,
-                                                                };
-                    respostaEncaminhamento.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
-
+                    if (opcaoRespostaQuestao != null) {
+                        if (questao.Tipo == TipoQuestao.Radio || questao.Tipo == TipoQuestao.ComboMultiplaEscolha)
+                            respostaEncaminhamento.Resposta = opcaoRespostaQuestao.Nome;
+                        respostaEncaminhamento.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
+                    }
                     questaoRelatorio.Respostas.Add(respostaEncaminhamento);
                 }
 
@@ -135,12 +132,16 @@ namespace SME.SR.Application
 
         private static List<AtendimentoClinicoAlunoDto> ObterRespostaAtendimentoClinicoAluno(RespostaQuestaoDto respostaQuestao)
         {
+            if (string.IsNullOrEmpty(respostaQuestao.Texto))
+                return null;
             var resposta = JsonConvert.DeserializeObject<List<AtendimentoClinicoAlunoDto>>(respostaQuestao.Texto);
             return resposta;
         }
 
         private static List<InformacaoEscolarAlunoDto> ObterRespostaInformacaoEscolarAluno(RespostaQuestaoDto respostaQuestao)
         {
+            if (string.IsNullOrEmpty(respostaQuestao.Texto))
+                return null;
             var resposta = JsonConvert.DeserializeObject<List<InformacaoEscolarAlunoDto>>(respostaQuestao.Texto);
             return resposta;
         }
