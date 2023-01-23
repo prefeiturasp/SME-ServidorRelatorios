@@ -88,7 +88,7 @@ namespace SME.SR.Application
             return secao;
         }
 
-        private async Task AdicionarQuestoesQuestionarioSecao(EncaminhamentoAeeDto encaminhamentoAee, SecaoQuestoesEncaminhamentoAeeDto secao, List<QuestaoDto> questoes)
+        private async Task AdicionarQuestoesQuestionarioSecao(EncaminhamentoAeeDto encaminhamentoAee, SecaoQuestoesEncaminhamentoAeeDto secao, List<QuestaoDto> questoes, string OrdemPai = "")
         {
 
             foreach (var questao in questoes)
@@ -100,6 +100,7 @@ namespace SME.SR.Application
                 {
                     Questao = questao.Nome,
                     Ordem = questao.Ordem,
+                    OrdemMascara = $"{(string.IsNullOrEmpty(OrdemPai) ? string.Empty : $"{ OrdemPai }.")}{questao.Ordem}",
                     QuestaoId = questao.Id,
                     TipoQuestao = questao.Tipo
                 };
@@ -151,7 +152,7 @@ namespace SME.SR.Application
                                                     c.Id == resposta.OpcaoRespostaId);
 
                         if (opcaoRespostaQuestao != null && opcaoRespostaQuestao.QuestoesComplementares != null && opcaoRespostaQuestao.QuestoesComplementares.Any())
-                            await AdicionarQuestoesQuestionarioSecao(encaminhamentoAee, secao, opcaoRespostaQuestao.QuestoesComplementares);
+                            await AdicionarQuestoesQuestionarioSecao(encaminhamentoAee, secao, opcaoRespostaQuestao.QuestoesComplementares, questao.Ordem.ToString());
 
                     }
 
