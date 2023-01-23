@@ -1,0 +1,379 @@
+﻿@using RazorEngine.Compilation.ImpromptuInterface.InvokeExt
+@using SME.SR.Infra
+@model IEnumerable<SME.SR.Infra.RelatorioEncaminhamentoAeeDetalhadoDto>
+
+@{
+    void MontarCabecalho(RelatorioEncaminhamentoAeeDetalhadoDto relatorio)
+    {
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DO ENCAMINHAMENTO AEE</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                <tr>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>ANO LETIVO:</strong> @relatorio.Cabecalho.AnoLetivo</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>DRE:</strong> @relatorio.Cabecalho.DreNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>UE:</strong> @relatorio.Cabecalho.UeNome</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>TURMA:</strong> @relatorio.Cabecalho.TurmaNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @relatorio.Cabecalho.Aluno</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 espacamento10 colspan="2"'><strong>SITUAÇÃO:</strong> @relatorio.Cabecalho.SituacaoEncaminhamento</td>
+                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA DO CADASTRO:</strong> @relatorio.Cabecalho.DataCriacao.Date.ToString("dd/MM/yyyy")</td>
+                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+ 
+    void MontarTituloPadrao(string titulo)
+    {
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
+        </tr>
+    }
+    
+    void MontarResponsavel(string responsavel)
+    {
+        <tr >
+            <td class="alinhamentoEsquerda espacamento10" colspan="7"><strong>RESPONSÁVEL:</strong> @responsavel</td>
+        </tr>
+    }  
+    
+    void MontarTabelaAtendimentoClinico(string questao, List<AtendimentoClinicoAlunoDto> atendimentoClinicoAlunoDtos)
+    {
+        
+        if (atendimentoClinicoAlunoDtos.Any())
+        {
+            MontarTituloPadrao(questao);
+            
+            <tr>
+                <td class="fundo-cinza negrito espacamento10">Dia da semana</td>
+                <td class="fundo-cinza negrito espacamento10">Atendimento/Atividade</td>
+                <td class="fundo-cinza negrito espacamento10">Local de realização</td>
+                <td class="fundo-cinza negrito espacamento10">Horário de início</td>
+                <td class="fundo-cinza negrito espacamento10">Horário de término</td>
+            </tr>
+        
+            foreach (var diaHorario in atendimentoClinicoAlunoDtos)
+            {
+                <tr>
+                    <td class="espacamento10">@diaHorario.DiaSemana</td>
+                    <td class="espacamento10">@diaHorario.AtendimentoAtividade</td>
+                    <td class="espacamento10">@diaHorario.LocalRealizacao</td>
+                    <td class="espacamento10">@diaHorario.HorarioInicio.ToString("HH:mm")</td>
+                    <td class="espacamento10">@diaHorario.HorarioTermino.ToString("HH:mm")</td>
+                </tr>       
+            }            
+        }
+    } 
+    
+    void MontarInformacoesEscolares(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes != null && secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                    @{ MontarTituloPadrao(secao.NomeComponenteSecao); }
+                </tbody>
+            </table>
+            
+            if (secao.Questoes.Any())
+            {
+                <table class="tabela-cabecalho">	
+                    <tbody>
+
+                    @{
+                        foreach (var questao in secao.Questoes.OrderBy(o => o.Ordem))
+                        {
+                            if (questao.TipoQuestao == TipoQuestao.InformacoesEscolares)
+                            {
+                                MontarTabelaIndicativoDeficiencia(questao.InformacaoEscolar);
+                            }
+                            else
+                            {
+                                if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
+                                {
+                                    MontarTabelaAtendimentoClinico(questao.Questao, questao.AtendimentoClinico);
+                                }
+                                else
+                                {
+                                    MontarSomenteTituloNegrito(questao.Questao);
+
+                                    MontarSomenteResposta(questao.Resposta);    
+                                }
+                            }
+                        }
+                    }
+                    </tbody>
+                </table>
+            }
+        }
+    }
+
+    void MontarTabelaIndicativoDeficiencia(List<InformacaoEscolarAlunoDto> informacaoEscolarAlunoDtos)
+    {
+        if (informacaoEscolarAlunoDtos.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                <tr>
+                    <td class="fundo-cinza width-40 negrito espacamento10">Indicativo de deficiência (EOL)</td>
+                    <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
+                    <td class="fundo-cinza width-20 negrito espacamento10">Frequência Glocal</td>
+                </tr>
+                    
+                @{
+                    foreach (var informacaoEscolar in informacaoEscolarAlunoDtos)
+                    {
+                        <tr>
+                            <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
+                            <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
+                            <td class="espacamento10">@informacaoEscolar.FrequenciaGlobal</td>
+                        </tr>
+                    }
+                }
+                    
+                </tbody>
+            </table>
+        }
+    }
+
+    void MontarDescricaoEncaminhamento(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                @{
+                    MontarTituloPadrao(secao.NomeComponenteSecao);
+
+                    foreach (var questao in secao.Questoes)
+                    {
+                        MontarSomenteTituloNegrito(questao.Questao);
+
+                        MontarSomenteResposta(questao.Resposta);
+                    }
+                }
+                </tbody>
+            </table>
+        }
+    }
+    
+    void MontarParecerCoordenacao(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                @{
+                    MontarTituloPadrao(secao.NomeComponenteSecao);
+
+                    foreach (var questao in secao.Questoes)
+                    {
+                        MontarSomenteTituloNegrito(questao.Questao);
+
+                        MontarSomenteResposta(questao.Resposta);
+                    }
+                }
+                </tbody>
+            </table>
+        }
+    }
+    
+    void MontarParecerAee(string responsavelPaai, SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                @{
+                    MontarTituloPadrao(secao.NomeComponenteSecao);
+
+                    MontarResponsavel(responsavelPaai);
+
+                    foreach (var questao in secao.Questoes)
+                    {
+                        MontarSomenteTituloNegrito(questao.Questao);
+
+                        MontarSomenteResposta(questao.Resposta);
+                    }
+                }
+                </tbody>
+            </table>
+        }
+    }
+
+    void MontarSomenteTituloNegrito(string titulo)
+    {
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
+        </tr>
+    } 
+    
+    void MontarSomenteResposta(string resposta)
+    {
+        <tr>
+            <td colspan="7" class="alinhamentoEsquerda espacamento10">@resposta</td>
+        </tr>
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DO ENCAMINHAMENTO AEE</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            margin-top: 5px;
+            padding: 3px;
+            text-align: left;
+        }        
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 43px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+        
+        .alinhamentoEsquerda {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        td span {
+            font-size: 12px;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+        
+        .espacamento10 {
+            padding: 10px;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+        
+        .marginTop20 {
+            margin-top:20px;
+        }
+        
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .img-logo-sgp {
+            height: 63px;
+            float: left;
+        }
+        
+        .width-22 {
+          width: 22%;
+        }
+        
+        .width-25 {
+          width: 25%;
+        }                
+
+        .width-33 {
+          width: 33%;
+        }
+        
+        .width-34 {
+          width: 34%;
+        }   
+    </style>
+    <div>
+        @{
+            foreach (var relatorio in Model)
+            {
+                MontarCabecalho(relatorio);  
+                
+                MontarInformacoesEscolares(relatorio.Detalhes.InformacoesEscolares);
+
+                MontarDescricaoEncaminhamento(relatorio.Detalhes.DescricaoEncaminhamento);
+
+                MontarParecerCoordenacao(relatorio.Detalhes.ParecerCoordenacao);
+                
+                MontarParecerAee(relatorio.Cabecalho.ResponsavelPaai, relatorio.Detalhes.ParecerAee);
+            }
+        }
+    </div>
+</body>
+</html>
