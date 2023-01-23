@@ -67,14 +67,16 @@
                 var EhUltimoUsuario = false;
                 foreach (var usuario in perfil.Usuarios)
                 {
+                    string nomeUsuario = usuario.Nome != null ? usuario.Nome : string.Empty;
+
                     str += $@"<tr>
                         <td width='10%' class='td-valor'>{usuario.Login}</td>
-                        <td width='40%' class='td-valor'>{usuario.Nome}</td>
+                        <td width='40%' class='td-valor'>{nomeUsuario}</td>
                         <td width='20%' class='td-valor'>{usuario.Situacao}</td>
                         <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
                         </tr>";
 
-                    contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
+                    contadorQuebrarPagina = contadorQuebrarPagina + (nomeUsuario.Length > 40 ? (int)(nomeUsuario.Length / 40) + 1 : 1);
 
                     retornoVerificacao = VerificaQuebra();
                     if (retornoVerificacao != string.Empty)
@@ -89,7 +91,7 @@
                             EhUltimoUsuario = true;
                         }
                     }
-                    else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                    else if (nomeUsuario.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
                     {
                         EhUltimoUsuario = true;
                     }
@@ -121,20 +123,21 @@
                         var EhUltimoUsuario = false;
                         foreach (var usuario in perfil.Usuarios)
                         {
+                            string nomeUsuario = usuario.Nome != null ? usuario.Nome : string.Empty;
 
                             str += $@"<tr>
                                         <td width='10%' class='td-valor'>{usuario.Login}</td>
-                                        <td width='40%' class='td-valor'>{usuario.Nome}</td>
+                                        <td width='40%' class='td-valor'>{nomeUsuario}</td>
                                         <td width='20%' class='td-valor'>{usuario.Situacao}</td>
                                         <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
                                       </tr>";
 
-                            contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
+                            contadorQuebrarPagina = contadorQuebrarPagina + (nomeUsuario.Length > 40 ? (int)(nomeUsuario.Length / 40) + 1 : 1);
 
                             retornoVerificacao = VerificaQuebra();
                             if (retornoVerificacao != string.Empty)
                             {
-                                if (!usuario.Nome.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                                if (!nomeUsuario.Equals(ultimoUsuario.Nome) && !usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
                                 {
                                     str += $@"</table>{retornoVerificacao}{MontarCabecalhoPerfil(perfil.Nome)}";
                                 }
@@ -144,7 +147,7 @@
                                     EhUltimoUsuario = true;
                                 }
                             }
-                            else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                            else if (nomeUsuario.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
                             {
                                 EhUltimoUsuario = true;
                             }
@@ -275,7 +278,7 @@
                                        <td width='45%' class='td-valor-historico'>{historico.SenhaReiniciada} - {historico.SenhaReiniciadaPor} ({historico.SenhaReiniciadaPorRf}) - {historico.SenhaReiniciadaPorPerfil}</td>
                                        <td width='8%' class='td-valor-historico'>{historico.UtilizaSenhaPadao}</td>
                                      </tr>";
-                                                        
+
 
                             if (historico.Nome != null && historico.Nome.Length > 40)
                             {
