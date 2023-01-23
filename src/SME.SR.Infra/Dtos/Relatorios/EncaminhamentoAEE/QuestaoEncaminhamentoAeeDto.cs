@@ -14,6 +14,7 @@ namespace SME.SR.Infra
         public long QuestaoId { get; set; }
         public TipoQuestao TipoQuestao { get; set; }
         public int Ordem { get; set; }
+        public string Justificativa { get; set; }
         public List<RespostaEncaminhamentoAeeDto> Respostas { get; set; }
     }
 }

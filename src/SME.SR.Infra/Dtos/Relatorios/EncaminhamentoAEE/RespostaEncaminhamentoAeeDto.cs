@@ -6,12 +6,14 @@ namespace SME.SR.Infra
     public class RespostaEncaminhamentoAeeDto
     {
         public RespostaEncaminhamentoAeeDto()
-        {}
+        {
+            AtendimentoClinico = new List<AtendimentoClinicoAlunoDto>();
+            InformacaoEscolar = new List<InformacaoEscolarAlunoDto>();
+        }
         public string Resposta { get; set; }
         public long? RespostaId { get; set; }
         public string Justificativa { get; set; }
 
-        //Nova tratativa pela resposta
         public List<AtendimentoClinicoAlunoDto> AtendimentoClinico { get; set; }
         public List<InformacaoEscolarAlunoDto> InformacaoEscolar { get; set; }
     }
