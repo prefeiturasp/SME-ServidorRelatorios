@@ -3,11 +3,6 @@
 @model IEnumerable<SME.SR.Infra.RelatorioEncaminhamentoAeeDetalhadoDto>
 
 @{
-    const string INFORMACOES_ESCOLARES = "INFORMAÇÕES ESCOLARES";
-    const string DESCRICAO_ENCAMINHAMENTO = "DESCRIÇÃO ENCAMINHAMENTO";
-    const string PARECER_COORDENACAO = "PARECER COORDENAÇÃO";
-    const string PARECER_AEE = "PARECER AEE";
-   
     void MontarCabecalho(RelatorioEncaminhamentoAeeDetalhadoDto relatorio)
     {
         <div>
@@ -25,12 +20,12 @@
                 </tr>
                 <tr>
                     <td class='espaco-esquerda-15 width-22 espacamento10'><strong>TURMA:</strong> @relatorio.Cabecalho.TurmaNome</td>
-                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @relatorio.Cabecalho.AlunoNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @relatorio.Cabecalho.Aluno</td>
                 </tr>
                 <tr>
                     <td class='espaco-esquerda-15 espacamento10 colspan="2"'><strong>SITUAÇÃO:</strong> @relatorio.Cabecalho.SituacaoEncaminhamento</td>
                     <td class='espaco-esquerda-15 espacamento10'><strong>DATA DO CADASTRO:</strong> @relatorio.Cabecalho.DataCriacao.Date.ToString("dd/MM/yyyy")</td>
-                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA IMPRESSÃO:</strong> @relatorio.Cabecalho.DataImpressao.Date.ToString("dd/MM/yyyy")</td>
+                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
                 </tr>
                 </tbody>
             </table>
@@ -85,29 +80,27 @@
         {
             <table class="tabela-cabecalho">	
                 <tbody>
-                    @{ MontarTituloPadrao(INFORMACOES_ESCOLARES); }
+                    @{ MontarTituloPadrao(secao.NomeComponenteSecao); }
                 </tbody>
             </table>
             
-            var questoes = secao.Questoes.OrderBy(o=> o.Ordem);
-
-            if (questoes.Any())
+            if (secao.Questoes.Any())
             {
                 <table class="tabela-cabecalho">	
                     <tbody>
 
                     @{
-                        foreach (var questao in questoes.OrderBy(o => o.Ordem))
+                        foreach (var questao in secao.Questoes.OrderBy(o => o.Ordem))
                         {
                             if (questao.TipoQuestao == TipoQuestao.InformacoesEscolares)
                             {
-                                MontarTabelaIndicativoDeficiencia(secao.InformacaoEscolar);
+                                MontarTabelaIndicativoDeficiencia(questao.InformacaoEscolar);
                             }
                             else
                             {
                                 if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
                                 {
-                                    MontarTabelaAtendimentoClinico(questao.Questao, secao.AtendimentoClinico);
+                                    MontarTabelaAtendimentoClinico(questao.Questao, questao.AtendimentoClinico);
                                 }
                                 else
                                 {
@@ -118,7 +111,6 @@
                             }
                         }
                     }
-                
                     </tbody>
                 </table>
             }
@@ -160,7 +152,7 @@
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(DESCRICAO_ENCAMINHAMENTO);
+                    MontarTituloPadrao(secao.NomeComponenteSecao);
 
                     foreach (var questao in secao.Questoes)
                     {
@@ -181,7 +173,7 @@
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(PARECER_COORDENACAO);
+                    MontarTituloPadrao(secao.NomeComponenteSecao);
 
                     foreach (var questao in secao.Questoes)
                     {
@@ -195,16 +187,16 @@
         }
     }
     
-    void MontarParecerAee(SecaoQuestoesEncaminhamentoAeeDto secao)
+    void MontarParecerAee(string responsavelPaai, SecaoQuestoesEncaminhamentoAeeDto secao)
     {
         if (secao.Questoes.Any())
         {
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(PARECER_AEE);
+                    MontarTituloPadrao(secao.NomeComponenteSecao);
 
-                    MontarResponsavel(secao.Responsavel);
+                    MontarResponsavel(responsavelPaai);
 
                     foreach (var questao in secao.Questoes)
                     {
@@ -379,7 +371,7 @@
 
                 MontarParecerCoordenacao(relatorio.Detalhes.ParecerCoordenacao);
                 
-                MontarParecerAee(relatorio.Detalhes.ParecerAee);
+                MontarParecerAee(relatorio.Cabecalho.ResponsavelPaai, relatorio.Detalhes.ParecerAee);
             }
         }
     </div>
