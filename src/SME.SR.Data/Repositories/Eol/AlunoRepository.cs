@@ -1682,5 +1682,29 @@ namespace SME.SR.Data
 						{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})";
 
 		}
+
+		public async Task<NecessidadeEspecialAlunoDto> ObterNecessidadesEspeciaisPorAluno(long codigoAluno)
+		{
+            var query = @"SELECT 
+	            a.cd_aluno as codigoAluno,
+	            nea.tp_necessidade_especial as tipoNecessidadeEspecial,
+	            tne.dc_necessidade_especial as descricaoNecessidadeEspecial,
+	            ra.cd_tipo_recurso as tipoRecurso,
+	            tra.dc_tipo_recurso as descricaoRecurso
+              FROM aluno a
+             inner join necessidade_especial_aluno nea ON a.cd_aluno = nea.cd_aluno and nea.dt_fim is null
+             inner join tipo_necessidade_especial tne on tne.tp_necessidade_especial = nea.tp_necessidade_especial 
+             left join recurso_aluno ra on ra.cd_aluno = a.cd_aluno and ra.dt_fim is null
+             left join tipo_recurso_aluno tra on tra.cd_tipo_recurso = ra.cd_tipo_recurso ";
+
+            if (codigoAluno > 0)
+                query += "where a.cd_aluno = @codigoAluno";
+
+            using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conn.QueryFirstOrDefaultAsync<NecessidadeEspecialAlunoDto>(query, new { codigoAluno });
+            }
+
+        }
 	}
 }

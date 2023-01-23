@@ -71,19 +71,19 @@ namespace SME.SR.Application
         private async Task ObterQuestoesSecoes(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
         {
             var questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_INFORMACOES_ESCOLARES));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.InformacoesEscolares = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_INFORMACOES_ESCOLARES);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.InformacoesEscolares = await ObterQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_INFORMACOES_ESCOLARES);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_DESCRICAO_ENCAMINHAMENTO));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.DescricaoEncaminhamento = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_DESCRICAO_ENCAMINHAMENTO);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.DescricaoEncaminhamento = await ObterQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_DESCRICAO_ENCAMINHAMENTO);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_COORDENACAO));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerCoordenacao = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_PARECER_COORDENACAO);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerCoordenacao = await ObterQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_PARECER_COORDENACAO);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_AEE));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerAee = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_PARECER_AEE);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerAee = await ObterQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_PARECER_AEE);
         }
 
-        private async Task<SecaoQuestoesEncaminhamentoAeeDto> ObterQuestoesQuestionario(List<QuestaoDto> questoes, string nomeComponenteSecao)
+        private async Task<SecaoQuestoesEncaminhamentoAeeDto> ObterQuestoesQuestionario(EncaminhamentoAeeDto encaminhamentoAee, List<QuestaoDto> questoes, string nomeComponenteSecao)
         {
             var secao = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = nomeComponenteSecao };
 
@@ -139,6 +139,8 @@ namespace SME.SR.Application
                         var respostaInformacaoEscolarAluno = ObterInformacoesEscolaresAluno(resposta);
                         if (respostaInformacaoEscolarAluno != null)
                             respostaEncaminhamento.InformacaoEscolar = respostaInformacaoEscolarAluno;
+                        else
+                            respostaEncaminhamento.InformacaoEscolar.Add(await mediator.Send(new ObterInformacoesEscolaresAlunoQuery(encaminhamentoAee.AlunoCodigo, encaminhamentoAee.TurmaCodigo)));
                     }
                     
                     questaoRelatorio.Respostas.Add(respostaEncaminhamento);
