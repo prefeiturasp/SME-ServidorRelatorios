@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf;
 
 namespace SME.SR.Application
 {
@@ -50,7 +51,7 @@ namespace SME.SR.Application
 
             var mensagem = JsonConvert.SerializeObject(relatorios);
            
-            await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao));
             //await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(relatorios,  request.CodigoCorrelacao));
         }
 
