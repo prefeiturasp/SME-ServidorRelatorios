@@ -70,10 +70,10 @@
                     string nomeUsuario = usuario.Nome != null ? usuario.Nome : string.Empty;
 
                     str += $@"<tr>
-                        <td width='10%' class='td-valor'>{usuario.Login}</td>
-                        <td width='40%' class='td-valor'>{nomeUsuario}</td>
-                        <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                        <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                        <td width='auto' class='td-valor'>{usuario.Login}</td>
+                        <td width='auto' class='td-valor'>{nomeUsuario}</td>
+                        <td width='auto' class='td-valor'>{usuario.Situacao}</td>
+                        <td width='auto' class='td-valor'>{usuario.UltimoAcesso}</td>
                         </tr>";
 
                     contadorQuebrarPagina = contadorQuebrarPagina + (nomeUsuario.Length > 40 ? (int)(nomeUsuario.Length / 40) + 1 : 1);
@@ -126,10 +126,10 @@
                             string nomeUsuario = usuario.Nome != null ? usuario.Nome : string.Empty;
 
                             str += $@"<tr>
-                                        <td width='10%' class='td-valor'>{usuario.Login}</td>
-                                        <td width='40%' class='td-valor'>{nomeUsuario}</td>
-                                        <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                                        <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                                        <td width='auto' class='td-valor'>{usuario.Login}</td>
+                                        <td width='auto' class='td-valor'>{nomeUsuario}</td>
+                                        <td width='auto' class='td-valor'>{usuario.Situacao}</td>
+                                        <td width='auto' class='td-valor'>{usuario.UltimoAcesso}</td>
                                       </tr>";
 
                             contadorQuebrarPagina = contadorQuebrarPagina + (nomeUsuario.Length > 40 ? (int)(nomeUsuario.Length / 40) + 1 : 1);
@@ -177,10 +177,10 @@
                                 {
 
                                     str += $@"<tr>
-                                            <td width='10%' class='td-valor'>{usuario.Login}</td>
-                                            <td width='40%' class='td-valor'>{usuario.Nome}</td>
-                                            <td width='20%' class='td-valor'>{usuario.Situacao}</td>
-                                            <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
+                                            <td width='auto' class='td-valor'>{usuario.Login}</td>
+                                            <td width='auto' class='td-valor'>{usuario.Nome}</td>
+                                            <td width='auto' class='td-valor'>{usuario.Situacao}</td>
+                                            <td width='auto' class='td-valor'>{usuario.UltimoAcesso}</td>
                                           </tr>";
 
                                     contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
@@ -388,7 +388,7 @@
 </table>
 <table class='fixed'>
         <tr>
-            <td width='10%' class='td-titulo'>LOGIN</td>
+            <td width='auto' class='td-titulo'>LOGIN</td>
             <td width='40%' class='td-titulo'>NOME</td>
             <td width='20%' class='td-titulo'>SITUAÇÃO</td>
             <td width='20%' class='td-titulo'>ÚLTIMO ACESSO</td>

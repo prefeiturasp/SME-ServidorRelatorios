@@ -145,7 +145,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
                                 {
-                                    var turmaAlunos = await mediator.Send(new ObterTurmaPorCodigoQuery(alunosSemFrequenciaNaTurma.First().TurmaCodigo));
+                                    var turmaAlunos = await mediator.Send(new ObterTurmaPorCodigoQuery(alunosSemFrequenciaNaTurma.FirstOrDefault().TurmaCodigo));
                                     var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFrequenciaAlunoDto
                                     {
                                         CodigoAluno = c.CodigoAluno,
