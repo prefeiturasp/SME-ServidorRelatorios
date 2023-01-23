@@ -10,6 +10,7 @@ namespace SME.SR.Infra
             Questoes = new List<QuestaoEncaminhamentoAeeDto>();
         }
         public string NomeComponenteSecao { get; set; }
+        public string NomeSecao { get; set; }
         public List<QuestaoEncaminhamentoAeeDto> Questoes { get; set; }
 
     }
