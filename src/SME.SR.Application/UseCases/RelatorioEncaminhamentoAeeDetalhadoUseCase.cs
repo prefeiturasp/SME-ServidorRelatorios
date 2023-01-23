@@ -152,7 +152,8 @@ namespace SME.SR.Application
                                                     c.Id == resposta.OpcaoRespostaId);
 
                         if (opcaoRespostaQuestao != null && opcaoRespostaQuestao.QuestoesComplementares != null && opcaoRespostaQuestao.QuestoesComplementares.Any())
-                            await AdicionarQuestoesQuestionarioSecao(encaminhamentoAee, secao, opcaoRespostaQuestao.QuestoesComplementares, questao.Ordem.ToString());
+                            await AdicionarQuestoesQuestionarioSecao(encaminhamentoAee, secao, 
+                                                                     opcaoRespostaQuestao.QuestoesComplementares, questao.Ordem.ToString());
 
                     }
 
@@ -176,44 +177,5 @@ namespace SME.SR.Application
             return resposta;
         }
 
-        private static string ObterRespostaJustificativa(OpcaoRespostaDto opcaoResposta)
-        {
-            if (opcaoResposta?.QuestoesComplementares == null || !opcaoResposta.QuestoesComplementares.Any())
-                return string.Empty;
-
-            var questaoComplementar = opcaoResposta.QuestoesComplementares.FirstOrDefault();
-            if (questaoComplementar.Tipo != TipoQuestao.Texto && questaoComplementar.Tipo != TipoQuestao.Frase)
-                return string.Empty;
-
-            var respostaQuestaoComplementar =
-                questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
-
-            return UtilRegex.RemoverTagsHtml(respostaQuestaoComplementar?.Texto);
-        }
-
-        private static RespostaQuestaoDto ObterRespostaAtencimentoClinico(OpcaoRespostaDto opcaoResposta)
-        {
-            if (opcaoResposta?.QuestoesComplementares == null || !opcaoResposta.QuestoesComplementares.Any())
-                return null;
-
-            var questaoComplementar = opcaoResposta.QuestoesComplementares.FirstOrDefault();
-            if (questaoComplementar.Tipo != TipoQuestao.AtendimentoClinico)
-                return null;
-
-            var respostaQuestaoComplementar =
-                questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
-
-            return respostaQuestaoComplementar;
-        }
-
-        private static bool TodasOpcoesRespostaComMesmaQuestaoComplementar(OpcaoRespostaDto[] opcoesResposta, long?[] opcoesRespostaUtilizadas)
-        {
-            if (opcoesRespostaUtilizadas == null || !opcoesRespostaUtilizadas.Any())
-                return true;
-
-            var opcoesComQuestaoComplementar = opcoesResposta.Where(opc => opc.QuestoesComplementares.Any() && opcoesRespostaUtilizadas.Contains(opc.Id));
-            var questaoComplementarDefault = opcoesComQuestaoComplementar.FirstOrDefault().QuestoesComplementares.FirstOrDefault().Id;
-            return opcoesComQuestaoComplementar.All(opc => opc.QuestoesComplementares.Any(questao => questao.Id == questaoComplementarDefault));
-        }
     }
 }
