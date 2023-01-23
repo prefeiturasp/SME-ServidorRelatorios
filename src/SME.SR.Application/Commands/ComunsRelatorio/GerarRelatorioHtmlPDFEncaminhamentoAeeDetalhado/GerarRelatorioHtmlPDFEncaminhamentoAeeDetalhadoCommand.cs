@@ -7,15 +7,13 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand : IRequest
     {
-        public GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(CabecalhoEncaminhamentoAeeDto cabecalho, List<AgrupamentoEncaminhamentoAeeDreUeDto> agrupamentos, Guid codigoCorrelacao)
+        public GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(List<RelatorioEncaminhamentoAeeDetalhadoDto> relatorios, Guid codigoCorrelacao)
         {
-            Cabecalho = cabecalho;
-            Agrupamentos = agrupamentos;
+            Relatorios = relatorios;
             CodigoCorrelacao = codigoCorrelacao;
         }
 
-        public CabecalhoEncaminhamentoAeeDto Cabecalho { get; set; }
-        public List<AgrupamentoEncaminhamentoAeeDreUeDto> Agrupamentos { get; set; }
+        public List<RelatorioEncaminhamentoAeeDetalhadoDto> Relatorios { get; set; }
         public Guid CodigoCorrelacao { get; set; }
     }
 }

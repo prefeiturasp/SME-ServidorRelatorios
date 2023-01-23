@@ -7,13 +7,17 @@ namespace SME.SR.Infra
     {
         public QuestaoEncaminhamentoAeeDto()
         {
-            this.Respostas = new List<RespostaEncaminhamentoAeeDto>();
+            AtendimentoClinico = new List<AtendimentoClinicoAlunoDto>();
+            InformacaoEscolar = new List<InformacaoEscolarAlunoDto>();
         }
 
         public string Questao { get; set; }
         public long QuestaoId { get; set; }
         public TipoQuestao TipoQuestao { get; set; }
         public int Ordem { get; set; }
-        public List<RespostaEncaminhamentoAeeDto> Respostas { get; set; }
+        public string OrdemMascara { get; set; }
+        public string Resposta { get; set; }
+        public List<AtendimentoClinicoAlunoDto> AtendimentoClinico { get; set; }
+        public List<InformacaoEscolarAlunoDto> InformacaoEscolar { get; set; }
     }
 }

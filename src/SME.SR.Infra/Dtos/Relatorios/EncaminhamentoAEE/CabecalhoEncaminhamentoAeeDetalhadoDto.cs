@@ -8,12 +8,11 @@ namespace SME.SR.Infra
         public string DreNome { get; set; }
         public string UeNome { get; set; }
         public string TurmaNome { get; set; }
-        public string AlunoNome { get; set; }
-        public string AlunoCodigo { get; set; }
+        public string Aluno { get; set; }
         public string SituacaoEncaminhamento { get; set; }
         public string UsuarioNome { get; set; }
         public DateTime DataCriacao { get; set; }
-        public DateTime DataImpressao { get; set; } = DateTimeExtension.HorarioBrasilia().Date; 
+        public string ResponsavelPaai { get; set; }
 
     }
 }

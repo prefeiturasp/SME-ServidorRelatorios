@@ -31,26 +31,11 @@ namespace SME.SR.Application
 
         protected override async Task Handle(GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand request, CancellationToken cancellationToken)
         {
-            var relatorioPaginado = new RelatorioPaginadoEncaminhamentoAee(request.Cabecalho, request.Agrupamentos);
-            var paginasSolo = new List<PaginaParaRelatorioPaginacaoSoloDto>();
-            var paginas = relatorioPaginado.ObterRelatorioPaginado();
-            var indicePagina = 0;
 
-            foreach (var relatorio in paginas)
-            {
-                indicePagina++;
-                paginasSolo.Add(await GerarPagina(relatorio, indicePagina, paginas.Count()));
-            }
-
-            var pdfGenerator = new PdfGenerator(converter);
-
-            var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório dos Encaminhamentos AEE");
-
-            await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
 
-        private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(RelatorioEncaminhamentoAeeDto relatorio, int pagina, int totalPaginas)
+
+        private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(RelatorioEncaminhamentoAeeDetalhadoDto relatorio, int pagina, int totalPaginas)
         {
             var html = await htmlHelper.RenderRazorViewToString("RelatorioEncaminhamentoAEEDetalhado", relatorio);
             html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
