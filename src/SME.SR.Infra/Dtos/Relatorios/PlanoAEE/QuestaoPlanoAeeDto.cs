@@ -19,6 +19,5 @@ namespace SME.SR.Infra
         public int Ordem { get; set; }
         public IEnumerable<FrequenciaAlunoPlanoAeeDto> FrequenciaAluno { get; set; }        
         public IEnumerable<DadosSrmPlanoAeeDto> InformacoesSrm { get; set; }        
-        public IEnumerable<DadosSrmPlanoAeeDto> InformacoesComplementares { get; set; }        
     }
 }
