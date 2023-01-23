@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using MediatR;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Ocsp;
 using SME.SR.Application.Interfaces;
@@ -8,6 +9,7 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
@@ -46,9 +48,10 @@ namespace SME.SR.Application
                 relatorios.Add(relatorio);
             }
 
-           /*
-
-             await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));*/
+            var mensagem = JsonConvert.SerializeObject(relatorios);
+           
+            await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao));
+            //await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(relatorios,  request.CodigoCorrelacao));
         }
 
         private static void ObterCabecalho(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
@@ -56,106 +59,123 @@ namespace SME.SR.Application
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.DreNome = encaminhamentoAee.DreAbreviacao;
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.UeNome = $"{encaminhamentoAee.UeCodigo} - {encaminhamentoAee.TipoEscola.ShortName()} {encaminhamentoAee.UeNome}";
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.AnoLetivo = encaminhamentoAee.AnoLetivo;
-            relatorioEncaminhamentoAeeDetalhado.Cabecalho.AlunoNome = encaminhamentoAee.AlunoNome;
+            relatorioEncaminhamentoAeeDetalhado.Cabecalho.Aluno = $"{encaminhamentoAee.AlunoNome} ({encaminhamentoAee.AlunoCodigo})";
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.SituacaoEncaminhamento = ((SituacaoEncaminhamentoAEE) encaminhamentoAee.Situacao).Name();
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.TurmaNome = $"{encaminhamentoAee.Modalidade.ShortName()} - {encaminhamentoAee.TurmaNome}";
-            relatorioEncaminhamentoAeeDetalhado.Cabecalho.AlunoCodigo = encaminhamentoAee.AlunoCodigo;
+            relatorioEncaminhamentoAeeDetalhado.Cabecalho.ResponsavelPaai = !string.IsNullOrEmpty(encaminhamentoAee.ResponsavelPaaiNome) ? $"{encaminhamentoAee.ResponsavelPaaiNome} ({encaminhamentoAee.ResponsavelPaaiLoginRf})" : string.Empty;
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.DataCriacao = encaminhamentoAee.CriadoEm;
         }
 
         private async Task ObterQuestoesSecoes(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
         {
             var questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_INFORMACOES_ESCOLARES));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.InformacoesEscolares = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_INFORMACOES_ESCOLARES);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.InformacoesEscolares = await ObterSecaoQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_INFORMACOES_ESCOLARES);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_DESCRICAO_ENCAMINHAMENTO));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.DescricaoEncaminhamento = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_DESCRICAO_ENCAMINHAMENTO);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.DescricaoEncaminhamento = await ObterSecaoQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_DESCRICAO_ENCAMINHAMENTO);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_COORDENACAO));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerCoordenacao = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_PARECER_COORDENACAO);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerCoordenacao = await ObterSecaoQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_PARECER_COORDENACAO);
 
             questoes = await mediator.Send(new ObterQuestoesEncaminhamentoAEEPorIdENomeComponenteSecaoQuery(encaminhamentoAee.Id, SECAO_PARECER_AEE));
-            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerAee = await ObterQuestoesQuestionario(questoes.ToList(), SECAO_PARECER_AEE);
+            relatorioEncaminhamentoAeeDetalhado.Detalhes.ParecerAee = await ObterSecaoQuestoesQuestionario(encaminhamentoAee, questoes.ToList(), SECAO_PARECER_AEE);
         }
 
-        private async Task<SecaoQuestoesEncaminhamentoAeeDto> ObterQuestoesQuestionario(List<QuestaoDto> questoes, string nomeComponenteSecao)
+        private async Task<SecaoQuestoesEncaminhamentoAeeDto> ObterSecaoQuestoesQuestionario(EncaminhamentoAeeDto encaminhamentoAee, List<QuestaoDto> questoes, string nomeComponenteSecao)
         {
             var secao = new SecaoQuestoesEncaminhamentoAeeDto() { NomeComponenteSecao = nomeComponenteSecao };
+            await AdicionarQuestoesQuestionarioSecao(encaminhamentoAee, secao, questoes);
+            return secao;
+        }
+
+        private async Task AdicionarQuestoesQuestionarioSecao(EncaminhamentoAeeDto encaminhamentoAee, SecaoQuestoesEncaminhamentoAeeDto secao, List<QuestaoDto> questoes, string OrdemPai = "")
+        {
 
             foreach (var questao in questoes)
             {
+                if (questao.Tipo == TipoQuestao.Upload || questao.Respostas == null || !questao.Respostas.Any())
+                    continue;
+
                 var questaoRelatorio = new QuestaoEncaminhamentoAeeDto
                 {
                     Questao = questao.Nome,
                     Ordem = questao.Ordem,
+                    OrdemMascara = $"{(string.IsNullOrEmpty(OrdemPai) ? string.Empty : $"{ OrdemPai }.")}{questao.Ordem}",
                     QuestaoId = questao.Id,
                     TipoQuestao = questao.Tipo
                 };
 
-                if (questao.Respostas == null || !questao.Respostas.Any())
-                    continue;
-
-                foreach (var resposta in questao.Respostas)
+                if (questao.Tipo != TipoQuestao.Radio &&
+                    questao.Tipo != TipoQuestao.ComboMultiplaEscolha &&
+                    questao.Tipo != TipoQuestao.Checkbox)
                 {
-                    var respostaEncaminhamento = new RespostaEncaminhamentoAeeDto()
-                                                            {
-                                                                RespostaId = resposta.OpcaoRespostaId,
-                                                                Resposta = resposta.Texto,
-                                                            };
+                    var resposta = questao.Respostas?.FirstOrDefault();
+                    questaoRelatorio.Resposta = resposta?.Texto;
 
-                    var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
-                                                c.Id == resposta.OpcaoRespostaId);
-
-                    respostaEncaminhamento.Resposta = questao.Tipo 
-                                                        switch {
-                                                                    TipoQuestao.Radio => opcaoRespostaQuestao?.Nome,
-                                                                };
-                    respostaEncaminhamento.Justificativa = ObterJustificativaQuestao(opcaoRespostaQuestao);
-
-                    questaoRelatorio.Respostas.Add(respostaEncaminhamento);
+                    if (resposta != null)
+                    {
+                        if (questaoRelatorio.TipoQuestao == TipoQuestao.AtendimentoClinico)
+                            questaoRelatorio.AtendimentoClinico = ObterAtendimentosClinicosAluno(resposta);
+                        if (questaoRelatorio.TipoQuestao == TipoQuestao.InformacoesEscolares)
+                        {
+                            var informacoesEscolaresPersistida = ObterInformacoesEscolaresAluno(resposta);
+                            if (informacoesEscolaresPersistida != null)
+                                questaoRelatorio.InformacaoEscolar = informacoesEscolaresPersistida;
+                            if (!questaoRelatorio.InformacaoEscolar.Any())
+                                questaoRelatorio.InformacaoEscolar.Add(await mediator.Send(new ObterInformacoesEscolaresAlunoQuery(encaminhamentoAee.AlunoCodigo, encaminhamentoAee.TurmaCodigo)));
+                        }
+                    }
                 }
+                else
+                    foreach (var resposta in questao.Respostas)
+                    {
+                        var respostaOpcao = resposta.Texto;
+                        var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
+                                                    c.Id == resposta.OpcaoRespostaId);
 
-                if (questao.Tipo == TipoQuestao.AtendimentoClinico) {
-                    var respostaAtendimentoClinicoAluno = ObterRespostaAtendimentoClinicoAluno(questao.Respostas.FirstOrDefault());
-                    if (respostaAtendimentoClinicoAluno != null)
-                        secao.AtendimentoClinico = respostaAtendimentoClinicoAluno;
-                }
-                else if (questao.Tipo == TipoQuestao.InformacoesEscolares)
+                        if (opcaoRespostaQuestao != null)
+                            respostaOpcao = opcaoRespostaQuestao.Nome;
+
+                        questaoRelatorio.Resposta += $"{(!string.IsNullOrEmpty(questaoRelatorio.Resposta) ? "| " : string.Empty)}{respostaOpcao}";
+                    }
+
+                if (!secao.Questoes.Any(questao => questao.QuestaoId == questaoRelatorio.QuestaoId))
+                    secao.Questoes.Add(questaoRelatorio);
+
+                if (questao.Tipo == TipoQuestao.Radio ||
+                    questao.Tipo == TipoQuestao.ComboMultiplaEscolha ||
+                    questao.Tipo == TipoQuestao.Checkbox)
                 {
-                    var respostaInformacaoEscolarAluno = ObterRespostaInformacaoEscolarAluno(questao.Respostas.FirstOrDefault());
-                    if (respostaInformacaoEscolarAluno != null)
-                        secao.InformacaoEscolar = respostaInformacaoEscolarAluno;
-                }
+                    foreach (var resposta in questao.Respostas)
+                    {
+                        var opcaoRespostaQuestao = questao.OpcaoResposta.FirstOrDefault(c => c.QuestaoId == questao.Id &&
+                                                    c.Id == resposta.OpcaoRespostaId);
 
-                secao.Questoes.Add(questaoRelatorio);
+                        if (opcaoRespostaQuestao != null && opcaoRespostaQuestao.QuestoesComplementares != null && opcaoRespostaQuestao.QuestoesComplementares.Any())
+                            await AdicionarQuestoesQuestionarioSecao(encaminhamentoAee, secao, 
+                                                                     opcaoRespostaQuestao.QuestoesComplementares, questao.Ordem.ToString());
+
+                    }
+
+                }
             }
-
-            return secao;
         }
 
-        private static List<AtendimentoClinicoAlunoDto> ObterRespostaAtendimentoClinicoAluno(RespostaQuestaoDto respostaQuestao)
+        private static List<AtendimentoClinicoAlunoDto> ObterAtendimentosClinicosAluno(RespostaQuestaoDto respostaQuestao)
         {
+            if (string.IsNullOrEmpty(respostaQuestao.Texto))
+                return null;
             var resposta = JsonConvert.DeserializeObject<List<AtendimentoClinicoAlunoDto>>(respostaQuestao.Texto);
             return resposta;
         }
 
-        private static List<InformacaoEscolarAlunoDto> ObterRespostaInformacaoEscolarAluno(RespostaQuestaoDto respostaQuestao)
+        private static List<InformacaoEscolarAlunoDto> ObterInformacoesEscolaresAluno(RespostaQuestaoDto respostaQuestao)
         {
+            if (string.IsNullOrEmpty(respostaQuestao.Texto))
+                return null;
             var resposta = JsonConvert.DeserializeObject<List<InformacaoEscolarAlunoDto>>(respostaQuestao.Texto);
             return resposta;
         }
 
-        private static string ObterJustificativaQuestao(OpcaoRespostaDto opcaoResposta)
-        {
-            if (opcaoResposta?.QuestoesComplementares == null)
-                return string.Empty;
-
-            var questaoComplementar = opcaoResposta.QuestoesComplementares.FirstOrDefault();
-
-            var respostaQuestaoComplementar =
-                questaoComplementar?.Respostas.FirstOrDefault(c => c.QuestaoId == questaoComplementar.Id);
-
-            return UtilRegex.RemoverTagsHtml(respostaQuestaoComplementar?.Texto);
-        }
     }
 }

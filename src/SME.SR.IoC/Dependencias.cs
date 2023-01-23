@@ -188,7 +188,9 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IPlanoAeeVersaoRepository), typeof(PlanoAeeVersaoRepository));
             services.TryAddScoped(typeof(IEncaminhamentoAeeRepository), typeof(EncaminhamentoAeeRepository));
 
-            services.TryAddScoped(typeof(IQuestionarioEncaminhamentoAeeRepository), typeof(QuestionarioEncaminhamentoAeeRepository));            
+            services.TryAddScoped(typeof(IQuestionarioEncaminhamentoAeeRepository), typeof(QuestionarioEncaminhamentoAeeRepository));
+            services.TryAddScoped(typeof(IEncaminhamentoAeeRespostaRepository), typeof(EncaminhamentoAeeRespostaRepository));
+            
         }
 
         private static void RegistrarServicos(IServiceCollection services)

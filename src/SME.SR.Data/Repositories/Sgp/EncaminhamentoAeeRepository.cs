@@ -138,7 +138,7 @@ namespace SME.SR.Data
 					inner join ue u on u.id = t.ue_id 
 					inner join dre d on d.id = u.dre_id
 					left join usuario responsavel on responsavel.id = ea.responsavel_id
-                where ea.id any(@encaminhamentosAeeId)");
+                where ea.id = any(@encaminhamentosAeeId)");
 
             query.AppendLine(" order by d.dre_id ");
 
