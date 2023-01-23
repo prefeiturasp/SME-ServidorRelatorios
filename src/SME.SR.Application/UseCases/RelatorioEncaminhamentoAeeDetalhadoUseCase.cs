@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using MediatR;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Ocsp;
 using SME.SR.Application.Interfaces;
@@ -50,7 +51,9 @@ namespace SME.SR.Application
             var mensagem = JsonConvert.SerializeObject(relatorios);
             var body = Encoding.UTF8.GetBytes(mensagem);
 
-            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(relatorios,  request.CodigoCorrelacao));
+
+            await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao));
+            //await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(relatorios,  request.CodigoCorrelacao));
         }
 
         private static void ObterCabecalho(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
