@@ -87,7 +87,7 @@
         {
             <table class="tabela-cabecalho">	
                 <tbody>
-                    @{ MontarTituloPadraoSemBordaBottom(secao.NomeComponenteSecao); }
+                    @{ MontarTituloPadraoSemBordaBottom(secao.NomeSecao); }
                 </tbody>
             </table>
             
@@ -105,16 +105,9 @@
                             }
                             else
                             {
-                                if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
-                                {
-                                    MontarTabelaAtendimentoClinico(questao.Questao, questao.AtendimentoClinico);
-                                }
-                                else
-                                {
-                                    MontarSomenteTituloNegrito(questao.Questao);
+                                MontarSomenteTituloNegrito(questao.Questao);
 
-                                    MontarSomenteResposta(questao.Resposta);    
-                                }
+                                MontarSomenteResposta(questao.Resposta);
                             }
                         }
                     }
@@ -128,28 +121,26 @@
     {
         if (informacaoEscolarAlunoDtos.Any())
         {
-            <table class="tabela-cabecalho">	
-                <tbody>
-                <tr>
-                    <td class="fundo-cinza width-40 negrito espacamento10">Indicativo de deficiência (EOL)</td>
-                    <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
-                    <td class="fundo-cinza width-20 negrito espacamento10">Frequência Global</td>
-                </tr>
-                    
-                @{
-                    foreach (var informacaoEscolar in informacaoEscolarAlunoDtos)
-                    {
-                        <tr>
-                            <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
-                            <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
-                            <td class="espacamento10">@informacaoEscolar.FrequenciaGlobal</td>
-                        </tr>
-                    }
-                }
-                    
-                </tbody>
-            </table>
+            <tr>
+                <td class="fundo-cinza width-40 negrito espacamento10">Indicativo de deficiência (EOL)</td>
+                <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
+                <td class="fundo-cinza width-20 negrito espacamento10">Frequência Global</td>
+            </tr>
+            
+            foreach (var informacaoEscolar in informacaoEscolarAlunoDtos)
+            {
+                GerarLinhaNecessidadeEspecial(informacaoEscolar);
+            }
         }
+    }
+
+    void GerarLinhaNecessidadeEspecial(InformacaoEscolarAlunoDto informacaoEscolar)
+    {
+        <tr>
+            <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
+            <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
+            <td class="espacamento10">@informacaoEscolar.FrequenciaGlobal</td>
+        </tr>
     }
 
     void MontarDescricaoEncaminhamento(SecaoQuestoesEncaminhamentoAeeDto secao)
@@ -159,13 +150,20 @@
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(secao.NomeComponenteSecao);
+                    MontarTituloPadrao(secao.NomeSecao);
 
                     foreach (var questao in secao.Questoes)
                     {
-                        MontarSomenteTituloNegrito(questao.Questao);
+                        if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
+                        {
+                            MontarTabelaAtendimentoClinico(questao.Questao, questao.AtendimentoClinico);
+                        }
+                        else
+                        {
+                            MontarSomenteTituloNegrito(questao.Questao);
 
-                        MontarSomenteResposta(questao.Resposta);
+                            MontarSomenteResposta(questao.Resposta);
+                        }
                     }
                 }
                 </tbody>
@@ -180,7 +178,7 @@
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(secao.NomeComponenteSecao);
+                    MontarTituloPadrao(secao.NomeSecao);
 
                     foreach (var questao in secao.Questoes)
                     {
@@ -201,7 +199,7 @@
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(secao.NomeComponenteSecao);
+                    MontarTituloPadrao(secao.NomeSecao);
 
                     MontarResponsavel(responsavelPaai);
 
