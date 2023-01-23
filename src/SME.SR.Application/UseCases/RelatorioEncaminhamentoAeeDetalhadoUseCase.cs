@@ -139,7 +139,7 @@ namespace SME.SR.Application
                         questaoRelatorio.Resposta += $"{(!string.IsNullOrEmpty(questaoRelatorio.Resposta) ? "| " : string.Empty)}{respostaOpcao}";
                     }
 
-                if (!secao.Questoes.Any(questao => questao.QuestaoId == questaoRelatorio.QuestaoId))
+                if (!secao.Questoes.Any(questao => questao.QuestaoId == questaoRelatorio.QuestaoId || questao.OrdemMascara == questaoRelatorio.OrdemMascara))
                     secao.Questoes.Add(questaoRelatorio);
 
                 if (questao.Tipo == TipoQuestao.Radio ||
