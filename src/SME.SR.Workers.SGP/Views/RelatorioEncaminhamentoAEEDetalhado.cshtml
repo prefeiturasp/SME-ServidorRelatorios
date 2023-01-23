@@ -1,5 +1,6 @@
-﻿@using SME.SR.Infra
-@model SME.SR.Infra.RelatorioEncaminhamentoAeeDto
+﻿@using RazorEngine.Compilation.ImpromptuInterface.InvokeExt
+@using SME.SR.Infra
+@model IEnumerable<SME.SR.Infra.RelatorioEncaminhamentoAeeDetalhadoDto>
 
 @{
     const string INFORMACOES_ESCOLARES = "INFORMAÇÕES ESCOLARES";
@@ -7,7 +8,7 @@
     const string PARECER_COORDENACAO = "PARECER COORDENAÇÃO";
     const string PARECER_AEE = "PARECER AEE";
    
-    void MontarCabecalho()
+    void MontarCabecalho(RelatorioEncaminhamentoAeeDetalhadoDto relatorio)
     {
         <div>
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
@@ -18,18 +19,18 @@
             <table class='tblTopo'>
                 <tbody>
                 <tr>
-                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>ANO LETIVO:</strong> @Model.Cabecalho.AnoLetivo</td>
-                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>DRE:</strong> @Model.Cabecalho.DreNome</td>
-                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>UE:</strong> @Model.Cabecalho.UeNome</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>ANO LETIVO:</strong> @relatorio.Cabecalho.AnoLetivo</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>DRE:</strong> @relatorio.Cabecalho.DreNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>UE:</strong> @relatorio.Cabecalho.UeNome</td>
                 </tr>
                 <tr>
-                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>TURMA:</strong> @Model.Cabecalho.TurmaNome</td>
-                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @Model.Cabecalho.AlunoNome</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>TURMA:</strong> @relatorio.Cabecalho.TurmaNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @relatorio.Cabecalho.AlunoNome</td>
                 </tr>
                 <tr>
-                    <td class='espaco-esquerda-15 espacamento10 colspan="2"'><strong>SITUAÇÃO:</strong> @Model.Cabecalho.SituacaoPlano</td>
-                    <td class='espaco-esquerda-15 width-25 espacamento10'><strong>DATA DO CADASTRO:</strong> @Model.Cabecalho.DataCadastro.Date.ToString("dd/MM/yyyy")</td>
-                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+                    <td class='espaco-esquerda-15 espacamento10 colspan="2"'><strong>SITUAÇÃO:</strong> @relatorio.Cabecalho.SituacaoEncaminhamento</td>
+                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA DO CADASTRO:</strong> @relatorio.Cabecalho.DataCriacao.Date.ToString("dd/MM/yyyy")</td>
+                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA IMPRESSÃO:</strong> @relatorio.Cabecalho.DataImpressao.Date.ToString("dd/MM/yyyy")</td>
                 </tr>
                 </tbody>
             </table>
@@ -39,55 +40,95 @@
     void MontarTituloPadrao(string titulo)
     {
         <tr>
-            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo.ToUpper()</td>
+            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
         </tr>
     }
     
-    void MontarQuestaoRadio(QuestaoPlanoAeeDto questao)
-    {
-        if (string.IsNullOrEmpty(questao.Justificativa))
-            MontarTextoComPrefixoNegrito(questao.Questao, questao.Resposta);
-        else
-            MontarQuestaoComRespostaJustificativa(questao);
-    }
-    
-    void MontarTextoComPrefixoNegrito(string titulo, string descricao)
+    void MontarResponsavel(string responsavel)
     {
         <tr >
-            <td class="alinhamentoEsquerda espacamento10" colspan="7"><strong>@titulo.ToUpper():</strong> @descricao</td>
+            <td class="alinhamentoEsquerda espacamento10" colspan="7"><strong>RESPONSÁVEL:</strong> @responsavel</td>
         </tr>
-    }    
+    }  
     
-    void MontarQuestaoFrequencia(QuestaoPlanoAeeDto questao)
+    void MontarTabelaAtendimentoClinico(string questao, List<AtendimentoClinicoAlunoDto> atendimentoClinicoAlunoDtos)
     {
         
-        if (questao.FrequenciaAluno.Any())
+        if (atendimentoClinicoAlunoDtos.Any())
         {
-            MontarTituloPadrao(questao.Questao);
+            MontarTituloPadrao(questao);
             
             <tr>
-                <td class="fundo-cinza width-33 negrito espacamento10">Dia da semana</td>
-                <td class="fundo-cinza width-33 negrito espacamento10">Horário de início</td>
-                <td class="fundo-cinza width-34 negrito espacamento10">Horário de término</td>
+                <td class="fundo-cinza negrito espacamento10">Dia da semana</td>
+                <td class="fundo-cinza negrito espacamento10">Atendimento/Atividade</td>
+                <td class="fundo-cinza negrito espacamento10">Local de realização</td>
+                <td class="fundo-cinza negrito espacamento10">Horário de início</td>
+                <td class="fundo-cinza negrito espacamento10">Horário de término</td>
             </tr>
         
-            foreach (var diaHorario in questao.FrequenciaAluno)
+            foreach (var diaHorario in atendimentoClinicoAlunoDtos)
             {
                 <tr>
-                    <td class="espacamento10">@diaHorario.DiaDaSemana</td>
-                    <td class="espacamento10">@diaHorario.Inicio</td>
-                    <td class="espacamento10">@diaHorario.Termino</td>
+                    <td class="espacamento10">@diaHorario.DiaSemana</td>
+                    <td class="espacamento10">@diaHorario.AtendimentoAtividade</td>
+                    <td class="espacamento10">@diaHorario.LocalRealizacao</td>
+                    <td class="espacamento10">@diaHorario.HorarioInicio.ToString("HH:mm")</td>
+                    <td class="espacamento10">@diaHorario.HorarioTermino.ToString("HH:mm")</td>
                 </tr>       
             }            
         }
     } 
     
-    void MontarInformacoesComplementares(QuestaoPlanoAeeDto questao)
+    void MontarInformacoesEscolares(SecaoQuestoesEncaminhamentoAeeDto secao)
     {
-        if (questao.InformacoesComplementares != null && questao.InformacoesComplementares.Any())
+        if (secao.Questoes != null && secao.Questoes.Any())
         {
-          MontarTituloPadrao(INFORMACOES_ESCOLARES);
+            <table class="tabela-cabecalho">	
+                <tbody>
+                    @{ MontarTituloPadrao(INFORMACOES_ESCOLARES); }
+                </tbody>
+            </table>
+            
+            var questoes = secao.Questoes.OrderBy(o=> o.Ordem);
 
+            if (questoes.Any())
+            {
+                <table class="tabela-cabecalho">	
+                    <tbody>
+
+                    @{
+                        foreach (var questao in questoes.OrderBy(o => o.Ordem))
+                        {
+                            if (questao.TipoQuestao == TipoQuestao.InformacoesEscolares)
+                            {
+                                MontarTabelaIndicativoDeficiencia(secao.InformacaoEscolar);
+                            }
+                            else
+                            {
+                                if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
+                                {
+                                    MontarTabelaAtendimentoClinico(questao.Questao, secao.AtendimentoClinico);
+                                }
+                                else
+                                {
+                                    MontarSomenteTituloNegrito(questao.Questao);
+
+                                    MontarSomenteResposta(questao.Resposta);    
+                                }
+                            }
+                        }
+                    }
+                
+                    </tbody>
+                </table>
+            }
+        }
+    }
+
+    void MontarTabelaIndicativoDeficiencia(List<InformacaoEscolarAlunoDto> informacaoEscolarAlunoDtos)
+    {
+        if (informacaoEscolarAlunoDtos.Any())
+        {
             <table class="tabela-cabecalho">	
                 <tbody>
                 <tr>
@@ -95,108 +136,100 @@
                     <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
                     <td class="fundo-cinza width-20 negrito espacamento10">Frequência Glocal</td>
                 </tr>
-                
+                    
                 @{
-                    foreach (var srm in questao.InformacoesComplementares)//Tipo = 7
+                    foreach (var informacaoEscolar in informacaoEscolarAlunoDtos)
                     {
                         <tr>
-                            <td class="espacamento10">@srm.IndicativoDeficiencia</td>
-                            <td class="espacamento10">@srm.RecursosUtilizados</td>
-                            <td class="espacamento10">@srm.FrequenciaGlobal</td>
+                            <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
+                            <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
+                            <td class="espacamento10">@informacaoEscolar.FrequenciaGlobal</td>
                         </tr>
+                    }
+                }
+                    
+                </tbody>
+            </table>
+        }
+    }
+
+    void MontarDescricaoEncaminhamento(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                @{
+                    MontarTituloPadrao(DESCRICAO_ENCAMINHAMENTO);
+
+                    foreach (var questao in secao.Questoes)
+                    {
+                        MontarSomenteTituloNegrito(questao.Questao);
+
+                        MontarSomenteResposta(questao.Resposta);
                     }
                 }
                 </tbody>
             </table>
-            
+        }
+    }
+    
+    void MontarParecerCoordenacao(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    foreach (var srm in questao.InformacoesComplementares) //Demais tipos
-                        MontarTituloNegritoLinhaTexto("Pergunta", "Resposta");
+                    MontarTituloPadrao(PARECER_COORDENACAO);
+
+                    foreach (var questao in secao.Questoes)
+                    {
+                        MontarSomenteTituloNegrito(questao.Questao);
+
+                        MontarSomenteResposta(questao.Resposta);
                     }
+                }
                 </tbody>
             </table>
         }
-    }    
-    
-    
-    void MontarQuestaoTexto(QuestaoPlanoAeeDto questao)
-    {
-        MontarTituloNegritoLinhaTexto(@questao.Questao, @questao.Resposta);
     }
     
-    void MontarTituloNegritoLinhaTexto(string titulo, string resposta)
+    void MontarParecerAee(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                @{
+                    MontarTituloPadrao(PARECER_AEE);
+
+                    MontarResponsavel(secao.Responsavel);
+
+                    foreach (var questao in secao.Questoes)
+                    {
+                        MontarSomenteTituloNegrito(questao.Questao);
+
+                        MontarSomenteResposta(questao.Resposta);
+                    }
+                }
+                </tbody>
+            </table>
+        }
+    }
+
+    void MontarSomenteTituloNegrito(string titulo)
     {
         <tr>
             <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
         </tr>
+    } 
+    
+    void MontarSomenteResposta(string resposta)
+    {
         <tr>
             <td colspan="7" class="alinhamentoEsquerda espacamento10">@resposta</td>
         </tr>
-    } 
-    
-    void MontarQuestaoComRespostaJustificativa(QuestaoPlanoAeeDto questao)
-    {
-        <tr>
-            <td colspan="7" class="negrito espacamento10 fundo-cinza">@questao.Questao.ToUpper()</td>
-        </tr>
-        <tr>
-            <td colspan="7" class="alinhamentoEsquerda sem-border-top sem-border-bottom espacamento10"><strong>Resposta:</strong> @questao.Resposta</td>
-        </tr>
-        <tr>
-            <td colspan="7" class="sem-border-top alinhamentoEsquerda sem-border-top espacamento10"><strong>Justificativa:</strong> @questao.Justificativa</td>
-        </tr>
-    }
-
-    void GerarParecer(ParecerPlanoAeeDto parecerPlanoAeeDto)
-    {
-        if (!string.IsNullOrEmpty(@Model.Parecer.Coordenacao) || !string.IsNullOrEmpty(@Model.Parecer.Cefai))
-        {
-            <div class="marginTop20">
-                <table>
-                    <tbody>
-                    <tr>
-                        <td colspan="7" class="fundo-cinza negrito espacamento10">@DESCRICAO_ENCAMINHAMENTO</td>
-                    </tr>
-                    @{
-                        GerarParecerCoordenacao(Model.Parecer.Coordenacao);
-                        GerarParecerCefaiResponsavel(Model.Parecer);
-                    }
-                    </tbody>
-                </table>
-            
-            </div> 
-        }
-    }
-
-    void GerarParecerCoordenacao(string parecerCoordenacao)
-    {
-        if (!string.IsNullOrEmpty(parecerCoordenacao))
-        {
-            <tr>
-                <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_COORDENACAO</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Coordenacao</td>
-            </tr>
-        }
-    }
-
-    void GerarParecerCefaiResponsavel(ParecerPlanoAeeDto parecerCefaiResponsavel)
-    {
-        if (!string.IsNullOrEmpty(@Model.Parecer.Cefai))
-        {
-            <tr>
-                <td colspan="7" class="fundo-cinza negrito espacamento10">@PARECER_AEE</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="alinhamentoEsquerda espacamento10">@Model.Parecer.Cefai</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="alinhamentoEsquerda espacamento10"><strong>PAAI RESPONSÁVEL:</strong> @Model.Parecer.PaaiResponsavel</td>
-            </tr>
-        }
     }
 }
 
@@ -336,30 +369,18 @@
     </style>
     <div>
         @{
-            MontarCabecalho();
+            foreach (var relatorio in Model)
+            {
+                MontarCabecalho(relatorio);  
+                
+                MontarInformacoesEscolares(relatorio.Detalhes.InformacoesEscolares);
 
-            MontarInformacoesComplementares(questao);
-            
-            @foreach (var questao in Model.Cadastro.Questoes.OrderBy(o=> o.Ordem))
-                {
-                    switch (questao.TipoQuestao)
-                    {
-                        
-                            break;
-                        case TipoQuestao.PeriodoEscolar : MontarTextoComPrefixoNegrito(questao.Questao, questao.Resposta);
-                            break;
-                        case TipoQuestao.InformacoesSrm:MontarQuestaoSrm(questao);
-                            break;
-                        case TipoQuestao.Radio: MontarQuestaoRadio(questao);
-                            break;
-                        case TipoQuestao.FrequenciaEstudanteAEE: MontarQuestaoFrequencia(questao);
-                            break;
-                        case TipoQuestao.Texto: MontarQuestaoTexto(questao);
-                            break;
-                    }
-                }
+                MontarDescricaoEncaminhamento(relatorio.Detalhes.DescricaoEncaminhamento);
 
-            GerarParecer(Model.Parecer);
+                MontarParecerCoordenacao(relatorio.Detalhes.ParecerCoordenacao);
+                
+                MontarParecerAee(relatorio.Detalhes.ParecerAee);
+            }
         }
     </div>
 </body>
