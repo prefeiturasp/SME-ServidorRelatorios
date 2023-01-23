@@ -23,7 +23,7 @@
                     <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @relatorio.Cabecalho.Aluno</td>
                 </tr>
                 <tr>
-                    <td class='espaco-esquerda-15 espacamento10 colspan="2"'><strong>SITUAÇÃO:</strong> @relatorio.Cabecalho.SituacaoEncaminhamento</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>SITUAÇÃO:</strong> @relatorio.Cabecalho.SituacaoEncaminhamento</td>
                     <td class='espaco-esquerda-15 espacamento10'><strong>DATA DO CADASTRO:</strong> @relatorio.Cabecalho.DataCriacao.Date.ToString("dd/MM/yyyy")</td>
                     <td class='espaco-esquerda-15 espacamento10'><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
                 </tr>
@@ -39,6 +39,13 @@
         </tr>
     }
     
+    void MontarTituloPadraoSemBordaBottom(string titulo)
+    {
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito espacamento10 sem-border-bottom">@titulo</td>
+        </tr>
+    }
+
     void MontarResponsavel(string responsavel)
     {
         <tr >
@@ -80,7 +87,7 @@
         {
             <table class="tabela-cabecalho">	
                 <tbody>
-                    @{ MontarTituloPadrao(secao.NomeComponenteSecao); }
+                    @{ MontarTituloPadraoSemBordaBottom(secao.NomeComponenteSecao); }
                 </tbody>
             </table>
             
@@ -126,7 +133,7 @@
                 <tr>
                     <td class="fundo-cinza width-40 negrito espacamento10">Indicativo de deficiência (EOL)</td>
                     <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
-                    <td class="fundo-cinza width-20 negrito espacamento10">Frequência Glocal</td>
+                    <td class="fundo-cinza width-20 negrito espacamento10">Frequência Global</td>
                 </tr>
                     
                 @{
@@ -213,7 +220,7 @@
     void MontarSomenteTituloNegrito(string titulo)
     {
         <tr>
-            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
+            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10">@titulo</td>
         </tr>
     } 
     
@@ -364,12 +371,16 @@
             foreach (var relatorio in Model)
             {
                 MontarCabecalho(relatorio);  
+                <br/>
                 
                 MontarInformacoesEscolares(relatorio.Detalhes.InformacoesEscolares);
-
+                <br/>
+                
                 MontarDescricaoEncaminhamento(relatorio.Detalhes.DescricaoEncaminhamento);
-
+                <br/>
+                
                 MontarParecerCoordenacao(relatorio.Detalhes.ParecerCoordenacao);
+                <br/>
                 
                 MontarParecerAee(relatorio.Cabecalho.ResponsavelPaai, relatorio.Detalhes.ParecerAee);
             }
