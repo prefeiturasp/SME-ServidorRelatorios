@@ -57,7 +57,6 @@ namespace SME.SR.Application
             var mensagem = JsonConvert.SerializeObject(relatorios);
            
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao));
-            //await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoAeeDetalhadoCommand(relatorios,  request.CodigoCorrelacao));
         }
 
         private static void ObterCabecalho(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
