@@ -162,6 +162,7 @@
         
             foreach (var diaHorario in atendimentoClinicoAlunoDtos)
             {
+                AvaliarQuebraPagina(1);
                 contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
                 <tr>
                     <td class="espacamento10">@diaHorario.DiaSemana</td>
