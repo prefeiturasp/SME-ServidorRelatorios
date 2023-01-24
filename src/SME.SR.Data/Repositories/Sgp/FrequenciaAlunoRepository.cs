@@ -606,7 +606,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre,
             string codigoUe, Modalidade modalidade, int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe)
         {
-            var query = @"select d.dre_id AS DreCodigo, d.abreviacao as DreSigla,
+            var query = @"select distinct d.dre_id AS DreCodigo, d.abreviacao as DreSigla,
                                 u.nome as UeNome,
                                 u.ue_id AS UeCodigo,
                                 te.descricao as DescricaoTipoEscola,
