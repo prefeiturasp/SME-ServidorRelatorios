@@ -142,7 +142,7 @@ namespace SME.SR.Application
                         if (opcaoRespostaQuestao != null)
                             respostaOpcao = opcaoRespostaQuestao.Nome;
 
-                        questaoRelatorio.Resposta += $"{(!string.IsNullOrEmpty(questaoRelatorio.Resposta) ? "| " : string.Empty)}{respostaOpcao}";
+                        questaoRelatorio.Resposta += $"{(!string.IsNullOrEmpty(questaoRelatorio.Resposta) ? " | " : string.Empty)}{respostaOpcao}";
                     }
 
                 if (!secao.Questoes.Any(questao => questao.QuestaoId == questaoRelatorio.QuestaoId || questao.OrdemMascara == questaoRelatorio.OrdemMascara))

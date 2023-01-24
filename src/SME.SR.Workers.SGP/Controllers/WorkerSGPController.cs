@@ -376,7 +376,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
             var filtro = new FiltroRelatorioEncaminhamentoAeeDetalhadoDto()
             {
-                EncaminhamentosAeeId = new long[] { 4357 } //4357, 4359
+                EncaminhamentosAeeId = new long[] { 4357, 4359 } //4357, 4359
             };
             var mensagem = JsonConvert.SerializeObject(filtro, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
