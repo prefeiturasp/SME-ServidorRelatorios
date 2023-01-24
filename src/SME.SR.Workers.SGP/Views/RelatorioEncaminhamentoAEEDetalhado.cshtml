@@ -3,8 +3,92 @@
 @model IEnumerable<SME.SR.Infra.RelatorioEncaminhamentoAeeDetalhadoDto>
 
 @{
+    int paginaAtual = 0;
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 35;
+    RelatorioEncaminhamentoAeeDetalhadoDto relatorioAtual = null;
+
+    const int QDADE_LINHAS_CABECALHO_GERAL = 8;
+    const int QDADE_LINHAS_LINHA_UNICA = 1;
+    const int QDADE_CHARS_POR_LINHA = 115;
+
+    int RetornarQdadeLinhasPrevistas(int qdadeChars) {
+        var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
+        if (qdadeChars % QDADE_CHARS_POR_LINHA > 0)
+            retorno++;
+        return retorno;
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLQuebraPagina()
+    {
+        contadorQuebrarPagina = 0;
+        paginaAtual++;
+        
+        var str = @"<div style='page-break-before:always' />";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLAberturaTable()
+    {
+        var str = @"<table class='tabela-cabecalho'> <tbody> ";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLFechamentoTable()
+    {
+        var str = @"</tbody></table>";
+        return Html.Raw(str);
+    }
+
+    void AvaliarQuebraPagina(int numeroLinhasPrevistas, RelatorioEncaminhamentoAeeDetalhadoDto relatorio = null)
+    {
+        bool quebra = (contadorQuebrarPagina + numeroLinhasPrevistas) > contadorMaximoLinhasPorPagina;
+        if (!quebra)
+            return;
+
+        @MontarHTMLFechamentoTable();
+        @MontarHTMLQuebraPagina();
+        MontarCabecalho(relatorio ?? relatorioAtual);
+        @MontarHTMLAberturaTable();
+    }
+
+    void AvaliarQuebraPagina2(string[] values, QuestaoEncaminhamentoAeeDto questao, int qdadeLinhasPreDefinidas = 0) 
+    {
+        var qdadeLinhasPrevista = 0;
+        foreach (var value in values) 
+            qdadeLinhasPrevista += RetornarQdadeLinhasPrevistas(value.Length);
+
+        qdadeLinhasPrevista += RetornarQdadeLinhasPrevistas(questao?.Questao.Length ?? 0) +
+                               RetornarQdadeLinhasPrevistas(questao?.Resposta.Length ?? 0) +
+                               qdadeLinhasPreDefinidas;
+        AvaliarQuebraPagina(qdadeLinhasPrevista);
+    }
+
+    void MontarQuestaoResposta(QuestaoEncaminhamentoAeeDto questao)
+    {
+        var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questao.Questao.Length) + 
+                                  RetornarQdadeLinhasPrevistas(questao.Resposta.Length);
+        AvaliarQuebraPagina(qdadeLinhasPrevista);
+
+        MontarTituloNegritoQuestaRespostao(questao.Questao, questao.Resposta);
+    }
+
+    void MontarQuestoes (List<QuestaoEncaminhamentoAeeDto> questoes)
+    {
+        foreach (var questao in questoes)
+        {
+            if (questao.TipoQuestao == TipoQuestao.InformacoesEscolares)
+                MontarTabelaIndicativoDeficiencia(questao.InformacaoEscolar);
+            else if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
+                MontarTabelaAtendimentoClinico(questao.Questao, questao.AtendimentoClinico);
+            else
+                MontarQuestaoResposta(questao);  
+        }
+    }
+
     void MontarCabecalho(RelatorioEncaminhamentoAeeDetalhadoDto relatorio)
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_CABECALHO_GERAL;
         <div>
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
         </div>
@@ -34,6 +118,7 @@
  
     void MontarTituloPadrao(string titulo)
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length);
         <tr>
             <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
         </tr>
@@ -41,6 +126,7 @@
     
     void MontarTituloPadraoSemBordaBottom(string titulo)
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length);
         <tr>
             <td colspan="7" class="fundo-cinza negrito espacamento10 sem-border-bottom">@titulo</td>
         </tr>
@@ -48,18 +134,24 @@
 
     void MontarResponsavel(string responsavel)
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(responsavel.Length);
         <tr >
             <td class="alinhamentoEsquerda espacamento10" colspan="7"><strong>RESPONSÁVEL:</strong> @responsavel</td>
         </tr>
     }  
-    
+
     void MontarTabelaAtendimentoClinico(string questao, List<AtendimentoClinicoAlunoDto> atendimentoClinicoAlunoDtos)
     {
-        
         if (atendimentoClinicoAlunoDtos.Any())
         {
+            var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questao.Length) +
+                                      QDADE_LINHAS_LINHA_UNICA + 
+                                      QDADE_LINHAS_LINHA_UNICA;
+            AvaliarQuebraPagina(qdadeLinhasPrevista);
+
             MontarTituloPadrao(questao);
-            
+
+            contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
             <tr>
                 <td class="fundo-cinza negrito espacamento10">Dia da semana</td>
                 <td class="fundo-cinza negrito espacamento10">Atendimento/Atividade</td>
@@ -70,6 +162,7 @@
         
             foreach (var diaHorario in atendimentoClinicoAlunoDtos)
             {
+                contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
                 <tr>
                     <td class="espacamento10">@diaHorario.DiaSemana</td>
                     <td class="espacamento10">@diaHorario.AtendimentoAtividade</td>
@@ -83,37 +176,17 @@
     
     void MontarInformacoesEscolares(SecaoQuestoesEncaminhamentoAeeDto secao)
     {
-        if (secao.Questoes != null && secao.Questoes.Any())
+        if (secao.Questoes.Any())
         {
-            <table class="tabela-cabecalho">	
+            <table class="tabela-cabecalho">
                 <tbody>
-                    @{ MontarTituloPadraoSemBordaBottom(secao.NomeSecao); }
+                    @{
+                        //AvaliarQuebraPagina2(new string[] { secao.NomeSecao }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarQuestoes(secao.Questoes);
+                    }
                 </tbody>
             </table>
-            
-            if (secao.Questoes.Any())
-            {
-                <table class="tabela-cabecalho">	
-                    <tbody>
-
-                    @{
-                        foreach (var questao in secao.Questoes.OrderBy(o => o.Ordem))
-                        {
-                            if (questao.TipoQuestao == TipoQuestao.InformacoesEscolares)
-                            {
-                                MontarTabelaIndicativoDeficiencia(questao.InformacaoEscolar);
-                            }
-                            else
-                            {
-                                MontarSomenteTituloNegrito(questao.Questao);
-
-                                MontarSomenteResposta(questao.Resposta);
-                            }
-                        }
-                    }
-                    </tbody>
-                </table>
-            }
         }
     }
 
@@ -121,6 +194,7 @@
     {
         if (informacaoEscolarAlunoDtos.Any())
         {
+            contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
             <tr>
                 <td class="fundo-cinza width-40 negrito espacamento10">Indicativo de deficiência (EOL)</td>
                 <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
@@ -136,6 +210,7 @@
 
     void GerarLinhaNecessidadeEspecial(InformacaoEscolarAlunoDto informacaoEscolar)
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
         <tr>
             <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
             <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
@@ -149,22 +224,10 @@
         {
             <table class="tabela-cabecalho">	
                 <tbody>
-                @{
-                    MontarTituloPadrao(secao.NomeSecao);
-
-                    foreach (var questao in secao.Questoes)
-                    {
-                        if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
-                        {
-                            MontarTabelaAtendimentoClinico(questao.Questao, questao.AtendimentoClinico);
-                        }
-                        else
-                        {
-                            MontarSomenteTituloNegrito(questao.Questao);
-
-                            MontarSomenteResposta(questao.Resposta);
-                        }
-                    }
+                    @{
+                        AvaliarQuebraPagina2(new string[] { secao.NomeSecao }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarQuestoes(secao.Questoes);
                 }
                 </tbody>
             </table>
@@ -178,14 +241,9 @@
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(secao.NomeSecao);
-
-                    foreach (var questao in secao.Questoes)
-                    {
-                        MontarSomenteTituloNegrito(questao.Questao);
-
-                        MontarSomenteResposta(questao.Resposta);
-                    }
+                        AvaliarQuebraPagina2(new string[] { secao.NomeSecao }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarQuestoes(secao.Questoes);
                 }
                 </tbody>
             </table>
@@ -199,35 +257,28 @@
             <table class="tabela-cabecalho">	
                 <tbody>
                 @{
-                    MontarTituloPadrao(secao.NomeSecao);
-
-                    MontarResponsavel(responsavelPaai);
-
-                    foreach (var questao in secao.Questoes)
-                    {
-                        MontarSomenteTituloNegrito(questao.Questao);
-
-                        MontarSomenteResposta(questao.Resposta);
-                    }
+                        AvaliarQuebraPagina2(new string[] { secao.NomeSecao, responsavelPaai }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarResponsavel(responsavelPaai);
+                        MontarQuestoes(secao.Questoes);
                 }
                 </tbody>
             </table>
         }
     }
 
-    void MontarSomenteTituloNegrito(string titulo)
+    void MontarTituloNegritoQuestaRespostao(string titulo, string resposta)
     {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length) +
+                                  RetornarQdadeLinhasPrevistas(resposta.Length);
+
         <tr>
             <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10">@titulo</td>
         </tr>
-    } 
-    
-    void MontarSomenteResposta(string resposta)
-    {
-        <tr>
+         <tr>
             <td colspan="7" class="alinhamentoEsquerda espacamento10">@resposta</td>
         </tr>
-    }
+    } 
 }
 
 <!DOCTYPE html>
@@ -368,19 +419,19 @@
         @{
             foreach (var relatorio in Model)
             {
+                if (relatorio != null)
+                    @MontarHTMLQuebraPagina();
+                relatorioAtual = relatorio;
                 MontarCabecalho(relatorio);  
                 <br/>
-                
                 MontarInformacoesEscolares(relatorio.Detalhes.InformacoesEscolares);
-                <br/>
-                
+                <br/>               
                 MontarDescricaoEncaminhamento(relatorio.Detalhes.DescricaoEncaminhamento);
                 <br/>
-                
                 MontarParecerCoordenacao(relatorio.Detalhes.ParecerCoordenacao);
                 <br/>
-                
                 MontarParecerAee(relatorio.Cabecalho.ResponsavelPaai, relatorio.Detalhes.ParecerAee);
+                paginaAtual = 0;
             }
         }
     </div>
