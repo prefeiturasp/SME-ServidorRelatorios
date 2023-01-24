@@ -11,7 +11,7 @@ namespace SME.SR.Data
 {
     public class QuestionarioRepository : IQuestionarioRepository
     {
-        private readonly VariaveisAmbiente variaveisAmbiente;
+        protected readonly VariaveisAmbiente variaveisAmbiente;
 
         public QuestionarioRepository(VariaveisAmbiente variaveisAmbiente)
         {
@@ -33,6 +33,7 @@ namespace SME.SR.Data
             const string query = @"select q.id,
                                         q.ordem,
                                         q.nome,
+                                        q.nome_componente as nomeComponente,
                                         q.tipo, 
                                         op.id,
                                         op.questao_id as questaoid,

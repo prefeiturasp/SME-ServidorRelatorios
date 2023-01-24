@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra
 {
-    public class FiltroRelatorioEncaminhamentoAeeDto
+    public class FiltroRelatorioEncaminhamentosAeeDto
     {
         public int AnoLetivo { get; set; }
         public string DreCodigo { get; set; }

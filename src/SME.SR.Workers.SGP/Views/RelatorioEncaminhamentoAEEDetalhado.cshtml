@@ -1,0 +1,439 @@
+﻿@using RazorEngine.Compilation.ImpromptuInterface.InvokeExt
+@using SME.SR.Infra
+@model IEnumerable<SME.SR.Infra.RelatorioEncaminhamentoAeeDetalhadoDto>
+
+@{
+    int paginaAtual = 0;
+    double contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 36;
+    RelatorioEncaminhamentoAeeDetalhadoDto relatorioAtual = null;
+
+    const int QDADE_LINHAS_CABECALHO_GERAL = 8;
+    const int QDADE_LINHAS_LINHA_UNICA = 1;
+    const int QDADE_CHARS_POR_LINHA = 215;
+
+    int RetornarQdadeLinhasPrevistas(int qdadeChars) {
+        var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
+        if (qdadeChars % QDADE_CHARS_POR_LINHA > 0)
+            retorno++;
+        return retorno;
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLQuebraPagina()
+    {
+        contadorQuebrarPagina = 0;
+        paginaAtual++;
+        
+        var str = @"<div style='page-break-before:always' />";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLAberturaTable()
+    {
+        var str = @"<table class='tabela-cabecalho'> <tbody> ";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLFechamentoTable()
+    {
+        var str = @"</tbody></table>";
+        return Html.Raw(str);
+    }
+
+    void AvaliarQuebraPagina(int numeroLinhasPrevistas, RelatorioEncaminhamentoAeeDetalhadoDto relatorio = null)
+    {
+        bool quebra = (contadorQuebrarPagina + numeroLinhasPrevistas) > contadorMaximoLinhasPorPagina;
+        if (!quebra)
+            return;
+
+        @MontarHTMLFechamentoTable();
+        @MontarHTMLQuebraPagina();
+        MontarCabecalho(relatorio ?? relatorioAtual);
+        @MontarHTMLAberturaTable();
+    }
+
+    void AvaliarQuebraPagina2(string[] values, QuestaoEncaminhamentoAeeDto questao, int qdadeLinhasPreDefinidas = 0) 
+    {
+        var qdadeLinhasPrevista = 0;
+        foreach (var value in values) 
+            qdadeLinhasPrevista += RetornarQdadeLinhasPrevistas(value.Length);
+
+        qdadeLinhasPrevista += RetornarQdadeLinhasPrevistas(questao?.Questao.Length ?? 0) +
+                               RetornarQdadeLinhasPrevistas(questao?.Resposta.Length ?? 0) +
+                               qdadeLinhasPreDefinidas;
+        AvaliarQuebraPagina(qdadeLinhasPrevista);
+    }
+
+    void MontarQuestaoResposta(QuestaoEncaminhamentoAeeDto questao)
+    {
+        var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questao.Questao.Length) + 
+                                  RetornarQdadeLinhasPrevistas(questao.Resposta.Length);
+        AvaliarQuebraPagina(qdadeLinhasPrevista);
+
+        MontarTituloNegritoQuestaRespostao(questao.Questao, questao.Resposta);
+    }
+
+    void MontarQuestoes (List<QuestaoEncaminhamentoAeeDto> questoes)
+    {
+        foreach (var questao in questoes)
+        {
+            if (questao.TipoQuestao == TipoQuestao.InformacoesEscolares)
+                MontarTabelaIndicativoDeficiencia(questao.InformacaoEscolar);
+            else if (questao.TipoQuestao == TipoQuestao.AtendimentoClinico)
+                MontarTabelaAtendimentoClinico(questao.Questao, questao.AtendimentoClinico);
+            else
+                MontarQuestaoResposta(questao);  
+        }
+    }
+
+    void MontarCabecalho(RelatorioEncaminhamentoAeeDetalhadoDto relatorio)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_CABECALHO_GERAL;
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DO ENCAMINHAMENTO AEE</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                <tr>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>ANO LETIVO:</strong> @relatorio.Cabecalho.AnoLetivo</td>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>DRE:</strong> @relatorio.Cabecalho.DreNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>UE:</strong> @relatorio.Cabecalho.UeNome</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 width-22 espacamento10'><strong>TURMA:</strong> @relatorio.Cabecalho.TurmaNome</td>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @relatorio.Cabecalho.Aluno</td>
+                </tr>
+                <tr>
+                    <td class='espaco-esquerda-15 espacamento10' colspan="2"><strong>SITUAÇÃO:</strong> @relatorio.Cabecalho.SituacaoEncaminhamento</td>
+                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA DO CADASTRO:</strong> @relatorio.Cabecalho.DataCriacao.Date.ToString("dd/MM/yyyy")</td>
+                    <td class='espaco-esquerda-15 espacamento10'><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+ 
+    void MontarTituloPadrao(string titulo)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length);
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito espacamento10">@titulo</td>
+        </tr>
+    }
+    
+    void MontarTituloPadraoSemBordaBottom(string titulo)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length);
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito espacamento10 sem-border-bottom">@titulo</td>
+        </tr>
+    }
+
+    void MontarResponsavel(string responsavel)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(responsavel.Length);
+        <tr >
+            <td class="alinhamentoEsquerda espacamento10" colspan="7"><strong>RESPONSÁVEL:</strong> @responsavel</td>
+        </tr>
+    }  
+
+    void MontarTabelaAtendimentoClinico(string questao, List<AtendimentoClinicoAlunoDto> atendimentoClinicoAlunoDtos)
+    {
+        if (atendimentoClinicoAlunoDtos.Any())
+        {
+            var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questao.Length) +
+                                      QDADE_LINHAS_LINHA_UNICA + 
+                                      QDADE_LINHAS_LINHA_UNICA;
+            AvaliarQuebraPagina(qdadeLinhasPrevista);
+
+            MontarTituloPadrao(questao);
+
+            contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
+            <tr>
+                <td class="fundo-cinza negrito espacamento10">Dia da semana</td>
+                <td class="fundo-cinza negrito espacamento10">Atendimento/Atividade</td>
+                <td class="fundo-cinza negrito espacamento10">Local de realização</td>
+                <td class="fundo-cinza negrito espacamento10">Horário de início</td>
+                <td class="fundo-cinza negrito espacamento10">Horário de término</td>
+            </tr>
+        
+            foreach (var diaHorario in atendimentoClinicoAlunoDtos)
+            {
+                contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
+                <tr>
+                    <td class="espacamento10">@diaHorario.DiaSemana</td>
+                    <td class="espacamento10">@diaHorario.AtendimentoAtividade</td>
+                    <td class="espacamento10">@diaHorario.LocalRealizacao</td>
+                    <td class="espacamento10">@diaHorario.HorarioInicio.ToString("HH:mm")</td>
+                    <td class="espacamento10">@diaHorario.HorarioTermino.ToString("HH:mm")</td>
+                </tr>       
+            }            
+        }
+    } 
+    
+    void MontarInformacoesEscolares(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">
+                <tbody>
+                    @{
+                        //AvaliarQuebraPagina2(new string[] { secao.NomeSecao }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarQuestoes(secao.Questoes);
+                    }
+                </tbody>
+            </table>
+        }
+    }
+
+    void MontarTabelaIndicativoDeficiencia(List<InformacaoEscolarAlunoDto> informacaoEscolarAlunoDtos)
+    {
+        if (informacaoEscolarAlunoDtos.Any())
+        {
+            contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
+            <tr>
+                <td class="fundo-cinza width-40 negrito espacamento10">Indicativo de deficiência (EOL)</td>
+                <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
+                <td class="fundo-cinza width-20 negrito espacamento10">Frequência Global</td>
+            </tr>
+            
+            foreach (var informacaoEscolar in informacaoEscolarAlunoDtos)
+            {
+                GerarLinhaNecessidadeEspecial(informacaoEscolar);
+            }
+        }
+    }
+
+    void GerarLinhaNecessidadeEspecial(InformacaoEscolarAlunoDto informacaoEscolar)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
+        <tr>
+            <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
+            <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
+            <td class="espacamento10">@informacaoEscolar.FrequenciaGlobal</td>
+        </tr>
+    }
+
+    void MontarDescricaoEncaminhamento(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                    @{
+                        AvaliarQuebraPagina2(new string[] { secao.NomeSecao }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarQuestoes(secao.Questoes);
+                }
+                </tbody>
+            </table>
+        }
+    }
+    
+    void MontarParecerCoordenacao(SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                @{
+                        AvaliarQuebraPagina2(new string[] { secao.NomeSecao }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarQuestoes(secao.Questoes);
+                }
+                </tbody>
+            </table>
+        }
+    }
+    
+    void MontarParecerAee(string responsavelPaai, SecaoQuestoesEncaminhamentoAeeDto secao)
+    {
+        if (secao.Questoes.Any())
+        {
+            <table class="tabela-cabecalho">	
+                <tbody>
+                @{
+                        AvaliarQuebraPagina2(new string[] { secao.NomeSecao, responsavelPaai }, secao.Questoes.FirstOrDefault());
+                        MontarTituloPadrao(secao.NomeSecao);
+                        MontarResponsavel(responsavelPaai);
+                        MontarQuestoes(secao.Questoes);
+                }
+                </tbody>
+            </table>
+        }
+    }
+
+    void MontarTituloNegritoQuestaRespostao(string titulo, string resposta)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length) +
+                                  RetornarQdadeLinhasPrevistas(resposta.Length);
+
+        <tr>
+            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10">@titulo</td>
+        </tr>
+         <tr>
+            <td colspan="7" class="alinhamentoEsquerda espacamento10">@resposta</td>
+        </tr>
+    } 
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DO ENCAMINHAMENTO AEE</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            margin-top: 5px;
+            padding: 3px;
+            text-align: left;
+        }        
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: Roboto, sans-serif;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 43px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+        
+        .alinhamentoEsquerda {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        td span {
+            font-size: 12px;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+        
+        .espacamento10 {
+            padding: 10px;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+        
+        .marginTop20 {
+            margin-top:20px;
+        }
+        
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .img-logo-sgp {
+            height: 63px;
+            float: left;
+        }
+        
+        .width-22 {
+          width: 22%;
+        }
+        
+        .width-25 {
+          width: 25%;
+        }                
+
+        .width-33 {
+          width: 33%;
+        }
+        
+        .width-34 {
+          width: 34%;
+        }   
+    </style>
+    <div>
+        @{
+            foreach (var relatorio in Model)
+            {
+                if (relatorio != null)
+                    @MontarHTMLQuebraPagina();
+                relatorioAtual = relatorio;
+                MontarCabecalho(relatorio);  
+                <br/>
+                MontarInformacoesEscolares(relatorio.Detalhes.InformacoesEscolares);
+                <br/>               
+                MontarDescricaoEncaminhamento(relatorio.Detalhes.DescricaoEncaminhamento);
+                <br/>
+                MontarParecerCoordenacao(relatorio.Detalhes.ParecerCoordenacao);
+                <br/>
+                MontarParecerAee(relatorio.Cabecalho.ResponsavelPaai, relatorio.Detalhes.ParecerAee);
+                paginaAtual = 0;
+            }
+        }
+    </div>
+</body>
+</html>

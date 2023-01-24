@@ -6,11 +6,11 @@ namespace SME.SR.Application
 {
     public class ObterEncaminhamentosAEEQuery : IRequest<IEnumerable<EncaminhamentoAeeDto>>
     {
-        public ObterEncaminhamentosAEEQuery(FiltroRelatorioEncaminhamentoAeeDto filtro)
+        public ObterEncaminhamentosAEEQuery(FiltroRelatorioEncaminhamentosAeeDto filtro)
         {
             Filtro = filtro;
         }
 
-        public FiltroRelatorioEncaminhamentoAeeDto Filtro { get; }
+        public FiltroRelatorioEncaminhamentosAeeDto Filtro { get; }
     }
 }

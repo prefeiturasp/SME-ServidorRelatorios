@@ -187,6 +187,10 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IPlanoAeeRespostaRepository), typeof(PlanoAeeRespostaRepository));
             services.TryAddScoped(typeof(IPlanoAeeVersaoRepository), typeof(PlanoAeeVersaoRepository));
             services.TryAddScoped(typeof(IEncaminhamentoAeeRepository), typeof(EncaminhamentoAeeRepository));
+
+            services.TryAddScoped(typeof(IQuestionarioEncaminhamentoAeeRepository), typeof(QuestionarioEncaminhamentoAeeRepository));
+            services.TryAddScoped(typeof(IEncaminhamentoAeeRespostaRepository), typeof(EncaminhamentoAeeRespostaRepository));
+            
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -244,7 +248,8 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioFrequenciaGlobalUseCase, RelatorioFrequenciaGlobalUseCase>();
             services.TryAddScoped<IRelatorioPlanoAeeUseCase, RelatorioPlanoAeeUseCase>();
             services.TryAddScoped<IRelatorioPlanosAeeUseCase, RelatorioPlanosAeeUseCase>();
-            services.TryAddScoped<IRelatorioEncaminhamentoAeeUseCase, RelatorioEncaminhamentoAeeUseCase>();
+            services.TryAddScoped<IRelatorioEncaminhamentosAeeUseCase, RelatorioEncaminhamentosAeeUseCase>();
+            services.TryAddScoped<IRelatorioEncaminhamentoAeeDetalhadoUseCase, RelatorioEncaminhamentoAeeDetalhadoUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
