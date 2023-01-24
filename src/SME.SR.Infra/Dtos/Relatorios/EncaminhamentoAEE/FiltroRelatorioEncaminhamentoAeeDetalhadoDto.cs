@@ -2,6 +2,6 @@
 {
     public class FiltroRelatorioEncaminhamentoAeeDetalhadoDto
     {
-        public long[] EncaminhamentosAeeId { get; set; }
+        public long[] Ids { get; set; }
     }
 }

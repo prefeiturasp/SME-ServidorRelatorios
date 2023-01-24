@@ -54,8 +54,6 @@ namespace SME.SR.Application
                 relatorios.Add(relatorio);
             }
 
-            var mensagem = JsonConvert.SerializeObject(relatorios);
-           
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao));
         }
 

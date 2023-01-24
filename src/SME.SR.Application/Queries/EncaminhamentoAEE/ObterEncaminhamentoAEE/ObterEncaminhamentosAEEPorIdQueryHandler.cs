@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public Task<IEnumerable<EncaminhamentoAeeDto>> Handle(ObterEncaminhamentosAEEPorIdQuery request, CancellationToken cancellationToken)
         {
-            return encaminhamentoAeeRepository.ObterEncaminhamentosAEEPorIds(request.Filtro.EncaminhamentosAeeId);   
+            return encaminhamentoAeeRepository.ObterEncaminhamentosAEEPorIds(request.Filtro.Ids);   
         }
     }
 }
