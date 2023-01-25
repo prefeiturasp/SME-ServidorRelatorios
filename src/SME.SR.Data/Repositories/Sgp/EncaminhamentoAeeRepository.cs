@@ -140,7 +140,7 @@ namespace SME.SR.Data
 					left join usuario responsavel on responsavel.id = ea.responsavel_id
                 where ea.id = any(@encaminhamentosAeeId)");
 
-            query.AppendLine(" order by d.dre_id ");
+            query.AppendLine(" order by d.abreviacao, u.nome, ea.aluno_codigo ");
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
