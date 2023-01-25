@@ -175,15 +175,16 @@
                                 str += MontarCabecalhoPerfil(perfil.Nome);
                                 foreach (var usuario in perfil.Usuarios)
                                 {
+                                    string nomeUsuario = usuario.Nome != null ? usuario.Nome : string.Empty;
 
                                     str += $@"<tr>
                                             <td width='10%' class='td-valor'>{usuario.Login}</td>
-                                            <td width='40%' class='td-valor'>{usuario.Nome}</td>
+                                            <td width='40%' class='td-valor'>{nomeUsuario}</td>
                                             <td width='20%' class='td-valor'>{usuario.Situacao}</td>
                                             <td width='20%' class='td-valor'>{usuario.UltimoAcesso}</td>
                                           </tr>";
 
-                                    contadorQuebrarPagina = contadorQuebrarPagina + (usuario.Nome.Length > 40 ? (int)(usuario.Nome.Length / 40) + 1 : 1);
+                                    contadorQuebrarPagina = contadorQuebrarPagina + (nomeUsuario.Length > 40 ? (int)(nomeUsuario.Length / 40) + 1 : 1);
 
                                     retornoVerificacao = VerificaQuebra();
                                     if (retornoVerificacao != string.Empty)
@@ -198,7 +199,7 @@
                                             EhUltimoUsuario = true;
                                         }
                                     }
-                                    else if (usuario.Nome.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
+                                    else if (nomeUsuario.Equals(ultimoUsuario.Nome) && usuario.UltimoAcesso.Equals(ultimoUsuario.UltimoAcesso))
                                     {
                                         EhUltimoUsuario = true;
                                     }
@@ -217,9 +218,11 @@
                         var EhUltimoProfessor = false;
                         foreach (var professor in ue.Professores)
                         {
+                            string nomeProfessor = professor.Nome != null ? professor.Nome : string.Empty;
+
                             str += $@"<tr>
                                     <td width='20%' class='td-valor'>{professor.Login}</td>
-                                    <td width='30%' class='td-valor'>{professor.Nome}</td>
+                                    <td width='30%' class='td-valor'>{nomeProfessor}</td>
                                     <td width='20%' class='td-valor'>{professor.Situacao}</td>
                                     <td width='30%' class='td-valor'>{professor.UltimoAcesso}</td>
                                     <td width='30%' class='td-valor'>{professor.UltimaAulaRegistrada}</td>
@@ -227,7 +230,7 @@
                                     <td width='30%' class='td-valor'>{professor.UltimaFrequenciaRegistrada}</td>
                                   </tr>";
 
-                            contadorQuebrarPagina = contadorQuebrarPagina + (professor.Nome.Length > 16 ? (int)(professor.Nome.Length / 16) + 1 : 1);
+                            contadorQuebrarPagina = contadorQuebrarPagina + (nomeProfessor.Length > 16 ? (int)(nomeProfessor.Length / 16) + 1 : 1);
 
                             retornoVerificacao = VerificaQuebra();
                             if (retornoVerificacao != string.Empty)
@@ -246,7 +249,7 @@
 
                             }
 
-                            if (professor.Nome.Equals(ultimoProfessor.Nome) && professor.UltimoAcesso.Equals(ultimoProfessor.UltimoAcesso))
+                            if (nomeProfessor.Equals(ultimoProfessor.Nome) && professor.UltimoAcesso.Equals(ultimoProfessor.UltimoAcesso))
                                 EhUltimoProfessor = true;
                         }
                         if (ue.Nome.Equals(ultimaUe.Nome))
@@ -271,18 +274,20 @@
                         str += MontarCabecalhoHistoricoReinicioSenha();
                         foreach (var historico in dre.HistoricoReinicioSenha)
                         {
+                            string nomeHistorico = historico.Nome != null ? historico.Nome : string.Empty;
+
                             str += $@"<tr>
                                        <td width='8%' class='td-valor-historico'>{historico.Login}</td>
-                                       <td width='24%' class='td-valor-historico'>{historico.Nome}</td>
+                                       <td width='24%' class='td-valor-historico'>{nomeHistorico}</td>
                                        <td width='15%' class='td-valor-historico'>{historico.Perfil}</td>
                                        <td width='45%' class='td-valor-historico'>{historico.SenhaReiniciada} - {historico.SenhaReiniciadaPor} ({historico.SenhaReiniciadaPorRf}) - {historico.SenhaReiniciadaPorPerfil}</td>
                                        <td width='8%' class='td-valor-historico'>{historico.UtilizaSenhaPadao}</td>
                                      </tr>";
 
 
-                            if (historico.Nome != null && historico.Nome.Length > 40)
+                            if (nomeHistorico != null && nomeHistorico.Length > 40)
                             {
-                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(historico.Nome.Length / 40) + 1;
+                                contadorQuebrarPagina = contadorQuebrarPagina + (int)(nomeHistorico.Length / 40) + 1;
                             }
                             else if (historico.SenhaReiniciadaPor != null && historico.SenhaReiniciadaPor.Length > 40)
                             {
