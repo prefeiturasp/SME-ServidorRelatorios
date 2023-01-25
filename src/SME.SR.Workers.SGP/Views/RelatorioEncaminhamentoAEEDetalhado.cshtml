@@ -10,10 +10,11 @@
 
     const int QDADE_LINHAS_CABECALHO_GERAL = 8;
     const int QDADE_LINHAS_LINHA_UNICA = 1;
-    const int QDADE_CHARS_POR_LINHA = 215;
+    const int QDADE_CHARS_POR_LINHA = 93;
 
     int RetornarQdadeLinhasPrevistas(int qdadeChars) {
         var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
+        if (retorno > 1) retorno = (int) (retorno * 0.5);
         if (qdadeChars % QDADE_CHARS_POR_LINHA > 0)
             retorno++;
         return retorno;
@@ -182,7 +183,6 @@
             <table class="tabela-cabecalho">
                 <tbody>
                     @{
-                        //AvaliarQuebraPagina2(new string[] { secao.NomeSecao }, secao.Questoes.FirstOrDefault());
                         MontarTituloPadrao(secao.NomeSecao);
                         MontarQuestoes(secao.Questoes);
                     }
@@ -197,9 +197,9 @@
         {
             contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
             <tr>
-                <td class="fundo-cinza width-40 negrito espacamento10">Indicativo de deficiência (EOL)</td>
-                <td class="fundo-cinza width-40 negrito espacamento10">Recursos Utilizados (EOL)</td>
-                <td class="fundo-cinza width-20 negrito espacamento10">Frequência Global</td>
+                <td class="fundo-cinza negrito espacamento10">Indicativo de deficiência (EOL)</td>
+                <td class="fundo-cinza negrito espacamento10">Recursos Utilizados (EOL)</td>
+                <td class="fundo-cinza negrito espacamento10">Frequência Global</td>
             </tr>
             
             foreach (var informacaoEscolar in informacaoEscolarAlunoDtos)
@@ -299,7 +299,7 @@
 
         .body-relatorio {
             margin: 0.5cm auto;
-            font-family: Roboto, sans-serif;
+            font-family: 'Roboto Mono', monospace;
             width: 21cm;
             min-height: 29.7cm;
             background: white;
@@ -383,14 +383,6 @@
             padding: 10px;
         }
 
-        .sem-border-top {
-            border-top: 0;
-        }
-        
-        .marginTop20 {
-            margin-top:20px;
-        }
-        
         .sem-border-bottom {
             border-bottom: 0;
         }
@@ -402,19 +394,7 @@
         
         .width-22 {
           width: 22%;
-        }
-        
-        .width-25 {
-          width: 25%;
-        }                
-
-        .width-33 {
-          width: 33%;
-        }
-        
-        .width-34 {
-          width: 34%;
-        }   
+        }                     
     </style>
     <div>
         @{
