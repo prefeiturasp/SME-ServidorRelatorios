@@ -54,7 +54,7 @@ namespace SME.SR.Application
                 relatorios.Add(relatorio);
             }
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao, tipoDePaginas:EnumTipoDePaginas.PaginaSemTotalPaginas));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao, tipoDePaginacao:EnumTipoDePaginacao.PaginaSemTotalPaginas));
         }
 
         private static void ObterCabecalho(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)

@@ -19,7 +19,7 @@ namespace SME.SR.HtmlPdf
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
-        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", EnumTipoDePaginas tipoDePaginas = EnumTipoDePaginas.PaginaComTotalPaginas, string templateHeader = "" )
+        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", EnumTipoDePaginacao tipoDePaginacao = EnumTipoDePaginacao.PaginaComTotalPaginas, string templateHeader = "" )
         {
             nomeArquivo = String.Format("{0}.pdf", nomeArquivo);
 
@@ -34,7 +34,7 @@ namespace SME.SR.HtmlPdf
                 }
             };
 
-            if (tipoDePaginas == EnumTipoDePaginas.SemPagina)
+            if (tipoDePaginacao == EnumTipoDePaginacao.SemPagina)
                 doc.Objects.Add(new ObjectSettings()
                 {
                     HtmlContent = html,
@@ -52,7 +52,7 @@ namespace SME.SR.HtmlPdf
                     FooterSettings = { 
                         FontName="Roboto", 
                         FontSize = 9, 
-                        Right = tipoDePaginas == EnumTipoDePaginas.PaginaComTotalPaginas ? "[page] / [toPage]" : "[page]", 
+                        Right = tipoDePaginacao == EnumTipoDePaginacao.PaginaComTotalPaginas ? "[page] / [toPage]" : "[page]", 
                         Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
                     }
                 }); 

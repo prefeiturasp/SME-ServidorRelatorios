@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra
 {
-    public enum EnumTipoDePaginas
+    public enum EnumTipoDePaginacao
     {
         PaginaSemTotalPaginas,
         PaginaComTotalPaginas,
