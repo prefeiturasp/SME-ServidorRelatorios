@@ -53,6 +53,13 @@ namespace SME.SR.HtmlPdf
                     HtmlContent = html,
                     WebSettings = { DefaultEncoding = "utf-8" } ,
                     PagesCount = true,
+                    HeaderSettings = { HtmUrl = templateHeader },
+                    FooterSettings = { 
+                        FontName="Roboto", 
+                        FontSize = 9, 
+                        Right = "[page]", 
+                        Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
+                    }
                 });
             
                 converter.Convert(doc);            
