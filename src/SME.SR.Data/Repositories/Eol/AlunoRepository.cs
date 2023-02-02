@@ -335,7 +335,7 @@ namespace SME.SR.Data
 									FROM lista ");
             
 
-			var parametros = new { dreCodigo, ueCodigo, anoTurma = anoTurma.ToDbChar(1), anoLetivo, dataFim = dataReferencia };
+			var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(6), ueCodigo, anoTurma = anoTurma.ToDbChar(1), anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
@@ -1655,32 +1655,7 @@ namespace SME.SR.Data
 				      AND mte.nr_chamada_aluno <> '0'
 					  AND mte.nr_chamada_aluno is not null
 					  {(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
-					  {(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}
-					 and mte.dt_situacao_aluno = (
-					select
-						max(mte2.dt_situacao_aluno)
-					from
-						v_historico_matricula_cotic matr2
-					INNER JOIN historico_matricula_turma_escola mte2 ON
-						matr2.cd_matricula = mte2.cd_matricula
-					where matr2.cd_aluno = matr.cd_aluno
-					{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
-					{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}
-						and (matr2.st_matricula in (1, 6, 10, 13, 5)
-						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
-						and matr2.dt_status_matricula > @dataFim)) )
-					AND NOT EXISTS(
-					SELECT
-						1
-					FROM
-						v_matricula_cotic matr3
-					INNER JOIN matricula_turma_escola mte3 ON
-						matr3.cd_matricula = mte3.cd_matricula
-					WHERE
-						mte.cd_matricula = mte3.cd_matricula
-						{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
-						{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)})";
-
+					  {(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}";
 		}
 	}
 }
