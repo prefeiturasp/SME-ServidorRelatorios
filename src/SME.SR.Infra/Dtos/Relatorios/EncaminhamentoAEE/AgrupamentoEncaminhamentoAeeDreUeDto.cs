@@ -12,6 +12,7 @@ namespace SME.SR.Infra
         public long DreId { get; set; }
         public string DreNome { get; set; }
         public string UeNome { get; set; }
+        public string UeOrdenacao { get; set; }
         public List<DetalheEncaminhamentoAeeDto> Detalhes { get; set; }
     }
 }

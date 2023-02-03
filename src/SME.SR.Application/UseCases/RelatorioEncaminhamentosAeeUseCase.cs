@@ -30,13 +30,15 @@ namespace SME.SR.Application
             {
                 DreId = g.DreId,
                 DreNome = g.DreAbreviacao,
-                UeNome = $"{g.UeCodigo} - {g.TipoEscola.ShortName()} {g.UeNome}",
+                UeCodigo = g.UeCodigo,
+                UeNome = $"{g.TipoEscola.ShortName()} {g.UeNome}",
             }, (key, group) =>
             new AgrupamentoEncaminhamentoAeeDreUeDto()
             {
                 DreId = key.DreId,
                 DreNome = key.DreNome,
-                UeNome = key.UeNome,
+                UeNome = $"{key.UeCodigo} - {key.UeNome}",
+                UeOrdenacao = key.UeNome,
                 Detalhes = group.Select(s =>
                 new DetalheEncaminhamentoAeeDto()
                 {
@@ -45,7 +47,7 @@ namespace SME.SR.Application
                     Situacao = ((SituacaoEncaminhamentoAEE)s.Situacao).Name(),
                     ResponsavelPAAI = !string.IsNullOrEmpty(s.ResponsavelPaaiNome) ? $"{s.ResponsavelPaaiNome} ({s.ResponsavelPaaiLoginRf})" : string.Empty,
                 }).OrderBy(oAluno => oAluno.Aluno).ToList()
-            }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeNome).ToList();
+            }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeOrdenacao).ToList();
 
             var cabecalho = new CabecalhoEncaminhamentoAeeDto()
             {
