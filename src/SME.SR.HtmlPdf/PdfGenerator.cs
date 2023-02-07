@@ -5,6 +5,7 @@ using SME.SR.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using SME.SR.Infra;
 
 namespace SME.SR.HtmlPdf
 {
@@ -18,7 +19,7 @@ namespace SME.SR.HtmlPdf
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
-        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", bool gerarPaginacao = true, string templateHeader = "" )
+        public void Converter(string html, string nomeArquivo, string tituloRelatorioRodape = "", EnumTipoDePaginacao tipoDePaginacao = EnumTipoDePaginacao.PaginaComTotalPaginas, string templateHeader = "" )
         {
             nomeArquivo = String.Format("{0}.pdf", nomeArquivo);
 
@@ -32,8 +33,16 @@ namespace SME.SR.HtmlPdf
                     Out=nomeArquivo
                 }
             };
-            
-            if (gerarPaginacao)
+
+            if (tipoDePaginacao == EnumTipoDePaginacao.SemPagina)
+                doc.Objects.Add(new ObjectSettings()
+                {
+                    HtmlContent = html,
+                    WebSettings = { DefaultEncoding = "utf-8" } ,
+                    PagesCount = true
+                });
+            else
+            {
                 doc.Objects.Add(new ObjectSettings()
                 {
                     HtmlContent = html,
@@ -43,19 +52,13 @@ namespace SME.SR.HtmlPdf
                     FooterSettings = { 
                         FontName="Roboto", 
                         FontSize = 9, 
-                        Right = "[page] / [toPage]", 
+                        Right = tipoDePaginacao == EnumTipoDePaginacao.PaginaComTotalPaginas ? "[page] / [toPage]" : "[page]", 
                         Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
                     }
                 }); 
-            else
-                doc.Objects.Add(new ObjectSettings()
-                {
-                    HtmlContent = html,
-                    WebSettings = { DefaultEncoding = "utf-8" } ,
-                    PagesCount = true,
-                });
-            
-                converter.Convert(doc);            
+            }
+
+            converter.Convert(doc);            
         }
 
         public void ConvertToPdf(List<string> paginas, string nomeArquivo)

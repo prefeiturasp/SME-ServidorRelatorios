@@ -6,6 +6,7 @@ using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.PlanoAEE;
 using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Application
@@ -98,7 +99,14 @@ namespace SME.SR.Application
                 
                 if (respostaFrequenciaAluno != null)
                     questaoRelatorio.FrequenciaAluno = ObterRespostaFrequenciaAluno(questao.Tipo, respostaQuestao);
+
                 
+                var respostaSrm =  ObterRespostaInformacoesSrm(questao.Tipo,respostaQuestao);
+
+                if (respostaSrm != null)
+                    questaoRelatorio.InformacoesSrm = respostaSrm;
+
+
                 questoesRelatorio.Add(questaoRelatorio);
             }
 
@@ -145,6 +153,22 @@ namespace SME.SR.Application
                     DiaDaSemana = respostaFrequencia.DiaSemana,
                     Inicio = respostaFrequencia.HorarioInicio.ToString("HH:mm"),
                     Termino = respostaFrequencia.HorarioTermino.ToString("HH:mm")
+                }).ToList();
+        }
+
+        private static IEnumerable<DadosSrmPlanoAeeDto> ObterRespostaInformacoesSrm(TipoQuestao tipoQuestao, RespostaQuestaoDto respostaQuestao)
+        {
+            if (tipoQuestao != TipoQuestao.InformacoesSrm)
+                return null;
+
+            var respostasSrm = JsonConvert.DeserializeObject<IEnumerable<DadosSrmPlanoAeeDto>>(respostaQuestao.Texto);
+
+            return respostasSrm?.Select(resposta =>
+                new DadosSrmPlanoAeeDto
+                {
+                    DreUe = resposta.DreUe,
+                    TurmaTurno = resposta.TurmaTurno,
+                    ComponenteCurricular = resposta.ComponenteCurricular
                 }).ToList();
         }
     }

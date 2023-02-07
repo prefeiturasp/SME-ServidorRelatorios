@@ -13,6 +13,7 @@ namespace SME.SR.Data
         public long Id { get; set; }
         public int Ordem { get; set; }
         public string Nome { get; set; }
+        public string NomeComponente { get; set; }
         public TipoQuestao Tipo { get; set; }
         public List<OpcaoResposta> OpcoesRespostas { get; }
     }

@@ -8,6 +8,7 @@ namespace SME.SR.Infra
         public int Ordem { get; set; }
         public string Nome { get; set; }
         public TipoQuestao Tipo { get; set; }
+        public string NomeComponente { get; set; }
         public OpcaoRespostaDto[] OpcaoResposta { get; set; }
         public IEnumerable<RespostaQuestaoDto> Respostas { get; set; }        
     }

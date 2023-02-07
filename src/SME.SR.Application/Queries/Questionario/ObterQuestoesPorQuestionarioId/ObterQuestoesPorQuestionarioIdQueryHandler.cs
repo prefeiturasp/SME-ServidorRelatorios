@@ -54,6 +54,7 @@ namespace SME.SR.Application
                 Id = questao.Id,
                 Ordem = questao.Ordem,
                 Nome = questao.Nome,
+                NomeComponente = questao.NomeComponente,
                 Tipo = questao.Tipo,
                 OpcaoResposta = questao.OpcoesRespostas.Select(opcaoResposta =>
                     {
