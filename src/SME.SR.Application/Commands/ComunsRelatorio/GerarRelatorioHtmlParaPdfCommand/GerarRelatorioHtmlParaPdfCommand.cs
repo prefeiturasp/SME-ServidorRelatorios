@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using System;
+using SME.SR.Infra;
 
 namespace SME.SR.Application
 {
     public class GerarRelatorioHtmlParaPdfCommand : IRequest<string>
     {
-        public GerarRelatorioHtmlParaPdfCommand(string nomeTemplate, object model, Guid codigoCorrelacao, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string tituloRelatorioRodape = "", bool gerarPaginacao = true, bool relatorioSincrono = false, string diretorioComplementar = null)
+        public GerarRelatorioHtmlParaPdfCommand(string nomeTemplate, object model, Guid codigoCorrelacao, string mensagemUsuario = "", string mensagemTitulo = "", bool envioPorRabbit = true, string tituloRelatorioRodape = "", EnumTipoDePaginacao tipoDePaginacao = EnumTipoDePaginacao.PaginaComTotalPaginas, bool relatorioSincrono = false, string diretorioComplementar = null)
         {
             if (!string.IsNullOrWhiteSpace(nomeTemplate))
                 NomeTemplate = nomeTemplate.Replace(".cshtml", "");
@@ -15,7 +16,7 @@ namespace SME.SR.Application
             MensagemTitulo = mensagemTitulo;
             EnvioPorRabbit = envioPorRabbit;
             TituloRelatorioRodape = tituloRelatorioRodape;
-            GerarPaginacao = gerarPaginacao;
+            TipoDePaginacao = tipoDePaginacao;
             RelatorioSincrono = relatorioSincrono;
             DiretorioComplementar = diretorioComplementar;
         }
@@ -27,7 +28,7 @@ namespace SME.SR.Application
         public string MensagemUsuario { get; set; }
         public string MensagemTitulo { get; set; }
         public bool EnvioPorRabbit { get; set; }
-        public bool GerarPaginacao { get; set; }
+        public EnumTipoDePaginacao TipoDePaginacao { get; set; }
         public bool RelatorioSincrono { get; set; }
         public string DiretorioComplementar { get; set; }
     }
