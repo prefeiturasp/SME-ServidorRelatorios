@@ -167,19 +167,27 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGlobalAlunos(string[] codigosAluno, int anoLetivo, int modalidade, string[] codigoTurmas)
         {
-            var query = @$"select fa.codigo_aluno as CodigoAluno
+            var query = @$"with frequenciaGeral as (select fa.codigo_aluno as CodigoAluno
                                 , sum(fa.total_aulas) as TotalAulas
                                 , sum(fa.total_ausencias) as TotalAusencias
                                 , sum(fa.total_compensacoes) as TotalCompensacoes
+                                , row_number() over (partition by fa.codigo_aluno, fa.bimestre order by fa.id) as sequencia
                               from frequencia_aluno fa 
                             inner join turma t on t.turma_id = fa.turma_id
-                            where fa.codigo_aluno = ANY(@codigosAluno) 
+                            where fa.codigo_aluno = any(@codigosAluno) 
                               and t.ano_letivo = @anoLetivo
                               and t.modalidade_codigo = @modalidade 
                               and fa.tipo = 2
                               and t.tipo_turma in(1,2,7) 
-                              and fa.turma_id = ANY(@codigoTurmas)
-                            group by fa.codigo_aluno";
+                              and fa.turma_id = any(@codigoTurmas)
+                            group by fa.codigo_aluno, fa.bimestre, fa.id)
+                            select codigoAluno as CodigoAluno, 
+                            sum(totalaulas) as TotalAulas,
+                            sum(totalausencias) as TotalAusencias,
+                            sum(totalCompensacoes) as TotalCompensacoes
+                            from frequenciaGeral where sequencia = 1
+                            group by codigoAluno
+                            ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
