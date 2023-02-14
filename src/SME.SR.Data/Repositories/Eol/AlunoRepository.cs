@@ -8,7 +8,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace SME.SR.Data
 {
     public class AlunoRepository : IAlunoRepository
@@ -1681,5 +1680,13 @@ namespace SME.SR.Data
             }
 
         }
-	}
+
+        public async Task<(DateTime dataMatricula, DateTime dataSituacao)> ObterDatasMatriculaAlunoNaTurma(int codigoAluno, int codigoTurma)
+        {
+			using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+			{
+				return await conn.QueryFirstOrDefaultAsync<(DateTime, DateTime)>(AlunoConsultas.DatasMatriculaAlunoNaTurma, new { codigoAluno, codigoTurma });
+            }
+        }
+    }
 }

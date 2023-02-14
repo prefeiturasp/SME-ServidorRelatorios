@@ -131,11 +131,11 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
 
                                 var novosAlunosComFrequencia = await NovaBuscaAlunosSemFrequencia(componente,
-                                                                                                    turmasccc,
-                                                                                                    turmas.ToList(),
-                                                                                                    int.Parse(bimestre.Numero),
-                                                                                                    alunosSemFrequenciaNaTurma.ToList(),
-                                                                                                    filtro.Modalidade);
+                                                                                                  turmasccc,
+                                                                                                  turmas.ToList(),
+                                                                                                  int.Parse(bimestre.Numero),
+                                                                                                  alunosSemFrequenciaNaTurma.ToList(),
+                                                                                                  filtro.Modalidade);
 
                                 if (novosAlunosComFrequencia.Any())
                                 {
@@ -174,10 +174,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                             await AjustarBimestresSemFaltas(filtro.AnoLetivo, filtro.Semestre, componentesFinal, filtro.Modalidade, ano.Bimestres);
                             foreach (var bimestre in ano.Bimestres.ToList())
                             {
-                                for (int c = 0; c < bimestre.Componentes.Count; c++)
+                                foreach (var componente  in bimestre.Componentes)
                                 {
-                                    var componente = bimestre.Componentes[c];
-
                                     var componenteAtual = final.Componentes.FirstOrDefault(c => c.CodigoComponente == componente.CodigoComponente);
                                     if (componenteAtual == null)
                                     {
@@ -191,9 +189,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                     {
                                         var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorFiltroQuery(componente.Alunos.FirstOrDefault().CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
 
-                                        for (int a = 0; a < componente.Alunos.Count; a++)
+                                        foreach (var aluno in componente.Alunos)
                                         {
-                                            var aluno = componente.Alunos[a];
                                             var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
 
                                             if (frequencias != null && frequencias.Any())
@@ -218,8 +215,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                             alunoAtual.NomeAluno = aluno.NomeAluno;
                                             alunoAtual.NomeTurma = aluno.NomeTurma;
                                             alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
-                                            alunoAtual.TotalPresenca = aluno.TotalPresenca;
-                                            alunoAtual.TotalRemoto = aluno.TotalRemoto;
+                                            alunoAtual.TotalPresenca += aluno.TotalPresenca;
+                                            alunoAtual.TotalRemoto += aluno.TotalRemoto;
                                         }
                                     }
                                     
