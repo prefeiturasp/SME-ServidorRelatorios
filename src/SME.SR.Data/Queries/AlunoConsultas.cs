@@ -374,5 +374,25 @@
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-	}
+		internal static string DatasMatriculaAlunoNaTurma = @"with lista as (
+																select mte.dt_situacao_aluno
+																	from v_matricula_cotic m
+																		inner join matricula_turma_escola mte
+																			on m.cd_matricula = mte.cd_matricula
+																where m.cd_aluno = @codigoAluno and
+																	mte.cd_turma_escola = @codigoTurma
+
+																union
+
+																select mte.dt_situacao_aluno
+																	from v_historico_matricula_cotic m
+																		inner join historico_matricula_turma_escola mte
+																			on m.cd_matricula = mte.cd_matricula
+																where m.cd_aluno = @codigoAluno and
+																	mte.cd_turma_escola = @codigoTurma)
+																select min(dt_situacao_aluno) data_matricula,
+																	   max(dt_situacao_aluno) data_situacao
+																	from lista";
+
+    }	
 }

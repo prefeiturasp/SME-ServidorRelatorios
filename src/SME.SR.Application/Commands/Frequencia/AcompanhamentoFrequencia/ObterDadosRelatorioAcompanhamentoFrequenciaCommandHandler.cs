@@ -84,9 +84,25 @@ namespace SME.SR.Application
                         (await alunoRepository.ObterNomesAlunosPorCodigos(request.FiltroRelatorio.AlunosCodigos.ToArray()))
                         .ToList();
 
-                if (alunosSelecionados != null && alunosSelecionados.Any())
+                var alunosForaBimestre = new List<string>();
+                alunosSelecionados.ForEach(a =>
                 {
-                    var codigosAlunos = alunosSelecionados.Select(s => s.Codigo).ToArray();
+                    var matricula = alunoRepository
+                        .ObterDatasMatriculaAlunoNaTurma(int.Parse(a.Codigo), int.Parse(request.FiltroRelatorio.TurmaCodigo)).Result;
+
+                    var periodoCorrespondente = periodosEscolares.Single(p => p.Bimestre == bimestreItem);
+
+                    if (matricula.Equals(default) || matricula.dataMatricula.Date > periodoCorrespondente.PeriodoFim.Date)
+                        alunosForaBimestre.Add(a.Codigo);
+                });
+
+                if (alunosSelecionados != null && alunosSelecionados.Any())
+                {                    
+                    var codigosAlunos = alunosSelecionados
+                        .Select(s => s.Codigo)
+                        .Except(alunosForaBimestre)
+                        .ToArray();
+
                     var dadosFrequencia = (await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(
                         bimestreItem.ToString(), codigosAlunos, request.FiltroRelatorio.TurmaCodigo,
                         TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId))).ToList();
