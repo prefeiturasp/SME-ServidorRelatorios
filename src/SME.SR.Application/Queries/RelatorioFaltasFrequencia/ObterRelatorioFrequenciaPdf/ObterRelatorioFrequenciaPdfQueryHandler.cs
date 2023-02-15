@@ -31,30 +31,26 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             var model = new RelatorioFrequenciaDto();
             var filtro = request.Filtro;
 
-            if (filtro.AnosEscolares == null)
-                filtro.AnosEscolares = new[] { new string("-99") };
+            filtro.AnosEscolares ??= new[] { new string("-99") };
 
             if (filtro.TurmasPrograma)
                 filtro.AnosEscolares.Concat(new[] { new string("0") });
 
-            if (filtro.CodigosTurma == null)
-                filtro.CodigosTurma = new List<string> { new string("-99") };
+            filtro.CodigosTurma ??= new List<string> { new string("-99") };
 
 
             var dres = await relatorioFaltasFrequenciaRepository.ObterFrequenciaPorAno(filtro.AnoLetivo,
-                                                                                          filtro.CodigoDre,
-                                                                                          filtro.CodigoUe,
-                                                                                          filtro.Modalidade,
-                                                                                          filtro.AnosEscolares,
-                                                                                          filtro.ComponentesCurriculares,
-                                                                                          filtro.Bimestres,
-                                                                                          filtro.TipoRelatorio,
-                                                                                          filtro.CodigosTurma);
+                                                                                       filtro.CodigoDre,
+                                                                                       filtro.CodigoUe,
+                                                                                       filtro.Modalidade,
+                                                                                       filtro.AnosEscolares,
+                                                                                       filtro.ComponentesCurriculares,
+                                                                                       filtro.Bimestres,
+                                                                                       filtro.TipoRelatorio,
+                                                                                       filtro.CodigosTurma);
 
             if (dres == null || !dres.Any())
-            {
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
-            }
 
             var componentes = await mediator.Send(new ObterListaComponentesCurricularesQuery());
 
@@ -63,21 +59,27 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 .SelectMany(u => u.Bimestres)
                 .SelectMany(u => u.Componentes)
                 .SelectMany(u => u.Alunos)
-                .Select(u => u.CodigoTurma)
-                .Distinct();
+                .Select(u => int.Parse(u.CodigoTurma))
+                .Distinct()
+                .ToArray();
 
-            var alunos = await mediator.Send(new ObterAlunosPorTurmasRelatorioFrequenciaQuery(codigosTurmas));
+            var alunos = await mediator
+                .Send(new ObterAlunosMatriculasPorTurmasQuery(codigosTurmas));
 
-            var turmas = await turmaRepository.ObterTurmasPorAnoEModalidade(filtro.AnoLetivo, filtro.AnosEscolares.ToArray(), filtro.Modalidade);
+            var turmas = await turmaRepository
+                .ObterTurmasPorAnoEModalidade(filtro.AnoLetivo, filtro.AnosEscolares.ToArray(), filtro.Modalidade);
+
             if (turmas == null || !turmas.Any())
                 throw new NegocioException("Turmas não localizadas para os anos informados.");
 
             var deveAdicionarFinal = filtro.Bimestres.Any(c => c == 0);
             var mostrarSomenteFinal = deveAdicionarFinal && filtro.Bimestres.Count() == 1;
 
-            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(filtro.AnoLetivo, filtro.ModalidadeTipoCalendario, filtro.Semestre));
+            var tipoCalendarioId = await mediator
+                .Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(filtro.AnoLetivo, filtro.ModalidadeTipoCalendario, filtro.Semestre));
 
-            var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
+            var periodosEscolares = await mediator
+                .Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
 
             foreach (var dre in dres)
             {
@@ -92,60 +94,69 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         {
                             bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre".ToUpper();
 
-                            var periodoEscolar = periodosEscolares.FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
+                            var periodoEscolar = periodosEscolares
+                                .FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
 
                             foreach (var componente in bimestre.Componentes)
                             {
-                                var componenteAtual = componentes.FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
+                                var componenteAtual = componentes
+                                    .FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
 
                                 var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
-                                
+
                                 if (componenteAtual != null)
                                     componente.NomeComponente = componenteAtual.Descricao.ToUpper();
 
-                                var frequencias = await mediator.Send(new ObterFrequenciasAlunosConsolidadoQuery(turmasccc.ToArray(), componente.CodigoComponente, bimestre.Numero));
+                                var frequencias = await mediator
+                                    .Send(new ObterFrequenciasAlunosConsolidadoQuery(turmasccc.ToArray(), componente.CodigoComponente, bimestre.Numero));
 
                                 foreach (var aluno in componente.Alunos)
                                 {
-                                    var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma);
-                                    var frequenciaAluno = frequencias.FirstOrDefault(f => f.AlunoCodigo == aluno.CodigoAluno.ToString());
+                                    var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma &&
+                                                                                c.DataMatricula.Date <= periodoEscolar.PeriodoFim.Date);
 
-                                    if (alunoAtual != null)
-                                    {
-                                        var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == alunoAtual.TurmaCodigo);
-                                        aluno.NomeAluno = alunoAtual.NomeFinal;
-                                        aluno.NumeroChamada = alunoAtual.NumeroChamada ?? "0";
-                                        aluno.TotalPresenca = frequenciaAluno.TotalPresencas;
-                                        aluno.TotalRemoto = frequenciaAluno.TotalRemotos;
-                                        aluno.TotalAusencias = frequenciaAluno.TotalAusencias;
-                                        aluno.NomeTurma = turmaFiltrada == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaFiltrada.Nome}";
-                                        aluno.TotalAulas = frequenciaAluno.TotalAulas;
-                                    }
+                                    if (alunoAtual == null)
+                                        continue;
+
+                                    var frequenciaAluno = frequencias.FirstOrDefault(f => f.AlunoCodigo == aluno.CodigoAluno.ToString() &&
+                                                                                          f.TurmaCodigo == aluno.CodigoTurma);
+
+                                    var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == alunoAtual.TurmaCodigo);
+                                    aluno.NomeAluno = alunoAtual.NomeFinal ?? alunoAtual.Nome;
+                                    aluno.NumeroChamada = alunoAtual.NumeroChamada ?? "0";
+                                    aluno.TotalPresenca = frequenciaAluno.TotalPresencas;
+                                    aluno.TotalRemoto = frequenciaAluno.TotalRemotos;
+                                    aluno.TotalAusencias = frequenciaAluno.TotalAusencias;
+                                    aluno.NomeTurma = turmaFiltrada == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaFiltrada.Nome}";
+                                    aluno.TotalAulas = frequenciaAluno.TotalAulas;
                                 }
 
                                 var alunosSemFrequenciaNaTurma = alunos
-                                    .Where(a => a.Ativo && a.DataSituacao.Date <= periodoEscolar.PeriodoInicio.Date 
-                                            || (!a.Ativo && a.DataSituacao.Date >= periodoEscolar.PeriodoInicio.Date 
-                                                && a.SituacaoMatricula != SituacaoMatriculaAluno.VinculoIndevido))
+                                    .Where(a => (a.Ativo && a.SituacaoMatricula != SituacaoMatriculaAluno.VinculoIndevido) ||
+                                                (!a.Ativo && a.DataMatricula.Date < periodoEscolar.PeriodoFim.Date))
                                     .Where(a => turmasccc.Contains(a.TurmaCodigo))
                                     .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
 
                                 var novosAlunosComFrequencia = await NovaBuscaAlunosSemFrequencia(componente,
-                                                                                                    turmasccc,
-                                                                                                    turmas.ToList(),
-                                                                                                    int.Parse(bimestre.Numero),
-                                                                                                    alunosSemFrequenciaNaTurma.ToList(),
-                                                                                                    filtro.Modalidade);
+                                                                                                  turmasccc,
+                                                                                                  turmas.ToList(),
+                                                                                                  int.Parse(bimestre.Numero),
+                                                                                                  alunosSemFrequenciaNaTurma.ToList(),
+                                                                                                  filtro.Modalidade);
 
                                 if (novosAlunosComFrequencia.Any())
                                 {
                                     componente.Alunos.AddRange(novosAlunosComFrequencia);
-                                    alunosSemFrequenciaNaTurma = alunosSemFrequenciaNaTurma.Where(asf => !novosAlunosComFrequencia.Any(naf => naf.CodigoAluno == asf.CodigoAluno && naf.CodigoTurma == asf.TurmaCodigo));
+
+                                    alunosSemFrequenciaNaTurma = alunosSemFrequenciaNaTurma
+                                        .Where(asf => !novosAlunosComFrequencia.Any(naf => naf.CodigoAluno == asf.CodigoAluno && naf.CodigoTurma == asf.TurmaCodigo));
                                 }
 
                                 if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
                                 {
-                                    var turmaAlunos = await mediator.Send(new ObterTurmaPorCodigoQuery(alunosSemFrequenciaNaTurma.First().TurmaCodigo));
+                                    var turmaAlunos = await mediator
+                                        .Send(new ObterTurmaPorCodigoQuery(alunosSemFrequenciaNaTurma.First().TurmaCodigo));
+
                                     var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFrequenciaAlunoDto
                                     {
                                         CodigoAluno = c.CodigoAluno,
@@ -156,29 +167,34 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                         TotalCompensacoes = 0,
                                         TotalAulas = componente.Alunos.FirstOrDefault()?.TotalAulas ?? 0
                                     }).ToList();
+
                                     componente.Alunos.AddRange(sem);
                                 }
 
-                                model.UltimoAluno = componente.Alunos.LastOrDefault().CodigoAluno.ToString();
+                                model.UltimoAluno = componente.Alunos
+                                    .LastOrDefault().CodigoAluno.ToString();
                             }
                         }
 
                         if (deveAdicionarFinal)
                         {
-                            var final = new RelatorioFrequenciaBimestreDto
-                            {
-                                NomeBimestre = "Final",
-                            };
+                            var final = new RelatorioFrequenciaBimestreDto { NomeBimestre = "Final", };
 
-                            var componentesFinal = ano.Bimestres.SelectMany(c => c.Componentes).DistinctBy(c => c.CodigoComponente).ToList();
+                            var componentesFinal = ano.Bimestres
+                                .SelectMany(c => c.Componentes).DistinctBy(c => c.CodigoComponente).ToList();
+
                             await AjustarBimestresSemFaltas(filtro.AnoLetivo, filtro.Semestre, componentesFinal, filtro.Modalidade, ano.Bimestres);
+
                             foreach (var bimestre in ano.Bimestres.ToList())
                             {
-                                for (int c = 0; c < bimestre.Componentes.Count; c++)
+                                foreach (var componente in bimestre.Componentes)
                                 {
-                                    var componente = bimestre.Componentes[c];
+                                    var componenteAtual = final.Componentes
+                                        .FirstOrDefault(c => c.CodigoComponente == componente.CodigoComponente);
 
-                                    var componenteAtual = final.Componentes.FirstOrDefault(c => c.CodigoComponente == componente.CodigoComponente);
+                                    var periodoEscolar = periodosEscolares
+                                        .FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
+
                                     if (componenteAtual == null)
                                     {
                                         componenteAtual = new RelatorioFrequenciaComponenteDto();
@@ -189,11 +205,16 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                     if (componente.Alunos.Any())
                                     {
-                                        var frequencias = await mediator.Send(new ObterFrequenciasAlunosPorFiltroQuery(componente.Alunos.FirstOrDefault().CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
+                                        var frequencias = await mediator
+                                            .Send(new ObterFrequenciasAlunosPorFiltroQuery(componente.Alunos.FirstOrDefault().CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
 
-                                        for (int a = 0; a < componente.Alunos.Count; a++)
+                                        foreach (var aluno in componente.Alunos)
                                         {
-                                            var aluno = componente.Alunos[a];
+                                            var matriculaCorrespondentePeriodo = alunos.FirstOrDefault(a => a.CodigoAluno == aluno.CodigoAluno && a.TurmaCodigo == aluno.CodigoTurma &&
+                                                                                                            a.DataMatricula.Date <= periodoEscolar.PeriodoFim.Date);
+                                            if (matriculaCorrespondentePeriodo == null)
+                                                continue;
+
                                             var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
 
                                             if (frequencias != null && frequencias.Any())
@@ -201,9 +222,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
                                             var totalPresenca = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
                                             var totalRemoto = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
-
                                             var codigoAluno = aluno.CodigoAluno;
-                                            var alunoAtual = componenteAtual.Alunos.FirstOrDefault(c => c.CodigoAluno == codigoAluno);
+                                            var alunoAtual = componenteAtual.Alunos
+                                                .FirstOrDefault(c => c.CodigoAluno == codigoAluno);
+
                                             if (alunoAtual == null)
                                             {
                                                 alunoAtual = new RelatorioFrequenciaAlunoDto();
@@ -218,31 +240,32 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                             alunoAtual.NomeAluno = aluno.NomeAluno;
                                             alunoAtual.NomeTurma = aluno.NomeTurma;
                                             alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
-                                            alunoAtual.TotalPresenca = aluno.TotalPresenca;
-                                            alunoAtual.TotalRemoto = aluno.TotalRemoto;
+                                            alunoAtual.TotalPresenca += aluno.TotalPresenca;
+                                            alunoAtual.TotalRemoto += aluno.TotalRemoto;
                                         }
                                     }
-                                    
+
                                 }
                             }
                             ano.Bimestres.Add(final);
                         }
+
                         if (mostrarSomenteFinal)
                             ano.Bimestres.RemoveAll(c => c.NomeBimestre != "Final");
 
-                        ano.Bimestres = ano.Bimestres.OrderBy(c => c.NomeBimestre).ToList();
+                        ano.Bimestres = ano.Bimestres
+                            .OrderBy(c => c.NomeBimestre).ToList();
                     }
                 }
                 model.UltimoAluno = $"{dre.NomeDre}{model.UltimoAluno}";
             }
 
             DefinirCabecalho(request, model, filtro, dres, componentes);
-
             model.Dres = FiltrarFaltasFrequencia(model.Dres, filtro);
+
             if (model.Dres == null || !model.Dres.Any())
-            {
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
-            }
+
             return await Task.FromResult(model);
         }
 
@@ -259,10 +282,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             {
                 var alunosComFrequencia = alunosSemFrequencia.Where(asf => frequencias.Any(f => f.AlunoCodigo == asf.CodigoAluno.ToString()));
                 foreach (var aluno in alunosComFrequencia)
-                {                    
-                    var frequenciaAluno = frequencias.FirstOrDefault(f => f.AlunoCodigo == aluno.CodigoAluno.ToString() && f.TurmaCodigo == aluno.TurmaCodigo);                  
+                {
+                    var frequenciaAluno = frequencias.FirstOrDefault(f => f.AlunoCodigo == aluno.CodigoAluno.ToString() && f.TurmaCodigo == aluno.TurmaCodigo);
 
-                    var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == frequenciaAluno.TurmaCodigo);                    
+                    var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == frequenciaAluno.TurmaCodigo);
 
                     novosAlunos.Add(new RelatorioFrequenciaAlunoDto()
                     {
@@ -428,7 +451,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             {
                 componente.Alunos = (from a in componente.Alunos select a)
                                  .Where(a => !string.IsNullOrWhiteSpace(a.NomeAluno) && !string.IsNullOrWhiteSpace(a.NumeroChamada))
-                                 .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))  
+                                 .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
                                  .ThenBy(c => c.NomeTurma)
                                  .ThenBy(c => c.NomeAluno)
                                  .DistinctBy(c => c.CodigoAluno)
