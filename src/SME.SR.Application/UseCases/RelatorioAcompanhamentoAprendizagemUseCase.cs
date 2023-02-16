@@ -27,7 +27,12 @@ namespace SME.SR.Application
                 throw new NegocioException("Turma não encontrada");
 
             var turmaCodigo = new string[1] { turma.Codigo };
-            var professores = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmaCodigo));
+            var professores = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmaCodigo))).ToList();
+
+            var uesIndiretas = new TipoEscola[] { TipoEscola.CRPCONV, TipoEscola.CEIINDIR };
+            if (uesIndiretas.Contains(turma.Ue.TipoEscola))
+                professores.AddRange(await mediator.Send(new ObterProfessorTitularExternoComponenteCurricularPorTurmaQuery(turmaCodigo)));
+            
 
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo, turma.AnoLetivo));
             if (alunosEol == null || !alunosEol.Any())
