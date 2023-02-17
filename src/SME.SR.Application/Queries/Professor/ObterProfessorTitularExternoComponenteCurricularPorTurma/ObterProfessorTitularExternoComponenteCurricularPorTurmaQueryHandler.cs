@@ -17,11 +17,9 @@ namespace SME.SR.Application
             this.professorRepository = professorRepository ?? throw new ArgumentNullException(nameof(professorRepository));
         }
 
-        public async Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> Handle(ObterProfessorTitularExternoComponenteCurricularPorTurmaQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> Handle(ObterProfessorTitularExternoComponenteCurricularPorTurmaQuery request, CancellationToken cancellationToken)
         {
-            var lstProfessores = await professorRepository.BuscarProfessorTitularExternoComponenteCurricularPorTurma(request.CodigosTurma);
-
-            return lstProfessores;
+            return professorRepository.BuscarProfessorTitularExternoComponenteCurricularPorTurma(request.CodigosTurma);
         }
     }
 }
