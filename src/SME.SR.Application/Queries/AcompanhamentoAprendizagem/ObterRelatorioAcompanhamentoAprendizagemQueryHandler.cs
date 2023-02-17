@@ -50,7 +50,7 @@ namespace SME.SR.Application
                 quantidadeProfessoresValidosTurma = professores.Count() - professores.Where(p => p.NomeProfessor.Contains("Não há professor titular")).Count();
 
                 professoresCabecalho = quantidadeProfessoresValidosTurma == 0 ?
-                   "Não há professor titular" : String.Join(", ", professores.Where(p => !p.NomeProfessor.Contains("Não há professor titular")).Select(a => a.NomeProfessor).ToArray());
+                   "Não há professor titular" : String.Join(", ", professores.Where(p => !p.NomeProfessor.Contains("Não há professor titular")).Select(a => a.NomeProfessor).Distinct().ToArray());
             }  
 
             var cabecalho = new RelatorioAcompanhamentoAprendizagemCabecalhoDto
