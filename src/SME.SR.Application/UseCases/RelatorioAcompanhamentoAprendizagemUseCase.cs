@@ -31,7 +31,11 @@ namespace SME.SR.Application
 
             var uesIndiretas = new TipoEscola[] { TipoEscola.CRPCONV, TipoEscola.CEIINDIR };
             if (uesIndiretas.Contains(turma.Ue.TipoEscola))
-                professores.AddRange(await mediator.Send(new ObterProfessorTitularExternoComponenteCurricularPorTurmaQuery(turmaCodigo)));
+            {
+                professores.RemoveAll(prof => prof.NomeProfessor == "Não há professor titular.");
+                var professoresAtribuicaoExterna = await mediator.Send(new ObterProfessorTitularExternoComponenteCurricularPorTurmaQuery(turmaCodigo));
+                professores.AddRange(professoresAtribuicaoExterna);
+            }
             
 
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo, turma.AnoLetivo));
