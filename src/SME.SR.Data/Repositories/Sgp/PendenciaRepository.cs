@@ -595,7 +595,7 @@ namespace SME.SR.Data
                             on p.id = ppa.pendencia_id
                         inner join plano_aee pa 
                             on pa.id = ppa.plano_aee_id 
-                        inner join turma t 
+                        left join turma t 
                             on t.id = pa.turma_id 
                         inner join ue u 
                             on u.id  = t.ue_id       
@@ -607,7 +607,7 @@ namespace SME.SR.Data
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
                               on usu.id = pu.usuario_id 
-                        where t.ano_letivo = @anoLetivo
+                        where extract(year from p.criado_em) = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
                         and p.situacao in (1,2)
@@ -662,7 +662,7 @@ namespace SME.SR.Data
                             on p.id = pea.pendencia_id
                         inner join encaminhamento_aee ea  
                             on ea.id = pea.encaminhamento_aee_id 
-                        inner join turma t 
+                        left join turma t 
                             on t.id = ea.turma_id 
                         inner join ue u 
                             on u.id  = t.ue_id       
@@ -674,7 +674,7 @@ namespace SME.SR.Data
                               on pu.pendencia_id = p.id
                         inner join usuario usu 
                               on usu.id = pu.usuario_id 
-                        where t.ano_letivo = @anoLetivo
+                        where extract(year from p.criado_em) = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
                         and p.situacao in(1,2)
