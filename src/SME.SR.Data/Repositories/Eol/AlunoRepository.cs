@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SME.Pedagogico.Repository.Constantes;
 using SME.SR.Data.Extensions;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -335,7 +336,7 @@ namespace SME.SR.Data
 									FROM lista ");
             
 
-			var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(6), ueCodigo, anoTurma = anoTurma.ToDbChar(1), anoLetivo, dataFim = dataReferencia };
+			var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), ueCodigo, anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
