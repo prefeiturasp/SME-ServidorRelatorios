@@ -11,6 +11,7 @@ namespace SME.SR.Data
         public string TurmaCodigo { get; set; }
         public int CodigoAluno { get; set; }
         public string NomeFinal { get; set; }
+        public DateTime DataMatricula { get; set; }
         public DateTime DataSituacao { get; set; }
         public SituacaoMatriculaAluno SituacaoMatricula { get; set; }
         public bool Ativo => SituacaoMatricula.EhUmDosValores(SituacaoMatriculaAluno.Ativo,
