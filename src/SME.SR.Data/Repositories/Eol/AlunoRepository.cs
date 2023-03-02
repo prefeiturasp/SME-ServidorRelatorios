@@ -6,10 +6,8 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace SME.SR.Data
 {
     public class AlunoRepository : IAlunoRepository
@@ -295,12 +293,12 @@ namespace SME.SR.Data
         public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades, bool consideraHistorico = false)
         {
             StringBuilder query = new StringBuilder();
-			if (anoLetivo < DateTime.Now.Date.Year)
-				consideraHistorico = true;
-			
-			var queryHistorica = consideraHistorico ? " UNION " + ObtenhaQueryAlunosPorTurmasHistorico(dreCodigo, ueCodigo) : string.Empty; 
+            if (anoLetivo < DateTime.Now.Date.Year)
+                consideraHistorico = true;
 
-			query.AppendLine($@" WITH lista AS (
+            var queryHistorica = consideraHistorico ? " UNION " + ObtenhaQueryAlunosPorTurmasHistorico(dreCodigo, ueCodigo) : string.Empty;
+
+            query.AppendLine($@" WITH lista AS (
 								SELECT DISTINCT mte.cd_turma_escola,
 												m.cd_aluno
 								FROM v_matricula_cotic m
@@ -330,11 +328,11 @@ namespace SME.SR.Data
 									  AND se.sg_resumida_serie = @anoTurma 
 									  AND ee.cd_etapa_ensino in (@modalidades)
 									{(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
-									{ (!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}
+									{(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}
 									{queryHistorica})
 									SELECT COUNT(DISTINCT cd_aluno)
 									FROM lista ");
-            
+
 
 			var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), ueCodigo, anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), anoLetivo, dataFim = dataReferencia };
 
@@ -343,7 +341,7 @@ namespace SME.SR.Data
             return await conexao.QueryFirstOrDefaultAsync<int>(query.ToString().Replace("@modalidades", string.Join(',', modalidades)), parametros, commandTimeout: 600);
         }
 
-		public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
+        public async Task<Aluno> ObterDados(string codigoTurma, string codigoAluno)
         {
             var query = AlunoConsultas.DadosAluno;
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
@@ -1413,9 +1411,9 @@ namespace SME.SR.Data
             }
         }
 
-		public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
-		{
-			var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
+        public async Task<AlunoNomeDto> ObterNomeAlunoPorCodigo(string codigo)
+        {
+            var query = @"select vac.cd_aluno as Codigo, vac.nm_aluno as Nome, vac.nm_social_aluno as NomeSocial
                           from v_aluno_cotic vac  
                           where vac.cd_aluno = @codigo";
 
@@ -1594,7 +1592,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string codigoEscola, int anoLetivo, string[] codigosAlunos)
         {
-			var sql = @" with matriculas as (
+            var sql = @" with matriculas as (
 						select distinct CodigoAluno, NomeAluno, DataNascimento, NomeSocialAluno, CodigoSituacaoMatricula, SituacaoMatricula, te.cd_escola AS CodigoEscola,
 						case when NumeroAlunoChamada is null then '0'
 						when NumeroAlunoChamada = 'NULL' then '0'
@@ -1608,8 +1606,8 @@ namespace SME.SR.Data
 
             if (!string.IsNullOrEmpty(codigoEscola) && codigoEscola != "-99")
                 sql += @" and te.cd_escola = @codigoEscola ";
-            else 
-				sql += $" and CodigoAluno in (#codigosAlunos) ";
+            else
+                sql += $" and CodigoAluno in (#codigosAlunos) ";
 
             sql += @" and te.an_letivo = @anoLetivo )
 								select*
@@ -1623,9 +1621,9 @@ namespace SME.SR.Data
             }
         }
 
-		private string ObtenhaQueryAlunosPorTurmasHistorico(long dreCodigo, string ueCodigo)
-		{
-			return $@" SELECT
+        private string ObtenhaQueryAlunosPorTurmasHistorico(long dreCodigo, string ueCodigo)
+        {
+            return $@" SELECT
 					mte.cd_turma_escola,
 					matr.cd_aluno
 				FROM
@@ -1657,10 +1655,10 @@ namespace SME.SR.Data
 					  AND mte.nr_chamada_aluno is not null
 					  {(dreCodigo > 0 ? " AND ue.cd_unidade_administrativa_referencia = @dreCodigo" : string.Empty)}
 					  {(!string.IsNullOrEmpty(ueCodigo) ? " AND ue.cd_unidade_educacao = @ueCodigo" : string.Empty)}";
-		}
+        }
 
-		public async Task<NecessidadeEspecialAlunoDto> ObterNecessidadesEspeciaisPorAluno(long codigoAluno)
-		{
+        public async Task<NecessidadeEspecialAlunoDto> ObterNecessidadesEspeciaisPorAluno(long codigoAluno)
+        {
             var query = @"SELECT 
 	            a.cd_aluno as codigoAluno,
 	            nea.tp_necessidade_especial as tipoNecessidadeEspecial,
@@ -1676,11 +1674,20 @@ namespace SME.SR.Data
             if (codigoAluno > 0)
                 query += "where a.cd_aluno = @codigoAluno";
 
-            using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conn.QueryFirstOrDefaultAsync<NecessidadeEspecialAlunoDto>(query, new { codigoAluno });
-            }
-
+            using var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conn.QueryFirstOrDefaultAsync<NecessidadeEspecialAlunoDto>(query, new { codigoAluno });
         }
-	}
+
+        public async Task<(DateTime dataMatricula, DateTime dataSituacao)> ObterDatasMatriculaAlunoNaTurma(int codigoAluno, int codigoTurma)
+        {
+            using var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conn.QueryFirstOrDefaultAsync<(DateTime, DateTime)>(AlunoConsultas.DatasMatriculaAlunoNaTurma, new { codigoAluno, codigoTurma });
+        }
+
+        public async Task<IEnumerable<AlunoTurma>> ObterAlunosMatriculasPorTurmas(int[] codigosTurmas)
+        {
+            using var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            return await conn.QueryAsync<AlunoTurma>(AlunoConsultas.AlunosMatriculasPorTurmas, new { codigosTurmas });
+        }
+    }
 }

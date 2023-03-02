@@ -21,7 +21,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresFinais(int anoLetivo, string dreCodigo, string ueCodigo, Modalidade? modalidade, int? semestre,
                                                                                                   long cicloId, string[] turmasCodigo, string[] anos, long parecerConclusivoId)
         {
-            var query = new StringBuilder(@"select t.turma_id as TurmaId, 
+            var query = new StringBuilder(@"with PareceresConclusivos as (select t.turma_id as TurmaId, 
 	                                               cca.aluno_codigo AlunoCodigo, 
 	                                               ccp.nome ParecerConclusivo, 
 	                                               d.abreviacao as DreNome, 
@@ -32,7 +32,8 @@ namespace SME.SR.Data
 	                                               t.ano,
                                                    t.ano_letivo as anoLetivo,
 	                                               tc.descricao as Ciclo,
-                                                   tc.Id as CicloId
+                                                   tc.Id as CicloId,
+                                                   row_number() over (partition by cca.aluno_codigo order by cca.id desc) sequencia
 	                                            from conselho_classe_aluno cca 
 		                                            inner join conselho_classe_parecer ccp
 			                                            on cca.conselho_classe_parecer_id = ccp.id 
@@ -85,7 +86,9 @@ namespace SME.SR.Data
             if (!string.IsNullOrEmpty(ueCodigo))
                 query.AppendLine(" and u.ue_id = @ueCodigo ");
 
-            query.AppendLine("order by d.id, u.id, t.id");
+            query.AppendLine("order by d.id, u.id, t.id)");
+
+            query.AppendLine("select * from PareceresConclusivos where sequencia = 1;");
 
             var parametros = new
             {

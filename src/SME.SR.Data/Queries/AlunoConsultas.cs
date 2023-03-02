@@ -374,5 +374,91 @@
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-	}
+		internal static string DatasMatriculaAlunoNaTurma = @"with lista as (
+																select mte.dt_situacao_aluno
+																	from v_matricula_cotic m
+																		inner join matricula_turma_escola mte
+																			on m.cd_matricula = mte.cd_matricula
+																where m.cd_aluno = @codigoAluno and
+																	mte.cd_turma_escola = @codigoTurma
+
+																union
+
+																select mte.dt_situacao_aluno
+																	from v_historico_matricula_cotic m
+																		inner join historico_matricula_turma_escola mte
+																			on m.cd_matricula = mte.cd_matricula
+																where m.cd_aluno = @codigoAluno and
+																	mte.cd_turma_escola = @codigoTurma)
+																select min(dt_situacao_aluno) data_matricula,
+																	   max(dt_situacao_aluno) data_situacao
+																	from lista";
+
+        internal static string AlunosMatriculasPorTurmas = @"with lista as (
+																select mte.nr_chamada_aluno,
+																	   a.nm_aluno,
+																	   a.nm_social_aluno,
+																	   mte.cd_turma_escola,
+																	   m.cd_aluno,
+																	   mte.dt_situacao_aluno,
+																	   mte.cd_situacao_aluno
+																	from v_matricula_cotic m
+																		inner join matricula_turma_escola mte
+																			on m.cd_matricula = mte.cd_matricula
+																		inner join v_aluno_cotic a
+																			on m.cd_aluno = a.cd_aluno
+																where mte.cd_turma_escola in @codigosTurmas
+
+																union
+
+																select mte.nr_chamada_aluno,
+																	   a.nm_aluno,
+																	   a.nm_social_aluno,
+																	   mte.cd_turma_escola,
+																	   m.cd_aluno,
+																	   mte.dt_situacao_aluno,
+																	   mte.cd_situacao_aluno
+																	from v_historico_matricula_cotic m
+																		inner join historico_matricula_turma_escola mte
+																			on m.cd_matricula = mte.cd_matricula
+																		inner join v_aluno_cotic a
+																			on m.cd_aluno = a.cd_aluno
+																where mte.cd_turma_escola in @codigosTurmas)
+																select distinct
+																	   (select top 1 nr_chamada_aluno 
+																			from lista 
+																		where cd_aluno = l.cd_aluno and 
+																			  cd_turma_escola = l.cd_turma_escola 
+																		order by dt_situacao_aluno desc) NumeroChamada,
+																	   nm_aluno Nome,
+																	   (select top 1 nm_social_aluno 
+																			from lista 
+																		where cd_aluno = l.cd_aluno and 
+																			  cd_turma_escola = l.cd_turma_escola 
+																		order by dt_situacao_aluno desc) NomeFinal,
+																	   cd_turma_escola TurmaCodigo,
+																	   cd_aluno CodigoAluno,
+																	   (select top 1 dt_situacao_aluno 
+																			from lista 
+																		where cd_aluno = l.cd_aluno and 
+																			  cd_turma_escola = l.cd_turma_escola 
+																		order by dt_situacao_aluno) DataMatricula,
+																	   (select top 1 dt_situacao_aluno 
+																			from lista 
+																		where cd_aluno = l.cd_aluno and 
+																			  cd_turma_escola = l.cd_turma_escola 
+																		order by dt_situacao_aluno desc) DataSituacao,
+																	   (select top 1 cd_situacao_aluno 
+																			from lista 
+																		where cd_aluno = l.cd_aluno and 
+																			  cd_turma_escola = l.cd_turma_escola 
+																		order by dt_situacao_aluno desc) SituacaoMatricula
+																	from lista l
+																group by nr_chamada_aluno,
+																		 nm_aluno,
+																		 nm_social_aluno,
+																		 cd_turma_escola,
+																		 cd_aluno";
+
+    }	
 }
