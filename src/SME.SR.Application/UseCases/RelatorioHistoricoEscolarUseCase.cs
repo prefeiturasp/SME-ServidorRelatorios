@@ -128,7 +128,7 @@ namespace SME.SR.Application
             var turmasFundMedio = turmasHistorico.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
             IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
-            IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null;
+            IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null, resultadoFinalEJA = null;
             IEnumerable<TransferenciaDto> resultadoTransferencia = null;
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
@@ -152,6 +152,8 @@ namespace SME.SR.Application
                 resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
                 resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
             }
+            else if (resultadoEJA != null && resultadoEJA.Any())
+                resultadoFinalEJA = resultadoEJA.Where(a => a.Modalidade == Modalidade.EJA);
 
             if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) ||
                 (resultadoFinalMedio != null && resultadoFinalMedio.Any()) ||
@@ -165,7 +167,7 @@ namespace SME.SR.Application
                 }
 
                 if (resultadoEJA != null && resultadoEJA.Any())
-                    await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
+                    await EnviaRelatorioEJA(resultadoFinalEJA, request.CodigoCorrelacao);
 
                 if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
