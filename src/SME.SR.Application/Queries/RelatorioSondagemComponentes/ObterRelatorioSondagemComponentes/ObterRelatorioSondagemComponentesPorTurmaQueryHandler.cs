@@ -312,6 +312,10 @@ namespace SME.SR.Application
             }
         }
 
+        private bool EhTurmaMatematicaSemestral(int anoTurma, int anoLetivo)
+        {
+            return (anoTurma >= 4 && anoLetivo >= 2023);
+        }
         private async Task<RelatorioSondagemComponentesPorTurmaCabecalhoDto> ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
             var componenteCurricular = request.ComponenteCurricular.ShortName();
@@ -324,7 +328,7 @@ namespace SME.SR.Application
             string periodo;
             string proficiencia;
 
-            if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
+            if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA) 
             {
                 ordens = (await ObterOrdens(request.Ano, request.Proficiencia)).ToList();
                 perguntas = await ObterPerguntas(request.Proficiencia, request.Ano);
@@ -335,7 +339,10 @@ namespace SME.SR.Application
             {
                 ordens = (await ObterOrdens(request)).ToList();
                 perguntas = await ObterPerguntas(request);
-                periodo = $"{request.Bimestre}° Bimestre";
+                if (request.Semestre > 0 || EhTurmaMatematicaSemestral(int.Parse(request.Ano), request.AnoLetivo))
+                    periodo = $"{(request.Semestre > 0 ? request.Semestre : request.Bimestre)}° Semestre"; 
+                else
+                    periodo = $"{request.Bimestre}° Bimestre";
                 proficiencia = int.Parse(request.Ano) >= 4 ? string.Empty : request.Proficiencia.Name();
             }
 
