@@ -1,0 +1,59 @@
+﻿@using SME.SR.HtmlPdf;
+@using SME.SR.Infra
+
+@model HistoricoEscolarDTO
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            HISTÓRICO ESCOLAR
+        </title>
+    </head>
+
+    <body class="body-relatorio">
+        @await Html.PartialAsync("Css.cshtml")
+        @{
+            var contadorPagina = 1;
+
+            <div id="page" class="pagina">
+                <header id="header">
+                    <div class="cabecalho-principal">
+                    <div>
+                                <img class='img-logo-sgp' src='@(SmeConstants.LogoSmeMono)' alt='Logo SGP' />
+                    </div>
+                    <div class='cabecalho-titulo'>PREFEITURA DO MUNICÍPIO DE SÃO PAULO</div>
+                    <div class='cabecalho-titulo'>SECRETARIA MUNICIPAL DE EDUCAÇÃO</div>
+                    <div class='cabecalho-titulo'>@(Model.NomeDre)</div>
+                    <div class='cabecalho-titulo-02'>HISTÓRICO ESCOLAR</div>
+                    @await Html.PartialAsync("Cabecalho.cshtml", Model)
+                    </div>
+                </header>
+                <div id="content">
+                    @await Html.PartialAsync("DadosHistoricoFundamental.cshtml")
+                    @await Html.PartialAsync("EstudosRealizados.cshtml")
+                    @await Html.PartialAsync("DadosTransferenciaFundamental.cshtml")
+                    @await Html.PartialAsync("Observacoes.cshtml")
+                    @await Html.PartialAsync("Assinaturas.cshtml")
+                </div>
+                <footer class="footer" @Html.Raw(ObtenhaQuebraDePagina(contadorPagina))>
+                    <div class="titulo-sgp-rodape">
+                        SGP - Sistema de gestão Pedagógica | HISTÓRICO ESCOLAR
+                    </div>
+                </footer>
+            </div>
+
+            contadorPagina++;
+        }
+    </body>
+</html>
+
+@{
+    string ObtenhaQuebraDePagina(int pagina)
+    {
+        return " style=\"page-break-after:always;\"";
+    }
+}
