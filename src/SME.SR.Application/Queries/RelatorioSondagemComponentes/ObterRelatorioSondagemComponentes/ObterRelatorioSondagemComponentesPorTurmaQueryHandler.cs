@@ -312,10 +312,6 @@ namespace SME.SR.Application
             }
         }
 
-        private bool EhTurmaMatematicaSemestral(int anoTurma, int anoLetivo)
-        {
-            return (anoTurma >= 4 && anoLetivo >= 2023);
-        }
         private async Task<RelatorioSondagemComponentesPorTurmaCabecalhoDto> ObterCabecalho(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
             var componenteCurricular = request.ComponenteCurricular.ShortName();
@@ -339,7 +335,7 @@ namespace SME.SR.Application
             {
                 ordens = (await ObterOrdens(request)).ToList();
                 perguntas = await ObterPerguntas(request);
-                if (request.Semestre > 0 || EhTurmaMatematicaSemestral(int.Parse(request.Ano), request.AnoLetivo))
+                if (request.Semestre > 0)
                     periodo = $"{(request.Semestre > 0 ? request.Semestre : request.Bimestre)}° Semestre"; 
                 else
                     periodo = $"{request.Bimestre}° Bimestre";
