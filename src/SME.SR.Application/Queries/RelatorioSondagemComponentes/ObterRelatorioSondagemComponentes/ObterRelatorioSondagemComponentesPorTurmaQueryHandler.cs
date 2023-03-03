@@ -411,7 +411,8 @@ namespace SME.SR.Application
 
         private async Task<List<RelatorioSondagemComponentesPorTurmaPerguntaDto>> ObterPerguntasAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request)
         {
-            var listaPerguntas = (await relatorioSondagemComponentePorTurmaRepository.ObterPerguntas(request.AnoLetivo, int.Parse(request.Ano), request.Bimestre)).Distinct();
+            var listaPerguntas = (await relatorioSondagemComponentePorTurmaRepository.ObterPerguntas(request.AnoLetivo, int.Parse(request.Ano), 
+                                                                                                    (request.Semestre > 0 ? request.Semestre : request.Bimestre))).Distinct();
 
             var retorno = new List<RelatorioSondagemComponentesPorTurmaPerguntaDto>();
 
@@ -553,11 +554,15 @@ namespace SME.SR.Application
         private async Task<RelatorioSondagemComponentesPorTurmaPlanilhaDto> ObterPlanilhaPerguntasRespostasAutoral(ObterRelatorioSondagemComponentesPorTurmaQuery request,
             List<RelatorioSondagemComponentesPorTurmaPerguntaDto> perguntas)
         {
-            var periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Bimestre, TipoPeriodoSondagem.Bimestre));
+            PeriodoSondagem periodoPorTipo = null;
+            if (request.Semestre > 0) 
+              periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Semestre, TipoPeriodoSondagem.Semestre));
+            else
+                periodoPorTipo = await mediator.Send(new ObterPeriodoPorTipoQuery(request.Bimestre, TipoPeriodoSondagem.Bimestre));
             var periodoId = periodoPorTipo?.Id;
 
             var listaSondagem = await relatorioSondagemComponentePorTurmaRepository.ObterPerguntasRespostas(request.DreCodigo, request.TurmaCodigo.ToString(),
-                request.AnoLetivo, request.Bimestre, int.Parse(request.Ano), request.ComponenteCurricular.Name(), periodoId);
+                request.AnoLetivo, (request.Semestre > 0 ? request.Semestre : request.Bimestre), int.Parse(request.Ano), request.ComponenteCurricular.Name(), periodoId);
 
             List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto> linhasPlanilhaQueryDto = new List<RelatorioSondagemComponentesPorTurmaPlanilhaLinhasDto>();
 
