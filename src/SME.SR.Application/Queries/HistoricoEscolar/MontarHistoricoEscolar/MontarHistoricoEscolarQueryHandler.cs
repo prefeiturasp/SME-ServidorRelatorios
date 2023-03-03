@@ -116,7 +116,13 @@ namespace SME.SR.Application
 
         private HistoricoEscolarNotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesDto> diversificadosDto, BaseNacionalComumDto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarDto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarDto> projetosDto, TiposNotaDto tiposNotaDto, ParecerConclusivoDto pareceresDto)
         {
-            return new HistoricoEscolarNotasFrequenciaDto()
+            if ((diversificadosDto == null || !diversificadosDto.Any(d => d.PossuiNotaValida)) &&
+                   (baseNacionalDto == null || baseNacionalDto.ObterComNotaValida == null) &&
+                   (enriquecimentoDto == null || !enriquecimentoDto.Any(d => d.PossuiNotaValida)) &&
+                   (projetosDto == null || !projetosDto.Any(d => d.PossuiNotaValida)))
+                return null;
+            else
+                return new HistoricoEscolarNotasFrequenciaDto()
             {
                 GruposComponentesCurriculares = diversificadosDto,
                 BaseNacionalComum = baseNacionalDto,

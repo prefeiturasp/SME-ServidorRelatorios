@@ -160,16 +160,16 @@ namespace SME.SR.Application
                 (resultadoEJA != null && resultadoEJA.Any()))
             {
 
-                if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
+                if (resultadoFinalMedio != null && resultadoFinalMedio.Any() && filtros.Modalidade == Modalidade.Medio)
                 {
                     await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
                     request.CodigoCorrelacao = await CopiarCorrelacao(request.CodigoCorrelacao);
                 }
 
-                if (resultadoEJA != null && resultadoEJA.Any())
+                if (resultadoEJA != null && resultadoEJA.Any() && filtros.Modalidade == Modalidade.EJA)
                     await EnviaRelatorioEJA(resultadoFinalEJA, request.CodigoCorrelacao);
 
-                if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
+                if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any() && filtros.Modalidade == Modalidade.Fundamental)
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
 
                 
