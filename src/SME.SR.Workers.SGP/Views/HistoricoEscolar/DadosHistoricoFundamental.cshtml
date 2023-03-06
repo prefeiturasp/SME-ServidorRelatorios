@@ -5,14 +5,16 @@
 @{
     if (Model.DadosHistorico != null)
     {
+        var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
+        var margemBaseNacional = 5 * totalLinhasBaseNacional;
         <div>
             <table class='tabela margin-top'>
                 <tr class="cabecalho-principal">
                     <td class="cabecalho-titulo" colspan="21">@(Model.Cabecalho.LeiFundamental)</td>
                 </tr>
                 <tr>
-                    <th class="texto-vertical" rowspan="@ObterTotalLinhasBaseNacional()">
-                        <p style="width: 48px;margin-left: -50%;">Base Nacional Comum</p>
+                    <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
+                        <p style="width: 48px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
                     </th>
                     <td class="titulo" style="width: 14.5%;" rowspan="4">Àrea de conhecimento</td>
                     <td class="titulo" style="width: 14.5%;" rowspan="4">Componentes curriculares</td>

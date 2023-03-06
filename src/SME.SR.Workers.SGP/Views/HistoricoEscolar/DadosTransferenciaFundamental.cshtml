@@ -5,17 +5,19 @@
 @{
     if (Model.DadosTransferencia != null)
     {
-         <div>
+        var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
+        var margemBaseNacional = 7 * totalLinhasBaseNacional;
+        <div>
             <table class='tabela margin-top'>
                 <tr class="cabecalho-principal">
-                    <td class="cabecalho-titulo" colspan="21">TRANSFERÊNCIA DO ANO LETIVO ATÉ: @Model.DadosTransferencia.Data</td>
+                    <td class="cabecalho-titulo" colspan="12">TRANSFERÊNCIA DO ANO LETIVO ATÉ: @Model.DadosTransferencia.Data</td>
                 </tr>
                 <tr>
-                    <th class="texto-vertical" rowspan="@ObterTotalLinhasBaseNacional()">
-                        <p style="width: 48px;margin-left: -30%;">Base Nacional Comum</p>
+                    <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
+                        <p style="width: 25px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
                     </th>
-                    <td class="titulo" style="width: 14.5%;" rowspan="3">Àrea de conhecimento</td>
-                    <td class="titulo" style="width: 14.5%;" rowspan="3">Componentes curriculares</td>
+                    <td class="titulo" style="width: 18%;" rowspan="3">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 18%;" rowspan="3">Componentes curriculares</td>
                     <td class="titulo" colspan="8">@Model.DadosTransferencia.Descricao</td>
                 </tr>
                 <tr>
@@ -42,7 +44,6 @@
             @Html.Raw(ObterLegenda())
         </div>
     }
-
 
     int ObterTotalLinhasBaseNacional()
     {
@@ -102,14 +103,14 @@
             if (adicionarPrimeiraLinha)
                 linhas += "<tr>";
             linhas += $"<td class='subTitulo'>{componente.Nome}</td>";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoPrimeiroBimestre)}</td>";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaPrimeiroBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoSegundoBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSegundoBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoTerceiroBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaTerceiroBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoQuartoBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaQuartoBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoPrimeiroBimestre)}</td>";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaPrimeiroBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoSegundoBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaSegundoBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoTerceiroBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaTerceiroBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoQuartoBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaQuartoBimestre)}</ td >";
             linhas += "</tr>";
 
             adicionarPrimeiraLinha = true;
@@ -161,7 +162,6 @@
         return linhas;
     }
 
-
     string ObterLinhasEnriquecimentoCurricular()
     {
         var enriquecimentos = Model.DadosTransferencia?.EnriquecimentoCurricular;
@@ -176,14 +176,16 @@
         return ObterLinhasAtividadesExtra(complementares, "Projetos/atividades complementares");
     }
 
-    string ObterLinhasAtividadesExtra(List<ComponenteCurricularHistoricoEscolarTransferenciaDto> componentesCurriculares, string nomeAtividade)
+    string ObterLinhasAtividadesExtra(List<ComponenteCurricularHistoricoEscolarTransferenciaDto> componentesCurriculares, string nomeAtividade, bool adicionarLinha = true)
     {
         var linhas = "";
 
         if (componentesCurriculares == null)
             return linhas;
 
-        linhas = "<tr>";
+        if (adicionarLinha)
+            linhas += "<tr>";
+
         linhas += $"<td class='subTitulo texto-centralizado' colspan='2' rowspan='{componentesCurriculares.Count()}'>{nomeAtividade}</td>";
         linhas += ObterLinhasComponentesCurriculares(componentesCurriculares);
 

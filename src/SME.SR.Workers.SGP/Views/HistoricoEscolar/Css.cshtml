@@ -94,20 +94,21 @@
         }
 
         .texto-vertical {
+            font-size: 8px;
             font-weight: bold;
-            text-align: justify;
+            text-align: justify !important;
             white-space:nowrap;
             g-origin:50% 50%;
-            -webkit-transform: rotate(90deg);
-            -moz-transform: rotate(90deg);
-            -ms-transform: rotate(90deg);
-            -o-transform: rotate(90deg);
-            transform: rotate(90deg);
+            -webkit-transform: rotate(-90deg);
+            -moz-transform: rotate(-90deg);
+            -ms-transform: rotate(-90deg);
+            -o-transform: rotate(-90deg);
+            transform: rotate(-90deg);
         }
 
         .texto-vertical p {
             display:inline-block;
-            text-align: justify;
+            text-align: justify !important;
         }
 
         .texto-vertical p:before {
@@ -120,6 +121,10 @@
 
         .coluna-nota {
             width: 3.9%;
+        }
+
+        .coluna-nota-transf {
+            width: 7.5%;
         }
 
         .coluna-diversificada {
@@ -185,7 +190,6 @@
             width: 100%;
             font-size: 10px;
             font-family: "Roboto Mono", monospace !important;
-            text-align: justify;
             margin-top: 10px;
             border: 1px solid #42474a;
         }

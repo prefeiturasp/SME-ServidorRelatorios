@@ -1,7 +1,7 @@
 ﻿@using SME.SR.HtmlPdf;
 @using SME.SR.Infra
 
-@model HistoricoEscolarDTO
+@model RelatorioPaginadoHistoricoEscolarDto
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -16,44 +16,33 @@
 
     <body class="body-relatorio">
         @await Html.PartialAsync("Css.cshtml")
-        @{
-            var contadorPagina = 1;
+    @{
 
-            <div id="page" class="pagina">
-                <header id="header">
-                    <div class="cabecalho-principal">
-                    <div>
-                                <img class='img-logo-sgp' src='@(SmeConstants.LogoSmeMono)' alt='Logo SGP' />
-                    </div>
-                    <div class='cabecalho-titulo'>PREFEITURA DO MUNICÍPIO DE SÃO PAULO</div>
-                    <div class='cabecalho-titulo'>SECRETARIA MUNICIPAL DE EDUCAÇÃO</div>
-                    <div class='cabecalho-titulo'>@(Model.NomeDre)</div>
-                    <div class='cabecalho-titulo-02'>HISTÓRICO ESCOLAR</div>
-                    @await Html.PartialAsync("Cabecalho.cshtml", Model)
-                    </div>
-                </header>
-                <div id="content">
-                    @await Html.PartialAsync("DadosHistoricoFundamental.cshtml")
-                    @await Html.PartialAsync("EstudosRealizados.cshtml")
-                    @await Html.PartialAsync("DadosTransferenciaFundamental.cshtml")
-                    @await Html.PartialAsync("Observacoes.cshtml")
-                    @await Html.PartialAsync("Assinaturas.cshtml")
+        <div id="page" class="pagina">
+            <header id="header">
+                <div class="cabecalho-principal">
+                <div>
+                    <img class='img-logo-sgp' src='@(SmeConstants.LogoSmeMono)' alt='Logo SGP' />
                 </div>
-                <footer class="footer" @Html.Raw(ObtenhaQuebraDePagina(contadorPagina))>
-                    <div class="titulo-sgp-rodape">
-                        SGP - Sistema de gestão Pedagógica | HISTÓRICO ESCOLAR
-                    </div>
-                </footer>
+                <div class='cabecalho-titulo'>PREFEITURA DO MUNICÍPIO DE SÃO PAULO</div>
+                <div class='cabecalho-titulo'>SECRETARIA MUNICIPAL DE EDUCAÇÃO</div>
+                <div class='cabecalho-titulo'>@(Model.HistoricoEscolar.NomeDre)</div>
+                <div class='cabecalho-titulo-02'>HISTÓRICO ESCOLAR</div>
+                    @await Html.PartialAsync("Cabecalho.cshtml", Model.HistoricoEscolar)
+                </div>
+            </header>
+            <div id="content">
+                @foreach(var secao in Model.SecoesPorPagina)
+                {
+                    @await Html.PartialAsync(secao.NomeView, Model.HistoricoEscolar)
+                }
             </div>
+            <footer class="footer">
+                <div class="titulo-sgp-rodape">
+                </div>
+            </footer>
+        </div>
 
-            contadorPagina++;
-        }
+    }
     </body>
 </html>
-
-@{
-    string ObtenhaQuebraDePagina(int pagina)
-    {
-        return " style=\"page-break-after:always;\"";
-    }
-}
