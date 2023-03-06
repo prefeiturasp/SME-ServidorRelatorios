@@ -14,7 +14,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    // [ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -389,7 +389,7 @@ namespace SME.SR.Workers.SGP.Controllers
                 FluxoAlertaIds = new int[] { }, //71, 72, 76, 73
                 PortaEntradaIds = new int[] { },//48 
                 SituacaoIds = null,//new int[] { 2, 3 }
-                UeCodigo = "094668",
+                UeCodigo = "094765",
                 UsuarioNome = "Jailson",
                 UsuarioRf = "125588"
             };
