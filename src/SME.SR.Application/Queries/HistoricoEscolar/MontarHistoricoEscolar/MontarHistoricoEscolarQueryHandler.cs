@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
@@ -71,7 +70,8 @@ namespace SME.SR.Application
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
                         EstudosRealizados = estudosRealizados.Count > 0 ? estudosRealizados : null,
-                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
+                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key),
+                        ObservacaoComplementar = request.ObservacaoComplementar
                     };
 
                     listaRetorno.Add(historicoDto);
@@ -296,9 +296,9 @@ namespace SME.SR.Application
 
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
-                
 
-                List<ComponenteCurricularHistoricoEscolarDto> componentesRegencia = new List<ComponenteCurricularHistoricoEscolarDto>();                               
+
+                List<ComponenteCurricularHistoricoEscolarDto> componentesRegencia = new List<ComponenteCurricularHistoricoEscolarDto>();
 
                 foreach (var componenteCurricular in componentesCurricularesDaTurma.Where(x => !x.Regencia))
                 {
