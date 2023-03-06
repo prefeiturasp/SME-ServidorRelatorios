@@ -1,6 +1,6 @@
 ﻿@using RazorEngine.Compilation.ImpromptuInterface.InvokeExt
 @using SME.SR.Infra
-@model IEnumerable<RelatorioEncaminhamentosNAAPADto>
+@model RelatorioEncaminhamentosNAAPADto
 
 @{
     const string TODAS = "Todas";
@@ -14,8 +14,8 @@
     const int QDADE_LINHAS_LINHA_UNICA = 1;
     const int QDADE_CHARS_POR_LINHA = 93;
     
-    var mostrarDre = Model.FirstOrDefault().DreNome == TODAS;
-    var mostrarUe = Model.FirstOrDefault().UeNome == TODAS;
+    var mostrarDre = Model.DreNome == TODAS;
+    var mostrarUe = Model.UeNome == TODAS;
 
     int RetornarQdadeLinhasPrevistas(int qdadeChars) {
         var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
@@ -67,14 +67,19 @@
         <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
         <div class='titulo-relatorio'>RELATÓRIO DE ENCAMINHAMENTO NAAPA</div>
         <div class='fonte-14 header-pagina'>
+            
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td class='espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @Model.DreNome</td>
+                        <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>UE:</strong> @Model.UeNome</td>
+                    </tr>
+                </tbody>
+            </table>
             <table class='tblTopo'>
                 <tbody>
                 <tr>
-                    <td class='espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @relatorio.DreNome</td>
-                    <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>Unidade Escolar (UE):</strong> @relatorio.UeNome</td>
-                </tr>
-                <tr>
-                    <td class='espaco-esquerda-15 width-70 espacamento7 sem-border-top'><strong>USUÁRIO:</strong> @relatorio.UsuarioNome</td>
+                    <td class='espaco-esquerda-15 width-70 espacamento7 sem-border-top'><strong>USUÁRIO:</strong> @Model.UsuarioNome</td>
                     <td class='espaco-esquerda-15 espacamento7 sem-border-top' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</td>
                 </tr>
                 </tbody>
@@ -135,8 +140,7 @@
         AvaliarQuebraPagina(contadorQuebrarPagina);        
 
         <tr>
-            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10"><strong>@titulo</strong></td>
-            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10">@dado</td>
+            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10">@titulo: @dado</td>
         </tr>
     } 
     
@@ -151,8 +155,8 @@
         AvaliarQuebraPagina(contadorQuebrarPagina);        
 
         <tr>
-            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10"><strong>${@tituloPrimeiraColuna}:</strong> ${@dadoPrimeiraColuna}</td>
-            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10"><strong>${@tituloSegundaColuna}:</strong> ${@dadoSegundaColuna}</td>
+            <td class="fundo-cinza alinhamentoEsquerda espacamento10"><strong>@tituloPrimeiraColuna:</strong> @dadoPrimeiraColuna</td>
+            <td class="fundo-cinza alinhamentoEsquerda espacamento10"><strong>@tituloSegundaColuna:</strong> @dadoSegundaColuna</td>
         </tr>
     } 
 }
@@ -273,20 +277,16 @@
     </style>
     <div>
         @{
-            foreach (var relatorio in Model)
-            {
-                if (relatorio != null)
-                    @MontarHTMLQuebraPagina();
-                
-                relatorioAtual = relatorio;
-                
-                MontarCabecalho(relatorio);  
-                
-                MontarInformacoesNAAPA(relatorio);
-                <br/>               
-                
-                paginaAtual = 0;
-            }
+            if (Model != null)
+                @MontarHTMLQuebraPagina();
+            
+            relatorioAtual = Model;
+            
+            MontarCabecalho(Model);  
+            
+            MontarInformacoesNAAPA(Model);
+            <br/>              
+            
         }
     </div>
 </body>
