@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SME.SR.Infra.Utilitarios;
-using SME.SR.Infra.RelatorioPaginado;
 
 namespace SME.SR.Application
 {

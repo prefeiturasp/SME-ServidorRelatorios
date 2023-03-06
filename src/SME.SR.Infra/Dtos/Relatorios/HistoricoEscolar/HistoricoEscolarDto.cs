@@ -32,6 +32,7 @@ namespace SME.SR.Infra
 
         [JsonProperty("historicoEscolarTransferencia")]
         public TransferenciaDto DadosTransferencia{ get; set; }
+
         [JsonProperty("observacaoComplementar")]
         public string ObservacaoComplementar { get; set; }
     }
