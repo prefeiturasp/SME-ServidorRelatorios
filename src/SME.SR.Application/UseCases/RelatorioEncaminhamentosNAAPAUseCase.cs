@@ -21,13 +21,45 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNAAPADto>();
-            var encaminhamentosNAAPA = await mediator.Send(new ObterEncaminhamentosNAAPAQuery(filtroRelatorio));
+            var encaminhamentosNAAPA = await mediator.Send(new ObterResumoEncaminhamentosNAAPAQuery(filtroRelatorio));
 
             if (encaminhamentosNAAPA == null || !encaminhamentosNAAPA.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            
-            //await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentosAeeCommand(cabecalho, encaminhamentosAgrupados, request.CodigoCorrelacao));
+            var encaminhamentosAgrupados = encaminhamentosNAAPA.GroupBy(g => new
+            {
+                DreId = g.DreId,
+                DreNome = g.DreAbreviacao,
+                UeCodigo = g.UeCodigo,
+                UeNome = $"{g.TipoEscola.ShortName()} {g.UeNome}",
+            }, (key, group) =>
+            new AgrupamentoEncaminhamentoNAAPADreUeDto()
+            {
+                DreId = key.DreId,
+                DreNome = key.DreNome,
+                UeNome = $"{key.UeCodigo} - {key.UeNome}",
+                UeOrdenacao = key.UeNome,
+                Detalhes = group.Select(s =>
+                new DetalheEncaminhamentoNAAPADto()
+                {
+                    Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
+                    Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}",
+                    PortaEntrada = s.PortaEntrada,
+                    DataEntradaQueixa = s.DataEntradaQueixa,
+                    DataUltimoAtendimento = s.DataUltimoAtendimento,
+                    FluxosAlerta = String.Join("|", s.FluxosAlerta)
+                }).OrderBy(oAluno => oAluno.Aluno).ToList()
+            }).OrderBy(oDre => oDre.DreNome).ThenBy(oUe => oUe.UeOrdenacao).ToList();
+
+
+            var relatorio = new RelatorioEncaminhamentosNAAPADto()
+            {
+                DreNome = filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
+                UeNome = filtroRelatorio.UeCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.UeCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().UeNome,
+                UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
+            };
+            relatorio.EncaminhamentosDreUe = encaminhamentosAgrupados;
+            //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentosNAAPA", relatorio, request.CodigoCorrelacao, tipoDePaginacao: EnumTipoDePaginacao.PaginaSemTotalPaginas));
         }
     }
 }

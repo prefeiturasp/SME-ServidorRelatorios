@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterEncaminhamentosNAAPAQuery : IRequest<IEnumerable<EncaminhamentoNAAPADto>>
+    public class ObterResumoEncaminhamentosNAAPAQuery : IRequest<IEnumerable<EncaminhamentoNAAPASimplesDto>>
     {
-        public ObterEncaminhamentosNAAPAQuery(FiltroRelatorioEncaminhamentoNAAPADto filtro)
+        public ObterResumoEncaminhamentosNAAPAQuery(FiltroRelatorioEncaminhamentoNAAPADto filtro)
         {
             Filtro = filtro;
         }

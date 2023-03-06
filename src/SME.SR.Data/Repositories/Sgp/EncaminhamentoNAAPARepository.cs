@@ -16,9 +16,12 @@ namespace SME.SR.Data
         private readonly VariaveisAmbiente variaveisAmbiente;
         private const int SECAO_ETAPA_1 = 1;
         private const int SECAO_INFORMACOES_ALUNO_ORDEM = 1;
+        private const int SECAO_ITINERANCIA_ORDEM = 3;
         private const string NOME_COMPONENTE_DATA_ENTRADA_QUEIXA = "DATA_ENTRADA_QUEIXA";
         private const string NOME_COMPONENTE_PORTA_ENTRADA = "PORTA_ENTRADA";
         private const string NOME_COMPONENTE_FLUXO_ALERTA = "FLUXO_ALERTA";
+        private const string NOME_COMPONENTE_DATA_DO_ATENDIMENTO = "DATA_DO_ATENDIMENTO";
+        
 
         public EncaminhamentoNAAPARepository(VariaveisAmbiente variaveisAmbiente)
         {
@@ -85,14 +88,14 @@ namespace SME.SR.Data
             return query.ToString();
         }
 
-        public async Task<IEnumerable<EncaminhamentoNAAPADto>> ObterEncaminhamentosNAAPA(FiltroRelatorioEncaminhamentoNAAPADto filtro)
+        public async Task<IEnumerable<EncaminhamentoNAAPASimplesDto>> ObterResumoEncaminhamentosNAAPA(FiltroRelatorioEncaminhamentoNAAPADto filtro)
         {
             var query = new StringBuilder();
 
             query.AppendLine($@"     
                     with vw_resposta_data as (
                         select ens.encaminhamento_naapa_id, 
-                               enr.texto DataAberturaQueixaInicio	
+                               case when length(enr.texto) > 0 then to_date(enr.texto,'yyyy-mm-dd') else null end DataAberturaQueixa	
                         from encaminhamento_naapa_secao ens   
                         join encaminhamento_naapa_questao enq on ens.id = enq.encaminhamento_naapa_secao_id  
                         join questao q on enq.questao_id = q.id 
@@ -124,6 +127,18 @@ namespace SME.SR.Data
                         join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
                         left join opcao_resposta opr on opr.id = enr.resposta_id
                          where q.nome_componente = {NOME_COMPONENTE_FLUXO_ALERTA} and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
+                        ),
+                        vw_resposta_data_ultimo_atendimento as (
+                        select ens.encaminhamento_naapa_id, 
+                               max(to_date(enr.texto,'yyyy-mm-dd')) DataUltimoAtendimento	
+                        from encaminhamento_naapa_secao ens   
+                        join encaminhamento_naapa_questao enq on ens.id = enq.encaminhamento_naapa_secao_id  
+                        join questao q on enq.questao_id = q.id 
+                        join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
+                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
+                        left join opcao_resposta opr on opr.id = enr.resposta_id
+                        where q.nome_componente = {NOME_COMPONENTE_DATA_DO_ATENDIMENTO} and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_ITINERANCIA_ORDEM}
+                        group by ens.encaminhamento_naapa_id
                         )
 		                select en.id, d.dre_id dreId, 
 	                        d.abreviacao as dreAbreviacao,
@@ -137,11 +152,12 @@ namespace SME.SR.Data
 	                        t.ano_letivo as anoLetivo,
 	                        t.modalidade_codigo as modalidade,
 	                        en.situacao as situacao
-	                        ,case when length(qdata.DataAberturaQueixaInicio) > 0 then to_date(qdata.DataAberturaQueixaInicio,'yyyy-mm-dd') else null end DataEntradaQueixa
+	                        ,qdata.DataAberturaQueixa
 	                        ,qportaentrada.PortaEntradaId as Id
 	                        ,qportaentrada.PortaEntrada as Nome
 	                        ,qfluxoalerta.FluxoAlertaId as Id
 	                        ,qfluxoalerta.FluxoAlerta as Nome
+                            ,qatendimetno.DataUltimoAtendimento
 	                    from encaminhamento_naapa en 
                         inner join turma t on t.id = en.turma_id
 			                inner join ue u on u.id = t.ue_id 
@@ -149,20 +165,21 @@ namespace SME.SR.Data
 			                left join vw_resposta_data qdata on qdata.encaminhamento_naapa_id = en.id
 			                left join vw_resposta_porta_entrada qportaentrada on qportaentrada.encaminhamento_naapa_id = en.id
 			                left join vw_resposta_fluxo_alerta qfluxoalerta on qfluxoalerta.encaminhamento_naapa_id = en.id
+                            left join vw_resposta_data_ultimo_atendimento qatendimetno on qatendimetno.encaminhamento_naapa_id = en.id
                             where not en.excluido    
                             ");
 
             query.AppendLine(ObterCondicao(filtro));
 
-            query.AppendLine(" order by d.abreviacao, u.nome, case when length(qdata.DataAberturaQueixaInicio) > 0 then to_date(qdata.DataAberturaQueixaInicio,'yyyy-mm-dd') else null end ;   ");
+            query.AppendLine(" order by d.abreviacao, u.nome, DataAberturaQueixa ;   ");
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            var lookup = new Dictionary<long, EncaminhamentoNAAPADto>();
+            var lookup = new Dictionary<long, EncaminhamentoNAAPASimplesDto>();
 
-            return await conexao.QueryAsync<EncaminhamentoNAAPADto, OpcaoRespostaSimplesDTO, OpcaoRespostaSimplesDTO, EncaminhamentoNAAPADto>(query.ToString(), 
+            return await conexao.QueryAsync<EncaminhamentoNAAPASimplesDto, OpcaoRespostaSimplesDTO, OpcaoRespostaSimplesDTO, EncaminhamentoNAAPASimplesDto>(query.ToString(), 
                 (encaminhamento, opcaoRespostaPortaEntrada, opcaoRespostaFluxoAlerta) =>
                 {
-                    EncaminhamentoNAAPADto encaminhamentoNAAPA;
+                    EncaminhamentoNAAPASimplesDto encaminhamentoNAAPA;
                     if (!lookup.TryGetValue(encaminhamento.Id, out encaminhamentoNAAPA))
                     {
                         encaminhamentoNAAPA = encaminhamento;
