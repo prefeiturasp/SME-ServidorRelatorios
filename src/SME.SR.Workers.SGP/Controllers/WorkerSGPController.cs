@@ -384,12 +384,12 @@ namespace SME.SR.Workers.SGP.Controllers
 
             var relatorio = new FiltroRelatorioEncaminhamentoNAAPADto()
             {
-                DreCodigo = "108200",
+                DreCodigo = "108800",
                 ExibirEncerrados = false,
-                FluxoAlertaIds = new int[] { 71, 72, 76, 73 },
-                PortaEntradaIds = new int[] { 48 },
-                SituacaoIds = new int[] { 2, 3 },
-                UeCodigo = "092959",
+                FluxoAlertaIds = new int[] { }, //71, 72, 76, 73
+                PortaEntradaIds = new int[] { },//48 
+                SituacaoIds = null,//new int[] { 2, 3 }
+                UeCodigo = "094668",
                 UsuarioNome = "Jailson",
                 UsuarioRf = "125588"
             };

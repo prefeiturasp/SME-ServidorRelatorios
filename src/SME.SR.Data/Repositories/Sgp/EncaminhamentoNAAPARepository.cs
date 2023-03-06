@@ -153,11 +153,11 @@ namespace SME.SR.Data
 	                        t.modalidade_codigo as modalidade,
 	                        en.situacao as situacao
 	                        ,qdata.DataAberturaQueixa as DataEntradaQueixa
+                            ,qatendimetno.DataUltimoAtendimento
 	                        ,qportaentrada.PortaEntradaId as Id
 	                        ,qportaentrada.PortaEntrada as Nome
 	                        ,qfluxoalerta.FluxoAlertaId as Id
 	                        ,qfluxoalerta.FluxoAlerta as Nome
-                            ,qatendimetno.DataUltimoAtendimento
 	                    from encaminhamento_naapa en 
                         inner join turma t on t.id = en.turma_id
 			                inner join ue u on u.id = t.ue_id 
