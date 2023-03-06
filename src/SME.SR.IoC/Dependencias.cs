@@ -190,6 +190,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IQuestionarioEncaminhamentoAeeRepository), typeof(QuestionarioEncaminhamentoAeeRepository));
             services.TryAddScoped(typeof(IEncaminhamentoAeeRespostaRepository), typeof(EncaminhamentoAeeRespostaRepository));
+            services.TryAddScoped(typeof(IEncaminhamentoNAAPARepository), typeof(EncaminhamentoNAAPARepository));
             
         }
 
@@ -250,6 +251,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioPlanosAeeUseCase, RelatorioPlanosAeeUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosAeeUseCase, RelatorioEncaminhamentosAeeUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentoAeeDetalhadoUseCase, RelatorioEncaminhamentoAeeDetalhadoUseCase>();
+            services.TryAddScoped<IRelatorioEncaminhamentosNAAPAUseCase, RelatorioEncaminhamentosNAAPAUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
