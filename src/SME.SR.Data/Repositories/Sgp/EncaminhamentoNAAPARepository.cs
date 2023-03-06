@@ -40,9 +40,9 @@ namespace SME.SR.Data
             var condicao = string.Empty;
 
             if (!filtro.ExibirEncerrados)
-                condicao += $" and ea.situacao <> {(int)SituacaoNAAPA.Encerrado}";
+                condicao += $" and en.situacao <> {(int)SituacaoNAAPA.Encerrado}";
             if (!filtro.SituacaoIds.EstaFiltrandoTodas())
-                condicao += " and ea.situacao = ANY(@situacaoIds) ";
+                condicao += " and en.situacao = ANY(@situacaoIds) ";
 
             return condicao;
         }
@@ -102,7 +102,7 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
                         join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                        where q.nome_componente = {NOME_COMPONENTE_DATA_ENTRADA_QUEIXA} and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
+                        where q.nome_componente = '{NOME_COMPONENTE_DATA_ENTRADA_QUEIXA}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
                         ),
                         vw_resposta_porta_entrada as (
                         select ens.encaminhamento_naapa_id, 
@@ -114,7 +114,7 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
                         join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                         where q.nome_componente = {NOME_COMPONENTE_PORTA_ENTRADA} and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
+                         where q.nome_componente = '{NOME_COMPONENTE_PORTA_ENTRADA}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
                         ),
                         vw_resposta_fluxo_alerta as (
                         select ens.encaminhamento_naapa_id, 
@@ -126,7 +126,7 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
                         join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                         where q.nome_componente = {NOME_COMPONENTE_FLUXO_ALERTA} and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
+                         where q.nome_componente = '{NOME_COMPONENTE_FLUXO_ALERTA}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
                         ),
                         vw_resposta_data_ultimo_atendimento as (
                         select ens.encaminhamento_naapa_id, 
@@ -137,7 +137,7 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
                         join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                        where q.nome_componente = {NOME_COMPONENTE_DATA_DO_ATENDIMENTO} and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_ITINERANCIA_ORDEM}
+                        where q.nome_componente = '{NOME_COMPONENTE_DATA_DO_ATENDIMENTO}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_ITINERANCIA_ORDEM}
                         group by ens.encaminhamento_naapa_id
                         )
 		                select en.id, d.dre_id dreId, 
@@ -152,7 +152,7 @@ namespace SME.SR.Data
 	                        t.ano_letivo as anoLetivo,
 	                        t.modalidade_codigo as modalidade,
 	                        en.situacao as situacao
-	                        ,qdata.DataAberturaQueixa
+	                        ,qdata.DataAberturaQueixa as DataEntradaQueixa
 	                        ,qportaentrada.PortaEntradaId as Id
 	                        ,qportaentrada.PortaEntrada as Nome
 	                        ,qfluxoalerta.FluxoAlertaId as Id
