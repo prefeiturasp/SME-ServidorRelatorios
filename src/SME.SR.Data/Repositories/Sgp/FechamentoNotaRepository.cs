@@ -62,7 +62,7 @@ namespace SME.SR.Data
                            left join usuario u on u.id = n.usuario_id
                            left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
                            inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id
-                           left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id
+                           left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false
                            where ft.turma_id = @turmaId ");
 
             if (bimestres.Contains(0))

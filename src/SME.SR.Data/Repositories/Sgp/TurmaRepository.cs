@@ -983,8 +983,8 @@ namespace SME.SR.Data
         }
         public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
         {
-            var query = @"select t.id as Codigo
-                            , t.turma_id
+            var query = @"select t.id 
+                            , t.turma_id as Codigo
                             , t.nome
                             , t.modalidade_codigo  ModalidadeCodigo
                             , t.semestre
@@ -1001,8 +1001,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo)
         {
-            var query = @"select t.id as Codigo
-   		                        , t.turma_id 
+            var query = @"select t.id 
+   		                        , t.turma_id as Codigo
                                 , t.nome
                                 , t.modalidade_codigo  ModalidadeCodigo
                                 , t.semestre
@@ -1255,7 +1255,7 @@ namespace SME.SR.Data
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
+                return await conexao.QueryAsync<Turma>(query.ToString(), parametros);
 
         }
 
@@ -1265,8 +1265,7 @@ namespace SME.SR.Data
             var parametros = new { turmaId };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-
-            return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
+                return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
         }
 
         public async Task<IEnumerable<Aluno>> ObterDadosAlunosPorTurmaDataMatricula(string codigoTurma, DateTime dataMatricula)
@@ -1274,21 +1273,16 @@ namespace SME.SR.Data
             var query = TurmaConsultas.DadosAlunosDataMatricula;
             var parametros = new { CodigoTurma = codigoTurma, dataMatricula };
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
                 return await conexao.QueryAsync<Aluno>(query, parametros);
-
-            }
         }
 
         public async Task<IEnumerable<TurmaItinerarioEnsinoMedioDto>> ObterTurmasItinerarioEnsinoMedio()
         {
             var query = @"select id, nome, serie from turma_tipo_itinerario tti";
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
-            {
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
                 return await conexao.QueryAsync<TurmaItinerarioEnsinoMedioDto>(query);
-            }
         }
     }
 }

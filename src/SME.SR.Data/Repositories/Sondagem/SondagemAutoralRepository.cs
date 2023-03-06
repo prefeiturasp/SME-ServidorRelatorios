@@ -76,23 +76,24 @@ namespace SME.SR.Data
             query.AppendLine(" INNER JOIN \"PerguntaResposta\" pr ON pr.\"PerguntaId\" = p.\"Id\"");
             query.AppendLine(" INNER JOIN \"Resposta\" r ON r.\"Id\" = pr.\"RespostaId\"");
             query.AppendLine(" LEFT JOIN ( ");
-            query.AppendLine("    SELECT sar.\"PerguntaId\" AS \"PerguntaId\",");
-            query.AppendLine("           r.\"Id\" AS \"RespostaId\", COUNT(sa.\"CodigoAluno\") AS \"QtdRespostas\"");
+            query.AppendLine("    SELECT p.\"Id\" AS \"PerguntaId\",");
+            query.AppendLine("           r.\"Id\" AS \"RespostaId\", COUNT(distinct sa.\"CodigoAluno\") AS \"QtdRespostas\"");
             query.AppendLine("    FROM \"SondagemAlunoRespostas\" sar");
-            query.AppendLine("    INNER JOIN \"SondagemAluno\" sa ON sa.\"Id\" = sar.\"SondagemAlunoId\" and sar.\"CodigoAluno\" = sa.\"CodigoAluno\"");
+            query.AppendLine("    INNER JOIN \"SondagemAluno\" sa ON sa.\"Id\" = sar.\"SondagemAlunoId\"");
             query.AppendLine("    INNER JOIN \"Sondagem\" s ON s.\"Id\" = sa.\"SondagemId\"");
+            query.AppendLine("    INNER JOIN \"Pergunta\" p ON p.\"Id\" = sar.\"PerguntaId\"");
             query.AppendLine("    INNER JOIN \"Resposta\" r ON r.\"Id\" = sar.\"RespostaId\"");
-            query.AppendLine("    WHERE sar.\"ComponenteCurricularId\" = @componenteCurricularId");
+            query.AppendLine("    WHERE s.\"ComponenteCurricularId\" = @componenteCurricularId");
             query.AppendLine("      AND s.\"AnoLetivo\" = @anoLetivo");
             query.AppendLine("      AND s.\"AnoTurma\" = @anoTurma");
-            query.AppendLine("      AND sa.\"Bimestre\" = @bimestre");
+            query.AppendLine("      AND s.\"Bimestre\" = @bimestre");
 
             if (!string.IsNullOrEmpty(codigoDre))
                 query.AppendLine(" AND s.\"CodigoDre\" =  @codigoDre");
             if (!string.IsNullOrEmpty(codigoUe))
                 query.AppendLine(" AND s.\"CodigoUe\" =  @codigoUe");
 
-            query.AppendLine("    GROUP BY sar.\"PerguntaId\", r.\"Id\") AS tabela");
+            query.AppendLine("    GROUP BY p.\"Id\", r.\"Id\") AS tabela");
             query.AppendLine(" ON p.\"Id\" = tabela.\"PerguntaId\" AND r.\"Id\"= tabela.\"RespostaId\"");
             query.AppendLine(" WHERE ((pa.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pa.\"InicioVigencia\") <= @anoLetivo)");
             query.AppendLine("    OR (EXTRACT(YEAR FROM pa.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pa.\"InicioVigencia\") <= @anoLetivo))");
