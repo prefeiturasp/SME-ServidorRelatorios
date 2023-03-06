@@ -128,43 +128,48 @@ namespace SME.SR.Application
             var turmasFundMedio = turmasHistorico.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
             IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
-            IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null;
+            IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null, resultadoFinalEJA = null;
             IEnumerable<TransferenciaDto> resultadoTransferencia = null;
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
                 resultadoTransferencia = await mediator.Send(new MontarHistoricoEscolarTransferenciaQuery(areasDoConhecimento, ordenacaoGrupoArea, componentesCurriculares, alunosTurmasTransferencia, mediasFrequencia, notas,
                   frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray(), legenda, registroFrequenciasAlunos, bimestreAtual));
 
-            if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
-                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
-            else if ((turmasEja != null && turmasEja.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
-                resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
-                    frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
+            if ((turmasFundMedio != null && turmasFundMedio.Any() && (filtros.Modalidade == Modalidade.Fundamental || filtros.Modalidade == Modalidade.Medio) ) 
+                || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
+                    resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
+                        frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+                        historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
+            
+            if ((turmasEja != null && turmasEja.Any() && filtros.Modalidade == Modalidade.EJA) 
+                || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
+                    resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
+                        frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+                        historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
 
             if (resultadoFundMedio != null && resultadoFundMedio.Any())
             {
                 resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
                 resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
             }
+            else if (resultadoEJA != null && resultadoEJA.Any())
+                resultadoFinalEJA = resultadoEJA.Where(a => a.Modalidade == Modalidade.EJA);
 
             if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) ||
                 (resultadoFinalMedio != null && resultadoFinalMedio.Any()) ||
                 (resultadoEJA != null && resultadoEJA.Any()))
             {
 
-                if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
+                if (resultadoFinalMedio != null && resultadoFinalMedio.Any() && filtros.Modalidade == Modalidade.Medio)
                 {
                     await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
                     request.CodigoCorrelacao = await CopiarCorrelacao(request.CodigoCorrelacao);
                 }
 
-                if (resultadoEJA != null && resultadoEJA.Any())
-                    await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
+                if (resultadoEJA != null && resultadoEJA.Any() && filtros.Modalidade == Modalidade.EJA)
+                    await EnviaRelatorioEJA(resultadoFinalEJA, request.CodigoCorrelacao);
 
-                if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
+                if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any() && filtros.Modalidade == Modalidade.Fundamental)
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
 
                 

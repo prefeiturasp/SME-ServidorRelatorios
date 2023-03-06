@@ -56,7 +56,7 @@ namespace SME.SR.Application
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
 
-                    var uesHistorico = request.HistoricoUes?.FirstOrDefault(ue => ue.Key.ToString() == aluno.Key)?.ToList();
+                    var uesHistorico = request.HistoricoUes?.FirstOrDefault(ue => ue.Key.Item1.ToString() == aluno.Key)?.ToList();
 
                     var historicoDto = new HistoricoEscolarEJADto()
                     {
