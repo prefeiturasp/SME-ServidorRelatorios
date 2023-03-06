@@ -364,11 +364,11 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
         
-        [HttpGet("relatorios/encaminhamentonaapa")]
-        [Action("relatorios/encaminhamentonaapa", typeof(IRelatorioEncaminhamentosNaapaUseCase))]
-        public async Task<bool> RelatorioEncaminhamentoNaapa([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaUseCase useCase)
+        [HttpGet("relatorios/encaminhamentonaapadetalhado")]
+        [Action("relatorios/encaminhamentonaapadetalhado", typeof(IRelatorioEncaminhamentosNaapaDetalhadoUseCase))]
+        public async Task<bool> RelatorioEncaminhamentoNaapaDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaDetalhadoUseCase detalhadoUseCase)
         {
-            await useCase.Executar(request);
+            await detalhadoUseCase.Executar(request);
             return true;
         }
                 

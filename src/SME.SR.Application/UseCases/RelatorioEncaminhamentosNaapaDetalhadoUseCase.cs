@@ -8,18 +8,18 @@ using SME.SR.Infra.EncaminhamentoNaapa;
 
 namespace SME.SR.Application
 {
-    public class RelatorioEncaminhamentosNaapaUseCase : IRelatorioEncaminhamentosNaapaUseCase
+    public class RelatorioEncaminhamentosNaapaDetalhadoUseCase : IRelatorioEncaminhamentosNaapaDetalhadoUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioEncaminhamentosNaapaUseCase(IMediator mediator)
+        public RelatorioEncaminhamentosNaapaDetalhadoUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNaapaDto>();
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNaapaDetalhadoDto>();
             
             if (filtroRelatorio == null || !filtroRelatorio.EncaminhamentoNaapaIds.Any())
                 throw new NegocioException("Nenhum Id de Encaminhamento NAAPA informado para realizar a Consulta");

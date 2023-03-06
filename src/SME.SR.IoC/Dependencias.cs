@@ -250,7 +250,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioPlanosAeeUseCase, RelatorioPlanosAeeUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosAeeUseCase, RelatorioEncaminhamentosAeeUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentoAeeDetalhadoUseCase, RelatorioEncaminhamentoAeeDetalhadoUseCase>();
-            services.TryAddScoped<IRelatorioEncaminhamentosNaapaUseCase, RelatorioEncaminhamentosNaapaUseCase>();
+            services.TryAddScoped<IRelatorioEncaminhamentosNaapaDetalhadoUseCase, RelatorioEncaminhamentosNaapaDetalhadoUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
