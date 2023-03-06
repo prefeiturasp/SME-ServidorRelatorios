@@ -363,6 +363,14 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
+        
+        [HttpGet("relatorios/encaminhamentonaapa")]
+        [Action("relatorios/encaminhamentonaapa", typeof(IRelatorioEncaminhamentosNaapaUseCase))]
+        public async Task<bool> RelatorioEncaminhamentoNaapa([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
                 
 
         #region App Escola Aqui
