@@ -794,7 +794,7 @@ namespace SME.SR.Data
                                 'Diário de Classe' as TipoPendencia,
                                 true as OutrasPendencias,
                                 p.tipo,
-                                '' as Detalhe
+                                to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
                             from pendencia_devolutiva pd 
 	                            inner join pendencia p on pd.pendencia_id = p.id
 	                            inner join turma t on t.id = pd.turma_id 
@@ -853,7 +853,7 @@ namespace SME.SR.Data
                         'Diário de Classe' as TipoPendencia,
                         true as OutrasPendencias,
                         p.tipo,
-                        '' as Detalhe
+                         to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
                     from pendencia_diario_bordo pdb 
 	                    inner join pendencia p on pdb.pendencia_id = p.id
 	                    inner join aula a on a.id = pdb.aula_id
