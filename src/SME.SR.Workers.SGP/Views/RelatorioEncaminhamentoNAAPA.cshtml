@@ -1,19 +1,21 @@
 ﻿@using RazorEngine.Compilation.ImpromptuInterface.InvokeExt
 @using SME.SR.Infra
-@model IEnumerable<SME.SR.Infra.RelatorioEncaminhamentoNAAPADto>
+@model IEnumerable<RelatorioEncaminhamentosNAAPADto>
 
 @{
+    const string TODAS = "Todas";
+        
     int paginaAtual = 0;
     double contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 35;
-    RelatorioEncaminhamentoNAAPADto relatorioAtual = null;
+    RelatorioEncaminhamentosNAAPADto relatorioAtual = null;
 
     const int QDADE_LINHAS_CABECALHO_GERAL = 8;
     const int QDADE_LINHAS_LINHA_UNICA = 1;
     const int QDADE_CHARS_POR_LINHA = 93;
     
-    var mostrarDre = Model.DreNome == TODAS;
-    var mostrarUe = Model.UeNome == TODAS;
+    var mostrarDre = Model.FirstOrDefault().DreNome == TODAS;
+    var mostrarUe = Model.FirstOrDefault().UeNome == TODAS;
 
     int RetornarQdadeLinhasPrevistas(int qdadeChars) {
         var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
@@ -44,7 +46,7 @@
         return Html.Raw(str);
     }
 
-    void AvaliarQuebraPagina(double numeroLinhasPrevistas, RelatorioEncaminhamentoAeeDetalhadoDto relatorio = null)
+    void AvaliarQuebraPagina(double numeroLinhasPrevistas, RelatorioEncaminhamentosNAAPADto relatorio = null)
     {
         bool quebra = (contadorQuebrarPagina + numeroLinhasPrevistas) > contadorMaximoLinhasPorPagina;
         if (!quebra)
@@ -56,7 +58,7 @@
         @MontarHTMLAberturaTable();
     }
 
-    void MontarCabecalho(RelatorioEncaminhamentoNAAPADto relatorio)
+    void MontarCabecalho(RelatorioEncaminhamentosNAAPADto relatorio)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_CABECALHO_GERAL;
         <div>
@@ -80,7 +82,7 @@
         </div>
     }
 
-    void MontarInformacoesNAAPA(RelatorioEncaminhamentoNAAPADto relatorioEncaminhamentoNaapa)
+    void MontarInformacoesNAAPA(RelatorioEncaminhamentosNAAPADto relatorioEncaminhamentoNaapa)
     {
         if (relatorioEncaminhamentoNaapa.EncaminhamentosDreUe.Any())
         {
@@ -96,7 +98,7 @@
                                 MontarLinhaSimples("CRIANÇA/ESTUDANTE",detalhe.Aluno);
                                 MontarLinhaComDuasColunas("TURMA",detalhe.Turma, "DATA DE ENTRADA DA QUEIXA", detalhe.DataEntradaQueixa.Date.ToString("dd/MM/yyyy"));
                                 MontarLinhaComDuasColunas("PORTA DE ENTRADA",detalhe.PortaEntrada, "DATA DO ÚLTIMO ATENDIMENTO", detalhe.DataUltimoAtendimento.Date.ToString("dd/MM/yyyy"));
-                                MontarLinhaSimples("FLUXO DE ALERTA",detalhe.FluxoAlerta);
+                                MontarLinhaSimples("FLUXO DE ALERTA",detalhe.FluxosAlerta);
                             }
                         }
                     }
