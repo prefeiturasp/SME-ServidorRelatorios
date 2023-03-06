@@ -138,7 +138,7 @@ namespace SME.SR.Application
             if ((turmasFundMedio != null && turmasFundMedio.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
+                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis, filtros.InformarObservacoesComplementares ? filtros.ObservacaoComplementar : null));
             else if ((turmasEja != null && turmasEja.Any()) || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
                 resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
@@ -167,7 +167,7 @@ namespace SME.SR.Application
                 if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
 
-                
+
             }
             else
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");

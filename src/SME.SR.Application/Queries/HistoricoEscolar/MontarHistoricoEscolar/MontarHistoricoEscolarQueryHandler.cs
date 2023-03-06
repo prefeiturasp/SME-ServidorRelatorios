@@ -71,7 +71,8 @@ namespace SME.SR.Application
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
                         EstudosRealizados = estudosRealizados.Count > 0 ? estudosRealizados : null,
-                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
+                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key),
+                        ObservacaoComplementar = request.ObservacaoComplementar
                     };
 
                     listaRetorno.Add(historicoDto);
