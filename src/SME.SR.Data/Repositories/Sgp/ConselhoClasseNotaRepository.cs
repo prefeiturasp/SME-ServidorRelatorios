@@ -193,7 +193,7 @@ namespace SME.SR.Data
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvc on ccn.conceito_id = cvc.id
                   left join sintese_valores sv on sv.id = fn.sintese_id
-                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false and wanf.wf_aprovacao_id is null
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false
                   left join conceito_valores cv on cv.id = wanf.conceito_id 
                   left join wf_aprovacao_nota_conselho wfnc on wfnc.conselho_classe_nota_id = ccn.id
                   left join conceito_valores cv1 on cv1.id = wfnc.conceito_id
@@ -264,7 +264,7 @@ namespace SME.SR.Data
                   left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvf on fn.conceito_id = cvf.id
-                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false and wanf.wf_aprovacao_id is null
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false 
                   left join conceito_valores cv on cv.id = wanf.conceito_id
                   left join wf_aprovacao_nota_conselho wfnc on wfnc.conselho_classe_nota_id = ccn.id
                   left join conceito_valores cv1 on cv1.id = wfnc.conceito_id
