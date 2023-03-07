@@ -20,6 +20,10 @@ namespace SME.SR.Application
 
         public async Task<RelatorioNotasEConceitosFinaisDto> Handle(ObterRelatorioNotasEConceitosFinaisPdfQuery request, CancellationToken cancellationToken)
         {
+            try
+            {
+
+            
             var relatorioNotasEConceitosFinaisDto = new RelatorioNotasEConceitosFinaisDto();
             var filtros = request.FiltroRelatorioNotasEConceitosFinais;
 
@@ -159,6 +163,12 @@ namespace SME.SR.Application
                 throw new NegocioException("Não encontramos dados para geração do relatório!");
 
             return relatorioNotasEConceitosFinaisDto;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private async Task<IEnumerable<RetornoNotaConceitoBimestreComponenteDto>> ObterTurmasAssociadas(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
