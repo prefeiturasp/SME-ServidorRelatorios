@@ -1,16 +1,27 @@
 ﻿@using RazorEngine.Compilation.ImpromptuInterface.InvokeExt
 @using SME.SR.Infra
+@using SME.SR.Infra.Utilitarios
 @model RelatorioEncaminhamentosNAAPADto
 
+@functions {
+    private static string ObterData(DateTime? data)
+    {
+        return data.HasValue ? data.Value.ToString("dd/MM/yyyy") : string.Empty;
+    }
+}
+
 @{
-    const string TODAS = "Todas";
+    const string TODAS = "TODAS";
         
     int paginaAtual = 0;
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 35;
+    int contadorMaximoLinhasPorPagina = 33;
     RelatorioEncaminhamentosNAAPADto relatorioAtual = null;
+    
+    string DreNome = string.Empty;
+    string UeNome = string.Empty;
 
-    const int QDADE_LINHAS_CABECALHO_GERAL = 8;
+    const int QDADE_LINHAS_CABECALHO_GERAL = 2;
     const int QDADE_LINHAS_LINHA_UNICA = 1;
     const int QDADE_CHARS_POR_LINHA = 93;
     
@@ -48,13 +59,14 @@
 
     void AvaliarQuebraPagina(double numeroLinhasPrevistas, RelatorioEncaminhamentosNAAPADto relatorio = null)
     {
-        bool quebra = (contadorQuebrarPagina + numeroLinhasPrevistas) > contadorMaximoLinhasPorPagina;
+        bool quebra = numeroLinhasPrevistas > contadorMaximoLinhasPorPagina;
         if (!quebra)
             return;
 
         @MontarHTMLFechamentoTable();
         @MontarHTMLQuebraPagina();
         MontarCabecalho(relatorio ?? relatorioAtual);
+        MontarDreUe(DreNome, UeNome);
         @MontarHTMLAberturaTable();
     }
 
@@ -91,72 +103,90 @@
     {
         if (relatorioEncaminhamentoNaapa.EncaminhamentosDreUe.Any())
         {
-            <table class="tabela-cabecalho">
-                <tbody>
+            foreach (var relatorio in relatorioEncaminhamentoNaapa.EncaminhamentosDreUe)
+            {
+                DreNome = relatorio.DreNome;
+                UeNome = relatorio.UeNome;
+                
+                MontarDreUe(relatorio.DreNome, relatorio.UeNome);
+                
+                foreach (var detalhe in relatorio.Detalhes)
+                {
+                    <table class='tabela-cabecalho'> <tbody>
                     @{
-                        foreach (var relatorio in relatorioEncaminhamentoNaapa.EncaminhamentosDreUe)
-                        {
-                            MontarDreUe(relatorio.DreNome, relatorio.UeNome);    
                         
-                            foreach (var detalhe in relatorio.Detalhes)
-                            {
-                                MontarLinhaSimples("CRIANÇA/ESTUDANTE",detalhe.Aluno);
-                                MontarLinhaComDuasColunas("TURMA",detalhe.Turma, "DATA DE ENTRADA DA QUEIXA", detalhe.DataEntradaQueixa.Date.ToString("dd/MM/yyyy"));
-                                MontarLinhaComDuasColunas("PORTA DE ENTRADA",detalhe.PortaEntrada, "DATA DO ÚLTIMO ATENDIMENTO", detalhe.DataUltimoAtendimento.Date.ToString("dd/MM/yyyy"));
-                                MontarLinhaSimples("FLUXO DE ALERTA",detalhe.FluxosAlerta);
-                            }
-                        }
+                        MontarLinhaComDuasColunasCustom("CRIANÇA/ESTUDANTE", detalhe.Aluno, "TURMA", detalhe.Turma);
+                        MontarLinhaComDuasColunasWidth50("SITUAÇÃO",detalhe.Situacao,"DATA DE ENTRADA DA QUEIXA", ObterData(detalhe.DataEntradaQueixa));
+                        MontarLinhaComDuasColunasWidth50("PORTA DE ENTRADA", detalhe.PortaEntrada, "DATA DO ÚLTIMO ATENDIMENTO", ObterData(detalhe.DataUltimoAtendimento));
+                        MontarLinhaSimples("FLUXO DE ALERTA", detalhe.FluxosAlerta);
                     }
-                </tbody>
-            </table>
+                    </tbody></table>
+                }
+                <br/>      
+            }
         }
     }
     
     void MontarDreUe(string dreNome, string ueNome)
     {
-        contadorQuebrarPagina = contadorQuebrarPagina +
-                                (mostrarDre ? RetornarQdadeLinhasPrevistas(dreNome.Length) : 0) +
-                                (mostrarUe ? RetornarQdadeLinhasPrevistas(ueNome.Length) : 0); 
+        var qtdeCaracteresDre = mostrarDre ? dreNome.Length : 0;
+        var qtdeCaracteresUe = mostrarUe ? ueNome.Length : 0;
+        
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(qtdeCaracteresDre + qtdeCaracteresUe); 
 
         AvaliarQuebraPagina(contadorQuebrarPagina);
         
-        @if (mostrarDre)
-        {
-            <td class='fundo-cinza espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @dreNome</td>
-        }
+        <table class='tabela-cabecalho'> <tbody>
+        <th>
+            @if (mostrarDre)
+            {
+                <td class='espaco-esquerda-15 espacamento7 width-25' colspan="1"><strong>DRE:</strong> @dreNome</td>
+            }
 
-        @if (mostrarUe)
-        {
-            <td class='fundo-cinza espaco-esquerda-15 espacamento7' @(mostrarDre ? "colspan='2'" : "")><strong>Unidade Escolar (UE):</strong> @ueNome</td>
-        }
+            @if (mostrarUe)
+            {
+                <td class='espaco-esquerda-15 espacamento7 width-75' colspan="3" ><strong>Unidade Escolar (UE):</strong> @ueNome</td>
+            }
+        </th>
+        </tbody></table>
     }
 
     void MontarLinhaSimples(string titulo, string dado)
     {
-        contadorQuebrarPagina = contadorQuebrarPagina +
-                                RetornarQdadeLinhasPrevistas(titulo.Length) +
-                                RetornarQdadeLinhasPrevistas(dado.Length); 
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length + dado.Length); 
         
         AvaliarQuebraPagina(contadorQuebrarPagina);        
 
         <tr>
-            <td colspan="7" class="fundo-cinza negrito alinhamentoEsquerda espacamento10">@titulo: @dado</td>
+            <td colspan="4" class="alinhamentoEsquerda espacamento7 width-100"><strong>@titulo:</strong> @dado</td>
         </tr>
     } 
     
-    void MontarLinhaComDuasColunas(string tituloPrimeiraColuna, string dadoPrimeiraColuna, string tituloSegundaColuna, string dadoSegundaColuna)
+    void MontarLinhaComDuasColunasWidth50(string tituloPrimeiraColuna, string dadoPrimeiraColuna, string tituloSegundaColuna, string dadoSegundaColuna) 
     {
-        contadorQuebrarPagina = contadorQuebrarPagina +
-                                RetornarQdadeLinhasPrevistas(tituloPrimeiraColuna.Length) +
-                                RetornarQdadeLinhasPrevistas(tituloPrimeiraColuna.Length) + 
-                                RetornarQdadeLinhasPrevistas(tituloSegundaColuna.Length) + 
-                                RetornarQdadeLinhasPrevistas(dadoSegundaColuna.Length);  
+        var qtdeCaracteres = tituloPrimeiraColuna.Length + dadoPrimeiraColuna.Length + tituloSegundaColuna.Length + dadoSegundaColuna.Length;
+        
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(qtdeCaracteres);  
         
         AvaliarQuebraPagina(contadorQuebrarPagina);        
 
         <tr>
-            <td class="fundo-cinza alinhamentoEsquerda espacamento10"><strong>@tituloPrimeiraColuna:</strong> @dadoPrimeiraColuna</td>
-            <td class="fundo-cinza alinhamentoEsquerda espacamento10"><strong>@tituloSegundaColuna:</strong> @dadoSegundaColuna</td>
+            <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>@tituloPrimeiraColuna:</strong> @dadoPrimeiraColuna</td>
+            <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>@tituloSegundaColuna:</strong> @dadoSegundaColuna</td>
+        </tr>
+    } 
+    
+    void MontarLinhaComDuasColunasCustom(string tituloPrimeiraColuna, string dadoPrimeiraColuna, string tituloSegundaColuna, string dadoSegundaColuna) 
+    {
+        var qtdeCaracteres = tituloPrimeiraColuna.Length + dadoPrimeiraColuna.Length + tituloSegundaColuna.Length + dadoSegundaColuna.Length;
+        
+        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(qtdeCaracteres);  
+        
+        AvaliarQuebraPagina(contadorQuebrarPagina);        
+
+        <tr>
+            <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-75" colspan="3"><strong>@tituloPrimeiraColuna:</strong> @dadoPrimeiraColuna</td>
+            <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-25" colspan="1"><strong>@tituloSegundaColuna:</strong> @dadoSegundaColuna</td>
         </tr>
     } 
 }
@@ -261,6 +291,10 @@
         .espacamento10 {
             padding: 10px;
         }
+        
+        .espacamento7 {
+            padding: 7px;
+        }
 
         .sem-border-bottom {
             border-bottom: 0;
@@ -273,7 +307,23 @@
         
         .width-22 {
           width: 22%;
-        }                     
+        }      
+        
+        .width-25 {
+          width: 25%;
+        }      
+                
+        .width-50 {
+          width: 50%;
+        }      
+                
+        .width-75 {
+          width: 75%;
+        }      
+                
+        .width-100 {
+          width: 100%;
+        }      
     </style>
     <div>
         @{
