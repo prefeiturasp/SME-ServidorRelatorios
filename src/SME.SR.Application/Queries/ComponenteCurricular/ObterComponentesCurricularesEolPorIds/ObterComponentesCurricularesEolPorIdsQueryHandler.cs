@@ -35,7 +35,12 @@ namespace SME.SR.Application
             IEnumerable<ComponenteCurricular> componentesTerritorioSaber = null;
 
             if (ExisteComponentesTerritorioSaberTurma(componentesTS, request.TurmasId))
+            {
                 componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
+
+                foreach (var componenteTerritorio in componentesTerritorioSaber)
+                    componenteTerritorio.GrupoMatrizId = lstComponentes.Where(w=> w.Codigo == componenteTerritorio.Codigo).FirstOrDefault().GrupoMatrizId;
+            }
 
             if (componentesTerritorioSaber != null)
                 lstComponentes = ConcatenarComponenteTerritorio(lstComponentes, componentesTerritorioSaber);

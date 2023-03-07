@@ -129,7 +129,7 @@ namespace SME.SR.Application
             var turmasFundMedio = turmasHistorico.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
             IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
-            IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null;
+            IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null, resultadoFinalEJA = null;
             IEnumerable<TransferenciaDto> resultadoTransferencia = null;
 
             if (turmasTransferencia != null && turmasTransferencia.Any())
@@ -150,22 +150,24 @@ namespace SME.SR.Application
                 resultadoFinalFundamental = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Fundamental);
                 resultadoFinalMedio = resultadoFundMedio.Where(a => a.Modalidade == Modalidade.Medio);
             }
+            else if (resultadoEJA != null && resultadoEJA.Any())
+                resultadoFinalEJA = resultadoEJA.Where(a => a.Modalidade == Modalidade.EJA);
 
             if ((resultadoFinalFundamental != null && resultadoFinalFundamental.Any()) ||
                 (resultadoFinalMedio != null && resultadoFinalMedio.Any()) ||
                 (resultadoEJA != null && resultadoEJA.Any()))
             {
 
-                if (resultadoFinalMedio != null && resultadoFinalMedio.Any())
+                if (resultadoFinalMedio != null && resultadoFinalMedio.Any() && filtros.Modalidade == Modalidade.Medio)
                 {
                     await EnviaRelatorioMedio(resultadoFinalMedio, request.CodigoCorrelacao);
                     request.CodigoCorrelacao = await CopiarCorrelacao(request.CodigoCorrelacao);
                 }
 
-                if (resultadoEJA != null && resultadoEJA.Any())
-                    await EnviaRelatorioEJA(resultadoEJA, request.CodigoCorrelacao);
+                if (resultadoEJA != null && resultadoEJA.Any() && filtros.Modalidade == Modalidade.EJA)
+                    await EnviaRelatorioEJA(resultadoFinalEJA, request.CodigoCorrelacao);
 
-                if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any())
+                if (resultadoFinalFundamental != null && resultadoFinalFundamental.Any() && filtros.Modalidade == Modalidade.Fundamental)
                     await EnviaRelatorioFundamental(resultadoFinalFundamental, request.CodigoCorrelacao);
 
                 
