@@ -200,7 +200,7 @@ namespace SME.SR.Data
                 }, splitOn: "id,id,id");
         }
 
-        public async Task<IEnumerable<EncaminhamentoNaapaDto>> ObterEncaminhamentosNAAPAPorIds(long[] encaminhamentoNaapaIds)
+        public async Task<IEnumerable<EncaminhamentoNAAPADto>> ObterEncaminhamentosNAAPAPorIds(long[] encaminhamentoNaapaIds)
         {
             var query = new StringBuilder();
 
@@ -227,7 +227,7 @@ namespace SME.SR.Data
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryAsync<EncaminhamentoNaapaDto>(query.ToString(), new { encaminhamentoNaapaIds });
+            return await conexao.QueryAsync<EncaminhamentoNAAPADto>(query.ToString(), new { encaminhamentoNaapaIds });
         }
     }
 }

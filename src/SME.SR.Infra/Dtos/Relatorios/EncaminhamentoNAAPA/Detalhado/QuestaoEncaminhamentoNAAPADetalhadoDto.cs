@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Infra
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Infra
 {
     public class QuestaoEncaminhamentoNAAPADetalhadoDto
     {
@@ -8,5 +10,9 @@
         public int Ordem { get; set; }
         public string OrdemMascara { get; set; }
         public string Resposta { get; set; }
+        public IEnumerable<EnderecoDto> Enderecos { get; set; }
+        public IEnumerable<ContatoResponsaveisDto> ContatoResponsaveis { get; set; }
+        public IEnumerable<AtividadeContraTurnoDto> AtividadeContraTurnos { get; set; }
+        public IEnumerable<TurmaProgramaDto> TurmasPrograma { get; set; }
     }
 }

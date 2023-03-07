@@ -1,14 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
+using System;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SME.SR.Data;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
@@ -371,7 +370,6 @@ namespace SME.SR.Workers.SGP.Controllers
             await detalhadoUseCase.Executar(request);
             return true;
         }
-                
 
         [HttpGet("relatorios/encaminhamentosnaapa")]
         [Action("relatorios/encaminhamentosnaapa", typeof(IRelatorioEncaminhamentosNAAPAUseCase))]
@@ -409,7 +407,6 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioNAAPA.Executar(filtroRelatorioDto);
             return Ok();
         }
-
 
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]

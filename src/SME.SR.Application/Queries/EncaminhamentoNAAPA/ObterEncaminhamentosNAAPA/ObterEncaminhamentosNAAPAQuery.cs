@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterEncaminhamentosNAAPAQuery : IRequest<IEnumerable<EncaminhamentoNaapaDto>>
+    public class ObterEncaminhamentosNAAPAQuery : IRequest<IEnumerable<EncaminhamentoNAAPADto>>
     {
-        public ObterEncaminhamentosNAAPAQuery(FiltroRelatorioEncaminhamentoNaapaDetalhadoDto filtroRelatorioEncaminhamentoNaapaDetalhadoDto)
+        public ObterEncaminhamentosNAAPAQuery(FiltroRelatorioEncaminhamentoNAAPADetalhadoDto filtroRelatorioEncaminhamentoNaapaDetalhadoDto)
         {
             this.filtroRelatorioEncaminhamentoNaapaDetalhadoDto = filtroRelatorioEncaminhamentoNaapaDetalhadoDto;
         }
 
-        public FiltroRelatorioEncaminhamentoNaapaDetalhadoDto filtroRelatorioEncaminhamentoNaapaDetalhadoDto { get; }
+        public FiltroRelatorioEncaminhamentoNAAPADetalhadoDto filtroRelatorioEncaminhamentoNaapaDetalhadoDto { get; }
     }
 }

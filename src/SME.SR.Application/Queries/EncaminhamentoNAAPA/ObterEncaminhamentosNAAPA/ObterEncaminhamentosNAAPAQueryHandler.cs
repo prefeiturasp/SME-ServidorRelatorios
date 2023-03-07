@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterEncaminhamentosNAAPAQueryHandler : IRequestHandler<ObterEncaminhamentosNAAPAQuery, IEnumerable<EncaminhamentoNaapaDto>>
+    public class ObterEncaminhamentosNAAPAQueryHandler : IRequestHandler<ObterEncaminhamentosNAAPAQuery, IEnumerable<EncaminhamentoNAAPADto>>
     {
         private readonly IEncaminhamentoNAAPARepository encaminhamentoAeeRepository;
 
@@ -17,7 +17,7 @@ namespace SME.SR.Application
             this.encaminhamentoAeeRepository = encaminhamentoAeeRepository ?? throw new ArgumentNullException(nameof(encaminhamentoAeeRepository));
         }
 
-        public Task<IEnumerable<EncaminhamentoNaapaDto>> Handle(ObterEncaminhamentosNAAPAQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<EncaminhamentoNAAPADto>> Handle(ObterEncaminhamentosNAAPAQuery request, CancellationToken cancellationToken)
         {
             return encaminhamentoAeeRepository.ObterEncaminhamentosNAAPAPorIds(request.filtroRelatorioEncaminhamentoNaapaDetalhadoDto.EncaminhamentoNaapaIds);
         }
