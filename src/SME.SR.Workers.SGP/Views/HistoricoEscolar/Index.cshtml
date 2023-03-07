@@ -1,0 +1,48 @@
+﻿@using SME.SR.HtmlPdf;
+@using SME.SR.Infra
+
+@model RelatorioPaginadoHistoricoEscolarDto
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            HISTÓRICO ESCOLAR
+        </title>
+    </head>
+
+    <body class="body-relatorio">
+        @await Html.PartialAsync("Css.cshtml")
+    @{
+
+        <div id="page" class="pagina">
+            <header id="header">
+                <div class="cabecalho-principal">
+                <div>
+                    <img class='img-logo-sgp' src='@(SmeConstants.LogoSmeMono)' alt='Logo SGP' />
+                </div>
+                <div class='cabecalho-titulo'>PREFEITURA DO MUNICÍPIO DE SÃO PAULO</div>
+                <div class='cabecalho-titulo'>SECRETARIA MUNICIPAL DE EDUCAÇÃO</div>
+                <div class='cabecalho-titulo'>@(Model.HistoricoEscolar.NomeDre)</div>
+                <div class='cabecalho-titulo-02'>HISTÓRICO ESCOLAR</div>
+                    @await Html.PartialAsync("Cabecalho.cshtml", Model.HistoricoEscolar)
+                </div>
+            </header>
+            <div id="content">
+                @foreach(var secao in Model.SecoesPorPagina)
+                {
+                    @await Html.PartialAsync(secao.NomeView, Model.HistoricoEscolar)
+                }
+            </div>
+            <footer class="footer">
+                <div class="titulo-sgp-rodape">
+                </div>
+            </footer>
+        </div>
+
+    }
+    </body>
+</html>

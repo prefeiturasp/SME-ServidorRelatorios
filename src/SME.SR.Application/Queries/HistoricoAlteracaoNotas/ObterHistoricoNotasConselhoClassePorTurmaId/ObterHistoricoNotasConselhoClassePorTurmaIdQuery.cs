@@ -9,7 +9,7 @@ namespace SME.SR.Application
         public ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long turmaId, long tipoCalendarioId, int[] bimestres , long[] componentes)
         {
             TurmaId = turmaId;
-            TipoCalendarioId = tipoCalendarioId;
+            this.TipoCalendarioId = tipoCalendarioId;
             Bimestres = bimestres;
             Componentes = componentes;
         }

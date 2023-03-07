@@ -67,7 +67,7 @@ namespace SME.SR.Application
                     else
                         turmas = (await mediator.Send(new ObterTurmasPorCodigoQuery(filtro.CodigosTurmas.Select(c => c).ToArray()))).ToList();
 
-                    var alunos = await mediator.Send(new ObterAlunosPorTurmasQuery(turmas.Select(c => c.Id)));
+                    var alunos = await mediator.Send(new ObterAlunosPorTurmasQuery(turmas.Select(c => long.Parse(c.Codigo))));
 
                     var dadosAlunosEscolas = await mediator.Send(new ObterDadosAlunosEscolaQuery(ue.Codigo, filtro.AnoLetivo,
                         alunos.Select(c => c.CodigoAluno.ToString()).ToArray()));

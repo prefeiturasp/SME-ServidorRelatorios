@@ -149,7 +149,7 @@ namespace SME.SR.Data
 
             var query = new StringBuilder(@$"with tmpNotasFinais as (
                 select distinct * from (
-                select coalesce(ccn.id,fn.id) as id, wanf.id as workFlowAprovacaoId, fa.aluno_codigo as AlunoCodigo
+                select coalesce(ccn.id,fn.id) as id, fa.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
                 	, fn.disciplina_id as ComponenteCurricularCodigo
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
@@ -193,7 +193,7 @@ namespace SME.SR.Data
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvc on ccn.conceito_id = cvc.id
                   left join sintese_valores sv on sv.id = fn.sintese_id
-                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id 
                   left join conceito_valores cv on cv.id = wanf.conceito_id 
                   left join wf_aprovacao_nota_conselho wfnc on wfnc.conselho_classe_nota_id = ccn.id
                   left join conceito_valores cv1 on cv1.id = wfnc.conceito_id
@@ -221,7 +221,7 @@ namespace SME.SR.Data
                 query.AppendLine(@" and fn.disciplina_id = ANY(@componentesCurricularesCodigos) ");
 
             query.AppendLine(@$"union all 
-                select coalesce(ccn.id,fn.id) as id, wanf.id as workFlowAprovacaoId, cca.aluno_codigo as AlunoCodigo
+                select coalesce(ccn.id,fn.id) as id, cca.aluno_codigo as AlunoCodigo
                 	, pe.bimestre
                 	, ccn.componente_curricular_codigo as ComponenteCurricularCodigo
                 	, coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId
@@ -264,7 +264,7 @@ namespace SME.SR.Data
                   left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
 		                                        and ccn.componente_curricular_codigo = fn.disciplina_id 
                   left join conceito_valores cvf on fn.conceito_id = cvf.id
-                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false 
+                  left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id 
                   left join conceito_valores cv on cv.id = wanf.conceito_id
                   left join wf_aprovacao_nota_conselho wfnc on wfnc.conselho_classe_nota_id = ccn.id
                   left join conceito_valores cv1 on cv1.id = wfnc.conceito_id
@@ -316,7 +316,7 @@ namespace SME.SR.Data
                 ,ano
                 ,turmaCodigo
                 ,turmaNome
-                ,Row_number() OVER (partition by AlunoCodigo, bimestre,ComponenteCurricularCodigo,turmaCodigo order by Id,workFlowAprovacaoId desc) as sequencia
+                ,Row_number() OVER (partition by AlunoCodigo order by Id desc) as sequencia
                 from tmpNotasFinais)
                 select * from lista
                 where sequencia = 1");

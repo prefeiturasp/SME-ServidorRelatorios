@@ -1,0 +1,210 @@
+﻿@using SME.SR.Infra;
+
+@model HistoricoEscolarDTO
+
+@{
+    if (Model.DadosTransferencia != null)
+    {
+        var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
+        var margemBaseNacional = 7 * totalLinhasBaseNacional;
+        <div>
+            <table class='tabela margin-top'>
+                <tr class="cabecalho-principal">
+                    <td class="cabecalho-titulo" colspan="12">TRANSFERÊNCIA DO ANO LETIVO ATÉ: @Model.DadosTransferencia.Data</td>
+                </tr>
+                <tr>
+                    <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
+                        <p style="width: 25px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
+                    </th>
+                    <td class="titulo" style="width: 18%;" rowspan="3">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 18%;" rowspan="3">Componentes curriculares</td>
+                    <td class="titulo" colspan="8">@Model.DadosTransferencia.Descricao</td>
+                </tr>
+                <tr>
+                    <td class="texto-centralizado" colspan="2">1º Bimestre</td>
+                    <td class="texto-centralizado" colspan="2">2º Bimestre</td>
+                    <td class="texto-centralizado" colspan="2">3º Bimestre</td>
+                    <td class="texto-centralizado" colspan="2">4º Bimestre</td>
+                </tr>
+                <tr>
+                    <td class="texto-centralizado">N</td>
+                    <td class="texto-centralizado">F</td>
+                    <td class="texto-centralizado">N</td>
+                    <td class="texto-centralizado">F</td>
+                    <td class="texto-centralizado">N</td>
+                    <td class="texto-centralizado">F</td>
+                    <td class="texto-centralizado">N</td>
+                    <td class="texto-centralizado">F</td>
+                </tr>
+                @Html.Raw(ObterLinhasBaseNacional())
+                @Html.Raw(ObterLinhasDiversificadas())
+                @Html.Raw(ObterLinhasEnriquecimentoCurricular())
+                @Html.Raw(ObterLinhasProjetosAtividadesComplementares())
+            </table>
+            @Html.Raw(ObterLegenda())
+        </div>
+    }
+
+    int ObterTotalLinhasBaseNacional()
+    {
+        var totalLinhasCabecalho = 3;
+        var totalLinhasComponentes = 0;
+        var areasConhecimento = Model.DadosTransferencia?.BaseNacionalComum?.AreasDeConhecimento;
+
+        if (areasConhecimento == null)
+            return totalLinhasComponentes;
+
+        foreach (var areaDeConhecimento in areasConhecimento)
+        {
+            totalLinhasComponentes += areaDeConhecimento.ComponentesCurriculares.Count();
+        }
+
+        return totalLinhasCabecalho + totalLinhasComponentes;
+    }
+
+    string ObterLinhasBaseNacional()
+    {
+        var areasConhecimento = Model.DadosTransferencia?.BaseNacionalComum?.AreasDeConhecimento;
+
+        return ObterLinhasAreaDeConhecimento(areasConhecimento);
+    }
+
+    string ObterLinhasAreaDeConhecimento(List<AreaDeConhecimentoTransferenciaDto> areasConhecimento, bool adicionarPrimeiraLinha = true)
+    {
+        var linhas = "";
+
+        if (areasConhecimento == null)
+            return linhas;
+
+        foreach (var areaDeConhecimento in areasConhecimento)
+        {
+            var totalComponentes = areaDeConhecimento.ComponentesCurriculares.Count();
+            if (adicionarPrimeiraLinha)
+                linhas += "<tr>";
+            linhas += $"<td class='subTitulo' rowspan='{totalComponentes}'>{areaDeConhecimento.Nome}</td>";
+            linhas += ObterLinhasComponentesCurriculares(areaDeConhecimento.ComponentesCurriculares);
+
+            adicionarPrimeiraLinha = true;
+        }
+
+        return linhas;
+    }
+
+    string ObterLinhasComponentesCurriculares(List<ComponenteCurricularHistoricoEscolarTransferenciaDto> componentesCurriculares)
+    {
+        var linhas = "";
+        var adicionarPrimeiraLinha = false;
+
+        if (componentesCurriculares == null)
+            return linhas;
+
+        foreach (var componente in componentesCurriculares)
+        {
+            if (adicionarPrimeiraLinha)
+                linhas += "<tr>";
+            linhas += $"<td class='subTitulo'>{componente.Nome}</td>";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoPrimeiroBimestre)}</td>";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaPrimeiroBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoSegundoBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaSegundoBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoTerceiroBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaTerceiroBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoQuartoBimestre)}</ td >";
+            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaQuartoBimestre)}</ td >";
+            linhas += "</tr>";
+
+            adicionarPrimeiraLinha = true;
+        }
+
+        return linhas;
+    }
+
+    string ObterNotaConceito(string notaConceito)
+    {
+        return string.IsNullOrEmpty(notaConceito) ? "-" : notaConceito;
+    }
+
+    int ObterTotalLinhasDiversificadas()
+    {
+        var grupos = Model.DadosTransferencia?.GruposComponentesCurriculares;
+        var totalLinhasComponentes = 0;
+
+        if (grupos == null)
+            return totalLinhasComponentes;
+
+        foreach (var grupo in grupos)
+        {
+            foreach (var areaConhecimento in grupo.AreasDeConhecimento)
+            {
+                totalLinhasComponentes += areaConhecimento.ComponentesCurriculares.Count();
+            }
+        }
+
+        return totalLinhasComponentes;
+    }
+
+    string ObterLinhasDiversificadas()
+    {
+        var grupos = Model.DadosTransferencia?.GruposComponentesCurriculares;
+        var linhas = "";
+
+        if (grupos != null && grupos.Any())
+        {
+            linhas = "<tr>";
+            linhas += $"<td class='coluna-diversificada' rowspan='{ObterTotalLinhasDiversificadas()}'><p>DIVERSIFICADA</p></td>";
+
+            foreach (var grupo in grupos)
+            {
+                linhas += ObterLinhasAreaDeConhecimento(grupo.AreasDeConhecimento, false);
+            }
+        }
+
+        return linhas;
+    }
+
+    string ObterLinhasEnriquecimentoCurricular()
+    {
+        var enriquecimentos = Model.DadosTransferencia?.EnriquecimentoCurricular;
+
+        return ObterLinhasAtividadesExtra(enriquecimentos, "Enriquecimento curricular");
+    }
+
+    string ObterLinhasProjetosAtividadesComplementares()
+    {
+        var complementares = Model.DadosTransferencia?.ProjetosAtividadesComplementares;
+
+        return ObterLinhasAtividadesExtra(complementares, "Projetos/atividades complementares");
+    }
+
+    string ObterLinhasAtividadesExtra(List<ComponenteCurricularHistoricoEscolarTransferenciaDto> componentesCurriculares, string nomeAtividade, bool adicionarLinha = true)
+    {
+        var linhas = "";
+
+        if (componentesCurriculares == null)
+            return linhas;
+
+        if (adicionarLinha)
+            linhas += "<tr>";
+
+        linhas += $"<td class='subTitulo texto-centralizado' colspan='2' rowspan='{componentesCurriculares.Count()}'>{nomeAtividade}</td>";
+        linhas += ObterLinhasComponentesCurriculares(componentesCurriculares);
+
+        return linhas;
+    }
+
+    string ObterLegenda()
+    {
+        var legenda = Model.Legenda;
+        var linhas = "";
+
+        if (legenda == null)
+            return linhas;
+
+        linhas += "<div style='margin-bottom 10px;'>";
+        linhas += $"<div class='legenda'>{Model.DadosTransferencia.Rodape}</div>";
+        linhas += $"<div class='legenda'>C = Conceito, N = Nota, {legenda.Texto}</div>";
+        linhas += "</div>";
+
+        return linhas;
+    }
+}

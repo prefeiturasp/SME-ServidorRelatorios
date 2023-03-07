@@ -9,7 +9,6 @@ namespace SME.SR.Data
     public class Turma
     {
         public static readonly TipoTurma[] TiposRegulares = { TipoTurma.Regular, TipoTurma.EdFisica, TipoTurma.Itinerarios2AAno };
-        public long Id { get; set; }
         public string Codigo { get; set; }
         public string RegularCodigo { get; set; }        
         public int AnoLetivo { get; set; }

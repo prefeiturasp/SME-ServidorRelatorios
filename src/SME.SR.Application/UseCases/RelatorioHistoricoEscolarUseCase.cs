@@ -3,12 +3,13 @@ using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
-using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SME.SR.Infra.Utilitarios;
+using SME.SR.Infra.RelatorioPaginado;
 
 namespace SME.SR.Application
 {
@@ -239,8 +240,9 @@ namespace SME.SR.Application
 
         private async Task EnviaRelatorioFundamental(IEnumerable<HistoricoEscolarDTO> resultadoFinalFundamental, Guid codigoCorrelacao)
         {
-            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalFundamental });
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarFundamental/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));
+            var relatorioPaginados = new RelatorioPaginadoHistoricoEscolar(resultadoFinalFundamental);
+
+            await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginadoFundamental(), codigoCorrelacao));
         }
 
         private async Task EnviaRelatorioEJA(IEnumerable<HistoricoEscolarEJADto> resultadoFinalEJA, Guid codigoCorrelacao)
