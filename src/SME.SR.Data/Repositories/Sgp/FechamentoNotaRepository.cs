@@ -22,7 +22,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasAlunoBimestre(long fechamentoTurmaId, string codigoAluno)
         {
             var query = FechamentoNotaConsultas.NotasAlunoBimestre;
-            var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno};
+            var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -62,7 +62,7 @@ namespace SME.SR.Data
                            left join usuario u on u.id = n.usuario_id
                            left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
                            inner join componente_curricular cc2 on ftd.disciplina_id = cc2.id
-                           left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id
+                           left join wf_aprovacao_nota_fechamento wanf on wanf.fechamento_nota_id = fn.id and wanf.excluido = false
                            where ft.turma_id = @turmaId ");
 
             if (bimestres.Contains(0))
@@ -73,7 +73,7 @@ namespace SME.SR.Data
 
             if (!bimestres.Contains(-99) && !bimestres.Contains(0))
                 query.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY(@bimestres) ");
-            
+
             if (componentes.Length > 0)
                 query.AppendLine(@" and ftd.disciplina_id = ANY(@componentes)");
 
