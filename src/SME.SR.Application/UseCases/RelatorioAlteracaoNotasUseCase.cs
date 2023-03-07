@@ -23,14 +23,14 @@ namespace SME.SR.Application
             try
             {
                 var filtro = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
-
-                if (filtro.ComponentesCurriculares.Any(c => c == -99))
+                
+                if(filtro.ComponentesCurriculares.Any(c => c == -99))
                     filtro.ComponentesCurriculares = Array.Empty<long>();
-
-                var relatorioDto = new RelatorioAlteracaoNotasDto();
+                
+                var relatorioDto = new RelatorioAlteracaoNotasDto();                
 
                 await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
-
+                
                 await ObterDadosRelatorio(relatorioDto, filtro);
 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioHistoricoAlteracoesNotas", relatorioDto, request.CodigoCorrelacao));
@@ -77,8 +77,8 @@ namespace SME.SR.Application
 
         private async Task<string> ObterComponenteCurricular(IEnumerable<long> componenteCurricularIds)
         {
-            return !componenteCurricularIds.Any() ? "Todos" : componenteCurricularIds.Count() > 1
-                ? string.Empty : await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(componenteCurricularIds.FirstOrDefault()));
+            return !componenteCurricularIds.Any() ? "Todos" : componenteCurricularIds.Count() > 1 
+                ? string.Empty : await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(componenteCurricularIds.FirstOrDefault()));            
         }
 
         private string ObterNomeBimestre(IEnumerable<int> bimestres)
@@ -122,6 +122,6 @@ namespace SME.SR.Application
             var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
 
             return $"{turma.Modalidade.ShortName()} - {turma.Nome}";
-        }
-    }
+        }        
+    }    
 }

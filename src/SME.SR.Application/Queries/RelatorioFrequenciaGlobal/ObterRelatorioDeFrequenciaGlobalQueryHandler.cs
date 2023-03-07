@@ -80,7 +80,7 @@ namespace SME.SR.Application
                         foreach (var mes in meses)
                         {
                             foreach (var item in agrupamento.SelectMany(c => c))
-                            {
+                            {                                
                                 var alunoDados = dadosAlunosEscolas.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
                                     .FirstOrDefault(c => c.CodigoAluno == item.CodigoAluno);
 
@@ -129,7 +129,7 @@ namespace SME.SR.Application
 
             foreach (var item in retornoQuery)
             {
-                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol && c.FirstOrDefault().CodigoTurma == item.TurmaCodigo);
+                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol && c.FirstOrDefault().CodigoTurma == item.TurmaCodigo );
                 var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes);
 
                 if (dadosSituacaoAluno.ImprimirRelatorio)
@@ -212,7 +212,7 @@ namespace SME.SR.Application
                         dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
                         dadosSituacaoAluno.ImprimirRelatorio = true;
                     }
-                    else if (itemsMesSelecionado.FirstOrDefault().FirstOrDefault().DataSituacao.Month >= mesSelecionado)
+                    else if (itemsMesSelecionado.FirstOrDefault().FirstOrDefault().DataSituacao.Month >= mesSelecionado) 
                     {
                         dadosSituacaoAluno.NomeFinalAluno = itemsMesSelecionado.FirstOrDefault()?.FirstOrDefault()?.ObterNomeFinal();
                         dadosSituacaoAluno.ImprimirRelatorio = true;
@@ -228,7 +228,7 @@ namespace SME.SR.Application
             {
                 var estaAtivo = SituacoesAtiva.Contains((agrupamento?.FirstOrDefault()?.FirstOrDefault()?.CodigoSituacaoMatricula).GetValueOrDefault());
                 dadosSituacaoAluno.ImprimirRelatorio = estaAtivo;
-                dadosSituacaoAluno.NomeFinalAluno = estaAtivo ? agrupamento.FirstOrDefault()?.FirstOrDefault().ObterNomeFinal() : agrupamento.LastOrDefault()?.LastOrDefault()?.ObterNomeFinal() + " - "
+                dadosSituacaoAluno.NomeFinalAluno = estaAtivo ? agrupamento.FirstOrDefault()?.FirstOrDefault().ObterNomeFinal() : agrupamento.LastOrDefault()?.LastOrDefault()?.ObterNomeFinal() + " - " 
                                                        + agrupamento.LastOrDefault()?.LastOrDefault()?.SituacaoMatricula
                                                        + " " + agrupamento.LastOrDefault()?.LastOrDefault()?.DataSituacao.ToString("dd/MM/yyyy");
             }

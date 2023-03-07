@@ -34,34 +34,34 @@ namespace SME.SR.Application
 
             foreach (var turma in turmas)
             {
-
-                if (!turma.Ano.Equals("0"))
-                {
-                    var notaTipoValor = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, request.FiltroRelatorio.AnoLetivo));
-
-                    var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery()
+                
+                    if (!turma.Ano.Equals("0"))
                     {
-                        TurmaCodigo = turma.Codigo
-                    });
+                        var notaTipoValor = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, request.FiltroRelatorio.AnoLetivo));
 
-                    var historicoAlteracaoNotas = await ObterHistoricoAlteracaoNotas(turma.Id, tipoCalendarioId, request.FiltroRelatorio.TipoAlteracaoNota, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.ComponentesCurriculares);
-
-                    var nomeTurma = turma.NomeRelatorio;
-
-                    foreach (var historicoNota in historicoAlteracaoNotas)
-                    {
-                        var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == int.Parse(historicoNota.CodigoAluno));
-
-                        if (alunoAtual != null)
+                        var alunos = await mediator.Send(new ObterAlunosPorTurmaQuery()
                         {
-                            historicoNota.NomeAluno = alunoAtual.NomeAluno;
-                            historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada;
-                            historicoNota.NomeTurma = nomeTurma;
+                            TurmaCodigo = turma.Codigo
+                        });
+
+                        var historicoAlteracaoNotas = await ObterHistoricoAlteracaoNotas(turma.Id, tipoCalendarioId, request.FiltroRelatorio.TipoAlteracaoNota, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.ComponentesCurriculares);
+
+                        var nomeTurma = turma.NomeRelatorio;
+
+                        foreach (var historicoNota in historicoAlteracaoNotas)
+                        {
+                            var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == int.Parse(historicoNota.CodigoAluno));
+
+                            if(alunoAtual != null)
+                            {
+                                historicoNota.NomeAluno = alunoAtual.NomeAluno;
+                                historicoNota.NumeroChamada = alunoAtual.NumeroAlunoChamada;
+                                historicoNota.NomeTurma = nomeTurma;
+                            }                            
                         }
+                        if (historicoAlteracaoNotas != null && historicoAlteracaoNotas.Any())
+                            listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
                     }
-                    if (historicoAlteracaoNotas != null && historicoAlteracaoNotas.Any())
-                        listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
-                }
             }
 
             if (listaTurmaAlteracaoNotasDto == null || !listaTurmaAlteracaoNotasDto.Any())
@@ -180,7 +180,7 @@ namespace SME.SR.Application
         {
             var AlunosAlteracaoNotasDto = new AlunosAlteracaoNotasDto()
             {
-                NumeroChamada = string.IsNullOrEmpty(historicoAlteracaoNotas.NumeroChamada) ? "0" : historicoAlteracaoNotas.NumeroChamada.TrimStart(new Char[] { '0' }),
+                NumeroChamada = string.IsNullOrEmpty(historicoAlteracaoNotas.NumeroChamada) ? "0" : historicoAlteracaoNotas.NumeroChamada.TrimStart(new Char[] {'0'}),
                 Nome = string.IsNullOrEmpty(historicoAlteracaoNotas.NomeAluno) ? "" : ToTitleCase(historicoAlteracaoNotas.NomeAluno),
                 TipoAlteracaoNota = historicoAlteracaoNotas.TipoNota.Name(),
                 DataAlteracao = historicoAlteracaoNotas.DataAlteracao.ToString("dd/MM/yyy HH:mm"),

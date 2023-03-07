@@ -687,7 +687,7 @@ namespace SME.SR.Data
 
             if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
-
+            
             query.AppendLine(" union all  ");
 
             query.AppendLine(@" select distinct 
@@ -764,8 +764,8 @@ namespace SME.SR.Data
 
             if (bimestre > 0)
                 query.AppendLine($" and pe.bimestre  = @bimestre and a.data_aula between pe.periodo_inicio and pe.periodo_fim");
-
-
+            
+            
             query.AppendLine(" union all  ");
 
             query.AppendLine(@"select 

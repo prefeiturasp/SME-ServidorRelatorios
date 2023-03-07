@@ -11,7 +11,7 @@ namespace SME.SR.Data
         public static readonly TipoTurma[] TiposRegulares = { TipoTurma.Regular, TipoTurma.EdFisica, TipoTurma.Itinerarios2AAno };
         public long Id { get; set; }
         public string Codigo { get; set; }
-        public string RegularCodigo { get; set; }
+        public string RegularCodigo { get; set; }        
         public int AnoLetivo { get; set; }
         public string Ano { get; set; }
         public string Nome { get; set; }
@@ -28,7 +28,7 @@ namespace SME.SR.Data
         {
             get => ModalidadeCodigo == Modalidade.EJA ?
                 ModalidadeTipoCalendario.EJA :
-                ModalidadeCodigo == Modalidade.Infantil ?
+                ModalidadeCodigo == Modalidade.Infantil ? 
                 ModalidadeTipoCalendario.Infantil :
                 ModalidadeTipoCalendario.FundamentalMedio;
         }

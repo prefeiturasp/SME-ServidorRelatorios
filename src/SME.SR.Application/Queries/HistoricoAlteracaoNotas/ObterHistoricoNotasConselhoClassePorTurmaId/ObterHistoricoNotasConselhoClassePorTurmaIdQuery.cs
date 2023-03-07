@@ -6,7 +6,7 @@ namespace SME.SR.Application
 {
     public class ObterHistoricoNotasConselhoClassePorTurmaIdQuery : IRequest<IEnumerable<HistoricoAlteracaoNotasDto>>
     {
-        public ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long turmaId, long tipoCalendarioId, int[] bimestres, long[] componentes)
+        public ObterHistoricoNotasConselhoClassePorTurmaIdQuery(long turmaId, long tipoCalendarioId, int[] bimestres , long[] componentes)
         {
             TurmaId = turmaId;
             TipoCalendarioId = tipoCalendarioId;

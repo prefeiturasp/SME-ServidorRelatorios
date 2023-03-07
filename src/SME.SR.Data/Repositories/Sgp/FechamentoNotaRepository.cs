@@ -22,7 +22,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<NotaConceitoBimestreComponente>> ObterNotasAlunoBimestre(long fechamentoTurmaId, string codigoAluno)
         {
             var query = FechamentoNotaConsultas.NotasAlunoBimestre;
-            var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno };
+            var parametros = new { FechamentoTurmaId = fechamentoTurmaId, CodigoAluno = codigoAluno};
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -73,7 +73,7 @@ namespace SME.SR.Data
 
             if (!bimestres.Contains(-99) && !bimestres.Contains(0))
                 query.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY(@bimestres) ");
-
+            
             if (componentes.Length > 0)
                 query.AppendLine(@" and ftd.disciplina_id = ANY(@componentes)");
 
