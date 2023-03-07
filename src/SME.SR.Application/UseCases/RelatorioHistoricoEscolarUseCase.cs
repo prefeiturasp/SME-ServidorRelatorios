@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
+using SME.SR.Infra.RelatorioPaginado;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -136,10 +138,10 @@ namespace SME.SR.Application
 
             if ((turmasFundMedio != null && turmasFundMedio.Any() && (filtros.Modalidade == Modalidade.Fundamental || filtros.Modalidade == Modalidade.Medio) ) 
                 || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
-                    resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
-                        frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                        historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
-            
+                resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
+                    frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
+                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis, filtros.InformarObservacoesComplementares ? filtros.ObservacaoComplementar : null));
+
             if ((turmasEja != null && turmasEja.Any() && filtros.Modalidade == Modalidade.EJA) 
                 || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
                     resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
