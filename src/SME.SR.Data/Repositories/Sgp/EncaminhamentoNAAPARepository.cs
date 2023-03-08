@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Microsoft.EntityFrameworkCore.Internal;
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -21,7 +20,7 @@ namespace SME.SR.Data
         private const string NOME_COMPONENTE_PORTA_ENTRADA = "PORTA_ENTRADA";
         private const string NOME_COMPONENTE_FLUXO_ALERTA = "FLUXO_ALERTA";
         private const string NOME_COMPONENTE_DATA_DO_ATENDIMENTO = "DATA_DO_ATENDIMENTO";
-        
+
 
         public EncaminhamentoNAAPARepository(VariaveisAmbiente variaveisAmbiente)
         {
@@ -34,8 +33,8 @@ namespace SME.SR.Data
         private string ObterCondicaoUe(FiltroRelatorioEncaminhamentoNAAPADto filtro) =>
                     !filtro.UeCodigo.EstaFiltrandoTodas() ? " and u.ue_id = @ueCodigo " : string.Empty;
 
-        
-        private string ObterCondicaoSituacao(FiltroRelatorioEncaminhamentoNAAPADto filtro)  
+
+        private string ObterCondicaoSituacao(FiltroRelatorioEncaminhamentoNAAPADto filtro)
         {
             var condicao = string.Empty;
 
@@ -80,7 +79,7 @@ namespace SME.SR.Data
                 ObterCondicaoFluxoAlerta
             };
 
-            foreach(var funcao in funcoes)
+            foreach (var funcao in funcoes)
             {
                 query.Append(funcao(filtro));
             }
@@ -176,7 +175,7 @@ namespace SME.SR.Data
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var lookup = new Dictionary<long, EncaminhamentoNAAPASimplesDto>();
 
-            return await conexao.QueryAsync<EncaminhamentoNAAPASimplesDto, OpcaoRespostaSimplesDTO, OpcaoRespostaSimplesDTO, EncaminhamentoNAAPASimplesDto>(query.ToString(), 
+            return await conexao.QueryAsync<EncaminhamentoNAAPASimplesDto, OpcaoRespostaSimplesDTO, OpcaoRespostaSimplesDTO, EncaminhamentoNAAPASimplesDto>(query.ToString(),
                 (encaminhamento, opcaoRespostaPortaEntrada, opcaoRespostaFluxoAlerta) =>
                 {
                     EncaminhamentoNAAPASimplesDto encaminhamentoNAAPA;
@@ -192,13 +191,43 @@ namespace SME.SR.Data
                     return encaminhamentoNAAPA;
                 },
                 new
-            {
-                dreCodigo = filtro.DreCodigo,
-                ueCodigo = filtro.UeCodigo,
-                situacaoIds = filtro.SituacaoIds,
-                portaEntradaIds = filtro.PortaEntradaIds,
-                fluxoAlertaIds = filtro.FluxoAlertaIds               
-            }, splitOn: "id,id,id");
+                {
+                    dreCodigo = filtro.DreCodigo,
+                    ueCodigo = filtro.UeCodigo,
+                    situacaoIds = filtro.SituacaoIds,
+                    portaEntradaIds = filtro.PortaEntradaIds,
+                    fluxoAlertaIds = filtro.FluxoAlertaIds
+                }, splitOn: "id,id,id");
+        }
+
+        public async Task<IEnumerable<EncaminhamentoNAAPADto>> ObterEncaminhamentosNAAPAPorIds(long[] encaminhamentoNaapaIds)
+        {
+            var query = new StringBuilder();
+
+            query.Append(" select en.id,");
+            query.Append(" d.dre_id dreId,");
+            query.Append(" d.abreviacao as dreAbreviacao,");
+            query.Append(" u.ue_id as ueCodigo,");
+            query.Append(" u.nome as ueNome,");
+            query.Append(" u.tipo_escola as tipoEscola,");
+            query.Append(" en.aluno_codigo as alunoCodigo,");
+            query.Append(" en.aluno_nome as alunoNome,");
+            query.Append(" t.turma_id as turmaCodigo,");
+            query.Append(" t.nome as turmaNome,");
+            query.Append(" t.ano_letivo as anoLetivo,");
+            query.Append(" t.modalidade_codigo as modalidade,");
+            query.Append(" en.situacao as situacao,");
+            query.Append(" en.criado_em as CriadoEm");
+            query.Append(" from encaminhamento_naapa en");
+            query.Append(" inner join turma t on t.id = en.turma_id");
+            query.Append(" inner join ue u on u.id = t.ue_id");
+            query.Append(" inner join dre d on d.id = u.dre_id");
+            query.Append(" where en.id = any(@encaminhamentoNaapaIds)");
+            query.Append(" order by d.abreviacao, u.nome, en.aluno_codigo");
+
+            await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryAsync<EncaminhamentoNAAPADto>(query.ToString(), new { encaminhamentoNaapaIds });
         }
     }
 }

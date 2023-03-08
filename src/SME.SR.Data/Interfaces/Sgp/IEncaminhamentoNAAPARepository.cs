@@ -7,5 +7,6 @@ namespace SME.SR.Data.Interfaces
     public interface IEncaminhamentoNAAPARepository
     {
         Task<IEnumerable<EncaminhamentoNAAPASimplesDto>> ObterResumoEncaminhamentosNAAPA(FiltroRelatorioEncaminhamentoNAAPADto filtro);
+        Task<IEnumerable<EncaminhamentoNAAPADto>> ObterEncaminhamentosNAAPAPorIds(long[] encaminhamentoNaapaIds);
     }
 }
