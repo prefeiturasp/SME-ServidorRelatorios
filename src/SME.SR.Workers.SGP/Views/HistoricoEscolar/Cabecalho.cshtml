@@ -1,0 +1,41 @@
+﻿@using SME.SR.Infra;
+
+@model HistoricoEscolarDTO
+
+<div class='fonte-14 header-pagina'>
+    <table class='cabecalho-relatorio'>
+        <tbody>
+            <tr>
+                <td colspan='2' class='espaco-esquerda-6'>UNIDADE ESCOLAR: @Model.Cabecalho.NomeUe</td>
+            </tr>
+            <tr>
+                <td colspan='2' class='espaco-esquerda-6'>ENDEREÇO: @Model.Cabecalho.Endereco</td>
+            </tr>
+            <tr>
+                <td width='50%' class='espaco-esquerda-6'>ATO DE CRIAÇÃO: @Model.Cabecalho.AtoCriacao</td>
+                <td width='50%' class='espaco-esquerda-6'>ATO DE AUTORIZAÇÃO: @Model.Cabecalho.AtoAutorizacao</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <table class='cabecalho-relatorio margin-top-20'>
+        <tbody>
+            <tr>
+                <td colspan='2' width='75%' class='espaco-esquerda-6'>ESTUDANTE: @Model.InformacoesAluno.Nome</td>
+                <td colspan='2' width="25%" class='espaco-esquerda-6'>R.G.A: @Model.InformacoesAluno.Rga</td>
+            </tr>
+            <tr>
+                <td width='30%' class='espaco-esquerda-6'>CIDADE NATAL: @Model.InformacoesAluno.CidadeNatal</td>
+                <td width='15%' class='espaco-esquerda-6'>ESTADO NATAL: @Model.InformacoesAluno.EstadoNatal</td>
+                <td width='25%' class='espaco-esquerda-6'>NACIONALIDADE: @Model.InformacoesAluno.Nacionalidade</td>
+                <td width='30%' class='espaco-esquerda-6'>DATA DE NASC.: @Model.InformacoesAluno.Nascimento</td>
+            </tr>
+            <tr>
+                <td width='20%' class='espaco-esquerda-6'>RG: @Model.InformacoesAluno.Rg</td>
+                <td width='30%' class='espaco-esquerda-6'>DATA DE EXPEDIÇÃO: @Model.InformacoesAluno.Expedicao</td>
+                <td width='25%' class='espaco-esquerda-6'>ORGÃO EXPEDIDOR: @Model.InformacoesAluno.OrgaoExpeditor</td>
+                <td width='25%' class='espaco-esquerda-6'>ESTADO EXPEDIDOR: @Model.InformacoesAluno.Estado</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
