@@ -1,0 +1,258 @@
+﻿@using SME.SR.Infra;
+
+@model HistoricoEscolarDTO
+
+@{
+    if (Model.DadosHistorico != null)
+    {
+        var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
+        var margemBaseNacional = 5 * totalLinhasBaseNacional;
+        <div>
+            <table class='tabela margin-top'>
+                <tr class="cabecalho-principal">
+                    <td class="cabecalho-titulo" colspan="21">@(Model.Cabecalho.LeiFundamental)</td>
+                </tr>
+                <tr>
+                    <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
+                        <p style="width: 48px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
+                    </th>
+                    <td class="titulo" style="width: 14.5%;" rowspan="4">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 14.5%;" rowspan="4">Componentes curriculares</td>
+                    <td class="titulo" colspan="18">Resultado final</td>
+                </tr>
+                <tr>
+                    <td class="titulo" colspan="6">Ciclo de alfabetização</td>
+                    <td class="titulo" colspan="6">Ciclo interdisciplinar</td>
+                    <td class="titulo" colspan="6">Ciclo autoral</td>
+                </tr>
+                <tr>
+                    <td class="texto-centralizado" colspan="2">1º ano</td>
+                    <td class="texto-centralizado" colspan="2">2º ano</td>
+                    <td class="texto-centralizado" colspan="2">3º ano</td>
+                    <td class="texto-centralizado" colspan="2">4º ano</td>
+                    <td class="texto-centralizado" colspan="2">5º ano</td>
+                    <td class="texto-centralizado" colspan="2">6º ano</td>
+                    <td class="texto-centralizado" colspan="2">7º ano</td>
+                    <td class="texto-centralizado" colspan="2">8º ano</td>
+                    <td class="texto-centralizado" colspan="2">9º ano</td>
+                </tr>
+                <tr>
+                    <td class="texto-centralizado coluna-nota">C</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">C</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">C</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">N</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">N</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">N</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">N</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">N</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                    <td class="texto-centralizado coluna-nota">N</td>
+                    <td class="texto-centralizado coluna-nota">F</td>
+                </tr>
+                @Html.Raw(ObterLinhasBaseNacional())
+                @Html.Raw(ObterLinhasDiversificadas())
+                @Html.Raw(ObterLinhasEnriquecimentoCurricular())
+                @Html.Raw(ObterLinhasProjetosAtividadesComplementares())
+                @Html.Raw(ObterLinhasParecerConclusivo())
+            </table>
+            @Html.Raw(ObterLegenda())
+        </div>
+    }
+
+
+    int ObterTotalLinhasBaseNacional()
+    {
+        var totalLinhasCabecalho = 4;
+        var totalLinhasComponentes = 0;
+        var areasConhecimento = Model.DadosHistorico?.BaseNacionalComum?.AreasDeConhecimento;
+
+        if (areasConhecimento == null)
+            return totalLinhasComponentes;
+
+        foreach (var areaDeConhecimento in areasConhecimento)
+        {
+            totalLinhasComponentes += areaDeConhecimento.ComponentesCurriculares.Count();
+        }
+
+        return totalLinhasCabecalho + totalLinhasComponentes;
+    }
+
+    string ObterLinhasBaseNacional()
+    {
+        var areasConhecimento = Model.DadosHistorico?.BaseNacionalComum?.AreasDeConhecimento;
+
+        return ObterLinhasAreaDeConhecimento(areasConhecimento);
+    }
+
+    string ObterLinhasAreaDeConhecimento(List<AreaDeConhecimentoDto> areasConhecimento, bool adicionarPrimeiraLinha = true)
+    {
+        var linhas = "";
+
+        if (areasConhecimento == null)
+            return linhas;
+
+        foreach (var areaDeConhecimento in areasConhecimento)
+        {
+            var totalComponentes = areaDeConhecimento.ComponentesCurriculares.Count();
+            if (adicionarPrimeiraLinha)
+                linhas += "<tr>";
+            linhas += $"<td class='subTitulo' rowspan='{totalComponentes}'>{areaDeConhecimento.Nome}</td>";
+            linhas += ObterLinhasComponentesCurriculares(areaDeConhecimento.ComponentesCurriculares);
+
+            adicionarPrimeiraLinha = true;
+        }
+
+        return linhas;
+    }
+
+    string ObterLinhasComponentesCurriculares(List<ComponenteCurricularHistoricoEscolarDto> componentesCurriculares)
+    {
+        var linhas = "";
+        var adicionarPrimeiraLinha = false;
+
+        if (componentesCurriculares == null)
+            return linhas;
+
+        foreach (var componente in componentesCurriculares)
+        {
+            if (adicionarPrimeiraLinha)
+                linhas += "<tr>";
+            linhas += $"<td class='subTitulo'>{componente.Nome}</td>";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoPrimeiroAno)}</td>";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaPrimeiroAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoSegundoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSegundoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoTerceiroAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaTerceiroAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoQuartoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaQuartoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoQuintoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaQuintoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoSextoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSextoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoSetimoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSetimoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoOitavoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaOitavoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoNonoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaNonoAno)}</ td >";
+            linhas += "</tr>";
+
+            adicionarPrimeiraLinha = true;
+        }
+
+        return linhas;
+    }
+
+    string ObterNotaConceito(string notaConceito)
+    {
+        return string.IsNullOrEmpty(notaConceito) ? "-" : notaConceito;
+    }
+
+    int ObterTotalLinhasDiversificadas()
+    {
+        var grupos = Model.DadosHistorico?.GruposComponentesCurriculares;
+        var totalLinhasComponentes = 0;
+
+        if (grupos == null)
+            return totalLinhasComponentes;
+
+        foreach (var grupo in grupos)
+        {
+            foreach (var areaConhecimento in grupo.AreasDeConhecimento)
+            {
+                totalLinhasComponentes += areaConhecimento.ComponentesCurriculares.Count();
+            }
+        }
+
+        return totalLinhasComponentes;
+    }
+
+    string ObterLinhasDiversificadas()
+    {
+        var grupos = Model.DadosHistorico?.GruposComponentesCurriculares;
+        var linhas = "";
+
+        if (grupos != null && grupos.Any())
+        {
+            linhas = "<tr>";
+            linhas += $"<td class='coluna-diversificada' rowspan='{ObterTotalLinhasDiversificadas()}'><p style='width: 48px;'>DIVERSIFICADA</p></td>";
+
+            foreach (var grupo in grupos)
+            {
+                linhas += ObterLinhasAreaDeConhecimento(grupo.AreasDeConhecimento, false);
+            }
+        }
+
+        return linhas;
+    }
+
+    string ObterLinhasEnriquecimentoCurricular()
+    {
+        var enriquecimentos = Model.DadosHistorico?.EnriquecimentoCurricular;
+
+        return ObterLinhasAtividadesExtra(enriquecimentos, "Enriquecimento curricular");
+    }
+
+    string ObterLinhasProjetosAtividadesComplementares()
+    {
+        var complementares = Model.DadosHistorico?.ProjetosAtividadesComplementares;
+
+        return ObterLinhasAtividadesExtra(complementares, "Projetos/atividades complementares");
+    }
+
+    string ObterLinhasAtividadesExtra(List<ComponenteCurricularHistoricoEscolarDto> componentesCurriculares, string nomeAtividade)
+    {
+        var linhas = "";
+
+        if (componentesCurriculares == null)
+            return linhas;
+
+        linhas = "<tr>";
+        linhas += $"<td class='subTitulo texto-centralizado' colspan='2' rowspan='{componentesCurriculares.Count()}'>{nomeAtividade}</td>";
+        linhas += ObterLinhasComponentesCurriculares(componentesCurriculares);
+
+        return linhas;
+    }
+
+    string ObterLinhasParecerConclusivo()
+    {
+        var parecer = Model.DadosHistorico?.ParecerConclusivo;
+        var linhas = "";
+
+        if (parecer == null)
+            return linhas;
+
+        linhas = "<tr>";
+        linhas += "<td class='subTitulo texto-centralizado' colspan='3'>PARECER CONCLUSIVO</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.PrimeiroAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.SegundoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.TerceiroAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.QuartoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.QuintoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.SextoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.SetimoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.OitavoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.NonoAno}</td>";
+        linhas += "</tr>";
+
+        return linhas;
+    }
+
+    string ObterLegenda()
+    {
+        var legenda = Model.Legenda;
+
+        if (legenda == null)
+            return "";
+
+        return $"<div class='legenda'>C = Conceito, N = Nota, {legenda.Texto}</div>";
+    }
+}
