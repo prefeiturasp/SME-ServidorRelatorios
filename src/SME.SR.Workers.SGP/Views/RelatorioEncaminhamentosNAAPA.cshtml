@@ -135,20 +135,25 @@
         contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(qtdeCaracteresDre + qtdeCaracteresUe); 
 
         AvaliarQuebraPagina(contadorQuebrarPagina);
-        
-        <table class='tabela-cabecalho'> <tbody>
-        <th>
-            @if (mostrarDre)
-            {
-                <td class='alinhamentoEsquerda espacamento7 width-25' colspan="1"><strong>DRE:</strong> @dreNome</td>
-            }
 
-            @if (mostrarUe)
-            {
-                <td class='alinhamentoEsquerda espacamento7 width-75' colspan="3" ><strong>Unidade Escolar (UE):</strong> @ueNome</td>
-            }
-        </th>
-        </tbody></table>
+        @if (mostrarDre || mostrarUe)
+        {
+            <table class='tabela-cabecalho'>
+                <tbody>
+                <th>
+                    @if (mostrarDre)
+                    {
+                        <td class='alinhamentoEsquerda espacamento7 width-25' colspan="1"><strong>DRE:</strong> @dreNome</td>
+                    }
+
+                    @if (mostrarUe)
+                    {
+                        <td class='alinhamentoEsquerda espacamento7 width-75' colspan="3"><strong>Unidade Escolar (UE):</strong> @ueNome</td>
+                    }
+                </th>
+                </tbody>
+            </table>
+        }
     }
 
     void MontarLinhaSimples(string titulo, string dado)
