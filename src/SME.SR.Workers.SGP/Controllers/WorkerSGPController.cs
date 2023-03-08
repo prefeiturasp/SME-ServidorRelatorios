@@ -14,7 +14,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    // [ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -363,10 +363,17 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
-                
+
+        [HttpGet("relatorios/encaminhamentosnaapa")]
+        [Action("relatorios/encaminhamentosnaapa", typeof(IRelatorioEncaminhamentosNAAPAUseCase))]
+        public async Task<bool> RelatorioEncaminhamentosNAAPA([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNAAPAUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
 
         #region App Escola Aqui
-                [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
+        [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
         public async Task<bool> AcompanhamentoAprendizagemEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoAprendizagemUseCase relatorioUseCase)
         {
