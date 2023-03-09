@@ -3,7 +3,6 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Sgp
@@ -20,6 +19,7 @@ namespace SME.SR.Data.Repositories.Sgp
         public async Task<IEnumerable<RespostaQuestaoDto>> ObterRespostasPorEncaminhamentoIdAsync(long encaminhamentoNaapaId, string nomeComponenteSecao)
         {
             string query = @"select enr.id,
+                                    ens.id as SecaoId,
 	                                enq.questao_id as QuestaoId,
 	                                enr.resposta_id as OpcaoRespostaId,
 	                                enr.texto

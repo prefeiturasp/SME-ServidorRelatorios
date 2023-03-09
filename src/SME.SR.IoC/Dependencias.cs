@@ -194,6 +194,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IEncaminhamentoNAAPARepository), typeof(EncaminhamentoNAAPARepository));
             services.TryAddScoped(typeof(IEncaminhamentoNAAPARespostaRepository), typeof(EncaminhamentoNAAPARespostaRepository));
             services.TryAddScoped(typeof(IQuestionarioEncaminhamentoNAAPARepository), typeof(QuestionarioEncaminhamentoNAAPARepository));
+            services.TryAddScoped(typeof(IEncaminhamentoNAAPASecaoRepository), typeof(EncaminhamentoNAAPASecaoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
