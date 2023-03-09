@@ -35,7 +35,7 @@ namespace SME.SR.Application
             {
                 foreach (var relatorioPagina in relatorio.RelatorioPaginadados)
                 {
-                    paginasSolo.Add(await GerarPagina(relatorioPagina, relatorioPagina.PaginaAtual, relatorio.TotalPagina));
+                    paginasSolo.Add(await GerarPagina(relatorioPagina, relatorioPagina.Pagina, relatorio.TotalPagina));
                 }
             }
 
