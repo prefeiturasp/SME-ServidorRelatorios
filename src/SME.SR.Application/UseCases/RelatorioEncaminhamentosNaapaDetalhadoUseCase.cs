@@ -81,8 +81,20 @@ namespace SME.SR.Application
                 relatorio.Detalhes.QuestoesApresentadas = await ObterSecaoQuestoesQuestionario(encaminhamentoNaapa, questoes, NOME_COMPONENTE_SECAO_QUESTOES_APRESENTADAS_FUNDAMENTAL, NOME_SECAO_QUESTOES_APRESENTADAS_FUNDAMENTAL);
             }
 
-            questoes = await mediator.Send(new ObterQuestoesEncaminhamentoNAAPAPorIdENomeComponenteSecaoQuery(encaminhamentoNaapa.Id, NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA));
-            relatorio.Detalhes.QuestoesApresentadas = await ObterSecaoQuestoesQuestionario(encaminhamentoNaapa, questoes, NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA, NOME_SECAO_QUESTOES_ITINERANCIA);
+            var secoes = await mediator.Send(new ObterSecoesEncaminhamentoNAAPAPorIdENomeComponenteSecaoQuery(encaminhamentoNaapa.Id, NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA));
+            relatorio.Detalhes.Itinerancia = await ObterSecaoQuestoesQuestionario(encaminhamentoNaapa, secoes, NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA, NOME_SECAO_QUESTOES_ITINERANCIA);
+        }
+
+        private async Task<IEnumerable<SecaoQuestoesEncaminhamentoNAAPAItineranciaDetalhadoDto>> ObterSecaoQuestoesQuestionario(EncaminhamentoNAAPADto encaminhamentoNaapa, IEnumerable<SecaoEncaminhamentoNAAPADto> secoes, string nomeComponenteSecao, string nomeSecao)
+        {
+            var itinerancias = new List<SecaoQuestoesEncaminhamentoNAAPAItineranciaDetalhadoDto>();
+            foreach (var secao in secoes)
+            {
+                var secaoDetalhado = new SecaoQuestoesEncaminhamentoNAAPAItineranciaDetalhadoDto(nomeComponenteSecao, nomeSecao, secao.SecaoId, secao.DataAtendimento, secao.TipoAtendimento, secao.CriadoPor);
+                await AdicionarQuestoesQuestionarioSecao(encaminhamentoNaapa, secaoDetalhado, secao.Questoes);
+                itinerancias.Add(secaoDetalhado);
+            }
+            return itinerancias;
         }
 
         private async Task<SecaoQuestoesEncaminhamentoNAAPADetalhadoDto> ObterSecaoQuestoesQuestionario(EncaminhamentoNAAPADto encaminhamentoNaapa, IEnumerable<QuestaoDto> questoes, string nomeComponenteSecao, string nomeSecao)
@@ -109,6 +121,7 @@ namespace SME.SR.Application
                 };
 
                 if (questao.Tipo != TipoQuestao.Radio &&
+                    questao.Tipo != TipoQuestao.Combo &&
                     questao.Tipo != TipoQuestao.ComboMultiplaEscolha &&
                     questao.Tipo != TipoQuestao.Checkbox)
                 {
@@ -152,6 +165,7 @@ namespace SME.SR.Application
                     secao.Questoes.Add(questaoRelatorio);
 
                 if (questao.Tipo == TipoQuestao.Radio ||
+                    questao.Tipo == TipoQuestao.Combo ||
                     questao.Tipo == TipoQuestao.ComboMultiplaEscolha ||
                     questao.Tipo == TipoQuestao.Checkbox)
                 {
