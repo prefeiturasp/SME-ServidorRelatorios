@@ -289,6 +289,7 @@ namespace SME.SR.Application
             if (componentesCurricularesDaTurma != null && componentesCurricularesDaTurma.Any())
             {
                 componentes = new List<ComponenteCurricularHistoricoEscolarEJADto>();
+                componentesCurricularesDaTurma = componentesCurricularesDaTurma.OrderByDescending(c => c.CodDisciplina).ToList();
 
                 foreach (var componenteCurricular in componentesCurricularesDaTurma)
                 {
@@ -298,29 +299,32 @@ namespace SME.SR.Application
                     }
                     else
                     {
-                        componentes.Add(new ComponenteCurricularHistoricoEscolarEJADto()
+                        if(!componentes.Any(c=> c.Codigo.Equals(componenteCurricular.CodDisciplina.ToString())))
                         {
-                            Codigo = componenteCurricular.CodDisciplina.ToString(),
-                            Nome = componenteCurricular.Disciplina,
-                            Frequencia = componenteCurricular.Frequencia,
-                            Nota = componenteCurricular.LancaNota,
-                            FrequenciaPrimeiraEtapaCiclo1 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaPrimeiraEtapaCiclo2 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaPrimeiraEtapaCiclo3 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaPrimeiraEtapaCiclo4 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaSegundaEtapaCiclo1 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaSegundaEtapaCiclo2 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaSegundaEtapaCiclo3 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            FrequenciaSegundaEtapaCiclo4 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
-                            NotaConceitoPrimeiraEtapaCiclo1 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoPrimeiraEtapaCiclo2 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoPrimeiraEtapaCiclo3 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoPrimeiraEtapaCiclo4 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoSegundaEtapaCiclo1 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoSegundaEtapaCiclo2 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoSegundaEtapaCiclo3 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                            NotaConceitoSegundaEtapaCiclo4 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
-                        });
+                            componentes.Add(new ComponenteCurricularHistoricoEscolarEJADto()
+                            {
+                                Codigo = componenteCurricular.CodDisciplina.ToString(),
+                                Nome = componenteCurricular.Disciplina,
+                                Frequencia = componenteCurricular.Frequencia,
+                                Nota = componenteCurricular.LancaNota,
+                                FrequenciaPrimeiraEtapaCiclo1 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                FrequenciaPrimeiraEtapaCiclo2 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                FrequenciaPrimeiraEtapaCiclo3 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                FrequenciaPrimeiraEtapaCiclo4 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                FrequenciaSegundaEtapaCiclo1 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                FrequenciaSegundaEtapaCiclo2 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                FrequenciaSegundaEtapaCiclo3 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                FrequenciaSegundaEtapaCiclo4 = ObterFrequenciaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), frequencia),
+                                NotaConceitoPrimeiraEtapaCiclo1 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                                NotaConceitoPrimeiraEtapaCiclo2 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                                NotaConceitoPrimeiraEtapaCiclo3 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                                NotaConceitoPrimeiraEtapaCiclo4 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 1), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                                NotaConceitoSegundaEtapaCiclo1 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "1" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                                NotaConceitoSegundaEtapaCiclo2 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "2" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                                NotaConceitoSegundaEtapaCiclo3 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "3" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                                NotaConceitoSegundaEtapaCiclo4 = ObterNotaComponentePorTurma(turmas.FirstOrDefault(f => f.Ano == "4" && f.EtapaEJA == 2), componenteCurricular.CodDisciplina.ToString(), false, componenteCurricular.LancaNota, frequencia, notas, mediasFrequencia),
+                            });
+                        }       
                     }
                 }
             }
