@@ -39,7 +39,7 @@ namespace SME.SR.Application
                 DreNome = key.DreNome,
                 UeNome = $"{key.UeCodigo} - {key.UeNome}",
                 UeOrdenacao = key.UeNome,
-                Detalhes = group.Distinct().Select(s =>
+                Detalhes = group.Select(s =>
                 new DetalheEncaminhamentoNAAPADto()
                 {
                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
