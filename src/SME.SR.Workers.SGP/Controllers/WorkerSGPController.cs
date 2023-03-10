@@ -390,5 +390,34 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
         #endregion App Escola Aqui
+        
+        [HttpGet("relatorios/encaminhamentosnaapa_teste")]
+        public async Task<IActionResult> RelatorioTeste([FromServices] IRelatorioEncaminhamentosNAAPAUseCase relatorioNAAPA)
+        {
+            var filtroRelatorioDto = new FiltroRelatorioDto()
+            {
+                Action = "relatorios/encaminhamentosnaapa",
+                UsuarioLogadoRF = "8850976",
+                CodigoCorrelacao = new Guid("AF3A5649-E805-4CB3-B73E-5191C445DE19"),
+            };
+
+            var relatorio = new FiltroRelatorioEncaminhamentoNAAPADto()
+            {
+                DreCodigo = "108800",
+                ExibirEncerrados = false,
+                // FluxoAlertaIds = new int[] { 71, 72, 76, 73 },
+                // PortaEntradaIds = new int[] { 48 },
+                // SituacaoIds = new int[] { 2, 3 },
+                UeCodigo = "094765",
+                UsuarioNome = "Usuário Logado",
+                UsuarioRf = "125588"
+            };
+
+            var mensagem = JsonConvert.SerializeObject(relatorio, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            filtroRelatorioDto.Mensagem = mensagem;
+
+            await relatorioNAAPA.Executar(filtroRelatorioDto);
+            return Ok();
+        }
     }
 }
