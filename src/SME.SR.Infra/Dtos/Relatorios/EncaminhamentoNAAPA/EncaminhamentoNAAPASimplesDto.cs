@@ -27,7 +27,7 @@ namespace SME.SR.Infra
         public void AdicionarFluxoAlerta(string fluxoAlerta)
         {
             if (!FluxosAlerta.Contains(fluxoAlerta))
-                FluxosAlerta.Append(fluxoAlerta);
+                FluxosAlerta.Add(fluxoAlerta);
         }
     }
 }
