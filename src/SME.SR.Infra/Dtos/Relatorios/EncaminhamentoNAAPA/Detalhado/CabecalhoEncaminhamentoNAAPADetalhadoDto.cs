@@ -11,7 +11,8 @@ namespace SME.SR.Infra
         public string Aluno { get; set; }
         public string SituacaoEncaminhamento { get; set; }
         public string UsuarioNome { get; set; }
-        public DateTime DataCriacao { get; set; }
-        public DateTime DataNascimento { get; set; }
+        public string DataCriacao { get; set; }
+        public string DataNascimento { get; set; }
+        public string DataImpressao { get; set; }
     }
 }

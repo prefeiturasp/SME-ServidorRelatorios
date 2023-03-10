@@ -32,7 +32,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNAAPADetalhadoDto>();
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNAAPADetalhadoDto>(); 
             var encaminhamentosNaapa = await mediator.Send(new ObterEncaminhamentosNAAPAQuery(filtroRelatorio));
 
             if (encaminhamentosNaapa == null || !encaminhamentosNaapa.Any())
@@ -49,6 +49,8 @@ namespace SME.SR.Application
 
                 relatorios.Add(relatorio);
             }
+
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand(relatorios, request.CodigoCorrelacao));
         }
 
         private async Task ObterCabecalho(EncaminhamentoNAAPADto encaminhamentoNaapa, RelatorioEncaminhamentoNAAPADetalhadoDto relatorio)
@@ -59,10 +61,11 @@ namespace SME.SR.Application
             relatorio.Cabecalho.Aluno = $"{encaminhamentoNaapa.AlunoNome} ({encaminhamentoNaapa.AlunoCodigo})";
             relatorio.Cabecalho.SituacaoEncaminhamento = ((SituacaoEncaminhamentoAEE)encaminhamentoNaapa.Situacao).Name();
             relatorio.Cabecalho.TurmaNome = $"{encaminhamentoNaapa.Modalidade.ShortName()} - {encaminhamentoNaapa.TurmaNome}";
-            relatorio.Cabecalho.DataCriacao = encaminhamentoNaapa.CriadoEm;
+            relatorio.Cabecalho.DataCriacao = encaminhamentoNaapa.CriadoEm.ToString("dd/MM/yyyy");
+            relatorio.Cabecalho.DataImpressao = DateTime.Now.ToString("dd/MM/yyyy");
 
             var dadosAluno = await mediator.Send(new ObterDadosAlunoQuery { CodigoAluno = encaminhamentoNaapa.AlunoCodigo, CodigoTurma = encaminhamentoNaapa.TurmaCodigo });
-            relatorio.Cabecalho.DataNascimento = dadosAluno.DataNascimento;
+            relatorio.Cabecalho.DataNascimento = dadosAluno.DataNascimento.ToString("dd/MM/yyyy");
         }
 
         private async Task ObterQuestoesSecoes(EncaminhamentoNAAPADto encaminhamentoNaapa, RelatorioEncaminhamentoNAAPADetalhadoDto relatorio)
@@ -88,12 +91,17 @@ namespace SME.SR.Application
         private async Task<IEnumerable<SecaoQuestoesEncaminhamentoNAAPAItineranciaDetalhadoDto>> ObterSecaoQuestoesQuestionario(EncaminhamentoNAAPADto encaminhamentoNaapa, IEnumerable<SecaoEncaminhamentoNAAPADto> secoes, string nomeComponenteSecao, string nomeSecao)
         {
             var itinerancias = new List<SecaoQuestoesEncaminhamentoNAAPAItineranciaDetalhadoDto>();
-            foreach (var secao in secoes)
+            
+            if (secoes != null)
             {
-                var secaoDetalhado = new SecaoQuestoesEncaminhamentoNAAPAItineranciaDetalhadoDto(nomeComponenteSecao, nomeSecao, secao.SecaoId, secao.DataAtendimento, secao.TipoAtendimento, secao.CriadoPor);
-                await AdicionarQuestoesQuestionarioSecao(encaminhamentoNaapa, secaoDetalhado, secao.Questoes);
-                itinerancias.Add(secaoDetalhado);
+                foreach (var secao in secoes)
+                {
+                    var secaoDetalhado = new SecaoQuestoesEncaminhamentoNAAPAItineranciaDetalhadoDto(nomeComponenteSecao, nomeSecao, secao.SecaoId, secao.DataAtendimento, secao.TipoAtendimento, secao.CriadoPor);
+                    await AdicionarQuestoesQuestionarioSecao(encaminhamentoNaapa, secaoDetalhado, secao.Questoes);
+                    itinerancias.Add(secaoDetalhado);
+                }
             }
+
             return itinerancias;
         }
 
@@ -117,7 +125,8 @@ namespace SME.SR.Application
                     Ordem = questao.Ordem,
                     OrdemMascara = $"{(string.IsNullOrEmpty(OrdemPai) ? string.Empty : $"{ OrdemPai }.")}{questao.Ordem}",
                     QuestaoId = questao.Id,
-                    TipoQuestao = questao.Tipo
+                    TipoQuestao = questao.Tipo,
+                    NomeComponente = questao.NomeComponente
                 };
 
                 if (questao.Tipo != TipoQuestao.Radio &&
