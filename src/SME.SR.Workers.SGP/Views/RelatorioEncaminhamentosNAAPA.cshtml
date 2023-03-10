@@ -15,7 +15,7 @@
         
     int paginaAtual = 0;
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 33;
+    int contadorMaximoLinhasPorPagina = 32;
     RelatorioEncaminhamentosNAAPADto relatorioAtual = null;
     
     string DreNome = string.Empty;
@@ -140,17 +140,17 @@
         {
             <table class='tabela-cabecalho'>
                 <tbody>
-                <th>
+                <tr>
                     @if (mostrarDre)
                     {
-                        <td class='alinhamentoEsquerda espacamento7 width-25' colspan="1"><strong>DRE:</strong> @dreNome</td>
+                        <td class='alinhamentoEsquerda espacamento7'><strong>DRE:</strong> @dreNome</td>
                     }
 
                     @if (mostrarUe)
                     {
-                        <td class='alinhamentoEsquerda espacamento7 width-75' colspan="3"><strong>Unidade Escolar (UE):</strong> @ueNome</td>
+                        <td class='alinhamentoEsquerda espacamento7'><strong>Unidade Escolar (UE):</strong> @ueNome</td>
                     }
-                </th>
+                </tr>
                 </tbody>
             </table>
         }
