@@ -176,7 +176,7 @@ namespace SME.SR.Data
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var lookup = new Dictionary<long, EncaminhamentoNAAPASimplesDto>();
 
-            return await conexao.QueryAsync<EncaminhamentoNAAPASimplesDto, OpcaoRespostaSimplesDTO, OpcaoRespostaSimplesDTO, EncaminhamentoNAAPASimplesDto>(query.ToString(), 
+            await conexao.QueryAsync<EncaminhamentoNAAPASimplesDto, OpcaoRespostaSimplesDTO, OpcaoRespostaSimplesDTO, EncaminhamentoNAAPASimplesDto>(query.ToString(), 
                 (encaminhamento, opcaoRespostaPortaEntrada, opcaoRespostaFluxoAlerta) =>
                 {
                     EncaminhamentoNAAPASimplesDto encaminhamentoNAAPA;
@@ -199,6 +199,8 @@ namespace SME.SR.Data
                 portaEntradaIds = filtro.PortaEntradaIds,
                 fluxoAlertaIds = filtro.FluxoAlertaIds               
             }, splitOn: "id,id,id");
+
+            return lookup.Values;
         }
     }
 }
