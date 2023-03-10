@@ -1,0 +1,40 @@
+﻿@using SME.SR.Infra;
+
+@model HistoricoEscolarDTO
+
+@{
+    if (Model.EstudosRealizados != null)
+    {
+        <div class="margin-top-20">
+            <table class='tabela margin-top'>
+                <tr class="cabecalho-principal">
+                    <td class="cabecalho-titulo" colspan="4">ESTUDOS REALIZADOS</td>
+                </tr>
+                 <tr>
+                    <td class="titulo" style="width: 15%;">Ano</td>
+                    <td class="titulo" style="width: 60%;">Estabelecimento</td>
+                    <td class="titulo" style="width: 20%;">Município</td>
+                    <td class="titulo" style="width: 5%;">UF</td>
+                 </tr>
+                @Html.Raw(ObterLinhas())
+            </table>
+        </div>
+    }
+
+    string ObterLinhas()
+    {
+        var linhas = "";
+
+        foreach (var estudoRealizado in Model.EstudosRealizados)
+        {
+            linhas += "<tr>";
+            linhas += $"<td class='texto-centralizado'>{estudoRealizado.Ano}</td>";
+            linhas += $"<td class='textoEsqueda'>{estudoRealizado.UeNome}</td>";
+            linhas += $"<td class='texto-centralizado'>{estudoRealizado.UeMunicipio}</td>";
+            linhas += $"<td class='texto-centralizado'>{estudoRealizado.UeUf}</td>";
+            linhas += "</tr>";
+        }
+
+        return linhas;
+    }
+}

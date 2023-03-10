@@ -40,7 +40,7 @@ namespace SME.SR.Data
 
             if (!filtro.ExibirEncerrados)
                 condicao += $" and en.situacao <> {(int)SituacaoNAAPA.Encerrado}";
-            if (!filtro.SituacaoIds.EstaFiltrandoTodas())
+            if (filtro.SituacaoIds != null && !filtro.SituacaoIds.EstaFiltrandoTodas())
                 condicao += " and en.situacao = ANY(@situacaoIds) ";
 
             return condicao;
@@ -50,7 +50,7 @@ namespace SME.SR.Data
         {
             var condicao = string.Empty;
 
-            if (filtro.PortaEntradaIds.Any())
+            if (filtro.PortaEntradaIds != null && filtro.PortaEntradaIds.Any())
                 condicao += $" and qportaentrada.PortaEntradaId = ANY(@portaEntradaIds)";
 
             return condicao;
@@ -60,7 +60,7 @@ namespace SME.SR.Data
         {
             var condicao = string.Empty;
 
-            if (filtro.FluxoAlertaIds.Any())
+            if (filtro.FluxoAlertaIds != null && filtro.FluxoAlertaIds.Any())
                 condicao += $" and qfluxoalerta.FluxoAlertaId = ANY(@fluxoAlertaIds)";
 
             return condicao;

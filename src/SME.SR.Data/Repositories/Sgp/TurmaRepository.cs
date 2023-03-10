@@ -983,8 +983,8 @@ namespace SME.SR.Data
         }
         public async Task<IEnumerable<Turma>> ObterTurmasPorIds(long[] ids)
         {
-            var query = @"select t.id as Codigo
-                            , t.turma_id
+            var query = @"select t.id 
+                            , t.turma_id as Codigo
                             , t.nome
                             , t.modalidade_codigo  ModalidadeCodigo
                             , t.semestre
@@ -1001,8 +1001,8 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo)
         {
-            var query = @"select t.id as Codigo
-   		                        , t.turma_id 
+            var query = @"select t.id 
+   		                        , t.turma_id as Codigo
                                 , t.nome
                                 , t.modalidade_codigo  ModalidadeCodigo
                                 , t.semestre

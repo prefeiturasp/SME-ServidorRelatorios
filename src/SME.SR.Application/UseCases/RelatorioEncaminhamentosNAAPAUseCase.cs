@@ -47,7 +47,8 @@ namespace SME.SR.Application
                     PortaEntrada = s.PortaEntrada,
                     DataEntradaQueixa = s.DataEntradaQueixa,
                     DataUltimoAtendimento = s.DataUltimoAtendimento,
-                    FluxosAlerta = String.Join("|", s.FluxosAlerta)
+                    FluxosAlerta = String.Join("|", s.FluxosAlerta),
+                    Situacao = s.Situacao.Name()
                 }).OrderBy(oAluno => oAluno.Aluno).ToList()
             }).OrderBy(oDre => oDre.DreNome).ThenBy(oUe => oUe.UeOrdenacao).ToList();
 
