@@ -19,13 +19,9 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AreaDoConhecimento>> ObterAreasDoConhecimentoPorComponentesCurriculares(long[] codigosComponentesCurriculares)
         {
-            var query = @"select distinct cac.id, cac.nome, cc.descricao_sgp as NomeComponenteCurricular, cc.id CodigoComponenteCurricular, o.Ordem 
-                          from componente_curricular cc
-                          	inner join componente_curricular_grupo_matriz ccgm on cc.grupo_matriz_id = ccgm.id 
-                            left join componente_curricular_area_conhecimento cac on cac.id = cc.area_conhecimento_id
-                            left join componente_curricular_grupo_area_ordenacao o on o.area_conhecimento_id = cac.id and o.grupo_matriz_id = ccgm.id
-                          where cc.id = ANY(@codigosComponentesCurriculares)
-                          order by ordem ";
+            var query = @"select cac.id, cac.nome, cc.descricao_sgp as NomeComponenteCurricular, cc.id CodigoComponenteCurricular from componente_curricular cc
+                          left join componente_curricular_area_conhecimento cac on cac.id = cc.area_conhecimento_id
+                          where cc.id = ANY(@CodigosComponentesCurriculares)  ";
 
             var parametros = new { CodigosComponentesCurriculares = codigosComponentesCurriculares };
 
