@@ -32,7 +32,6 @@ namespace SME.SR.Application
                 DreNome = g.DreAbreviacao,
                 UeCodigo = g.UeCodigo,
                 UeNome = $"{g.TipoEscola.ShortName()} {g.UeNome}",
-                EncaminhamentoNAAPAId = g.Id
             }, (key, group) =>
             new AgrupamentoEncaminhamentoNAAPADreUeDto()
             {
