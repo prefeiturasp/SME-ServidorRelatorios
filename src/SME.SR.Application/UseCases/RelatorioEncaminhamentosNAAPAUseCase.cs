@@ -32,6 +32,7 @@ namespace SME.SR.Application
                 DreNome = g.DreAbreviacao,
                 UeCodigo = g.UeCodigo,
                 UeNome = $"{g.TipoEscola.ShortName()} {g.UeNome}",
+                EncaminhamentoNAAPAId = g.Id
             }, (key, group) =>
             new AgrupamentoEncaminhamentoNAAPADreUeDto()
             {
@@ -39,7 +40,7 @@ namespace SME.SR.Application
                 DreNome = key.DreNome,
                 UeNome = $"{key.UeCodigo} - {key.UeNome}",
                 UeOrdenacao = key.UeNome,
-                Detalhes = group.Select(s =>
+                Detalhes = group.Distinct().Select(s =>
                 new DetalheEncaminhamentoNAAPADto()
                 {
                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
