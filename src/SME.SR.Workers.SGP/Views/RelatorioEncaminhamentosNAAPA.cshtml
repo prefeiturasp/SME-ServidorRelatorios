@@ -15,7 +15,7 @@
         
     int paginaAtual = 0;
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 32;
+    int contadorMaximoLinhasPorPagina = 34;
     RelatorioEncaminhamentosNAAPADto relatorioAtual = null;
     
     string DreNome = string.Empty;
@@ -113,20 +113,49 @@
                 foreach (var detalhe in relatorio.Detalhes)
                 {
                     <table class='tabela-cabecalho'> <tbody>
-                    @{
-                        
-                        MontarLinhaComDuasColunasCustom("CRIANÇA/ESTUDANTE", detalhe.Aluno, "TURMA", detalhe.Turma);
-                        MontarLinhaComDuasColunasWidth50("SITUAÇÃO",detalhe.Situacao,"DATA DE ENTRADA DA QUEIXA", ObterData(detalhe.DataEntradaQueixa));
-                        MontarLinhaComDuasColunasWidth50("PORTA DE ENTRADA", detalhe.PortaEntrada, "DATA DO ÚLTIMO ATENDIMENTO", ObterData(detalhe.DataUltimoAtendimento));
-                        MontarLinhaSimples("FLUXO DE ALERTA", detalhe.FluxosAlerta);
+                            @{
+
+                                MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
+                                MontarLinhaComDuasColunasWidth50("SITUAÇÃO",detalhe.Situacao,"DATA DE ENTRADA DA QUEIXA", ObterData(detalhe.DataEntradaQueixa));
+                                MontaLinhaPortaEntradaDataAtendimento(detalhe.PortaEntrada, ObterData(detalhe.DataUltimoAtendimento));
+                                MontarLinhaSimples("FLUXO DE ALERTA", detalhe.FluxosAlerta);
                     }
                     </tbody></table>
                 }
-                <br/>      
+                <br/>
             }
         }
     }
-    
+
+    void MontaLinhaCriancaTurma(string aluno, string turma)
+    {
+        const int TOTAL_TURMA = 15;
+        const int TOTAL_ALUNO = 52;
+
+        contadorQuebrarPagina += turma.Length > TOTAL_TURMA || aluno.Length > TOTAL_ALUNO ? 2 : 1;
+
+        AvaliarQuebraPagina(contadorQuebrarPagina);
+
+        <tr>
+            <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-75" colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @aluno</td>
+            <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-25" colspan="1"><strong>TURMA:</strong> @turma</td>
+        </tr>
+    }
+
+    void MontaLinhaPortaEntradaDataAtendimento(string portaEntrada, string dataUltimoAtendimento)
+    {
+        const int TOTAL_PORTA = 29;
+
+        contadorQuebrarPagina += portaEntrada.Length > TOTAL_PORTA ? 2 : 1;
+
+        AvaliarQuebraPagina(contadorQuebrarPagina);        
+
+        <tr>
+            <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>PORTA DE ENTRADA:</strong> @portaEntrada</td>
+            <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>DATA DO ÚLTIMO ATENDIMENTO:</strong> @dataUltimoAtendimento</td>
+        </tr>
+    }
+
     void MontarDreUe(string dreNome, string ueNome)
     {
         var qtdeCaracteresDre = mostrarDre ? dreNome.Length : 0;
