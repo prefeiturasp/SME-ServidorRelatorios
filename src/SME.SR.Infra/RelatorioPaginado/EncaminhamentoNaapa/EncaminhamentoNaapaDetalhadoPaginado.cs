@@ -6,7 +6,7 @@ namespace SME.SR.Infra
 {
     public class EncaminhamentoNaapaDetalhadoPaginado
     {
-        private const int TOTAL_LINHAS = 35;
+        private const int TOTAL_LINHAS = 40;
 
         private int TotalLinhaPaginaAtual { get; set; }
         private List<EncaminhamentoNaapaDetalhadoPagina> Paginas { get; set; }
