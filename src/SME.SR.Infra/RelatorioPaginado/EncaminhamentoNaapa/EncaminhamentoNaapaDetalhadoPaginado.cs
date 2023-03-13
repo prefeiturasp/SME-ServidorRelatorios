@@ -90,7 +90,7 @@ namespace SME.SR.Infra
         {
             var questao = questoesApresentadas.Questoes.Find(q => q.NomeComponente == NomeComponentesEncaminhamentoNaapa.HIPOTESE_ESCRITA);
 
-            if (!string.IsNullOrEmpty(questao.Resposta))
+            if (questao != null && !string.IsNullOrEmpty(questao.Resposta))
             {
                 questao.Resposta = $"{questao.Questao}: {questao.Resposta}";
                 AdicionarLinha(new SecaoRespostaTextoEncaminhamentoNaapa(questao, true));
