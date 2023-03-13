@@ -150,6 +150,7 @@ namespace SME.SR.Data
 	                        t.nome as turmaNome,
 	                        t.ano_letivo as anoLetivo,
 	                        t.modalidade_codigo as modalidade,
+                            t.tipo_turno as turmaTipoTurno,
 	                        en.situacao as situacao
 	                        ,qdata.DataAberturaQueixa as DataEntradaQueixa
                             ,qatendimetno.DataUltimoAtendimento

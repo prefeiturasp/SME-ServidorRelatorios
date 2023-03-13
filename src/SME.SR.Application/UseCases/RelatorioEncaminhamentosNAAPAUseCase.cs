@@ -43,7 +43,7 @@ namespace SME.SR.Application
                 new DetalheEncaminhamentoNAAPADto()
                 {
                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
-                    Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}",
+                    Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}{s.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}",
                     PortaEntrada = s.PortaEntrada,
                     DataEntradaQueixa = s.DataEntradaQueixa,
                     DataUltimoAtendimento = s.DataUltimoAtendimento,
