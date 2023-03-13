@@ -1,20 +1,19 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
+using System;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SME.SR.Data;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [ChaveIntegracaoSrApi]
+    [ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -361,6 +360,14 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioEncaminhamentoAeeDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentoAeeDetalhadoUseCase useCase)
         {
             await useCase.Executar(request);
+            return true;
+        }
+        
+        [HttpGet("relatorios/encaminhamentonaapadetalhado")]
+        [Action("relatorios/encaminhamentonaapadetalhado", typeof(IRelatorioEncaminhamentosNaapaDetalhadoUseCase))]
+        public async Task<bool> RelatorioEncaminhamentoNaapaDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaDetalhadoUseCase detalhadoUseCase)
+        {
+            await detalhadoUseCase.Executar(request);
             return true;
         }
 
