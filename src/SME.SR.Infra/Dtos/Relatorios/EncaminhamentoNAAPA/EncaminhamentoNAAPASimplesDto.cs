@@ -18,6 +18,7 @@ namespace SME.SR.Infra
         public SituacaoNAAPA Situacao { get; set; }
         public string TurmaCodigo { get; set; }
         public string TurmaNome { get; set; }
+        public int TurmaTipoTurno { get; set; }
         public Modalidade Modalidade { get; set; }
         public DateTime? DataEntradaQueixa { get; set; }
         public string PortaEntrada { get; set; } = string.Empty;
