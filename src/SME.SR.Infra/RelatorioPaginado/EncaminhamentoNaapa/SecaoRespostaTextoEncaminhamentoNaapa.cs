@@ -17,12 +17,18 @@ namespace SME.SR.Infra
 
         public override int ObterLinhasDeQuebra()
         {
-            var linha = string.IsNullOrEmpty(Titulo) ? 1 : 2;
+            var qtdeLinha = string.IsNullOrEmpty(Titulo) ? 1 : 2;
+            var quebra = Resposta.Split("\n");
 
-            if (!string.IsNullOrEmpty(Resposta) && Resposta.Length > QDADE_CHARS_POR_LINHA)
-                return 1 + (int)Math.Round((double)(Resposta.Length / QDADE_CHARS_POR_LINHA));
+            foreach(var linha in quebra)
+            {
+                if (!string.IsNullOrEmpty(linha) && linha.Length > QDADE_CHARS_POR_LINHA)
+                    qtdeLinha += (int)Math.Round((double)(linha.Length / QDADE_CHARS_POR_LINHA));
+                else
+                    qtdeLinha += 1;
+            }
 
-            return linha;
+            return qtdeLinha;
         }
     }
 }

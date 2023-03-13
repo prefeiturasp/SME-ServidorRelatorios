@@ -6,7 +6,7 @@ namespace SME.SR.Infra
 {
     public class EncaminhamentoNaapaDetalhadoPaginado
     {
-        private const int TOTAL_LINHAS = 35;
+        private const int TOTAL_LINHAS = 40;
 
         private int TotalLinhaPaginaAtual { get; set; }
         private List<EncaminhamentoNaapaDetalhadoPagina> Paginas { get; set; }
@@ -90,7 +90,7 @@ namespace SME.SR.Infra
         {
             var questao = questoesApresentadas.Questoes.Find(q => q.NomeComponente == NomeComponentesEncaminhamentoNaapa.HIPOTESE_ESCRITA);
 
-            if (!string.IsNullOrEmpty(questao.Resposta))
+            if (questao != null && !string.IsNullOrEmpty(questao.Resposta))
             {
                 questao.Resposta = $"{questao.Questao}: {questao.Resposta}";
                 AdicionarLinha(new SecaoRespostaTextoEncaminhamentoNaapa(questao, true));

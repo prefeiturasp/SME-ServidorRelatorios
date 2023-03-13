@@ -49,9 +49,9 @@ namespace SME.SR.Infra
         {
             var endereco = (EnderecoDto)item;
 
-            return endereco.Logradouro.Length > COLUNA_LOGRADOURO ||
-                endereco.Complemento.Length > COLUNA_COMPLEMENTO ||
-                endereco.Bairro.Length > COLUNA_BAIRRO ? 1 : 0;
+            return endereco.Logradouro?.Length > COLUNA_LOGRADOURO ||
+                endereco.Complemento?.Length > COLUNA_COMPLEMENTO ||
+                endereco.Bairro?.Length > COLUNA_BAIRRO ? 1 : 0;
         }
 
         private int ObterTotalQuebraPorColuna()
