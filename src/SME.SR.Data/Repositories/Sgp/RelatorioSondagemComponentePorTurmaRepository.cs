@@ -35,7 +35,7 @@ namespace SME.SR.Data
                            inner join ""Pergunta"" p on p.""Id"" = pae.""PerguntaId""
                            left join  ""PerguntaAnoEscolarBimestre"" paeb ON paeb.""PerguntaAnoEscolarId"" = pae.""Id"" 
             where pae.""AnoEscolar"" = @anoTurma 
-                           and(pae.""FimVigencia"" is null and extract(year from pae.""InicioVigencia"") <= @anoLetivo)";
+                           and((pae.""FimVigencia"" is null or extract(year from pae.""FimVigencia"") = @anoLetivo) and extract(year from pae.""InicioVigencia"") <= @anoLetivo)";
 
             if (anoTurma <= 3)
                 sql += "and pae.\"Grupo\" = @grupoNumero";
@@ -44,7 +44,7 @@ namespace SME.SR.Data
                        and not exists(select 1 from ""PerguntaAnoEscolar"" pae 
                                       inner join  ""PerguntaAnoEscolarBimestre"" paeb ON paeb.""PerguntaAnoEscolarId"" = pae.""Id""
                                       where pae.""AnoEscolar"" = @anoTurma 
-                                      and (pae.""FimVigencia"" is null and extract(year from pae.""InicioVigencia"") <= @anoLetivo) 
+                                      and ((pae.""FimVigencia"" is null or extract(year from pae.""FimVigencia"") = @anoLetivo) and extract(year from pae.""InicioVigencia"") <= @anoLetivo) 
                                       and paeb.""Bimestre"" = @bimestre)
                         or paeb.""Bimestre"" = @bimestre)";
             sql += " order by pae.\"Ordenacao\"";
@@ -104,7 +104,7 @@ namespace SME.SR.Data
             sql.AppendLine(" and s.\"CodigoTurma\" = @turmaCodigo");
             sql.AppendLine(" and s.\"ComponenteCurricularId\" = @componenteCurricularId");
             sql.AppendLine(" and sa.\"Bimestre\" = @bimestre ");
-            sql.AppendLine(" and ((pae.\"FimVigencia\" IS NULL AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
+            sql.AppendLine(" and (((pae.\"FimVigencia\" IS NULL OR EXTRACT(YEAR FROM pae.\"FimVigencia\") = @anoLetivo) AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo) ");
             sql.AppendLine("  or (EXTRACT(YEAR FROM pae.\"FimVigencia\") >= @anoLetivo AND EXTRACT (YEAR FROM pae.\"InicioVigencia\") <= @anoLetivo)) ");
 
             if (anoTurma <= 3)
