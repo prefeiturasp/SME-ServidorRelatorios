@@ -158,15 +158,15 @@ namespace SME.SR.Application
         {
             return new TiposNotaDto()
             {
-                PrimeiroAno = tiposNota.FirstOrDefault(t => t.Ano == 1 && t.Modalidade == modalidade)?.TipoNota,
-                SegundoAno = tiposNota.FirstOrDefault(t => t.Ano == 2 && t.Modalidade == modalidade)?.TipoNota,
-                TerceiroAno = tiposNota.FirstOrDefault(t => t.Ano == 3 && t.Modalidade == modalidade)?.TipoNota,
-                QuartoAno = tiposNota.FirstOrDefault(t => t.Ano == 4 && t.Modalidade == modalidade)?.TipoNota,
-                QuintoAno = tiposNota.FirstOrDefault(t => t.Ano == 5 && t.Modalidade == modalidade)?.TipoNota,
-                SextoAno = tiposNota.FirstOrDefault(t => t.Ano == 6 && t.Modalidade == modalidade)?.TipoNota,
-                SetimoAno = tiposNota.FirstOrDefault(t => t.Ano == 7 && t.Modalidade == modalidade)?.TipoNota,
-                OitavoAno = tiposNota.FirstOrDefault(t => t.Ano == 8 && t.Modalidade == modalidade)?.TipoNota,
-                NonoAno = tiposNota.FirstOrDefault(t => t.Ano == 9 && t.Modalidade == modalidade)?.TipoNota,
+                PrimeiroAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("1") && t.Modalidade == modalidade)?.TipoNota,
+                SegundoAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("2") && t.Modalidade == modalidade)?.TipoNota,
+                TerceiroAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("3") && t.Modalidade == modalidade)?.TipoNota,
+                QuartoAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("4") && t.Modalidade == modalidade)?.TipoNota,
+                QuintoAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("5") && t.Modalidade == modalidade)?.TipoNota,
+                SextoAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("6") && t.Modalidade == modalidade)?.TipoNota,
+                SetimoAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("7") && t.Modalidade == modalidade)?.TipoNota,
+                OitavoAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("8") && t.Modalidade == modalidade)?.TipoNota,
+                NonoAno = tiposNota.FirstOrDefault(t => t.Ano.Equals("9") && t.Modalidade == modalidade)?.TipoNota,
             };
         }
 

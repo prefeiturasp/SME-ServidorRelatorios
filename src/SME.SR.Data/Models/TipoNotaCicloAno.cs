@@ -6,7 +6,7 @@ namespace SME.SR.Data
     {
         public int Ciclo { get; set; }
 
-        public int Ano { get; set; }
+        public string Ano { get; set; }
 
         public Modalidade Modalidade { get; set; }
 
