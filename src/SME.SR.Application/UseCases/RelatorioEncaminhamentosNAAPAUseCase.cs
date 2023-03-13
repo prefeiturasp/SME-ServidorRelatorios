@@ -50,7 +50,7 @@ namespace SME.SR.Application
                     FluxosAlerta = String.Join("|", s.FluxosAlerta),
                     Situacao = s.Situacao.Name()
                 }).OrderBy(oAluno => oAluno.Aluno).ToList()
-            }).OrderBy(oDre => oDre.DreNome).ThenBy(oUe => oUe.UeOrdenacao).ToList();
+            }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeOrdenacao).ToList();
 
 
             var relatorio = new RelatorioEncaminhamentosNAAPADto()
