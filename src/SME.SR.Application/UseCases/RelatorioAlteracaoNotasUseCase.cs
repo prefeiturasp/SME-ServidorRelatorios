@@ -45,9 +45,9 @@ namespace SME.SR.Application
             relatorioDto.Turmas = await mediator.Send(new ObterDadosRelatorioAlteracaoNotasCommand(filtro));
         }
 
-        private async Task<FiltroAlteracaoNotasDto> ObterFiltroRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioAlteracaoNotasDto filtro, string usuarioLogadoRF)
+        private async Task ObterFiltroRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioAlteracaoNotasDto filtro, string usuarioLogadoRF)
         {
-            return new FiltroAlteracaoNotasDto
+            relatorioDto.Filtro = new FiltroAlteracaoNotasDto
             {
                 Dre = await ObterNomeDre(filtro.CodigoDre),
                 Ue = await ObterNomeUe(filtro.CodigoUe),

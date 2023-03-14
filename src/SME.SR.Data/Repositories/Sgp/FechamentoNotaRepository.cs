@@ -37,23 +37,20 @@ namespace SME.SR.Data
 	        if (bimestres.Contains(0))
 		        criterios.AppendLine(@" and ft.periodo_escolar_id is null ");
 
-	        if (bimestres.Contains(-99))
-		        criterios.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY('{1,2,3,4}') ");
-
 	        if (!bimestres.Contains(-99) && !bimestres.Contains(0))
 		        criterios.AppendLine(@" and pe.tipo_calendario_id = @tipocalendarioId and pe.bimestre = ANY(@bimestres) ");
             
 	        if (componentes.Length > 0)
 		        criterios.AppendLine(@" and ftd.disciplina_id = ANY(@componentes)");
 	        
-	        var query = new StringBuilder(@$"swith vw_notas as (
+	        var query = new StringBuilder(@$"with vw_notas as (
 												 select distinct 
 												     fa.aluno_codigo as codigoAluno,
 												     fn.nota as notaAnterior,
 												     wanf.nota as notaAtribuida,
 												     fn.conceito_id as conceitoAnteriorId,
 												     wanf.conceito_id as conceitoAtribuidoId, 
-												     wanf.alterado_por as usuarioAlteracao,
+												     wanf.criado_por as usuarioAlteracao,
 												     2 as TipoNota,
 												     wanf.criado_rf as rfAlteracao,
 												     wanf.criado_em as dataAlteracao,
@@ -70,7 +67,7 @@ namespace SME.SR.Data
 												    join fechamento_turma_disciplina ftd on fa.fechamento_turma_disciplina_id = ftd.id 
 												    join fechamento_turma ft on ftd.fechamento_turma_id = ft.id                        
 												    join turma t on ft.turma_id = t.id
-												    join componente_curricular cc2 on fn.disciplina_id = cc2.id--ftd.disciplina_id = cc2.id
+												    join componente_curricular cc2 on fn.disciplina_id = cc2.id --ftd.disciplina_id = cc2.id
 												    left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
 													left join wf_aprovacao wa on wa.id = wanf.wf_aprovacao_id
 												    left join wf_aprovacao_nivel wan on wan.wf_aprovacao_id = wanf.wf_aprovacao_id  
@@ -80,7 +77,7 @@ namespace SME.SR.Data
 												 where ft.turma_id = @turmaId
 													   and not wanf.excluido	 												   
 													   and (wanf.wf_aprovacao_id is null  or wan.id = (select id from wf_aprovacao_nivel wan2 where wan2.wf_aprovacao_id = wan.wf_aprovacao_id order by wan2.nivel desc limit 1))
-													   ${criterios}	  
+													   {criterios}	  
 											 union all
 												 select distinct 
 												     fa.aluno_codigo as codigoAluno,
@@ -109,7 +106,7 @@ namespace SME.SR.Data
 												   left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
 												   inner join componente_curricular cc2 on fn.disciplina_id = cc2.id  
 												 where ft.turma_id = @turmaId 
-													   ${criterios}
+													   {criterios}
 								) select * from vw_notas order by dataAlteracao,codigoAluno desc ");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
