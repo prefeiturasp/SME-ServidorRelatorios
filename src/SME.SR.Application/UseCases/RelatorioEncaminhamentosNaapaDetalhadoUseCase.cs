@@ -60,7 +60,7 @@ namespace SME.SR.Application
             relatorio.Cabecalho.AnoLetivo = encaminhamentoNaapa.AnoLetivo;
             relatorio.Cabecalho.Aluno = $"{encaminhamentoNaapa.AlunoNome} ({encaminhamentoNaapa.AlunoCodigo})";
             relatorio.Cabecalho.SituacaoEncaminhamento = ((SituacaoNAAPA)encaminhamentoNaapa.Situacao).Name();
-            relatorio.Cabecalho.TurmaNome = $"{encaminhamentoNaapa.Modalidade.ShortName()} - {encaminhamentoNaapa.TurmaNome}";
+            relatorio.Cabecalho.TurmaNome = $"{encaminhamentoNaapa.Modalidade.ShortName()}-{encaminhamentoNaapa.TurmaNome} - {encaminhamentoNaapa.Turno.Name()}";
             relatorio.Cabecalho.DataCriacao = encaminhamentoNaapa.CriadoEm.ToString("dd/MM/yyyy");
             relatorio.Cabecalho.DataImpressao = DateTime.Now.ToString("dd/MM/yyyy");
 
