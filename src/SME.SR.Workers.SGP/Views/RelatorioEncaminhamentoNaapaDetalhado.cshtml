@@ -308,16 +308,19 @@
                     <td width="22%" class="espacamento">@secao.Prioridade</td>
                     <td width="40%" class="espacamento">@secao.PortaDeEntrada</td>
                 </tr>
-                <tr>
-                    <td class="subTabela" colspan="3">
-                        <table>
-                            <tbody>
-                                <td width="50%" class="semBorda espacamento">@secao.NIS</td>
-                                <td class="semBorda bordaEsqueda espacamento">@secao.CNS</td>
-                            </tbody>
-                        </table>
-                   </td>
-                </tr>
+                @if (!string.IsNullOrEmpty(secao.NIS) || !string.IsNullOrEmpty(secao.CNS))
+                {
+                    <tr>
+                        <td class="subTabela" colspan="3">
+                            <table>
+                                <tbody>
+                                    <td width="50%" class="semBorda espacamento">@secao.NIS</td>
+                                    <td class="semBorda bordaEsqueda espacamento">@secao.CNS</td>
+                                </tbody>
+                            </table>
+                       </td>
+                    </tr>
+                }
             </tbody>
         </table>
     }
@@ -337,14 +340,20 @@
                     <td class="subTabela" colspan="3">
                     <table>
                         <tbody>
-                            <tr>
-                                <td width="50%" class="espacamento" style="border-top: none; border-left: none;">@secao.EstudanteMigrante</td>
-                                <td class="espacamento" style="border-top: none; border-right: none;">@secao.ResponsavelMigrante</td>
-                            </tr>
-                            <tr>
-                                <td width="50%" class="espacamento" style="border-bottom: none; border-left: none;">@secao.UBS</td>
-                                <td class="espacamento" style="border-bottom: none; border-right: none;">@secao.CRAS</td>
-                            </tr>
+                            @if (!string.IsNullOrEmpty(secao.EstudanteMigrante) || !string.IsNullOrEmpty(secao.ResponsavelMigrante))
+                            {
+                                <tr>
+                                    <td width="50%" class="espacamento" style="border-top: none; border-left: none;">@secao.EstudanteMigrante</td>
+                                    <td class="espacamento" style="border-top: none; border-right: none;">@secao.ResponsavelMigrante</td>
+                                </tr>
+                            }
+                            @if (!string.IsNullOrEmpty(secao.UBS) || !string.IsNullOrEmpty(secao.CRAS))
+                            {
+                                <tr>
+                                    <td width="50%" class="espacamento" style="border-bottom: none; border-left: none;">@secao.UBS</td>
+                                    <td class="espacamento" style="border-bottom: none; border-right: none;">@secao.CRAS</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </tr>
