@@ -7,6 +7,7 @@ namespace SME.SR.Infra
     public class EncaminhamentoNaapaDetalhadoPaginado
     {
         private const int TOTAL_LINHAS = 40;
+        private const int TOTAL_LINHAS_TEXTO = 62;
 
         private int TotalLinhaPaginaAtual { get; set; }
         private List<EncaminhamentoNaapaDetalhadoPagina> Paginas { get; set; }
@@ -52,7 +53,7 @@ namespace SME.SR.Infra
 
         private void CarregueLinhaQuestoesApresentadas(SecaoQuestoesEncaminhamentoNAAPADetalhadoDto questoesApresentadas)
         {
-            if (questoesApresentadas == null)
+            if (questoesApresentadas == null || questoesApresentadas.Questoes == null || !questoesApresentadas.Questoes.Any())
                 return;
 
             AdicionarLinha(new SecaoTituloEncaminhamentoNaapa(questoesApresentadas.NomeSecao));
@@ -118,15 +119,24 @@ namespace SME.SR.Infra
         private void AdicioneSecaoRespostaTexto(QuestaoEncaminhamentoNAAPADetalhadoDto questao)
         {
             if (!string.IsNullOrEmpty(questao.Resposta))
-                AdicionarLinha(new SecaoRespostaTextoEncaminhamentoNaapa(questao));
+            {
+                var secaoTexto = new SecaoRespostaTextoEncaminhamentoNaapa(questao);
+                var paginasSecao = secaoTexto.ObterSecaoTextoPaginada(TOTAL_LINHAS, TotalLinhaPaginaAtual);
+
+                foreach (var pagina in paginasSecao)
+                {
+                    AdicionarLinha(pagina);
+                }
+            }
         }
 
         private void AdicionarLinha(SecaoRelatorioEncaminhamentoNaapa secao)
         {
             var totalLinhaSecao = secao.ObterLinhasDeQuebra();
+            var totalLinha = ObterTotalLinhas(secao, totalLinhaSecao);
             TotalLinhaPaginaAtual += totalLinhaSecao;
 
-            if (TotalLinhaPaginaAtual >= TOTAL_LINHAS)
+            if (TotalLinhaPaginaAtual >= totalLinha)
             {
                 AdicionarPagina();
                 PaginaAtual = ObterPagina(PaginaAtual.Pagina);
@@ -135,6 +145,14 @@ namespace SME.SR.Infra
             }
 
             AdicionarSecaoPaginaAtual(secao);
+        }
+
+        private int ObterTotalLinhas(SecaoRelatorioEncaminhamentoNaapa secao, int totalLinhaSecao)
+        {
+            if (typeof(SecaoRespostaTextoEncaminhamentoNaapa) == secao.GetType() && totalLinhaSecao == TOTAL_LINHAS_TEXTO)
+                return TOTAL_LINHAS_TEXTO;
+
+            return TOTAL_LINHAS;
         }
 
         private void AdicionarPagina()
