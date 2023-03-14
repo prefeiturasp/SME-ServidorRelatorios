@@ -47,7 +47,8 @@ namespace SME.SR.Data.Repositories.Sgp
                              inner join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id 
                              inner join vw_resposta_data questaoDataAtendimento on questaoDataAtendimento.encaminhamento_naapa_secao_id = ens.id
                              inner join vw_resposta_tipo_atendimento questaoTipoAtendimento on questaoTipoAtendimento.encaminhamento_naapa_secao_id = ens.id
-                             where en.id = @encaminhamentoNaapaId and secao.nome_componente = @nomeComponenteSecao and not ens.excluido";
+                             where en.id = @encaminhamentoNaapaId and secao.nome_componente = @nomeComponenteSecao and not ens.excluido
+                             order by questaoDataAtendimento.DataAtendimento desc";
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 

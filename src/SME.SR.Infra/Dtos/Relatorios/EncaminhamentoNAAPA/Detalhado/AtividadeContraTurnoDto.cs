@@ -2,7 +2,7 @@
 {
     public class AtividadeContraTurnoDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Local { get; set; }
         public string Atividade { get; set; }
     }
