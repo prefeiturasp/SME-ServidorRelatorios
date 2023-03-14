@@ -32,7 +32,12 @@ namespace SME.SR.Infra
             foreach (var linha in quebra)
             {
                 if (!string.IsNullOrEmpty(linha) && linha.Length > QDADE_CHARS_POR_LINHA)
-                    qtdeLinha += (int)Math.Round((double)(linha.Length / QDADE_CHARS_POR_LINHA));
+                {
+                    var qtde = (int)Math.Round((double)(linha.Length / QDADE_CHARS_POR_LINHA));
+                    if (qtde > 1) qtdeLinha += (int)(qtde * 0.5);
+                    if (linha.Length % QDADE_CHARS_POR_LINHA > 0)
+                        qtdeLinha += 1;
+                }
                 else
                     qtdeLinha += 1;
             }
