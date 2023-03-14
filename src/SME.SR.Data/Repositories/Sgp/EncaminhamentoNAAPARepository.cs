@@ -219,7 +219,8 @@ namespace SME.SR.Data
             query.Append(" t.ano_letivo as anoLetivo,");
             query.Append(" t.modalidade_codigo as modalidade,");
             query.Append(" en.situacao as situacao,");
-            query.Append(" en.criado_em as CriadoEm");
+            query.Append(" en.criado_em as CriadoEm,");
+            query.Append(" t.tipo_turno as Turno  ");
             query.Append(" from encaminhamento_naapa en");
             query.Append(" inner join turma t on t.id = en.turma_id");
             query.Append(" inner join ue u on u.id = t.ue_id");
