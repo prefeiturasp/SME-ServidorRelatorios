@@ -18,5 +18,6 @@ namespace SME.SR.Infra
         public Modalidade Modalidade { get; set; }
         public DateTime CriadoEm { get; set; }
         public int AnoLetivo { get; set; }
+        public TipoTurnoEOL Turno { get; set; }
     }
 }
