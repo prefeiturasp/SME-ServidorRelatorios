@@ -8,7 +8,7 @@ namespace SME.SR.Infra.RelatorioPaginado
     public class RelatorioPaginadoHistoricoEscolar
     {
         private const int TOTAL_CARACTER_LINHA = 95;
-        private const int TOTAL_LINHAS = 40;
+        private const int TOTAL_LINHAS = 38;
         private const int TOTAL_LINHAS_ASSINATURA = 10;
         private readonly IEnumerable<HistoricoEscolarDTO> historicoEscolarDTOs;
         private Dictionary<SecaoViewHistoricoEscolar, Func<HistoricoEscolarDTO, List<RelatorioPaginadoHistoricoEscolarDto>>> dicionarioSecao;
