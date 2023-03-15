@@ -85,17 +85,29 @@ namespace SME.SR.Data
 												     hn.nota_nova as notaAtribuida,
 												     hn.conceito_anterior_id as conceitoAnteriorId,
 												     hn.conceito_novo_id as conceitoAtribuidoId, 
-												     hn.criado_por as usuarioAlteracao,
+												     case when wanf.wf_aprovacao_id is null 
+												     	then hn.criado_por 
+												     	else wanf.criado_por  
+												     end as usuarioAlteracao,
 												     2 as TipoNota,
-												     hn.criado_rf as rfAlteracao,
+												     case when wanf.wf_aprovacao_id is null 
+												     	then hn.criado_rf 
+												     	else wanf.criado_rf  
+												     end as rfAlteracao,
 												     hn.criado_em as dataAlteracao,
 												     fn.disciplina_id as disciplinaId,
 												     pe.bimestre,
 												     coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
-												     0 as Situacao,
-												     false as EmAprovacao,     
-												     '' as usuarioaprovacao,
-												     '' as rfaprovacao
+												     wan.status as Situacao,
+												     false as EmAprovacao,
+												     case when wanf.wf_aprovacao_id is null 
+												     	then null 
+												     	else hn.criado_por  
+												     end as usuarioAlteracao,
+												     case when wanf.wf_aprovacao_id is null 
+												     	then null
+												     	else hn.criado_rf   
+												     end as rfaprovacao 
 												from historico_nota hn 
 												   inner join historico_nota_fechamento hnf on hn.id = hnf.historico_nota_id 
 												   inner join fechamento_nota fn on hnf.fechamento_nota_id = fn.id
@@ -104,10 +116,12 @@ namespace SME.SR.Data
 												   inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id                        
 												   inner join turma t on ft.turma_id = t.id 
 												   left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
-												   inner join componente_curricular cc2 on fn.disciplina_id = cc2.id  
+												   inner join componente_curricular cc2 on fn.disciplina_id = cc2.id
+												   left join wf_aprovacao_nota_fechamento wanf on hnf.wf_aprovacao_id = wanf.wf_aprovacao_id
+												   left join wf_aprovacao_nivel wan on wan.wf_aprovacao_id = hnf.wf_aprovacao_id 
 												 where ft.turma_id = @turmaId 
 													   {criterios}
-								) select * from vw_notas order by dataAlteracao,codigoAluno desc ");
+								) select * from vw_notas order by dataAlteracao desc,codigoAluno asc ");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
