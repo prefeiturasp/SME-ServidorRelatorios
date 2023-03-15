@@ -107,17 +107,18 @@
                 DreNome = relatorio.DreNome;
                 UeNome = relatorio.UeNome;
                 
-                MontarDreUe(relatorio.DreNome, relatorio.UeNome);
+                if (relatorio.MostrarAgrupamento)
+                    MontarDreUe(relatorio.DreNome, relatorio.UeNome);
                 
                 foreach (var detalhe in relatorio.Detalhes)
                 {
                     <table class='tabela-cabecalho'> <tbody>
-                            @{
+                    @{
 
-                                MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
-                                MontarLinhaComDuasColunasWidth50("SITUAÇÃO",detalhe.Situacao,"DATA DE ENTRADA DA QUEIXA", ObterData(detalhe.DataEntradaQueixa));
-                                MontaLinhaPortaEntradaDataAtendimento(detalhe.PortaEntrada, ObterData(detalhe.DataUltimoAtendimento));
-                                MontarLinhaSimples("FLUXO DE ALERTA", detalhe.FluxosAlerta);
+                        MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
+                        MontarLinhaComDuasColunasWidth50("SITUAÇÃO",detalhe.Situacao,"DATA DE ENTRADA DA QUEIXA", ObterData(detalhe.DataEntradaQueixa));
+                        MontaLinhaPortaEntradaDataAtendimento(detalhe.PortaEntrada, ObterData(detalhe.DataUltimoAtendimento));
+                        MontarLinhaSimples("FLUXO DE ALERTA", detalhe.FluxosAlerta);
                     }
                     </tbody></table>
                 }
@@ -128,13 +129,6 @@
 
     void MontaLinhaCriancaTurma(string aluno, string turma)
     {
-        const int TOTAL_TURMA = 15;
-        const int TOTAL_ALUNO = 52;
-
-        contadorQuebrarPagina += turma.Length > TOTAL_TURMA || aluno.Length > TOTAL_ALUNO ? 2 : 1;
-
-        AvaliarQuebraPagina(contadorQuebrarPagina);
-
         <tr>
             <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-75" colspan="3"><strong>CRIANÇA/ESTUDANTE:</strong> @aluno</td>
             <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-25" colspan="1"><strong>TURMA:</strong> @turma</td>
@@ -143,12 +137,6 @@
 
     void MontaLinhaPortaEntradaDataAtendimento(string portaEntrada, string dataUltimoAtendimento)
     {
-        const int TOTAL_PORTA = 29;
-
-        contadorQuebrarPagina += portaEntrada.Length > TOTAL_PORTA ? 2 : 1;
-
-        AvaliarQuebraPagina(contadorQuebrarPagina);        
-
         <tr>
             <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>PORTA DE ENTRADA:</strong> @portaEntrada</td>
             <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>DATA DO ÚLTIMO ATENDIMENTO:</strong> @dataUltimoAtendimento</td>
@@ -157,13 +145,6 @@
 
     void MontarDreUe(string dreNome, string ueNome)
     {
-        var qtdeCaracteresDre = mostrarDre ? dreNome.Length : 0;
-        var qtdeCaracteresUe = mostrarUe ? ueNome.Length : 0;
-        
-        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(qtdeCaracteresDre + qtdeCaracteresUe); 
-
-        AvaliarQuebraPagina(contadorQuebrarPagina);
-
         @if (mostrarDre || mostrarUe)
         {
             <table class='tabela-cabecalho'>
@@ -186,10 +167,6 @@
 
     void MontarLinhaSimples(string titulo, string dado)
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(titulo.Length + dado.Length); 
-        
-        AvaliarQuebraPagina(contadorQuebrarPagina);        
-
         <tr>
             <td colspan="4" class="alinhamentoEsquerda espacamento7 width-100"><strong>@titulo:</strong> @dado</td>
         </tr>
@@ -197,12 +174,6 @@
     
     void MontarLinhaComDuasColunasWidth50(string tituloPrimeiraColuna, string dadoPrimeiraColuna, string tituloSegundaColuna, string dadoSegundaColuna) 
     {
-        var qtdeCaracteres = tituloPrimeiraColuna.Length + dadoPrimeiraColuna.Length + tituloSegundaColuna.Length + dadoSegundaColuna.Length;
-        
-        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(qtdeCaracteres);  
-        
-        AvaliarQuebraPagina(contadorQuebrarPagina);        
-
         <tr>
             <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>@tituloPrimeiraColuna:</strong> @dadoPrimeiraColuna</td>
             <td class="alinhamentoEsquerda espacamento7 width-50" colspan="2"><strong>@tituloSegundaColuna:</strong> @dadoSegundaColuna</td>
@@ -211,12 +182,6 @@
     
     void MontarLinhaComDuasColunasCustom(string tituloPrimeiraColuna, string dadoPrimeiraColuna, string tituloSegundaColuna, string dadoSegundaColuna) 
     {
-        var qtdeCaracteres = tituloPrimeiraColuna.Length + dadoPrimeiraColuna.Length + tituloSegundaColuna.Length + dadoSegundaColuna.Length;
-        
-        contadorQuebrarPagina = contadorQuebrarPagina + RetornarQdadeLinhasPrevistas(qtdeCaracteres);  
-        
-        AvaliarQuebraPagina(contadorQuebrarPagina);        
-
         <tr>
             <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-75" colspan="3"><strong>@tituloPrimeiraColuna:</strong> @dadoPrimeiraColuna</td>
             <td class="fundo-cinza alinhamentoEsquerda espacamento7 width-25" colspan="1"><strong>@tituloSegundaColuna:</strong> @dadoSegundaColuna</td>

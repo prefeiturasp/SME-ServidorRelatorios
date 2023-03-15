@@ -13,6 +13,7 @@ namespace SME.SR.Infra
         public string DreNome { get; set; }
         public string UeNome { get; set; }
         public string UeOrdenacao { get; set; }
+        public bool MostrarAgrupamento { get; set; }
         public List<DetalheEncaminhamentoNAAPADto> Detalhes { get; set; }
     }
 }
