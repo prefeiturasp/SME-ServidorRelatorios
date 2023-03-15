@@ -136,8 +136,8 @@ namespace SME.SR.Infra
         private int ObterLinhasFluxoDeAlerta(DetalheEncaminhamentoNAAPADto dto)
         {
             var qtdeLinha = 1;
-            var qtde = (int)Math.Round((double)(dto.FluxosAlerta.Length / QTDE_CHARS_POR_LINHA));
-            if (qtde > 1) qtdeLinha += (int)(qtde * 0.5);
+            var qtde = Math.Round((double)dto.FluxosAlerta.Length / QTDE_CHARS_POR_LINHA);
+            if (qtde > 1) qtdeLinha = (int)qtde;
 
             return qtdeLinha;
         }
