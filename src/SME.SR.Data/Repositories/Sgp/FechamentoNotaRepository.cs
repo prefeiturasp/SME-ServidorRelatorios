@@ -92,7 +92,7 @@ namespace SME.SR.Data
 												     fn.disciplina_id as disciplinaId,
 												     pe.bimestre,
 												     coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
-												     0 as Situacao,
+												     wan.status as Situacao,
 												     false as EmAprovacao,     
 												     u.nome as usuarioaprovacao,
 												     u.rf_codigo as rfaprovacao 
