@@ -60,7 +60,7 @@ namespace SME.SR.Application
                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
             relatorio.EncaminhamentosDreUe = encaminhamentosAgrupados;
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentosNAAPA", relatorio, request.CodigoCorrelacao, tipoDePaginacao: EnumTipoDePaginacao.PaginaComTotalPaginas));
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaCommad(relatorio, request.CodigoCorrelacao));
         }
     }
 }
