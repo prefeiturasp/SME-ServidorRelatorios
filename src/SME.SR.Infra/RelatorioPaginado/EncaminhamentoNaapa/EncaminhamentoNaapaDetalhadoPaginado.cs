@@ -6,8 +6,7 @@ namespace SME.SR.Infra
 {
     public class EncaminhamentoNaapaDetalhadoPaginado
     {
-        private const int TOTAL_LINHAS = 40;
-        private const int TOTAL_LINHAS_TEXTO = 62;
+        private const int TOTAL_LINHAS = 38;
 
         private int TotalLinhaPaginaAtual { get; set; }
         private List<EncaminhamentoNaapaDetalhadoPagina> Paginas { get; set; }
@@ -133,10 +132,9 @@ namespace SME.SR.Infra
         private void AdicionarLinha(SecaoRelatorioEncaminhamentoNaapa secao)
         {
             var totalLinhaSecao = secao.ObterLinhasDeQuebra();
-            var totalLinha = ObterTotalLinhas(secao, totalLinhaSecao);
             TotalLinhaPaginaAtual += totalLinhaSecao;
 
-            if (TotalLinhaPaginaAtual >= totalLinha)
+            if (TotalLinhaPaginaAtual >= TOTAL_LINHAS)
             {
                 AdicionarPagina();
                 PaginaAtual = ObterPagina(PaginaAtual.Pagina);
@@ -145,14 +143,6 @@ namespace SME.SR.Infra
             }
 
             AdicionarSecaoPaginaAtual(secao);
-        }
-
-        private int ObterTotalLinhas(SecaoRelatorioEncaminhamentoNaapa secao, int totalLinhaSecao)
-        {
-            if (typeof(SecaoRespostaTextoEncaminhamentoNaapa) == secao.GetType() && totalLinhaSecao == TOTAL_LINHAS_TEXTO)
-                return TOTAL_LINHAS_TEXTO;
-
-            return TOTAL_LINHAS;
         }
 
         private void AdicionarPagina()

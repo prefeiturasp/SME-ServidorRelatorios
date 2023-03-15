@@ -8,7 +8,7 @@ namespace SME.SR.Infra
     {
         private const int QDADE_CHARS_POR_LINHA = 110;
         private const int QTDE_TOTAL_CHARS_POR_PAG = 6820;
-        private const int QTDE_TOTAL_LINHAS = 62;
+        private const int QTDE_TOTAL_LINHAS = 39;
 
         public SecaoRespostaTextoEncaminhamentoNaapa(QuestaoEncaminhamentoNAAPADetalhadoDto questao, bool semTitulo = false)
         {
