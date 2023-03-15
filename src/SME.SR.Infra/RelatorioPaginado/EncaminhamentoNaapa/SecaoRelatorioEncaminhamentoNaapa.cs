@@ -16,8 +16,13 @@ namespace SME.SR.Infra
         protected string ObterValorFormatado(QuestaoEncaminhamentoNAAPADetalhadoDto questao)
         {
             if (questao != null)
-                return $"{questao.Questao}: {ObterValorPorTipo(questao)}";
+            {
+                var resposta = ObterValorPorTipo(questao);
 
+                if (!string.IsNullOrEmpty(resposta))
+                    return $"{questao.Questao}: {ObterValorPorTipo(questao)}";
+            }
+                
             return string.Empty;
         }
 
