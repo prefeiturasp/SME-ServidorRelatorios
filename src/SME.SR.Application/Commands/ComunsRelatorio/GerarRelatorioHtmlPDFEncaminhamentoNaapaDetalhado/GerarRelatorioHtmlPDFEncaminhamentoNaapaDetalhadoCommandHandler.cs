@@ -31,11 +31,11 @@ namespace SME.SR.Application
         protected override async Task Handle(GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand request, CancellationToken cancellationToken)
         {
             var paginasSolo = new List<PaginaParaRelatorioPaginacaoSoloDto>();
-            var relatorioPaginado = new EncaminhamentoNaapaDetalhadoPaginado();
+            
 
             foreach (var relatorioDto in request.RelatorioEncaminhamentoNAAPADetalhadoDtos)
             {
-                var relatorioPaginas = relatorioPaginado.ObterPaginas(relatorioDto);
+                var relatorioPaginas = new EncaminhamentoNaapaDetalhadoPaginado().ObterPaginas(relatorioDto);
 
                 foreach (var pagina in relatorioPaginas)
                 {
