@@ -6,7 +6,7 @@ namespace SME.SR.Infra
 {
     public class EncaminhamentoNaapaDetalhadoPaginado
     {
-        private const int TOTAL_LINHAS = 40;
+        private const int TOTAL_LINHAS = 38;
 
         private int TotalLinhaPaginaAtual { get; set; }
         private List<EncaminhamentoNaapaDetalhadoPagina> Paginas { get; set; }
@@ -52,7 +52,7 @@ namespace SME.SR.Infra
 
         private void CarregueLinhaQuestoesApresentadas(SecaoQuestoesEncaminhamentoNAAPADetalhadoDto questoesApresentadas)
         {
-            if (questoesApresentadas == null)
+            if (questoesApresentadas == null || questoesApresentadas.Questoes == null || !questoesApresentadas.Questoes.Any())
                 return;
 
             AdicionarLinha(new SecaoTituloEncaminhamentoNaapa(questoesApresentadas.NomeSecao));
@@ -118,7 +118,15 @@ namespace SME.SR.Infra
         private void AdicioneSecaoRespostaTexto(QuestaoEncaminhamentoNAAPADetalhadoDto questao)
         {
             if (!string.IsNullOrEmpty(questao.Resposta))
-                AdicionarLinha(new SecaoRespostaTextoEncaminhamentoNaapa(questao));
+            {
+                var secaoTexto = new SecaoRespostaTextoEncaminhamentoNaapa(questao);
+                var paginasSecao = secaoTexto.ObterSecaoTextoPaginada(TOTAL_LINHAS, TotalLinhaPaginaAtual);
+
+                foreach (var pagina in paginasSecao)
+                {
+                    AdicionarLinha(pagina);
+                }
+            }
         }
 
         private void AdicionarLinha(SecaoRelatorioEncaminhamentoNaapa secao)
