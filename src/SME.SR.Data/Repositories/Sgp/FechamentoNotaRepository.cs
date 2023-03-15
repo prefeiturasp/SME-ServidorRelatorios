@@ -94,8 +94,8 @@ namespace SME.SR.Data
 												     coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
 												     0 as Situacao,
 												     false as EmAprovacao,     
-												     '' as usuarioaprovacao,
-												     '' as rfaprovacao
+												     u.nome as usuarioaprovacao,
+												     u.rf_codigo as rfaprovacao 
 												from historico_nota hn 
 												   inner join historico_nota_fechamento hnf on hn.id = hnf.historico_nota_id 
 												   inner join fechamento_nota fn on hnf.fechamento_nota_id = fn.id
@@ -104,7 +104,11 @@ namespace SME.SR.Data
 												   inner join fechamento_turma ft on ftd.fechamento_turma_id = ft.id                        
 												   inner join turma t on ft.turma_id = t.id 
 												   left join periodo_escolar pe on ft.periodo_escolar_id = pe.id
-												   inner join componente_curricular cc2 on fn.disciplina_id = cc2.id  
+												   inner join componente_curricular cc2 on fn.disciplina_id = cc2.id
+												   left join wf_aprovacao_nivel wan on wan.wf_aprovacao_id = hnf.wf_aprovacao_id  
+												   left join wf_aprovacao_nivel_notificacao wann on wann.wf_aprovacao_nivel_id = wan.id                                                     
+												   left join notificacao n on n.id = wann.notificacao_id and n.turma_id = t.turma_id
+												   left join usuario u on u.id = n.usuario_id   
 												 where ft.turma_id = @turmaId 
 													   {criterios}
 								) select * from vw_notas order by dataAlteracao,codigoAluno desc ");
