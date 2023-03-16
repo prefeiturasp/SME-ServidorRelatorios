@@ -144,9 +144,9 @@ namespace SME.SR.Infra.RelatorioPaginado
         private int ObterQuantidadeLinhaObsevacaoAssinatura(HistoricoEscolarDTO historicoEscolar)
         {
             if (historicoEscolar.ObservacaoComplementar.Length > TOTAL_CARACTER_LINHA)
-                return (int)Math.Round((double)historicoEscolar.ObservacaoComplementar.Length / TOTAL_CARACTER_LINHA);
+                return 1 + (int)Math.Round((double)historicoEscolar.ObservacaoComplementar.Length / TOTAL_CARACTER_LINHA);
 
-            return 1;
+            return 2;
         }
 
         private int ObterQuantidadeLinhasTransferencia(HistoricoEscolarDTO historicoEscolar)
