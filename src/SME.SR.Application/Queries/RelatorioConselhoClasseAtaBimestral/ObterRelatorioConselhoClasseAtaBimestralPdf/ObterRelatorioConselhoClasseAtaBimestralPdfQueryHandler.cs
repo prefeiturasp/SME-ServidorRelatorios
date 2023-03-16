@@ -67,6 +67,9 @@ namespace SME.SR.Application
                 tiposTurma.Add((int)TipoTurma.Regular);
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray(), filtro.Bimestre);
+
+            notas = notas.Where(n => n.Key.Equals(turma.Codigo));
+
             if (notas == null || !notas.Any())
                 return Enumerable.Empty<ConselhoClasseAtaBimestralPaginaDto>();
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
