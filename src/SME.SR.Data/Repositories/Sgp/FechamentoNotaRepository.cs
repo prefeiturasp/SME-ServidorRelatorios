@@ -59,8 +59,8 @@ namespace SME.SR.Data
 												     coalesce(cc2.descricao_sgp,cc2.descricao) as componentecurricularNome,
 												     wan.status as Situacao,
 												     wanf.id is not null as EmAprovacao,     
-												     u.nome as usuarioaprovacao,
-												     u.rf_codigo as rfaprovacao
+												     case when wan.status = 1 then '' else u.nome end as usuarioaprovacao,
+												     case when wan.status = 1 then '' else u.rf_codigo end as rfaprovacao
 												from wf_aprovacao_nota_fechamento wanf
 													join fechamento_nota fn on wanf.fechamento_nota_id = fn.id
 												    join fechamento_aluno fa on fn.fechamento_aluno_id = fa.id 
