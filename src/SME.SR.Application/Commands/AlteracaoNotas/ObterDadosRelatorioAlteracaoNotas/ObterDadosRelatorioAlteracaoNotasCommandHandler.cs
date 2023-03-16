@@ -187,14 +187,28 @@ namespace SME.SR.Application
                 UsuarioAlteracao = string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAlteracao) ? "" : ToTitleCase($"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})"),
                 Situacao = historicoAlteracaoNotas.Situacao == 0 ? " - " : historicoAlteracaoNotas.Situacao.Name(),
                 UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : " - ",
-                NotaConceitoAnterior = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAnterior.ToString() : historicoAlteracaoNotas.ConceitoAnteriorId.Name(),
-                NotaConceitoAtribuido = tipoNotaConceito == TipoNota.Nota ? historicoAlteracaoNotas.NotaAtribuida.ToString() : historicoAlteracaoNotas.ConceitoAtribuidoId.Name(),
+                NotaConceitoAnterior = tipoNotaConceito == TipoNota.Nota ? RetornarNota(historicoAlteracaoNotas.NotaAnterior) : RetornarConceito(historicoAlteracaoNotas.ConceitoAnteriorId),
+                NotaConceitoAtribuido = tipoNotaConceito == TipoNota.Nota ? RetornarNota(historicoAlteracaoNotas.NotaAtribuida) : RetornarConceito(historicoAlteracaoNotas.ConceitoAtribuidoId),
                 EmAprovacao = historicoAlteracaoNotas.EmAprovacao
             };
 
             AlunosAlteracaoNotasDto.NotaConceitoAtribuido = AlunosAlteracaoNotasDto.EmAprovacao ? $"{AlunosAlteracaoNotasDto.NotaConceitoAtribuido}*" : AlunosAlteracaoNotasDto.NotaConceitoAtribuido;
 
             return AlunosAlteracaoNotasDto;
+        }
+
+        private string RetornarNota(double? nota)
+        {
+            if (nota.HasValue)
+                return nota.ToString();
+            return string.Empty;
+        }
+
+        private string RetornarConceito(TipoConceito? conceito)
+        {
+            if (conceito.HasValue)
+                return conceito.Name();
+            return string.Empty;
         }
 
 
