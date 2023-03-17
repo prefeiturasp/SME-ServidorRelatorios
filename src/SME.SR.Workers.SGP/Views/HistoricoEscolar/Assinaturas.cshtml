@@ -1,0 +1,77 @@
+﻿@using SME.SR.Infra;
+
+@model HistoricoEscolarDTO
+
+@{
+    <div class="assinaturas">
+        <table class='tabela-assinatura'>
+            <thead>
+                <tr>
+                    <td class="titulo" style="width: 70%;">Secretário da Escola</td>
+                    <td class="titulo" style="width: 30%;">RG</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @if (PossuiSecretario())
+                    {
+                        <td class='espaco-esquerda-6'>@Model.ResponsaveisUe.NomeSecretario</td>
+                        <td class='espaco-esquerda-6'>@Model.ResponsaveisUe.DocumentoSecretario</td>
+                    }
+                    else
+                    {
+                        <td class='linha-assinatura-branco'></td>
+                        <td class='linha-assinatura-branco'></td>
+                    }
+
+                </tr>
+            </tbody>
+        </table>
+
+        <table class='tabela-assinatura'>
+            <thead>
+                <tr>
+                    <td class="titulo" style="width: 70%;">Diretor da Escola</td>
+                    <td class="titulo" style="width: 30%;">RG</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @if (PossuiDiretor())
+                    {
+                        <td class='espaco-esquerda-6'>@Model.ResponsaveisUe.NomeDiretor</td>
+                        <td class='espaco-esquerda-6'>@Model.ResponsaveisUe.DocumentoDiretor</td>
+                    }
+                    else
+                    {
+                        <td class='linha-assinatura-branco'></td>
+                        <td class='linha-assinatura-branco'></td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+        <div class="legendaAssinatura"><p>Este documento não contém emendas nem rasuras</p></div>
+
+        <div class="dataAssinatura">
+            <p>@Html.Raw(ObterData())</p>
+        </div>
+    </div>
+
+    bool PossuiSecretario()
+    {
+        return Model.ResponsaveisUe != null && !string.IsNullOrEmpty(Model.ResponsaveisUe.NomeSecretario);
+    }
+
+    bool PossuiDiretor()
+    {
+        return Model.ResponsaveisUe != null && !string.IsNullOrEmpty(Model.ResponsaveisUe.NomeDiretor);
+    }
+
+    string ObterData()
+    {
+        if (Model.DadosData != null && Model.DadosData.Ano != null)
+            return $"{Model.DadosData.Municipio}, {Model.DadosData.Dia} de {Model.DadosData.Mes} de {Model.DadosData.Ano}";
+
+        return "São Paulo, ____ de _______________ de ______";
+    }
+}

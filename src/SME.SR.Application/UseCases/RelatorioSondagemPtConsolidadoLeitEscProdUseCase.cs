@@ -288,7 +288,7 @@ namespace SME.SR.Application
                 respostas.Add(itemRetorno);                
             }            
 
-            if (alunosPorAno > totalRespostas)
+            if (alunosPorAno > totalRespostas && !respostas.Any(x => x.Percentual == 100))
             {
                 var totalSemPreenchimento = alunosPorAno - totalRespostas;
 
@@ -325,22 +325,28 @@ namespace SME.SR.Application
             var listaOrdenadaRespostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
             var opcao1 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Pré-Silábico");
-            listaOrdenadaRespostas.Add(opcao1);
+            if (opcao1 != null)
+                listaOrdenadaRespostas.Add(opcao1);
 
             var opcao2 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico sem valor");
-            listaOrdenadaRespostas.Add(opcao2);
+            if (opcao2 != null)
+                listaOrdenadaRespostas.Add(opcao2);
 
             var opcao3 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico com valor");
-            listaOrdenadaRespostas.Add(opcao3);
+            if (opcao3 != null)
+                listaOrdenadaRespostas.Add(opcao3);
 
             var opcao4 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Silábico alfabético");
-            listaOrdenadaRespostas.Add(opcao4);
+            if (opcao4 != null)
+                listaOrdenadaRespostas.Add(opcao4);
 
             var opcao5 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Alfabético");
-            listaOrdenadaRespostas.Add(opcao5);
+            if (opcao5 != null)
+                listaOrdenadaRespostas.Add(opcao5);
 
             var opcao6 = listaRespostas.FirstOrDefault(lr => lr.Resposta == "Sem Preenchimento");
-            listaOrdenadaRespostas.Add(opcao6);
+            if (opcao6 != null)
+                listaOrdenadaRespostas.Add(opcao6);
 
             return listaOrdenadaRespostas;
         }

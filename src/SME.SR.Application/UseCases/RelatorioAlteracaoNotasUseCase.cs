@@ -23,9 +23,14 @@ namespace SME.SR.Application
             try
             {
                 var filtro = request.ObterObjetoFiltro<FiltroRelatorioAlteracaoNotasDto>();
+                
+                if(filtro.ComponentesCurriculares.Any(c => c == -99))
+                    filtro.ComponentesCurriculares = Array.Empty<long>();
+                
                 var relatorioDto = new RelatorioAlteracaoNotasDto();                
 
                 await ObterFiltroRelatorio(relatorioDto, filtro, request.UsuarioLogadoRF);
+                
                 await ObterDadosRelatorio(relatorioDto, filtro);
 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioHistoricoAlteracoesNotas", relatorioDto, request.CodigoCorrelacao));
@@ -42,18 +47,16 @@ namespace SME.SR.Application
 
         private async Task ObterFiltroRelatorio(RelatorioAlteracaoNotasDto relatorioDto, FiltroRelatorioAlteracaoNotasDto filtro, string usuarioLogadoRF)
         {
-            var filtroRelatorio = new FiltroAlteracaoNotasDto();
-
-
-            filtroRelatorio.Dre = await ObterNomeDre(filtro.CodigoDre);
-            filtroRelatorio.Ue = await ObterNomeUe(filtro.CodigoUe);
-            filtroRelatorio.Usuario = filtro.NomeUsuario;
-            filtroRelatorio.RF = usuarioLogadoRF;
-            filtroRelatorio.Bimestre = ObterNomeBimestre(filtro.Bimestres);
-            filtroRelatorio.ComponenteCurricular = await ObterComponenteCurricular(filtro.ComponentesCurriculares);
-            filtroRelatorio.Turma = await ObterNomeTurma(filtro.Turma);
-
-            relatorioDto.Filtro = filtroRelatorio;
+            relatorioDto.Filtro = new FiltroAlteracaoNotasDto
+            {
+                Dre = await ObterNomeDre(filtro.CodigoDre),
+                Ue = await ObterNomeUe(filtro.CodigoUe),
+                Usuario = filtro.NomeUsuario,
+                RF = usuarioLogadoRF,
+                Bimestre = ObterNomeBimestre(filtro.Bimestres),
+                ComponenteCurricular = await ObterComponenteCurricular(filtro.ComponentesCurriculares),
+                Turma = await ObterNomeTurma(filtro.Turma)
+            };
         }
 
         private async Task<string> ObterNomeDre(string dreCodigo)
@@ -74,18 +77,8 @@ namespace SME.SR.Application
 
         private async Task<string> ObterComponenteCurricular(IEnumerable<long> componenteCurricularIds)
         {
-            var componenteCurricular = string.Empty;
-            var selecionouTodos = componenteCurricularIds.Any(c => c == -99);
-
-            componenteCurricular = selecionouTodos ?
-                "Todos"
-                :
-                componenteCurricularIds.Count() > 1 ?
-                string.Empty
-                :
-                await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(componenteCurricularIds.FirstOrDefault()));            
-
-            return componenteCurricular;
+            return !componenteCurricularIds.Any() ? "Todos" : componenteCurricularIds.Count() > 1 
+                ? string.Empty : await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(componenteCurricularIds.FirstOrDefault()));            
         }
 
         private string ObterNomeBimestre(IEnumerable<int> bimestres)

@@ -67,6 +67,9 @@ namespace SME.SR.Application
                 tiposTurma.Add((int)TipoTurma.Regular);
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray(), filtro.Bimestre);
+
+            notas = notas.Where(n => n.Key.Equals(turma.Codigo));
+
             if (notas == null || !notas.Any())
                 return Enumerable.Empty<ConselhoClasseAtaBimestralPaginaDto>();
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
@@ -413,15 +416,14 @@ namespace SME.SR.Application
 
                 bool possuiComponente = true;
                 int componentesCurricularesTotal = 0;
-                List<(long, long, bool)> alunoComponenteConselhoClasse = new List<(long, long, bool)>();
+                List<(long codigoAluno, long codigoDisciplina, bool possuiConselho)> alunoComponenteConselhoClasse = new List<(long codigoAluno, long codigoDisciplina, bool possuiConselho)>();
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
                     var componentes = ObterComponentesCurriculares(grupoMatriz.GroupBy(c => c.CodDisciplina).Select(x => x.FirstOrDefault()).ToList());
                     var componentesTurmas = ObterComponentesCurriculares(grupoMatriz.ToList());
 
-                    // Desconsiderar o componente 1106 - LINGUA INGLESA COMPARTILHADA para o total de componentes que possuem conselho.
-                    componentesCurricularesTotal += componentesTurmas.Where(c => c.LancaNota && c.CodDisciplina != 1106).Select(a => a.CodDisciplina).Distinct().Count();
+                    componentesCurricularesTotal += componentesTurmas.Where(c => c.LancaNota).Select(a => a.CodDisciplina).Distinct().Count();
 
                     foreach (var componente in componentes.OrderBy(c => c.Disciplina))
                     {
@@ -508,7 +510,7 @@ namespace SME.SR.Application
                                                 ++coluna);
                     }
                 }
-
+                
                 linhaDto.ConselhoClasse = ativos ? TrataConselhoRegistrado(aluno.CodigoAluno, alunoComponenteConselhoClasse, componentesCurricularesTotal, anotacoes) : "";
 
                 linhas.Add(linhaDto);
@@ -517,11 +519,11 @@ namespace SME.SR.Application
             return linhas;
         }
 
-        private string TrataConselhoRegistrado(long codigoAluno, List<(long, long, bool)> alunoComponenteConselhoClasse, int componentesCurricularesTotal, IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto> anotacoes)
+        private string TrataConselhoRegistrado(long codigoAluno, List<(long codigoAluno, long codigoDisciplina, bool possuiConselho)> alunoComponenteConselhoClasse, int componentesCurricularesTotal, IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto> anotacoes)
         {
             var componentesConselhosDoAluno = alunoComponenteConselhoClasse
-                .Where(a => a.Item1 == codigoAluno && a.Item3 == true && a.Item2 != 1106)
-                .Select(a => a.Item2)
+                .Where(a => a.codigoAluno == codigoAluno && a.possuiConselho == true)
+                .Select(a => a.codigoDisciplina)
                 .Count();
 
             if (componentesConselhosDoAluno == 0)

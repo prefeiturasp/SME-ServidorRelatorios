@@ -1,11 +1,12 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
+using System;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP.Controllers
@@ -354,9 +355,33 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet("relatorios/encaminhamentoaee")]
-        [Action("relatorios/encaminhamentoaee", typeof(IRelatorioEncaminhamentoAeeUseCase))]
-        public async Task<bool> RelatorioEncaminhamentoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentoAeeUseCase useCase)
+        [HttpGet("relatorios/encaminhamentosaee")]
+        [Action("relatorios/encaminhamentosaee", typeof(IRelatorioEncaminhamentosAeeUseCase))]
+        public async Task<bool> RelatorioEncaminhamentosAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosAeeUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/encaminhamentoaeedetalhado")]
+        [Action("relatorios/encaminhamentoaeedetalhado", typeof(IRelatorioEncaminhamentoAeeDetalhadoUseCase))]
+        public async Task<bool> RelatorioEncaminhamentoAeeDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentoAeeDetalhadoUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+        
+        [HttpGet("relatorios/encaminhamentonaapadetalhado")]
+        [Action("relatorios/encaminhamentonaapadetalhado", typeof(IRelatorioEncaminhamentosNaapaDetalhadoUseCase))]
+        public async Task<bool> RelatorioEncaminhamentoNaapaDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaDetalhadoUseCase detalhadoUseCase)
+        {
+            await detalhadoUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/encaminhamentosnaapa")]
+        [Action("relatorios/encaminhamentosnaapa", typeof(IRelatorioEncaminhamentosNAAPAUseCase))]
+        public async Task<bool> RelatorioEncaminhamentosNAAPA([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNAAPAUseCase useCase)
         {
             await useCase.Executar(request);
             return true;

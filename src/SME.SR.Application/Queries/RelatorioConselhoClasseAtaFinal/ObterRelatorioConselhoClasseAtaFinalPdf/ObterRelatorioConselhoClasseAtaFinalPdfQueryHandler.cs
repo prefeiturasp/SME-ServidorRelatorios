@@ -136,7 +136,8 @@ namespace SME.SR.Application
                     Conceito = nf.NotaConceito.Conceito,
                     NotaId = nf.NotaConceito.NotaId,
                     Sintese = nf.NotaConceito.Sintese,
-                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId
+                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
+                    Aprovado = nf.Aprovado
                 }));
             }
 
@@ -175,7 +176,7 @@ namespace SME.SR.Application
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
 
-            var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });
+            var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });            
             if (notas == null || !notas.Any()) return default;
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
@@ -227,7 +228,8 @@ namespace SME.SR.Application
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
                     Sintese = nf.NotaConceito.Sintese,
-                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId
+                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
+                    Aprovado = nf.Aprovado
                 }));
             }
 
@@ -524,7 +526,7 @@ namespace SME.SR.Application
                         var frequenciaAluno = ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, componentesTurmas);
 
                         var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
-                        var notaConceitofinal = notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
+                        var notaConceitofinal = notasFinais.OrderByDescending(n => n.Aprovado).ThenByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                 && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
                                                 aluno.Ativo);

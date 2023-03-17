@@ -29,7 +29,7 @@ namespace SME.SR.Application
             while (cont < alunosCodigos.Length)
             {
                 var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
-                var frequenciasAlunos = await frequenciaRepository.ObterFrequenciaGlobalAlunos(request.CodigosAluno, request.AnoLetivo, (int)request.Modalidade);
+                var frequenciasAlunos = await frequenciaRepository.ObterFrequenciaGlobalAlunos(request.CodigosAluno, request.AnoLetivo, (int)request.Modalidade,request.CodigoTurmas);
                 frequenciasRetorno.AddRange(frequenciasAlunos.ToList());
                 cont += alunosPagina.Count();
                 i++;
