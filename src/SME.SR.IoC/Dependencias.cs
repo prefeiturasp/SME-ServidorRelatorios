@@ -10,6 +10,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Cache;
+using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -21,7 +22,6 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
-using SME.SR.Data.Repositories.Sgp;
 
 namespace SME.SR.IoC
 {
@@ -195,6 +195,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IEncaminhamentoNAAPARespostaRepository), typeof(EncaminhamentoNAAPARespostaRepository));
             services.TryAddScoped(typeof(IQuestionarioEncaminhamentoNAAPARepository), typeof(QuestionarioEncaminhamentoNAAPARepository));
             services.TryAddScoped(typeof(IEncaminhamentoNAAPASecaoRepository), typeof(EncaminhamentoNAAPASecaoRepository));
+
+            services.TryAddScoped(typeof(ISondagemAnaliticaRepository), typeof(SondagemAnaliticaRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -256,6 +258,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioEncaminhamentoAeeDetalhadoUseCase, RelatorioEncaminhamentoAeeDetalhadoUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosNaapaDetalhadoUseCase, RelatorioEncaminhamentosNAAPADetalhadoUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosNAAPAUseCase, RelatorioEncaminhamentosNAAPAUseCase>();
+            services.TryAddScoped<IRelatorioAnaliticoSondagemUseCase, RelatorioAnaliticoSondagemUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
