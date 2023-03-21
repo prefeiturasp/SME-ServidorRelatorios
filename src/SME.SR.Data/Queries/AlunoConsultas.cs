@@ -394,6 +394,79 @@
 																	   max(dt_situacao_aluno) data_situacao
 																	from lista";
 
+		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId) =>
+			$@"WITH lista AS (
+				SELECT DISTINCT mte.cd_turma_escola,
+								m.cd_aluno
+				FROM v_matricula_cotic m
+					INNER JOIN matricula_turma_escola mte
+						ON m.cd_matricula = mte.cd_matricula	
+					INNER JOIN turma_escola te
+						ON mte.cd_turma_escola = te.cd_turma_escola
+					INNER JOIN serie_turma_escola ste
+						ON te.cd_turma_escola = ste.cd_turma_escola
+					INNER JOIN serie_turma_grade stg
+						ON ste.cd_serie_ensino = stg.cd_serie_ensino
+					INNER JOIN serie_ensino se
+						ON stg.cd_serie_ensino = se.cd_serie_ensino
+					INNER JOIN etapa_ensino ee
+						ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+					INNER JOIN v_cadastro_unidade_educacao ue
+						ON te.cd_escola = ue.cd_unidade_educacao
+					INNER JOIN alunos_matriculas_norm aln 
+						ON aln.CodigoAluno = m.cd_aluno
+				WHERE te.an_letivo = @anoLetivo AND
+					  te.cd_tipo_turma = 1 AND
+					  mte.cd_situacao_aluno in (1,5,6,10,13) 
+					  AND (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+					  and mte.dt_situacao_aluno > @dataFim))
+					  and aln.AnoLetivo = anoLetivo
+					  AND se.sg_resumida_serie = @turmaAno 
+					  AND ee.cd_etapa_ensino in (@modalidades)
+					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)}
+				UNION
+
+				SELECT
+					mte.cd_turma_escola,
+					matr.cd_aluno
+				FROM
+					v_aluno_cotic aluno
+				INNER JOIN v_historico_matricula_cotic matr ON
+					aluno.cd_aluno = matr.cd_aluno
+				INNER JOIN historico_matricula_turma_escola mte ON
+					matr.cd_matricula = mte.cd_matricula
+				LEFT JOIN necessidade_especial_aluno nea ON
+					nea.cd_aluno = matr.cd_aluno
+				INNER JOIN turma_escola te
+					ON mte.cd_turma_escola = te.cd_turma_escola
+				INNER JOIN serie_turma_escola ste
+					ON te.cd_turma_escola = ste.cd_turma_escola
+				INNER JOIN serie_turma_grade stg
+					ON ste.cd_serie_ensino = stg.cd_serie_ensino
+				INNER JOIN serie_ensino se
+					ON stg.cd_serie_ensino = se.cd_serie_ensino
+				INNER JOIN etapa_ensino ee
+					ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+				INNER JOIN v_cadastro_unidade_educacao ue
+					ON te.cd_escola = ue.cd_unidade_educacao
+				WHERE te.an_letivo = @anoLetivo AND
+					  te.cd_tipo_turma = 1 AND
+					  mte.cd_situacao_aluno in (5, 10) AND
+					  se.sg_resumida_serie = @turmaAno AND
+					  ee.cd_etapa_ensino in (@modalidades)
+				      AND mte.nr_chamada_aluno <> '0'
+					  AND mte.nr_chamada_aluno is not null
+					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)})
+			SELECT COUNT(DISTINCT cd_aluno)
+				FROM lista";
+		
+		
+		
+		
+		
         internal static string AlunosMatriculasPorTurmas = @"with lista as (
 																select mte.nr_chamada_aluno,
 																	   a.nm_aluno,

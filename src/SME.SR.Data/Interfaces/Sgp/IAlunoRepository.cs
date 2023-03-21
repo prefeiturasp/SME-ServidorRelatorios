@@ -35,5 +35,6 @@ namespace SME.SR.Data.Interfaces
         Task<NecessidadeEspecialAlunoDto> ObterNecessidadesEspeciaisPorAluno(long codigoAluno);
         Task<(DateTime dataMatricula, DateTime dataSituacao)> ObterDatasMatriculaAlunoNaTurma(int codigoAluno, int codigoTurma);
         Task<IEnumerable<AlunoTurma>> ObterAlunosMatriculasPorTurmas(int[] codigosTurmas);
+        Task<int> ObterTotalAlunosAtivosPorPeriodo(string anoTurma, int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId);
     }
 }
