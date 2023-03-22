@@ -42,7 +42,7 @@ namespace SME.SR.Data
             var periodo = await ObterPeriodoSondagem(filtro.Bimestre);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var modalidades = new List<int> {5, 13};
-            var relatorioSondagemAnaliticoLeituraDto = new RelatorioSondagemAnaliticoLeituraDto();
+            var relatorioSondagemAnaliticoEscritaDto = new RelatorioSondagemAnaliticoEscritaDto();
             var dre = await dreRepository.ObterPorCodigo(filtro.DreCodigo);
             var ue = await ueRepository.ObterPorCodigo(filtro.UeCodigo);
             var campoTabelaFiltroBimestre = @$"writing{filtro.Bimestre}B";
@@ -72,7 +72,7 @@ namespace SME.SR.Data
                 var respostaSondagemAnaliticoEscritaDto = new RespostaSondagemAnaliticoEscritaDto
                 {
                     PreSilabico = dtoConsulta.Select(x => x.PreSilabico).Sum(),
-                    SilabicoSemValor=dtoConsulta.Select(x => x.SilabicoSemValor).Sum() ,
+                    SilabicoSemValor = dtoConsulta.Select(x => x.SilabicoSemValor).Sum() ,
                     SilabicoComValor = dtoConsulta.Select(x => x.SilabicoComValor).Sum(),
                     SilabicoAlfabetico = dtoConsulta.Select(x => x.SilabicoAlfabetico).Sum() ,
                     Alfabetico = dtoConsulta.Select(x => x.Alfabetico).Sum(),
@@ -82,11 +82,12 @@ namespace SME.SR.Data
                     TotalDeTurma = turmasComSondagem.Count(),
                     Ue = ue.Nome
                 };
+                relatorioSondagemAnaliticoEscritaDto.Respostas.Add(respostaSondagemAnaliticoEscritaDto);
             }
 
-            relatorioSondagemAnaliticoLeituraDto.Dre = dre.Nome;
-            relatorioSondagemAnaliticoLeituraDto.DreSigla = dre.Abreviacao;
-            retorno.Add(relatorioSondagemAnaliticoLeituraDto);
+            relatorioSondagemAnaliticoEscritaDto.Dre = dre.Nome;
+            relatorioSondagemAnaliticoEscritaDto.DreSigla = dre.Abreviacao;
+            retorno.Add(relatorioSondagemAnaliticoEscritaDto);
             return retorno;
         }
 
@@ -188,10 +189,11 @@ namespace SME.SR.Data
         {
             var sql = new StringBuilder();
             sql.AppendLine("          select  pp.\"classroomCodeEol\" as TurmaCodigo,  ");
-            sql.AppendLine($"		        count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'PS') as Nivel1,");
-            sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'SSV') as Nivel2,");
-            sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'SCV') as Nivel3,");
-            sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'Nivel4') as Nivel4,");
+            sql.AppendLine($"		        count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'PS') as PreSilabico,");
+            sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'SSV') as SilabicoSemValor,");
+            sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'SCV') as SilabicoComValor,");
+            sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'SA') as SilabicoAlfabetico,");
+            sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where pp.\"{campoTabelaFiltroBimestre}\" = 'A') as Alfabetico,");
             sql.AppendLine($"	            count(pp.\"studentCodeEol\") filter (where ((pp.\"{campoTabelaFiltroBimestre}\" is null) or (trim(pp.\"{campoTabelaFiltroBimestre}\") = ''))) as SemPreenchimento");
             sql.AppendLine("         from \"PortuguesePolls\" pp ");
             sql.AppendLine("         where  pp.\"dreCodeEol\" = @dreCodeEol ");
