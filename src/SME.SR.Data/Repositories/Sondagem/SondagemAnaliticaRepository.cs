@@ -16,11 +16,15 @@ namespace SME.SR.Data
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
         private readonly IAlunoRepository alunoRepository;
+        private readonly IDreRepository dreRepository;
+        private readonly IUeRepository ueRepository;
 
-        public SondagemAnaliticaRepository(VariaveisAmbiente variaveisAmbiente,IAlunoRepository alunoRepository)
+        public SondagemAnaliticaRepository(VariaveisAmbiente variaveisAmbiente,IAlunoRepository alunoRepository,IDreRepository dreRepository,IUeRepository ueRepository)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
             this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
+            this.dreRepository = dreRepository ?? throw new ArgumentNullException(nameof(dreRepository));
+            this.ueRepository = ueRepository ?? throw new ArgumentNullException(nameof(ueRepository));
         }
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCapacidadeDeLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
@@ -51,7 +55,8 @@ namespace SME.SR.Data
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var modalidades = new List<int> {5, 13};
             var relatorioSondagemAnaliticoLeituraDto = new RelatorioSondagemAnaliticoLeituraDto();
-
+            var dre = await dreRepository.ObterPorCodigo(filtro.DreCodigo);
+            var ue = await ueRepository.ObterPorCodigo(filtro.UeCodigo);
             var sql = ConsultaLeituraEscritaLinguaPortuguesaPrimeiroAoTerceiroAno(campoTabelaFiltroBimestre);
 
             var parametros = new {dreCodeEol = filtro.DreCodigo, ueCodigo = filtro.UeCodigo, anoLetivo = filtro.AnoLetivo.ToString(), anoTurma = filtro.AnoTurma};
@@ -80,11 +85,21 @@ namespace SME.SR.Data
                     Nivel2 = dtoConsulta.Select(x => x.Nivel2).Sum(),
                     Nivel3 = dtoConsulta.Select(x => x.Nivel3).Sum(),
                     Nivel4 = dtoConsulta.Select(x => x.Nivel4).Sum(),
-                    SemPreenchimento = calculoComAlunos >= 0 ? calculoComAlunos : dtoConsulta.Select(x => x.SemPreenchimento).Sum()
+                    SemPreenchimento = calculoComAlunos >= 0 ? calculoComAlunos : dtoConsulta.Select(x => x.SemPreenchimento).Sum(),
+                    TotalDeAlunos = quantidadeTotalAlunos,
+                    Ano = int.Parse(filtro.AnoTurma),
+                    TotalDeTurma = turmasComSondagem.Count(),
+                    Ue = ue.Nome
                 };
                 relatorioSondagemAnaliticoLeituraDto.Respostas.Add(respostaSondagemAnaliticoLeituraDto);
             }
 
+            relatorioSondagemAnaliticoLeituraDto.Dre = dre.Nome;
+            relatorioSondagemAnaliticoLeituraDto.DreSigla = dre.Abreviacao;
+            //Total De Alunos = quantidadeTotalAlunos
+            //Ano = filtro.AnoTurma
+            //Total De Turmas = turmasComSondagem.Count()
+            //Unidade Escolar = ue.Nome
             retorno.Add(relatorioSondagemAnaliticoLeituraDto);
             return retorno;
         }

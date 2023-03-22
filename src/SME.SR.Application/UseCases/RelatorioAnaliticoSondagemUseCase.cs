@@ -27,10 +27,11 @@ namespace SME.SR.Application
                 Bimestre= 1,
                 DreCodigo= "108300",
                 UeCodigo= "019406",
-                TipoSondagem= TipoSondagem.LP_Escrita
+                TipoSondagem= TipoSondagem.LP_Leitura
             };
+            request.CodigoCorrelacao = Guid.NewGuid();
             var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
-
+    
             if (relatorios == null || !relatorios.Any())
                 throw new NegocioException("Não há dados para o relatório analítico da sondagem.");
 
