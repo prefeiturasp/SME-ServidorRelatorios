@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra.Dtos.Sondagem
 {
-    public class TotalRespostasAnaliticoDto
+    public class TotalRespostasAnaliticoLeituraDto
     {
         public int Nivel1 { get; set; }
         public int Nivel2 { get; set; }

@@ -1,7 +1,8 @@
-﻿namespace SME.SR.Infra
+﻿namespace SME.SR.Infra.Dtos.Sondagem
 {
-    public class RespostaSondagemAnaliticoEscritaDto : RelatorioSondagemAnaliticoDto
+    public class TotalRespostasAnaliticoEscritaDto
     {
+        public string TurmaCodigo { get; set; }
         public int PreSilabico { get; set; }
         public int SilabicoSemValor { get; set; }
         public int SilabicoComValor { get; set; }

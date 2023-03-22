@@ -27,7 +27,7 @@ namespace SME.SR.Application
                 Bimestre= 1,
                 DreCodigo= "108300",
                 UeCodigo= "019406",
-                TipoSondagem= TipoSondagem.LP_Leitura
+                TipoSondagem= TipoSondagem.LP_Escrita
             };
             request.CodigoCorrelacao = Guid.NewGuid();
             var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
