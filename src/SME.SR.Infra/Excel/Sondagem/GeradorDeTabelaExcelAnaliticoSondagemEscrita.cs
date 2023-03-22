@@ -5,6 +5,7 @@ namespace SME.SR.Infra
 {
     public class GeradorDeTabelaExcelAnaliticoSondagemEscrita : GeradorDeTabelaExcelAnaliticoSondagem
     {
+        private const string PRE_SILABICO = "PreSilabico";
         private const string SILABICO_SEM_VALOR = "SilabicoSemValor";
         private const string SILABICO_COM_VALOR = "SilabicoComValor";
         private const string SILABICO_ALFABETICO = "SilabicoAlfabetico";
@@ -25,6 +26,7 @@ namespace SME.SR.Infra
 
                 CarregaLinha(linha, resposta);
 
+                linha[PRE_SILABICO] = resposta.PreSilabico;
                 linha[SILABICO_SEM_VALOR] = resposta.SilabicoSemValor;
                 linha[SILABICO_COM_VALOR] = resposta.SilabicoComValor;
                 linha[SILABICO_ALFABETICO] = resposta.SilabicoAlfabetico;
@@ -37,6 +39,7 @@ namespace SME.SR.Infra
 
         protected override void CarregarLinhaTitulo(DataRow linha)
         {
+            linha[PRE_SILABICO] = "Pré-Silábico";
             linha[SILABICO_SEM_VALOR] = "Silábico sem valor";
             linha[SILABICO_COM_VALOR] = "Silábico com valor";
             linha[SILABICO_ALFABETICO] = "Silábico alfabético";
@@ -48,6 +51,7 @@ namespace SME.SR.Infra
         {
             return new DataColumn[]
             {
+                new DataColumn(PRE_SILABICO),
                 new DataColumn(SILABICO_SEM_VALOR),
                 new DataColumn(SILABICO_COM_VALOR),
                 new DataColumn(SILABICO_ALFABETICO),
