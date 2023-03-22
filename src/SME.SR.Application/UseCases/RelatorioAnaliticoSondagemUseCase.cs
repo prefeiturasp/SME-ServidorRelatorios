@@ -18,23 +18,13 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            //var filtros = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
-            var filtros = new FiltroRelatorioAnaliticoSondagemDto
-            {
-                AnoLetivo= 2021,
-                AnoTurma= "3",
-                Semestre= 1,
-                Bimestre= 1,
-                DreCodigo= "108300",
-                UeCodigo= "019406",
-                TipoSondagem= TipoSondagem.LP_Leitura
-            };
-            var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtros));
+            var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
+            var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
 
             if (relatorios == null || !relatorios.Any())
                 throw new NegocioException("Não há dados para o relatório analítico da sondagem.");
 
-            //await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
+            await mediator.Send(new GerarRelatorioAnaliticoDaSondagemExcelCommand(relatorios, filtro.TipoSondagem, request.CodigoCorrelacao));
         }
     }
 }

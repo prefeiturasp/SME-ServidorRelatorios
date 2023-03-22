@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SME.SR.Infra.Utilitarios;
+using System.ComponentModel.DataAnnotations;
 
 namespace SME.SR.Infra
 {
@@ -6,5 +7,7 @@ namespace SME.SR.Infra
     {
         public string Dre { get; set; }
         public string DreSigla { get; set; }
+        public string DescricaoTipoSondagem => TipoDaSondagem.GetAttribute<DisplayAttribute>().Name;
+        protected abstract TipoSondagem TipoDaSondagem { get; }
     }
 }
