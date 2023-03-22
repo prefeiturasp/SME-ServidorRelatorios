@@ -44,7 +44,7 @@ namespace SME.SR.Infra
             linha["TotalDeAlunos"] = dto.TotalDeAlunos;
         }
 
-        private void CarregarTitulo(DataTable data)
+        protected virtual void CarregarTitulo(DataTable data)
         {
             DataRow linhaTitulo = data.NewRow();
 

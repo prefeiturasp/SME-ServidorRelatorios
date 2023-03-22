@@ -40,7 +40,7 @@ namespace SME.SR.Infra.Excel.Sondagem
             linha[NIVEL2] = "Nivel2";
             linha[NIVEL3] = "Nivel3";
             linha[NIVEL4] = "Nivel4";
-            linha[SEM_PREENCHIMENTO] = "Sem \npreenchimento";
+            linha[SEM_PREENCHIMENTO] = "Sem preenchimento";
         }
 
         protected override DataColumn[] ObterColunas()
