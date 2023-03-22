@@ -24,10 +24,10 @@ namespace SME.SR.Data.Repositories.Sgp
 	                                enr.resposta_id as OpcaoRespostaId,
 	                                enr.texto
 	                         from encaminhamento_naapa_secao ens 
-	                         inner join secao_encaminhamento_naapa sen on sen.id = ens.secao_encaminhamento_id 
-	                         inner join encaminhamento_naapa_questao enq on enq.encaminhamento_naapa_secao_id = ens.id 
-	                         inner join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
-	                         where ens.encaminhamento_naapa_id = @encaminhamentoNaapaId";
+                             inner join secao_encaminhamento_naapa sen on sen.id = ens.secao_encaminhamento_id and not sen.excluido
+                             inner join encaminhamento_naapa_questao enq on enq.encaminhamento_naapa_secao_id = ens.id and not enq.excluido
+                             inner join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id and not enr.excluido 
+	                         where not ens.excluido and ens.encaminhamento_naapa_id = @encaminhamentoNaapaId";
 
             if (!string.IsNullOrEmpty(nomeComponenteSecao))
                 query += " and sen.nome_componente = @nomeComponenteSecao ";
