@@ -225,7 +225,7 @@ namespace SME.SR.Data
             query.Append(" inner join turma t on t.id = en.turma_id");
             query.Append(" inner join ue u on u.id = t.ue_id");
             query.Append(" inner join dre d on d.id = u.dre_id");
-            query.Append(" where en.id = any(@encaminhamentoNaapaIds)");
+            query.Append(" where not en.excluido and en.id = any(@encaminhamentoNaapaIds)");
             query.Append(" order by d.abreviacao, u.nome, en.aluno_codigo");
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
