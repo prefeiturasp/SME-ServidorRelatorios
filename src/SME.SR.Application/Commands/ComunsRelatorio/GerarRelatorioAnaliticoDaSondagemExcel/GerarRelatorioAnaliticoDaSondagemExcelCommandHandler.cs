@@ -1,12 +1,9 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
 using MediatR;
-using RazorEngine.Compilation.ImpromptuInterface.InvokeExt;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using System;
-using System.Data;
-using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -44,7 +41,7 @@ namespace SME.SR.Application
 
                     worksheet.Cell(LINHA_TABELA, 1).InsertData(dtoExcel.TabelaDeDado);
 
-                    AdicionarEstilo(worksheet);
+                    AdicionarEstilo(worksheet, request.TipoSondagem);
                 }
 
                 var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
@@ -91,13 +88,13 @@ namespace SME.SR.Application
             return new MemoryStream(Convert.FromBase64String(base64Logo));
         }
 
-        private void AdicionarEstilo(IXLWorksheet worksheet)
+        private void AdicionarEstilo(IXLWorksheet worksheet, TipoSondagem tipoSondagem)
         {
             int ultimaColunaUsada = worksheet.LastColumnUsed().ColumnNumber();
             int ultimaLinhaUsada = worksheet.LastRowUsed().RowNumber();
 
             AdicionarEstiloCabecalho(worksheet, ultimaColunaUsada);
-            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada);
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, tipoSondagem);
 
             worksheet.ShowGridLines = false;
 
@@ -118,20 +115,71 @@ namespace SME.SR.Application
             range.Style.Font.SetFontName("Arial");
         }
 
-        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
+        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada, TipoSondagem tipoSondagem)
         {
-            worksheet.Range(LINHA_TABELA, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontName("Arial");
-            worksheet.Range(LINHA_TABELA, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            var dicionarioEstiloCustom = ObterDicionarioEstiloCorpoCustom();
 
-            worksheet.Range(LINHA_TABELA, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-            worksheet.Range(LINHA_TABELA, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorderColor(XLColor.Black);
+            if (dicionarioEstiloCustom.ContainsKey(tipoSondagem))
+                dicionarioEstiloCustom[tipoSondagem](worksheet, ultimaColunaUsada, ultimaLinhaUsada);
+            else
+                AdicionarEstiloCorpoPadrao(worksheet, ultimaColunaUsada, ultimaLinhaUsada);
+        }
 
-            worksheet.Range(LINHA_TABELA, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
-            worksheet.Range(LINHA_TABELA, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorderColor(XLColor.Black);
+        private Dictionary<TipoSondagem, Action<IXLWorksheet, int, int>> ObterDicionarioEstiloCorpoCustom()
+        {
+            return new Dictionary<TipoSondagem, Action<IXLWorksheet, int, int>>()
+            {
+                { TipoSondagem.LP_CapacidadeLeitura, AdicionarEstiloCorpoCapacidadeDeLeitura }
+            };
+        }
 
-            worksheet.Range(LINHA_TABELA, 1, LINHA_TABELA, ultimaColunaUsada).Style.Font.SetFontSize(10);
-            worksheet.Range(LINHA_TABELA, 1, LINHA_TABELA, ultimaColunaUsada).Style.Font.Bold = true;
-            worksheet.Range(LINHA_TABELA, 2, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+        private void AdicionarEstiloCorpoPadrao(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
+        {
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABELA);
+        }
+
+        private void AdicionarEstiloCorpoCapacidadeDeLeitura(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
+        {
+            const int LINHA_SUBTITULO = 9;
+            const int LINHA_TABTITULO = 10;
+
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABELA);
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_SUBTITULO);
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABTITULO);
+
+            worksheet.Range(LINHA_TABELA, 1, LINHA_TABELA, 4).Merge();
+            worksheet.Range(LINHA_TABELA, 1, LINHA_SUBTITULO, 4).Merge();
+
+            AdicioneMerge(worksheet, 5, ultimaColunaUsada, LINHA_TABELA, 11);
+            AdicioneMerge(worksheet, 1, ultimaColunaUsada, LINHA_SUBTITULO, 3);
+        }
+
+        private void AdicioneMerge(IXLWorksheet worksheet, int colunaInicio, int ultimaColunaUsada, int linhaMerge, int acrescimoColuna)
+        {
+            var colunafinal = 0;
+
+            while (colunaInicio <= ultimaColunaUsada)
+            {
+                colunafinal = colunaInicio + acrescimoColuna;
+                worksheet.Range(linhaMerge, colunaInicio, linhaMerge, colunafinal).Merge();
+                colunaInicio = colunafinal + 1;
+            }
+        }
+
+        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada, int linha)
+        {
+            worksheet.Range(linha, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontName("Arial");
+            worksheet.Range(linha, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+            worksheet.Range(linha, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(linha, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorderColor(XLColor.Black);
+
+            worksheet.Range(linha, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(linha, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorderColor(XLColor.Black);
+
+            worksheet.Range(linha, 1, linha, ultimaColunaUsada).Style.Font.SetFontSize(10);
+            worksheet.Range(linha, 1, linha, ultimaColunaUsada).Style.Font.Bold = true;
+            worksheet.Range(linha, 2, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
         }
     }
 }

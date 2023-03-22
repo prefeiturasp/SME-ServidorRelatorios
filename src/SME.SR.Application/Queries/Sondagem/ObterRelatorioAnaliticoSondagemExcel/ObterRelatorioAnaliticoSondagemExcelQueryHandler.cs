@@ -25,7 +25,10 @@ namespace SME.SR.Application
             return new Dictionary<TipoSondagem, GeradorDeTabelaExcelAnaliticoSondagem>()
             {
                 { TipoSondagem.LP_Leitura, new GeradorDeTabelaExcelAnaliticoSondagemLeitura(relatorios) },
-                { TipoSondagem.LP_LeituraVozAlta, new GeradorDeTabelaExcelAnaliticoSondagemLeituraDeVozAlta(relatorios) }
+                { TipoSondagem.LP_LeituraVozAlta, new GeradorDeTabelaExcelAnaliticoSondagemLeituraDeVozAlta(relatorios) },
+                { TipoSondagem.LP_CapacidadeLeitura, new GeradorDeTabelaExcelAnaliticoSondagemCapacidadeDeLeitura(relatorios) },
+                { TipoSondagem.LP_ProducaoTexto, new GeradorDeTabelaExcelAnaliticoSondagemProducaoDeTexto(relatorios) },
+                { TipoSondagem.LP_Escrita, new GeradorDeTabelaExcelAnaliticoSondagemEscrita(relatorios) }
             };
         }
     }
