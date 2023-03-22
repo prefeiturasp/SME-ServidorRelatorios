@@ -6,6 +6,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 namespace SME.SR.Data
@@ -1706,6 +1707,20 @@ namespace SME.SR.Data
 	        {
 		        return await con.QueryFirstOrDefaultAsync<int>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
 	        }
+        }
+
+        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string[] codigosTurmas, DateTime dataReferencia)
+        {
+	        var totalAlunos = 0;
+	        var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
+	        var parametros = new {dataReferencia};
+	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
+	        {
+		        var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query.ToString().Replace("@turmas", string.Join(", ", codigosTurmas)), parametros, commandTimeout: 6000)).ToList();
+		        if (registros.Count() >= 0)
+			        totalAlunos = registros.Count();
+	        }
+	        return totalAlunos;
         }
     }
 }
