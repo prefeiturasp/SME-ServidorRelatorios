@@ -17,9 +17,9 @@ namespace SME.SR.Infra
 
         protected override void CarregarLinhas(DataTable data, RelatorioSondagemAnaliticoPorDreDto sondagemAnalitica)
         {
-            var vozAlta = (RelatorioSondagemAnaliticoEscritaDto)sondagemAnalitica;
+            var escrita = (RelatorioSondagemAnaliticoEscritaDto)sondagemAnalitica;
 
-            foreach (var resposta in vozAlta.Respostas)
+            foreach (var resposta in escrita.Respostas)
             {
                 DataRow linha = data.NewRow();
 
