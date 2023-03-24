@@ -28,7 +28,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         public async Task<RelatorioFrequenciaDto> Handle(ObterRelatorioFrequenciaPdfQuery request, CancellationToken cancellationToken)
         {
-            var model = new RelatorioFrequenciaDto();
+            var relatorioFrequenciaDto = new RelatorioFrequenciaDto();
             var filtro = request.Filtro;
 
             filtro.AnosEscolares ??= new[] { new string("-99") };
@@ -83,190 +83,20 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             foreach (var dre in dres)
             {
-                foreach (var ue in dre.Ues)
-                {
-                    foreach (var ano in ue.TurmasAnos)
-                    {
-                        ano.EhExibirTurma = request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano;
-                        ano.Nome = ano.Nome.Equals("0º ano") ? "TURMA DE PROGRAMA" : ano.NomeTurmaAno.ToUpper();
-
-                        foreach (var bimestre in ano.Bimestres)
-                        {
-                            bimestre.NomeBimestre = $"{bimestre.NomeBimestre}º Bimestre".ToUpper();
-
-                            var periodoEscolar = periodosEscolares
-                                .FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
-
-                            foreach (var componente in bimestre.Componentes)
-                            {
-                                var componenteAtual = componentes
-                                    .FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
-
-                                var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
-
-                                if (componenteAtual != null)
-                                    componente.NomeComponente = componenteAtual.Descricao.ToUpper();
-
-                                var frequencias = await mediator
-                                    .Send(new ObterFrequenciasAlunosConsolidadoQuery(turmasccc.ToArray(), componente.CodigoComponente, bimestre.Numero));
-
-                                foreach (var aluno in componente.Alunos)
-                                {
-                                    var alunoAtual = alunos.FirstOrDefault(c => c.CodigoAluno == aluno.CodigoAluno && c.TurmaCodigo == aluno.CodigoTurma &&
-                                                                                c.DataMatricula.Date <= periodoEscolar.PeriodoFim.Date);
-
-                                    if (alunoAtual == null)
-                                        continue;
-
-                                    var frequenciaAluno = frequencias.FirstOrDefault(f => f.AlunoCodigo == aluno.CodigoAluno.ToString() &&
-                                                                                          f.TurmaCodigo == aluno.CodigoTurma);
-
-                                    var turmaFiltrada = turmas.FirstOrDefault(a => a.Codigo == alunoAtual.TurmaCodigo);
-                                    aluno.NomeAluno = alunoAtual.NomeFinal ?? alunoAtual.Nome;
-                                    aluno.NumeroChamada = alunoAtual.NumeroChamada ?? "0";
-                                    aluno.TotalPresenca = frequenciaAluno.TotalPresencas;
-                                    aluno.TotalRemoto = frequenciaAluno.TotalRemotos;
-                                    aluno.TotalAusencias = frequenciaAluno.TotalAusencias;
-                                    aluno.NomeTurma = turmaFiltrada == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaFiltrada.Nome}";
-                                    aluno.TotalAulas = frequenciaAluno.TotalAulas;
-                                }
-
-                                var alunosSemFrequenciaNaTurma = alunos
-                                    .Where(a => (a.Ativo && a.SituacaoMatricula != SituacaoMatriculaAluno.VinculoIndevido) ||
-                                                (!a.Ativo && a.DataMatricula.Date < periodoEscolar.PeriodoFim.Date))
-                                    .Where(a => turmasccc.Contains(a.TurmaCodigo))
-                                    .Where(a => !componente.Alunos.Any(c => c.CodigoAluno == a.CodigoAluno));
-
-                                var novosAlunosComFrequencia = await NovaBuscaAlunosSemFrequencia(componente,
-                                                                                                  turmasccc,
-                                                                                                  turmas.ToList(),
-                                                                                                  int.Parse(bimestre.Numero),
-                                                                                                  alunosSemFrequenciaNaTurma.ToList(),
-                                                                                                  filtro.Modalidade);
-
-                                if (novosAlunosComFrequencia.Any())
-                                {
-                                    componente.Alunos.AddRange(novosAlunosComFrequencia);
-
-                                    alunosSemFrequenciaNaTurma = alunosSemFrequenciaNaTurma
-                                        .Where(asf => !novosAlunosComFrequencia.Any(naf => naf.CodigoAluno == asf.CodigoAluno && naf.CodigoTurma == asf.TurmaCodigo));
-                                }
-
-                                if (alunosSemFrequenciaNaTurma != null && alunosSemFrequenciaNaTurma.Any())
-                                {
-                                    var turmaAlunos = await mediator
-                                        .Send(new ObterTurmaPorCodigoQuery(alunosSemFrequenciaNaTurma.First().TurmaCodigo));
-
-                                    var sem = alunosSemFrequenciaNaTurma.Select(c => new RelatorioFrequenciaAlunoDto
-                                    {
-                                        CodigoAluno = c.CodigoAluno,
-                                        NomeTurma = turmaAlunos == null ? "" : $"{filtro.Modalidade.ShortName()}-{turmaAlunos.Nome}",
-                                        NomeAluno = c.NomeFinal,
-                                        NumeroChamada = c.NumeroChamada ?? "0",
-                                        TotalAusencias = 0,
-                                        TotalCompensacoes = 0,
-                                        TotalAulas = componente.Alunos.FirstOrDefault()?.TotalAulas ?? 0
-                                    }).ToList();
-
-                                    componente.Alunos.AddRange(sem);
-                                }
-
-                                model.UltimoAluno = componente.Alunos
-                                    .LastOrDefault().CodigoAluno.ToString();
-                            }
-                        }
-
-                        if (deveAdicionarFinal)
-                        {
-                            var final = new RelatorioFrequenciaBimestreDto { NomeBimestre = "Final", };
-
-                            var componentesFinal = ano.Bimestres
-                                .SelectMany(c => c.Componentes).DistinctBy(c => c.CodigoComponente).ToList();
-
-                            await AjustarBimestresSemFaltas(filtro.AnoLetivo, filtro.Semestre, componentesFinal, filtro.Modalidade, ano.Bimestres);
-
-                            foreach (var bimestre in ano.Bimestres.ToList())
-                            {
-                                foreach (var componente in bimestre.Componentes)
-                                {
-                                    var componenteAtual = final.Componentes
-                                        .FirstOrDefault(c => c.CodigoComponente == componente.CodigoComponente);
-
-                                    var periodoEscolar = periodosEscolares
-                                        .FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
-
-                                    if (componenteAtual == null)
-                                    {
-                                        componenteAtual = new RelatorioFrequenciaComponenteDto();
-                                        componenteAtual.NomeComponente = componente.NomeComponente.ToUpper();
-                                        componenteAtual.CodigoComponente = componente.CodigoComponente;
-                                        final.Componentes.Add(componenteAtual);
-                                    }
-
-                                    if (componente.Alunos.Any())
-                                    {
-                                        var frequencias = await mediator
-                                            .Send(new ObterFrequenciasAlunosPorFiltroQuery(componente.Alunos.FirstOrDefault().CodigoTurma, componente.CodigoComponente, int.Parse(bimestre.Numero)));
-
-                                        foreach (var aluno in componente.Alunos)
-                                        {
-                                            var matriculaCorrespondentePeriodo = alunos.FirstOrDefault(a => a.CodigoAluno == aluno.CodigoAluno && a.TurmaCodigo == aluno.CodigoTurma &&
-                                                                                                            a.DataMatricula.Date <= periodoEscolar.PeriodoFim.Date);
-                                            if (matriculaCorrespondentePeriodo == null)
-                                                continue;
-
-                                            var frequenciaAluno = new List<FrequenciaAlunoRetornoDto>();
-
-                                            if (frequencias != null && frequencias.Any())
-                                                frequenciaAluno = frequencias.Where(f => f.AlunoCodigo == aluno.CodigoAluno.ToString()).ToList();
-
-                                            var totalPresenca = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.C);
-                                            var totalRemoto = frequenciaAluno?.FirstOrDefault(f => f.TipoFrequencia == TipoFrequencia.R);
-                                            var codigoAluno = aluno.CodigoAluno;
-                                            var alunoAtual = componenteAtual.Alunos
-                                                .FirstOrDefault(c => c.CodigoAluno == codigoAluno);
-
-                                            if (alunoAtual == null)
-                                            {
-                                                alunoAtual = new RelatorioFrequenciaAlunoDto();
-                                                alunoAtual.CodigoAluno = aluno.CodigoAluno;
-                                                alunoAtual.NomeAluno = aluno.NomeAluno;
-                                                alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
-                                                componenteAtual.Alunos.Add(alunoAtual);
-                                            }
-                                            alunoAtual.TotalAulas += aluno.TotalAulas;
-                                            alunoAtual.TotalAusencias += aluno.TotalAusencias;
-                                            alunoAtual.TotalCompensacoes += aluno.TotalCompensacoes;
-                                            alunoAtual.NomeAluno = aluno.NomeAluno;
-                                            alunoAtual.NomeTurma = aluno.NomeTurma;
-                                            alunoAtual.NumeroChamada = aluno.NumeroChamada ?? "0";
-                                            alunoAtual.TotalPresenca += aluno.TotalPresenca;
-                                            alunoAtual.TotalRemoto += aluno.TotalRemoto;
-                                        }
-                                    }
-
-                                }
-                            }
-                            ano.Bimestres.Add(final);
-                        }
-
-                        if (mostrarSomenteFinal)
-                            ano.Bimestres.RemoveAll(c => c.NomeBimestre != "Final");
-
-                        ano.Bimestres = ano.Bimestres
-                            .OrderBy(c => c.NomeBimestre).ToList();
-                    }
-                }
-                model.UltimoAluno = $"{dre.NomeDre}{model.UltimoAluno}";
+                var ultimoAluno = await mediator.Send(new ObterRelatorioFrequenciaPdfPorDreQuery(request.Filtro, dre.Ues, periodosEscolares, componentes, alunos, turmas, deveAdicionarFinal, mostrarSomenteFinal));
+                if (!string.IsNullOrEmpty(ultimoAluno))
+                    relatorioFrequenciaDto.UltimoAluno = ultimoAluno;
+                
+                relatorioFrequenciaDto.UltimoAluno = $"{dre.NomeDre}{relatorioFrequenciaDto.UltimoAluno}";
             }
 
-            DefinirCabecalho(request, model, filtro, dres, componentes);
-            model.Dres = FiltrarFaltasFrequencia(model.Dres, filtro);
+            DefinirCabecalho(request, relatorioFrequenciaDto, filtro, dres, componentes);
+            relatorioFrequenciaDto.Dres = FiltrarFaltasFrequencia(relatorioFrequenciaDto.Dres, filtro);
 
-            if (model.Dres == null || !model.Dres.Any())
+            if (relatorioFrequenciaDto.Dres == null || !relatorioFrequenciaDto.Dres.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            return await Task.FromResult(model);
+            return await Task.FromResult(relatorioFrequenciaDto);
         }
 
         private async Task<List<RelatorioFrequenciaAlunoDto>> NovaBuscaAlunosSemFrequencia(RelatorioFrequenciaComponenteDto componente,
