@@ -4,7 +4,7 @@
     {
         public int NaoConseguiuOuNaoQuisLer { get; set; }
         public int LeuComMuitaDificuldade { get; set; }
-        public int LeuComAlgumaFluência { get; set; }
+        public int LeuComAlgumaFluencia { get; set; }
         public int LeuComFluencia { get; set; }
         public int SemPreenchimento { get; set; }
     }

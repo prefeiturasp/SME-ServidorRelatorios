@@ -24,7 +24,6 @@ namespace SME.SR.Infra.Excel.Sondagem
                 DataRow linha = data.NewRow();
 
                 CarregaLinha(linha, resposta);
-
                 linha[NIVEL1] = resposta.Nivel1;
                 linha[NIVEL2] = resposta.Nivel2;
                 linha[NIVEL3] = resposta.Nivel3;
