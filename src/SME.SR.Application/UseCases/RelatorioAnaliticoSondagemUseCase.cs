@@ -18,18 +18,18 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
-            // var filtro = new FiltroRelatorioAnaliticoSondagemDto
-            // {
-            //     AnoLetivo= 2021,
-            //     AnoTurma= "1",
-            //     Semestre= 1,
-            //     Bimestre= 1,
-            //     DreCodigo= "108300",
-            //     UeCodigo= "019406",
-            //     TipoSondagem= TipoSondagem.LP_Escrita
-            // };
-            // request.CodigoCorrelacao = Guid.NewGuid();
+            //var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
+            var filtro = new FiltroRelatorioAnaliticoSondagemDto
+            {
+                AnoLetivo= 2021,
+                AnoTurma= "4",
+                Semestre= 4,
+                Bimestre= 4,
+                DreCodigo= "108300",
+                UeCodigo= "019406",
+                TipoSondagem= TipoSondagem.LP_ProducaoTexto
+            };
+            request.CodigoCorrelacao = Guid.NewGuid();
             var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
     
             if (relatorios == null || !relatorios.Any())

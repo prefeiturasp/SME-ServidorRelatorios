@@ -36,7 +36,7 @@ namespace SME.SR.Infra
 
         private void CarregarLinhaResposta(RespostaCapacidadeDeLeituraDto dto, DataRow linha, int coluna)
         {
-            CarregarLinhaResposta(dto.Localização, linha, coluna);
+            CarregarLinhaResposta(dto.Localizacao, linha, coluna);
             CarregarLinhaResposta(dto.Inferencia, linha, coluna + 4);
             CarregarLinhaResposta(dto.Reflexao, linha, coluna + 8);
         }

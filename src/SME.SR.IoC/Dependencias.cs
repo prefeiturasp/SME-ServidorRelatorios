@@ -22,6 +22,7 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
+using SME.SR.Data.Interfaces.Sondagem;
 
 namespace SME.SR.IoC
 {
@@ -157,6 +158,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
+            services.TryAddScoped(typeof(ISondagemRelatorioRepository), typeof(SondagemRelatorioRepository));
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
             services.TryAddScoped(typeof(IDiarioBordoRepository), typeof(DiarioBordoRepository));
             services.TryAddScoped(typeof(INotificacaoRepository), typeof(NotificacaoRepository));
