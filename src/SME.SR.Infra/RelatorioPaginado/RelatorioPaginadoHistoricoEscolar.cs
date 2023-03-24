@@ -131,6 +131,8 @@ namespace SME.SR.Infra.RelatorioPaginado
 
             linhas += dadosHistoricoDto.GruposComponentesCurriculares != null ? dadosHistoricoDto.GruposComponentesCurriculares.Count() : 0;
 
+            linhas += dadosHistoricoDto.FrequenciaGlobal != null ? 1 : 0;
+            
             linhas += dadosHistoricoDto.ParecerConclusivo != null ? 1 : 0;
 
             return linhas;

@@ -13,6 +13,13 @@ namespace SME.SR.Application
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
         private const string FREQUENCIA_100 = "100";
+        private const string SEM_PARECER_CONCLUSIVO = "Sem parecer";
+        
+        private const int COLUNA_AUSENCIA = 1;
+        private const int COLUNA_COMPENSACAO = 2;
+        private const int COLUNA_PORCENTAGEM_FREQUENCIA = 3;
+        private const int COLUNA_PARECER_CONCLUSIVO = 4;
+        
         private readonly VariaveisAmbiente variaveisAmbiente;
 
         private readonly IMediator mediator;
@@ -617,30 +624,23 @@ namespace SME.SR.Application
             var percentualFrequencia2020 = Math.Round((((qtdeDisciplinasLancamFrequencia - frequenciasAluno.Count()) * 100) 
                                                 + (decimal)frequenciasAluno.Sum(f => f.PercentualFrequenciaFinal)) / qtdeDisciplinasLancamFrequencia, 2);
 
-            if (possuiConselhoFinalParaAnual || aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo)
+            string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequencia.ToString() 
+                : ObterPercentualFrequenciaFinal(frequenciasAluno, turmaExisteFrequenciaRegistrada);
+            
+            var percentualFrequenciaAcumulado = (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : percentualFrequenciaFinal);
+            
+            linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? "0", COLUNA_AUSENCIA);
+            linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", COLUNA_COMPENSACAO);
+            linhaDto.AdicionaCelula(99, 99, percentualFrequenciaAcumulado ?? FREQUENCIA_100, COLUNA_PORCENTAGEM_FREQUENCIA);
+
+            var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
+            var textoParecer = parecerConclusivo?.ParecerConclusivo;
+            if (textoParecer == null)
             {
-                string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequencia.ToString() 
-                                                                                 : ObterPercentualFrequenciaFinal(frequenciasAluno, turmaExisteFrequenciaRegistrada);
-
-                linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? "0", 1);
-                linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
-                linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : percentualFrequenciaFinal) ?? FREQUENCIA_100, 3);
-
-                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
-                var textoParecer = parecerConclusivo?.ParecerConclusivo;
-                if (textoParecer == null)
-                {
-                    bool ativoOuConcluido = AlunoAtivo(aluno.CodigoSituacaoMatricula);
-                    textoParecer = !ativoOuConcluido ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
-                }
-                linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
-                return;
+                bool ativoOuConcluido = AlunoAtivo(aluno.CodigoSituacaoMatricula);
+                textoParecer = !ativoOuConcluido ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : SEM_PARECER_CONCLUSIVO;
             }
-
-            linhaDto.AdicionaCelula(99, 99, "0", 1);
-            linhaDto.AdicionaCelula(99, 99, "0", 2);
-            linhaDto.AdicionaCelula(99, 99, string.Empty, 3);
-            linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
+            linhaDto.AdicionaCelula(99, 99, textoParecer, COLUNA_PARECER_CONCLUSIVO);
         }
 
         private string ObterPercentualFrequenciaFinal(IEnumerable<FrequenciaAluno> frequenciasAluno, bool existeFrequenciaRegistradaTurma)
