@@ -347,8 +347,9 @@ namespace SME.SR.Data
             })).ToList();
 
             var alunoNaSondagem = realizarConsulta.GroupBy(x => x.CodigoAluno);
+            var tumasNaSondagem = realizarConsulta.GroupBy(x => x.CodigoTurma);
             var quantidadeAlunoNaSondagem = alunoNaSondagem.Select(x => x.Key).Count();
-            var totalDeTurma = 0;
+            var totalDeTurma = tumasNaSondagem.Select(x => x.Key).Count();
             
             var respostas = new RespostaSondagemAnaliticoProducaoDeTextoDto()
             {
@@ -361,10 +362,13 @@ namespace SME.SR.Data
                 SemPreenchimento = totalDeAlunos - quantidadeAlunoNaSondagem,
                 Ano = int.Parse(filtro.AnoTurma),
                 TotalDeTurma = totalDeTurma,
-                TotalDeAlunos = totalDeAlunos
+                TotalDeAlunos = totalDeAlunos,
+                Ue = ue.Nome
             };
             
             perguntas.Respostas.Add(respostas);
+            perguntas.DreSigla = dre.Abreviacao;
+            perguntas.Dre = dre.Nome;
             retorno.Add(perguntas);
             return retorno;
         }
