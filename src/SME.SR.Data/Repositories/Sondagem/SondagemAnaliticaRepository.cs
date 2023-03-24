@@ -317,8 +317,46 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeituraDeVozAlta(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
+            var modalidades = new List<int> {5, 13};
+            var periodo = await ObterPeriodoSondagem(filtro.Bimestre);
+            var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
+            var dre = await dreRepository.ObterPorCodigo(filtro.DreCodigo);
+            var ue = await ueRepository.ObterPorCodigo(filtro.UeCodigo);
+            var totalDeAlunos = await alunoRepository.ObterTotalAlunosAtivosPorPeriodo(filtro.AnoTurma, filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio, periodoFixo.DataFim, filtro.UeCodigo, filtro.DreCodigo);
+            var perguntas = new RelatorioSondagemAnaliticoLeituraDeVozAltaDto();
+            var realizarConsulta =( await sondagemRelatorioRepository.ObterDadosProducaoTexto(new RelatorioPortuguesFiltroDto
+            {
+                AnoEscolar = int.Parse(filtro.AnoTurma),
+                AnoLetivo = filtro.AnoLetivo,
+                CodigoDre = filtro.DreCodigo,
+                CodigoUe = filtro.UeCodigo,
+                ComponenteCurricularId = SondagemComponenteCurricular.LINGUA_PORTUGUESA,
+                GrupoId = GrupoSondagem.LEITURA_EM_VOZ_ALTA,
+                PeriodoId = periodo.Id
+            })).ToList();
+            
+            var alunoNaSondagem = realizarConsulta.GroupBy(x => x.CodigoAluno);
+            var tumasNaSondagem = realizarConsulta.GroupBy(x => x.CodigoTurma);
+            var quantidadeAlunoNaSondagem = alunoNaSondagem.Select(x => x.Key).Count();
+            var totalDeTurma = tumasNaSondagem.Select(x => x.Key).Count();
 
-            retorno.Add(new RelatorioSondagemAnaliticoLeituraDeVozAltaDto());
+            var respostas = new RespostaSondagemAnaliticoLeituraDeVozAltaDto
+            {
+                NaoConseguiuOuNaoQuisLer = realizarConsulta.Count(p => p.Pergunta == PerguntaDescricaoSondagem.NaoConseguiuOuNaoQuisLer),
+                LeuComMuitaDificuldade = realizarConsulta.Count(p => p.Pergunta == PerguntaDescricaoSondagem.LeuComMuitaDificuldade),
+                LeuComAlgumaFluencia = realizarConsulta.Count(p => p.Pergunta == PerguntaDescricaoSondagem.LeuComAlgumaFluencia),
+                LeuComFluencia = realizarConsulta.Count(p => p.Pergunta == PerguntaDescricaoSondagem.LeuComFluencia),
+                SemPreenchimento = totalDeAlunos - quantidadeAlunoNaSondagem,
+                Ano = int.Parse(filtro.AnoTurma),
+                TotalDeTurma = totalDeTurma,
+                TotalDeAlunos = totalDeAlunos,
+                Ue = ue.Nome
+            };
+            
+            perguntas.Respostas.Add(respostas);
+            perguntas.DreSigla = dre.Abreviacao;
+            perguntas.Dre = dre.Nome;
+            retorno.Add(perguntas);
 
             return retorno;
         }

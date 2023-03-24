@@ -26,7 +26,7 @@ namespace SME.SR.Infra
 
                 linha[NAO_CONSEGUIU_NAO_QUIS_LER] = resposta.NaoConseguiuOuNaoQuisLer;
                 linha[LEU_COM_MUITA_DIFICULDADE] = resposta.LeuComMuitaDificuldade;
-                linha[LEU_COM_ALGUMA_FLUENCIA] = resposta.LeuComAlgumaFluência;
+                linha[LEU_COM_ALGUMA_FLUENCIA] = resposta.LeuComAlgumaFluencia;
                 linha[LEU_COM_FLUENCIA] = resposta.LeuComFluencia;
                 linha[SEM_PREENCHIMENTO] = resposta.SemPreenchimento;
 
