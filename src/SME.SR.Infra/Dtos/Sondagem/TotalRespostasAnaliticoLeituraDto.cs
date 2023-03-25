@@ -8,5 +8,6 @@
         public int Nivel4 { get; set; }
         public int SemPreenchimento { get; set; }
         public string TurmaCodigo { get; set; }
+        public string AnoTurma { get; set; }
     }
 }

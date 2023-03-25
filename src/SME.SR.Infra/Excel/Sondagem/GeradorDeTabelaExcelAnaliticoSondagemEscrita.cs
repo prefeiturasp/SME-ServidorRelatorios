@@ -10,6 +10,10 @@ namespace SME.SR.Infra
         private const string SILABICO_COM_VALOR = "SilabicoComValor";
         private const string SILABICO_ALFABETICO = "SilabicoAlfabetico";
         private const string ALFABETICO = "Alfabetico";
+        private const string NIVEL1 = "Nivel1";
+        private const string NIVEL2 = "Nivel2";
+        private const string NIVEL3 = "Nivel3";
+        private const string NIVEL4 = "Nivel4";
         private const string SEM_PREENCHIMENTO = "SemPreenchimento";
 
         public GeradorDeTabelaExcelAnaliticoSondagemEscrita(IEnumerable<RelatorioSondagemAnaliticoPorDreDto> relatorioSondagemAnaliticoPorDreDtos) : base(relatorioSondagemAnaliticoPorDreDtos)
@@ -31,6 +35,10 @@ namespace SME.SR.Infra
                 linha[SILABICO_COM_VALOR] = resposta.SilabicoComValor;
                 linha[SILABICO_ALFABETICO] = resposta.SilabicoAlfabetico;
                 linha[ALFABETICO] = resposta.Alfabetico;
+                linha[NIVEL1] = resposta.Nivel1;
+                linha[NIVEL2] = resposta.Nivel2;
+                linha[NIVEL3] = resposta.Nivel3;
+                linha[NIVEL4] = resposta.Nivel4;
                 linha[SEM_PREENCHIMENTO] = resposta.SemPreenchimento;
 
                 data.Rows.Add(linha);
@@ -39,11 +47,15 @@ namespace SME.SR.Infra
 
         protected override void CarregarLinhaTitulo(DataRow linha)
         {
-            linha[PRE_SILABICO] = "Pré-Silábico";
-            linha[SILABICO_SEM_VALOR] = "Silábico sem valor";
-            linha[SILABICO_COM_VALOR] = "Silábico com valor";
-            linha[SILABICO_ALFABETICO] = "Silábico alfabético";
-            linha[ALFABETICO] = "Alfabético";
+            linha[PRE_SILABICO] = "PS";
+            linha[SILABICO_SEM_VALOR] = "SSV";
+            linha[SILABICO_COM_VALOR] = "SCV";
+            linha[SILABICO_ALFABETICO] = "SA";
+            linha[ALFABETICO] = "A";
+            linha[NIVEL1] = "Nivel1";
+            linha[NIVEL2] = "Nivel2";
+            linha[NIVEL3] = "Nivel3";
+            linha[NIVEL4] = "Nivel4";
             linha[SEM_PREENCHIMENTO] = "Sem preenchimento";
         }
 
@@ -56,6 +68,10 @@ namespace SME.SR.Infra
                 new DataColumn(SILABICO_COM_VALOR),
                 new DataColumn(SILABICO_ALFABETICO),
                 new DataColumn(ALFABETICO),
+                new DataColumn(NIVEL1),
+                new DataColumn(NIVEL2),
+                new DataColumn(NIVEL3),
+                new DataColumn(NIVEL4),
                 new DataColumn(SEM_PREENCHIMENTO)
             };
         }

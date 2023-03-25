@@ -397,7 +397,8 @@
 		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId) =>
 			$@"WITH lista AS (
 				SELECT DISTINCT mte.cd_turma_escola,
-								m.cd_aluno
+								m.cd_aluno,
+								se.sg_resumida_serie
 				FROM v_matricula_cotic m
 					INNER JOIN matricula_turma_escola mte
 						ON m.cd_matricula = mte.cd_matricula	
@@ -422,7 +423,6 @@
 					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					  and mte.dt_situacao_aluno > @dataFim))
 					  and aln.AnoLetivo = anoLetivo
-					  AND se.sg_resumida_serie = @turmaAno 
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
 					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)}
@@ -430,7 +430,8 @@
 
 				SELECT
 					mte.cd_turma_escola,
-					matr.cd_aluno
+					matr.cd_aluno,
+					se.sg_resumida_serie
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -454,14 +455,13 @@
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
 					  mte.cd_situacao_aluno in (5, 10) AND
-					  se.sg_resumida_serie = @turmaAno AND
 					  ee.cd_etapa_ensino in (@modalidades)
 				      AND mte.nr_chamada_aluno <> '0'
 					  AND mte.nr_chamada_aluno is not null
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
 					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)})
-			SELECT COUNT(DISTINCT cd_aluno)
-				FROM lista";
+			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
+				FROM lista group by sg_resumida_serie ";
 
 
 

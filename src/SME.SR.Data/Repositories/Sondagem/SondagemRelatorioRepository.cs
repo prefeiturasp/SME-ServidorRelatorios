@@ -32,6 +32,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                    r.""Id"" as ""RespostaId"", 
                                    r.""Descricao"" as ""RespostaDescricao"" ,
                                    gp.""Ordenacao"",
+                                   tabela.""AnoTurma"",
                                    op.""OrdenacaoNaTela"",
                                    count(tabela.""RespostaId"") as ""QtdRespostas""
                                    from
@@ -92,7 +93,6 @@ namespace SME.SR.Data.Repositories.Sondagem
                                         
             query.Append(@"  and s.""PeriodoId"" = @PeriodoId
                                    			and s.""AnoLetivo"" = @AnoLetivo
-                                   			and s.""AnoTurma"" = @AnoTurma
                                    		        ) ) as tabela on
                                           	p.""Id"" = tabela.""PerguntaId"" and
                                           	r.""Id""= tabela.""RespostaId"" and
@@ -105,7 +105,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                           	p.""Id"",
                                           	p.""Descricao"",
                                           	gp.""Ordenacao"",
-                                            op.""OrdenacaoNaTela"",tabela.""CodigoTurma""
+                                            op.""OrdenacaoNaTela"",tabela.""CodigoTurma"",tabela.""AnoTurma""
                                           order by
                                              gp.""Ordenacao"",
                                              o.""Descricao"",
@@ -114,7 +114,6 @@ namespace SME.SR.Data.Repositories.Sondagem
 
             var parametros = new
             {
-	            AnoTurma = filtro.AnoEscolar,
 	            CodigoEscola = filtro.CodigoUe,
 	            CodigoDRE = filtro.CodigoDre,
 	            AnoLetivo = filtro.AnoLetivo,
@@ -136,10 +135,11 @@ namespace SME.SR.Data.Repositories.Sondagem
         public async Task<IEnumerable<PerguntaRespostaProducaoTextoDto>> ObterDadosProducaoTexto(RelatorioPortuguesFiltroDto filtro)
         {
 	        var retorno = new List<PerguntaRespostaProducaoTextoDto>();
-	        StringBuilder sql = new StringBuilder();
+	        var sql = new StringBuilder();
 
 	        sql.AppendLine("select ");
 	        sql.AppendLine("	s.\"CodigoTurma\",");
+	        sql.AppendLine("	s.\"AnoTurma\",");
 	        sql.AppendLine("	g.\"Descricao\" as \"Grupo\" ,");
 	        sql.AppendLine("	p.\"Descricao\" as \"Pergunta\" ,");
 	        sql.AppendLine("	r.\"Descricao\"  as \"Resposta\",");
@@ -154,13 +154,11 @@ namespace SME.SR.Data.Repositories.Sondagem
 	        sql.AppendLine("and s.\"ComponenteCurricularId\" = @ComponenteCurricularId ");
 	        sql.AppendLine("and s.\"PeriodoId\" = @PeriodoId ");
 	        sql.AppendLine("and s.\"GrupoId\" = @GrupoId ");
-	        sql.AppendLine("and s.\"AnoTurma\" = @AnoTurma ");
 	        sql.AppendLine("and s.\"CodigoUe\" = @CodigoEscola ");
 	        sql.AppendLine("and s.\"CodigoDre\" = @CodigoDRE ");
 
 	        var parametros = new
 	        {
-		        AnoTurma = filtro.AnoEscolar,
 		        CodigoEscola = filtro.CodigoUe,
 		        CodigoDRE = filtro.CodigoDre,
 		        AnoLetivo = filtro.AnoLetivo,
