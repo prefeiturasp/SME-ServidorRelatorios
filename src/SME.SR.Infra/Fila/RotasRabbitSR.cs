@@ -80,5 +80,6 @@
         public const string RotaRelatoriosSolicitadosEncaminhamentoAeeDetalhado = "sr.relatorios.solicitados.RelatorioEncaminhamentoAeeDetalhado";
         public const string RotaRelatoriosSolicitadosEncaminhamentoNaapaDetalhado = "sr.relatorios.solicitados.encaminhamentonaapa.detalhado";
         public const string RotaRelatoriosSolicitadosEncaminhamentoNAAPA = "sr.relatorios.solicitados.encaminhamentonaapa";
+        public const string RotaRelatoriosSolicitadosAnaliticoSondagem = "sr.relatorios.solicitados.sondagem.analitico";
     }
 }
