@@ -1,12 +1,15 @@
 ﻿using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace SME.SR.Data
 {
     public class FrequenciaAluno
     {
+        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
+
         public FrequenciaAluno(string codigoAluno,
                 string turmaId,
                 string disciplinaId,
@@ -61,6 +64,7 @@ namespace SME.SR.Data
                 return Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
             }
         }
+        public string PercentualFrequenciaFormatado => PercentualFrequencia.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
         public long? PeriodoEscolarId { get; set; }
         public DateTime PeriodoFim { get; set; }
         public DateTime PeriodoInicio { get; set; }

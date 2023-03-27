@@ -13,9 +13,13 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaBimestralPdfQuery, List<ConselhoClasseAtaBimestralPaginaDto>>
     {        
+        private const double FREQUENCIA_100 = 100;
+        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
         private readonly VariaveisAmbiente variaveisAmbiente;
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
+
+        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
 
         public ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
@@ -482,13 +486,13 @@ namespace SME.SR.Application
                         {
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.TotalAusencias.ToString(), ++coluna);
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.TotalCompensacoes.ToString(), ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.PercentualFrequencia.ToString(), ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.PercentualFrequenciaFormatado, ++coluna);
                         }
                         else
                         {
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? "0" : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? "100" : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture) : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture) : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? frequencia100Formatada : "", ++coluna);
                         }
 
                         var notaConceito = notasFinais.OrderByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
