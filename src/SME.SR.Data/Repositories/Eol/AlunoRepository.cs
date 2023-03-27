@@ -1691,11 +1691,10 @@ namespace SME.SR.Data
             return await conn.QueryAsync<AlunoTurma>(AlunoConsultas.AlunosMatriculasPorTurmas, new { codigosTurmas });
         }
 
-        public async Task<int> ObterTotalAlunosAtivosPorPeriodo(string anoTurma, int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId)
+        public async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalAlunosAtivosPorPeriodoEAnoTurma(int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId)
         {
 	        var parametros = new
 	        {
-		        turmaAno = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH),
 		        anoLetivo,
 		        dataInicio,
 		        dataFim,
@@ -1705,7 +1704,7 @@ namespace SME.SR.Data
 	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId);
 	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
 	        {
-		        return await con.QueryFirstOrDefaultAsync<int>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
+		        return await con.QueryAsync<TotalAlunosAnoTurmaDto>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
 	        }
         }
 

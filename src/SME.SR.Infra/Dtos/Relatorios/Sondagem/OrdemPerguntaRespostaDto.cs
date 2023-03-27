@@ -10,5 +10,6 @@
         public string RespostaDescricao { get; set; }
         public int QtdRespostas { get; set; }
         public string CodigoTurma { get; set; }
+        public string AnoTurma { get; set; }
     }
 }
