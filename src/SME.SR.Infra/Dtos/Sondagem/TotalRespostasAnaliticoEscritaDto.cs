@@ -3,6 +3,8 @@
     public class TotalRespostasAnaliticoEscritaDto
     {
         public string AnoTurma { get; set; }
+        public string DreCodigo { get; set; }
+        public string UeCodigo { get; set; }
         public string TurmaCodigo { get; set; }
         public int PreSilabico { get; set; }
         public int SilabicoSemValor { get; set; }

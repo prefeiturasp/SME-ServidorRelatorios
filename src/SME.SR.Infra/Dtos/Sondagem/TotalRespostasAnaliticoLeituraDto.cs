@@ -9,5 +9,7 @@
         public int SemPreenchimento { get; set; }
         public string TurmaCodigo { get; set; }
         public string AnoTurma { get; set; }
+        public string CodigoUe { get; set; }
+        public string CodigoDre { get; set; }
     }
 }
