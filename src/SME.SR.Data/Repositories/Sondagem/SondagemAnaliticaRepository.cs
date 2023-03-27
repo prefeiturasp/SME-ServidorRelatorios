@@ -64,7 +64,6 @@ namespace SME.SR.Data
 
                 var agrupamentoPorOrderm = anoTurmaItem.GroupBy(x => x.Ordem);
 
-                //var relatorioAgrupadoPergunta = anoTurmaItem.Where(x => x.AnoTurma == anoTurmaItem.Key).GroupBy(x => x.PerguntaDescricao).ToList();
 
                 var ordemNarrarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_NARRAR).ToList();
                 var ordemRelatarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_RELATAR).ToList();
