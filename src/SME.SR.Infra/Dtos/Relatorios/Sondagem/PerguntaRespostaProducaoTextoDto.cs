@@ -3,6 +3,8 @@
     public class PerguntaRespostaProducaoTextoDto
     {
         public  string CodigoTurma { get; set; }
+        public  string CodigoUe { get; set; }
+        public  string CodigoDre { get; set; }
         public  string AnoTurma { get; set; }
         public  string Grupo { get; set; }
         public  string Pergunta { get; set; }

@@ -25,6 +25,7 @@ namespace SME.SR.Data.Repositories.Sondagem
             var retorno = new List<OrdemPerguntaRespostaDto>();
             var queryRelatorio = @"
                                    select tabela.""CodigoTurma"",
+                                   tabela.""CodigoDre"",tabela.""CodigoUe"",
                                    o.""Id"" as ""OrdermId"",
                                    o.""Descricao"" as ""Ordem"",
                                    p.""Id"" as ""PerguntaId"",
@@ -51,9 +52,11 @@ namespace SME.SR.Data.Repositories.Sondagem
                                    left join (
                                    	select
                                    	    s.""OrdemId"",
-                                   		s.""AnoLetivo"",
+                                   		s.""AnoLetivo"",		                                s.""CodigoDre"",
+		                                s.""CodigoUe"",
                                    		s.""AnoTurma"",
                                    		s.""CodigoTurma"",
+
                                    		per.""Descricao"",
                                    		c.""Descricao"",
                                    		sa.""NomeAluno"",
@@ -105,7 +108,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                           	p.""Id"",
                                           	p.""Descricao"",
                                           	gp.""Ordenacao"",
-                                            op.""OrdenacaoNaTela"",tabela.""CodigoTurma"",tabela.""AnoTurma""
+                                            op.""OrdenacaoNaTela"",tabela.""CodigoTurma"",tabela.""AnoTurma"",tabela.""CodigoDre"",tabela.""CodigoUe""
                                           order by
                                              gp.""Ordenacao"",
                                              o.""Descricao"",
@@ -140,6 +143,8 @@ namespace SME.SR.Data.Repositories.Sondagem
 	        sql.AppendLine("select ");
 	        sql.AppendLine("	s.\"CodigoTurma\",");
 	        sql.AppendLine("	s.\"AnoTurma\",");
+	        sql.AppendLine("	s.\"CodigoUe\",");
+	        sql.AppendLine("	s.\"CodigoDre\",");
 	        sql.AppendLine("	g.\"Descricao\" as \"Grupo\" ,");
 	        sql.AppendLine("	p.\"Descricao\" as \"Pergunta\" ,");
 	        sql.AppendLine("	r.\"Descricao\"  as \"Resposta\",");
@@ -154,8 +159,10 @@ namespace SME.SR.Data.Repositories.Sondagem
 	        sql.AppendLine("and s.\"ComponenteCurricularId\" = @ComponenteCurricularId ");
 	        sql.AppendLine("and s.\"PeriodoId\" = @PeriodoId ");
 	        sql.AppendLine("and s.\"GrupoId\" = @GrupoId ");
-	        sql.AppendLine("and s.\"CodigoUe\" = @CodigoEscola ");
-	        sql.AppendLine("and s.\"CodigoDre\" = @CodigoDRE ");
+            if(filtro.CodigoUe != "-99")
+	            sql.AppendLine(" and s.\"CodigoUe\" = @CodigoEscola ");
+            if (filtro.CodigoDre != "-99")
+                sql.AppendLine(" and s.\"CodigoDre\" = @CodigoDRE ");
 
 	        var parametros = new
 	        {

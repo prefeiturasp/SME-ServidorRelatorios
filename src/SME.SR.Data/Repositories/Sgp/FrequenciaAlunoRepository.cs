@@ -304,13 +304,14 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunosPorTurmaEBimestre(long turmaId, string alunoCodigo, int[] bimestres)
         {
-            var query = new StringBuilder(@$"select fa.id Id
+            var query = new StringBuilder(@$"select * from (select fa.id Id
                                                     , fa.codigo_aluno as CodigoAluno
                                                     , fa.turma_id as TurmaId
                                                     , fa.total_aulas as TotalAulas
                                                     , fa.total_ausencias as TotalAusencias
                                                     , fa.total_compensacoes as TotalCompensacoes
                                                     , fa.bimestre
+                                                    , row_number() over (partition by fa.turma_id, fa.codigo_aluno, fa.bimestre, fa.disciplina_id, fa.tipo order by fa.id desc) sequencia
                                               from frequencia_aluno fa
                                              inner join turma t on fa.turma_id = t.turma_id
                                              inner join periodo_escolar pe on fa.periodo_escolar_id = pe.id
@@ -320,6 +321,8 @@ namespace SME.SR.Data
 
             if (!string.IsNullOrEmpty(alunoCodigo))
                 query.AppendLine("and fa.codigo_aluno = @alunoCodigo");
+
+            query.AppendLine(") as freqAluno where freqAluno.sequencia = 1");
 
             var parametros = new { turmaId, alunoCodigo, bimestres };
 

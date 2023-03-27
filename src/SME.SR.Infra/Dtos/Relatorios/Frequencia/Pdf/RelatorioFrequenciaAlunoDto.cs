@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Globalization;
 
 namespace SME.SR.Infra
 {
     public class RelatorioFrequenciaAlunoDto
     {
+        public const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
         public string NumeroChamada { get; set; }
         public int CodigoAluno { get; set; }
         public string NomeAluno { get; set; }
@@ -25,15 +27,15 @@ namespace SME.SR.Infra
                     return "";
 
                 if (TotalAulas == TotalAusencias && TotalCompensacoes == 0)
-                    return "0";
+                    return 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
 
                 if (TotalPresenca == 0 && TotalRemoto == 0 && TotalAusencias == 0)
                     return "";
 
-                var porcentagem = 100 - Math.Round((double)NumeroFaltasNaoCompensadas / TotalAulas, 2) * 100;
+                var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100;
                 var porcentagemRetorno = Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
 
-                return porcentagemRetorno > 0 ? porcentagemRetorno.ToString() : "";
+                return porcentagemRetorno.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
             }
         }        
     }

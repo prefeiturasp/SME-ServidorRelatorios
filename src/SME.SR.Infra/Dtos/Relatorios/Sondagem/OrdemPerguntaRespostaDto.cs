@@ -11,5 +11,7 @@
         public int QtdRespostas { get; set; }
         public string CodigoTurma { get; set; }
         public string AnoTurma { get; set; }
+        public string CodigoDre { get; set; }
+        public string CodigoUe { get; set; }
     }
 }
