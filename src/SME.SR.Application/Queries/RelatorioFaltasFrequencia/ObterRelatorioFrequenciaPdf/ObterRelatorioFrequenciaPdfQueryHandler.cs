@@ -83,9 +83,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             foreach (var dre in dres)
             {
-                var ultimoAluno = await mediator.Send(new ObterRelatorioFrequenciaPdfPorDreQuery(request.Filtro, dre.Ues, periodosEscolares, componentes, alunos, turmas, deveAdicionarFinal, mostrarSomenteFinal));
-                if (!string.IsNullOrEmpty(ultimoAluno))
-                    relatorioFrequenciaDto.UltimoAluno = ultimoAluno;
+                relatorioFrequenciaDto.Dres.Add(await mediator.Send(new ObterRelatorioFrequenciaPdfPorDreQuery(request.Filtro, dre.Ues, periodosEscolares, componentes, alunos, turmas, deveAdicionarFinal, mostrarSomenteFinal)));
+                // var ultimoAluno = 
+                // if (!string.IsNullOrEmpty(ultimoAluno))
+                //     relatorioFrequenciaDto.UltimoAluno = ultimoAluno;
                 
                 relatorioFrequenciaDto.UltimoAluno = $"{dre.NomeDre}{relatorioFrequenciaDto.UltimoAluno}";
             }

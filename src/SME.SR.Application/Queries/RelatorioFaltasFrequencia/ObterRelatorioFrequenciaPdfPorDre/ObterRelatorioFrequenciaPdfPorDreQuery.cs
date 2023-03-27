@@ -5,7 +5,7 @@ using SME.SR.Infra;
 
 namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 {
-    public class ObterRelatorioFrequenciaPdfPorDreQuery : IRequest<string>
+    public class ObterRelatorioFrequenciaPdfPorDreQuery : IRequest<RelatorioFrequenciaDreDto>
     {
         public ObterRelatorioFrequenciaPdfPorDreQuery(FiltroRelatorioFrequenciasDto filtro, List<RelatorioFrequenciaUeDto> ues, IEnumerable<PeriodoEscolar> periodosEscolares, IEnumerable<Data.ComponenteCurricular> componentes, IEnumerable<AlunoTurma> alunos, IEnumerable<Turma> turmas, bool deveAdicionarFinal, bool mostrarSomenteFinal)
         {

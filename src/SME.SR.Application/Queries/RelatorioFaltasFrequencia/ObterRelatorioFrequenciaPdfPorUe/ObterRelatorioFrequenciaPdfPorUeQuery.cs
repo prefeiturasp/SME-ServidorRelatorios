@@ -5,9 +5,9 @@ using SME.SR.Infra;
 
 namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 {
-    public class ObterRelatorioFrequenciaPdfPorUeQuery : IRequest<string>
+    public class ObterRelatorioFrequenciaPdfPorUeQuery : IRequest<RelatorioFrequenciaUeDto>
     {
-        public ObterRelatorioFrequenciaPdfPorUeQuery(FiltroRelatorioFrequenciasDto filtro, IEnumerable<PeriodoEscolar> periodosEscolares, IEnumerable<Data.ComponenteCurricular> componentes, IEnumerable<AlunoTurma> alunos, IEnumerable<Turma> turmas, bool deveAdicionarFinal, bool mostrarSomenteFinal)
+        public ObterRelatorioFrequenciaPdfPorUeQuery(FiltroRelatorioFrequenciasDto filtro, List<RelatorioFrequenciaTurmaAnoDto> relatorioFrequenciaTurmaAnoDto, IEnumerable<PeriodoEscolar> periodosEscolares, IEnumerable<Data.ComponenteCurricular> componentes, IEnumerable<AlunoTurma> alunos, IEnumerable<Turma> turmas, bool deveAdicionarFinal, bool mostrarSomenteFinal)
         {
             Filtro = filtro;
             PeriodosEscolares = periodosEscolares;
@@ -16,6 +16,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             Turmas = turmas;
             DeveAdicionarFinal = deveAdicionarFinal;
             MostrarSomenteFinal = mostrarSomenteFinal;
+            RelatorioFrequenciaTurmaAnoDto = relatorioFrequenciaTurmaAnoDto;
         }
         
         public FiltroRelatorioFrequenciasDto Filtro { get; set; }
@@ -25,5 +26,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
         public IEnumerable<Turma> Turmas { get; set; }
         public bool DeveAdicionarFinal { get; set; }
         public bool MostrarSomenteFinal { get; set; }
+        public List<RelatorioFrequenciaTurmaAnoDto> RelatorioFrequenciaTurmaAnoDto { get; set; }
     }
 }
