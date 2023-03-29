@@ -13,6 +13,9 @@ namespace SME.SR.Application
     public class RelatorioSondagemPtConsolidadoLeitEscProdUseCase : IRelatorioSondagemPtConsolidadoLeitEscProdUseCase
     {
         private readonly IMediator mediator;
+
+        private const int ANO_ESCOLAR_PROFICIENCIA_NIVEL = 3;
+
         public RelatorioSondagemPtConsolidadoLeitEscProdUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -258,19 +261,15 @@ namespace SME.SR.Application
                 Convert.ToInt64(filtros.DreCodigo),
                 filtros.Modalidades));
 
-            // obter todas as turmas lançadas sondagem...
-            var turmasComSondagem = linhasSondagem.GroupBy(q => q.TurmaEolCode).Select(q => q.Key).ToArray();
-
-            if (turmasComSondagem.Any())
-                alunosPorAno = await RetornaTotalAlunosSondagem(turmasComSondagem, dataReferencia);
-
-
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
             var respAgrupado = linhasSondagem
                 .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
 
-            var totalRespostas = respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
+            int totalRespostas = 0;
+
+            if(respAgrupado.Any())
+                respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
 
             foreach (var item in respAgrupado)
             {
@@ -301,23 +300,10 @@ namespace SME.SR.Application
                 respostas.Add(itemRetorno);
             }
 
-            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Escrita)
+            if (filtros.ProficienciaId == ProficienciaSondagemEnum.Escrita && filtros.Ano != ANO_ESCOLAR_PROFICIENCIA_NIVEL)
                 respostas = OrdenarRespostasEscrita(respostas);
 
             return respostas;
-        }
-
-
-        public async Task<int> RetornaTotalAlunosSondagem(string[] turmasSondagem, DateTime dataReferencia)
-        {
-            int totalAlunos = 0;
-            foreach (var turma in turmasSondagem)
-            {
-                var alunos = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Convert.ToInt64(turma), dataReferencia));
-                totalAlunos += alunos.Count();
-            }
-
-            return totalAlunos;
         }
 
         private List<RelatorioSondagemPortuguesConsolidadoRespostaDto> OrdenarRespostasEscrita(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> listaRespostas)
