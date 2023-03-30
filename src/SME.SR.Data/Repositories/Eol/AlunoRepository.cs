@@ -1708,14 +1708,14 @@ namespace SME.SR.Data
 	        }
         }
 
-        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string[] codigosTurmas, DateTime dataReferencia)
+        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferencia)
         {
 	        var totalAlunos = 0;
 	        var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
-	        var parametros = new {dataReferencia};
+	        var parametros = new {dataReferencia,codigoTurma};
 	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
 	        {
-		        var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query.ToString().Replace("@turmas", string.Join(", ", codigosTurmas)), parametros, commandTimeout: 6000)).ToList();
+		        var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000)).ToList();
 		        if (registros.Count() >= 0)
 			        totalAlunos = registros.Count();
 	        }
