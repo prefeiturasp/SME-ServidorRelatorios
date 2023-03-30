@@ -1186,6 +1186,29 @@ namespace SME.SR.Data
 
         }
 
+        public async Task<IEnumerable<QuantidadeTurmaPorAnoDto>> ObterTotalDeTurmasPorAno(string loginUsuario,string codigoUe,Guid perfilUsuario,bool consideraHistorico, int modalidade,int anoLetivo,int semestre = 0)
+        {
+		        var query = new StringBuilder();
+		        query.AppendLine(@" select  ano as AnoTurma, codigo  ");
+		        query.AppendLine(@" from f_abrangencia_turmas_tipos(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo)   ");
+		        query.AppendLine(@"where 1=1  ");
+	       
+		        var parametros = new
+		        {
+			        login = loginUsuario,
+			        perfil = perfilUsuario,
+			        consideraHistorico,
+			        modalidade,
+			        semestre,
+			        codigoUe,
+			        anoLetivo
+		        };
+		        using( var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+		        {
+			        var consulta = await conexao.QueryAsync<QuantidadeTurmaPorAnoDto>(query.ToString(), parametros);    
+			        return consulta;
+		        }
+	    }
 
         public async Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
         {
