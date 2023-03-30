@@ -133,7 +133,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
 
                     anoParaIncluir.Nome = cicloAgrupado.Ano + "º Ano";
 
-                    var turmasFiltradas = await mediator.Send(new ObterTurmasPorUeCicloAnoQuery(cicloAgrupado.Id, cicloAgrupado.Ano.ToString(), ueId, anoLetivo));
+                    var turmasFiltradas = await mediator.Send(new ObterTurmasPorUeCicloAnoQuery(cicloAgrupado.Id, cicloAgrupado.Ano, ueId, anoLetivo));
 
                     IEnumerable<AlunoDaTurmaDto> alunosDasTurmas = new List<AlunoDaTurmaDto>();
 

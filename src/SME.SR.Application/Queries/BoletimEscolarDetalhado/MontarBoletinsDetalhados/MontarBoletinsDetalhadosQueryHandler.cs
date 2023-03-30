@@ -105,7 +105,7 @@ namespace SME.SR.Application
                         var recomendacao = recomendacoes?.FirstOrDefault(r =>
                             r.TurmaCodigo == turma.Codigo && r.AlunoCodigo == aluno.Key);
                         var ciclo = ciclos.FirstOrDefault(c =>
-                            c.Modalidade == turma.ModalidadeCodigo && c.Ano == Convert.ToInt32(turma.Ano));
+                            c.Modalidade == turma.ModalidadeCodigo && c.Ano == turma.Ano);
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,

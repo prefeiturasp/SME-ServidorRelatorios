@@ -76,7 +76,7 @@ namespace SME.SR.Application
             var lstTurmasTipoNota = new Dictionary<string, string>();
 
             foreach (var turma in turmas)
-                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ciclo == tipoCiclos.FirstOrDefault(tp => tp.Ano.ToString() == turma.Ano).Id).TipoNota);
+                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ciclo == tipoCiclos.FirstOrDefault(tp => tp.Ano == turma.Ano).Id).TipoNota);
 
             return lstTurmasTipoNota;
         }
