@@ -269,22 +269,20 @@ namespace SME.SR.Application
             int totalRespostas = 0;
 
             if(respAgrupado.Any())
-                respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
+                totalRespostas = respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
 
             foreach (var item in respAgrupado)
             {
                 RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
-                int quantidadeRespostas = item.Value;
-
-                if (string.IsNullOrWhiteSpace(item.Label))
-                    quantidadeRespostas = alunosPorAno - respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
-
-                itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
-                itemRetorno.Quantidade = quantidadeRespostas;
-                itemRetorno.Percentual = Math.Round(((decimal)quantidadeRespostas / (decimal)alunosPorAno) * 100, 2);
-                itemRetorno.Total = alunosPorAno;
-                respostas.Add(itemRetorno);                
+                if (!string.IsNullOrWhiteSpace(item.Label))
+                {
+                    itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
+                    itemRetorno.Quantidade = item.Value;
+                    itemRetorno.Percentual = Math.Round((item.Value / (decimal)alunosPorAno) * 100, 2);
+                    itemRetorno.Total = alunosPorAno;
+                    respostas.Add(itemRetorno);
+                }                   
             }            
 
             if (alunosPorAno > totalRespostas && !respostas.Any(x => x.Percentual == 100))
