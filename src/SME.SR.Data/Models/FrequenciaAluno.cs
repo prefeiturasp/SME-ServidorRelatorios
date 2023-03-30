@@ -61,10 +61,10 @@ namespace SME.SR.Data
 
                 var porcentagem = 100 - (((double)NumeroFaltasNaoCompensadas / TotalAulas) * 100);
 
-                return Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
+                return ArredondarPercentual(porcentagem > 100 ? 100 : porcentagem);
             }
         }
-        public string PercentualFrequenciaFormatado => PercentualFrequencia.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+        public string PercentualFrequenciaFormatado => FormatarPercentual(PercentualFrequencia);
         public long? PeriodoEscolarId { get; set; }
         public DateTime PeriodoFim { get; set; }
         public DateTime PeriodoInicio { get; set; }
@@ -88,7 +88,7 @@ namespace SME.SR.Data
         {
             get
             {
-                return PercentuaisFrequenciaPorBimestre.Any() && PercentuaisFrequenciaPorBimestre.Any(a=> a.Item2.HasValue) ? Math.Round(PercentuaisFrequenciaPorBimestre.Sum(p => p.Item2.Value) / PercentuaisFrequenciaPorBimestre.Count, 2) : (double?)null;
+                return PercentuaisFrequenciaPorBimestre.Any() && PercentuaisFrequenciaPorBimestre.Any(a=> a.Item2.HasValue) ? ArredondarPercentual(PercentuaisFrequenciaPorBimestre.Sum(p => p.Item2.Value) / PercentuaisFrequenciaPorBimestre.Count) : (double?)null;
             }
         }
 
@@ -109,6 +109,13 @@ namespace SME.SR.Data
         public void AdicionarFrequenciaBimestre(int bimestre, double? percentual)
         {
             PercentuaisFrequenciaPorBimestre.Add((bimestre, percentual));
+        }
+
+        public static double ArredondarPercentual(double percentual) => Math.Round(percentual, PERCENTUAL_FREQUENCIA_PRECISAO);
+
+        public static string FormatarPercentual(double percentual)
+        {
+            return percentual.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
         }
     }
 }
