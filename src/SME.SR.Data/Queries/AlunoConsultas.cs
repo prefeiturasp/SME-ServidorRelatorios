@@ -501,7 +501,7 @@
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola in (@turmas)
+					mte.cd_turma_escola = @codigoTurma
 					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
 					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					and mte.dt_situacao_aluno > @dataReferencia))
@@ -542,7 +542,7 @@
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
-					mte.cd_turma_escola in (@turmas)
+					mte.cd_turma_escola = @codigoTurma
 					and mte.nr_chamada_aluno <> '0'
 					and mte.nr_chamada_aluno is not null
 					and mte.dt_situacao_aluno = (
@@ -553,7 +553,7 @@
 					INNER JOIN historico_matricula_turma_escola mte2 ON
 						matr2.cd_matricula = mte2.cd_matricula
 					where
-						mte2.cd_turma_escola in (@turmas)
+						mte2.cd_turma_escola = @codigoTurma
 						and matr2.cd_aluno = matr.cd_aluno
 						and (matr2.st_matricula in (1, 6, 10, 13, 5)
 						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
@@ -567,7 +567,7 @@
 						matr3.cd_matricula = mte3.cd_matricula
 					WHERE
 						mte.cd_matricula = mte3.cd_matricula
-						AND mte.cd_turma_escola in (@turmas))";
+						AND mte.cd_turma_escola = @codigoTurma )";
 		
         internal static string AlunosMatriculasPorTurmas = @"with lista as (
 																select mte.nr_chamada_aluno,
