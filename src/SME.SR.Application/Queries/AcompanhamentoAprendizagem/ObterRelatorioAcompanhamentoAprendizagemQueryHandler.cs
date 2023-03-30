@@ -157,7 +157,7 @@ namespace SME.SR.Application
                     Bimestre = "",
                     Aulas = totalAulasInfantil,
                     Ausencias = totalAusencias,
-                    Frequencia = valorFrequencia == 0 ? "" : $"{valorFrequencia}%",
+                    Frequencia = valorFrequencia == 0 ? "" : $"{ FrequenciaAluno.FormatarPercentual(valorFrequencia)}%",
                 };
                 frequenciasRelatorio.Add(frequenciaRelatorio);
 
@@ -181,7 +181,7 @@ namespace SME.SR.Application
                         Bimestre = $"{bimestre}º",
                         Aulas = frequenciaAluno == null ? quantidadeAulas : frequenciaAluno.TotalAulas,
                         Ausencias = frequenciaAluno == null ? 0 : frequenciaAluno.TotalAusencias,
-                        Frequencia = frequenciaAluno != null ? $"{frequenciaAluno.PercentualFrequencia}%" : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? "100%" : "",
+                        Frequencia = frequenciaAluno != null ? $"{frequenciaAluno.PercentualFrequenciaFormatado}%" : (turmaPossuiFrequenciaRegistrada || aulasDadas != null) ? "100.00%" : "",
                     };
                     frequenciasRelatorio.Add(frequenciaRelatorio);
                 }
@@ -197,8 +197,7 @@ namespace SME.SR.Application
 
             var porcentagem = 100 - (((double)TotalFaltasNaoCompensadas / (double)TotalAulas) * 100);
 
-            return Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
-
+            return FrequenciaAluno.ArredondarPercentual(porcentagem > 100 ? 100 : porcentagem);
         }
 
         private List<RelatorioAcompanhamentoAprendizagemAlunoOcorrenciaDto> MontarOcorrencias(string alunoCodigo, IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto> ocorrencias)
