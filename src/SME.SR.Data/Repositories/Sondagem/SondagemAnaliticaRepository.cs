@@ -83,6 +83,16 @@ namespace SME.SR.Data
 
                             var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key).Select(x => x.QuantidadeAluno).Sum();
 
+
+
+                            if (ordemNarrarLista.Count() == 0)
+                            {
+                                var ordemNarrar = new RespostaCapacidadeDeLeituraDto();
+                                ordemNarrar.Localizacao.SemPreenchimento = totalDeAlunos;
+                                ordemNarrar.Reflexao.SemPreenchimento = totalDeAlunos;
+                                ordemNarrar.Inferencia.SemPreenchimento = totalDeAlunos;
+                                listaDtoOrdemNarrar.Add(ordemNarrar);
+                            }
                             foreach (var ordemNarrarItem in ordemNarrarLista)
                             {
                                 var ordemNarrar = new RespostaCapacidadeDeLeituraDto
@@ -94,15 +104,33 @@ namespace SME.SR.Data
                                 listaDtoOrdemNarrar.Add(ordemNarrar);
                             }
 
+                            if(ordemRelatarLista.Count() == 0)
+                            {
+                                var ordemRelatarItem = new RespostaCapacidadeDeLeituraDto();
+                                ordemRelatarItem.Localizacao.SemPreenchimento = totalDeAlunos;
+                                ordemRelatarItem.Reflexao.SemPreenchimento = totalDeAlunos;
+                                ordemRelatarItem.Inferencia.SemPreenchimento = totalDeAlunos;
+                                listaDtoOrdemRelatar.Add(ordemRelatarItem);
+                            }
+
                             foreach (var ordemRelatarItem in ordemRelatarLista)
                             {
                                 var ordemDoRelatar = new RespostaCapacidadeDeLeituraDto
                                 {
-                                    Localizacao = MapearOrdemDoNarrarLocalizacao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
+                                    Localizacao =  MapearOrdemDoNarrarLocalizacao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
                                     Inferencia = MapearOrdemDoNarrarInferencia(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
                                     Reflexao = MapearOrdemDoNarrarReflexao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
                                 };
                                 listaDtoOrdemRelatar.Add(ordemDoRelatar);
+                            }
+
+                            if (ordemArgumentarLista.Count() == 0)
+                            {
+                                var ordemArgumentarItem = new RespostaCapacidadeDeLeituraDto();
+                                ordemArgumentarItem.Localizacao.SemPreenchimento = totalDeAlunos;
+                                ordemArgumentarItem.Reflexao.SemPreenchimento = totalDeAlunos;
+                                ordemArgumentarItem.Inferencia.SemPreenchimento = totalDeAlunos;
+                                listaDtoOrdemArgumentar.Add(ordemArgumentarItem);
                             }
 
                             foreach (var ordemArgumentarItem in ordemArgumentarLista)
