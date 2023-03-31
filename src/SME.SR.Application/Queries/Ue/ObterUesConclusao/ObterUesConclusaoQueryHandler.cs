@@ -84,7 +84,7 @@ namespace SME.SR.Application
                             }
                             else
                             {
-                                if (request.Modalidade != Modalidade.Medio || (ciclo.Ano < 4 || (ciclo.Ano > 3 && turmaDetalhe.EhTurmaMagisterio))) 
+                                if (request.Modalidade != Modalidade.Medio || (int.TryParse(ciclo.Ano, out int ano) && (ano < 4 || (ano > 3 && turmaDetalhe.EhTurmaMagisterio))))
                                 {
                                     uesConclusao.Add(new UeConclusaoPorAlunoAno()
                                     {
