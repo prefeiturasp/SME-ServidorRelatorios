@@ -233,8 +233,10 @@ namespace SME.SR.Data
 
                             int valorSemPreenchimento = anoComValorSemPreenchimento.Where(x => x.Ano == anoTurma.Key).Select(x => x.Valor).Sum();
 
-                            var totalDeAlunosNaSondagem = anoTurma.Key == TURMA_TERCEIRO_ANO ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, valorSemPreenchimento) 
-                                                                                                 : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, valorSemPreenchimento);
+                            var semPreenchimentoRelatorio = valorSemPreenchimento > 0 ? (totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0;
+
+                            var totalDeAlunosNaSondagem = anoTurma.Key == TURMA_TERCEIRO_ANO ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio) 
+                                                                                                 : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
                             
 
                             var respostaSondagemAnaliticoEscritaDto = new RespostaSondagemAnaliticoEscritaDto
@@ -248,7 +250,7 @@ namespace SME.SR.Data
                                 Nivel3 = anoTurma.Select(x => x.Nivel3).Sum(),
                                 Nivel4 = anoTurma.Select(x => x.Nivel4).Sum(),
                                 Alfabetico = anoTurma.Select(x => x.Alfabetico).Sum(),
-                                SemPreenchimento = valorSemPreenchimento > 0 ?(totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0,
+                                SemPreenchimento = semPreenchimentoRelatorio,
                                 TotalDeAlunos = totalDeAlunosNaSondagem,
                                 Ano = int.Parse(anoTurma.Key),
                                 TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurma.Key),
@@ -528,6 +530,7 @@ namespace SME.SR.Data
 
             return (totalSemPreenchimento + (anoTurma.Select(x => x.PreSilabico).Sum() + anoTurma.Select(x => x.SilabicoSemValor).Sum()
                                                                                   + anoTurma.Select(x => x.SilabicoComValor).Sum()
+                                                                                  + anoTurma.Select(x => x.Alfabetico).Sum()
                                                                                   + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()));
         }
         
