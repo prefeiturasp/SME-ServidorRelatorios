@@ -24,9 +24,9 @@ namespace SME.SR.Application
             int[] modalidadesAtaFinal = VerificaModalidadeRelatorioAtaFinal(request.AnoLetivo, request.TiposTurma, request.Modalidade);
 
             var notas = await notasConceitoRepository.ObterNotasTurmasAlunosParaAtaFinalAsync(request.CodigosAlunos, request.AnoLetivo, modalidadesAtaFinal, request.Semestre, request.TiposTurma);
-            notas = notas.Where(x => x.CodigoTurma == request.CodigoTurma);
             if (notas == null || !notas.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
+            notas = notas.Where(x => x.CodigoTurma == request.CodigoTurma);
 
             return notas.GroupBy(nf => nf.CodigoTurma);
         }
