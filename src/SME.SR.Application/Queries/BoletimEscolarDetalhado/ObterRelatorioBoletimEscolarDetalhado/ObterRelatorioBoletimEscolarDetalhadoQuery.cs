@@ -28,6 +28,6 @@ namespace SME.SR.Application
 
         public int QuantidadeBoletimPorPagina { get; set; }
 
-        public bool ExibirRecomentacoes { get { return QuantidadeBoletimPorPagina == 1; } }
+        public bool ExibirRecomentacoes { get; set; }
     }
 }
