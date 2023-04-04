@@ -59,8 +59,8 @@ namespace SME.SR.Application
             var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
             var frequencias = await ObterFrequenciasAlunos(alunosAPesquisarTurmas, request.AnoLetivo, request.Modalidade, request.Semestre, turmas.Select(t => t.Codigo).ToArray());
             var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(alunosAPesquisarTurmas, request.AnoLetivo, request.Modalidade, codigosTurma);
-            var recomendacoes = await ObterRecomendacoesAlunosTurma(alunosAPesquisarTurmas, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre, request.ExibirRecomentacoes);
-            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo, request.ExibirRecomentacoes, request.Modalidade);
+            var recomendacoes = await ObterRecomendacoesAlunosTurma(alunosAPesquisarTurmas, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var boletins = await MontarBoletins(dre, ue, ciclos, turmas, ultimoBimestrePeriodoFechamento, componentesCurriculares, alunosPorTurma, alunosFoto, notas, pareceresConclusivos, recomendacoes, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, request.AnoLetivo, recomendacoes.Any() && recomendacoes != null, request.Modalidade);
 
             return new BoletimEscolarDetalhadoEscolaAquiDto(boletins);
         }
@@ -92,12 +92,9 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(anoLetivo));
         }
 
-        private async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesAlunosTurma(string[] codigosAlunos, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre, bool exibirRecomendacao)
+        private async Task<IEnumerable<RecomendacaoConselhoClasseAluno>> ObterRecomendacoesAlunosTurma(string[] codigosAlunos, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre)
         {
-            if (exibirRecomendacao)
-                return await mediator.Send(new ObterRecomendacoesPorAlunosTurmasQuery(codigosAlunos, codigosTurma, anoLetivo, modalidade, semestre));
-
-            return Enumerable.Empty<RecomendacaoConselhoClasseAluno>();
+             return await mediator.Send(new ObterRecomendacoesPorAlunosTurmasQuery(codigosAlunos, codigosTurma, anoLetivo, modalidade, semestre));
         }
 
         private async Task<IEnumerable<AlunoFotoArquivoDto>> ObterFotosAlunos(string[] codigosAluno)
