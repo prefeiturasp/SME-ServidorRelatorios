@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
             var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
             var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
-    
+            
             if (relatorios == null || !relatorios.Any())
                 throw new NegocioException("Não há dados para o relatório analítico da sondagem.");
 

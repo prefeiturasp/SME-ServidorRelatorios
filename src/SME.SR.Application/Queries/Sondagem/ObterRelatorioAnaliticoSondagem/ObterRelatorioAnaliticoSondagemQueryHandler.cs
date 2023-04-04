@@ -21,7 +21,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> Handle(ObterRelatorioAnaliticoSondagemQuery request, CancellationToken cancellationToken)
         {
             var dicionario = ObterDicionarioAcaoObterRelatorio();
-
+    
             if (dicionario.ContainsKey(request.Filtro.TipoSondagem))
                 return await dicionario[request.Filtro.TipoSondagem](request.Filtro);
 

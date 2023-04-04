@@ -16,7 +16,8 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
         private const int LINHA_CABECALHO_DRE = 6;
-        private const int LINHA_TABELA = 8;
+        private const int LINHA_CABECALHO_ANO_PERIODO = 7;
+        private const int LINHA_TABELA = 9;
 
         public GerarRelatorioAnaliticoDaSondagemExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
         {
@@ -73,7 +74,10 @@ namespace SME.SR.Application
             AdicinarFonte(worksheet.Range(4, indiceColunaTitulo, 4, totalColunas));
 
             worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"DRE: {dto.Dre}";
-            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));
+            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));            
+            
+            worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"Ano Letivo: {dto.AnoLetivo}  Período: {dto.Periodo}º Bimestre";
+            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_ANO_PERIODO, 1, LINHA_CABECALHO_ANO_PERIODO, totalColunas));
         }
 
         private void AdicinarFonte(IXLRange range)
