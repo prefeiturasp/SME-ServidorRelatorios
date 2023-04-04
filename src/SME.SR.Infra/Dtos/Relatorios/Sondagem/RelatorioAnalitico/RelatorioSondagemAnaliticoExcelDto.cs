@@ -9,5 +9,7 @@ namespace SME.SR.Infra
         public string DreSigla { get; set; }
         public string DescricaoTipoSondagem { get; set; }
         public DataTable TabelaDeDado { get; set; }
+        public int Periodo { get; set; }
+        public int AnoLetivo { get; set; }
     }
 }

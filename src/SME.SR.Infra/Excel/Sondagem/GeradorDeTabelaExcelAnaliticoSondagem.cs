@@ -75,6 +75,8 @@ namespace SME.SR.Infra
             {
                 Dre = dto.Dre,
                 DreSigla = dto.DreSigla,
+                AnoLetivo = dto.AnoLetivo,
+                Periodo = dto.Periodo,
                 DescricaoTipoSondagem = dto.DescricaoTipoSondagem,
                 TabelaDeDado = ObterData()
             };

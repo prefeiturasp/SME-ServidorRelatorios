@@ -175,6 +175,8 @@ namespace SME.SR.Data
                     var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     perguntas.Dre = dre.Nome;
                     perguntas.DreSigla = dre.Abreviacao;
+                    perguntas.AnoLetivo = filtro.AnoLetivo;
+                    perguntas.Periodo = filtro.Periodo;
                     retorno.Add(perguntas);
                 }
             }
@@ -263,6 +265,8 @@ namespace SME.SR.Data
                     var dre = dreLista.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     relatorioSondagemAnaliticoEscritaDto.Dre = dre.Nome;
                     relatorioSondagemAnaliticoEscritaDto.DreSigla = dre.Abreviacao;
+                    relatorioSondagemAnaliticoEscritaDto.AnoLetivo = filtro.AnoLetivo;
+                    relatorioSondagemAnaliticoEscritaDto.Periodo = filtro.Periodo;
                     retorno.Add(relatorioSondagemAnaliticoEscritaDto);
                 }
             }
@@ -352,6 +356,8 @@ namespace SME.SR.Data
                     var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     relatorioSondagemAnaliticoLeituraDto.Dre = dre.Nome;
                     relatorioSondagemAnaliticoLeituraDto.DreSigla = dre.Abreviacao;
+                    relatorioSondagemAnaliticoLeituraDto.AnoLetivo = filtro.AnoLetivo;
+                    relatorioSondagemAnaliticoLeituraDto.Periodo = filtro.Periodo;
                     retorno.Add(relatorioSondagemAnaliticoLeituraDto);
                 }
             }
@@ -430,6 +436,8 @@ namespace SME.SR.Data
                     var dre = listaDre.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     perguntas.DreSigla = dre.Abreviacao;
                     perguntas.Dre = dre.Nome;
+                    perguntas.AnoLetivo = filtro.AnoLetivo;
+                    perguntas.Periodo = filtro.Periodo;
                     retorno.Add(perguntas);
                 }
             }
@@ -499,6 +507,8 @@ namespace SME.SR.Data
                     var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     perguntas.DreSigla = dre.Abreviacao;
                     perguntas.Dre = dre.Nome;
+                    perguntas.AnoLetivo = filtro.AnoLetivo;
+                    perguntas.Periodo = filtro.Periodo;
                     retorno.Add(perguntas);
                 }
             }
