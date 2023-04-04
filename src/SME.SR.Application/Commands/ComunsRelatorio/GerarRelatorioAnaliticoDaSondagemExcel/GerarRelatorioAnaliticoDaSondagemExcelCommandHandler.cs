@@ -76,7 +76,7 @@ namespace SME.SR.Application
             worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"DRE: {dto.Dre}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));            
             
-            worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"Ano Letivo: {dto.AnoLetivo}  Período: {dto.Periodo}º Bimestre";
+            worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º BIMESTRE";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_ANO_PERIODO, 1, LINHA_CABECALHO_ANO_PERIODO, totalColunas));
         }
 
@@ -108,15 +108,25 @@ namespace SME.SR.Application
 
         private void AdicionarEstiloCabecalho(IXLWorksheet worksheet, int ultimaColunaUsada)
         {
-            var range = worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, ultimaColunaUsada);
-            range.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-            range.Style.Border.SetOutsideBorderColor(XLColor.Black);
+            var rangeDre = worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, ultimaColunaUsada);
+            rangeDre.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            rangeDre.Style.Border.SetOutsideBorderColor(XLColor.Black);
 
-            range.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
-            range.Style.Border.SetInsideBorderColor(XLColor.Black);
+            rangeDre.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            rangeDre.Style.Border.SetInsideBorderColor(XLColor.Black);
 
-            range.Style.Font.SetFontSize(10);
-            range.Style.Font.SetFontName("Arial");
+            rangeDre.Style.Font.SetFontSize(10);
+            rangeDre.Style.Font.SetFontName("Arial");
+            
+            var rangeAnoPeriodo = worksheet.Range(LINHA_CABECALHO_ANO_PERIODO, 1, LINHA_CABECALHO_ANO_PERIODO, ultimaColunaUsada);
+            rangeAnoPeriodo.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            rangeAnoPeriodo.Style.Border.SetOutsideBorderColor(XLColor.Black);
+
+            rangeAnoPeriodo.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            rangeAnoPeriodo.Style.Border.SetInsideBorderColor(XLColor.Black);
+
+            rangeAnoPeriodo.Style.Font.SetFontSize(10);
+            rangeAnoPeriodo.Style.Font.SetFontName("Arial");
         }
 
         private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada, TipoSondagem tipoSondagem)
