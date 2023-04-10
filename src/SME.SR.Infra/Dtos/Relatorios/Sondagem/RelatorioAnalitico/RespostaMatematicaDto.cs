@@ -1,6 +1,6 @@
 ﻿namespace SME.SR.Infra
 {
-    public class RespostaMatematica
+    public class RespostaMatematicaDto
     {
         public int Acertou {  get; set; }   
         public int Resolveu { get; set; }

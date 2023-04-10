@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace SME.SR.Infra.Dtos.Relatorios.Sondagem.RelatorioAnalitico
+namespace SME.SR.Infra
 {
-    internal class RespostaSondagemAnaliticoCampoAditivoDto
+    public class RespostaSondagemAnaliticoCampoAditivoMultiplicativoDto : RelatorioSondagemAnaliticoDto
     {
+        public RespostaSondagemAnaliticoCampoAditivoMultiplicativoDto()
+        {
+            Ordens = new List<RespostaOrdemMatematicaDto>();
+        }
+
+        public List<RespostaOrdemMatematicaDto> Ordens { get; set; }
     }
 }
