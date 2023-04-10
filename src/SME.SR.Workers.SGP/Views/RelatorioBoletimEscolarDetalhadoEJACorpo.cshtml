@@ -63,7 +63,8 @@
 
     bool ChecarNotaConceito(List<GrupoMatrizComponenteCurricularDto> grupos)
     {
-        return grupos.Where(a =>
+       var gruposNovos = grupos.Where(x => x.ComponentesCurriculares != null);
+        return gruposNovos.Where(a =>
             a.ComponentesCurriculares.Any(b =>
                 (b.NotaBimestre1 != null && (b.NotaBimestre1.Contains("P") || b.NotaBimestre1.Contains("S"))) ||
                 (b.NotaBimestre2 != null && (b.NotaBimestre2.Contains("P") || b.NotaBimestre2.Contains("S"))) ||
