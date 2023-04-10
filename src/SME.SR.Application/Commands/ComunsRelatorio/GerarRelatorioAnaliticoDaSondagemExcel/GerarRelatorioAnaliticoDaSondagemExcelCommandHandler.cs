@@ -18,6 +18,8 @@ namespace SME.SR.Application
         private const int LINHA_CABECALHO_DRE = 6;
         private const int LINHA_CABECALHO_ANO_PERIODO = 7;
         private const int LINHA_TABELA = 9;
+        private const int LINHA_SUBTITULO = 10;
+        private const int LINHA_TABTITULO = 11;
 
         public GerarRelatorioAnaliticoDaSondagemExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
         {
@@ -143,7 +145,9 @@ namespace SME.SR.Application
         {
             return new Dictionary<TipoSondagem, Action<IXLWorksheet, int, int>>()
             {
-                { TipoSondagem.LP_CapacidadeLeitura, AdicionarEstiloCorpoCapacidadeDeLeitura }
+                { TipoSondagem.LP_CapacidadeLeitura, AdicionarEstiloCorpoCapacidadeDeLeitura },
+                { TipoSondagem.MAT_CampoAditivo, AdicionarEstiloCorpoAditivoMultiplicativo },
+                { TipoSondagem.MAT_CampoMultiplicativo, AdicionarEstiloCorpoAditivoMultiplicativo }
             };
         }
 
@@ -154,9 +158,6 @@ namespace SME.SR.Application
 
         private void AdicionarEstiloCorpoCapacidadeDeLeitura(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
         {
-            const int LINHA_SUBTITULO = 9;
-            const int LINHA_TABTITULO = 10;
-
             AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABELA);
             AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_SUBTITULO);
             AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABTITULO);
@@ -166,6 +167,19 @@ namespace SME.SR.Application
 
             AdicioneMerge(worksheet, 5, ultimaColunaUsada, LINHA_TABELA, 11);
             AdicioneMerge(worksheet, 1, ultimaColunaUsada, LINHA_SUBTITULO, 3);
+        }
+
+        private void AdicionarEstiloCorpoAditivoMultiplicativo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
+        {
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABELA);
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_SUBTITULO);
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABTITULO);
+
+            worksheet.Range(LINHA_TABELA, 1, LINHA_TABELA, 4).Merge();
+            worksheet.Range(LINHA_TABELA, 1, LINHA_SUBTITULO, 4).Merge();
+
+            AdicioneMerge(worksheet, 5, ultimaColunaUsada, LINHA_TABELA, 7);
+            AdicioneMerge(worksheet, 5, ultimaColunaUsada, LINHA_SUBTITULO, 3);
         }
 
         private void AdicioneMerge(IXLWorksheet worksheet, int colunaInicio, int ultimaColunaUsada, int linhaMerge, int acrescimoColuna)
