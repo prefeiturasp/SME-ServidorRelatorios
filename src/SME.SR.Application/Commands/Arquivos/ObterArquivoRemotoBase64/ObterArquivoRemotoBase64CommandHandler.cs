@@ -18,6 +18,13 @@ namespace SME.SR.Application
         private const string PROTOCOLO_HTTP = "http";
         private const string PROTOCOLO_HTTPS = "https";
 
+        private readonly IMediator mediator;
+
+        public ObterArquivoRemotoBase64CommandHandler(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
         public async Task<string> Handle(ObterArquivoRemotoBase64Command request, CancellationToken cancellationToken)
         {
             if (request.Url.StartsWith("data:") && request.Url.Contains(";base64,"))
@@ -101,7 +108,7 @@ namespace SME.SR.Application
 
             var escala = Math.Min(escalaV, escalaH);
 
-            if (escala >= 1)
+            if (escala >= 1 || imagem.Width > escalaH)
                 return ConverterImagem(imagem);
 
             var width = (int)(imagem.Width * escala);

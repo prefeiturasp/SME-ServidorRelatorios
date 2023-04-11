@@ -43,5 +43,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<Turma>> ObterTurmasPorCodigosSituacaoConsolidado(string[] codigos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres);
         Task<IEnumerable<Aluno>> ObterDadosAlunosPorTurmaDataMatricula(string codigoTurma, DateTime dataMatricula);
         Task<IEnumerable<TurmaItinerarioEnsinoMedioDto>> ObterTurmasItinerarioEnsinoMedio();
+        Task<IEnumerable<Turma>> ObterTurmasComplementaresPorAlunos(string[] alunosCodigos);
     }
 }
