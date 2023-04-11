@@ -548,27 +548,30 @@ namespace SME.SR.Application
                                                     possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
                                                 ++coluna);
 
-                        var frequencia = "-";                            
+                        var frequencia = "-";
 
                         if (possuiComponente)
                         {
                             if (turma.AnoLetivo.Equals(2020))
+                            {
                                 frequencia = frequenciaAluno == null || frequenciaAluno.TotalAusencias == 0
-                                    ?
-                                    "100"
-                                    :
-                                    frequenciaAluno.PercentualFrequenciaFinal.ToString();
+                                ? "100"
+                                : frequenciaAluno.PercentualFrequenciaFinal.ToString();
+                            }
                             else
-                                frequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
-                                        ?
-                                        "100"
-                                        :
-                                        frequenciaAluno != null && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo)
-                                        ? 
-                                        frequenciaAluno.PercentualFrequencia > 0 ?
-                                        frequenciaAluno.PercentualFrequencia.ToString() : "0"
-                                        :
-                                        "";
+                            {
+                                frequencia = "";
+                                if (frequenciaAluno != null && frequenciaAluno.TotalAulas != 0 && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo))
+                                {
+                                    frequencia = frequenciaAluno.PercentualFrequencia > 0
+                                    ? frequenciaAluno.PercentualFrequencia.ToString()
+                                    : "0";
+                                }
+                                else if (frequenciaAluno == null && turmaPossuiFrequenciaRegistrada)
+                                {
+                                    frequencia = "100";
+                                }
+                            }
                         }
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
@@ -577,13 +580,6 @@ namespace SME.SR.Application
                                                 ++coluna);
 
                         continue;
-
-                        var textoParaExibir = possuiComponente ? "" : "-";
-                        
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, (!aluno.Inativo && possuiComponente) ? "" : "-", ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
-                        linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, textoParaExibir, ++coluna);
                     }
                 }
 
