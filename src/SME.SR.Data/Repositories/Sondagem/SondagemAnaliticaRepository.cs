@@ -516,6 +516,11 @@ namespace SME.SR.Data
             return retorno;
         }
 
+        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoNumeros(FiltroRelatorioAnaliticoSondagemDto filtro)
+        {
+            throw new NotImplementedException();
+        }
+
         private  int TotalAlunosEscritaTerceiroAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int totalSemPreenchimento,int valorSemPreenchimento)
         {
 

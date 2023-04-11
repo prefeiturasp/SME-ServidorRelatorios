@@ -7,6 +7,7 @@ using Npgsql;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.Sondagem;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SME.SR.Data.Repositories.Sondagem
 {
@@ -183,6 +184,20 @@ namespace SME.SR.Data.Repositories.Sondagem
 
 	        return retorno;
 
+        }
+
+        public async Task<IEnumerable<PerguntaRelatorioMatematicaNumerosDto>> ObterPerguntasMatematicaNumeros(RelatorioPortuguesFiltroDto filtro)
+        {
+            var listaRetorno = new List<PerguntaRelatorioMatematicaNumerosDto>();
+            var sql = new StringBuilder();
+            var parametros = new { };
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
+            {
+                var consulta = await conexao.QueryAsync<PerguntaRelatorioMatematicaNumerosDto>(sql.ToString(), parametros);
+                if (consulta != null)
+                    listaRetorno = consulta.ToList();
+            }
+            return listaRetorno;
         }
     }
 }

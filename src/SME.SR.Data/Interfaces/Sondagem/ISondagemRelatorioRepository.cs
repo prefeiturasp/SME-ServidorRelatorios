@@ -8,5 +8,6 @@ namespace SME.SR.Data.Interfaces.Sondagem
     {
         Task<IEnumerable<OrdemPerguntaRespostaDto>> ConsolidadoCapacidadeLeitura(RelatorioPortuguesFiltroDto filtro);
         Task<IEnumerable<PerguntaRespostaProducaoTextoDto>> ObterDadosProducaoTexto(RelatorioPortuguesFiltroDto filtro);
+        Task<IEnumerable<PerguntaRelatorioMatematicaNumerosDto>> ObterPerguntasMatematicaNumeros(RelatorioPortuguesFiltroDto filtro);
     }
 }
