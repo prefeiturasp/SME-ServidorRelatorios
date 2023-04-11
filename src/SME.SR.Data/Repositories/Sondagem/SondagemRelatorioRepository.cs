@@ -15,9 +15,81 @@ namespace SME.SR.Data.Repositories.Sondagem
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
 
+        public const int QUARTO_ANO = 4;
+        public const int NONO_ANO = 9;
+        public const int QUARTO_BIMESTRE = 4;
+
         public SondagemRelatorioRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
+        }
+
+        public async Task<IEnumerable<PerguntaRespostaOrdemDto>> ConsolidacaoCampoAditivoMultiplicativo(RelatorioMatematicaFiltroDto filtro)
+        {
+            var retorno = new List<PerguntaRespostaOrdemDto>();
+            var filtroUeDre = "";
+            if (!string.IsNullOrEmpty(filtro.CodigoDre) && filtro.CodigoDre != "-99")
+                filtroUeDre += @" AND s.""CodigoDre"" =  @CodigoDRE";
+            if (!string.IsNullOrEmpty(filtro.CodigoUe) && filtro.CodigoUe != "-99")
+                filtroUeDre += @" AND s.""CodigoUe"" =  @CodigoUe";
+
+            var query = @$"	SELECT      pae.""AnoEscolar"" as ""AnoTurma"",
+                                    pae.""Ordenacao"" AS ""OrdemPergunta"",
+                                    ppai.""Id"" AS ""PerguntaId"",
+                                    ppai.""Descricao"" AS ""PerguntaDescricao"",
+                                    pfilho.""Id"" AS ""SubPerguntaId"",
+                                    pfilho.""Descricao"" AS ""SubPerguntaDescricao"",
+                                    pr.""Ordenacao"" AS ""OrdemResposta"",
+                                    r.""Id"" AS ""RespostaId"",
+                                    r.""Descricao"" AS ""RespostaDescricao"",
+                                    tabela.""QtdRespostas"",
+                                    tabela.""CodigoDre"",
+			                        tabela.""CodigoUe"", 	
+			                        tabela.""CodigoTurma""
+                        FROM ""PerguntaAnoEscolar"" pae
+                        INNER JOIN ""Pergunta"" ppai ON ppai.""Id"" = pae.""PerguntaId"" 
+                        INNER JOIN ""Pergunta"" pfilho ON pfilho.""PerguntaId"" = pae.""PerguntaId""
+                        INNER JOIN ""PerguntaResposta"" pr ON pr.""PerguntaId"" = pfilho.""Id""
+                        LEFT JOIN ""Resposta"" r ON r.""Id"" = pr.""RespostaId""
+                        {(filtro.Bimestre == QUARTO_BIMESTRE ? 
+                            @$" LEFT JOIN  ""PerguntaAnoEscolarBimestre"" paeb  on pae.""Id"" = paeb.""PerguntaAnoEscolarId"" and pae.""AnoEscolar"" >= {QUARTO_ANO} and pae.""AnoEscolar"" <= {NONO_ANO}" : "") }
+                        LEFT JOIN ( SELECT p.""Id"" AS ""PerguntaId"",
+                                            r.""Id"" AS ""RespostaId"", COUNT(1) AS ""QtdRespostas"",
+                                            s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma"", s.""CodigoTurma""
+                                    FROM ""SondagemAlunoRespostas"" sar
+                                    INNER JOIN ""SondagemAluno"" sa ON sa.""Id"" = sar.""SondagemAlunoId""
+                                    INNER JOIN ""Sondagem"" s ON s.""Id"" = sa.""SondagemId""
+                                    INNER JOIN ""Pergunta"" p ON p.""Id"" = sar.""PerguntaId""
+                                    INNER JOIN ""Resposta"" r ON r.""Id"" = sar.""RespostaId""
+                                    WHERE s.""ComponenteCurricularId"" = @ComponenteCurricularId
+                                        AND s.""AnoLetivo"" = @AnoLetivo
+                                        AND s.""Bimestre"" = @Bimestre
+                                    {filtroUeDre}    
+                                    GROUP BY p.""Id"", r.""Id"", s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma"", s.""CodigoTurma"") 
+                                AS tabela ON pfilho.""Id"" = tabela.""PerguntaId"" AND r.""Id"" = tabela.""RespostaId"" AND pae.""AnoEscolar"" = tabela.""AnoTurma""
+                        WHERE pae.""Grupo"" = @Grupo
+                        AND ((pae.""FimVigencia"" IS NULL AND EXTRACT (YEAR FROM pae.""InicioVigencia"") <= @AnoLetivo)
+                        OR (EXTRACT(YEAR FROM pae.""FimVigencia"") >= @AnoLetivo AND EXTRACT (YEAR FROM pae.""InicioVigencia"") <= @AnoLetivo))
+                        {(filtro.Bimestre == QUARTO_BIMESTRE ? $@" AND (paeb.""Id"" is null or paeb.""Bimestre"" = {QUARTO_BIMESTRE})" : "")}
+                        ORDER BY tabela.""CodigoDre"", tabela.""CodigoUe"", tabela.""CodigoTurma"", pae.""AnoEscolar"", pae.""Ordenacao"",  pfilho.""Id"", pr.""Ordenacao"" ";
+
+            var parametros = new
+            {
+                filtro.CodigoUe,
+                filtro.CodigoDre,
+                filtro.AnoLetivo,
+                filtro.Bimestre,
+                filtro.ComponenteCurricularId,
+                Grupo = filtro.Proficiencia
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
+            {
+                var consulta = await conexao.QueryAsync<PerguntaRespostaOrdemDto>(query.ToString(), parametros);
+                if (consulta != null)
+                    retorno = consulta.ToList();
+            }
+            return retorno;
         }
 
         public async Task<IEnumerable<OrdemPerguntaRespostaDto>> ConsolidadoCapacidadeLeitura(RelatorioPortuguesFiltroDto filtro)

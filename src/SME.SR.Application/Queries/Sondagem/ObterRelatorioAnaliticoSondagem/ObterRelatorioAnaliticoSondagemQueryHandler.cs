@@ -37,7 +37,10 @@ namespace SME.SR.Application
                 { TipoSondagem.LP_LeituraVozAlta, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoLeituraDeVozAlta },
                 { TipoSondagem.LP_Escrita, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoEscrita },
                 { TipoSondagem.LP_ProducaoTexto, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoProducaoDeTexto },
-                { TipoSondagem.MAT_Numeros, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoNumeros }
+                { TipoSondagem.MAT_CampoAditivo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoAditivo },
+                { TipoSondagem.MAT_CampoMultiplicativo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoMultiplicativo },
+                { TipoSondagem.MAT_Numeros, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoNumero },
+                { TipoSondagem.MAT_IAD, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoIAD }
             };
         }
     }

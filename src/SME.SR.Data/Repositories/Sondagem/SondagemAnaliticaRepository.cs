@@ -9,6 +9,7 @@ using Npgsql;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Models;
 using SME.SR.Infra.Dtos.Sondagem;
+using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Data
 {
@@ -549,10 +550,10 @@ namespace SME.SR.Data
                                                                                   + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()));
         }
         
-        private async Task<List<QuantidadeTurmaPorAnoDto>> ObterQuantidadeTurmaPorAno(FiltroRelatorioAnaliticoSondagemDto filtro, string codigoUe)
+        private async Task<List<QuantidadeTurmaPorAnoDto>> ObterQuantidadeTurmaPorAno(FiltroRelatorioAnaliticoSondagemDto filtro, string codigoUe, int modalidade = (int)Modalidade.Fundamental)
         {
             var historico = filtro.AnoLetivo < DateTime.Now.Year;
-            var turmas = (await turmaRepository.ObterTotalDeTurmasPorAno(filtro.LoginUsuarioLogado, codigoUe, filtro.PerfilUsuarioLogado, historico, (int) Modalidade.Fundamental, filtro.AnoLetivo)).ToList();
+            var turmas = (await turmaRepository.ObterTotalDeTurmasPorAno(filtro.LoginUsuarioLogado, codigoUe, filtro.PerfilUsuarioLogado, historico, modalidade, filtro.AnoLetivo)).ToList();
             return turmas;
         }
 
@@ -703,6 +704,122 @@ namespace SME.SR.Data
             sql.AppendLine("                order by pp.\"dreCodeEol\", pp.\"schoolCodeEol\", pp.\"yearClassroom\" ");
 
             return sql.ToString();
+        }
+        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCampoAditivo(FiltroRelatorioAnaliticoSondagemDto filtro) => await ObterRelatorioSondagemAnaliticoCampoAditivoMultiplicativo(filtro, ProficienciaSondagemEnum.CampoAditivo);
+        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCampoMultiplicativo(FiltroRelatorioAnaliticoSondagemDto filtro) => await ObterRelatorioSondagemAnaliticoCampoAditivoMultiplicativo(filtro, ProficienciaSondagemEnum.CampoMultiplicativo);
+
+        public Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoNumero(FiltroRelatorioAnaliticoSondagemDto filtro)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoIAD(FiltroRelatorioAnaliticoSondagemDto filtro)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCampoAditivoMultiplicativo(FiltroRelatorioAnaliticoSondagemDto filtro, ProficienciaSondagemEnum proficiencia)
+        {
+            var retorno = new List<RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto>();
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
+            var modalidades = new List<int> { 5, 13 };
+
+            var dtoConsultaDados = await sondagemRelatorioRepository.ConsolidacaoCampoAditivoMultiplicativo(new RelatorioMatematicaFiltroDto
+            {
+                AnoLetivo = filtro.AnoLetivo,
+                CodigoDre = filtro.DreCodigo,
+                CodigoUe = filtro.UeCodigo,
+                ComponenteCurricularId = SondagemComponenteCurricular.MATEMATICA,
+                Proficiencia = proficiencia,
+                Bimestre = filtro.Periodo
+            });
+
+            var perguntasPorAno = dtoConsultaDados.Where(x => x.AnoTurma != null).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao }).ToList();
+            var listaDres = await dreRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre != null).Select(x => x.CodigoDre).Distinct().ToArray());
+            foreach (var dre in listaDres)
+            {
+                var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
+                var relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto = new RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto(TipoSondagem.MAT_CampoAditivo)
+                {
+                    Dre = dre.Nome,
+                    DreSigla = dre.Abreviacao,
+                    AnoLetivo = filtro.AnoLetivo,
+                    Periodo = filtro.Periodo
+                };
+
+                var listaUes = await ueRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre == dre.Codigo && x.CodigoUe != null).Select(x => x.CodigoUe).Distinct().ToArray());
+                foreach (var ue in listaUes)
+                {
+                    var turmas = await ObterQuantidadeTurmaPorAno(filtro, ue.Codigo);
+
+                    var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(),
+                                                                                                                periodoFixo.DataInicio, periodoFixo.DataFim,
+                                                                                                                ue.Codigo, dre.Codigo)).ToList();
+                     foreach (var anoTurmaItem in perguntasPorAno)
+                    {
+                        var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma).Select(x => x.QuantidadeAluno).Sum();
+                     
+                        var respostaSondagemAnaliticoCampoAditivoMultiplicativoDto = relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Where(x => x.Ano == int.Parse(anoTurmaItem.Key.AnoTurma) && x.Ue == ue.Nome).FirstOrDefault() ;
+                        if (respostaSondagemAnaliticoCampoAditivoMultiplicativoDto == null)
+                        {
+                            respostaSondagemAnaliticoCampoAditivoMultiplicativoDto = new RespostaSondagemAnaliticoCampoAditivoMultiplicativoDto()
+                            {
+                                TotalDeAlunos = totalDeAlunos,
+                                Ano = int.Parse(anoTurmaItem.Key.AnoTurma),
+                                TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma),
+                                Ue = ue.Nome
+                            };
+                            relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Add(respostaSondagemAnaliticoCampoAditivoMultiplicativoDto);
+                        }
+
+                        var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
+                        var respostaSondagemAnaliticoOrdem = ObterRespostaSondagemAnaliticoOrdemDto(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma, 
+                                                                                                    anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao, 
+                                                                                                    totalDeAlunos);
+
+                        respostaSondagemAnaliticoCampoAditivoMultiplicativoDto.Ordens.Add(respostaSondagemAnaliticoOrdem);
+                        
+                    }
+                }
+                retorno.Add(relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto);
+            }
+         
+            return retorno;
+        }
+
+        private RespostaOrdemMatematicaDto ObterRespostaSondagemAnaliticoOrdemDto(List<PerguntaRespostaOrdemDto> perguntasRepostasUe, 
+                                                                                  string anoTurma, int ordemPergunta, string descricaoPergunta, int totalDeAlunos)
+        {
+            var respostaSondagemAnaliticoIdeiaDto = new RespostaMatematicaDto();
+            var respostaSondagemAnaliticoResultadoDto = new RespostaMatematicaDto();
+
+            var perguntasRespostas = perguntasRepostasUe.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Ideia").ToList();
+            respostaSondagemAnaliticoIdeiaDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoIdeiaDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoIdeiaDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
+            var totalRespostas = respostaSondagemAnaliticoIdeiaDto.Acertou +
+                                    respostaSondagemAnaliticoIdeiaDto.Errou + 
+                                    respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
+            respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos - totalRespostas;
+        
+
+            perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
+            respostaSondagemAnaliticoResultadoDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoResultadoDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoResultadoDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
+            totalRespostas = respostaSondagemAnaliticoResultadoDto.Acertou +
+                             respostaSondagemAnaliticoResultadoDto.Errou +
+                             respostaSondagemAnaliticoResultadoDto.NaoResolveu;
+            respostaSondagemAnaliticoResultadoDto.SemPreenchimento = totalDeAlunos - totalRespostas;
+            
+            return new RespostaOrdemMatematicaDto
+                {
+                    Ordem = ordemPergunta,
+                    Descricao = descricaoPergunta,
+                    Resultado = respostaSondagemAnaliticoResultadoDto,
+                    Ideia = respostaSondagemAnaliticoIdeiaDto
+                };
         }
     }
 }
