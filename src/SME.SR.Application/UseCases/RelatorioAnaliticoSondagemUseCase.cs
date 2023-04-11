@@ -18,16 +18,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            //var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
-            var filtro = new FiltroRelatorioAnaliticoSondagemDto()
-            {
-                TipoSondagem = TipoSondagem.MAT_CampoAditivo,
-                AnoLetivo = 2023,
-                DreCodigo = "108100",
-                UeCodigo = "",
-                Periodo = 1
-            };
-
+            var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
             var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
             
             if (relatorios == null || !relatorios.Any())
