@@ -692,7 +692,7 @@ namespace SME.SR.Data
                 sql.AppendLine("                and pp.\"dreCodeEol\" = @dreCodeEol");
 
             if (filtroRelatorioAnaliticoSondagemDto.UeCodigo != "-99")
-                sql.AppendLine("                and pp.\"schoolCodeEol\" = @ueCodigo");
+                sql += " and pp.\"schoolCodeEol\" = @ueCodigo";
 
             sql.AppendLine("			    group by pp.\"dreCodeEol\", pp.\"schoolCodeEol\" ,pp.\"yearClassroom\" ,pp.\"classroomCodeEol\" ,pp.\"yearClassroom\"");
             sql.AppendLine("                order by pp.\"dreCodeEol\", pp.\"schoolCodeEol\", pp.\"yearClassroom\" ");
