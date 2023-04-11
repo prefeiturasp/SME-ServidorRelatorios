@@ -88,25 +88,24 @@
                 @{
                     if (!ehEJA)
                     {
-                        aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
+                        foreach (var grupo in aluno.ComponentesCurriculares.GroupBy(g => g.Grupo))
                         {
-                            MontarComponenteCurriculares(f.Select(s => s));
+                            MontarComponenteCurriculares(grupo.Select(s => s));
 
-                            if (f.Key == 1 && aluno.EhRegencia && !ehEJA)
+                            if (grupo.Key == 1 && aluno.EhRegencia)
                                 MontarComponenteCurricularesRegencia(aluno);
-                        });
+                        }
                     }
                     else
                     {
                         if (aluno.ComponenteCurricularRegencia != null)
                             MontarComponenteCurricularesRegencia(aluno);
 
-                        aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
+                        foreach (var grupo in aluno.ComponentesCurriculares.GroupBy(g => g.Grupo))
                         {
-                            MontarComponenteCurriculares(f.Select(s => s));
-                        });
+                            MontarComponenteCurriculares(grupo.Select(s => s));
+                        }
                     }
-
                 }
             </tbody>
         </table>
