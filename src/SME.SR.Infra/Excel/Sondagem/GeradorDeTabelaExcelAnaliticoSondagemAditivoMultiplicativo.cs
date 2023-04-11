@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Org.BouncyCastle.Crypto.Agreement;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -6,16 +7,16 @@ namespace SME.SR.Infra
 {
     public class GeradorDeTabelaExcelAnaliticoSondagemAditivoMultiplicativo : GeradorDeTabelaExcelAnaliticoSondagem
     {
-        private const int COLUNA_ORDEM = 4;
+        private List<(int, string)> perguntaPorOrdem;
 
         public GeradorDeTabelaExcelAnaliticoSondagemAditivoMultiplicativo(IEnumerable<RelatorioSondagemAnaliticoPorDreDto> relatorioSondagemAnaliticoPorDreDtos) : base(relatorioSondagemAnaliticoPorDreDtos)
         {
+            perguntaPorOrdem = ObterPerguntas();
         }
 
         protected override void CarregarLinhas(DataTable data, RelatorioSondagemAnaliticoPorDreDto sondagemAnalitica)
         {
             var matematica = (RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto)sondagemAnalitica;
-            var totalColuna = COLUNA_ORDEM;
 
             foreach (var resposta in matematica.Respostas)
             {
@@ -25,8 +26,7 @@ namespace SME.SR.Infra
 
                 foreach (var ordem in resposta.Ordens)
                 {
-                    CarregarLinhaResposta(ordem, linha, totalColuna);
-                    totalColuna += 8;
+                    CarregarLinhaResposta(ordem, linha, $"{ordem.Ordem}_{ordem.Descricao}");
                 }
 
                 data.Rows.Add(linha);
@@ -40,45 +40,45 @@ namespace SME.SR.Infra
             base.CarregarTitulo(data);
         }
 
+        private List<(int, string)> ObterPerguntas()
+        {
+            var perguntas = new List<(int, string)>();
+            var relatorio = relatorioSondagemAnaliticoPorDreDtos.Cast<RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto>();
+            var perguntasAno = relatorio.SelectMany(dre => dre.Respostas.GroupBy(a => a.Ano).SelectMany(ano => ano.FirstOrDefault().Ordens)); 
+
+            foreach(var pergunta in perguntasAno)
+            {
+                if (!perguntas.Exists(p => p.Item1 == pergunta.Ordem && p.Item2 == pergunta.Descricao))
+                    perguntas.Add((pergunta.Ordem, pergunta.Descricao));
+            }
+
+            return perguntas.OrderBy(p => p.Item1).ToList();
+        }
+
         protected override void CarregarLinhaTitulo(DataRow linha)
         {
-            var totalColuna = COLUNA_ORDEM;
-            var matematica = (RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto)relatorioSondagemAnaliticoPorDreDtos.FirstOrDefault();
-
-            foreach (var resposta in matematica.Respostas)
+            foreach (var pergunta in perguntaPorOrdem)
             {
-                foreach (var ordem in resposta.Ordens)
-                {
-                    CarregarLinhaTituloResposta(linha, totalColuna);
-                    totalColuna += COLUNA_ORDEM;
-                    CarregarLinhaTituloResposta(linha, totalColuna);
-                    totalColuna += COLUNA_ORDEM;
-                }
+                CarregarLinhaTituloResposta(linha, $"{pergunta.Item1}_{pergunta.Item2}_Ideia");
+                CarregarLinhaTituloResposta(linha, $"{pergunta.Item1}_{pergunta.Item2}_Resultado");
             }
         }
 
-        private void CarregarLinhaTituloResposta(DataRow linha, int coluna)
+        private void CarregarLinhaTituloResposta(DataRow linha, string coluna)
         {
-            linha[coluna] = "Acertou";
-            linha[coluna + 1] = "Errou";
-            linha[coluna + 2] = "Não resolveu";
-            linha[coluna + 3] = "Sem preenchimento";
+            linha[$"{coluna}_1"] = "Acertou";
+            linha[$"{coluna}_2"] = "Errou";
+            linha[$"{coluna}_3"] = "Não resolveu";
+            linha[$"{coluna}_4"] = "Sem preenchimento";
         }
 
         private void CarregarLinhaTituloOrdem(DataTable data)
         {
-            var totalColuna = COLUNA_ORDEM;
             DataRow linhaTitulo = data.NewRow();
 
-            var matematica = (RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto)relatorioSondagemAnaliticoPorDreDtos.FirstOrDefault();
-
-            foreach (var resposta in matematica.Respostas)
+            foreach (var pergunta in perguntaPorOrdem)
             {
-                foreach(var ordem in resposta.Ordens)
-                {
-                    linhaTitulo[totalColuna] = $"ORDEM {ordem.Ordem} - {ordem.Descricao.ToUpper()}";
-                    totalColuna += 8;
-                }
+                linhaTitulo[$"{pergunta.Item1}_{pergunta.Item2}_Ideia_1"] = $"ORDEM {pergunta.Item1} - {pergunta.Item2.ToUpper()}";
             }
 
             data.Rows.Add(linhaTitulo);
@@ -86,20 +86,12 @@ namespace SME.SR.Infra
 
         private void CarregarLinhaTituloIdeiaResultado(DataTable data)
         {
-            var totalColuna = COLUNA_ORDEM;
             DataRow linhaTitulo = data.NewRow();
 
-            var matematica = (RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto)relatorioSondagemAnaliticoPorDreDtos.FirstOrDefault();
-
-            foreach (var resposta in matematica.Respostas)
+            foreach (var pergunta in perguntaPorOrdem)
             {
-                foreach (var ordem in resposta.Ordens)
-                {
-                    linhaTitulo[totalColuna] = "Ideia";
-                    totalColuna += COLUNA_ORDEM;
-                    linhaTitulo[totalColuna] = "Resultado";
-                    totalColuna += COLUNA_ORDEM;
-                }
+                linhaTitulo[$"{pergunta.Item1}_{pergunta.Item2}_Ideia_1"] = "Ideia";
+                linhaTitulo[$"{pergunta.Item1}_{pergunta.Item2}_Resultado_1"] = "Resultado";
             }
 
             data.Rows.Add(linhaTitulo);
@@ -108,46 +100,39 @@ namespace SME.SR.Infra
         protected override DataColumn[] ObterColunas()
         {
             var colunas = new List<DataColumn>();
-            var totalColuna = COLUNA_ORDEM;
-            var matematica = (RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto)relatorioSondagemAnaliticoPorDreDtos.FirstOrDefault();
 
-            foreach (var resposta in matematica.Respostas)
+            foreach (var pergunta in perguntaPorOrdem)
             {
-                foreach (var ordem in resposta.Ordens)
-                {
-                    colunas.AddRange(ObterColunasResposta(totalColuna));
-                    totalColuna += COLUNA_ORDEM;
-                    colunas.AddRange(ObterColunasResposta(totalColuna));
-                    totalColuna += COLUNA_ORDEM;
-                }
+                colunas.AddRange(ObterColunasResposta($"{pergunta.Item1}_{pergunta.Item2}_Ideia"));
+                colunas.AddRange(ObterColunasResposta($"{pergunta.Item1}_{pergunta.Item2}_Resultado"));
             }
 
             return colunas.ToArray();   
         }
 
-        private List<DataColumn> ObterColunasResposta(int coluna)
+        private List<DataColumn> ObterColunasResposta(string coluna)
         {
             return new List<DataColumn>()
             {
-                new DataColumn(coluna.ToString()),
-                new DataColumn((coluna + 1).ToString()),
-                new DataColumn((coluna + 2).ToString()),
-                new DataColumn((coluna + 3).ToString()),
+                new DataColumn($"{coluna}_1"),
+                new DataColumn($"{coluna}_2"),
+                new DataColumn($"{coluna}_3"),
+                new DataColumn($"{coluna}_4"),
             };
         }
 
-        private void CarregarLinhaResposta(RespostaOrdemMatematicaDto dto, DataRow linha, int coluna)
+        private void CarregarLinhaResposta(RespostaOrdemMatematicaDto dto, DataRow linha, string coluna)
         {
-            CarregarLinhaResposta(dto.Ideia, linha, coluna);
-            CarregarLinhaResposta(dto.Resultado, linha, coluna + 4);
+            CarregarLinhaResposta(dto.Ideia, linha, $"{coluna}_Ideia");
+            CarregarLinhaResposta(dto.Resultado, linha, $"{coluna}_Resultado");
         }
 
-        private void CarregarLinhaResposta(RespostaMatematicaDto dto, DataRow linha, int coluna)
+        private void CarregarLinhaResposta(RespostaMatematicaDto dto, DataRow linha, string coluna)
         {
-            linha[coluna] = dto.Acertou;
-            linha[coluna + 1] = dto.Errou;
-            linha[coluna + 2] = dto.NaoResolveu;
-            linha[coluna + 3] = dto.SemPreenchimento;
+            linha[$"{coluna}_1"] = dto.Acertou;
+            linha[$"{coluna}_2"] = dto.Errou;
+            linha[$"{coluna}_3"] = dto.NaoResolveu;
+            linha[$"{coluna}_4"] = dto.SemPreenchimento;
         }
     }
 }
