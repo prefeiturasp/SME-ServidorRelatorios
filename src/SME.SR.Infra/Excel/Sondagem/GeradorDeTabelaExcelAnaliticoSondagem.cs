@@ -5,6 +5,8 @@ namespace SME.SR.Infra
 {
     public abstract class GeradorDeTabelaExcelAnaliticoSondagem
     {
+        protected const int TOTAL_COLUNA = 4;
+
         protected IEnumerable<RelatorioSondagemAnaliticoPorDreDto> relatorioSondagemAnaliticoPorDreDtos; 
 
         public GeradorDeTabelaExcelAnaliticoSondagem(IEnumerable<RelatorioSondagemAnaliticoPorDreDto> relatorioSondagemAnaliticoPorDreDtos)
@@ -58,18 +60,7 @@ namespace SME.SR.Infra
             data.Rows.Add(linhaTitulo);
         }
 
-        private DataTable ObterData() {
-            var data = new DataTable();
-
-            data.Columns.Add("UnidadeEscolar");
-            data.Columns.Add("Ano");
-            data.Columns.Add("TotalDeTurmas");
-            data.Columns.Add("TotalDeAlunos");
-
-            return data;
-        } 
-
-        private RelatorioSondagemAnaliticoExcelDto ObterExcelDto(RelatorioSondagemAnaliticoPorDreDto dto)
+        protected virtual RelatorioSondagemAnaliticoExcelDto ObterExcelDto(RelatorioSondagemAnaliticoPorDreDto dto)
         {
             return new RelatorioSondagemAnaliticoExcelDto()
             {
@@ -81,5 +72,16 @@ namespace SME.SR.Infra
                 TabelaDeDado = ObterData()
             };
         }
+
+        private DataTable ObterData() {
+            var data = new DataTable();
+
+            data.Columns.Add("UnidadeEscolar");
+            data.Columns.Add("Ano");
+            data.Columns.Add("TotalDeTurmas");
+            data.Columns.Add("TotalDeAlunos");
+
+            return data;
+        } 
     }
 }

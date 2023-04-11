@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Crypto.Agreement;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -11,7 +10,6 @@ namespace SME.SR.Infra
 
         public GeradorDeTabelaExcelAnaliticoSondagemAditivoMultiplicativo(IEnumerable<RelatorioSondagemAnaliticoPorDreDto> relatorioSondagemAnaliticoPorDreDtos) : base(relatorioSondagemAnaliticoPorDreDtos)
         {
-            perguntaPorOrdem = ObterPerguntas();
         }
 
         protected override void CarregarLinhas(DataTable data, RelatorioSondagemAnaliticoPorDreDto sondagemAnalitica)
@@ -40,21 +38,6 @@ namespace SME.SR.Infra
             base.CarregarTitulo(data);
         }
 
-        private List<(int, string)> ObterPerguntas()
-        {
-            var perguntas = new List<(int, string)>();
-            var relatorio = relatorioSondagemAnaliticoPorDreDtos.Cast<RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto>();
-            var perguntasAno = relatorio.SelectMany(dre => dre.Respostas.GroupBy(a => a.Ano).SelectMany(ano => ano.FirstOrDefault().Ordens)); 
-
-            foreach(var pergunta in perguntasAno)
-            {
-                if (!perguntas.Exists(p => p.Item1 == pergunta.Ordem && p.Item2 == pergunta.Descricao))
-                    perguntas.Add((pergunta.Ordem, pergunta.Descricao));
-            }
-
-            return perguntas.OrderBy(p => p.Item1).ToList();
-        }
-
         protected override void CarregarLinhaTitulo(DataRow linha)
         {
             foreach (var pergunta in perguntaPorOrdem)
@@ -62,6 +45,21 @@ namespace SME.SR.Infra
                 CarregarLinhaTituloResposta(linha, $"{pergunta.Item1}_{pergunta.Item2}_Ideia");
                 CarregarLinhaTituloResposta(linha, $"{pergunta.Item1}_{pergunta.Item2}_Resultado");
             }
+        }
+
+        protected override DataColumn[] ObterColunas()
+        {
+            var colunas = new List<DataColumn>();
+
+            perguntaPorOrdem = ObterPerguntas();
+
+            foreach (var pergunta in perguntaPorOrdem)
+            {
+                colunas.AddRange(ObterColunasResposta($"{pergunta.Item1}_{pergunta.Item2}_Ideia"));
+                colunas.AddRange(ObterColunasResposta($"{pergunta.Item1}_{pergunta.Item2}_Resultado"));
+            }
+
+            return colunas.ToArray();
         }
 
         private void CarregarLinhaTituloResposta(DataRow linha, string coluna)
@@ -97,19 +95,6 @@ namespace SME.SR.Infra
             data.Rows.Add(linhaTitulo);
         }
 
-        protected override DataColumn[] ObterColunas()
-        {
-            var colunas = new List<DataColumn>();
-
-            foreach (var pergunta in perguntaPorOrdem)
-            {
-                colunas.AddRange(ObterColunasResposta($"{pergunta.Item1}_{pergunta.Item2}_Ideia"));
-                colunas.AddRange(ObterColunasResposta($"{pergunta.Item1}_{pergunta.Item2}_Resultado"));
-            }
-
-            return colunas.ToArray();   
-        }
-
         private List<DataColumn> ObterColunasResposta(string coluna)
         {
             return new List<DataColumn>()
@@ -133,6 +118,21 @@ namespace SME.SR.Infra
             linha[$"{coluna}_2"] = dto.Errou;
             linha[$"{coluna}_3"] = dto.NaoResolveu;
             linha[$"{coluna}_4"] = dto.SemPreenchimento;
+        }
+
+        private List<(int, string)> ObterPerguntas()
+        {
+            var perguntas = new List<(int, string)>();
+            var relatorio = relatorioSondagemAnaliticoPorDreDtos.Cast<RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto>();
+            var perguntasAno = relatorio.SelectMany(dre => dre.Respostas.GroupBy(a => a.Ano).SelectMany(ano => ano.FirstOrDefault().Ordens));
+
+            foreach (var pergunta in perguntasAno)
+            {
+                if (!perguntas.Exists(p => p.Item1 == pergunta.Ordem && p.Item2 == pergunta.Descricao))
+                    perguntas.Add((pergunta.Ordem, pergunta.Descricao));
+            }
+
+            return perguntas.OrderBy(p => p.Item1).ToList();
         }
     }
 }
