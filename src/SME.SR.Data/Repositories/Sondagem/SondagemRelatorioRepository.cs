@@ -256,5 +256,81 @@ namespace SME.SR.Data.Repositories.Sondagem
 	        return retorno;
 
         }
+
+        public async Task<IEnumerable<PerguntaRespostaOrdemDto>> ConsolidacaoCampoAditivoMultiplicativoAntes2022(RelatorioMatematicaFiltroDto filtro)
+        {
+            var retorno = new List<PerguntaRespostaOrdemDto>();
+            var ehCampoAditivo = filtro.Proficiencia == ProficienciaSondagemEnum.CampoAditivo;
+            var tabela = ehCampoAditivo ? "MathPoolCAs" : "MathPoolCMs";
+
+            var filtroUeDre = "";
+            if (!string.IsNullOrEmpty(filtro.CodigoDre) && filtro.CodigoDre != "-99")
+                filtroUeDre += @" AND mpc.""DreEolCode"" =  @CodigoDRE";
+            if (!string.IsNullOrEmpty(filtro.CodigoUe) && filtro.CodigoUe != "-99")
+                filtroUeDre += @" AND mpc.""EscolaEolCode"" =  @CodigoUe";
+
+            var query = @$"	select *, count(tabela.""RespostaDescricao"") as ""QtdRespostas"" from ( ";
+
+            for (int i = (ehCampoAditivo ? 1 : 3);  
+                     i <= (ehCampoAditivo ? 4 : 8); i++)
+            {
+                query += @$"{(i != (ehCampoAditivo ? 1 : 3) ? " union all " : "")} select 'Ideia' AS ""SubPerguntaDescricao"",
+	                       mpc.""DreEolCode"" as ""CodigoDre"", 
+	                       mpc.""EscolaEolCode"" as ""CodigoUe"", 
+	                       mpc.""TurmaEolCode"" as ""CodigoTurma"", 
+	                       mpc.""AnoTurma"",
+	                       case when mpc.""Ordem{i}Ideia"" = 'A' then 'Acertou'
+	                            when mpc.""Ordem{i}Ideia"" = 'E' then 'Errou'
+	                            when mpc.""Ordem{i}Ideia"" = 'NR' then 'Não resolveu'
+	                            else 'Sem preenchimento' end AS ""RespostaDescricao"",
+	                       {i} as ""OrdemPergunta""
+	                       from ""{tabela}"" mpc
+                    where mpc.""AnoLetivo"" = @AnoLetivo and mpc.""Semestre"" = @Bimestre {filtroUeDre}
+                    union all
+                    select 'Resultado' AS ""SubPerguntaDescricao"",
+	                       mpc.""DreEolCode"" as ""CodigoDre"", 
+	                       mpc.""EscolaEolCode"" as ""CodigoUe"", 
+	                       mpc.""TurmaEolCode"" as ""CodigoTurma"", 
+	                       mpc.""AnoTurma"",
+	                       case when mpc.""Ordem{i}Resultado"" = 'A' then 'Acertou'
+	                            when mpc.""Ordem{i}Resultado"" = 'E' then 'Errou'
+	                            when mpc.""Ordem{i}Resultado"" = 'NR' then 'Não resolveu'
+	                            else 'Sem preenchimento' end AS ""RespostaDescricao"",
+	                       {i} as ""OrdemPergunta""       
+	                       from ""{tabela}"" mpc
+                    where mpc.""AnoLetivo"" = @AnoLetivo and mpc.""Semestre"" = @Bimestre  {filtroUeDre}";
+            }
+
+            query += @") as tabela
+                        group by tabela.""CodigoDre"", 
+	                           tabela.""CodigoUe"", 
+	                           tabela.""CodigoTurma"", 
+	                           tabela.""AnoTurma"",
+	                           tabela.""OrdemPergunta"",
+	                           tabela.""SubPerguntaDescricao"",
+	                           tabela.""RespostaDescricao""
+                        order by tabela.""CodigoDre"", 
+	                           tabela.""CodigoUe"", 
+	                           tabela.""CodigoTurma"", 
+	                           tabela.""AnoTurma"",
+	                           tabela.""OrdemPergunta"",
+	                           tabela.""SubPerguntaDescricao"",
+	                           tabela.""RespostaDescricao""";
+            var parametros = new
+            {
+                filtro.CodigoUe,
+                filtro.CodigoDre,
+                filtro.AnoLetivo,
+                filtro.Bimestre
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
+            {
+                var consulta = await conexao.QueryAsync<PerguntaRespostaOrdemDto>(query.ToString(), parametros);
+                if (consulta != null)
+                    retorno = consulta.ToList();
+            }
+            return retorno;
+        }
     }
 }
