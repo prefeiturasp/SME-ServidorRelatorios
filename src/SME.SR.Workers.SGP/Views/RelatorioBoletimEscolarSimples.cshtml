@@ -86,16 +86,27 @@
             </thead>
             <tbody>
                 @{
-                    aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
+                    if (!ehEJA)
                     {
-                        if (f.Key == 3 && ehEJA && aluno.ComponenteCurricularRegencia != null)
+                        aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
+                        {
+                            MontarComponenteCurriculares(f.Select(s => s));
+
+                            if (f.Key == 1 && aluno.EhRegencia && !ehEJA)
+                                MontarComponenteCurricularesRegencia(aluno);
+                        });
+                    }
+                    else
+                    {
+                        if (aluno.ComponenteCurricularRegencia != null)
                             MontarComponenteCurricularesRegencia(aluno);
 
-                        MontarComponenteCurriculares(f.Select(s => s));
+                        aluno.ComponentesCurriculares.GroupBy(g => g.Grupo).ToList().ForEach(f =>
+                        {
+                            MontarComponenteCurriculares(f.Select(s => s));
+                        });
+                    }
 
-                        if (f.Key == 1 && aluno.EhRegencia && !ehEJA)
-                            MontarComponenteCurricularesRegencia(aluno);
-                    });
                 }
             </tbody>
         </table>
