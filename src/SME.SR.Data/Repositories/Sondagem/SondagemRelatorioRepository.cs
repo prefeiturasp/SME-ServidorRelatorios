@@ -51,8 +51,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                         INNER JOIN ""Pergunta"" pfilho ON pfilho.""PerguntaId"" = pae.""PerguntaId""
                         INNER JOIN ""PerguntaResposta"" pr ON pr.""PerguntaId"" = pfilho.""Id""
                         LEFT JOIN ""Resposta"" r ON r.""Id"" = pr.""RespostaId""
-                        {(filtro.Bimestre == QUARTO_BIMESTRE ? 
-                            @$" LEFT JOIN  ""PerguntaAnoEscolarBimestre"" paeb  on pae.""Id"" = paeb.""PerguntaAnoEscolarId"" and pae.""AnoEscolar"" >= {QUARTO_ANO} and pae.""AnoEscolar"" <= {NONO_ANO}" : "") }
+                        {(filtro.Bimestre == QUARTO_BIMESTRE ?
+                            @$" LEFT JOIN  ""PerguntaAnoEscolarBimestre"" paeb  on pae.""Id"" = paeb.""PerguntaAnoEscolarId"" and pae.""AnoEscolar"" >= {QUARTO_ANO} and pae.""AnoEscolar"" <= {NONO_ANO}" : "")}
                         LEFT JOIN ( SELECT p.""Id"" AS ""PerguntaId"",
                                             r.""Id"" AS ""RespostaId"", COUNT(1) AS ""QtdRespostas"",
                                             s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma"", s.""CodigoTurma""
@@ -163,10 +163,10 @@ namespace SME.SR.Data.Repositories.Sondagem
                                    		    and s.""ComponenteCurricularId"" = @ComponenteCurricularId";
             query.Append(queryRelatorio);
             if (!string.IsNullOrEmpty(filtro.CodigoDre))
-	            query.AppendLine(@" and ""CodigoDre"" =  @CodigoDRE");
+                query.AppendLine(@" and ""CodigoDre"" =  @CodigoDRE");
             if (!string.IsNullOrEmpty(filtro.CodigoUe))
-	            query.AppendLine(@"and ""CodigoUe"" =  @CodigoEscola");
-                                        
+                query.AppendLine(@"and ""CodigoUe"" =  @CodigoEscola");
+
             query.Append(@"  and s.""PeriodoId"" = @PeriodoId
                                    			and s.""AnoLetivo"" = @AnoLetivo
                                    		        ) ) as tabela on
@@ -190,79 +190,361 @@ namespace SME.SR.Data.Repositories.Sondagem
 
             var parametros = new
             {
-	            CodigoEscola = filtro.CodigoUe,
-	            CodigoDRE = filtro.CodigoDre,
-	            AnoLetivo = filtro.AnoLetivo,
-	            PeriodoId = filtro.PeriodoId,
-	            filtro.ComponenteCurricularId,
-	            GrupoId = filtro.GrupoId
+                CodigoEscola = filtro.CodigoUe,
+                CodigoDRE = filtro.CodigoDre,
+                AnoLetivo = filtro.AnoLetivo,
+                PeriodoId = filtro.PeriodoId,
+                filtro.ComponenteCurricularId,
+                GrupoId = filtro.GrupoId
 
             };
-            
+
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
-	            var consulta = await conexao.QueryAsync<OrdemPerguntaRespostaDto>(query.ToString(), parametros);
-	            if (consulta != null)
-		            retorno = consulta.ToList();
+                var consulta = await conexao.QueryAsync<OrdemPerguntaRespostaDto>(query.ToString(), parametros);
+                if (consulta != null)
+                    retorno = consulta.ToList();
             }
             return retorno;
         }
 
         public async Task<IEnumerable<PerguntaRespostaProducaoTextoDto>> ObterDadosProducaoTexto(RelatorioPortuguesFiltroDto filtro)
         {
-	        var retorno = new List<PerguntaRespostaProducaoTextoDto>();
-	        var sql = new StringBuilder();
+            var retorno = new List<PerguntaRespostaProducaoTextoDto>();
+            var sql = new StringBuilder();
 
-	        sql.AppendLine("select ");
-	        sql.AppendLine("	s.\"CodigoTurma\",");
-	        sql.AppendLine("	s.\"AnoTurma\",");
-	        sql.AppendLine("	s.\"CodigoUe\",");
-	        sql.AppendLine("	s.\"CodigoDre\",");
-	        sql.AppendLine("	g.\"Descricao\" as \"Grupo\" ,");
-	        sql.AppendLine("	p.\"Descricao\" as \"Pergunta\" ,");
-	        sql.AppendLine("	r.\"Descricao\"  as \"Resposta\",");
-	        sql.AppendLine("    sa.\"CodigoAluno\" ");
-	        sql.AppendLine("from \"Sondagem\" s");
-	        sql.AppendLine("inner join \"SondagemAluno\" sa on sa.\"SondagemId\" = s.\"Id\"");
-	        sql.AppendLine("inner join \"SondagemAlunoRespostas\" sar on sar.\"SondagemAlunoId\" = sa.\"Id\"");
-	        sql.AppendLine("inner join \"Pergunta\" p on sar.\"PerguntaId\" = p.\"Id\" ");
-	        sql.AppendLine("inner join \"Resposta\" r on sar.\"RespostaId\" = r.\"Id\" ");
-	        sql.AppendLine("inner join \"Grupo\" g on s.\"GrupoId\" = g.\"Id\" ");
-	        sql.AppendLine("where s.\"AnoLetivo\" = @AnoLetivo ");
-	        sql.AppendLine("and s.\"ComponenteCurricularId\" = @ComponenteCurricularId ");
-	        sql.AppendLine("and s.\"PeriodoId\" = @PeriodoId ");
-	        sql.AppendLine("and s.\"GrupoId\" = @GrupoId ");
-            if(filtro.CodigoUe != "-99")
-	            sql.AppendLine(" and s.\"CodigoUe\" = @CodigoEscola ");
+            sql.AppendLine("select ");
+            sql.AppendLine("	s.\"CodigoTurma\",");
+            sql.AppendLine("	s.\"AnoTurma\",");
+            sql.AppendLine("	s.\"CodigoUe\",");
+            sql.AppendLine("	s.\"CodigoDre\",");
+            sql.AppendLine("	g.\"Descricao\" as \"Grupo\" ,");
+            sql.AppendLine("	p.\"Descricao\" as \"Pergunta\" ,");
+            sql.AppendLine("	r.\"Descricao\"  as \"Resposta\",");
+            sql.AppendLine("    sa.\"CodigoAluno\" ");
+            sql.AppendLine("from \"Sondagem\" s");
+            sql.AppendLine("inner join \"SondagemAluno\" sa on sa.\"SondagemId\" = s.\"Id\"");
+            sql.AppendLine("inner join \"SondagemAlunoRespostas\" sar on sar.\"SondagemAlunoId\" = sa.\"Id\"");
+            sql.AppendLine("inner join \"Pergunta\" p on sar.\"PerguntaId\" = p.\"Id\" ");
+            sql.AppendLine("inner join \"Resposta\" r on sar.\"RespostaId\" = r.\"Id\" ");
+            sql.AppendLine("inner join \"Grupo\" g on s.\"GrupoId\" = g.\"Id\" ");
+            sql.AppendLine("where s.\"AnoLetivo\" = @AnoLetivo ");
+            sql.AppendLine("and s.\"ComponenteCurricularId\" = @ComponenteCurricularId ");
+            sql.AppendLine("and s.\"PeriodoId\" = @PeriodoId ");
+            sql.AppendLine("and s.\"GrupoId\" = @GrupoId ");
+            if (filtro.CodigoUe != "-99")
+                sql.AppendLine(" and s.\"CodigoUe\" = @CodigoEscola ");
             if (filtro.CodigoDre != "-99")
                 sql.AppendLine(" and s.\"CodigoDre\" = @CodigoDRE ");
 
-	        var parametros = new
-	        {
-		        CodigoEscola = filtro.CodigoUe,
-		        CodigoDRE = filtro.CodigoDre,
-		        AnoLetivo = filtro.AnoLetivo,
-		        PeriodoId = filtro.PeriodoId,
-		        filtro.ComponenteCurricularId,
-		        GrupoId = filtro.GrupoId
+            var parametros = new
+            {
+                CodigoEscola = filtro.CodigoUe,
+                CodigoDRE = filtro.CodigoDre,
+                AnoLetivo = filtro.AnoLetivo,
+                PeriodoId = filtro.PeriodoId,
+                filtro.ComponenteCurricularId,
+                GrupoId = filtro.GrupoId
 
-	        };
-	        using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
-	        {
-		        var consulta = await conexao.QueryAsync<PerguntaRespostaProducaoTextoDto>(sql.ToString(), parametros);
-		        if (consulta != null)
-			        retorno = consulta.ToList();
-	        }
+            };
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
+            {
+                var consulta = await conexao.QueryAsync<PerguntaRespostaProducaoTextoDto>(sql.ToString(), parametros);
+                if (consulta != null)
+                    retorno = consulta.ToList();
+            }
 
-	        return retorno;
+            return retorno;
 
         }
 
-        public async Task<IEnumerable<PerguntaRelatorioMatematicaNumerosDto>> ObterPerguntasMatematicaNumeros(RelatorioPortuguesFiltroDto filtro)
+        public async Task<IEnumerable<PerguntaRelatorioMatematicaNumerosDto>> MatematicaIADNumeroBimestre(int anoLetivo, string componenteCurricularId, int bimestre, string codigoUe, string codigoDre, ProficienciaSondagemEnum proeficienciaSondagem = ProficienciaSondagemEnum.IAD)
         {
             var listaRetorno = new List<PerguntaRelatorioMatematicaNumerosDto>();
             var sql = new StringBuilder();
-            var parametros = new { };
+            sql.AppendLine(@" SELECT pa.""AnoEscolar"" AS AnoTurma,
+                                   p.""Id"" AS PerguntaId,
+                                   p.""Descricao"" AS PerguntaDescricao,
+                                   r.""Id"" AS RespostaId,
+                                   r.""Descricao"" AS RespostaDescricao,
+                                   pa.""Ordenacao"" AS OrdermPergunta,
+                                   pr.""Ordenacao"" AS OrdemReposta,
+                                   tabela.""QtdRespostas"" as QtdRespostas,
+                                   tabela.""CodigoDre"" as CodigoDre,
+                                   tabela.""CodigoUe"" as CodigoUe,
+                                   tabela.""CodigoTurma"" as CodigoTurma
+                            FROM ""Pergunta"" p
+                            INNER JOIN ""PerguntaAnoEscolar"" pa ON pa.""PerguntaId"" = p.""Id""
+                            LEFT JOIN ""PerguntaAnoEscolarBimestre"" paeb ON pa.""Id"" = paeb.""PerguntaAnoEscolarId""
+                            INNER JOIN ""PerguntaResposta"" pr ON pr.""PerguntaId"" = p.""Id""
+                            INNER JOIN ""Resposta"" r ON r.""Id"" = pr.""RespostaId""
+                            LEFT JOIN
+                              (SELECT p.""Id"" AS ""PerguntaId"",
+                                      r.""Id"" AS ""RespostaId"",
+                                      COUNT(DISTINCT sa.""CodigoAluno"") AS ""QtdRespostas"",
+                                      s.""CodigoDre"",
+                                      s.""CodigoUe"",
+                                      s.""AnoTurma"",
+                                      s.""CodigoTurma""
+                               FROM ""SondagemAlunoRespostas"" sar
+                               INNER JOIN ""SondagemAluno"" sa ON sa.""Id"" = sar.""SondagemAlunoId""
+                               INNER JOIN ""Sondagem"" s ON s.""Id"" = sa.""SondagemId""
+                               INNER JOIN ""Pergunta"" p ON p.""Id"" = sar.""PerguntaId""
+                               INNER JOIN ""Resposta"" r ON r.""Id"" = sar.""RespostaId""
+                               WHERE s.""ComponenteCurricularId"" = @componenteCurricularId
+                                 AND s.""AnoLetivo"" = @anoLetivo
+                                 AND s.""Bimestre"" = @bimestre
+                            ");
+
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
+                sql.AppendLine(@" AND s.""CodigoDre""=@codigoDre ");
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
+                sql.AppendLine(@" AND s.""CodigoUe""=@codigoUe ");
+
+            sql.AppendLine(@" GROUP BY p.""Id"",
+                                    r.""Id"",
+                                    s.""CodigoDre"",
+                                    s.""CodigoUe"",
+                                    s.""AnoTurma"",
+                                    s.""CodigoTurma"") AS tabela ON p.""Id"" = tabela.""PerguntaId""
+                        AND r.""Id""= tabela.""RespostaId""
+                        AND pa.""AnoEscolar"" = tabela.""AnoTurma""
+                        WHERE ((pa.""FimVigencia"" IS NULL
+                                AND EXTRACT (YEAR
+                                             FROM pa.""InicioVigencia"") <= @anoLetivo)
+                               OR (EXTRACT(YEAR
+                                           FROM pa.""FimVigencia"") >= @anoLetivo
+                                   AND EXTRACT (YEAR
+                                                FROM pa.""InicioVigencia"") <= @anoLetivo))
+                          AND (paeb.""Id"" IS NULL
+                               AND NOT EXISTS
+                                 (SELECT 1
+                                  FROM ""PerguntaAnoEscolar"" pae
+                                  INNER JOIN ""PerguntaAnoEscolarBimestre"" paeb ON paeb.""PerguntaAnoEscolarId"" = pae.""Id""
+                                  WHERE pae.""AnoEscolar"" = pa.""AnoEscolar""
+                                    AND (pae.""FimVigencia"" IS NULL
+                                         AND EXTRACT(YEAR
+                                                     FROM pae.""InicioVigencia"") <= @anoLetivo)
+                                    AND paeb.""Bimestre"" = @bimestre )
+                               OR paeb.""Bimestre"" = @bimestre ) ");
+            if (proeficienciaSondagem == ProficienciaSondagemEnum.Numeros)
+                sql.AppendLine(@" AND pa.""Grupo"" = @proeficiencia ");
+            else sql.Append(@" pa.""AnoEscolar"" >= 4 and pa.""AnoEscolar"" <= 9 ");
+
+            sql.AppendLine(@"   ORDER BY tabela.""CodigoDre"",
+                                     tabela.""CodigoUe"",
+                                     tabela.""CodigoTurma"",
+                                     pa.""AnoEscolar"",
+                                     pa.""Ordenacao"",
+                                     pr.""Ordenacao"" ");
+
+            var parametros = new
+            {
+                anoLetivo,
+                componenteCurricularId,
+                bimestre,
+                codigoDre,
+                codigoUe,
+                proeficiencia = (int)proeficienciaSondagem
+            };
+
+            try
+            {
+                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
+                {
+                    var consulta = await conexao.QueryAsync<PerguntaRelatorioMatematicaNumerosDto>(sql.ToString(), parametros);
+                    if (consulta != null)
+                        listaRetorno = consulta.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return listaRetorno;
+        }
+
+        public Task<IEnumerable<PerguntaRelatorioMatematicaNumerosDto>> MatematicaIADAntes2022(int anoLetivo, string componenteCurricularId, int bimestre, string codigoUe, string codigoDre, string periodoId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<PerguntaRelatorioMatematicaNumerosDto>> MatematicaNumerosAntes2022(int anoLetivo, int semestre, string codigoUe, string codigoDre, string periodoId)
+        {
+            var listaRetorno = new List<PerguntaRelatorioMatematicaNumerosDto>();
+            var sql = new StringBuilder(@"SELECT *
+                                            FROM
+                                              (SELECT *,
+                                                      count(tabela.""RespostaDescricao"") AS ""QtdRespostas""
+                                               FROM
+                                                 (SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
+                                                         mpc.""EscolaEolCode"" AS ""CodigoUe"",
+                                                         mpc.""TurmaEolCode"" AS ""CodigoTurma"",
+                                                         mpc.""AnoTurma"",
+                                                         CASE
+                                                             WHEN mpc.""Familiares"" = 'S' THEN 'Sim'
+                                                             WHEN mpc.""Familiares"" = 'N' THEN 'Não'
+                                                             ELSE 'Sem preenchimento'
+                                                         END AS ""RespostaDescricao"",
+                                                         'Familiares ou Frequentes' AS ""PerguntaDescricao"",
+                                                         1 AS ""OrdemPergunta""
+                                                  FROM ""MathPoolNumbers"" mpc
+                                                  WHERE mpc.""AnoLetivo"" = @anoLetivo
+                                                    AND mpc.""Semestre"" = @semestre ");
+
+            if (!string.IsNullOrWhiteSpace(codigoDre))
+                sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
+            if (!string.IsNullOrWhiteSpace(codigoUe))
+                sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
+
+
+
+            sql.AppendLine(@"  UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
+                                                                   mpc.""EscolaEolCode"" AS ""CodigoUe"",
+                                                                   mpc.""TurmaEolCode"" AS ""CodigoTurma"",
+                                                                   mpc.""AnoTurma"",
+                                                                   CASE
+                                                                       WHEN mpc.""Opacos"" = 'S' THEN 'Sim'
+                                                                       WHEN mpc.""Opacos"" = 'N' THEN 'Não'
+                                                                       ELSE 'Sem preenchimento'
+                                                                   END AS ""RespostaDescricao"",
+                                                                   'Opacos' AS ""PerguntaDescricao"",
+                                                                   2 AS ""OrdemPergunta""
+                                                  FROM ""MathPoolNumbers"" mpc
+                                                  WHERE mpc.""AnoLetivo"" = @anoLetivo
+                                                    AND mpc.""Semestre"" = @semestre ");
+
+            if (!string.IsNullOrWhiteSpace(codigoDre))
+                sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
+            if (!string.IsNullOrWhiteSpace(codigoUe))
+                sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
+
+            sql.AppendLine(@"           UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
+                                                                   mpc.""EscolaEolCode"" AS ""CodigoUe"",
+                                                                   mpc.""TurmaEolCode"" AS ""CodigoTurma"",
+                                                                   mpc.""AnoTurma"",
+                                                                   CASE
+                                                                       WHEN mpc.""Transparentes"" = 'S' THEN 'Sim'
+                                                                       WHEN mpc.""Transparentes"" = 'N' THEN 'Não'
+                                                                       ELSE 'Sem preenchimento'
+                                                                   END AS ""RespostaDescricao"",
+                                                                   'Transparentes' AS ""PerguntaDescricao"",
+                                                                   3 AS ""OrdemPergunta""
+                                                  FROM ""MathPoolNumbers"" mpc
+                                                  WHERE mpc.""AnoLetivo"" = @anoLetivo
+                                                    AND mpc.""Semestre"" = @semestre ");
+
+            if (!string.IsNullOrWhiteSpace(codigoDre))
+                sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
+            if (!string.IsNullOrWhiteSpace(codigoUe))
+                sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
+
+            sql.AppendLine(@"       UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
+                                                                   mpc.""EscolaEolCode"" AS ""CodigoUe"",
+                                                                   mpc.""TurmaEolCode"" AS ""CodigoTurma"",
+                                                                   mpc.""AnoTurma"",
+                                                                   CASE
+                                                                       WHEN mpc.""TerminamZero"" = 'S' THEN 'Sim'
+                                                                       WHEN mpc.""TerminamZero"" = 'N' THEN 'Não'
+                                                                       ELSE 'Sem preenchimento'
+                                                                   END AS ""RespostaDescricao"",
+                                                                   'Terminam em Zero' AS ""PerguntaDescricao"",
+                                                                   4 AS ""OrdemPergunta""
+                                                  FROM ""MathPoolNumbers"" mpc
+                                                  WHERE mpc.""AnoLetivo"" = @anoLetivo
+                                                    AND mpc.""Semestre"" = @semestre ");
+
+
+            if (!string.IsNullOrWhiteSpace(codigoDre))
+                sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
+            if (!string.IsNullOrWhiteSpace(codigoUe))
+                sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
+
+
+            sql.AppendLine(@"               UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
+                                                                   mpc.""EscolaEolCode"" AS ""CodigoUe"",
+                                                                   mpc.""TurmaEolCode"" AS ""CodigoTurma"",
+                                                                   mpc.""AnoTurma"",
+                                                                   CASE
+                                                                       WHEN mpc.""Algarismos"" = 'S' THEN 'Sim'
+                                                                       WHEN mpc.""Algarismos"" = 'N' THEN 'Não'
+                                                                       ELSE 'Sem preenchimento'
+                                                                   END AS ""RespostaDescricao"",
+                                                                   'Algarismos Iguais' AS ""PerguntaDescricao"",
+                                                                   5 AS ""OrdemPergunta""
+                                                  FROM ""MathPoolNumbers"" mpc
+                                                  WHERE mpc.""AnoLetivo"" = @anoLetivo
+                                                    AND mpc.""Semestre"" = @semestre  ");
+            if (!string.IsNullOrWhiteSpace(codigoDre))
+                sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
+            if (!string.IsNullOrWhiteSpace(codigoUe))
+                sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
+
+            sql.AppendLine(@"                        UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
+                                                                   mpc.""EscolaEolCode"" AS ""CodigoUe"",
+                                                                   mpc.""TurmaEolCode"" AS ""CodigoTurma"",
+                                                                   mpc.""AnoTurma"",
+                                                                   CASE
+                                                                       WHEN mpc.""Processo"" = 'S' THEN 'Sim'
+                                                                       WHEN mpc.""Processo"" = 'N' THEN 'Não'
+                                                                       ELSE 'Sem preenchimento'
+                                                                   END AS ""RespostaDescricao"",
+                                                                   'Processo de Generalização' AS ""PerguntaDescricao"",
+                                                                   6 AS ""OrdemPergunta""
+                                                  FROM ""MathPoolNumbers"" mpc
+                                                  WHERE mpc.""AnoLetivo"" = @anoLetivo
+                                                    AND mpc.""Semestre"" = @semestre  ");
+
+            if (!string.IsNullOrWhiteSpace(codigoDre))
+                sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
+            if (!string.IsNullOrWhiteSpace(codigoUe))
+                sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
+
+            sql.AppendLine(@"                UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
+                                                                   mpc.""EscolaEolCode"" AS ""CodigoUe"",
+                                                                   mpc.""TurmaEolCode"" AS ""CodigoTurma"",
+                                                                   mpc.""AnoTurma"",
+                                                                   CASE
+                                                                       WHEN mpc.""ZeroIntercalados"" = 'S' THEN 'Sim'
+                                                                       WHEN mpc.""ZeroIntercalados"" = 'N' THEN 'Não'
+                                                                       ELSE 'Sem preenchimento'
+                                                                   END AS ""RespostaDescricao"",
+                                                                   'Zero Intercalado' AS ""PerguntaDescricao"",
+                                                                   7 AS ""OrdemPergunta""
+                                                  FROM ""MathPoolNumbers"" mpc
+                                                  WHERE mpc.""AnoLetivo"" = @anoLetivo
+                                                    AND mpc.""Semestre"" = @@semestre  ");
+
+            if (!string.IsNullOrWhiteSpace(codigoDre))
+                sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
+            if (!string.IsNullOrWhiteSpace(codigoUe))
+                sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
+
+            sql.AppendLine(@") AS tabela
+                                               GROUP BY tabela.""CodigoDre"",
+                                                        tabela.""CodigoUe"",
+                                                        tabela.""CodigoTurma"",
+                                                        tabela.""AnoTurma"",
+                                                        tabela.""OrdemPergunta"",
+                                                        tabela.""PerguntaDescricao"",
+                                                        tabela.""RespostaDescricao""
+                                               ORDER BY tabela.""CodigoDre"",
+                                                        tabela.""CodigoUe"",
+                                                        tabela.""CodigoTurma"",
+                                                        tabela.""AnoTurma"",
+                                                        tabela.""OrdemPergunta"",
+                                                        tabela.""PerguntaDescricao"",
+                                                        tabela.""RespostaDescricao"") AS tabela  ");
+
+            var parametros = new
+            {
+                anoLetivo,
+                semestre,
+                codigoDre,
+                codigoUe,
+            };
+
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
                 var consulta = await conexao.QueryAsync<PerguntaRelatorioMatematicaNumerosDto>(sql.ToString(), parametros);
@@ -270,6 +552,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                     listaRetorno = consulta.ToList();
             }
             return listaRetorno;
+
         }
     }
 }

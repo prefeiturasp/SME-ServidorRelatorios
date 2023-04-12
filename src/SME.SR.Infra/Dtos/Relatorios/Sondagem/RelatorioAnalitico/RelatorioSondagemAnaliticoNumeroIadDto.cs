@@ -10,6 +10,7 @@ namespace SME.SR.Infra
         {
             this.tipoSondagem = tipoSondagem;
             Respostas = new List<RespostaSondagemAnaliticaNumeroIadDto>();
+            ColunasDoCabecalho = new List<CabecalhoSondagemAnaliticaDto>();
         }
 
         public List<CabecalhoSondagemAnaliticaDto> ColunasDoCabecalho { get; set; }
