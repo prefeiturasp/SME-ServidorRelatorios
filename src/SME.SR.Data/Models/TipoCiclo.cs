@@ -7,6 +7,6 @@ namespace SME.SR.Data
         public long Id { get; set; }
         public string Descricao { get; set; }
         public Modalidade Modalidade { get; set; }
-        public int Ano { get; set; }
+        public string Ano { get; set; }
     }
 }

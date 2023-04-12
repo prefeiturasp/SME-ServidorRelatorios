@@ -170,14 +170,13 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, string codigoTurma, int anoLetivo, int[] modalidade, int semestre, int[] tiposTurma)
+        public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, int anoLetivo, int[] modalidade, int semestre, int[] tiposTurma)
         {
             var query = "select * from f_ata_final_obter_notas_turmas_alunos(@anoLetivo, @modalidade, @semestre, @tiposTurma, @codigosAlunos)";
 
             var parametros = new
             {
                 codigosAlunos,
-                codigoTurma,
                 anoLetivo,
                 modalidade = modalidade.Length > 0 ? modalidade : null,
                 semestre,

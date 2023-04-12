@@ -108,7 +108,7 @@ namespace SME.SR.Application
                         var recomendacao = recomendacoes?.FirstOrDefault(r =>
                             r.TurmaCodigo == turma.Codigo && r.AlunoCodigo == aluno.Key);
                         var ciclo = ciclos.FirstOrDefault(c =>
-                            c.Modalidade == turma.ModalidadeCodigo && c.Ano == Convert.ToInt32(turma.Ano));
+                            c.Modalidade == turma.ModalidadeCodigo && c.Ano == turma.Ano);
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
@@ -190,54 +190,57 @@ namespace SME.SR.Application
                     grupos.Add(grupo);
                 }
 
-                foreach (var componente in grupoMatriz.OrderBy(a => a.Disciplina))
-                {
-                    if (componente.Regencia && componente.ComponentesCurricularesRegencia != null &&
-                        componente.ComponentesCurricularesRegencia.Any())
-                    {
-                        boletim.ComponenteCurricularRegencia = new ComponenteCurricularRegenciaDto()
-                        {
-                            Codigo = componente.CodDisciplina.ToString(),
-                            Frequencia = componente.Frequencia
-                        };
+                var grupoMatrizAgrupadosAreaOrdem = grupoMatriz.GroupBy(a => a.AreaDoConhecimento.Ordem != null);
 
-                        foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia.OrderBy(a =>
-                            a.Disciplina))
+                foreach(var gruposOrdem in grupoMatrizAgrupadosAreaOrdem.OrderByDescending(g=> g.Key))
+                {
+                    foreach (var componente in gruposOrdem.OrderBy(a => a.Disciplina))
+                    {
+                        if (componente.Regencia && componente.ComponentesCurricularesRegencia != null &&
+                            componente.ComponentesCurricularesRegencia.Any())
                         {
-                            if (!boletim.ComponenteCurricularRegencia.ComponentesCurriculares.Any(g =>
-                                g.Codigo == componenteRegencia.CodDisciplina.ToString()))
-                                boletim.ComponenteCurricularRegencia.ComponentesCurriculares.Add(
-                                    new ComponenteCurricularRegenciaNotaDto()
+                            boletim.ComponenteCurricularRegencia = new ComponenteCurricularRegenciaDto()
+                            {
+                                Codigo = componente.CodDisciplina.ToString(),
+                                Frequencia = componente.Frequencia
+                            };
+
+                            foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia.OrderBy(a =>
+                                a.Disciplina))
+                            {
+                                if (!boletim.ComponenteCurricularRegencia.ComponentesCurriculares.Any(g =>
+                                    g.Codigo == componenteRegencia.CodDisciplina.ToString()))
+                                    boletim.ComponenteCurricularRegencia.ComponentesCurriculares.Add(
+                                        new ComponenteCurricularRegenciaNotaDto()
+                                        {
+                                            Codigo = componenteRegencia.CodDisciplina.ToString(),
+                                            Nome = componenteRegencia.Disciplina,
+                                            Nota = componenteRegencia.LancaNota
+                                        });
+                            }
+                        }
+                        else if (!componente.Regencia)
+                        {
+                            if (grupo.ComponentesCurriculares == null)
+                                grupo.ComponentesCurriculares = new List<ComponenteCurricularDto>();
+
+                            if (!grupo.ComponentesCurriculares.Any(g => g.Codigo == componente.CodDisciplina.ToString()))
+                                grupo.ComponentesCurriculares.Add(
+                                    new ComponenteCurricularDto()
                                     {
-                                        Codigo = componenteRegencia.CodDisciplina.ToString(),
-                                        Nome = componenteRegencia.Disciplina,
-                                        Nota = componenteRegencia.LancaNota
+                                        Codigo = componente.CodDisciplina.ToString(),
+                                        Nome = componente.Disciplina,
+                                        Nota = componente.LancaNota,
+                                        Frequencia = componente.Frequencia
                                     });
                         }
                     }
-                    else if (!componente.Regencia)
-                    {
-                        if (grupo.ComponentesCurriculares == null)
-                            grupo.ComponentesCurriculares = new List<ComponenteCurricularDto>();
-
-                        if (!grupo.ComponentesCurriculares.Any(g => g.Codigo == componente.CodDisciplina.ToString()))
-                            grupo.ComponentesCurriculares.Add(
-                                new ComponenteCurricularDto()
-                                {
-                                    Codigo = componente.CodDisciplina.ToString(),
-                                    Nome = componente.Disciplina,
-                                    Nota = componente.LancaNota,
-                                    Frequencia = componente.Frequencia
-                                });
-                    }
                 }
+               
 
                 if (boletim.ComponenteCurricularRegencia != null)
                     boletim.ComponenteCurricularRegencia.ComponentesCurriculares = boletim.ComponenteCurricularRegencia
                         .ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
-
-                if (grupo.ComponentesCurriculares != null && grupo.ComponentesCurriculares.Any())
-                    grupo.ComponentesCurriculares = grupo.ComponentesCurriculares.OrderBy(c => c.Nome).ToList();
             }
         }
 
