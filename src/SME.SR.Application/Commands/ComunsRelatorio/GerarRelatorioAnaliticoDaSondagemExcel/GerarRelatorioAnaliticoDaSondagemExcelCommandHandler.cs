@@ -41,7 +41,7 @@ namespace SME.SR.Application
                 {
                     var worksheet = workbook.Worksheets.Add(dtoExcel.DreSigla);
 
-                    MontarCabecalho(worksheet, dtoExcel, dtoExcel.TabelaDeDado.Columns.Count);
+                    MontarCabecalho(worksheet, dtoExcel, dtoExcel.TabelaDeDado.Columns.Count, request.TipoSondagem);
 
                     worksheet.Cell(LINHA_TABELA, 1).InsertData(dtoExcel.TabelaDeDado);
 
@@ -57,8 +57,11 @@ namespace SME.SR.Application
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
 
-        private void MontarCabecalho(IXLWorksheet worksheet, RelatorioSondagemAnaliticoExcelDto dto, int totalColunas)
+        private void MontarCabecalho(IXLWorksheet worksheet, RelatorioSondagemAnaliticoExcelDto dto, int totalColunas, TipoSondagem tipoSondagem)
         {
+            var ehCampoAditivoMultiplicativoMatematica = tipoSondagem == TipoSondagem.MAT_CampoAditivo || tipoSondagem == TipoSondagem.MAT_CampoMultiplicativo;
+            var ehAnoLetivoAnterior2022 = dto.AnoLetivo < 2022;
+
             worksheet.AddPicture(ObterLogo())
                 .MoveTo(worksheet.Cell(2, 1))
                 .Scale(0.15);
@@ -79,7 +82,7 @@ namespace SME.SR.Application
             worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"DRE: {dto.Dre}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));            
             
-            worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º BIMESTRE";
+            worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º {(ehCampoAditivoMultiplicativoMatematica && ehAnoLetivoAnterior2022 ? "SEMESTRE" : "BIMESTRE")}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_ANO_PERIODO, 1, LINHA_CABECALHO_ANO_PERIODO, totalColunas));
         }
 
