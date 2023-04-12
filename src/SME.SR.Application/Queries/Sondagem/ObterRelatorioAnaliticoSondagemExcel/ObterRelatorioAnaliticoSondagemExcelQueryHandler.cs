@@ -31,6 +31,8 @@ namespace SME.SR.Application
                 { TipoSondagem.LP_Escrita, new GeradorDeTabelaExcelAnaliticoSondagemEscrita(relatorios) },
                 { TipoSondagem.MAT_CampoAditivo, new GeradorDeTabelaExcelAnaliticoSondagemAditivoMultiplicativo(relatorios) },
                 { TipoSondagem.MAT_CampoMultiplicativo, new GeradorDeTabelaExcelAnaliticoSondagemAditivoMultiplicativo(relatorios) },
+                { TipoSondagem.MAT_Numeros, new GeradorDeTabelaExcelAnaliticoSondagemNumeroIAD(relatorios) },
+                { TipoSondagem.MAT_IAD, new GeradorDeTabelaExcelAnaliticoSondagemNumeroIAD(relatorios) }
             };
         }
     }

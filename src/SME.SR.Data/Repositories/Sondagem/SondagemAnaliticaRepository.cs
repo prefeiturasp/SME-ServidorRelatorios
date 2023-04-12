@@ -11,6 +11,8 @@ using SME.SR.Data.Models;
 using SME.SR.Infra.Dtos.Sondagem;
 using SME.SR.Infra.Utilitarios;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using System.Collections;
+using Microsoft.VisualBasic;
 
 namespace SME.SR.Data
 {
@@ -39,7 +41,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCapacidadeDeLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
 
@@ -189,7 +191,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoEscrita(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var modalidades = new List<int> { 5, 13 };
 
@@ -293,7 +295,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var modalidades = new List<int> { 5, 13 };
             var sql = ConsultaLeituraLinguaPortuguesaPrimeiroAoTerceiroAno(filtro);
@@ -381,7 +383,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeituraDeVozAlta(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var modalidades = new List<int> { 5, 13 };
+            var modalidades = new List<int> {5, 13};
             var periodo = await ObterPeriodoSondagem(filtro.Periodo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
 
@@ -450,7 +452,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoProducaoDeTexto(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var modalidades = new List<int> { 5, 13 };
+            var modalidades = new List<int> {5, 13};
             var periodo = await ObterPeriodoSondagem(filtro.Periodo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
 
@@ -619,9 +621,9 @@ namespace SME.SR.Data
             return reflexao;
         }
 
-        private async Task<PeriodoSondagem> ObterPeriodoSondagem(int bimestre)
+        private async Task<PeriodoSondagem> ObterPeriodoSondagem(int bimestre, int anoLetivo)
         {
-            var termo = @$"{bimestre}° Bimestre";
+            var termo = @$"{bimestre}° {(anoLetivo < 2022 ? "Semestre": "Bimestre")}";
 
             var sql = " select * from \"Periodo\" p where p.\"Descricao\" = @termo";
 
@@ -802,23 +804,34 @@ namespace SME.SR.Data
         private async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCampoAditivoMultiplicativo(FiltroRelatorioAnaliticoSondagemDto filtro, ProficienciaSondagemEnum proficiencia)
         {
             var retorno = new List<RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto>();
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var modalidades = new List<int> { 5, 13 };
 
-            var dtoConsultaDados = await sondagemRelatorioRepository.ConsolidacaoCampoAditivoMultiplicativo(new RelatorioMatematicaFiltroDto
+            IEnumerable<PerguntaRespostaOrdemDto> dtoConsultaDados = Enumerable.Empty<PerguntaRespostaOrdemDto>(); ;
+            if (filtro.AnoLetivo >= 2022)
+                dtoConsultaDados = await sondagemRelatorioRepository.ConsolidacaoCampoAditivoMultiplicativo(new RelatorioMatematicaFiltroDto
+                {
+                    AnoLetivo = filtro.AnoLetivo,
+                    CodigoDre = filtro.DreCodigo,
+                    CodigoUe = filtro.UeCodigo,
+                    ComponenteCurricularId = SondagemComponenteCurricular.MATEMATICA,
+                    Proficiencia = proficiencia,
+                    Bimestre = filtro.Periodo
+                });
+            else dtoConsultaDados = await sondagemRelatorioRepository.ConsolidacaoCampoAditivoMultiplicativoAntes2022(new RelatorioMatematicaFiltroDto
             {
                 AnoLetivo = filtro.AnoLetivo,
                 CodigoDre = filtro.DreCodigo,
                 CodigoUe = filtro.UeCodigo,
-                ComponenteCurricularId = SondagemComponenteCurricular.MATEMATICA,
                 Proficiencia = proficiencia,
                 Bimestre = filtro.Periodo
             });
 
+
             var perguntasPorAno = dtoConsultaDados.Where(x => x.AnoTurma != null).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao }).ToList();
             var listaDres = await dreRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre != null).Select(x => x.CodigoDre).Distinct().ToArray());
-            foreach (var dre in listaDres)
+            foreach (var dre in listaDres.OrderBy(x => x.Abreviacao))
             {
                 var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
                 var relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto = new RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto(TipoSondagem.MAT_CampoAditivo)
@@ -830,15 +843,23 @@ namespace SME.SR.Data
                 };
 
                 var listaUes = await ueRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre == dre.Codigo && x.CodigoUe != null).Select(x => x.CodigoUe).Distinct().ToArray());
-                foreach (var ue in listaUes)
+                foreach (var ue in listaUes.OrderBy(x => x.Nome))
                 {
                     var turmas = await ObterQuantidadeTurmaPorAno(filtro, ue.Codigo);
+                    if (!turmas.Any())
+                    {
+                        turmas.AddRange(
+                            dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).GroupBy(x => new { x.CodigoTurma, x.AnoTurma}).Select(x => new QuantidadeTurmaPorAnoDto { Codigo = x.Key.CodigoTurma, AnoTurma = x.Key.AnoTurma} ));
+                    }
 
                     var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(),
                                                                                                                 periodoFixo.DataInicio, periodoFixo.DataFim,
                                                                                                                 ue.Codigo, dre.Codigo)).ToList();
                     foreach (var anoTurmaItem in perguntasPorAno)
                     {
+                        var descricaoPergunta = ObterDescricaoPergunta(proficiencia, anoTurmaItem.Key.PerguntaDescricao, anoTurmaItem.Key.OrdemPergunta, int.Parse(anoTurmaItem.Key.AnoTurma));
+                        if (string.IsNullOrEmpty(descricaoPergunta)) continue;
+
                         var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma).Select(x => x.QuantidadeAluno).Sum();
 
                         var respostaSondagemAnaliticoCampoAditivoMultiplicativoDto = relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Where(x => x.Ano == int.Parse(anoTurmaItem.Key.AnoTurma) && x.Ue == ue.Nome).FirstOrDefault();
@@ -855,8 +876,8 @@ namespace SME.SR.Data
                         }
 
                         var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
-                        var respostaSondagemAnaliticoOrdem = ObterRespostaSondagemAnaliticoOrdemDto(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma,
-                                                                                                    anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao,
+                        var respostaSondagemAnaliticoOrdem = ObterRespostaSondagemAnaliticoOrdemDto(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma, 
+                                                                                                    anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao, 
                                                                                                     totalDeAlunos);
 
                         respostaSondagemAnaliticoCampoAditivoMultiplicativoDto.Ordens.Add(respostaSondagemAnaliticoOrdem);
@@ -869,7 +890,197 @@ namespace SME.SR.Data
             return retorno;
         }
 
-        private RespostaOrdemMatematicaDto ObterRespostaSondagemAnaliticoOrdemDto(List<PerguntaRespostaOrdemDto> perguntasRepostasUe,
+        private string ObterDescricaoPergunta(ProficienciaSondagemEnum proficiencia, string perguntaDescricao, int ordem, int anoTurma)
+        {
+            if (!string.IsNullOrEmpty(perguntaDescricao))
+                return perguntaDescricao;
+
+            string orderTitle = string.Empty;
+
+            switch (anoTurma)
+            {
+                case 1:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            orderTitle = "COMPOSIÇÃO";
+                            break;
+
+                        default:
+                            orderTitle = string.Empty;
+                            break;
+                    }
+                    break;
+
+                case 2:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 3:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                case 3:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                case 3:
+                                    orderTitle = "COMPARAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 4:
+                                    orderTitle = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+
+                                case 5:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                case 3:
+                                    orderTitle = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+
+                                case 4:
+                                    orderTitle = "COMPARAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    orderTitle = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+
+                                case 6:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                case 7:
+                                    orderTitle = "COMBINATÓRIA";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                case 5:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                case 3:
+                                    orderTitle = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+
+                                case 4:
+                                    orderTitle = "COMPARAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    orderTitle = "COMBINATÓRIA";
+                                    break;
+
+                                case 6:
+                                    orderTitle = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+
+        private RespostaOrdemMatematicaDto ObterRespostaSondagemAnaliticoOrdemDto(List<PerguntaRespostaOrdemDto> perguntasRepostasUe, 
                                                                                   string anoTurma, int ordemPergunta, string descricaoPergunta, int totalDeAlunos)
         {
             var respostaSondagemAnaliticoIdeiaDto = new RespostaMatematicaDto();
@@ -883,7 +1094,7 @@ namespace SME.SR.Data
                                     respostaSondagemAnaliticoIdeiaDto.Errou +
                                     respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
             respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos - totalRespostas;
-
+        
 
             perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
             respostaSondagemAnaliticoResultadoDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
@@ -893,7 +1104,7 @@ namespace SME.SR.Data
                              respostaSondagemAnaliticoResultadoDto.Errou +
                              respostaSondagemAnaliticoResultadoDto.NaoResolveu;
             respostaSondagemAnaliticoResultadoDto.SemPreenchimento = totalDeAlunos - totalRespostas;
-
+            
             return new RespostaOrdemMatematicaDto
             {
                 Ordem = ordemPergunta,

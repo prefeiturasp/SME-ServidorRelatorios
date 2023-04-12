@@ -20,6 +20,7 @@ namespace SME.SR.Application
         private const int LINHA_TABELA = 9;
         private const int LINHA_SUBTITULO = 10;
         private const int LINHA_TABTITULO = 11;
+        private IEnumerable<RelatorioSondagemAnaliticoExcelDto> tabelaExcel;
 
         public GerarRelatorioAnaliticoDaSondagemExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
         {
@@ -29,7 +30,7 @@ namespace SME.SR.Application
 
         protected override async Task Handle(GerarRelatorioAnaliticoDaSondagemExcelCommand request, CancellationToken cancellationToken)
         {
-            var tabelaExcel = await mediator.Send(new ObterRelatorioAnaliticoSondagemExcelQuery(request.RelatorioAnalitico, request.TipoSondagem));
+            tabelaExcel = await mediator.Send(new ObterRelatorioAnaliticoSondagemExcelQuery(request.RelatorioAnalitico, request.TipoSondagem));
 
             if (!tabelaExcel.Any())
                 throw new NegocioException("Não foi possui informações.");
@@ -40,7 +41,7 @@ namespace SME.SR.Application
                 {
                     var worksheet = workbook.Worksheets.Add(dtoExcel.DreSigla);
 
-                    MontarCabecalho(worksheet, dtoExcel, dtoExcel.TabelaDeDado.Columns.Count);
+                    MontarCabecalho(worksheet, dtoExcel, dtoExcel.TabelaDeDado.Columns.Count, request.TipoSondagem);
 
                     worksheet.Cell(LINHA_TABELA, 1).InsertData(dtoExcel.TabelaDeDado);
 
@@ -56,8 +57,11 @@ namespace SME.SR.Application
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
 
-        private void MontarCabecalho(IXLWorksheet worksheet, RelatorioSondagemAnaliticoExcelDto dto, int totalColunas)
+        private void MontarCabecalho(IXLWorksheet worksheet, RelatorioSondagemAnaliticoExcelDto dto, int totalColunas, TipoSondagem tipoSondagem)
         {
+            var ehCampoAditivoMultiplicativoMatematica = tipoSondagem == TipoSondagem.MAT_CampoAditivo || tipoSondagem == TipoSondagem.MAT_CampoMultiplicativo;
+            var ehAnoLetivoAnterior2022 = dto.AnoLetivo < 2022;
+
             worksheet.AddPicture(ObterLogo())
                 .MoveTo(worksheet.Cell(2, 1))
                 .Scale(0.15);
@@ -78,7 +82,7 @@ namespace SME.SR.Application
             worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"DRE: {dto.Dre}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));            
             
-            worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º BIMESTRE";
+            worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º {(ehCampoAditivoMultiplicativoMatematica && ehAnoLetivoAnterior2022 ? "SEMESTRE" : "BIMESTRE")}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_ANO_PERIODO, 1, LINHA_CABECALHO_ANO_PERIODO, totalColunas));
         }
 
@@ -147,7 +151,9 @@ namespace SME.SR.Application
             {
                 { TipoSondagem.LP_CapacidadeLeitura, AdicionarEstiloCorpoCapacidadeDeLeitura },
                 { TipoSondagem.MAT_CampoAditivo, AdicionarEstiloCorpoAditivoMultiplicativo },
-                { TipoSondagem.MAT_CampoMultiplicativo, AdicionarEstiloCorpoAditivoMultiplicativo }
+                { TipoSondagem.MAT_CampoMultiplicativo, AdicionarEstiloCorpoAditivoMultiplicativo },
+                { TipoSondagem.MAT_Numeros, AdicionarEstiloCorpoNumeroIAD },
+                { TipoSondagem.MAT_IAD, AdicionarEstiloCorpoNumeroIAD }
             };
         }
 
@@ -180,6 +186,24 @@ namespace SME.SR.Application
 
             AdicioneMerge(worksheet, 5, ultimaColunaUsada, LINHA_TABELA, 7);
             AdicioneMerge(worksheet, 5, ultimaColunaUsada, LINHA_SUBTITULO, 3);
+        }
+
+        private void AdicionarEstiloCorpoNumeroIAD(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada)
+        {
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_TABELA);
+            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, LINHA_SUBTITULO);
+
+            worksheet.Range(LINHA_TABELA, 1, LINHA_TABELA, 4).Merge();
+
+            var dtoExcel = tabelaExcel.FirstOrDefault();
+
+            if (dtoExcel.MergeColunas != null && dtoExcel.MergeColunas.Any())
+            {
+                foreach (var merge in dtoExcel.MergeColunas)
+                {
+                    worksheet.Range(LINHA_TABELA, merge.ColunaInicio, LINHA_TABELA, merge.ColunaFim).Merge();
+                }
+            }
         }
 
         private void AdicioneMerge(IXLWorksheet worksheet, int colunaInicio, int ultimaColunaUsada, int linhaMerge, int acrescimoColuna)
