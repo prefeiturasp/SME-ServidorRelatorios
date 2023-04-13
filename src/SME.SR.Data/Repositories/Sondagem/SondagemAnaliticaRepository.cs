@@ -866,7 +866,7 @@ namespace SME.SR.Data
             });
 
 
-            var perguntasPorAno = dtoConsultaDados.Where(x => x.AnoTurma != null).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao }).ToList();
+            var perguntasPorAno = dtoConsultaDados.Where(x => x.AnoTurma != null).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao }).ToList().OrderBy(x => x.Key.AnoTurma).ThenBy(d => d.Key.OrdemPergunta);
             var listaDres = await dreRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre != null).Select(x => x.CodigoDre).Distinct().ToArray());
             foreach (var dre in listaDres.OrderBy(x => x.Abreviacao))
             {
@@ -914,7 +914,7 @@ namespace SME.SR.Data
 
                         var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
                         var respostaSondagemAnaliticoOrdem = ObterRespostaSondagemAnaliticoOrdemDto(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma,
-                                                                                                    anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao,
+                                                                                                    anoTurmaItem.Key.OrdemPergunta, descricaoPergunta,
                                                                                                     totalDeAlunos);
 
                         respostaSondagemAnaliticoCampoAditivoMultiplicativoDto.Ordens.Add(respostaSondagemAnaliticoOrdem);
