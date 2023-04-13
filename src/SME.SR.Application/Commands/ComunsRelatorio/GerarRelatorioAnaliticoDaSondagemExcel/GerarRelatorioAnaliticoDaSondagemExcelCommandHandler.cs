@@ -77,26 +77,34 @@ namespace SME.SR.Application
             AdicinarFonte(worksheet.Range(4, indiceColunaTitulo, 4, totalColunas));
 
             worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"DRE: {dto.Dre}";
-            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));            
-            
+            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));
+
             worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º {ObterTituloSemestreBimestre(tipoSondagem, dto.AnoLetivo)}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_ANO_PERIODO, 1, LINHA_CABECALHO_ANO_PERIODO, totalColunas));
         }
-        
+
         private string ObterTituloSemestreBimestre(TipoSondagem tipoSondagem, int anoLetivo)
         {
             var ehAnoLetivoAnterior2022 = anoLetivo < 2022;
             var ehAnoLetivo2022 = anoLetivo == 2022;
             var ehAnoLetivoApos2022 = anoLetivo > 2022;
+            var ehTipoSondagemMatematica = tipoSondagem == TipoSondagem.MAT_IAD ||
+                                           tipoSondagem == TipoSondagem.MAT_CampoMultiplicativo ||
+                                           tipoSondagem == TipoSondagem.MAT_CampoAditivo ||
+                                           tipoSondagem == TipoSondagem.MAT_Numeros;
 
-            if (ehAnoLetivoAnterior2022)
-                return "SEMESTRE";
-            else if (ehAnoLetivo2022)
-                return "BIMESTRE";
-            else if (ehAnoLetivoApos2022 && tipoSondagem == TipoSondagem.MAT_IAD)
-                return "SEMESTRE";
-            else
-                return "BIMESTRE";
+            if (ehTipoSondagemMatematica) 
+            {
+                if (ehAnoLetivoAnterior2022)
+                    return "SEMESTRE";
+                else if (ehAnoLetivo2022)
+                    return "BIMESTRE";
+                else if (ehAnoLetivoApos2022 && tipoSondagem == TipoSondagem.MAT_IAD)
+                    return "SEMESTRE";
+                else
+                    return "BIMESTRE";
+            } else return "BIMESTRE";
+
         }
 
         private void AdicinarFonte(IXLRange range)
