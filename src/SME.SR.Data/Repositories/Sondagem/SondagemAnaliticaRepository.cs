@@ -9,6 +9,11 @@ using Npgsql;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Models;
 using SME.SR.Infra.Dtos.Sondagem;
+using SME.SR.Infra.Utilitarios;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using System.Collections;
+using Microsoft.VisualBasic;
+using Org.BouncyCastle.Ocsp;
 
 namespace SME.SR.Data
 {
@@ -22,7 +27,8 @@ namespace SME.SR.Data
         private readonly ITurmaRepository turmaRepository;
 
         private readonly string TURMA_TERCEIRO_ANO = "3";
-
+        private readonly string DESCRICAO_SEMPREENCHIMENTO = "Sem Preenchimento";
+        private readonly int ANO_ESCOLAR_2022 = 2022;
 
         public SondagemAnaliticaRepository(VariaveisAmbiente variaveisAmbiente, IAlunoRepository alunoRepository, IDreRepository dreRepository, IUeRepository ueRepository
             , ISondagemRelatorioRepository sondagemRelatorioRepository, ITurmaRepository turmaRepository)
@@ -37,11 +43,11 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCapacidadeDeLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
 
-            var modalidades = new List<int> {5, 13};
+            var modalidades = new List<int> { 5, 13 };
 
             var consultaDados = await sondagemRelatorioRepository.ConsolidadoCapacidadeLeitura(new RelatorioPortuguesFiltroDto
             {
@@ -104,7 +110,7 @@ namespace SME.SR.Data
                                 listaDtoOrdemNarrar.Add(ordemNarrar);
                             }
 
-                            if(ordemRelatarLista.Count() == 0)
+                            if (ordemRelatarLista.Count() == 0)
                             {
                                 var ordemRelatarItem = new RespostaCapacidadeDeLeituraDto();
                                 ordemRelatarItem.Localizacao.SemPreenchimento = totalDeAlunos;
@@ -117,7 +123,7 @@ namespace SME.SR.Data
                             {
                                 var ordemDoRelatar = new RespostaCapacidadeDeLeituraDto
                                 {
-                                    Localizacao =  MapearOrdemDoNarrarLocalizacao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
+                                    Localizacao = MapearOrdemDoNarrarLocalizacao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
                                     Inferencia = MapearOrdemDoNarrarInferencia(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
                                     Reflexao = MapearOrdemDoNarrarReflexao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
                                 };
@@ -187,12 +193,12 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoEscrita(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
-            var modalidades = new List<int> {5, 13};
+            var modalidades = new List<int> { 5, 13 };
 
             var sql = ConsultaEscritaLinguaPortuguesaPrimeiroAoTerceiroAno(filtro);
-            var parametros = new {dreCodeEol = filtro.DreCodigo, ueCodigo = filtro.UeCodigo, anoLetivo = filtro.AnoLetivo.ToString(), anoTurma = filtro.AnoTurma};
+            var parametros = new { dreCodeEol = filtro.DreCodigo, ueCodigo = filtro.UeCodigo, anoLetivo = filtro.AnoLetivo.ToString(), anoTurma = filtro.AnoTurma };
             IEnumerable<TotalRespostasAnaliticoEscritaDto> dtoConsulta = null;
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
@@ -227,7 +233,7 @@ namespace SME.SR.Data
                                 quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
 
-                            var  totalSemPreenchimento = anoTurma.Key == TURMA_TERCEIRO_ANO
+                            var totalSemPreenchimento = anoTurma.Key == TURMA_TERCEIRO_ANO
                                     ? TotalSemPreenchimentoTerceiroAnoEscrita(anoTurma, quantidadeTotalAlunosEol)
                                     : TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(anoTurma, quantidadeTotalAlunosEol);
 
@@ -237,9 +243,9 @@ namespace SME.SR.Data
 
                             var semPreenchimentoRelatorio = valorSemPreenchimento > 0 ? (totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0;
 
-                            var totalDeAlunosNaSondagem = anoTurma.Key == TURMA_TERCEIRO_ANO ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio) 
+                            var totalDeAlunosNaSondagem = anoTurma.Key == TURMA_TERCEIRO_ANO ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio)
                                                                                                  : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
-                            
+
 
                             var respostaSondagemAnaliticoEscritaDto = new RespostaSondagemAnaliticoEscritaDto
                             {
@@ -291,11 +297,11 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
-            var modalidades = new List<int> {5, 13};
+            var modalidades = new List<int> { 5, 13 };
             var sql = ConsultaLeituraLinguaPortuguesaPrimeiroAoTerceiroAno(filtro);
-            var parametros = new {dreCodeEol = filtro.DreCodigo, ueCodigo = filtro.UeCodigo, anoLetivo = filtro.AnoLetivo.ToString(), anoTurma = filtro.AnoTurma};
+            var parametros = new { dreCodeEol = filtro.DreCodigo, ueCodigo = filtro.UeCodigo, anoLetivo = filtro.AnoLetivo.ToString(), anoTurma = filtro.AnoTurma };
             IEnumerable<TotalRespostasAnaliticoLeituraDto> dtoConsultaDados = null;
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
@@ -369,18 +375,18 @@ namespace SME.SR.Data
         {
 
             if (valorSemPreenchimento == 0)
-               return (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum() + anoTurma.Select(x => x.Nivel4).Sum());
-            
-            
+                return (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum() + anoTurma.Select(x => x.Nivel4).Sum());
+
+
             return (semPreenchimento + (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum() + anoTurma.Select(x => x.Nivel4).Sum()));
-            
+
         }
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeituraDeVozAlta(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var modalidades = new List<int> {5, 13};
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var modalidades = new List<int> { 5, 13 };
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
 
 
@@ -448,8 +454,8 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoProducaoDeTexto(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var modalidades = new List<int> {5, 13};
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo);
+            var modalidades = new List<int> { 5, 13 };
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
 
             var consultaDados = (await sondagemRelatorioRepository.ObterDadosProducaoTexto(new RelatorioPortuguesFiltroDto
@@ -516,7 +522,7 @@ namespace SME.SR.Data
             return retorno;
         }
 
-        private  int TotalAlunosEscritaTerceiroAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int totalSemPreenchimento,int valorSemPreenchimento)
+        private int TotalAlunosEscritaTerceiroAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int totalSemPreenchimento, int valorSemPreenchimento)
         {
 
             if (valorSemPreenchimento == 0)
@@ -525,10 +531,10 @@ namespace SME.SR.Data
                                                + anoTurma.Select(x => x.Nivel4).Sum());
             }
 
-           return (totalSemPreenchimento + anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
-                                                           + anoTurma.Select(x => x.Nivel4).Sum());
-        }        
-        private  int TotalAlunosEscritaPrimeiroSegundoAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int totalSemPreenchimento, string ano,int valorSemPreenchimento)
+            return (totalSemPreenchimento + anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
+                                                            + anoTurma.Select(x => x.Nivel4).Sum());
+        }
+        private int TotalAlunosEscritaPrimeiroSegundoAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int totalSemPreenchimento, string ano, int valorSemPreenchimento)
         {
             if (valorSemPreenchimento == 0)
             {
@@ -543,11 +549,11 @@ namespace SME.SR.Data
                                                                                   + anoTurma.Select(x => x.Alfabetico).Sum()
                                                                                   + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()));
         }
-        
-        private async Task<List<QuantidadeTurmaPorAnoDto>> ObterQuantidadeTurmaPorAno(FiltroRelatorioAnaliticoSondagemDto filtro, string codigoUe)
+
+        private async Task<List<QuantidadeTurmaPorAnoDto>> ObterQuantidadeTurmaPorAno(FiltroRelatorioAnaliticoSondagemDto filtro, string codigoUe, int modalidade = (int)Modalidade.Fundamental)
         {
             var historico = filtro.AnoLetivo < DateTime.Now.Year;
-            var turmas = (await turmaRepository.ObterTotalDeTurmasPorAno(filtro.LoginUsuarioLogado, codigoUe, filtro.PerfilUsuarioLogado, historico, (int) Modalidade.Fundamental, filtro.AnoLetivo)).ToList();
+            var turmas = (await turmaRepository.ObterTotalDeTurmasPorAno(filtro.LoginUsuarioLogado, codigoUe, filtro.PerfilUsuarioLogado, historico, modalidade, filtro.AnoLetivo)).ToList();
             return turmas;
         }
 
@@ -617,22 +623,22 @@ namespace SME.SR.Data
             return reflexao;
         }
 
-        private async Task<PeriodoSondagem> ObterPeriodoSondagem(int bimestre)
+        private async Task<PeriodoSondagem> ObterPeriodoSondagem(int bimestre, int anoLetivo)
         {
-            var termo = @$"{bimestre}° Bimestre";
+            var termo = @$"{bimestre}° {(anoLetivo < 2022 ? "Semestre" : "Bimestre")}";
 
             var sql = " select * from \"Periodo\" p where p.\"Descricao\" = @termo";
 
             using (var conn = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
-                return await conn.QueryFirstOrDefaultAsync<PeriodoSondagem>(sql, new {termo});
+                return await conn.QueryFirstOrDefaultAsync<PeriodoSondagem>(sql, new { termo });
             }
         }
 
         private async Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagem(int anoLetivo, string periodoId)
         {
             var sql = " select * from \"PeriodoFixoAnual\" pfa where pfa.\"PeriodoId\" = @periodoId and \"Ano\" = @anoLetivo ";
-            var parametros = new {periodoId, anoLetivo};
+            var parametros = new { periodoId, anoLetivo };
             using (var conn = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
             {
                 return await conn.QueryFirstOrDefaultAsync<PeriodoFixoSondagem>(sql, parametros);
@@ -698,6 +704,529 @@ namespace SME.SR.Data
             sql.AppendLine("                order by pp.\"dreCodeEol\", pp.\"schoolCodeEol\", pp.\"yearClassroom\" ");
 
             return sql.ToString();
+        }
+        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCampoAditivo(FiltroRelatorioAnaliticoSondagemDto filtro) => await ObterRelatorioSondagemAnaliticoCampoAditivoMultiplicativo(filtro, ProficienciaSondagemEnum.CampoAditivo);
+        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCampoMultiplicativo(FiltroRelatorioAnaliticoSondagemDto filtro) => await ObterRelatorioSondagemAnaliticoCampoAditivoMultiplicativo(filtro, ProficienciaSondagemEnum.CampoMultiplicativo);
+
+        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoNumero(FiltroRelatorioAnaliticoSondagemDto filtro) => await ObterRelatorioSondagemAnaliticoNumeroIAD(filtro, ProficienciaSondagemEnum.Numeros);
+        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoIAD(FiltroRelatorioAnaliticoSondagemDto filtro) => await ObterRelatorioSondagemAnaliticoNumeroIAD(filtro, ProficienciaSondagemEnum.IAD);
+
+        private async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoNumeroIAD(FiltroRelatorioAnaliticoSondagemDto filtro, ProficienciaSondagemEnum proficienciaSondagemEnum)
+        {
+            var retorno = new List<RelatorioSondagemAnaliticoNumeroIadDto>();
+            var considerarBimestre = filtro.AnoLetivo >= ANO_ESCOLAR_2022;
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
+            var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
+            var modalidades = new List<int> { 5, 13 };
+
+            var consultarDados = await ConsultaMatematicaNumerosAutoral(filtro, periodo.Id, proficienciaSondagemEnum);
+            var listaDres = await dreRepository.ObterPorCodigos(consultarDados.Where(x => x.CodigoDre != null).Select(x => x.CodigoDre).Distinct().ToArray());
+            var perguntasPorAno = consultarDados.Where(x => int.Parse(x.AnoTurma) > 0).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao}).ToList();
+            var respostasPorAno = consultarDados.Where(x => int.Parse(x.AnoTurma) > 0).GroupBy(p => new { p.OrdemPergunta, p.PerguntaDescricao, p.OrdemResposta, p.RespostaDescricao}).OrderBy(x => x.Key.OrdemPergunta).ThenBy(t => t.Key.OrdemResposta).ToList();
+
+            var cabecalho = respostasPorAno.GroupBy(x => new { x.Key.OrdemPergunta, x.Key.PerguntaDescricao}).Select(x =>
+                new CabecalhoSondagemAnaliticaDto
+                {
+                    Descricao = x.Key.PerguntaDescricao,
+                    Ordem = x.Key.OrdemPergunta,
+                    SubCabecalhos = respostasPorAno
+                    .Where(f => f.Key.OrdemPergunta == x.Key.OrdemPergunta && f.Key.PerguntaDescricao == x.Key.PerguntaDescricao)
+                    .Select(y => new SubCabecalhoSondagemAnaliticaDto { Ordem = y.Key.OrdemResposta, IdPerguntaResposta = @$"{x.Key.PerguntaDescricao}_{y.Key.RespostaDescricao}", Descricao = y.Key.RespostaDescricao }).ToList()
+                }
+                ).ToList();
+
+            foreach (var dre in listaDres)
+            {
+                var relatorioSondagemAnaliticoNumeroIad = new RelatorioSondagemAnaliticoNumeroIadDto(TipoSondagem.MAT_Numeros)
+                {
+                    Dre = dre.Nome,
+                    DreSigla = dre.Abreviacao,
+                    AnoLetivo = filtro.AnoLetivo,
+                    Periodo = filtro.Periodo
+                };
+
+                relatorioSondagemAnaliticoNumeroIad.ColunasDoCabecalho.AddRange(cabecalho);
+
+                var listaUes = await ueRepository.ObterPorCodigos(consultarDados.Where(x => x.CodigoDre == dre.Codigo && x.CodigoUe != null).Select(x => x.CodigoUe).Distinct().ToArray());
+                foreach (var ue in listaUes)
+                {
+                    var turmas = await ObterQuantidadeTurmaPorAno(filtro, ue.Codigo);
+
+                    var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(),
+                                                                                                                periodoFixo.DataInicio, periodoFixo.DataFim,
+                                                                                                                ue.Codigo, dre.Codigo)).ToList();
+                    foreach (var anoTurmaItem in perguntasPorAno)
+                    {
+                        var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma.ToString()).Select(x => x.QuantidadeAluno).Sum();
+
+                        var relatorioSondagemAnaliticoNumero = relatorioSondagemAnaliticoNumeroIad.Respostas.Where(x => x.Ano.ToString() == anoTurmaItem.Key.AnoTurma && x.Ue == ue.Nome).FirstOrDefault();
+                        if (relatorioSondagemAnaliticoNumero == null)
+                        {
+                            relatorioSondagemAnaliticoNumero = new RespostaSondagemAnaliticaNumeroIadDto()
+                            {
+                                TotalDeAlunos = totalDeAlunos,
+                                Ano = int.Parse(anoTurmaItem.Key.AnoTurma),
+                                TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma.ToString()),
+                                Ue = ue.Nome
+                            };
+                            relatorioSondagemAnaliticoNumeroIad.Respostas.Add(relatorioSondagemAnaliticoNumero);
+                        }
+
+                        var perguntasRespostasUe = consultarDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
+                        MapearRespostaNumeros(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma, anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao,
+                                                                                                    totalDeAlunos, relatorioSondagemAnaliticoNumero.Respostas
+                                                                                                    , relatorioSondagemAnaliticoNumeroIad.ColunasDoCabecalho);
+
+                    }
+                }
+                retorno.Add(relatorioSondagemAnaliticoNumeroIad);
+            }
+            return retorno;
+        }
+
+        private void MapearRespostaNumeros(List<PerguntaRespostaOrdemDto> perguntasRespostasUe, string anoTurma, int ordermPergunta, string perguntaDescricao, int totalDeAlunos,
+            List<RespostaSondagemAnaliticaDto> respostas, List<CabecalhoSondagemAnaliticaDto> colunasDoCabecalho)
+        {
+            var perguntas = perguntasRespostasUe.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordermPergunta && x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO);
+
+            foreach (var cabec in colunasDoCabecalho)
+            {
+                var naoExiste = cabec.SubCabecalhos?.Count(x => x.Descricao == DESCRICAO_SEMPREENCHIMENTO) == 0;
+                if (naoExiste)
+                    cabec.SubCabecalhos.Add(new SubCabecalhoSondagemAnaliticaDto { Descricao = DESCRICAO_SEMPREENCHIMENTO, IdPerguntaResposta = $"{cabec.Descricao}_{DESCRICAO_SEMPREENCHIMENTO}", Ordem = cabec.SubCabecalhos.Count() + 1 });
+            }
+            var cabecalhoRespostas = colunasDoCabecalho.Where(x => x.Ordem == ordermPergunta && x.Descricao == perguntaDescricao).FirstOrDefault().SubCabecalhos;
+
+
+            foreach (var cabecalhoResposta in cabecalhoRespostas)
+            {
+                var resposta = perguntas.Where(x => x.OrdemResposta == cabecalhoResposta.Ordem);
+                if (cabecalhoResposta.Descricao == DESCRICAO_SEMPREENCHIMENTO)
+                {
+                    var totalRespostas = perguntas?.Sum(c => c.QtdRespostas) ?? 0;
+                    var semPrenechimento = totalDeAlunos - totalRespostas;
+                    respostas.Add(new RespostaSondagemAnaliticaDto
+                    {
+                        IdPerguntaResposta = $"{perguntaDescricao}_{cabecalhoResposta.Descricao}",
+                        Valor = semPrenechimento,
+                    });
+
+                }
+                else
+                {
+                    respostas.Add(new RespostaSondagemAnaliticaDto
+                    {
+                        IdPerguntaResposta = $"{perguntaDescricao}_{cabecalhoResposta.Descricao}",
+                        Valor = resposta?.Sum(x => x.QtdRespostas) ?? 0,
+                    });
+                }
+                
+            }
+        }
+
+        private async Task<IEnumerable<PerguntaRespostaOrdemDto>> ConsultaMatematicaNumerosAutoral(FiltroRelatorioAnaliticoSondagemDto filtro, string periodoId, ProficienciaSondagemEnum proficienciaSondagemEnum)
+        {
+            if (proficienciaSondagemEnum == ProficienciaSondagemEnum.Numeros)
+            {
+                return filtro.AnoLetivo >= ANO_ESCOLAR_2022 ? await sondagemRelatorioRepository.MatematicaIADNumeroBimestre(filtro.AnoLetivo, SondagemComponenteCurricular.MATEMATICA, filtro.Periodo, filtro.UeCodigo, filtro.DreCodigo, proficienciaSondagemEnum)
+                                                     : await sondagemRelatorioRepository.MatematicaNumerosAntes2022(filtro.AnoLetivo, filtro.Periodo, filtro.UeCodigo, filtro.DreCodigo, periodoId);
+            }
+            else
+            {
+                return filtro.AnoLetivo >= ANO_ESCOLAR_2022 ? await sondagemRelatorioRepository.MatematicaIADNumeroBimestre(filtro.AnoLetivo, SondagemComponenteCurricular.MATEMATICA, filtro.Periodo, filtro.UeCodigo, filtro.DreCodigo, proficienciaSondagemEnum)
+                                     : await sondagemRelatorioRepository.MatematicaIADAntes2022(filtro.AnoLetivo, SondagemComponenteCurricular.MATEMATICA, filtro.Periodo, filtro.UeCodigo, filtro.DreCodigo, periodoId);
+            }
+        }
+
+        private async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCampoAditivoMultiplicativo(FiltroRelatorioAnaliticoSondagemDto filtro, ProficienciaSondagemEnum proficiencia)
+        {
+            var retorno = new List<RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto>();
+            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo);
+            var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
+            var modalidades = new List<int> { 5, 13 };
+
+            IEnumerable<PerguntaRespostaOrdemDto> dtoConsultaDados = Enumerable.Empty<PerguntaRespostaOrdemDto>(); ;
+            if (filtro.AnoLetivo >= 2022)
+                dtoConsultaDados = await sondagemRelatorioRepository.ConsolidacaoCampoAditivoMultiplicativo(new RelatorioMatematicaFiltroDto
+                {
+                    AnoLetivo = filtro.AnoLetivo,
+                    CodigoDre = filtro.DreCodigo,
+                    CodigoUe = filtro.UeCodigo,
+                    ComponenteCurricularId = SondagemComponenteCurricular.MATEMATICA,
+                    Proficiencia = proficiencia,
+                    Bimestre = filtro.Periodo
+                });
+            else dtoConsultaDados = await sondagemRelatorioRepository.ConsolidacaoCampoAditivoMultiplicativoAntes2022(new RelatorioMatematicaFiltroDto
+            {
+                AnoLetivo = filtro.AnoLetivo,
+                CodigoDre = filtro.DreCodigo,
+                CodigoUe = filtro.UeCodigo,
+                Proficiencia = proficiencia,
+                Bimestre = filtro.Periodo
+            });
+
+
+            var perguntasPorAno = dtoConsultaDados.Where(x => x.AnoTurma != null).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao }).ToList();
+            var listaDres = await dreRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre != null).Select(x => x.CodigoDre).Distinct().ToArray());
+            foreach (var dre in listaDres.OrderBy(x => x.Abreviacao))
+            {
+                var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
+                var relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto = new RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto(TipoSondagem.MAT_CampoAditivo)
+                {
+                    Dre = dre.Nome,
+                    DreSigla = dre.Abreviacao,
+                    AnoLetivo = filtro.AnoLetivo,
+                    Periodo = filtro.Periodo
+                };
+
+                var listaUes = await ueRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre == dre.Codigo && x.CodigoUe != null).Select(x => x.CodigoUe).Distinct().ToArray());
+                foreach (var ue in listaUes.OrderBy(x => x.Nome))
+                {
+                    var turmas = await ObterQuantidadeTurmaPorAno(filtro, ue.Codigo);
+                    if (!turmas.Any())
+                    {
+                        turmas.AddRange(
+                            dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).GroupBy(x => new { x.CodigoTurma, x.AnoTurma }).Select(x => new QuantidadeTurmaPorAnoDto { Codigo = x.Key.CodigoTurma, AnoTurma = x.Key.AnoTurma }));
+                    }
+
+                    var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(),
+                                                                                                                periodoFixo.DataInicio, periodoFixo.DataFim,
+                                                                                                                ue.Codigo, dre.Codigo)).ToList();
+                    foreach (var anoTurmaItem in perguntasPorAno)
+                    {
+                        var descricaoPergunta = ObterDescricaoPergunta(proficiencia, anoTurmaItem.Key.PerguntaDescricao, anoTurmaItem.Key.OrdemPergunta, int.Parse(anoTurmaItem.Key.AnoTurma));
+                        if (string.IsNullOrEmpty(descricaoPergunta)) continue;
+
+                        var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma).Select(x => x.QuantidadeAluno).Sum();
+
+                        var respostaSondagemAnaliticoCampoAditivoMultiplicativoDto = relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Where(x => x.Ano == int.Parse(anoTurmaItem.Key.AnoTurma) && x.Ue == ue.Nome).FirstOrDefault();
+                        if (respostaSondagemAnaliticoCampoAditivoMultiplicativoDto == null)
+                        {
+                            respostaSondagemAnaliticoCampoAditivoMultiplicativoDto = new RespostaSondagemAnaliticoCampoAditivoMultiplicativoDto()
+                            {
+                                TotalDeAlunos = totalDeAlunos,
+                                Ano = int.Parse(anoTurmaItem.Key.AnoTurma),
+                                TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma),
+                                Ue = ue.Nome
+                            };
+                            relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Add(respostaSondagemAnaliticoCampoAditivoMultiplicativoDto);
+                        }
+
+                        var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
+                        var respostaSondagemAnaliticoOrdem = ObterRespostaSondagemAnaliticoOrdemDto(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma,
+                                                                                                    anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao,
+                                                                                                    totalDeAlunos);
+
+                        respostaSondagemAnaliticoCampoAditivoMultiplicativoDto.Ordens.Add(respostaSondagemAnaliticoOrdem);
+
+                    }
+                }
+                retorno.Add(relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto);
+            }
+
+            return retorno;
+        }
+
+        private string ObterDescricaoPergunta(ProficienciaSondagemEnum proficiencia, string perguntaDescricao, int ordem, int anoTurma)
+        {
+            if (!string.IsNullOrEmpty(perguntaDescricao))
+                return perguntaDescricao;
+
+            string orderTitle = string.Empty;
+
+            switch (anoTurma)
+            {
+                case 1:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            orderTitle = "COMPOSIÇÃO";
+                            break;
+
+                        default:
+                            orderTitle = string.Empty;
+                            break;
+                    }
+                    break;
+
+                case 2:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 3:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                case 3:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                case 3:
+                                    orderTitle = "COMPARAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 4:
+                                    orderTitle = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+
+                                case 5:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                case 4:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                case 3:
+                                    orderTitle = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+
+                                case 4:
+                                    orderTitle = "COMPARAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    orderTitle = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+
+                                case 6:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                case 7:
+                                    orderTitle = "COMBINATÓRIA";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                case 5:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                case 3:
+                                    orderTitle = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+
+                                case 4:
+                                    orderTitle = "COMPARAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    orderTitle = "COMBINATÓRIA";
+                                    break;
+
+                                case 6:
+                                    orderTitle = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+
+                                case 7:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                case 8:
+                                    orderTitle = "MULTIPLICAÇÃO COMPARATIVA";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                case 6:
+                    switch (proficiencia)
+                    {
+                        case ProficienciaSondagemEnum.CampoAditivo:
+                            switch (ordem)
+                            {
+                                case 1:
+                                    orderTitle = "COMPOSIÇÃO";
+                                    break;
+
+                                case 2:
+                                    orderTitle = "TRANSFORMAÇÃO";
+                                    break;
+
+                                case 3:
+                                    orderTitle = "COMPOSIÇÃO DE TRANSF.";
+                                    break;
+
+                                case 4:
+                                    orderTitle = "COMPARAÇÃO";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+
+                        case ProficienciaSondagemEnum.CampoMultiplicativo:
+                            switch (ordem)
+                            {
+                                case 5:
+                                    orderTitle = "COMBINATÓRIA";
+                                    break;
+
+                                case 6:
+                                    orderTitle = "CONFIGURAÇÃO RETANGULAR";
+                                    break;
+
+                                case 7:
+                                    orderTitle = "PROPORCIONALIDADE";
+                                    break;
+
+                                case 8:
+                                    orderTitle = "MULTIPLICAÇÃO COMPARATIVA";
+                                    break;
+
+                                default:
+                                    orderTitle = string.Empty;
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+            return orderTitle;
+
+        }
+        private RespostaOrdemMatematicaDto ObterRespostaSondagemAnaliticoOrdemDto(List<PerguntaRespostaOrdemDto> perguntasRepostasUe,
+                                                                                  string anoTurma, int ordemPergunta, string descricaoPergunta, int totalDeAlunos)
+        {
+            var respostaSondagemAnaliticoIdeiaDto = new RespostaMatematicaDto();
+            var respostaSondagemAnaliticoResultadoDto = new RespostaMatematicaDto();
+
+            var perguntasRespostas = perguntasRepostasUe.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Ideia").ToList();
+            respostaSondagemAnaliticoIdeiaDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoIdeiaDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoIdeiaDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
+            var totalRespostas = respostaSondagemAnaliticoIdeiaDto.Acertou +
+                                    respostaSondagemAnaliticoIdeiaDto.Errou +
+                                    respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
+            respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos - totalRespostas;
+
+
+            perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
+            respostaSondagemAnaliticoResultadoDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoResultadoDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
+            respostaSondagemAnaliticoResultadoDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
+            totalRespostas = respostaSondagemAnaliticoResultadoDto.Acertou +
+                             respostaSondagemAnaliticoResultadoDto.Errou +
+                             respostaSondagemAnaliticoResultadoDto.NaoResolveu;
+            respostaSondagemAnaliticoResultadoDto.SemPreenchimento = totalDeAlunos - totalRespostas;
+
+            return new RespostaOrdemMatematicaDto
+            {
+                Ordem = ordemPergunta,
+                Descricao = descricaoPergunta,
+                Resultado = respostaSondagemAnaliticoResultadoDto,
+                Ideia = respostaSondagemAnaliticoIdeiaDto
+            };
         }
     }
 }

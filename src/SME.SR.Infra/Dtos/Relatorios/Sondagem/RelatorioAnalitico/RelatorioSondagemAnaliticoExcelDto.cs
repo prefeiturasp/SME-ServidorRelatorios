@@ -11,5 +11,6 @@ namespace SME.SR.Infra
         public DataTable TabelaDeDado { get; set; }
         public int Periodo { get; set; }
         public int AnoLetivo { get; set; }
+        public List<MergeColunaDto> MergeColunas { get; set; }
     }
 }

@@ -28,7 +28,11 @@ namespace SME.SR.Application
                 { TipoSondagem.LP_LeituraVozAlta, new GeradorDeTabelaExcelAnaliticoSondagemLeituraDeVozAlta(relatorios) },
                 { TipoSondagem.LP_CapacidadeLeitura, new GeradorDeTabelaExcelAnaliticoSondagemCapacidadeDeLeitura(relatorios) },
                 { TipoSondagem.LP_ProducaoTexto, new GeradorDeTabelaExcelAnaliticoSondagemProducaoDeTexto(relatorios) },
-                { TipoSondagem.LP_Escrita, new GeradorDeTabelaExcelAnaliticoSondagemEscrita(relatorios) }
+                { TipoSondagem.LP_Escrita, new GeradorDeTabelaExcelAnaliticoSondagemEscrita(relatorios) },
+                { TipoSondagem.MAT_CampoAditivo, new GeradorDeTabelaExcelAnaliticoSondagemAditivoMultiplicativo(relatorios) },
+                { TipoSondagem.MAT_CampoMultiplicativo, new GeradorDeTabelaExcelAnaliticoSondagemAditivoMultiplicativo(relatorios) },
+                { TipoSondagem.MAT_Numeros, new GeradorDeTabelaExcelAnaliticoSondagemNumeroIAD(relatorios) },
+                { TipoSondagem.MAT_IAD, new GeradorDeTabelaExcelAnaliticoSondagemNumeroIAD(relatorios) }
             };
         }
     }
