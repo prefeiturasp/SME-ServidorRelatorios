@@ -37,7 +37,7 @@ namespace SME.SR.Infra
 
             foreach (var cabelho in relatorio.ColunasDoCabecalho)
             {
-                foreach (var subCabelho in cabelho.SubCabelhos)
+                foreach (var subCabelho in cabelho.SubCabecalhos)
                 {
                     linha[subCabelho.IdPerguntaResposta] = subCabelho.Descricao;
                 }
@@ -57,7 +57,7 @@ namespace SME.SR.Infra
 
             foreach(var cabelho in relatorio.ColunasDoCabecalho)
             {
-                foreach(var subCabelho in cabelho.SubCabelhos)
+                foreach(var subCabelho in cabelho.SubCabecalhos)
                 {
                     colunas.Add(new DataColumn(subCabelho.IdPerguntaResposta));
                 }
@@ -74,7 +74,7 @@ namespace SME.SR.Infra
 
             foreach (var cabelho in relatorio.ColunasDoCabecalho)
             {
-                var subCabelho = cabelho.SubCabelhos.FirstOrDefault();
+                var subCabelho = cabelho.SubCabecalhos.FirstOrDefault();
                 linhaTitulo[subCabelho.IdPerguntaResposta] = cabelho.Descricao;
             }
                 
@@ -100,7 +100,7 @@ namespace SME.SR.Infra
             {
                 var merge = new MergeColunaDto();
                 merge.ColunaInicio = indiceColuna + 1;
-                indiceColuna += cabelho.SubCabelhos.Count();
+                indiceColuna += cabelho.SubCabecalhos.Count();
                 merge.ColunaFim = indiceColuna;
 
                 colunas.Add(merge);
