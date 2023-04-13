@@ -455,8 +455,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                          mpc.""TurmaEolCode"" AS ""CodigoTurma"",
                                                          mpc.""AnoTurma"",
                                                          CASE
-                                                             WHEN mpc.""Familiares"" = 'S' THEN 'Sim'
-                                                             WHEN mpc.""Familiares"" = 'N' THEN 'Não'
+                                                             WHEN mpc.""Familiares"" = 'S' THEN 'Escreve convencionalmente'
+                                                             WHEN mpc.""Familiares"" = 'N' THEN 'Não escreve convencionalmente'
                                                              ELSE 'Sem Preenchimento'
                                                          END AS ""RespostaDescricao"",
                                                          'Familiares ou Frequentes' AS ""PerguntaDescricao"",
@@ -482,8 +482,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                                    mpc.""TurmaEolCode"" AS ""CodigoTurma"",
                                                                    mpc.""AnoTurma"",
                                                                    CASE
-                                                                       WHEN mpc.""Opacos"" = 'S' THEN 'Sim'
-                                                                       WHEN mpc.""Opacos"" = 'N' THEN 'Não'
+                                                                       WHEN mpc.""Opacos"" = 'S' THEN 'Escreve convencionalmente'
+                                                                       WHEN mpc.""Opacos"" = 'N' THEN 'Não escreve convencionalmente'
                                                                        ELSE 'Sem Preenchimento'
                                                                    END AS ""RespostaDescricao"",
                                                                    'Opacos' AS ""PerguntaDescricao"",
@@ -507,8 +507,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                                    mpc.""TurmaEolCode"" AS ""CodigoTurma"",
                                                                    mpc.""AnoTurma"",
                                                                    CASE
-                                                                       WHEN mpc.""Transparentes"" = 'S' THEN 'Sim'
-                                                                       WHEN mpc.""Transparentes"" = 'N' THEN 'Não'
+                                                                       WHEN mpc.""Transparentes"" = 'S' THEN 'Escreve convencionalmente'
+                                                                       WHEN mpc.""Transparentes"" = 'N' THEN 'Não escreve convencionalmente'
                                                                        ELSE 'Sem Preenchimento'
                                                                    END AS ""RespostaDescricao"",
                                                                    'Transparentes' AS ""PerguntaDescricao"",
@@ -532,8 +532,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                                    mpc.""TurmaEolCode"" AS ""CodigoTurma"",
                                                                    mpc.""AnoTurma"",
                                                                    CASE
-                                                                       WHEN mpc.""TerminamZero"" = 'S' THEN 'Sim'
-                                                                       WHEN mpc.""TerminamZero"" = 'N' THEN 'Não'
+                                                                       WHEN mpc.""TerminamZero"" = 'S' THEN 'Escreve convencionalmente'
+                                                                       WHEN mpc.""TerminamZero"" = 'N' THEN 'Não escreve convencionalmente'
                                                                        ELSE 'Sem Preenchimento'
                                                                    END AS ""RespostaDescricao"",
                                                                    'Terminam em Zero' AS ""PerguntaDescricao"",
@@ -559,8 +559,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                                    mpc.""TurmaEolCode"" AS ""CodigoTurma"",
                                                                    mpc.""AnoTurma"",
                                                                    CASE
-                                                                       WHEN mpc.""Algarismos"" = 'S' THEN 'Sim'
-                                                                       WHEN mpc.""Algarismos"" = 'N' THEN 'Não'
+                                                                       WHEN mpc.""Algarismos"" = 'S' THEN 'Escreve convencionalmente'
+                                                                       WHEN mpc.""Algarismos"" = 'N' THEN 'Não escreve convencionalmente'
                                                                        ELSE 'Sem Preenchimento'
                                                                    END AS ""RespostaDescricao"",
                                                                    'Algarismos Iguais' AS ""PerguntaDescricao"",
@@ -583,8 +583,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                                    mpc.""TurmaEolCode"" AS ""CodigoTurma"",
                                                                    mpc.""AnoTurma"",
                                                                    CASE
-                                                                       WHEN mpc.""Processo"" = 'S' THEN 'Sim'
-                                                                       WHEN mpc.""Processo"" = 'N' THEN 'Não'
+                                                                       WHEN mpc.""Processo"" = 'S' THEN 'Escreve convencionalmente'
+                                                                       WHEN mpc.""Processo"" = 'N' THEN 'Não escreve convencionalmente'
                                                                        ELSE 'Sem Preenchimento'
                                                                    END AS ""RespostaDescricao"",
                                                                    'Processo de Generalização' AS ""PerguntaDescricao"",
@@ -608,8 +608,8 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                                    mpc.""TurmaEolCode"" AS ""CodigoTurma"",
                                                                    mpc.""AnoTurma"",
                                                                    CASE
-                                                                       WHEN mpc.""ZeroIntercalados"" = 'S' THEN 'Sim'
-                                                                       WHEN mpc.""ZeroIntercalados"" = 'N' THEN 'Não'
+                                                                       WHEN mpc.""ZeroIntercalados"" = 'S' THEN 'Escreve convencionalmente'
+                                                                       WHEN mpc.""ZeroIntercalados"" = 'N' THEN 'Não escreve convencionalmente'
                                                                        ELSE 'Sem Preenchimento'
                                                                    END AS ""RespostaDescricao"",
                                                                    'Zero Intercalado' AS ""PerguntaDescricao"",
