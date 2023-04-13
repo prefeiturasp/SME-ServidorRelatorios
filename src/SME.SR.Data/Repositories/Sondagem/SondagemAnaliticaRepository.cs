@@ -721,17 +721,17 @@ namespace SME.SR.Data
 
             var consultarDados = await ConsultaMatematicaNumerosAutoral(filtro, periodo.Id, proficienciaSondagemEnum);
             var listaDres = await dreRepository.ObterPorCodigos(consultarDados.Where(x => x.CodigoDre != null).Select(x => x.CodigoDre).Distinct().ToArray());
-            var perguntasPorAno = consultarDados.Where(x => int.Parse(x.AnoTurma) > 0).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao }).ToList();
-            var respostasPorAno = consultarDados.Where(x => int.Parse(x.AnoTurma) > 0).GroupBy(p => new { p.OrdemPergunta, p.PerguntaDescricao, p.OrdemResposta, p.RespostaDescricao }).OrderBy(x => x.Key.OrdemPergunta).ThenBy(t => t.Key.OrdemResposta).ToList();
+            var perguntasPorAno = consultarDados.Where(x => int.Parse(x.AnoTurma) > 0).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao}).ToList();
+            var respostasPorAno = consultarDados.Where(x => int.Parse(x.AnoTurma) > 0).GroupBy(p => new { p.OrdemPergunta, p.PerguntaDescricao, p.OrdemResposta, p.RespostaDescricao}).OrderBy(x => x.Key.OrdemPergunta).ThenBy(t => t.Key.OrdemResposta).ToList();
 
-            var cabecalho = respostasPorAno.GroupBy(x => new { x.Key.OrdemPergunta, x.Key.PerguntaDescricao }).Select(x =>
+            var cabecalho = respostasPorAno.GroupBy(x => new { x.Key.OrdemPergunta, x.Key.PerguntaDescricao}).Select(x =>
                 new CabecalhoSondagemAnaliticaDto
                 {
                     Descricao = x.Key.PerguntaDescricao,
                     Ordem = x.Key.OrdemPergunta,
                     SubCabecalhos = respostasPorAno
-                    .Where(f => f.Key.OrdemPergunta == x.Key.OrdemPergunta)
-                    .Select(y => new SubCabecalhoSondagemAnaliticaDto { Ordem = y.Key.OrdemResposta, IdPerguntaResposta = @$"{x.Key.OrdemPergunta}_{y.Key.OrdemResposta}", Descricao = y.Key.RespostaDescricao }).ToList()
+                    .Where(f => f.Key.OrdemPergunta == x.Key.OrdemPergunta && f.Key.PerguntaDescricao == x.Key.PerguntaDescricao)
+                    .Select(y => new SubCabecalhoSondagemAnaliticaDto { Ordem = y.Key.OrdemResposta, IdPerguntaResposta = @$"{x.Key.PerguntaDescricao}_{y.Key.RespostaDescricao}", Descricao = y.Key.RespostaDescricao }).ToList()
                 }
                 ).ToList();
 
@@ -793,9 +793,9 @@ namespace SME.SR.Data
             {
                 var naoExiste = cabec.SubCabecalhos?.Count(x => x.Descricao == DESCRICAO_SEMPREENCHIMENTO) == 0;
                 if (naoExiste)
-                    cabec.SubCabecalhos.Add(new SubCabecalhoSondagemAnaliticaDto { Descricao = DESCRICAO_SEMPREENCHIMENTO, IdPerguntaResposta = $"{cabec.Ordem}_{cabec.SubCabecalhos.Count() + 1}", Ordem = cabec.SubCabecalhos.Count() + 1 });
+                    cabec.SubCabecalhos.Add(new SubCabecalhoSondagemAnaliticaDto { Descricao = DESCRICAO_SEMPREENCHIMENTO, IdPerguntaResposta = $"{cabec.Descricao}_{DESCRICAO_SEMPREENCHIMENTO}", Ordem = cabec.SubCabecalhos.Count() + 1 });
             }
-            var cabecalhoRespostas = colunasDoCabecalho.Where(x => x.Ordem == ordermPergunta).FirstOrDefault().SubCabecalhos;
+            var cabecalhoRespostas = colunasDoCabecalho.Where(x => x.Ordem == ordermPergunta && x.Descricao == perguntaDescricao).FirstOrDefault().SubCabecalhos;
 
 
             foreach (var cabecalhoResposta in cabecalhoRespostas)
@@ -807,7 +807,7 @@ namespace SME.SR.Data
                     var semPrenechimento = totalDeAlunos - totalRespostas;
                     respostas.Add(new RespostaSondagemAnaliticaDto
                     {
-                        IdPerguntaResposta = $"{ordermPergunta}_{cabecalhoResposta.Ordem}",
+                        IdPerguntaResposta = $"{perguntaDescricao}_{cabecalhoResposta.Descricao}",
                         Valor = semPrenechimento,
                     });
 
@@ -816,7 +816,7 @@ namespace SME.SR.Data
                 {
                     respostas.Add(new RespostaSondagemAnaliticaDto
                     {
-                        IdPerguntaResposta = $"{ordermPergunta}_{cabecalhoResposta.Ordem}",
+                        IdPerguntaResposta = $"{perguntaDescricao}_{cabecalhoResposta.Descricao}",
                         Valor = resposta?.Sum(x => x.QtdRespostas) ?? 0,
                     });
                 }
