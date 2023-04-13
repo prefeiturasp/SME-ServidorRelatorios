@@ -27,6 +27,7 @@ namespace SME.SR.Data
         private readonly ITurmaRepository turmaRepository;
 
         private readonly string TURMA_TERCEIRO_ANO = "3";
+        private readonly string DESCRICAO_SEMPREENCHIMENTO = "Sem Preenchimento";
         private readonly int ANO_ESCOLAR_2022 = 2022;
 
         public SondagemAnaliticaRepository(VariaveisAmbiente variaveisAmbiente, IAlunoRepository alunoRepository, IDreRepository dreRepository, IUeRepository ueRepository
@@ -795,9 +796,9 @@ namespace SME.SR.Data
 
             foreach (var cabec in colunasDoCabecalho)
             {
-                var naoExiste = cabec.SubCabecalhos?.Count(x => x.Descricao == "Sem Preenchimento") == 0;
+                var naoExiste = cabec.SubCabecalhos?.Count(x => x.Descricao == DESCRICAO_SEMPREENCHIMENTO) == 0;
                 if (naoExiste)
-                    cabec.SubCabecalhos.Add(new SubCabecalhoSondagemAnaliticaDto { Descricao = "Sem Preenchimento", IdPerguntaResposta = $"{cabec.Ordem}_{cabec.SubCabecalhos.Count() + 1}", Ordem = cabec.SubCabecalhos.Count() + 1 });
+                    cabec.SubCabecalhos.Add(new SubCabecalhoSondagemAnaliticaDto { Descricao = DESCRICAO_SEMPREENCHIMENTO, IdPerguntaResposta = $"{cabec.Ordem}_{cabec.SubCabecalhos.Count() + 1}", Ordem = cabec.SubCabecalhos.Count() + 1 });
             }
             var cabecalhoRespostas = colunasDoCabecalho.Where(x => x.Ordem == ordermPergunta).FirstOrDefault().SubCabecalhos;
 
@@ -805,7 +806,7 @@ namespace SME.SR.Data
             foreach (var cabecalhoResposta in cabecalhoRespostas)
             {
                 var resposta = perguntas.Where(x => x.OrdemReposta == cabecalhoResposta.Ordem);
-                if (cabecalhoResposta.Descricao == "Sem Preenchimento")
+                if (cabecalhoResposta.Descricao == DESCRICAO_SEMPREENCHIMENTO)
                 {
                     var totalRespostas = respostas?.Sum(c => c.Valor) ?? 0;
                     var semPrenechimento = totalDeAlunos - totalRespostas;
