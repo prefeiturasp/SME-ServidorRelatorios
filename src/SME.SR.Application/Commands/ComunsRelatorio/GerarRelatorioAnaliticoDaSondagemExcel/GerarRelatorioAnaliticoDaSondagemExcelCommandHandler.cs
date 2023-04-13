@@ -59,9 +59,6 @@ namespace SME.SR.Application
 
         private void MontarCabecalho(IXLWorksheet worksheet, RelatorioSondagemAnaliticoExcelDto dto, int totalColunas, TipoSondagem tipoSondagem)
         {
-            var ehCampoAditivoMultiplicativoMatematica = tipoSondagem == TipoSondagem.MAT_CampoAditivo || tipoSondagem == TipoSondagem.MAT_CampoMultiplicativo;
-            var ehAnoLetivoAnterior2022 = dto.AnoLetivo < 2022;
-
             worksheet.AddPicture(ObterLogo())
                 .MoveTo(worksheet.Cell(2, 1))
                 .Scale(0.15);
@@ -82,8 +79,24 @@ namespace SME.SR.Application
             worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"DRE: {dto.Dre}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));            
             
-            worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º {(ehCampoAditivoMultiplicativoMatematica && ehAnoLetivoAnterior2022 ? "SEMESTRE" : "BIMESTRE")}";
+            worksheet.Cell(LINHA_CABECALHO_ANO_PERIODO, 1).Value = $"ANO LETIVO: {dto.AnoLetivo}  PERÍODO: {dto.Periodo}º {ObterTituloSemestreBimestre(tipoSondagem, dto.AnoLetivo)}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_ANO_PERIODO, 1, LINHA_CABECALHO_ANO_PERIODO, totalColunas));
+        }
+        
+        private string ObterTituloSemestreBimestre(TipoSondagem tipoSondagem, int anoLetivo)
+        {
+            var ehAnoLetivoAnterior2022 = anoLetivo < 2022;
+            var ehAnoLetivo2022 = anoLetivo == 2022;
+            var ehAnoLetivoApos2022 = anoLetivo > 2022;
+
+            if (ehAnoLetivoAnterior2022)
+                return "SEMESTRE";
+            else if (ehAnoLetivo2022)
+                return "BIMESTRE";
+            else if (ehAnoLetivoApos2022 && tipoSondagem == TipoSondagem.MAT_IAD)
+                return "SEMESTRE";
+            else
+                return "BIMESTRE";
         }
 
         private void AdicinarFonte(IXLRange range)

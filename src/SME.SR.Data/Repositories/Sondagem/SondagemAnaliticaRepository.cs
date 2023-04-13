@@ -1208,7 +1208,7 @@ namespace SME.SR.Data
             var totalRespostas = respostaSondagemAnaliticoIdeiaDto.Acertou +
                                     respostaSondagemAnaliticoIdeiaDto.Errou +
                                     respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
-            respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos - totalRespostas;
+            respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
 
 
             perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
@@ -1218,7 +1218,7 @@ namespace SME.SR.Data
             totalRespostas = respostaSondagemAnaliticoResultadoDto.Acertou +
                              respostaSondagemAnaliticoResultadoDto.Errou +
                              respostaSondagemAnaliticoResultadoDto.NaoResolveu;
-            respostaSondagemAnaliticoResultadoDto.SemPreenchimento = totalDeAlunos - totalRespostas;
+            respostaSondagemAnaliticoResultadoDto.SemPreenchimento = totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
 
             return new RespostaOrdemMatematicaDto
             {
