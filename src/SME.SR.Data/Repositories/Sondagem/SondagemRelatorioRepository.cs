@@ -261,14 +261,14 @@ namespace SME.SR.Data.Repositories.Sondagem
         public async Task<IEnumerable<PerguntaRespostaOrdemDto>> MatematicaIADNumeroBimestre(int anoLetivo, string componenteCurricularId, int bimestre, string codigoUe, string codigoDre, ProficienciaSondagemEnum proeficienciaSondagem = ProficienciaSondagemEnum.IAD)
         {
             var listaRetorno = new List<PerguntaRespostaOrdemDto>();
-            var bimestreLike = bimestre + "%";
+            var bimestreLike = $"'{bimestre}%'";
             var sql = new StringBuilder();
             sql.AppendLine(@" SELECT pa.""AnoEscolar"" AS AnoTurma,
                                    p.""Id"" AS PerguntaId,
                                    p.""Descricao"" AS PerguntaDescricao,
                                    r.""Id"" AS RespostaId,
                                    r.""Descricao"" AS RespostaDescricao,
-                                   pa.""Ordenacao"" AS OrdermPergunta,
+                                   pa.""Ordenacao"" AS OrdemPergunta,
                                    pr.""Ordenacao"" AS OrdemResposta,
                                    tabela.""QtdRespostas"" as QtdRespostas,
                                    tabela.""CodigoDre"" as CodigoDre,
@@ -331,7 +331,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                OR paeb.""Bimestre"" = @bimestre ) ");
             if (proeficienciaSondagem == ProficienciaSondagemEnum.Numeros)
                 sql.AppendLine(@" AND pa.""Grupo"" = @proeficiencia ");
-            else sql.Append(@" pa.""AnoEscolar"" >= 4 and pa.""AnoEscolar"" <= 9 ");
+            else sql.Append(@" and pa.""AnoEscolar"" >= 4 and pa.""AnoEscolar"" <= 9 ");
 
             sql.AppendLine(@"   ORDER BY tabela.""CodigoDre"",
                                      tabela.""CodigoUe"",
