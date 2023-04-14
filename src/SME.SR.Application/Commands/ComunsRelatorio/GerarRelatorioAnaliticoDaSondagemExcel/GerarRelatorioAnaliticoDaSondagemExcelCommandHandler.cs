@@ -15,11 +15,15 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
-        private const int LINHA_CABECALHO_DRE = 6;
-        private const int LINHA_CABECALHO_ANO_PERIODO = 7;
-        private const int LINHA_TABELA = 9;
-        private const int LINHA_SUBTITULO = 10;
-        private const int LINHA_TABTITULO = 11;
+        private const int LINHA_NOME_SISTEMA = 6;
+        private const int LINHA_NOME_RELATORIO = 7;
+        private const int LINHA_TIPO_SONDAGEM = 8;
+        private const int LINHA_CABECALHO_DRE = 9;
+        private const int LINHA_CABECALHO_ANO_PERIODO = 10;
+
+        private const int LINHA_TABELA = 12;
+        private const int LINHA_SUBTITULO = 13;
+        private const int LINHA_TABTITULO = 14;
         private IEnumerable<RelatorioSondagemAnaliticoExcelDto> tabelaExcel;
 
         public GerarRelatorioAnaliticoDaSondagemExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
@@ -63,18 +67,16 @@ namespace SME.SR.Application
                 .MoveTo(worksheet.Cell(2, 1))
                 .Scale(0.15);
 
-            int indiceColunaTitulo = (int)(totalColunas * 0.7) + 1;
+            worksheet.Cell(LINHA_NOME_SISTEMA, 1).Value = "SGP - Sistema de Gestão Pedagógica";
+            var linhaNomeSistema = worksheet.Range(LINHA_NOME_SISTEMA, 1, LINHA_NOME_SISTEMA, totalColunas);
+            linhaNomeSistema.Merge().Style.Font.Bold = true;
+            AdicinarFonte(linhaNomeSistema);
 
-            worksheet.Row(2).Cell(indiceColunaTitulo).Value = "SGP - Sistema de Gestão Pedagógica";
-            var rangeTitulo = worksheet.Range(2, indiceColunaTitulo, 2, totalColunas);
-            rangeTitulo.Merge().Style.Font.Bold = true;
-            AdicinarFonte(rangeTitulo);
+            worksheet.Cell(LINHA_NOME_RELATORIO, 1).Value = "Relatório analítico da Sondagem";
+            AdicinarFonte(worksheet.Range(LINHA_NOME_RELATORIO, 1, LINHA_NOME_RELATORIO, totalColunas));
 
-            worksheet.Row(3).Cell(indiceColunaTitulo).Value = "Relatório analítico da Sondagem";
-            AdicinarFonte(worksheet.Range(3, indiceColunaTitulo, 3, totalColunas));
-
-            worksheet.Row(4).Cell(indiceColunaTitulo).Value = dto.DescricaoTipoSondagem;
-            AdicinarFonte(worksheet.Range(4, indiceColunaTitulo, 4, totalColunas));
+            worksheet.Cell(LINHA_TIPO_SONDAGEM, 1).Value = dto.DescricaoTipoSondagem;
+            AdicinarFonte(worksheet.Range(LINHA_TIPO_SONDAGEM, 1, LINHA_TIPO_SONDAGEM, totalColunas));
 
             worksheet.Cell(LINHA_CABECALHO_DRE, 1).Value = $"DRE: {dto.Dre}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE, 1, LINHA_CABECALHO_DRE, totalColunas));
@@ -154,6 +156,37 @@ namespace SME.SR.Application
 
             rangeAnoPeriodo.Style.Font.SetFontSize(10);
             rangeAnoPeriodo.Style.Font.SetFontName("Arial");
+
+            var rangeNomeSistema = worksheet.Range(LINHA_NOME_SISTEMA, 1, LINHA_NOME_SISTEMA, ultimaColunaUsada);
+            rangeNomeSistema.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            rangeNomeSistema.Style.Border.SetOutsideBorderColor(XLColor.Black);
+
+            rangeNomeSistema.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            rangeNomeSistema.Style.Border.SetInsideBorderColor(XLColor.Black);
+
+            rangeNomeSistema.Style.Font.SetFontSize(10);
+            rangeNomeSistema.Style.Font.SetFontName("Arial");
+
+            var rangeNomeRelatorio = worksheet.Range(LINHA_NOME_RELATORIO, 1, LINHA_NOME_RELATORIO, ultimaColunaUsada);
+            rangeNomeRelatorio.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            rangeNomeRelatorio.Style.Border.SetOutsideBorderColor(XLColor.Black);
+
+            rangeNomeRelatorio.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            rangeNomeRelatorio.Style.Border.SetInsideBorderColor(XLColor.Black);
+
+            rangeNomeRelatorio.Style.Font.SetFontSize(10);
+            rangeNomeRelatorio.Style.Font.SetFontName("Arial");
+
+
+            var rangeTipoSondagem = worksheet.Range(LINHA_TIPO_SONDAGEM, 1, LINHA_TIPO_SONDAGEM, ultimaColunaUsada);
+            rangeTipoSondagem.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            rangeTipoSondagem.Style.Border.SetOutsideBorderColor(XLColor.Black);
+
+            rangeTipoSondagem.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            rangeTipoSondagem.Style.Border.SetInsideBorderColor(XLColor.Black);
+
+            rangeTipoSondagem.Style.Font.SetFontSize(10);
+            rangeTipoSondagem.Style.Font.SetFontName("Arial");
         }
 
         private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada, TipoSondagem tipoSondagem)
