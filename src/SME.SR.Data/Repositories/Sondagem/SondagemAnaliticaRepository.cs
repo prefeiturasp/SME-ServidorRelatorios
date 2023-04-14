@@ -767,7 +767,7 @@ namespace SME.SR.Data
 
             foreach (var dre in listaDres)
             {
-                var relatorioSondagemAnaliticoNumeroIad = new RelatorioSondagemAnaliticoNumeroIadDto(TipoSondagem.MAT_Numeros)
+                var relatorioSondagemAnaliticoNumeroIad = new RelatorioSondagemAnaliticoNumeroIadDto(filtro.TipoSondagem)
                 {
                     Dre = dre.Nome,
                     DreSigla = dre.Abreviacao,
@@ -901,7 +901,7 @@ namespace SME.SR.Data
             foreach (var dre in listaDres.OrderBy(x => x.Abreviacao))
             {
                 var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
-                var relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto = new RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto(TipoSondagem.MAT_CampoAditivo)
+                var relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto = new RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto(filtro.TipoSondagem)
                 {
                     Dre = dre.Nome,
                     DreSigla = dre.Abreviacao,
