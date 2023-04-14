@@ -236,15 +236,22 @@ namespace SME.SR.Application
             relatorio.Usuario = filtroRelatorio.UsuarioNome;
             relatorio.DreNome = dadosDreUe.DreNome;
             relatorio.UeNome = dadosDreUe.UeNome;
-            relatorio.ComponenteNome = await ObterNomeComponente(filtroRelatorio.ComponenteCurricularId);
+            relatorio.ComponenteNome = await ObterNomeComponente(turma.Codigo, filtroRelatorio.ComponenteCurricularId);
             relatorio.TurmaNome = turma.NomePorFiltroModalidade(null);
             relatorio.ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
         }
         private async Task<Turma> ObterDadosDaTurma(string turmaCodigo)
             => await mediator.Send(new ObterTurmaPorCodigoQuery(turmaCodigo));
 
-        private async Task<string> ObterNomeComponente(string componenteCodigo)
-            => await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(Convert.ToInt64(componenteCodigo)));
+        private async Task<string> ObterNomeComponente(string codigoTurma, string componenteCodigo)
+        {
+            var dadosComponente = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(new long[] { Convert.ToInt64(componenteCodigo) }, new string[] { codigoTurma }));
+
+            if (dadosComponente != null && dadosComponente.Any())
+                return dadosComponente.FirstOrDefault().Disciplina;
+           
+            return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(Convert.ToInt64(componenteCodigo)));
+        } 
 
         private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, List<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares, int aulasDadas, int bimestre)
         {
