@@ -16,7 +16,7 @@ namespace SME.SR.Infra
         {
             var matematica = (RelatorioSondagemAnaliticoNumeroIadDto)sondagemAnalitica;
 
-            foreach (var resposta in matematica.Respostas)
+            foreach (var resposta in matematica.Respostas.OrderBy(x => x.Ue))
             {
                 DataRow linha = data.NewRow();
 

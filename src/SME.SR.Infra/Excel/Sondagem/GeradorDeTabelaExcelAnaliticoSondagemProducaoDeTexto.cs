@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace SME.SR.Infra
 {
@@ -21,7 +22,7 @@ namespace SME.SR.Infra
         {
             var producaoDeTextoDto = (RelatorioSondagemAnaliticoProducaoDeTextoDto)sondagemAnalitica;
 
-            foreach (var resposta in producaoDeTextoDto.Respostas)
+            foreach (var resposta in producaoDeTextoDto.Respostas.OrderBy(x => x.Ue))
             {
                 DataRow linha = data.NewRow();
 
