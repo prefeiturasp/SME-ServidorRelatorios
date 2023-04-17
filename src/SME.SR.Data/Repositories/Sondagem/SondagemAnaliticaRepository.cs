@@ -1,19 +1,14 @@
-﻿using SME.SR.Data.Interfaces;
+﻿using Npgsql;
+using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.Sondagem;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Sondagem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Npgsql;
-using SME.SR.Data.Interfaces.Sondagem;
-using SME.SR.Data.Models;
-using SME.SR.Infra.Dtos.Sondagem;
-using SME.SR.Infra.Utilitarios;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using System.Collections;
-using Microsoft.VisualBasic;
-using Org.BouncyCastle.Ocsp;
 
 namespace SME.SR.Data
 {
@@ -25,7 +20,6 @@ namespace SME.SR.Data
         private readonly IUeRepository ueRepository;
         private readonly ISondagemRelatorioRepository sondagemRelatorioRepository;
         private readonly ITurmaRepository turmaRepository;
-
         private readonly string TURMA_TERCEIRO_ANO = "3";
         private readonly string DESCRICAO_SEMPREENCHIMENTO = "Sem Preenchimento";
         private readonly int ANO_ESCOLAR_2022 = 2022;
@@ -761,7 +755,7 @@ namespace SME.SR.Data
                     Ordem = x.Key.OrdemPergunta,
                     SubCabecalhos = respostasPorAno
                     .Where(f => f.Key.OrdemPergunta == x.Key.OrdemPergunta && f.Key.PerguntaDescricao == x.Key.PerguntaDescricao)
-                    .Select(y => new SubCabecalhoSondagemAnaliticaDto { Ordem = y.Key.OrdemResposta, IdPerguntaResposta = @$"{x.Key.PerguntaDescricao}_{y.Key.RespostaDescricao}", Descricao = y.Key.RespostaDescricao }).ToList()
+                    .Select(y => new SubCabecalhoSondagemAnaliticaDto { Ordem = y.Key.OrdemResposta, IdPerguntaResposta = @$"{x.Key.OrdemPergunta}_{x.Key.PerguntaDescricao}_{y.Key.RespostaDescricao}", Descricao = y.Key.RespostaDescricao }).ToList()
                 }
                 ).ToList();
 
@@ -828,7 +822,7 @@ namespace SME.SR.Data
             {
                 var naoExiste = cabec.SubCabecalhos?.Count(x => x.Descricao == DESCRICAO_SEMPREENCHIMENTO) == 0;
                 if (naoExiste)
-                    cabec.SubCabecalhos.Add(new SubCabecalhoSondagemAnaliticaDto { Descricao = DESCRICAO_SEMPREENCHIMENTO, IdPerguntaResposta = $"{cabec.Descricao}_{DESCRICAO_SEMPREENCHIMENTO}", Ordem = cabec.SubCabecalhos.Count() + 1 });
+                    cabec.SubCabecalhos.Add(new SubCabecalhoSondagemAnaliticaDto { Descricao = DESCRICAO_SEMPREENCHIMENTO, IdPerguntaResposta = $"{cabec.Ordem}_{cabec.Descricao}_{DESCRICAO_SEMPREENCHIMENTO}", Ordem = cabec.SubCabecalhos.Count() + 1 });
             }
             var cabecalhoRespostas = colunasDoCabecalho.Where(x => x.Ordem == ordermPergunta && x.Descricao == perguntaDescricao).FirstOrDefault().SubCabecalhos;
 
@@ -842,7 +836,7 @@ namespace SME.SR.Data
                     var semPrenechimento = (totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0);
                     respostas.Add(new RespostaSondagemAnaliticaDto
                     {
-                        IdPerguntaResposta = $"{perguntaDescricao}_{cabecalhoResposta.Descricao}",
+                        IdPerguntaResposta = $"{ordermPergunta}_{perguntaDescricao}_{cabecalhoResposta.Descricao}",
                         Valor = semPrenechimento,
                     });
 
@@ -851,7 +845,7 @@ namespace SME.SR.Data
                 {
                     respostas.Add(new RespostaSondagemAnaliticaDto
                     {
-                        IdPerguntaResposta = $"{perguntaDescricao}_{cabecalhoResposta.Descricao}",
+                        IdPerguntaResposta = $"{ordermPergunta}_{perguntaDescricao}_{cabecalhoResposta.Descricao}",
                         Valor = resposta?.Sum(x => x.QtdRespostas) ?? 0,
                     });
                 }
@@ -1238,7 +1232,6 @@ namespace SME.SR.Data
                                     respostaSondagemAnaliticoIdeiaDto.Errou +
                                     respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
             respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
-
 
             perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
             respostaSondagemAnaliticoResultadoDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
