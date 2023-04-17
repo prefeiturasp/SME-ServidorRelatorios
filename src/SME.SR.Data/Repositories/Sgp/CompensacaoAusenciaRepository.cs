@@ -26,8 +26,9 @@ namespace SME.SR.Data
                     from compensacao_ausencia ca 
                     inner join turma t on t.id  = ca.turma_id 
                     inner join ue u on t.ue_id  = u.id
-                    inner join compensacao_ausencia_aluno caa on caa.compensacao_ausencia_id  = ca.id
-                    where u.id = @UeId and t.modalidade_codigo = @modalidadeId and t.ano_letivo = @anoLetivo ");
+                    inner join compensacao_ausencia_aluno caa on caa.compensacao_ausencia_id  = ca.id and not caa.excluido
+                    where u.id = @UeId and t.modalidade_codigo = @modalidadeId and t.ano_letivo = @anoLetivo 
+                    and not ca.excluido ");
 
             if (semestre.HasValue)
                 query.AppendLine("and t.semestre = @semestre");
