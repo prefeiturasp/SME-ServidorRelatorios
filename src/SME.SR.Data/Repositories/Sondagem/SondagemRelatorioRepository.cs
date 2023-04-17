@@ -324,9 +324,10 @@ namespace SME.SR.Data.Repositories.Sondagem
                                   FROM ""PerguntaAnoEscolar"" pae
                                   INNER JOIN ""PerguntaAnoEscolarBimestre"" paeb ON paeb.""PerguntaAnoEscolarId"" = pae.""Id""
                                   WHERE pae.""AnoEscolar"" = pa.""AnoEscolar""
-                                    AND (pae.""FimVigencia"" IS NULL
-                                         AND EXTRACT(YEAR
-                                                     FROM pae.""InicioVigencia"") <= @anoLetivo)
+                                    AND ((pae.""FimVigencia"" IS NULL
+                                    AND EXTRACT (YEAR FROM pae.""InicioVigencia"") <= @anoLetivo)
+                                    OR (EXTRACT(YEAR FROM pae.""FimVigencia"") >= @anoLetivo
+                                    AND EXTRACT (YEAR FROM pae.""InicioVigencia"") <= @anoLetivo))
                                     AND paeb.""Bimestre"" = @bimestre )
                                OR paeb.""Bimestre"" = @bimestre ) ");
             if (proeficienciaSondagem == ProficienciaSondagemEnum.Numeros)
