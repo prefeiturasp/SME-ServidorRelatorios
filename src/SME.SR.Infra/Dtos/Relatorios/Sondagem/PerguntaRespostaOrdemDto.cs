@@ -2,10 +2,10 @@
 {
     public class PerguntaRespostaOrdemDto
     {
-        public string CodigoTurma { get; set; }
         public string AnoTurma { get; set; }
         public string CodigoDre { get; set; }
         public string CodigoUe { get; set; }
+        public string CodigoTurma { get; set; }
         public int OrdemPergunta { get; set; }       
         public string PerguntaId { get; set; }
         public string PerguntaDescricao { get; set; }

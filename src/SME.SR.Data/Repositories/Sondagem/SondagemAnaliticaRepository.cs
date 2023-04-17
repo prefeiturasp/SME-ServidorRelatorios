@@ -781,13 +781,19 @@ namespace SME.SR.Data
                 foreach (var ue in listaUes.OrderBy(ue => ue.TituloTipoEscolaNome))
                 {
                     var turmas = await ObterQuantidadeTurmaPorAno(filtro, ue.Codigo);
-
                     var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(),
                                                                                                                 periodoFixo.DataInicio, periodoFixo.DataFim,
                                                                                                                 ue.Codigo, dre.Codigo)).ToList();
                     foreach (var anoTurmaItem in perguntasPorAno)
                     {
                         var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma.ToString()).Select(x => x.QuantidadeAluno).Sum();
+                        var perguntasRespostasUe = consultarDados.Where(x => x.CodigoUe == ue.Codigo &&
+                                                                        x.AnoTurma == anoTurmaItem.Key.AnoTurma &&
+                                                                        x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta &&
+                                                                        x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO).ToList();
+                        var totalRespostas = perguntasRespostasUe.Sum(x => x.QtdRespostas);
+                        if (totalDeAlunos < totalRespostas) 
+                             totalDeAlunos = totalRespostas;
 
                         var relatorioSondagemAnaliticoNumero = relatorioSondagemAnaliticoNumeroIad.Respostas.Where(x => x.Ano.ToString() == anoTurmaItem.Key.AnoTurma && x.Ue == ue.TituloTipoEscolaNome).FirstOrDefault();
                         if (relatorioSondagemAnaliticoNumero == null)
@@ -802,10 +808,10 @@ namespace SME.SR.Data
                             relatorioSondagemAnaliticoNumeroIad.Respostas.Add(relatorioSondagemAnaliticoNumero);
                         }
 
-                        var perguntasRespostasUe = consultarDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
-                        MapearRespostaNumeros(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma, anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao,
-                                                                                                    totalDeAlunos, relatorioSondagemAnaliticoNumero.Respostas
-                                                                                                    , relatorioSondagemAnaliticoNumeroIad.ColunasDoCabecalho);
+                        
+                        MapearRespostaNumeros(perguntasRespostasUe, anoTurmaItem.Key.OrdemPergunta, anoTurmaItem.Key.PerguntaDescricao,
+                                              totalDeAlunos, relatorioSondagemAnaliticoNumero.Respostas
+                                              , relatorioSondagemAnaliticoNumeroIad.ColunasDoCabecalho);
 
                     }
                 }
@@ -814,11 +820,10 @@ namespace SME.SR.Data
             return retorno;
         }
 
-        private void MapearRespostaNumeros(List<PerguntaRespostaOrdemDto> perguntasRespostasUe, string anoTurma, int ordermPergunta, string perguntaDescricao, int totalDeAlunos,
+        private void MapearRespostaNumeros(List<PerguntaRespostaOrdemDto> perguntasRespostasUe, int ordermPergunta, string perguntaDescricao, int totalDeAlunos,
             List<RespostaSondagemAnaliticaDto> respostas, List<CabecalhoSondagemAnaliticaDto> colunasDoCabecalho)
         {
-            var perguntas = perguntasRespostasUe.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordermPergunta && x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO);
-
+            var perguntas = perguntasRespostasUe;
             foreach (var cabec in colunasDoCabecalho)
             {
                 var naoExiste = cabec.SubCabecalhos?.Count(x => x.Descricao == DESCRICAO_SEMPREENCHIMENTO) == 0;
@@ -834,7 +839,7 @@ namespace SME.SR.Data
                 if (cabecalhoResposta.Descricao == DESCRICAO_SEMPREENCHIMENTO)
                 {
                     var totalRespostas = perguntas?.Sum(c => c.QtdRespostas) ?? 0;
-                    var semPrenechimento = totalDeAlunos - totalRespostas;
+                    var semPrenechimento = (totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0);
                     respostas.Add(new RespostaSondagemAnaliticaDto
                     {
                         IdPerguntaResposta = $"{perguntaDescricao}_{cabecalhoResposta.Descricao}",
@@ -913,12 +918,6 @@ namespace SME.SR.Data
                 foreach (var ue in listaUes.OrderBy(ue => ue.TituloTipoEscolaNome))
                 {
                     var turmas = await ObterQuantidadeTurmaPorAno(filtro, ue.Codigo);
-                    if (!turmas.Any())
-                    {
-                        turmas.AddRange(
-                            dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).GroupBy(x => new { x.CodigoTurma, x.AnoTurma }).Select(x => new QuantidadeTurmaPorAnoDto { Codigo = x.Key.CodigoTurma, AnoTurma = x.Key.AnoTurma }));
-                    }
-
                     var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(),
                                                                                                                 periodoFixo.DataInicio, periodoFixo.DataFim,
                                                                                                                 ue.Codigo, dre.Codigo)).ToList();
@@ -1238,7 +1237,7 @@ namespace SME.SR.Data
             var totalRespostas = respostaSondagemAnaliticoIdeiaDto.Acertou +
                                     respostaSondagemAnaliticoIdeiaDto.Errou +
                                     respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
-            respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
+            respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos - totalRespostas;//totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
 
 
             perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
@@ -1248,7 +1247,7 @@ namespace SME.SR.Data
             totalRespostas = respostaSondagemAnaliticoResultadoDto.Acertou +
                              respostaSondagemAnaliticoResultadoDto.Errou +
                              respostaSondagemAnaliticoResultadoDto.NaoResolveu;
-            respostaSondagemAnaliticoResultadoDto.SemPreenchimento = totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
+            respostaSondagemAnaliticoResultadoDto.SemPreenchimento = totalDeAlunos - totalRespostas;//totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
 
             return new RespostaOrdemMatematicaDto
             {
