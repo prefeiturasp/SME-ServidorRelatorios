@@ -51,8 +51,6 @@ namespace SME.SR.Data.Repositories.Sondagem
                         INNER JOIN ""Pergunta"" pfilho ON pfilho.""PerguntaId"" = pae.""PerguntaId""
                         INNER JOIN ""PerguntaResposta"" pr ON pr.""PerguntaId"" = pfilho.""Id""
                         LEFT JOIN ""Resposta"" r ON r.""Id"" = pr.""RespostaId""
-                        {(filtro.Bimestre == QUARTO_BIMESTRE ?
-                            @$" LEFT JOIN  ""PerguntaAnoEscolarBimestre"" paeb  on pae.""Id"" = paeb.""PerguntaAnoEscolarId"" and pae.""AnoEscolar"" >= {QUARTO_ANO} and pae.""AnoEscolar"" <= {NONO_ANO}" : "")}
                         LEFT JOIN ( SELECT p.""Id"" AS ""PerguntaId"",
                                             r.""Id"" AS ""RespostaId"", COUNT(1) AS ""QtdRespostas"",
                                             s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma"", s.""CodigoTurma""
@@ -70,7 +68,6 @@ namespace SME.SR.Data.Repositories.Sondagem
                         WHERE pae.""Grupo"" = @Grupo
                         AND ((pae.""FimVigencia"" IS NULL AND EXTRACT (YEAR FROM pae.""InicioVigencia"") <= @AnoLetivo)
                         OR (EXTRACT(YEAR FROM pae.""FimVigencia"") >= @AnoLetivo AND EXTRACT (YEAR FROM pae.""InicioVigencia"") <= @AnoLetivo))
-                        {(filtro.Bimestre == QUARTO_BIMESTRE ? $@" AND (paeb.""Id"" is null or paeb.""Bimestre"" = {QUARTO_BIMESTRE})" : "")}
                         ORDER BY tabela.""CodigoDre"", tabela.""CodigoUe"", tabela.""CodigoTurma"", pae.""AnoEscolar"", pae.""Ordenacao"",  pfilho.""Id"", pr.""Ordenacao"" ";
 
             var parametros = new
@@ -272,8 +269,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                    pr.""Ordenacao"" AS OrdemResposta,
                                    tabela.""QtdRespostas"" as QtdRespostas,
                                    tabela.""CodigoDre"" as CodigoDre,
-                                   tabela.""CodigoUe"" as CodigoUe,
-                                   tabela.""CodigoTurma"" as CodigoTurma
+                                   tabela.""CodigoUe"" as CodigoUe
                             FROM ""Pergunta"" p
                             INNER JOIN ""PerguntaAnoEscolar"" pa ON pa.""PerguntaId"" = p.""Id""
                             LEFT JOIN ""PerguntaAnoEscolarBimestre"" paeb ON pa.""Id"" = paeb.""PerguntaAnoEscolarId""
@@ -285,8 +281,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                       COUNT(DISTINCT sa.""CodigoAluno"") AS ""QtdRespostas"",
                                       s.""CodigoDre"",
                                       s.""CodigoUe"",
-                                      s.""AnoTurma"",
-                                      s.""CodigoTurma""
+                                      s.""AnoTurma""
                                FROM ""SondagemAlunoRespostas"" sar
                                INNER JOIN ""SondagemAluno"" sa ON sa.""Id"" = sar.""SondagemAlunoId""
                                INNER JOIN ""Sondagem"" s ON s.""Id"" = sa.""SondagemId""
@@ -307,8 +302,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                     r.""Id"",
                                     s.""CodigoDre"",
                                     s.""CodigoUe"",
-                                    s.""AnoTurma"",
-                                    s.""CodigoTurma"") AS tabela ON p.""Id"" = tabela.""PerguntaId""
+                                    s.""AnoTurma"") AS tabela ON p.""Id"" = tabela.""PerguntaId""
                         AND r.""Id""= tabela.""RespostaId""
                         AND pa.""AnoEscolar"" = tabela.""AnoTurma""
                         WHERE ((pa.""FimVigencia"" IS NULL
@@ -335,7 +329,6 @@ namespace SME.SR.Data.Repositories.Sondagem
 
             sql.AppendLine(@"   ORDER BY tabela.""CodigoDre"",
                                      tabela.""CodigoUe"",
-                                     tabela.""CodigoTurma"",
                                      pa.""AnoEscolar"",
                                      pa.""Ordenacao"",
                                      pr.""Ordenacao"" ");
@@ -374,8 +367,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                             r.""Descricao"" AS ""RespostaDescricao"",
                                             tabela.""QtdRespostas"",
                                             tabela.""CodigoDre"",
-                                            tabela.""CodigoUe"", 	
-                                            tabela.""CodigoTurma""
+                                            tabela.""CodigoUe""
                                     FROM ""PerguntaAnoEscolar"" pae
                                     INNER JOIN ""Pergunta"" p ON p.""Id"" = pae.""PerguntaId"" 
                                     INNER JOIN ""PerguntaResposta"" pr ON pr.""PerguntaId"" = p.""Id""
@@ -386,7 +378,7 @@ namespace SME.SR.Data.Repositories.Sondagem
 
                              sql.AppendLine(@"    LEFT JOIN ( SELECT p.""Id"" AS ""PerguntaId"",
                                                         r.""Id"" AS ""RespostaId"", COUNT(1) AS ""QtdRespostas"",
-                                                        s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma"", s.""CodigoTurma""
+                                                        s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma""
                                                 FROM ""SondagemAlunoRespostas"" sar
                                                 INNER JOIN ""SondagemAluno"" sa ON sa.""Id"" = sar.""SondagemAlunoId""
                                                 INNER JOIN ""Sondagem"" s ON s.""Id"" = sa.""SondagemId""
@@ -402,7 +394,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                                         if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                                               sql.AppendLine(@$"AND s.""CodigoUe"" =  @codigoUe");
 
-                sql.AppendLine(@$"   GROUP BY p.""Id"", r.""Id"", s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma"", s.""CodigoTurma"") 
+                sql.AppendLine(@$"   GROUP BY p.""Id"", r.""Id"", s.""CodigoDre"", s.""CodigoUe"", s.""AnoTurma"") 
                                             AS tabela ON p.""Id"" = tabela.""PerguntaId"" AND r.""Id"" = tabela.""RespostaId"" AND pae.""AnoEscolar"" = tabela.""AnoTurma""
                                     WHERE pae.""AnoEscolar"" >= 7 and pae.""AnoEscolar"" <= 9
                                     AND ((pae.""FimVigencia"" IS NULL AND EXTRACT (YEAR FROM pae.""InicioVigencia"") <= @anoLetivo)
@@ -413,13 +405,7 @@ namespace SME.SR.Data.Repositories.Sondagem
                 sql.AppendLine($@" AND (paeb.""Id"" is null or paeb.""Bimestre"" = {QUARTO_BIMESTRE} ) ");
 
 
-            sql.AppendLine(@$"     ORDER BY tabela.""CodigoDre"", tabela.""CodigoUe"", tabela.""CodigoTurma"", pae.""AnoEscolar"", pae.""Ordenacao"", pr.""Ordenacao"";
-		
-
-
-                                    select p.""Descricao"", pae.""AnoEscolar"", pae.""InicioVigencia"", pae.""Grupo"", paeb.""Bimestre"" from ""PerguntaAnoEscolar"" pae 
-                                    inner join ""PerguntaAnoEscolarBimestre"" paeb on paeb.""PerguntaAnoEscolarId"" = pae.""Id"" 
-                                    inner join ""Pergunta"" p on p.""Id"" = pae.""PerguntaId"" ;");
+            sql.AppendLine(@$"     ORDER BY tabela.""CodigoDre"", tabela.""CodigoUe"", pae.""AnoEscolar"", pae.""Ordenacao"", pr.""Ordenacao"";");
 
 
             var parametros = new
