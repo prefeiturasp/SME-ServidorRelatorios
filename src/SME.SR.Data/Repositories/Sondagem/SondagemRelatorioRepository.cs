@@ -457,9 +457,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                   WHERE mpc.""AnoLetivo"" = @anoLetivo
                                                     AND mpc.""Semestre"" = @semestre ");
 
-            if (!string.IsNullOrWhiteSpace(codigoDre))
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
                 sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
-            if (!string.IsNullOrWhiteSpace(codigoUe))
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                 sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
 
 
@@ -484,9 +484,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                   WHERE mpc.""AnoLetivo"" = @anoLetivo
                                                     AND mpc.""Semestre"" = @semestre ");
 
-            if (!string.IsNullOrWhiteSpace(codigoDre))
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
                 sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
-            if (!string.IsNullOrWhiteSpace(codigoUe))
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                 sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
 
             sql.AppendLine(@"           UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
@@ -509,9 +509,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                   WHERE mpc.""AnoLetivo"" = @anoLetivo
                                                     AND mpc.""Semestre"" = @semestre ");
 
-            if (!string.IsNullOrWhiteSpace(codigoDre))
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
                 sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
-            if (!string.IsNullOrWhiteSpace(codigoUe))
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                 sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
 
             sql.AppendLine(@"       UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
@@ -535,9 +535,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                     AND mpc.""Semestre"" = @semestre ");
 
 
-            if (!string.IsNullOrWhiteSpace(codigoDre))
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
                 sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
-            if (!string.IsNullOrWhiteSpace(codigoUe))
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                 sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
 
 
@@ -560,9 +560,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                   FROM ""MathPoolNumbers"" mpc
                                                   WHERE mpc.""AnoLetivo"" = @anoLetivo
                                                     AND mpc.""Semestre"" = @semestre  ");
-            if (!string.IsNullOrWhiteSpace(codigoDre))
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
                 sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
-            if (!string.IsNullOrWhiteSpace(codigoUe))
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                 sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
 
             sql.AppendLine(@"                        UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
@@ -585,9 +585,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                   WHERE mpc.""AnoLetivo"" = @anoLetivo
                                                     AND mpc.""Semestre"" = @semestre  ");
 
-            if (!string.IsNullOrWhiteSpace(codigoDre))
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
                 sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
-            if (!string.IsNullOrWhiteSpace(codigoUe))
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                 sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
 
             sql.AppendLine(@"                UNION ALL SELECT mpc.""DreEolCode"" AS ""CodigoDre"",
@@ -610,9 +610,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                                   WHERE mpc.""AnoLetivo"" = @anoLetivo
                                                     AND mpc.""Semestre"" = @semestre  ");
 
-            if (!string.IsNullOrWhiteSpace(codigoDre))
+            if (!string.IsNullOrWhiteSpace(codigoDre) && codigoDre != "-99")
                 sql.AppendLine(@" AND mpc.""DreEolCode"" = @codigoDre  ");
-            if (!string.IsNullOrWhiteSpace(codigoUe))
+            if (!string.IsNullOrWhiteSpace(codigoUe) && codigoUe != "-99")
                 sql.AppendLine(@" AND mpc.""EscolaEolCode"" = @codigoUe  ");
 
             sql.AppendLine(@") AS tabela
