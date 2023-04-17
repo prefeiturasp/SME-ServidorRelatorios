@@ -17,7 +17,7 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
 
-            var filtros = request.ObterObjetoFiltro<FiltroRelatorioCompensacaoAusenciaDto>();
+           var filtros = request.ObterObjetoFiltro<FiltroRelatorioCompensacaoAusenciaDto>();
 
             var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
             if (ue == null)
@@ -39,7 +39,7 @@ namespace SME.SR.Application
 
             var alunosCodigos = compensacoes.Select(a => a.AlunoCodigo).Distinct().ToArray();
 
-            var alunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos));
+            var alunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos, filtros.AnoLetivo));
 
             var turmasCodigo = compensacoes.Select(a => a.TurmaCodigo).Distinct().ToArray();
 
