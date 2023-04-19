@@ -159,9 +159,9 @@ namespace SME.SR.Data.Repositories.Sondagem
                                    		        s.""GrupoId"" = @GrupoId
                                    		    and s.""ComponenteCurricularId"" = @ComponenteCurricularId";
             query.Append(queryRelatorio);
-            if (!string.IsNullOrEmpty(filtro.CodigoDre))
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoDre) && filtro.CodigoDre != "-99")
                 query.AppendLine(@" and ""CodigoDre"" =  @CodigoDRE");
-            if (!string.IsNullOrEmpty(filtro.CodigoUe))
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoUe) && filtro.CodigoUe != "-99")
                 query.AppendLine(@"and ""CodigoUe"" =  @CodigoEscola");
 
             query.Append(@"  and s.""PeriodoId"" = @PeriodoId
@@ -229,9 +229,9 @@ namespace SME.SR.Data.Repositories.Sondagem
             sql.AppendLine("and s.\"ComponenteCurricularId\" = @ComponenteCurricularId ");
             sql.AppendLine("and s.\"PeriodoId\" = @PeriodoId ");
             sql.AppendLine("and s.\"GrupoId\" = @GrupoId ");
-            if (filtro.CodigoUe != "-99")
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoUe) && filtro.CodigoUe != "-99")
                 sql.AppendLine(" and s.\"CodigoUe\" = @CodigoEscola ");
-            if (filtro.CodigoDre != "-99")
+            if (!string.IsNullOrWhiteSpace(filtro.CodigoDre) && filtro.CodigoDre != "-99")
                 sql.AppendLine(" and s.\"CodigoDre\" = @CodigoDRE ");
 
             var parametros = new
