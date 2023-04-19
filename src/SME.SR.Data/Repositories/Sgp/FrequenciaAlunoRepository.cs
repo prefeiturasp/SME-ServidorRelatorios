@@ -672,7 +672,7 @@ namespace SME.SR.Data
 	                        AND rfa.codigo_aluno = any(@codigosAlunos)
 	                        AND t.turma_id = @turmaCodigo 
                             AND a.disciplina_id = @componenteCurricularId
- 						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.valor, rfa.codigo_aluno, pe.bimestre
+ 						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.codigo_aluno, pe.bimestre
                         ORDER BY pe.bimestre, rfa.codigo_aluno, a.data_aula desc";
 
             var parametros = new
