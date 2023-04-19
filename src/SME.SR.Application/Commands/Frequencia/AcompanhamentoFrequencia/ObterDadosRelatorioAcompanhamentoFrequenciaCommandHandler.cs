@@ -42,7 +42,7 @@ namespace SME.SR.Application
                 await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
 
             int aulasDadas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(turma.Codigo, tipoCalendarioId,
-                long.Parse(request.FiltroRelatorio.ComponenteCurricularId),
+                relatorio.CodigosComponentesConsiderados,
                 int.Parse(request.FiltroRelatorio.Bimestre)));
 
             var bimestre = int.Parse(request.FiltroRelatorio.Bimestre);
@@ -105,7 +105,7 @@ namespace SME.SR.Application
 
                     var dadosFrequencia = (await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(
                         bimestreItem.ToString(), codigosAlunos, request.FiltroRelatorio.TurmaCodigo,
-                        TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId))).ToList();
+                        TipoFrequenciaAluno.PorDisciplina, relatorio.CodigosComponentesConsiderados.Select(c => c.ToString()).ToArray()))).ToList();
 
                     if (request.FiltroRelatorio.ImprimirFrequenciaDiaria)
                         frequenciasDiarias = await mediator.Send(new ObterFrequenciaAlunoDiariaQuery(
@@ -231,24 +231,29 @@ namespace SME.SR.Application
         private async Task MapearCabecalho(RelatorioFrequenciaIndividualDto relatorio, FiltroAcompanhamentoFrequenciaJustificativaDto filtroRelatorio, Turma turma)
         {
             var dadosDreUe = await ObterNomeDreUe(filtroRelatorio.TurmaCodigo);
+            var codigosComponentesConsiderados = new List<long>() { long.Parse(filtroRelatorio.ComponenteCurricularId) };
 
             relatorio.RF = filtroRelatorio.UsuarioRF;
             relatorio.Usuario = filtroRelatorio.UsuarioNome;
             relatorio.DreNome = dadosDreUe.DreNome;
             relatorio.UeNome = dadosDreUe.UeNome;
-            relatorio.ComponenteNome = await ObterNomeComponente(turma.Codigo, filtroRelatorio.ComponenteCurricularId);
+            relatorio.ComponenteNome = await ObterNomeComponente(turma.Codigo, filtroRelatorio.ComponenteCurricularId, codigosComponentesConsiderados);
             relatorio.TurmaNome = turma.NomePorFiltroModalidade(null);
             relatorio.ehInfantil = turma != null && turma.ModalidadeCodigo == Modalidade.Infantil;
+            relatorio.CodigosComponentesConsiderados = codigosComponentesConsiderados.ToArray();
         }
         private async Task<Turma> ObterDadosDaTurma(string turmaCodigo)
             => await mediator.Send(new ObterTurmaPorCodigoQuery(turmaCodigo));
 
-        private async Task<string> ObterNomeComponente(string codigoTurma, string componenteCodigo)
+        private async Task<string> ObterNomeComponente(string codigoTurma, string componenteCodigo, List<long> codigosComponentesConsiderados)
         {
             var dadosComponente = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(new long[] { Convert.ToInt64(componenteCodigo) }, new string[] { codigoTurma }));
 
             if (dadosComponente != null && dadosComponente.Any())
+            {
+                codigosComponentesConsiderados.AddRange(dadosComponente.Select(c => c.CodDisciplina).Except(codigosComponentesConsiderados));
                 return dadosComponente.FirstOrDefault().Disciplina;
+            }
            
             return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(Convert.ToInt64(componenteCodigo)));
         } 
