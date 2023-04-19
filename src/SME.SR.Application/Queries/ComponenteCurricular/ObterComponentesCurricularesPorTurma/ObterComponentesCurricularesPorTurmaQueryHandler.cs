@@ -35,7 +35,7 @@ namespace SME.SR.Application
                 {
                     var cc = new ComponenteCurricularPorTurma
                     {
-                        CodDisciplina = componente.Codigo,
+                        CodDisciplina = componente.CodigoTerritorioSaber,
                         CodDisciplinaPai = componente.CodigoComponentePai(componentesApiEol),
                         BaseNacional = componente.EhBaseNacional(componentesApiEol),
                         Compartilhada = componente.EhCompartilhada(componentesApiEol),
@@ -45,7 +45,7 @@ namespace SME.SR.Application
                         Regencia = componente.EhRegencia(componentesApiEol),
                         TerritorioSaber = componente.TerritorioSaber,
                         TipoEscola = componente.TipoEscola,
-                        Frequencia = componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == componente.Codigo) != null ? componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == componente.Codigo).PermiteRegistroFrequencia : false
+                        Frequencia = componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == componente.CodigoTerritorioSaber) != null ? componentesApiEol.FirstOrDefault(x => x.IdComponenteCurricular == componente.CodigoTerritorioSaber).PermiteRegistroFrequencia : false
                     };
                     componentes.Add(cc);
                 }
@@ -59,7 +59,7 @@ namespace SME.SR.Application
         {
             foreach(var componente in componentesCurriculares)
             {
-                var grupoMatrizId = await mediator.Send(new ObterGrupoMatrizIdPorComponenteCurricularIdQuery(componente.Codigo));
+                var grupoMatrizId = await mediator.Send(new ObterGrupoMatrizIdPorComponenteCurricularIdQuery(componente.CodigoTerritorioSaber));
                 componente.GrupoMatrizId = grupoMatrizId;
             }
         }
