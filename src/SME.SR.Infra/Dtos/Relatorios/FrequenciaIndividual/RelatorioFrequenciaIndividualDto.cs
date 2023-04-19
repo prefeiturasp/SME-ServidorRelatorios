@@ -22,5 +22,6 @@ namespace SME.SR.Infra
 
         public List<RelatorioFrequenciaIndividualAlunosDto> Alunos { get; set; }
         public bool ImprimirFrequenciaDiaria { get; set; }
+        public long[] CodigosComponentesConsiderados { get; set; }
     }
 }
