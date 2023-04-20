@@ -19,43 +19,30 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<int> ObterAulasDadas(string codigoTurma, string componenteCurricularCodigo, long tipoCalendarioId, int bimestre)
+        public async Task<int> ObterAulasDadas(string codigoTurma, string[] componentesCurricularesCodigo, long tipoCalendarioId, int bimestre)
         {
-            var query = new StringBuilder(@"select
-	                        Coalesce(SUM(a.quantidade) filter (
-	                        where a.tipo_aula = 1
-	                        and rf.id is not null), 0) as AulasQuantidade
-                        from
-	                        periodo_escolar p
-                        inner join tipo_calendario tp on
-	                        p.tipo_calendario_id = tp.id
-                        left join aula_prevista ap on
-	                        ap.tipo_calendario_id = p.tipo_calendario_id
-                        left join aula_prevista_bimestre apb on
-	                        ap.id = apb.aula_prevista_id
-	                        and p.bimestre = apb.bimestre
-                        left join aula a on
-	                        a.turma_id = ap.turma_id
-	                        and a.disciplina_id = ap.disciplina_id
-	                        and a.tipo_calendario_id = p.tipo_calendario_id
-	                        and a.data_aula between p.periodo_inicio and p.periodo_fim
-	                        and (a.id is null
-	                        or not a.excluido)
-                        left join registro_frequencia rf on
-	                        a.id = rf.aula_id
-                        where
-	                        tp.situacao
-	                        and not tp.excluido
-	                        and ap.tipo_calendario_id = @tipoCalendarioId
-	                        and ap.turma_id = @codigoTurma
-	                        and ap.disciplina_id = @componenteCurricularCodigo
-                            and p.bimestre = @bimestre");
+            var query = new StringBuilder(@"
+                        select SUM(a.quantidade) AulasQuantidade
+                        	from periodo_escolar pe 
+                        		inner join tipo_calendario tc 
+                        			on pe.tipo_calendario_id = tc.id 
+                        		inner join aula a 
+                        			on tc.id = a.tipo_calendario_id		
+                        where tc.situacao and
+                              tc.id = @tipoCalendarioId and
+                        	  not tc.excluido and
+                        	  pe.bimestre = @bimestre and
+                        	  a.data_aula::date between pe.periodo_inicio and pe.periodo_fim and
+                        	  a.disciplina_id = any(@componentesCurricularesCodigo) and
+                        	  a.turma_id = @codigoTurma and
+                        	  exists (select 1
+                        	  		  	from registro_frequencia_aluno rfa 
+                        	  		  where not rfa.excluido and
+                        	  		  	    rfa.aula_id = a.id);");
           
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
-                return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componenteCurricularCodigo, bimestre });
-            }
+                return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componentesCurricularesCodigo, bimestre });
         }
 
         public async Task<AulaPrevista> ObterAulaPrevistaFiltro(long tipoCalendarioId, string turmaId, string disciplinaId)

@@ -7,19 +7,19 @@ namespace SME.SR.Application
 {
     public class ObterFrequenciaAlunoPorCodigoBimestreQuery : IRequest<IEnumerable<FrequenciaAlunoConsolidadoDto>>
     {
-        public ObterFrequenciaAlunoPorCodigoBimestreQuery(string bimestre, string[] codigosAlunos, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string componenteCurricularId = null)
+        public ObterFrequenciaAlunoPorCodigoBimestreQuery(string bimestre, string[] codigosAlunos, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string[] componentesCurricularesId = null)
         {
             Bimestre = bimestre;
             CodigosAlunos = codigosAlunos;
             TurmaCodigo = turmaCodigo;
             TipoFrequencia = tipoFrequencia;
-            ComponenteCurricularId = componenteCurricularId;
+            ComponentesCurricularesId = componentesCurricularesId;
         }
 
         public string Bimestre { get; set; }
         public string[] CodigosAlunos { get; set; }
         public string TurmaCodigo { get; set; }
         public TipoFrequenciaAluno TipoFrequencia { get; set; }
-        public string ComponenteCurricularId { get; set; }
+        public string[] ComponentesCurricularesId { get; set; }
     }
 }
