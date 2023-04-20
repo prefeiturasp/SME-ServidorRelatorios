@@ -26,7 +26,7 @@ namespace SME.SR.Data.Interfaces
         Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAno(string codigoTurma, string componenteCurricularId, int anoLetivo);
         Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorTurmas(string[] codigosturma);
         Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorFiltro(string[] codigosturma, string componenteCurricularId, int bimestre);
-        Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[]codigosAlunos,string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string ComponenteCurricularId);
+        Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[]codigosAlunos,string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string[] ComponentesCurricularesId);
         Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre);
         Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre, string codigoUe, Modalidade modalidade,
             int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe);

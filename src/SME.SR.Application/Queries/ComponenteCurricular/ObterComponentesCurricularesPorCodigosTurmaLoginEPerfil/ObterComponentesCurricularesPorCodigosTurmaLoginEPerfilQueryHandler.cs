@@ -30,7 +30,7 @@ namespace SME.SR.Application
             await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
             if (request.EhEJA)
-                componentesCurriculares = componentesCurriculares.Where(w => w.Codigo != 6).ToList();
+                componentesCurriculares = componentesCurriculares.Where(w => w.CodigoTerritorioSaber != 6).ToList();
 
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
@@ -41,12 +41,12 @@ namespace SME.SR.Application
 
         private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo);
+            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.CodigoTerritorioSaber == componenteCurricular.CodigoTerritorioSaber);
 
             return new ComponenteCurricularPorTurmaRegencia
             {
                 CodigoTurma = componenteCurricular.CodigoTurma,
-                CodDisciplina = componenteCurricular.Codigo,
+                CodDisciplina = componenteCurricular.CodigoTerritorioSaber,
                 CodDisciplinaPai = componenteCurricular.CodigoComponentePai(componentesApiEol),
                 Compartilhada = componenteCurricular.EhCompartilhada(componentesApiEol),
                 Disciplina = componenteCurricular.Descricao.Trim(),
@@ -89,7 +89,7 @@ namespace SME.SR.Application
                     {
                         foreach (KeyValuePair<string, IEnumerable<long>> componentesPorTurma in idsComponentesPlanejamento)
                         {
-                            var componentesParaInserir = componentes.Where(c => componentesPorTurma.Value.Contains(c.Codigo))
+                            var componentesParaInserir = componentes.Where(c => componentesPorTurma.Value.Contains(c.CodigoTerritorioSaber))
                                                                     .Select(x =>
                                                                     {
                                                                         var retorno = (ComponenteCurricular)x.Clone();
@@ -112,7 +112,7 @@ namespace SME.SR.Application
                 return Enumerable.Empty<Data.ComponenteCurricular>();
 
             var componentes = await componenteCurricularRepository.ListarComponentes();
-            return componentes.Where(c => ids.Contains(c.Codigo));
+            return componentes.Where(c => ids.Contains(c.CodigoTerritorioSaber));
         }
 
         private async Task AdicionarComponentesTerritorio(string[] codigosTurma, List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol)
@@ -120,7 +120,7 @@ namespace SME.SR.Application
             var componentesTerritorioApiEol = componentesApiEol?.Where(x => x.TerritorioSaber)?.ToList();
             if (componentesTerritorioApiEol != null && componentesTerritorioApiEol.Any())
             {
-                var codigoDisciplinasTerritorio = componentesCurriculares.Where(x => componentesTerritorioApiEol.Any(z => x.Codigo == z.Codigo))?.Select(t => t.Codigo)?.Distinct();
+                var codigoDisciplinasTerritorio = componentesCurriculares.Where(x => componentesTerritorioApiEol.Any(z => x.CodigoTerritorioSaber == z.CodigoTerritorioSaber))?.Select(t => t.CodigoTerritorioSaber)?.Distinct();
 
                 if (codigoDisciplinasTerritorio != null && codigoDisciplinasTerritorio.Any())
                 {
@@ -133,7 +133,7 @@ namespace SME.SR.Application
 
                         foreach (var territorio in territoriosBanco.GroupBy(t => t.CodigoTurma))
                         {
-                            componentesCurriculares.RemoveAll(c => territoriosBanco.Any(x => x.CodigoComponenteCurricular == c.Codigo && c.CodigoTurma == territorio.Key));
+                            componentesCurriculares.RemoveAll(c => territoriosBanco.Any(x => x.CodigoComponenteCurricular == c.CodigoTerritorioSaber && c.CodigoTurma == territorio.Key));
 
                             var territorios = territorio.GroupBy(c => new { c.CodigoTerritorioSaber, c.CodigoExperienciaPedagogica, c.DataInicio });
 
@@ -146,7 +146,7 @@ namespace SME.SR.Application
                                 componentesCurriculares.Add(new Data.ComponenteCurricular()
                                 {
                                     CodigoTurma = territorio.Key,
-                                    Codigo = componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular, 
+                                    CodigoTerritorioSaber = componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular, 
                                     Descricao = componenteTerritorio.FirstOrDefault().ObterDescricaoComponenteCurricular(),
                                     TipoEscola = tipoEscola,
                                     TerritorioSaber = true,
@@ -188,15 +188,15 @@ namespace SME.SR.Application
 
             foreach (var ccPorTurma in componentesCurriculares.GroupBy(cc => cc.CodigoTurma))
             {
-                bool profLibras = ccPorTurma.Any(d => d.Codigo == 218 && d.TipoEscola == "4") && !ccPorTurma.Any(d => d.Codigo == 138 && d.TipoEscola == "4");
-                bool profPortugues = ccPorTurma.Any(d => d.Codigo == 138 && d.TipoEscola == "4") && !ccPorTurma.Any(d => d.Codigo == 218 && d.TipoEscola == "4");
+                bool profLibras = ccPorTurma.Any(d => d.CodigoTerritorioSaber == 218 && d.TipoEscola == "4") && !ccPorTurma.Any(d => d.CodigoTerritorioSaber == 138 && d.TipoEscola == "4");
+                bool profPortugues = ccPorTurma.Any(d => d.CodigoTerritorioSaber == 138 && d.TipoEscola == "4") && !ccPorTurma.Any(d => d.CodigoTerritorioSaber == 218 && d.TipoEscola == "4");
 
                 if (profLibras)
                 {
                     componentesParaAdd.Add(new ComponenteCurricular()
                     {
                         CodigoTurma = ccPorTurma.Key,
-                        Codigo = 138,
+                        CodigoTerritorioSaber = 138,
                         Descricao = "LINGUA PORTUGUESA",
                         TipoEscola = "4"
                     });
@@ -206,7 +206,7 @@ namespace SME.SR.Application
                     componentesParaAdd.Add(new ComponenteCurricular()
                     {
                         CodigoTurma = ccPorTurma.Key,
-                        Codigo = 218,
+                        CodigoTerritorioSaber = 218,
                         Descricao = "LIBRAS",
                         TipoEscola = "4"
                     });
