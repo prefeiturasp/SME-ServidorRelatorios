@@ -785,14 +785,14 @@ namespace SME.SR.Data
 	                                    else ' - '|| t.ano || 'ºANO'
 	                                end as TurmaNome,
                                 t.turma_id as TurmaCodigo,
-                                0 as DisciplinaId,
-                                0 as bimestre,
+                                a.disciplina_id::bigint as DisciplinaId,
+	                            pe.bimestre,
                                 usu.nome as criador,
                                 usu.login as criadorRf,
                                 p.alterado_por as aprovador,
                                 p.alterado_rf as aprovadorRf,
                                 'Diário de Classe' as TipoPendencia,
-                                true as OutrasPendencias,
+                                false as OutrasPendencias,
                                 p.tipo,
                                 to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
                             from pendencia_devolutiva pd 
@@ -824,7 +824,7 @@ namespace SME.SR.Data
             if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
-                query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo) ");
+                query.AppendLine($" and (a.disciplina_id::bigint = any(@componentesCodigo) or pd.componente_curricular_id = any(@componentesCodigo)) ");
 
             query.AppendLine(" union all  ");
             query.AppendLine(@"select 
@@ -844,14 +844,14 @@ namespace SME.SR.Data
 	                            else ' - '|| t.ano || 'ºANO'
 	                        end as TurmaNome,
                         t.turma_id as TurmaCodigo,
-                        0 as DisciplinaId,
-                        0 as bimestre,
+                        a.disciplina_id::bigint as DisciplinaId,
+	                    pe.bimestre,
                         usu.nome as criador,
                         usu.login as criadorRf,
                         p.alterado_por as aprovador,
                         p.alterado_rf as aprovadorRf,
                         'Diário de Classe' as TipoPendencia,
-                        true as OutrasPendencias,
+                        false as OutrasPendencias,
                         p.tipo,
                          to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
                     from pendencia_diario_bordo pdb 
@@ -883,7 +883,7 @@ namespace SME.SR.Data
             if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
-                query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo) ");
+                query.AppendLine($" and (a.disciplina_id::bigint = any(@componentesCodigo) or pdb.componente_curricular_id = any(@componentesCodigo)) ");
             return query.ToString();
         }
     }
