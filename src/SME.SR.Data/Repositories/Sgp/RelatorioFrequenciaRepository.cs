@@ -68,9 +68,7 @@ namespace SME.SR.Data
                 inner join ue u on
 	                t.ue_id = u.id
                 inner join dre d on
-	                u.dre_id = d.id
-                inner join componente_curricular cc on 
-                    cc.id = cast(fa.disciplina_id as bigint)
+	                u.dre_id = d.id                
                 where
 	                not fa.excluido and t.ano_letivo = @anoLetivo
                     and t.modalidade_codigo = @modalidade ");
