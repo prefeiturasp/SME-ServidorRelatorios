@@ -39,7 +39,7 @@ namespace SME.SR.Application
                 componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
 
                 foreach (var componenteTerritorio in componentesTerritorioSaber)
-                    componenteTerritorio.GrupoMatrizId = lstComponentes.Where(w=> w.Codigo == componenteTerritorio.Codigo).FirstOrDefault().GrupoMatrizId;
+                    componenteTerritorio.GrupoMatrizId = lstComponentes.Where(w=> w.CdComponenteCurricular == componenteTerritorio.CdComponenteCurricular).FirstOrDefault().GrupoMatrizId;
             }
 
             if (componentesTerritorioSaber != null)
