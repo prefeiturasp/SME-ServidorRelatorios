@@ -39,12 +39,17 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<double> ObterFrequenciaGlobal(string codigoTurma, string codigoAluno)
+        public async Task<string> ObterFrequenciaGlobal(string codigoTurma, string codigoAluno)
         {
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-
             var parametros = new { CodigoTurma = codigoTurma, CodigoAluno = codigoAluno };
-            return await conexao.QueryFirstOrDefaultAsync<double>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
+
+            var frequenciaAluno = await conexao.QueryFirstOrDefaultAsync<FrequenciaAluno>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
+
+            if (frequenciaAluno == null)
+                return string.Empty;
+
+            return frequenciaAluno.PercentualFrequenciaFormatado;
         }
 
         public async Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma)
@@ -123,7 +128,7 @@ namespace SME.SR.Data
 		                            )rf 
 	                            where rf.sequencia = 1;";
 
-            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos};
+            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -191,7 +196,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade,codigoTurmas });
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade, codigoTurmas });
             }
         }
 
@@ -599,7 +604,7 @@ namespace SME.SR.Data
                             and t.modalidade_codigo = @modalidade";
 
             if (codigoDre != "-99")
-                query +=  " and d.dre_id = @codigoDre";
+                query += " and d.dre_id = @codigoDre";
 
             if (codigoUe != "-99")
                 query += " and u.ue_id = @codigoUe";
@@ -639,9 +644,9 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(
-                                                                    string[] codigosAlunos, 
-                                                                    string bimestre, 
-                                                                    string turmaCodigo, 
+                                                                    string[] codigosAlunos,
+                                                                    string bimestre,
+                                                                    string turmaCodigo,
                                                                     string componenteCurricularId)
         {
             var condicaoBimestre = string.Empty;

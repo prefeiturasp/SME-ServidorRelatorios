@@ -31,7 +31,7 @@ namespace SME.SR.Application
             }
 
             var frequenciaGlobalAluno = await mediator.Send(new ObterFrequenciaGlobalPorAlunoQuery() { CodigoAluno = request.CodigoAluno, CodigoTurma = request.TurmaCodigo });
-            informacoesEscolaresAluno.FrequenciaGlobal = frequenciaGlobalAluno.ToString() ;
+            informacoesEscolaresAluno.FrequenciaGlobal = frequenciaGlobalAluno;
 
             return informacoesEscolaresAluno;
         }

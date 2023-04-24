@@ -8,12 +8,13 @@
                             total_ausencias TotalAusencias, total_compensacoes TotalCompensacoes, 
                             turma_id TurmaId, periodo_escolar_id PeriodoEscolarId";
 
-        internal static string FrequenciaGlobal = @"select 
-	    coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
+        internal static string FrequenciaGlobal = @"select sum(fa.total_aulas) as total_aulas,
+               sum(fa.total_ausencias) as total_ausencias,
+               sum(fa.total_compensacoes) as total_compensacoes
         from frequencia_aluno fa
-       where tipo = 2
-        and codigo_aluno = @codigoAluno
-        and fa.turma_id = @codigoTurma";
+        where fa.tipo = 2
+          and fa.codigo_aluno = @codigoAluno
+          and fa.turma_id = @codigoTurma";
 
         internal static string FrequenciGlobalPorBimestre = @"select pe.bimestre,
   	            coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterFrequenciaGlobalPorAlunoQueryHandler : IRequestHandler<ObterFrequenciaGlobalPorAlunoQuery, double>
+    public class ObterFrequenciaGlobalPorAlunoQueryHandler : IRequestHandler<ObterFrequenciaGlobalPorAlunoQuery, string>
     {
         private readonly IFrequenciaAlunoRepository frequenciaRepository;
 
@@ -15,7 +15,7 @@ namespace SME.SR.Application
             this.frequenciaRepository = frequenciaRepository ?? throw new ArgumentNullException(nameof(frequenciaRepository));
         }
 
-        public async Task<double> Handle(ObterFrequenciaGlobalPorAlunoQuery request, CancellationToken cancellationToken)
+        public async Task<string> Handle(ObterFrequenciaGlobalPorAlunoQuery request, CancellationToken cancellationToken)
         {
             return await frequenciaRepository.ObterFrequenciaGlobal(request.CodigoTurma, request.CodigoAluno);
         }
