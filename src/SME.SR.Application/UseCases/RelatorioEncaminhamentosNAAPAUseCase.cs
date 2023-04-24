@@ -49,7 +49,7 @@ namespace SME.SR.Application
                     DataUltimoAtendimento = s.DataUltimoAtendimento,
                     FluxosAlerta = String.Join("|", s.FluxosAlerta),
                     Situacao = s.Situacao.Name()
-                }).OrderBy(oAluno => oAluno.DataEntradaQueixa).ToList()
+                }).OrderByDescending(oAluno => oAluno.DataEntradaQueixa).ToList()
             }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeOrdenacao).ToList();
 
 
