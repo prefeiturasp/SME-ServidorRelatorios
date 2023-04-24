@@ -9,5 +9,7 @@ namespace SME.SR.Data
         Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularPorTurma(string[] codigosTurma);
 
         Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularPorCodigosRf(string[] codigosRf);
+
+        Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularExternoComponenteCurricularPorTurma(string[] codigosTurma);
     }
 }

@@ -11,6 +11,7 @@
     <EmbeddedResource Remove="Dtos\Respostas\**" />
     <None Remove="Dtos\Comunicado\**" />
     <None Remove="Dtos\Respostas\**" />
+    <Compile Remove="Enumeradores\GrupoSondagem.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -35,7 +35,7 @@ namespace SME.SR.Application
             if (request.TurmaAno > 3 || request.AnoLetivo >= 2022)
             {
                 var totalDeAlunos = request.QuantidadeTotalAlunos;
-                var listaPeguntaResposta = await sondagemAutoralRepository.ObterSondagemPerguntaRespostaConsolidadoBimestre(request.Dre?.Codigo, request.Ue?.Codigo, request.Bimestre, request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica.Name());
+                var listaPeguntaResposta = await sondagemAutoralRepository.ObterSondagemPerguntaRespostaConsolidadoBimestre(request.Dre?.Codigo, request.Ue?.Codigo, (request.Bimestre > 0 ? request.Bimestre : request.Semestre), request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica.Name());
                 var relatorioAgrupado = listaPeguntaResposta.GroupBy(p => p.PerguntaId).ToList();
 
                 relatorioAgrupado.ForEach(x =>

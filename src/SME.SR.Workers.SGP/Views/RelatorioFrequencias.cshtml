@@ -1,9 +1,11 @@
-﻿@model SME.SR.Infra.RelatorioFrequenciaDto
+﻿@using SME.SR.Infra
+@model SME.SR.Infra.RelatorioFrequenciaDto
 
 @{
     int paginaAtual = 0;
     double contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 55;
+    bool exibirCompensacoes = Model.Cabecalho.Modalidade != Modalidade.Infantil;
 
     void MontarComponente(string componenteNome, bool removerBorderTop = false)
     {
@@ -45,22 +47,23 @@
             str += $@"<th style='width: 9%;'>TURMA</th>";
         }
 
-        str+=$@"
+        str += $@"
         <th style='width: 6%;'>Nº</th>
         <th style='width: 35%;' class='alinhar-esquerda espaco-esquerda-8'>NOME</th>
         <th style='width: 8%;'>AULAS</th>
         <th style='width: 8%;'>PRESENÇAS</th>
         <th style='width: 8%;'>REMOTO</th>
-        <th style='width: 8%;'>AUSÊNCIAS</th>
-        <th style='width: 8%;'>COMPENSAÇÕES</th>
-        <th style='width: 8%;'>FREQ. %</th></tr>
-        </thead>
-        <tbody>";
+        <th style='width: 8%;'>AUSÊNCIAS</th>";
+
+        if (exibirCompensacoes)
+            str += "<th style='width: 8%;'>COMPENSAÇÕES</th>";
+        
+        str += "<th style='width: 8%;'>FREQ. %</th></tr></thead><tbody>";
 
         return Html.Raw(str);
     }
 
-    void MontarLinhaAluno(SME.SR.Infra.RelatorioFrequenciaAlunoDto aluno, bool ehExibirTurma)
+    void MontarLinhaAluno(RelatorioFrequenciaAlunoDto aluno, bool ehExibirTurma)
     {
         int numeroCaracteres = aluno == null
             ?
@@ -91,7 +94,10 @@
             <td>@aluno.TotalPresenca</td>
             <td>@aluno.TotalRemoto</td>
             <td>@aluno.TotalAusencias</td>
-            <td>@aluno.TotalCompensacoes</td>
+            @if (exibirCompensacoes)
+            {
+                <td>@aluno.TotalCompensacoes</td>
+            }
             <td>@aluno.Frequencia</td>
 
         </tr>

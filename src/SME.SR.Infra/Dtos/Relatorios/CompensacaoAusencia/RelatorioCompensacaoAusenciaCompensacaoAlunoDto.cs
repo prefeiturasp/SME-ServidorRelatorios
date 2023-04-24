@@ -22,5 +22,12 @@ namespace SME.SR.Infra
                 return Math.Round(porcentagem, 2);
             }
         }
+        public string FrequenciaFormatado
+        {
+            get
+            {
+                return Frequencia.ToString("N2");
+            }
+        }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
+using System;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SME.SR.Data;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
@@ -363,10 +362,33 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
-                
+        
+        [HttpGet("relatorios/encaminhamentonaapadetalhado")]
+        [Action("relatorios/encaminhamentonaapadetalhado", typeof(IRelatorioEncaminhamentosNaapaDetalhadoUseCase))]
+        public async Task<bool> RelatorioEncaminhamentoNaapaDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaDetalhadoUseCase detalhadoUseCase)
+        {
+            await detalhadoUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/encaminhamentosnaapa")]
+        [Action("relatorios/encaminhamentosnaapa", typeof(IRelatorioEncaminhamentosNAAPAUseCase))]
+        public async Task<bool> RelatorioEncaminhamentosNAAPA([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNAAPAUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/analitico-sondagem")]
+        [Action("relatorios/analitico-sondagem", typeof(IRelatorioAnaliticoSondagemUseCase))]
+        public async Task<bool> RelatorioAnalicoDaSondagem([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAnaliticoSondagemUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
 
         #region App Escola Aqui
-                [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
+        [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
         public async Task<bool> AcompanhamentoAprendizagemEscolaAqui([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAcompanhamentoAprendizagemUseCase relatorioUseCase)
         {

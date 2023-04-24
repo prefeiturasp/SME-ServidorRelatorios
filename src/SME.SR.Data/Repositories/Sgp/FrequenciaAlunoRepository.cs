@@ -338,13 +338,14 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunosPorTurmaEBimestre(long turmaId, string alunoCodigo, int[] bimestres)
         {
-            var query = new StringBuilder(@$"select fa.id Id
+            var query = new StringBuilder(@$"select * from (select fa.id Id
                                                     , fa.codigo_aluno as CodigoAluno
                                                     , fa.turma_id as TurmaId
                                                     , fa.total_aulas as TotalAulas
                                                     , fa.total_ausencias as TotalAusencias
                                                     , fa.total_compensacoes as TotalCompensacoes
                                                     , fa.bimestre
+                                                    , row_number() over (partition by fa.turma_id, fa.codigo_aluno, fa.bimestre, fa.disciplina_id, fa.tipo order by fa.id desc) sequencia
                                               from frequencia_aluno fa
                                              inner join turma t on fa.turma_id = t.turma_id
                                              inner join periodo_escolar pe on fa.periodo_escolar_id = pe.id
@@ -354,6 +355,8 @@ namespace SME.SR.Data
 
             if (!string.IsNullOrEmpty(alunoCodigo))
                 query.AppendLine("and fa.codigo_aluno = @alunoCodigo");
+
+            query.AppendLine(") as freqAluno where freqAluno.sequencia = 1");
 
             var parametros = new { turmaId, alunoCodigo, bimestres };
 
@@ -706,7 +709,7 @@ namespace SME.SR.Data
 	                        AND rfa.codigo_aluno = any(@codigosAlunos)
 	                        AND t.turma_id = @turmaCodigo 
                             AND a.disciplina_id = @componenteCurricularId
- 						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.valor, rfa.codigo_aluno, pe.bimestre
+ 						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.codigo_aluno, pe.bimestre
                         ORDER BY pe.bimestre, rfa.codigo_aluno, a.data_aula desc";
 
             var parametros = new
