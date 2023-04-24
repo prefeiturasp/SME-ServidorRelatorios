@@ -54,7 +54,7 @@ namespace SME.SR.Application
                         var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
 
                         frequenciaAluno.TotalAulas += frequenciaBimestre?.TotalAulas ??
-                                            await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaCodigo, tipoCalendarioId, new long[] { long.Parse(frequenciaAluno.DisciplinaId) }, bimestre));
+                                            await mediator.Send(new ObterAulasDadasNoBimestreQuery(turmaCodigo, tipoCalendarioId, long.Parse(frequenciaAluno.DisciplinaId), bimestre));
 
                         frequenciaAluno.TotalAusencias += frequenciaBimestre?.TotalAusencias ?? 0;
                         frequenciaAluno.TotalCompensacoes += frequenciaBimestre?.TotalCompensacoes ?? 0;

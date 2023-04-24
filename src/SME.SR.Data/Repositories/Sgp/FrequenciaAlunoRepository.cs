@@ -513,7 +513,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string[] componentesCurricularesId)
+        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string componenteCurricularId)
         {
             var query = new StringBuilder(@"select 
 	                                            extract(year from periodo_inicio) as AnoBimestre,
@@ -529,8 +529,8 @@ namespace SME.SR.Data
                                             and fa.tipo = @tipoFrequencia
                                             and fa.codigo_aluno = any(@codigosAlunos)  
                                             and fa.turma_id = @turmaCodigo ");
-            if (componentesCurricularesId != null && componentesCurricularesId.Any())
-                query.AppendLine(" and fa.disciplina_id = any(@componentesCurricularesId)");
+            if (!string.IsNullOrEmpty(componenteCurricularId))
+                query.AppendLine(" and fa.disciplina_id = @componenteCurricularId");
 
             if (bimestre != "-99")
                 query.AppendLine("and fa.bimestre = @numeroBimestre ");
@@ -538,7 +538,7 @@ namespace SME.SR.Data
             query.AppendLine(@" group by 
                                 fa.bimestre,
                                 fa.codigo_aluno,fa.periodo_inicio;");
-            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia, componentesCurricularesId };
+            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia, componenteCurricularId };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
