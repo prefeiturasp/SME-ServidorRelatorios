@@ -78,7 +78,7 @@ namespace SME.SR.Application
 
                 SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 if (!fechamentoTurma.Turma.AnoLetivo.Equals(2020))
-                    relatorio.AlunoFrequenciaGlobal = !string.IsNullOrEmpty(request.FrequenciaGlobal) ? request.FrequenciaGlobal : (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno)).ToString();
+                    relatorio.AlunoFrequenciaGlobal = await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno);
 
                 if (bimestre.HasValue)
                 {
@@ -234,7 +234,7 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<double> ObterFrequenciaGlobalPorAluno(string codigoTurma, string codigoAluno)
+        private async Task<string> ObterFrequenciaGlobalPorAluno(string codigoTurma, string codigoAluno)
         {
             return await mediator.Send(new ObterFrequenciaGlobalPorAlunoQuery()
             {

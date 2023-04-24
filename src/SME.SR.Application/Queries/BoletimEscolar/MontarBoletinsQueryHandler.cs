@@ -14,12 +14,11 @@ namespace SME.SR.Application
 {
     public class MontarBoletinsQueryHandler : IRequestHandler<MontarBoletinsQuery, List<RelatorioBoletimSimplesEscolarDto>>
     {
-        private const double FREQUENCIA_100 = 100;
-        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;        
+        private const double FREQUENCIA_100 = 100;    
         private readonly IMediator mediator;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
 
-        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+        private string frequencia100Formatada = FrequenciaAluno.FormatarPercentual(FREQUENCIA_100);
 
         public MontarBoletinsQueryHandler(IMediator mediator,
                                           ITipoCalendarioRepository tipoCalendarioRepository)
@@ -100,7 +99,7 @@ namespace SME.SR.Application
                             var frequenciaGlobal = frequenciasGlobal?
                                 .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
 
-                            var percentualFrequenciaGlobal = frequenciaGlobal != null ? frequenciaGlobal.First().PercentualFrequencia : 100;
+                            var percentualFrequenciaGlobal = frequenciaGlobal != null ? $"{FrequenciaAluno.FormatarPercentual(frequenciaGlobal.First().PercentualFrequencia)}%" : string.Empty;
                             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 
                             boletimAluno.Cabecalho = ObterCabecalhoInicial(dre,
@@ -109,7 +108,7 @@ namespace SME.SR.Application
                                 aluno.First().CodigoAluno.ToString(),
                                 aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio,
                                 aluno.First().ObterNomeFinal(),
-                                $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%");
+                                percentualFrequenciaGlobal);
 
                             boletimAluno.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
 
@@ -353,7 +352,7 @@ namespace SME.SR.Application
                         frequenciaFinal.AdicionarFrequenciaBimestre(p.Bimestre, frequencia != null ? frequencia.PercentualFrequencia : (double?)null);
                     });
 
-                    return frequenciaFinal.PercentualFrequenciaFinal?.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+                    return FrequenciaAluno.FormatarPercentual(frequenciaFinal.PercentualFrequenciaFinal.GetValueOrDefault());
                 }
 
                 return frequenciaFinal.PercentualFrequenciaFormatado;

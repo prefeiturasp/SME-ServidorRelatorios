@@ -18,11 +18,10 @@ namespace SME.SR.Application
             BoletimEscolarDetalhadoDto>
     {
         private const double FREQUENCIA_100 = 100;
-        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
         private readonly IMediator mediator;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
 
-        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+        private string frequencia100Formatada = FrequenciaAluno.FormatarPercentual(FREQUENCIA_100);
 
         public MontarBoletinsDetalhadosQueryHandler(IMediator mediator,
             ITipoCalendarioRepository tipoCalendarioRepository)
@@ -60,7 +59,7 @@ namespace SME.SR.Application
                     await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(request.AnoLetivo));
 
                 var boletinsAlunos = new List<BoletimEscolarDetalhadoAlunoDto>();
-   
+
                 foreach (var aluno in alunos)
                 {
                     // verifica PossuiConselho bimestre
@@ -80,13 +79,13 @@ namespace SME.SR.Application
 
                         var componentesAluno = componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key);
                         foreach (var turmaAluno in aluno)
-                        {                       
+                        {
                             if (componentesAluno != null && componentesAluno.Any())
                             {
                                 await MapearGruposEComponentes(
                                 componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()),
                                 boletimEscolarAlunoDto);
-                            }                            
+                            }
                         }
 
                         var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
@@ -99,10 +98,9 @@ namespace SME.SR.Application
                                 mediasFrequencia, conselhoClassBimestres, ultimoBimestrePeriodoFechamento,
                                 registroFrequencia, periodoAtual);
 
-                        var frequeciaGlobal =
-                            frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                        var percentualFrequenciaGlobal =
-                            frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
+                        var frequeciaGlobal = frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        var percentualFrequenciaGlobal = frequeciaGlobal != null ? $"{FrequenciaAluno.FormatarPercentual(frequeciaGlobal.First().PercentualFrequencia)}" : string.Empty;
+
                         var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c =>
                             c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
                         var recomendacao = recomendacoes?.FirstOrDefault(r =>
@@ -112,7 +110,7 @@ namespace SME.SR.Application
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                            aluno.FirstOrDefault().NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
+                            aluno.FirstOrDefault().NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), percentualFrequenciaGlobal, request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = conselhoClassBimestres.Any(b => b == 0)
                             ? (parecerConclusivo?.ParecerConclusivo ?? "")
                             : null;
@@ -131,10 +129,10 @@ namespace SME.SR.Application
             catch (Exception ex)
             {
                 var mensagem = $"Não foi possível montar boletim - Motivo: {ex.Message}";
-                
+
                 if (ex is NegocioException)
                     throw new NegocioException(mensagem);
-                
+
                 throw new Exception(mensagem);
             }
         }
@@ -192,7 +190,7 @@ namespace SME.SR.Application
 
                 var grupoMatrizAgrupadosAreaOrdem = grupoMatriz.GroupBy(a => a.AreaDoConhecimento.Ordem != null);
 
-                foreach(var gruposOrdem in grupoMatrizAgrupadosAreaOrdem.OrderByDescending(g=> g.Key))
+                foreach (var gruposOrdem in grupoMatrizAgrupadosAreaOrdem.OrderByDescending(g => g.Key))
                 {
                     foreach (var componente in gruposOrdem.OrderBy(a => a.Disciplina))
                     {
@@ -236,7 +234,7 @@ namespace SME.SR.Application
                         }
                     }
                 }
-               
+
 
                 if (boletim.ComponenteCurricularRegencia != null)
                     boletim.ComponenteCurricularRegencia.ComponentesCurriculares = boletim.ComponenteCurricularRegencia
@@ -496,7 +494,7 @@ namespace SME.SR.Application
                             frequencia != null ? frequencia.PercentualFrequencia : 100);
                     });
 
-                    return frequenciaFinal.PercentualFrequenciaFinal?.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+                    return FrequenciaAluno.FormatarPercentual(frequenciaFinal.PercentualFrequenciaFinal.GetValueOrDefault());
                 }
 
                 return frequenciaFinal.PercentualFrequenciaFormatado;
