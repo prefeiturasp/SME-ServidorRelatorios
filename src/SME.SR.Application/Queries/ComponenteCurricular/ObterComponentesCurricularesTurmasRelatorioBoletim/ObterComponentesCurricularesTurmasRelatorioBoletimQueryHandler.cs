@@ -26,7 +26,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
         {
             var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
 
-            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.CodigoTerritorioSaber).Distinct().ToArray()));
+            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));
 
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
             {
@@ -36,11 +36,11 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 var componentesMapeados = componentesDasTurmas?.Select(c => new ComponenteCurricularPorTurma
                 {
                     CodigoTurma = c.CodigoTurma,
-                    CodDisciplina = c.CodigoTerritorioSaber,
+                    CodDisciplina = c.Codigo,
                     CodDisciplinaPai = c.CodigoComponentePai(componentes),
                     BaseNacional = c.EhBaseNacional(componentes),
                     Compartilhada = c.EhCompartilhada(componentes),
-                    Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.Id == c.CodigoTerritorioSaber).Nome,
+                    Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.Id == c.Codigo).Nome,
                     GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
                     LancaNota = c.PodeLancarNota(componentes),
                     Frequencia = c.ControlaFrequencia(componentes),

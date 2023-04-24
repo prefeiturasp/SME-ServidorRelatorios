@@ -100,7 +100,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                             foreach (var componente in bimestre.Componentes)
                             {
                                 var componenteAtual = componentes
-                                    .FirstOrDefault(c => c.CodigoTerritorioSaber.ToString() == componente.CodigoComponente);
+                                    .FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
 
                                 var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
 
@@ -402,7 +402,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 "Todos"
                 :
                 filtro.ComponentesCurriculares.Count() == 1 ?
-                componentes.FirstOrDefault(c => c.CodigoTerritorioSaber.ToString() == primeiroComponente).Descricao
+                componentes.FirstOrDefault(c => c.Codigo.ToString() == primeiroComponente).Descricao
                 :
                 string.Empty;
         }
@@ -481,7 +481,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         var novoComponente = new RelatorioFrequenciaComponenteDto();
                         novoComponente.CodigoComponente = componente.CodigoComponente;
                         novoComponente.NomeComponente = componente.NomeComponente.ToUpper();
-                        var totalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(componente.Alunos.FirstOrDefault(c => c.CodigoTurma != null).CodigoTurma, tipoCalendarioId, new long[] { long.Parse(componente.CodigoComponente) }, numeroBimestre));
+                        var totalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(componente.Alunos.FirstOrDefault(c => c.CodigoTurma != null).CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
                         foreach (var aluno in componente.Alunos)
                         {
                             var novoAluno = new RelatorioFrequenciaAlunoDto();

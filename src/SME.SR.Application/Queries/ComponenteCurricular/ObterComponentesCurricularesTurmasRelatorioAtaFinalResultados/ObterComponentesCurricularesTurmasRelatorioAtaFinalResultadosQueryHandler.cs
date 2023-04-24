@@ -32,8 +32,8 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
             {
                 var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(request.CodigosTurma));
                 var tipoCalendarioId = await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turmas.FirstOrDefault()));
-                var totalAulasSemFrequencia = await mediator.Send(new ObterTotalAlunosSemFrequenciaPorTurmaBimestreQuery(componentesDasTurmas.Select(x => x.CodigoTerritorioSaber.ToString()).ToArray(), request.CodigosTurma, request.Bimestres));
-                var aulasDaTurma = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.CodigosTurma, tipoCalendarioId, componentesDasTurmas.Select(x => x.CodigoTerritorioSaber.ToString()).ToArray(), request.Bimestres));
+                var totalAulasSemFrequencia = await mediator.Send(new ObterTotalAlunosSemFrequenciaPorTurmaBimestreQuery(componentesDasTurmas.Select(x => x.Codigo.ToString()).ToArray(), request.CodigosTurma, request.Bimestres));
+                var aulasDaTurma = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.CodigosTurma, tipoCalendarioId, componentesDasTurmas.Select(x => x.Codigo.ToString()).ToArray(), request.Bimestres));
                 var componentesSemRegencia = componentesRegencia.Where(r => !r.Regencia);
                 var componentesComAula = aulasDaTurma.Select(a => a.ComponenteCurricularCodigo).ToList();
 
@@ -43,18 +43,18 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         componentesComAula.Add(componente.CodDisciplina.ToString());
                     }
 
-                componentesDasTurmas = componentesDasTurmas.Where(x => componentesComAula.Contains(x.CodigoTerritorioSaber.ToString())
-                || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.CodigoTerritorioSaber.ToString())));
+                componentesDasTurmas = componentesDasTurmas.Where(x => componentesComAula.Contains(x.Codigo.ToString())
+                || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.Codigo.ToString())));
             }
 
-            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.CodigoTerritorioSaber).Distinct().ToArray()));           
+            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));           
 
             var componentesCurricularesTurmas = new List<ComponenteCurricularPorTurma>();
             if (request.CodigosTurma.Length > 0)
             {
                 foreach(var turmaCodigo in request.CodigosTurma)
                 {
-                    componentesCurricularesTurmas.AddRange(await ObterComponentesCurriculares(componentesDasTurmas.Select(x => x.CodigoTerritorioSaber).Distinct().ToArray(), turmaCodigo));
+                    componentesCurricularesTurmas.AddRange(await ObterComponentesCurriculares(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray(), turmaCodigo));
                 }
             }
 
@@ -66,11 +66,11 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 var componentesMapeados = componentesDasTurmas?.Select(c => new ComponenteCurricularPorTurma
                 {
                     CodigoTurma = c.CodigoTurma,
-                    CodDisciplina = c.CodigoTerritorioSaber,
+                    CodDisciplina = c.Codigo,
                     CodDisciplinaPai = c.CodigoComponentePai(componentes),
                     BaseNacional = c.EhBaseNacional(componentes),
                     Compartilhada = c.EhCompartilhada(componentes),
-                    Disciplina = componentesCurricularesTurmas.FirstOrDefault(d => d.CodDisciplina == c.CodigoTerritorioSaber)?.Disciplina,
+                    Disciplina = componentesCurricularesTurmas.FirstOrDefault(d => d.CodDisciplina == c.Codigo)?.Disciplina,
                     GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
                     LancaNota = c.PodeLancarNota(componentes),
                     Frequencia = c.ControlaFrequencia(componentes),
