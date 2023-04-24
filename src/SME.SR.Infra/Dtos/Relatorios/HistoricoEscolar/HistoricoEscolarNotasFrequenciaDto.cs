@@ -19,6 +19,8 @@ namespace SME.SR.Infra
         [JsonProperty("tipoNota")]
         public TiposNotaDto TipoNota { get; set; }
         [JsonProperty("pareceresConclusivos")]
-        public ParecerConclusivoDto ParecerConclusivo { get; set; }
+        public ParecerConclusivoFrequenciaGlobalDto ParecerConclusivo { get; set; }
+        [JsonProperty("frequenciaGlobal")]
+        public ParecerConclusivoFrequenciaGlobalDto FrequenciaGlobal { get; set; }
     }
 }

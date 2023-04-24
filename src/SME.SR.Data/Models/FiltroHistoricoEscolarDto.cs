@@ -14,5 +14,7 @@ namespace SME.SR.Data
         public bool PreencherDataImpressao { get; set; }
         public int Semestre { get; set; }
         public Usuario Usuario { get; set; }
+        public bool InformarObservacoesComplementares { get; set; }
+        public string ObservacaoComplementar { get; set; }
     }
 }

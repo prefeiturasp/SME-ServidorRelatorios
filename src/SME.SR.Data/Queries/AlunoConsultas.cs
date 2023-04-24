@@ -394,6 +394,181 @@
 																	   max(dt_situacao_aluno) data_situacao
 																	from lista";
 
+		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId) =>
+			$@"WITH lista AS (
+				SELECT DISTINCT mte.cd_turma_escola,
+								m.cd_aluno,
+								se.sg_resumida_serie
+				FROM v_matricula_cotic m
+					INNER JOIN matricula_turma_escola mte
+						ON m.cd_matricula = mte.cd_matricula	
+					INNER JOIN turma_escola te
+						ON mte.cd_turma_escola = te.cd_turma_escola
+					INNER JOIN serie_turma_escola ste
+						ON te.cd_turma_escola = ste.cd_turma_escola
+					INNER JOIN serie_turma_grade stg
+						ON ste.cd_serie_ensino = stg.cd_serie_ensino
+					INNER JOIN serie_ensino se
+						ON stg.cd_serie_ensino = se.cd_serie_ensino
+					INNER JOIN etapa_ensino ee
+						ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+					INNER JOIN v_cadastro_unidade_educacao ue
+						ON te.cd_escola = ue.cd_unidade_educacao
+					INNER JOIN alunos_matriculas_norm aln 
+						ON aln.CodigoAluno = m.cd_aluno
+				WHERE te.an_letivo = @anoLetivo AND
+					  te.cd_tipo_turma = 1 AND
+					  mte.cd_situacao_aluno in (1,5,6,10,13) 
+					  AND (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+					  and mte.dt_situacao_aluno > @dataFim))
+					  and aln.AnoLetivo = anoLetivo
+					  AND ee.cd_etapa_ensino in (@modalidades)
+					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)}
+				UNION
+
+				SELECT
+					mte.cd_turma_escola,
+					matr.cd_aluno,
+					se.sg_resumida_serie
+				FROM
+					v_aluno_cotic aluno
+				INNER JOIN v_historico_matricula_cotic matr ON
+					aluno.cd_aluno = matr.cd_aluno
+				INNER JOIN historico_matricula_turma_escola mte ON
+					matr.cd_matricula = mte.cd_matricula
+				LEFT JOIN necessidade_especial_aluno nea ON
+					nea.cd_aluno = matr.cd_aluno
+				INNER JOIN turma_escola te
+					ON mte.cd_turma_escola = te.cd_turma_escola
+				INNER JOIN serie_turma_escola ste
+					ON te.cd_turma_escola = ste.cd_turma_escola
+				INNER JOIN serie_turma_grade stg
+					ON ste.cd_serie_ensino = stg.cd_serie_ensino
+				INNER JOIN serie_ensino se
+					ON stg.cd_serie_ensino = se.cd_serie_ensino
+				INNER JOIN etapa_ensino ee
+					ON se.cd_etapa_ensino = ee.cd_etapa_ensino
+				INNER JOIN v_cadastro_unidade_educacao ue
+					ON te.cd_escola = ue.cd_unidade_educacao
+				WHERE te.an_letivo = @anoLetivo AND
+					  te.cd_tipo_turma = 1 AND
+					  mte.cd_situacao_aluno in (5, 10) AND
+					  ee.cd_etapa_ensino in (@modalidades)
+				      AND mte.nr_chamada_aluno <> '0'
+					  AND mte.nr_chamada_aluno is not null
+					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)})
+			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
+				FROM lista group by sg_resumida_serie ";
+
+
+
+	    internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT   
+					aluno.cd_aluno CodigoAluno,
+					aluno.nm_aluno NomeAluno,
+					aluno.dt_nascimento_aluno DataNascimento,
+					aluno.nm_social_aluno NomeSocialAluno,
+					mte.cd_situacao_aluno CodigoSituacaoMatricula,
+					CASE
+						WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+						WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+						WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+						WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+						WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+						WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+						WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+						WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+						WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+						WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+						WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+						WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+						WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+						WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+						WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
+						ELSE 'Fora do domínio liberado pela PRODAM'
+					END SituacaoMatricula,
+					mte.dt_situacao_aluno DataSituacao,
+					coalesce(mte.nr_chamada_aluno,'0') NumeroAlunoChamada
+				FROM
+					v_aluno_cotic aluno
+				INNER JOIN v_matricula_cotic matr ON
+					aluno.cd_aluno = matr.cd_aluno
+				INNER JOIN matricula_turma_escola mte ON
+					matr.cd_matricula = mte.cd_matricula
+				LEFT JOIN necessidade_especial_aluno nea ON
+					nea.cd_aluno = matr.cd_aluno
+				WHERE
+					mte.cd_turma_escola = @codigoTurma
+					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+					and mte.dt_situacao_aluno > @dataReferencia))
+				UNION
+				SELECT 
+					aluno.cd_aluno CodigoAluno,
+					aluno.nm_aluno NomeAluno,
+					aluno.dt_nascimento_aluno DataNascimento,
+					aluno.nm_social_aluno NomeSocialAluno,
+					mte.cd_situacao_aluno CodigoSituacaoMatricula,
+					CASE
+						WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
+						WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
+						WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
+						WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
+						WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
+						WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
+						WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
+						WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
+						WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
+						WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
+						WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
+						WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
+						WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
+						WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
+						WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
+						WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física' 
+						ELSE 'Fora do domínio liberado pela PRODAM'
+					END SituacaoMatricula,
+					mte.dt_situacao_aluno DataSituacao,
+					mte.nr_chamada_aluno NumeroAlunoChamada
+				FROM
+					v_aluno_cotic aluno
+				INNER JOIN v_historico_matricula_cotic matr ON
+					aluno.cd_aluno = matr.cd_aluno
+				INNER JOIN historico_matricula_turma_escola mte ON
+					matr.cd_matricula = mte.cd_matricula
+				LEFT JOIN necessidade_especial_aluno nea ON
+					nea.cd_aluno = matr.cd_aluno
+				WHERE
+					mte.cd_turma_escola = @codigoTurma
+					and mte.nr_chamada_aluno <> '0'
+					and mte.nr_chamada_aluno is not null
+					and mte.dt_situacao_aluno = (
+					select
+						max(mte2.dt_situacao_aluno)
+					from
+						v_historico_matricula_cotic matr2
+					INNER JOIN historico_matricula_turma_escola mte2 ON
+						matr2.cd_matricula = mte2.cd_matricula
+					where
+						mte2.cd_turma_escola = @codigoTurma
+						and matr2.cd_aluno = matr.cd_aluno
+						and (matr2.st_matricula in (1, 6, 10, 13, 5)
+						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
+						and matr2.dt_status_matricula > @dataReferencia)) )
+					AND NOT EXISTS(
+					SELECT
+						1
+					FROM
+						v_matricula_cotic matr3
+					INNER JOIN matricula_turma_escola mte3 ON
+						matr3.cd_matricula = mte3.cd_matricula
+					WHERE
+						mte.cd_matricula = mte3.cd_matricula
+						AND mte.cd_turma_escola = @codigoTurma )";
+		
         internal static string AlunosMatriculasPorTurmas = @"with lista as (
 																select mte.nr_chamada_aluno,
 																	   a.nm_aluno,

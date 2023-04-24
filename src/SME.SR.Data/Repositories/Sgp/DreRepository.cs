@@ -27,6 +27,17 @@ namespace SME.SR.Data
             }
 
         }
+        public async Task<IEnumerable<Dre>> ObterPorCodigos(string[] dreCodigos)
+        {
+            var query = @"select Id, dre_id Codigo, Abreviacao, Nome from dre where dre_id  = any(@dreCodigos) ";
+            var parametros = new { dreCodigos };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<Dre>(query, parametros);
+            }
+
+        }
 
         public async Task<Dre> ObterPorId(long dreId)
         {

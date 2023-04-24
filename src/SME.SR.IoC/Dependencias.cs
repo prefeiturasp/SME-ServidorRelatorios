@@ -10,6 +10,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Repositories.Cache;
+using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -21,7 +22,7 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
-using SME.SR.Data.Repositories.Sgp;
+using SME.SR.Data.Interfaces.Sondagem;
 
 namespace SME.SR.IoC
 {
@@ -157,6 +158,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
+            services.TryAddScoped(typeof(ISondagemRelatorioRepository), typeof(SondagemRelatorioRepository));
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
             services.TryAddScoped(typeof(IDiarioBordoRepository), typeof(DiarioBordoRepository));
             services.TryAddScoped(typeof(INotificacaoRepository), typeof(NotificacaoRepository));
@@ -190,7 +192,13 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IQuestionarioEncaminhamentoAeeRepository), typeof(QuestionarioEncaminhamentoAeeRepository));
             services.TryAddScoped(typeof(IEncaminhamentoAeeRespostaRepository), typeof(EncaminhamentoAeeRespostaRepository));
-            
+
+            services.TryAddScoped(typeof(IEncaminhamentoNAAPARepository), typeof(EncaminhamentoNAAPARepository));
+            services.TryAddScoped(typeof(IEncaminhamentoNAAPARespostaRepository), typeof(EncaminhamentoNAAPARespostaRepository));
+            services.TryAddScoped(typeof(IQuestionarioEncaminhamentoNAAPARepository), typeof(QuestionarioEncaminhamentoNAAPARepository));
+            services.TryAddScoped(typeof(IEncaminhamentoNAAPASecaoRepository), typeof(EncaminhamentoNAAPASecaoRepository));
+
+            services.TryAddScoped(typeof(ISondagemAnaliticaRepository), typeof(SondagemAnaliticaRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -250,6 +258,9 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioPlanosAeeUseCase, RelatorioPlanosAeeUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosAeeUseCase, RelatorioEncaminhamentosAeeUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentoAeeDetalhadoUseCase, RelatorioEncaminhamentoAeeDetalhadoUseCase>();
+            services.TryAddScoped<IRelatorioEncaminhamentosNaapaDetalhadoUseCase, RelatorioEncaminhamentosNAAPADetalhadoUseCase>();
+            services.TryAddScoped<IRelatorioEncaminhamentosNAAPAUseCase, RelatorioEncaminhamentosNAAPAUseCase>();
+            services.TryAddScoped<IRelatorioAnaliticoSondagemUseCase, RelatorioAnaliticoSondagemUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)

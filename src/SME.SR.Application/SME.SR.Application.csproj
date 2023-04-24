@@ -30,4 +30,18 @@
     <Folder Include="Queries\HistoricoEscolar\MontarHistoricoEscolarTransferenciaEJA\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Queries\Ue\ObterUeComDrePorCodigo\ObterUeComDrePorCodigoQueryHandler.cs" />
+    <Compile Remove="Queries\Ue\ObterUeComDrePorCodigo\ObterUeComDrePorCodigoQuery.cs" />
+    <Compile Remove="Queries\Ue\ObterUeComDrePorCodigo\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Queries\Ue\ObterUeComDrePorCodigo\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Queries\Ue\ObterUeComDrePorCodigo\**" />
+  </ItemGroup>
+
 </Project>

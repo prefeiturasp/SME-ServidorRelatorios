@@ -2,7 +2,7 @@
 
 namespace SME.SR.Infra
 {
-    public class ParecerConclusivoDto
+    public class ParecerConclusivoFrequenciaGlobalDto  
     {
         [JsonProperty("primeiroAno")]
         public string PrimeiroAno { get; set; }
