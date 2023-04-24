@@ -201,7 +201,7 @@
                 <td class="fundo-cinza negrito espacamento10">Recursos Utilizados (EOL)</td>
                 <td class="fundo-cinza negrito espacamento10">Frequência Global</td>
             </tr>
-            
+
             foreach (var informacaoEscolar in informacaoEscolarAlunoDtos)
             {
                 GerarLinhaNecessidadeEspecial(informacaoEscolar);
@@ -212,10 +212,11 @@
     void GerarLinhaNecessidadeEspecial(InformacaoEscolarAlunoDto informacaoEscolar)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
+        var frequenciaGlobal = !string.IsNullOrWhiteSpace(informacaoEscolar.FrequenciaGlobal) ? Math.Round(double.Parse(informacaoEscolar.FrequenciaGlobal), 2).ToString($"N2", System.Globalization.CultureInfo.CurrentCulture) : null;
         <tr>
             <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
             <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
-            <td class="espacamento10">@informacaoEscolar.FrequenciaGlobal</td>
+            <td class="espacamento10">@frequenciaGlobal</td>
         </tr>
     }
 

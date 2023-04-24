@@ -1,9 +1,12 @@
-﻿using SME.SR.Data.Extensions;
+﻿using Dapper;
+using SME.Pedagogico.Repository.Constantes;
+using SME.SR.Data.Extensions;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 namespace SME.SR.Data
@@ -332,7 +335,7 @@ namespace SME.SR.Data
 									FROM lista ");
 
 
-            var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(6), ueCodigo, anoTurma = anoTurma.ToDbChar(1), anoLetivo, dataFim = dataReferencia };
+			var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), ueCodigo, anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), anoLetivo, dataFim = dataReferencia };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
@@ -1686,6 +1689,37 @@ namespace SME.SR.Data
         {
             using var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
             return await conn.QueryAsync<AlunoTurma>(AlunoConsultas.AlunosMatriculasPorTurmas, new { codigosTurmas });
+        }
+
+        public async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalAlunosAtivosPorPeriodoEAnoTurma(int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId)
+        {
+	        var parametros = new
+	        {
+		        anoLetivo,
+		        dataInicio,
+		        dataFim,
+		        ueId,
+		        codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
+	        };
+	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId);
+	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
+	        {
+		        return await con.QueryAsync<TotalAlunosAnoTurmaDto>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
+	        }
+        }
+
+        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferencia)
+        {
+	        var totalAlunos = 0;
+	        var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
+	        var parametros = new {dataReferencia,codigoTurma};
+	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
+	        {
+		        var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000)).ToList();
+		        if (registros.Count() >= 0)
+			        totalAlunos = registros.Count();
+	        }
+	        return totalAlunos;
         }
     }
 }

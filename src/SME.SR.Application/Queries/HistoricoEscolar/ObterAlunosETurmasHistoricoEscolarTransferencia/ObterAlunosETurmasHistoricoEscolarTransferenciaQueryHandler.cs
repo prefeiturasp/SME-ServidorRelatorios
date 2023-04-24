@@ -123,7 +123,7 @@ namespace SME.SR.Application
             informacoesAlunoDto.CidadeNatal = item.CidadeNatal;
             informacoesAlunoDto.Estado = string.Empty;
             informacoesAlunoDto.EstadoNatal = item.EstadoNatal;
-            informacoesAlunoDto.Expedicao = item.ExpedicaoData.ToString("dd/MM/yyyy");
+            informacoesAlunoDto.Expedicao = item.ExpedicaoData.Year == 1 ? string.Empty : item.ExpedicaoData.ToString("dd/MM/yyyy");
             informacoesAlunoDto.Nacionalidade = item.Nacionalidade;
             informacoesAlunoDto.Nascimento = item.DataNascimento.ToString("dd/MM/yyyy");
             informacoesAlunoDto.Nome = item.ObterNomeFinal();

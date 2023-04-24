@@ -1,0 +1,491 @@
+﻿@using SME.SR.HtmlPdf
+@using SME.SR.Infra
+@using SME.SR.Infra.Utilitarios
+@using System.ComponentModel.DataAnnotations
+
+@model EncaminhamentoNaapaDetalhadoPagina
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DO ENCAMINHAMENTO NAAPA</title>
+</head>
+
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            margin-top: 5px;
+            padding: 3px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: 'Roboto Mono', monospace;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 43px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        td span {
+            font-size: 12px;
+        }
+
+        .tabela-secao tr {
+            font-size: 12px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .espacamento {
+            padding: 5px;
+        }
+
+        .img-logo-sgp {
+            height: 63px;
+            float: left;
+        }
+
+        .titulo {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .colunaTitulo {
+             background-color: #f3f3f3;
+             font-weight: bold;
+             font-size: 12px;
+             text-align: center !important;
+        }
+
+        .titulo .colunaTitulo{
+            border-bottom: none !important;
+        }
+
+        .subTabela
+        {
+            margin-top: 0px !important;
+            padding: 0px !important;
+            width: 100%;
+        }
+
+        .tabela-secao .subTabela {
+            border-bottom: none;
+        }
+
+        .semBorda {
+            border: none !important;
+            padding-left: 6px;
+        }
+
+        .semBordaTop {
+            border-top: none !important;
+        }
+
+        .semBordaBottom {
+            border-bottom: none !important;
+        }
+
+        .bordaEsqueda
+        {
+            border-left: 1px solid #42474a !important;
+        }
+
+        .cabecalho-relatorio 
+        {
+            display: table;
+            width: 100%;
+            font-size: 12px;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .coluna{
+            padding: 5px;
+            padding-left: 5px;
+        }
+
+        .divTitulo {
+            border-top: 1px solid #42474a !important;
+        }
+
+        .content {
+            border-bottom: 1px solid #42474a !important;
+        }
+    </style>
+
+    <div id="page" class="pagina">
+        <header id="header">
+            <div>
+                <img class='img-logo-sgp' src='@(SmeConstants.LogoSmeMono)' alt='Logo SGP' />
+            </div>
+            <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+            <div class='titulo-relatorio'>
+                <p style='margin-bottom: 0'>
+                    RELATÓRIO DO ENCAMINHAMENTO NAAPA
+                </p>
+            </div>
+            <div class='fonte-14 header-pagina'>
+                <table class='cabecalho-relatorio'>
+                    <tbody>
+                        <tr>
+                            <td width='17%' class='coluna'>ANO LETIVO: @Model.Cabecalho.AnoLetivo</td>
+                            <td width='20%' class='coluna'>DRE: @Model.Cabecalho.DreNome</td>
+                            <td class='coluna'>Unidade Escolar (UE): @Model.Cabecalho.UeNome</td>
+                        </tr>
+                        <tr>
+                            <td class="subTabela" colspan="3">
+                              <table>
+                                <tbody>
+                                    <td width='25%' class='coluna semBorda'>TURMA: @Model.Cabecalho.TurmaNome</td>
+                                    <td class='coluna semBorda bordaEsqueda'>CRIANÇA/ESTUDANTE: @Model.Cabecalho.Aluno</td>
+                                </tbody>
+                              </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="subTabela" colspan="3">
+                              <table>
+                                <tbody>
+                                    <td width='30%' class='coluna semBorda'>DATA DE NASCIMENTO: @Model.Cabecalho.DataNascimento</td>
+                                    <td class='coluna semBorda bordaEsqueda'>SITUAÇÃO DO ENCAMINHAMENTO: @Model.Cabecalho.SituacaoEncaminhamento</td>
+                                </tbody>
+                              </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="subTabela" colspan="3">
+                              <table>
+                                <tbody>
+                                    <td width='50%' class='coluna semBorda'>DATA DO CADASTRO: @Model.Cabecalho.DataCriacao</td>
+                                    <td class='coluna semBorda bordaEsqueda '>DATA DE IMPRESSÃO: @Model.Cabecalho.DataImpressao</td>
+                                </tbody>
+                              </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </header>
+        <div class="content">
+            @{
+                var dicionario = ObterDicionarioPorSecaoFundamental();
+
+                foreach(var linha in Model.Linhas)
+                {
+                    var acao = dicionario[linha.GetType()];
+
+                    acao(linha);
+                }
+            }
+        </div>
+        <footer class="footer">
+            <div class="titulo-sgp-rodape">
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
+
+@{
+    Dictionary<Type, Action<SecaoRelatorioEncaminhamentoNaapa>> ObterDicionarioPorSecaoFundamental()
+    {
+        return new Dictionary<Type, Action<SecaoRelatorioEncaminhamentoNaapa>>()
+            {
+                { typeof(SecaoTituloEncaminhamentoNaapa), GerarTitulo },
+                { typeof(SecaoRespostaTextoEncaminhamentoNaapa), GerarTituloResposta },
+                { typeof(SecaoInformacoesEncaminhamentoNaapa), GerarSecaoInformacoes },
+                { typeof(SecaoContatoResponsavelEncaminhamentoNaapa), GerarSecaoContatoResponsavel },
+                { typeof(SecaoEnderecoEncaminhamentoNaapa), GerarSecaoEnderecoResidencial },
+                { typeof(SecaoFiliacaoEncaminhamentoNaapa), GerarSecaoFiliacao },
+                { typeof(SecaoContraturnoEncaminhamentoNaapa), GerarAtividadeContraturno },
+                { typeof(SecaoTurmaProgramaEncaminhamentoNaapa), GerarTurmaDePrograma },
+                { typeof(SecaoItensItineranciaEncaminhamentoNaapa), GerarItensItinerancia }
+            };
+    }
+
+    void GerarTitulo(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoTituloEncaminhamentoNaapa)secaoRelatorio;
+        var classe = secao.PrimeiraLinha ? string.Empty : "divTitulo";
+
+        <div class='@classe'>
+            <table class="titulo">	
+                <tbody>
+                    @{
+                        AdicionarTitulo(secao.Titulo, "");
+                        AdicionarTitulo(secao.SubTitulo, "");
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    void GerarTituloResposta(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoRespostaTextoEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">	
+            <tbody>
+                @{
+                    AdicionarTitulo(secao.Titulo, ""); 
+                }
+                <tr>
+                    <td class="espacamento semBordaBottom">@Html.Raw(secao.Resposta)</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    void GerarSecaoInformacoes(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoInformacoesEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">
+            <tbody>
+                <tr>
+                    <td width="38%" class="espacamento">@secao.DataDeEntradaQueixa</td>
+                    <td width="22%" class="espacamento">@secao.Prioridade</td>
+                    <td width="40%" class="espacamento">@secao.PortaDeEntrada</td>
+                </tr>
+                @if (!string.IsNullOrEmpty(secao.NIS) || !string.IsNullOrEmpty(secao.CNS))
+                {
+                    <tr>
+                        <td class="subTabela" colspan="3">
+                            <table>
+                                <tbody>
+                                    <td width="50%" class="semBorda espacamento">@secao.NIS</td>
+                                    <td class="semBorda bordaEsqueda espacamento">@secao.CNS</td>
+                                </tbody>
+                            </table>
+                       </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    void GerarSecaoFiliacao(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoFiliacaoEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">
+            <tbody>
+                <tr>
+                    <td width="45%" class="espacamento semBordaTop">@secao.Filiacao</td>
+                    <td width="18%" class="espacamento semBordaTop">@secao.Genero</td>
+                    <td width="37%" class="espacamento semBordaTop">@secao.GrupoEtnico</td>
+                </tr>
+                <tr>
+                    <td class="subTabela" colspan="3">
+                    <table>
+                        <tbody>
+                            @if (!string.IsNullOrEmpty(secao.EstudanteMigrante) || !string.IsNullOrEmpty(secao.ResponsavelMigrante))
+                            {
+                                <tr>
+                                    <td width="50%" class="espacamento" style="border-top: none; border-left: none;">@secao.EstudanteMigrante</td>
+                                    <td class="espacamento" style="border-top: none; border-right: none;">@secao.ResponsavelMigrante</td>
+                                </tr>
+                            }
+                            @if (!string.IsNullOrEmpty(secao.UBS) || !string.IsNullOrEmpty(secao.CRAS))
+                            {
+                                <tr>
+                                    <td width="50%" class="espacamento" style="border-bottom: none; border-left: none;">@secao.UBS</td>
+                                    <td class="espacamento" style="border-bottom: none; border-right: none;">@secao.CRAS</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    void GerarSecaoContatoResponsavel(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoContatoResponsavelEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">	
+            <tbody>
+                @{ AdicionarTitulo(secao.Titulo, "3"); }
+                <tr>
+                    <td width="50%" class="fundo-cinza negrito espacamento">Nome completo</td>
+                    <td width="30%" class="fundo-cinza negrito espacamento">Grau de parentesco/afetividade</td>
+                    <td width="20%" class="fundo-cinza negrito espacamento">Telefone</td>
+                </tr>
+                @foreach(var contato in secao.ContatoResponsaveis)
+                {
+                    <tr>
+                        <td class="espacamento">@contato.NomeCompleto</td>
+                        <td class="espacamento">@ObterNomeGrauParenteco(contato.GrauParentescoAfetividade)</td>
+                        <td class="espacamento">@contato.Telefone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    string ObterNomeGrauParenteco(GrauParentesco grauParentesco)
+    {
+        return grauParentesco.GetAttribute<DisplayAttribute>().Name;
+    }
+
+    void GerarSecaoEnderecoResidencial(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoEnderecoEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">	
+            <tbody>
+                @{ AdicionarTitulo(secao.Titulo, "5"); }
+                <tr>
+                    <td width="22%" class="fundo-cinza negrito espacamento semBordaTop">Tipo de logradouro</td>
+                    <td width="30%" class="fundo-cinza negrito espacamento semBordaTop">Lougradouro</td>
+                    <td width="8%" class="fundo-cinza negrito espacamento semBordaTop">Número</td>
+                    <td width="20%" class="fundo-cinza negrito espacamento semBordaTop">Complemento</td>
+                    <td width="20%" class="fundo-cinza negrito espacamento semBordaTop">Bairro</td>
+                </tr>
+                @foreach(var endereco in secao.Enderecos)
+                {
+                    <tr>
+                        <td class="espacamento">@endereco.TipoLogradouro</td>
+                        <td class="espacamento">@endereco.Logradouro</td>
+                        <td class="espacamento">@endereco.Numero</td>
+                        <td class="espacamento">@endereco.Complemento</td>
+                        <td class="espacamento">@endereco.Bairro</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    void GerarAtividadeContraturno(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoContraturnoEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">	
+            <tbody>
+                @{ AdicionarTitulo(secao.Titulo, "2"); }
+                <tr>
+                    <td width="50%" class="fundo-cinza negrito espacamento">Local</td>
+                    <td width="50%" class="fundo-cinza negrito espacamento">Atividade</td>
+                </tr>
+                @foreach (var contraTurno in secao.AtividadeContraTurnos)
+                {
+                    <tr>
+                        <td class="espacamento">@contraTurno.Local</td>
+                        <td class="espacamento">@contraTurno.Atividade</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    void GerarTurmaDePrograma(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoTurmaProgramaEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">
+            <tbody>
+                @{ AdicionarTitulo(secao.Titulo, "3"); }
+                <tr>
+                    <td width="50%" class="fundo-cinza negrito espacamento">DRE-UE</td>
+                    <td width="25%" class="fundo-cinza negrito espacamento">Turma - Turno</td>
+                    <td width="25%" class="fundo-cinza negrito espacamento">Componente curricular</td>
+                </tr>
+                @foreach (var turma in secao.TurmasPrograma)
+                {
+                    <tr>
+                        <td class="espacamento">@turma.DreUe</td>
+                        <td class="espacamento">@turma.Turma</td>
+                        <td class="espacamento">@turma.ComponenteCurricular</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    void GerarItensItinerancia(SecaoRelatorioEncaminhamentoNaapa secaoRelatorio)
+    {
+        var secao = (SecaoItensItineranciaEncaminhamentoNaapa)secaoRelatorio;
+
+        <table class="tabela-secao">
+            <tbody>
+                @{ AdicionarTitulo(secao.Titulo, "2"); }
+                <tr>
+                    <td width="50%" class="espacamento semBordaBottom">@secao.TipoAtendimento</td>
+                    <td width="50%" class="espacamento semBordaBottom">@secao.ProcedimentoDeTrabalho</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+    void AdicionarTitulo(string titulo, string colspan)
+    {
+        if (!string.IsNullOrEmpty(titulo)) 
+        {
+            <tr>
+                <td class="colunaTitulo" colspan="@colspan">@titulo</td>
+            </tr>
+        }
+    }
+}
