@@ -25,12 +25,12 @@ namespace SME.SR.Application
             var lstComponentes = await componenteCurricularRepository.ListarComponentes();
         
             lstComponentes = lstComponentes
-                   .Where(w => request.ComponentesCurricularesIds.Contains(w.CodigoTerritorioSaber))
+                   .Where(w => request.ComponentesCurricularesIds.Contains(w.Codigo))
                    .ToList();
 
             var componenteIds = request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray();
             var componentesTS = lstComponentes.Where(c => c.TerritorioSaber)
-                                .Select(c => c.CodigoTerritorioSaber.ToString()).ToArray();
+                                .Select(c => c.Codigo.ToString()).ToArray();
 
             IEnumerable<ComponenteCurricular> componentesTerritorioSaber = null;
 
@@ -39,7 +39,7 @@ namespace SME.SR.Application
                 componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
 
                 foreach (var componenteTerritorio in componentesTerritorioSaber)
-                    componenteTerritorio.GrupoMatrizId = lstComponentes.Where(w=> w.CdComponenteCurricular == componenteTerritorio.CdComponenteCurricular).FirstOrDefault().GrupoMatrizId;
+                    componenteTerritorio.GrupoMatrizId = lstComponentes.Where(w=> w.Codigo == componenteTerritorio.Codigo).FirstOrDefault().GrupoMatrizId;
             }
 
             if (componentesTerritorioSaber != null)
@@ -52,8 +52,7 @@ namespace SME.SR.Application
 
                 return lstComponentes.Select(x => new ComponenteCurricularPorTurma
                 {
-                    CodDisciplina = x.CdComponenteCurricular,
-                    CodigoTerritorioSaber = x.CodigoTerritorioSaber,
+                    CodDisciplina = x.Codigo,
                     CodDisciplinaPai = x.CodComponentePai,
                     Disciplina = x.Descricao.Trim(),
                     Regencia = x.ComponentePlanejamentoRegencia,
@@ -78,7 +77,7 @@ namespace SME.SR.Application
 
         public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesTerritorio)
         {
-		var componentesConcatenados = componentes.Where(a => !componentesTerritorio.Any(x => x.CodigoTerritorioSaber == a.CodigoTerritorioSaber)).ToList();
+		var componentesConcatenados = componentes.Where(a => !componentesTerritorio.Any(x => x.Codigo == a.Codigo)).ToList();
 		return componentesConcatenados.Concat(componentesTerritorio).ToList();
         }
     }
