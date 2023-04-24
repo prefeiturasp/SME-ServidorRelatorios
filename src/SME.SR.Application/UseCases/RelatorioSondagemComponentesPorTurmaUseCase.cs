@@ -54,7 +54,7 @@ namespace SME.SR.Application
             if (anoLetivo < 2022)
                 return await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
             else
-                return await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
+                return await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery((semestre > 0 ? semestre : bimestre), anoLetivo));
         }
 
         private async Task<RelatorioSondagemComponentesPorTurmaRelatorioDto> ObterDadosRelatorio(RelatorioSondagemComponentesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)

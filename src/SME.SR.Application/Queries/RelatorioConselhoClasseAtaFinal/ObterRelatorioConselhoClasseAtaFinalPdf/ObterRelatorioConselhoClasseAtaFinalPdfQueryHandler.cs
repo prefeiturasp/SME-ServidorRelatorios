@@ -3,6 +3,7 @@ using SME.SR.Data;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,7 +13,16 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaFinalPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaFinalPdfQuery, List<ConselhoClasseAtaFinalPaginaDto>>
     {
-        private const string FREQUENCIA_100 = "100";
+        private const double FREQUENCIA_100 = 100;
+        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
+        private const string SEM_PARECER_CONCLUSIVO = "Sem parecer";        
+        private const int COLUNA_AUSENCIA = 1;
+        private const int COLUNA_COMPENSACAO = 2;
+        private const int COLUNA_PORCENTAGEM_FREQUENCIA = 3;
+        private const int COLUNA_PARECER_CONCLUSIVO = 4;
+
+        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+
         private readonly VariaveisAmbiente variaveisAmbiente;
 
         private readonly IMediator mediator;
@@ -541,11 +551,11 @@ namespace SME.SR.Application
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
-                                            possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalAusencias.ToString() ?? "0") : "-",
+                                            possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalAusencias.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : "-",
                                             ++coluna);
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
-                                                    possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? "0") : "-",
+                                                    possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : "-",
                                                 ++coluna);
 
                         var frequencia = "-";
@@ -555,8 +565,10 @@ namespace SME.SR.Application
                             if (turma.AnoLetivo.Equals(2020))
                             {
                                 frequencia = frequenciaAluno == null || frequenciaAluno.TotalAusencias == 0
-                                ? "100"
-                                : frequenciaAluno.PercentualFrequenciaFinal.ToString();
+                                    ?
+                                    frequencia100Formatada
+                                    :
+                                    frequenciaAluno.PercentualFrequenciaFinal.ToString();
                             }
                             else
                             {
@@ -564,12 +576,12 @@ namespace SME.SR.Application
                                 if (frequenciaAluno != null && frequenciaAluno.TotalAulas != 0 && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo))
                                 {
                                     frequencia = frequenciaAluno.PercentualFrequencia > 0
-                                    ? frequenciaAluno.PercentualFrequencia.ToString()
-                                    : "0";
+                                    ? frequenciaAluno.PercentualFrequenciaFormatado
+                                    : 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
                                 }
                                 else if (frequenciaAluno == null && turmaPossuiFrequenciaRegistrada)
                                 {
-                                    frequencia = "100";
+                                    frequencia = frequencia100Formatada;
                                 }
                             }
                         }
@@ -613,30 +625,23 @@ namespace SME.SR.Application
             var percentualFrequencia2020 = Math.Round((((qtdeDisciplinasLancamFrequencia - frequenciasAluno.Count()) * 100) 
                                                 + (decimal)frequenciasAluno.Sum(f => f.PercentualFrequenciaFinal)) / qtdeDisciplinasLancamFrequencia, 2);
 
-            if (possuiConselhoFinalParaAnual || aluno.CodigoSituacaoMatricula != SituacaoMatriculaAluno.Ativo)
+            string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequenciaFormatado 
+                : ObterPercentualFrequenciaFinal(frequenciasAluno, turmaExisteFrequenciaRegistrada);
+            
+            var percentualFrequenciaAcumulado = (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : percentualFrequenciaFinal);
+            
+            linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture), COLUNA_AUSENCIA);
+            linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture), COLUNA_COMPENSACAO);
+            linhaDto.AdicionaCelula(99, 99, percentualFrequenciaAcumulado ?? frequencia100Formatada, COLUNA_PORCENTAGEM_FREQUENCIA);
+
+            var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
+            var textoParecer = parecerConclusivo?.ParecerConclusivo;
+            if (textoParecer == null)
             {
-                string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequencia.ToString() 
-                                                                                 : ObterPercentualFrequenciaFinal(frequenciasAluno, turmaExisteFrequenciaRegistrada);
-
-                linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? "0", 1);
-                linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? "0", 2);
-                linhaDto.AdicionaCelula(99, 99, (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : percentualFrequenciaFinal) ?? FREQUENCIA_100, 3);
-
-                var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
-                var textoParecer = parecerConclusivo?.ParecerConclusivo;
-                if (textoParecer == null)
-                {
-                    bool ativoOuConcluido = AlunoAtivo(aluno.CodigoSituacaoMatricula);
-                    textoParecer = !ativoOuConcluido ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : "Sem Parecer";
-                }
-                linhaDto.AdicionaCelula(99, 99, textoParecer, 4);
-                return;
+                bool ativoOuConcluido = AlunoAtivo(aluno.CodigoSituacaoMatricula);
+                textoParecer = !ativoOuConcluido ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : SEM_PARECER_CONCLUSIVO;
             }
-
-            linhaDto.AdicionaCelula(99, 99, "0", 1);
-            linhaDto.AdicionaCelula(99, 99, "0", 2);
-            linhaDto.AdicionaCelula(99, 99, string.Empty, 3);
-            linhaDto.AdicionaCelula(99, 99, "Sem parecer", 4);
+            linhaDto.AdicionaCelula(99, 99, textoParecer, COLUNA_PARECER_CONCLUSIVO);
         }
 
         private string ObterPercentualFrequenciaFinal(IEnumerable<FrequenciaAluno> frequenciasAluno, bool existeFrequenciaRegistradaTurma)
@@ -647,11 +652,11 @@ namespace SME.SR.Application
             if (totalAulas == 0 && !existeFrequenciaRegistradaTurma)
                 return string.Empty;
             else if (totalAulas == 0 && existeFrequenciaRegistradaTurma)
-                return FREQUENCIA_100;
+                return frequencia100Formatada;
 
             var porcentagemFrequenciaFinal = 100 - ((double)totalFaltasNaoCompensadas / totalAulas) * 100;
 
-            var percentualFrequenciaFinal = totalAulas == 0 ? "" : Math.Round(porcentagemFrequenciaFinal > 100 ? 100 : porcentagemFrequenciaFinal, 2).ToString();
+            var percentualFrequenciaFinal = totalAulas == 0 ? "" : Math.Round(porcentagemFrequenciaFinal > 100 ? 100 : porcentagemFrequenciaFinal, 2).ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
             return percentualFrequenciaFinal;
         }
 

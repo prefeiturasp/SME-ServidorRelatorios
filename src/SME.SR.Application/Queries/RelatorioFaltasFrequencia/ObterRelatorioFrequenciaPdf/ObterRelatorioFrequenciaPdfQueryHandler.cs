@@ -391,6 +391,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             model.Cabecalho.Usuario = request.Filtro.NomeUsuario;
             model.Cabecalho.RF = request.Filtro.CodigoRf;
+            model.Cabecalho.Modalidade = request.Filtro.Modalidade;
         }
 
         private static void DefinirNomeComponente(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)

@@ -124,7 +124,7 @@
     string MontarDadosTabela(List<SME.SR.Infra.AlunosAlteracaoNotasDto> alunosAlteracaoNotas, string componente, SME.SR.Infra.TurmaAlteracaoNotasDto turma)
     {
         var str = $@"<table class='tabela-alunos' style='border-bottom:none;'><tbody>";
-        
+
         alunosAlteracaoNotas.Sort((x, y) =>
         {
             var ret = x.Nome.CompareTo(y.Nome);
@@ -202,8 +202,9 @@
     {
         if (contadorQuebrarPagina > 0 && emAprovacao)
         {
+            var legenda = MontarLegenda();
             emAprovacao = false;
-            return MontarLegenda();
+            return legenda;
         }
         return "";
     }
@@ -227,7 +228,7 @@
         .body-relatorio {
             margin: 0.5cm auto;
             font-family: 'Roboto Mono';
-            width: 21cm;
+            width: 26cm;
             min-height: 29.7cm;
             background: white;
             color: #42474a;
