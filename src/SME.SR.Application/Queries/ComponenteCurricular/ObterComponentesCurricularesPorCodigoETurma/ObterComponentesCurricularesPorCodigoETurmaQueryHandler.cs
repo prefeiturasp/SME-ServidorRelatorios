@@ -28,7 +28,7 @@ namespace SME.SR.Application
 
                 return componentesDaTurma?.Select(c => new ComponenteCurricularPorTurma
                 {
-                    CodDisciplina = c.CodigoTerritorioSaber,
+                    CodDisciplina = c.Codigo,
                     CodDisciplinaPai = c.CodigoComponentePai(componentesApiEol),
                     BaseNacional = c.EhBaseNacional(componentesApiEol),
                     Compartilhada = c.EhCompartilhada(componentesApiEol),
