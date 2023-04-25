@@ -23,6 +23,8 @@ namespace SME.SR.Data
         private readonly string TURMA_TERCEIRO_ANO = "3";
         private readonly string DESCRICAO_SEMPREENCHIMENTO = "Sem Preenchimento";
         private readonly int ANO_ESCOLAR_2022 = 2022;
+        private readonly int ANO_ESCOLAR_2023 = 2023;
+        private readonly int PRIMEIRO_PERIODO = 1;
 
         public SondagemAnaliticaRepository(VariaveisAmbiente variaveisAmbiente, IAlunoRepository alunoRepository, IDreRepository dreRepository, IUeRepository ueRepository
             , ISondagemRelatorioRepository sondagemRelatorioRepository, ITurmaRepository turmaRepository)
@@ -228,7 +230,7 @@ namespace SME.SR.Data
                                 quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
 
-                            var totalSemPreenchimento = anoTurma.Key == TURMA_TERCEIRO_ANO
+                            var totalSemPreenchimento = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma)
                                     ? TotalSemPreenchimentoTerceiroAnoEscrita(anoTurma, quantidadeTotalAlunosEol)
                                     : TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(anoTurma, quantidadeTotalAlunosEol);
 
@@ -238,7 +240,7 @@ namespace SME.SR.Data
 
                             var semPreenchimentoRelatorio = valorSemPreenchimento > 0 ? (totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0;
 
-                            var totalDeAlunosNaSondagem = anoTurma.Key == TURMA_TERCEIRO_ANO ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio)
+                            var totalDeAlunosNaSondagem = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma) ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio)
                                                                                                  : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
 
 
@@ -276,6 +278,10 @@ namespace SME.SR.Data
             return retorno;
         }
 
+        private bool EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(FiltroRelatorioAnaliticoSondagemDto filtro, IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma)
+        {
+            return (anoTurma.Key == TURMA_TERCEIRO_ANO && (filtro.AnoLetivo <= ANO_ESCOLAR_2023 && filtro.Periodo == PRIMEIRO_PERIODO));
+        }
         private static int TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int quantidadeTotalAlunosEol)
         {
             return (quantidadeTotalAlunosEol - (anoTurma.Select(x => x.PreSilabico).Sum() + anoTurma.Select(x => x.SilabicoSemValor).Sum()
