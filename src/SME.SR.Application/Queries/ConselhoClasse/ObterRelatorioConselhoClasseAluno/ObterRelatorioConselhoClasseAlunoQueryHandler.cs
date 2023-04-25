@@ -148,9 +148,9 @@ namespace SME.SR.Application
                    request.FechamentoTurmaId,
                    request.CodigoAluno);
 
-                relatorio.RecomendacaoAluno = recomendacoes.RecomendacoesAluno;
-                relatorio.RecomendacaoFamilia = recomendacoes.RecomendacoesFamilia;
-                relatorio.AnotacoesPedagogicas = recomendacoes.AnotacoesPedagogicas;
+                relatorio.RecomendacaoAluno = recomendacoes?.RecomendacoesAluno;
+                relatorio.RecomendacaoFamilia = recomendacoes?.RecomendacoesFamilia;
+                relatorio.AnotacoesPedagogicas = recomendacoes?.AnotacoesPedagogicas;
 
                 SentrySdk.AddBreadcrumb("Obtendo ObterAnotacoesAluno", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 var anotacoes = await ObterAnotacoesAluno(
