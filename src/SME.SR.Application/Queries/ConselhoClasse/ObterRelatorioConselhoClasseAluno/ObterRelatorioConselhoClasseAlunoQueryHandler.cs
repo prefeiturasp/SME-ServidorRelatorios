@@ -184,9 +184,8 @@ namespace SME.SR.Application
             var totalDisciplinas = 0;
             listaGrupoMatrizComponenteComNotaFinal.ToList().ForEach(gmc =>
             {
-                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => !string.IsNullOrEmpty(cn.Frequencia)).Sum(gn => double.Parse(gn.Frequencia));
-                var percentualFrequencia = gmc.ComponentesComNotaRegencia?.Frequencia;
-                somaPercentuaisFrequencia += string.IsNullOrEmpty(percentualFrequencia) ? 0 : double.Parse(percentualFrequencia);
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
+                somaPercentuaisFrequencia += gmc.ComponentesComNotaRegencia?.Frequencia ?? 0;
                 totalDisciplinas += gmc.ComponentesComNota.Count();
                 totalDisciplinas += gmc.ComponentesComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
             });
@@ -199,9 +198,8 @@ namespace SME.SR.Application
             var totalDisciplinas = 0;
             listaGrupoMatrizComponenteComNotaBimestre.ToList().ForEach(gmc =>
             {
-                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => !string.IsNullOrEmpty(cn.Frequencia)).Sum(gn => double.Parse(gn.Frequencia));
-                var percentualFrequencia = gmc.ComponenteComNotaRegencia?.Frequencia;
-                somaPercentuaisFrequencia += string.IsNullOrEmpty(percentualFrequencia) ? 0 : double.Parse(percentualFrequencia);
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
+                somaPercentuaisFrequencia += gmc.ComponenteComNotaRegencia?.Frequencia ?? 0;
                 totalDisciplinas += gmc.ComponentesComNota.Count();
                 totalDisciplinas += gmc.ComponenteComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
             });
