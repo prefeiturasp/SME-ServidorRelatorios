@@ -5,6 +5,7 @@ namespace SME.SR.Data
 {
     public interface IDreRepository
     {
+        Task<IEnumerable<Dre>> ObterPorCodigos(string[] dreCodigos);
         Task<Dre> ObterPorCodigo(string dreCodigo);
         Task<IEnumerable<Dre>> ObterTodas();
         Task<Dre> ObterPorId(long dreId);

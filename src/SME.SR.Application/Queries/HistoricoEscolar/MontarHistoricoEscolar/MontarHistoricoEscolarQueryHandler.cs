@@ -51,6 +51,7 @@ namespace SME.SR.Application
                     var projetosDto = MontarComponentesNotasFrequencia(turmasHistorico, projetos, notasAluno, frequenciasAluno, request.MediasFrequencia, request.AreasConhecimento)?.ToList();
 
                     var tiposNotaDto = MapearTiposNota(agrupamentoTurmas.Key, request.TiposNota);
+                    var frequenciaGlobalDto = MapearFrequenciaGlobal(turmasHistorico, frequenciasAluno);
                     var pareceresDto = MapearPareceres(turmasHistorico, notasAluno);
 
                     var responsaveisUe = ObterResponsaveisUe(request.ImprimirDadosResponsaveis, request.DadosDiretor, request.DadosSecretario);
@@ -64,7 +65,7 @@ namespace SME.SR.Application
                         NomeDre = request.Dre.Nome,
                         Cabecalho = request.Cabecalho,
                         InformacoesAluno = aluno.Select(a => a.Aluno).FirstOrDefault(),
-                        DadosHistorico = ObterDadosHistorico(diversificadosDto, baseNacionalDto, enriquecimentoDto, projetosDto, tiposNotaDto, pareceresDto),
+                        DadosHistorico = ObterDadosHistorico(diversificadosDto, baseNacionalDto, enriquecimentoDto, projetosDto, tiposNotaDto, frequenciaGlobalDto, pareceresDto),
                         Modalidade = agrupamentoTurmas.Key,
                         Legenda = ObterLegenda(notasAluno, request.Transferencias, request.Legenda),
                         DadosData = request.DadosData,
@@ -114,7 +115,7 @@ namespace SME.SR.Application
             }
         }
 
-        private HistoricoEscolarNotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesDto> diversificadosDto, BaseNacionalComumDto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarDto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarDto> projetosDto, TiposNotaDto tiposNotaDto, ParecerConclusivoDto pareceresDto)
+        private HistoricoEscolarNotasFrequenciaDto ObterDadosHistorico(List<GruposComponentesCurricularesDto> diversificadosDto, BaseNacionalComumDto baseNacionalDto, List<ComponenteCurricularHistoricoEscolarDto> enriquecimentoDto, List<ComponenteCurricularHistoricoEscolarDto> projetosDto, TiposNotaDto tiposNotaDto, ParecerConclusivoFrequenciaGlobalDto frequenciaGlobalDto, ParecerConclusivoFrequenciaGlobalDto pareceresDto)
         {
             if ((diversificadosDto == null || !diversificadosDto.Any(d => d.PossuiNotaValida)) &&
                    (baseNacionalDto == null || baseNacionalDto.ObterComNotaValida == null) &&
@@ -129,6 +130,7 @@ namespace SME.SR.Application
                 EnriquecimentoCurricular = enriquecimentoDto,
                 ProjetosAtividadesComplementares = projetosDto,
                 TipoNota = tiposNotaDto,
+                FrequenciaGlobal = frequenciaGlobalDto,
                 ParecerConclusivo = pareceresDto
             };
         }
@@ -170,36 +172,70 @@ namespace SME.SR.Application
             };
         }
 
-        private ParecerConclusivoDto MapearPareceres(IEnumerable<Turma> turmas, IEnumerable<NotasAlunoBimestre> notas)
+        private ParecerConclusivoFrequenciaGlobalDto MapearPareceres(IEnumerable<Turma> turmas, IEnumerable<NotasAlunoBimestre> notas)
         {
-            ParecerConclusivoDto parecerConclusivoDto = new ParecerConclusivoDto();
+            ParecerConclusivoFrequenciaGlobalDto parecerConclusivoFrequenciaGlobalDto = new ParecerConclusivoFrequenciaGlobalDto();
 
             foreach (var turma in turmas)
             {
                 if (notas.Any(n => n.CodigoTurma == turma.Codigo))
                 {
                     if (turma.Ano == "1")
-                        parecerConclusivoDto.PrimeiroAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.PrimeiroAno = "Promovido";
                     else if (turma.Ano == "2")
-                        parecerConclusivoDto.SegundoAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.SegundoAno = "Promovido";
                     else if (turma.Ano == "3")
-                        parecerConclusivoDto.TerceiroAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.TerceiroAno = "Promovido";
                     else if (turma.Ano == "4")
-                        parecerConclusivoDto.QuartoAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.QuartoAno = "Promovido";
                     else if (turma.Ano == "5")
-                        parecerConclusivoDto.QuintoAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.QuintoAno = "Promovido";
                     else if (turma.Ano == "6")
-                        parecerConclusivoDto.SextoAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.SextoAno = "Promovido";
                     else if (turma.Ano == "7")
-                        parecerConclusivoDto.SetimoAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.SetimoAno = "Promovido";
                     else if (turma.Ano == "8")
-                        parecerConclusivoDto.OitavoAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.OitavoAno = "Promovido";
                     else if (turma.Ano == "9")
-                        parecerConclusivoDto.NonoAno = "Promovido";
+                        parecerConclusivoFrequenciaGlobalDto.NonoAno = "Promovido";
                 }
             }
 
-            return parecerConclusivoDto;
+            return parecerConclusivoFrequenciaGlobalDto;
+        }
+        
+        private ParecerConclusivoFrequenciaGlobalDto MapearFrequenciaGlobal(IEnumerable<Turma> turmas, IEnumerable<FrequenciaAluno> frequenciaAlunos)
+        {
+            ParecerConclusivoFrequenciaGlobalDto frequenciaGlobal = new ParecerConclusivoFrequenciaGlobalDto();
+
+            foreach (var turma in turmas)
+            {
+                var frequenciaGlobalTurma = ObterFrequenciaPorTurma(frequenciaAlunos.Where(a=> a.TurmaId.Equals(turma.Codigo)));
+                
+                if (frequenciaAlunos.Any(n => n.TurmaId == turma.Codigo))
+                {
+                    if (turma.Ano == "1")
+                        frequenciaGlobal.PrimeiroAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "2")
+                        frequenciaGlobal.SegundoAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "3")
+                        frequenciaGlobal.TerceiroAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "4")
+                        frequenciaGlobal.QuartoAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "5")
+                        frequenciaGlobal.QuintoAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "6")
+                        frequenciaGlobal.SextoAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "7")
+                        frequenciaGlobal.SetimoAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "8")
+                        frequenciaGlobal.OitavoAno = frequenciaGlobalTurma;
+                    else if (turma.Ano == "9")
+                        frequenciaGlobal.NonoAno = frequenciaGlobalTurma;
+                }
+            }
+
+            return frequenciaGlobal;
         }
 
         private List<GruposComponentesCurricularesDto> ObterGruposDiversificado(IEnumerable<Turma> turmas,
@@ -351,7 +387,7 @@ namespace SME.SR.Application
         {
             if (turma != null)
             {
-                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente);
+                var frequenciasAlunoParaTratar = frequenciaAlunos.Where(a => a.DisciplinaId == codigoComponente && a.TurmaId.Equals(turma.Codigo));
                 FrequenciaAluno frequenciaAluno;
 
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
@@ -376,10 +412,24 @@ namespace SME.SR.Application
                     frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
                 }
 
-                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia.ToString() ?? "100" : "100";
+                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? "100" : "100";
             }
             else
                 return null;
+        }
+        
+        private string ObterFrequenciaPorTurma(IEnumerable<FrequenciaAluno> frequenciaAlunos)
+        {
+            var frequenciaAluno = new FrequenciaAluno();
+            
+            foreach (var frequencia in frequenciaAlunos)
+            {
+                frequenciaAluno.TotalAulas += frequencia.TotalAulas;
+                frequenciaAluno.TotalAusencias += frequencia.TotalAusencias;
+                frequenciaAluno.TotalCompensacoes += frequencia.TotalCompensacoes;
+            }
+
+            return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? "100" : "100";
         }
 
         private string ObterNotaComponentePorTurma(Turma turma, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias)

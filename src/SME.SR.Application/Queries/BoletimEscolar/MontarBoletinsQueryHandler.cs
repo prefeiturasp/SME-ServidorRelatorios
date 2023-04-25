@@ -14,9 +14,12 @@ namespace SME.SR.Application
 {
     public class MontarBoletinsQueryHandler : IRequestHandler<MontarBoletinsQuery, List<RelatorioBoletimSimplesEscolarDto>>
     {
-        private const string FREQUENCIA_100 = "100";
+        private const double FREQUENCIA_100 = 100;
+        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;        
         private readonly IMediator mediator;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
+
+        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
 
         public MontarBoletinsQueryHandler(IMediator mediator,
                                           ITipoCalendarioRepository tipoCalendarioRepository)
@@ -107,7 +110,7 @@ namespace SME.SR.Application
                                 aluno.First().CodigoAluno.ToString(),
                                 aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio,
                                 aluno.First().ObterNomeFinal(),
-                                $"{percentualFrequenciaGlobal}%");
+                                $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%");
 
                             boletimAluno.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
 
@@ -165,7 +168,7 @@ namespace SME.SR.Application
 
         private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
         {
-            var componentesTurmaComAreaOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(a => a.AreaDoConhecimento.Ordem).ThenBy(b => b.AreaDoConhecimento.Id).ThenBy(d => d.Disciplina).ToList();
+            var componentesTurmaComAreaOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(d => d.Disciplina).ToList();
             var componentesTurmaComAreaSemOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && !w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(b => b.AreaDoConhecimento.Nome).ThenBy(b => b.Disciplina).ToList();
 
             var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null && !w.TerritorioSaber).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
@@ -318,8 +321,8 @@ namespace SME.SR.Application
             var possuiFrequenciaTurma = aulasCadastradas?.Any(nf => nf.Bimestre == bimestre);
             
             var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
-                frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequencia.ToString() ??
-                (frequenciasAlunoComponente.Any(fa =>fa.Bimestre ==bimestre) && possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? FREQUENCIA_100 : string.Empty);
+                frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ??
+                (frequenciasAlunoComponente.Any(fa =>fa.Bimestre ==bimestre) && possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? frequencia100Formatada : string.Empty);
 
             return String.IsNullOrEmpty(frequencia) ? String.Empty : frequencia;
         }
@@ -329,7 +332,7 @@ namespace SME.SR.Application
             if (!conselhoClassBimestres.Any(a => a == 0) || frequenciasAluno == null || !frequenciasAluno.Any())
                 return "-";
             else if (frequenciasAluno.FirstOrDefault(nf => nf.PeriodoEscolarId == null) != null)
-                return frequenciasAluno.FirstOrDefault(nf => nf.PeriodoEscolarId == null).PercentualFrequencia.ToString();
+                return frequenciasAluno.FirstOrDefault(nf => nf.PeriodoEscolarId == null).PercentualFrequenciaFormatado;
             else
             {
                 var frequenciaFinal = new FrequenciaAluno()
@@ -351,10 +354,10 @@ namespace SME.SR.Application
                         frequenciaFinal.AdicionarFrequenciaBimestre(p.Bimestre, frequencia != null ? frequencia.PercentualFrequencia : (double?)null);
                     });
 
-                    return frequenciaFinal.PercentualFrequenciaFinal.ToString();
+                    return frequenciaFinal.PercentualFrequenciaFinal?.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
                 }
 
-                return frequenciaFinal.PercentualFrequencia.ToString();
+                return frequenciaFinal.PercentualFrequenciaFormatado;
             }
         }
 

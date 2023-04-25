@@ -300,9 +300,10 @@ namespace SME.SR.Application
         {
 
             long[] alunosCodigos;
-            if (!filtros.AlunosCodigo.Any(a => a is null))
+            if (filtros.AlunosCodigo != null && filtros.AlunosCodigo.Length > 0 && !filtros.AlunosCodigo.Any(a => a is null))
                 alunosCodigos = filtros.AlunosCodigo.Select(long.Parse).ToArray();
-            else alunosCodigos = new long[0];
+            else
+                alunosCodigos = new long[0];
 
             var turmaCodigo = string.IsNullOrEmpty(filtros.TurmaCodigo) ? 0 : long.Parse(filtros.TurmaCodigo);
 
@@ -313,7 +314,7 @@ namespace SME.SR.Application
         {
 
             long[] alunosCodigos;
-            if (!filtros.AlunosCodigo.Any(a => a is null))
+            if (filtros.AlunosCodigo != null && filtros.AlunosCodigo.Length > 0 && !filtros.AlunosCodigo.Any(a => a is null))
                 alunosCodigos = filtros.AlunosCodigo.Select(long.Parse).ToArray();
             else alunosCodigos = new long[0];
 

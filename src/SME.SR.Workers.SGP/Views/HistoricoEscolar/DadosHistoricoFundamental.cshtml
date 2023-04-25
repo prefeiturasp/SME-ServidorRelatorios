@@ -60,7 +60,8 @@
                 @Html.Raw(ObterLinhasDiversificadas())
                 @Html.Raw(ObterLinhasEnriquecimentoCurricular())
                 @Html.Raw(ObterLinhasProjetosAtividadesComplementares())
-                @Html.Raw(ObterLinhasParecerConclusivo())
+                @Html.Raw(ObterLinhasParecerConclusivoFrequenciaGlobal("FREQUÊNCIA GLOBAL", Model.DadosHistorico?.FrequenciaGlobal))
+                @Html.Raw(ObterLinhasParecerConclusivoFrequenciaGlobal("PARECER CONCLUSIVO", Model.DadosHistorico?.ParecerConclusivo))
             </table>
             @Html.Raw(ObterLegenda())
         </div>
@@ -222,25 +223,24 @@
         return linhas;
     }
 
-    string ObterLinhasParecerConclusivo()
+    string ObterLinhasParecerConclusivoFrequenciaGlobal(string titulo, ParecerConclusivoFrequenciaGlobalDto parecerFrequencia)
     {
-        var parecer = Model.DadosHistorico?.ParecerConclusivo;
         var linhas = "";
 
-        if (parecer == null)
+        if (parecerFrequencia == null)
             return linhas;
 
         linhas = "<tr>";
-        linhas += "<td class='subTitulo texto-centralizado' colspan='3'>PARECER CONCLUSIVO</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.PrimeiroAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.SegundoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.TerceiroAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.QuartoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.QuintoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.SextoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.SetimoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.OitavoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecer.NonoAno}</td>";
+        linhas += $"<td class='subTitulo texto-centralizado' colspan='3'>{titulo}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiroAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.TerceiroAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.QuartoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.QuintoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SextoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SetimoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.OitavoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.NonoAno}</td>";
         linhas += "</tr>";
 
         return linhas;
