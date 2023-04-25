@@ -92,11 +92,11 @@ namespace SME.SR.Application
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                100
+                FrequenciaAluno.FormatarPercentual(100)
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequencia
+                frequenciaAluno?.PercentualFrequenciaFormatado
                 :
                 null;
             }
@@ -164,11 +164,11 @@ namespace SME.SR.Application
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                100
+                FrequenciaAluno.FormatarPercentual(100)
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequencia
+                frequenciaAluno?.PercentualFrequenciaFormatado
                 :
                 null;
             }
