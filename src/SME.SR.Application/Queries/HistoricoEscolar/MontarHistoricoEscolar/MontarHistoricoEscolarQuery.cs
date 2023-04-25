@@ -22,7 +22,7 @@ namespace SME.SR.Application
                                             DadosDataDto dadosData, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario,
                                             IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>> historicoUes,
                                             bool preencherDataImpressao, bool imprimirDadosResponsaveis,
-                                            string observacaoComplementar)
+                                            IEnumerable<FiltroHistoricoEscolarAlunosDto> filtroHistoricoAlunos)
         {
             Dre = dre;
             Ue = ue;
@@ -44,7 +44,7 @@ namespace SME.SR.Application
             DadosSecretario = dadosSecretario;
             PreencherDataImpressao = preencherDataImpressao;
             ImprimirDadosResponsaveis = imprimirDadosResponsaveis;
-            ObservacaoComplementar = observacaoComplementar;
+            FiltroHistoricoAlunos = filtroHistoricoAlunos;
         }
 
         public Dre Dre { get; set; }
@@ -67,6 +67,6 @@ namespace SME.SR.Application
         public LegendaDto Legenda { get; set; }
         public bool PreencherDataImpressao { get; set; }
         public bool ImprimirDadosResponsaveis { get; set; }
-        public string ObservacaoComplementar { get; set; }
+        public IEnumerable<FiltroHistoricoEscolarAlunosDto> FiltroHistoricoAlunos { get; set; }
     }
 }
