@@ -13,6 +13,8 @@ namespace SME.SR.Infra
 
         protected List<Func<T, object>> ListaDeAgrupamento { get; set; }
 
+        protected int TotalDeAgrupamentoOculto { get; set; }
+
         public List<Pagina> Paginas()
         {
             ListaDePaginas = new List<Pagina>();
@@ -119,7 +121,7 @@ namespace SME.SR.Infra
                     if (totalDeRegistro >= totalDeLinhas)
                     {
                         pagina++;
-                        totalDeRegistro = ListaDeAgrupamento.Count - 1;
+                        totalDeRegistro = ListaDeAgrupamento.Count - TotalDeAgrupamentoOculto;
                         dicionarioValores.Add(pagina, new List<T>());
                     }
                 }

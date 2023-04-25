@@ -18,6 +18,7 @@
     <EmbeddedResource Remove="fonts\**" />
     <None Remove="Commons\Exceptions\**" />
     <None Remove="fonts\**" />
+    <None Remove="healthchecksdb" />
   </ItemGroup>
 
   <ItemGroup>
