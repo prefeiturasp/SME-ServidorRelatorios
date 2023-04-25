@@ -236,7 +236,7 @@ namespace SME.SR.Application
                 if (frequenciasAlunoParaTratar == null || !frequenciasAlunoParaTratar.Any())
                 {
                     if (registroFrequenciaAluno.Any())
-                        return FrequenciaAluno.FormatarPercentual(100);
+                        return "100";
                     if (bimestre <= bimestreAtual)
                         return string.Empty;
                     return "-";
