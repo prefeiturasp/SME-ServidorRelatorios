@@ -14,7 +14,7 @@ namespace SME.SR.Data
         public int? AusenciasCompensadas { get; set; }
 
         [JsonProperty("Frequencia")]
-        public string Frequencia { get; set; }
+        public double? Frequencia { get; set; }
 
         [JsonProperty("EhEja")]
         public bool EhEja { get; set; }

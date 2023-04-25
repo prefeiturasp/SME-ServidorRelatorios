@@ -20,7 +20,7 @@ namespace SME.SR.Application
                 Componente = request.ComponenteCurricular.Disciplina,
                 Faltas = request.FrequenciaAluno?.TotalAusencias ?? 0,
                 AusenciasCompensadas = request.FrequenciaAluno?.TotalCompensacoes ?? 0,
-                Frequencia = (request.FrequenciaAluno.TotalAulas > 0 ? request.FrequenciaAluno?.PercentualFrequenciaFormatado : "100,00"),
+                Frequencia = (request.FrequenciaAluno.TotalAulas > 0 ? request.FrequenciaAluno?.PercentualFrequencia ?? 100 : 100),
                 NotaConceitoBimestre1 = notasComponente.FirstOrDefault(n => n.Bimestre == 1)?.NotaConceito,
                 NotaConceitoBimestre2 = notasComponente.FirstOrDefault(n => n.Bimestre == 2)?.NotaConceito,
                 NotaConceitoBimestre3 = notasComponente.FirstOrDefault(n => n.Bimestre == 3)?.NotaConceito,
