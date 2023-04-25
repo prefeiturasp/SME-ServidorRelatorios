@@ -102,11 +102,11 @@ namespace SME.SR.Application
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                FrequenciaAluno.FormatarPercentual(100)
+                100
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequenciaFormatado
+                frequenciaAluno?.PercentualFrequencia
                 :
                 null;
             }
@@ -115,7 +115,9 @@ namespace SME.SR.Application
             {
                 var percentualFrequencia2020 = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
                 frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia2020);
+
                 percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
+
             }
 
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
@@ -156,11 +158,11 @@ namespace SME.SR.Application
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                FrequenciaAluno.FormatarPercentual(100)
+                100
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequenciaFormatado
+                frequenciaAluno?.PercentualFrequencia
                 :
                 null;
             }
@@ -169,6 +171,7 @@ namespace SME.SR.Application
             {
                 var percentualFrequencia2020 = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
                 frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia2020);
+
                 percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
             }
 
