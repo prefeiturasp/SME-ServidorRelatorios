@@ -55,7 +55,7 @@ namespace SME.SR.Application
                     {
                         Componente = disciplina.Disciplina,
                         Faltas = frequenciaDisciplina?.Sum(x => x.TotalAusencias),
-                        Frequencia = FrequenciaAluno.FormatarPercentual(percentualFrequencia),
+                        Frequencia = percentualFrequencia,
                         Parecer = sintese
                     };
 

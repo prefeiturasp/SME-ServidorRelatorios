@@ -11,6 +11,6 @@ namespace SME.SR.Data
         public int? Faltas { get; set; }
 
         [JsonProperty("Frequencia")]
-        public string Frequencia { get; set; }
+        public double? Frequencia { get; set; }
     }
 }
