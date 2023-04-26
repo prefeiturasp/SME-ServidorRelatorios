@@ -86,24 +86,25 @@ namespace SME.SR.Application
         {            
             var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), turma.AnoLetivo));
 
-            double? percentualFrequencia = null;
+            string percentualFrequencia = null;
 
             if (disciplina.Frequencia)
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                100
+                FrequenciaAluno.FormatarPercentual(100)
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequencia
+                frequenciaAluno?.PercentualFrequenciaFormatado
                 :
                 null;
             }
 
             //Frequência especifica para 2020.
             if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
-                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
 
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaFinal()
             {
@@ -157,23 +158,24 @@ namespace SME.SR.Application
         {
             var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), turma.AnoLetivo));
             
-            double? percentualFrequencia = null;
+            string percentualFrequencia = null;
 
             if (disciplina.Frequencia)
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                100
+                FrequenciaAluno.FormatarPercentual(100)
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequencia
+                frequenciaAluno?.PercentualFrequenciaFormatado
                 :
                 null;
             }
 
             if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
-                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
 
             var notasComponente = ObterNotasComponente(disciplina, periodoEscolar, notasFechamentoAluno);
 
