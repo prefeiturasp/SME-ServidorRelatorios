@@ -68,7 +68,7 @@ namespace SME.SR.Application
                 var turma = await ObterDadosTurma(fechamentoTurma.Turma.Codigo);
 
                 relatorio.Dre = turma.Dre.Abreviacao;
-                relatorio.Ue = turma.Ue.Nome;
+                relatorio.Ue = turma.Ue.NomeRelatorio;
 
                 SentrySdk.AddBreadcrumb($"Obtendo dados do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 var dadosAluno = await ObterDadosAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno);
@@ -184,8 +184,9 @@ namespace SME.SR.Application
             var totalDisciplinas = 0;
             listaGrupoMatrizComponenteComNotaFinal.ToList().ForEach(gmc =>
             {
-                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
-                somaPercentuaisFrequencia += gmc.ComponentesComNotaRegencia?.Frequencia ?? 0;
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => !string.IsNullOrEmpty(cn.Frequencia)).Sum(gn => double.Parse(gn.Frequencia));
+                var percentualFrequencia = gmc.ComponentesComNotaRegencia?.Frequencia;
+                somaPercentuaisFrequencia += string.IsNullOrEmpty(percentualFrequencia) ? 0 : double.Parse(percentualFrequencia);
                 totalDisciplinas += gmc.ComponentesComNota.Count();
                 totalDisciplinas += gmc.ComponentesComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
             });
@@ -198,8 +199,9 @@ namespace SME.SR.Application
             var totalDisciplinas = 0;
             listaGrupoMatrizComponenteComNotaBimestre.ToList().ForEach(gmc =>
             {
-                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
-                somaPercentuaisFrequencia += gmc.ComponenteComNotaRegencia?.Frequencia ?? 0;
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => !string.IsNullOrEmpty(cn.Frequencia)).Sum(gn => double.Parse(gn.Frequencia));
+                var percentualFrequencia = gmc.ComponenteComNotaRegencia?.Frequencia;
+                somaPercentuaisFrequencia += string.IsNullOrEmpty(percentualFrequencia) ? 0 : double.Parse(percentualFrequencia);
                 totalDisciplinas += gmc.ComponentesComNota.Count();
                 totalDisciplinas += gmc.ComponenteComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
             });
