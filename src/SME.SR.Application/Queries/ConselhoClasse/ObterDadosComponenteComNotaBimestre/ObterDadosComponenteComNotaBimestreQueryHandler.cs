@@ -94,17 +94,17 @@ namespace SME.SR.Application
             var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), periodoEscolar.Id,new int[] { }));
 
             
-            double? percentualFrequencia = null;
+            string percentualFrequencia = null;
 
             if (disciplina.Frequencia)
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                100
+                FrequenciaAluno.FormatarPercentual(100)
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequencia
+                frequenciaAluno?.PercentualFrequenciaFormatado
                 :
                 null;
             }
@@ -113,7 +113,7 @@ namespace SME.SR.Application
             {
                 var percentualFrequencia2020 = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
                 frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia2020);
-                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
             }
 
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaBimestre()
@@ -163,17 +163,17 @@ namespace SME.SR.Application
         {
             var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), periodoEscolar.Id,new int[] { }));
             
-            double? percentualFrequencia = null;
+            string percentualFrequencia = null;
 
             if (disciplina.Frequencia)
             {
                 percentualFrequencia = frequenciaAluno == null && turmaPossuiFrequenciaRegistrada
                 ?
-                100
+                FrequenciaAluno.FormatarPercentual(100)
                 :
                 frequenciaAluno.TotalAulas > 0
                 ?
-                frequenciaAluno?.PercentualFrequencia
+                frequenciaAluno?.PercentualFrequenciaFormatado
                 :
                 null;
             }
@@ -182,7 +182,7 @@ namespace SME.SR.Application
             {
                 var percentualFrequencia2020 = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
                 frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia2020);
-                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal;
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
             }
 
             var conselhoClasseComponente = new ComponenteComNotaBimestre()
