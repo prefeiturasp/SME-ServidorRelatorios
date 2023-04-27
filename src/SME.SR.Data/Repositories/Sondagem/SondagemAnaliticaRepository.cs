@@ -785,10 +785,9 @@ namespace SME.SR.Data
                                                                         x.AnoTurma == anoTurmaItem.Key.AnoTurma &&
                                                                         x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta &&
                                                                         x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO).ToList();
-                        var totalRespostas = perguntasRespostasUe.Sum(x => x.QtdRespostas);
-                        if (totalDeAlunos < totalRespostas) 
-                             totalDeAlunos = totalRespostas;
 
+                        totalDeAlunos = ObterTotalAlunosOuTotalRespostas_NumerosIAD(perguntasRespostasUe, totalDeAlunos);
+                        
                         var relatorioSondagemAnaliticoNumero = relatorioSondagemAnaliticoNumeroIad.Respostas.Where(x => x.Ano.ToString() == anoTurmaItem.Key.AnoTurma && x.Ue == ue.TituloTipoEscolaNome).FirstOrDefault();
                         if (relatorioSondagemAnaliticoNumero == null)
                         {
@@ -922,6 +921,12 @@ namespace SME.SR.Data
 
                         var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma).Select(x => x.QuantidadeAluno).Sum();
 
+                        var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo &&
+                                                                        x.AnoTurma == anoTurmaItem.Key.AnoTurma &&
+                                                                        x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta).ToList();
+
+                        totalDeAlunos = ObterTotalAlunosOuTotalRespostas_AditivoMultiplicativo(perguntasRespostasUe, totalDeAlunos);
+
                         var respostaSondagemAnaliticoCampoAditivoMultiplicativoDto = relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Where(x => x.Ano == int.Parse(anoTurmaItem.Key.AnoTurma) && x.Ue == ue.TituloTipoEscolaNome).FirstOrDefault();
                         if (respostaSondagemAnaliticoCampoAditivoMultiplicativoDto == null)
                         {
@@ -935,7 +940,7 @@ namespace SME.SR.Data
                             relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Add(respostaSondagemAnaliticoCampoAditivoMultiplicativoDto);
                         }
 
-                        var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
+                        
                         var respostaSondagemAnaliticoOrdem = ObterRespostaSondagemAnaliticoOrdemDto(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma,
                                                                                                     anoTurmaItem.Key.OrdemPergunta, descricaoPergunta,
                                                                                                     totalDeAlunos);
@@ -1218,13 +1223,34 @@ namespace SME.SR.Data
             return orderTitle;
 
         }
+
+        private int ObterTotalAlunosOuTotalRespostas_AditivoMultiplicativo(List<PerguntaRespostaOrdemDto> perguntasRespostasUe, int totalAlunos)
+        {
+            var totalRespostas = 0;
+            if (perguntasRespostasUe != null && perguntasRespostasUe.Any())
+                totalRespostas = perguntasRespostasUe.GroupBy(pergunta => pergunta.SubPerguntaDescricao).Select(subpergunta => subpergunta.Sum(x => x.QtdRespostas)).Max();
+            if (totalAlunos < totalRespostas)
+                return totalRespostas;
+            return totalAlunos;
+        }
+
+        private int ObterTotalAlunosOuTotalRespostas_NumerosIAD(List<PerguntaRespostaOrdemDto> perguntasRespostasUe, int totalAlunos)
+        {
+            var totalRespostas = 0;
+            if (perguntasRespostasUe != null && perguntasRespostasUe.Any())
+                totalRespostas = perguntasRespostasUe.Sum(x => x.QtdRespostas);
+            if (totalAlunos < totalRespostas)
+                return totalRespostas;
+            return totalAlunos;
+        }
+
         private RespostaOrdemMatematicaDto ObterRespostaSondagemAnaliticoOrdemDto(List<PerguntaRespostaOrdemDto> perguntasRepostasUe,
                                                                                   string anoTurma, int ordemPergunta, string descricaoPergunta, int totalDeAlunos)
         {
             var respostaSondagemAnaliticoIdeiaDto = new RespostaMatematicaDto();
             var respostaSondagemAnaliticoResultadoDto = new RespostaMatematicaDto();
 
-            var perguntasRespostas = perguntasRepostasUe.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Ideia").ToList();
+            var perguntasRespostas = perguntasRepostasUe.Where(x => x.SubPerguntaDescricao == "Ideia").ToList();
             respostaSondagemAnaliticoIdeiaDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoIdeiaDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoIdeiaDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
@@ -1233,7 +1259,7 @@ namespace SME.SR.Data
                                     respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
             respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
 
-            perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
+            perguntasRespostas = perguntasRepostasUe?.Where(x => x.SubPerguntaDescricao == "Resultado").ToList();
             respostaSondagemAnaliticoResultadoDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoResultadoDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoResultadoDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
