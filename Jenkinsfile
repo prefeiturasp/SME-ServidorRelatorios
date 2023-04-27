@@ -37,7 +37,7 @@ pipeline {
         }
 	    
         stage('Deploy'){
-            when { anyOf {  branch 'master'; branch 'main' || env.branchname == 'homolog' || env.branchname == 'release' } }        
+            when { anyOf {  branch 'master'; branch 'main' ; branch 'homolog'; branch 'release'; branch 'release-r2'; } }        
             steps {
                 script{
                     if ( env.branchname == 'main' ||  env.branchname == 'master' ) {
@@ -48,22 +48,15 @@ pipeline {
                         }
                     }
 					
-					withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
-						sh('cp $config '+"$home"+'/.kube/config')
-						sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
-						sh('rm -f '+"$home"+'/.kube/config')
-					}
+                          withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
+                            sh('cp $config '+"$home"+'/.kube/config')
+                            sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
+                            sh('rm -f '+"$home"+'/.kube/config')
+                          }
                 }
             }           
         }    
     }
-
-  post {
-    success { sendTelegram("🚀 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Success \nLog: \n${env.BUILD_URL}console") }
-    unstable { sendTelegram("💣 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Unstable \nLog: \n${env.BUILD_URL}console") }
-    failure { sendTelegram("💥 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Failure \nLog: \n${env.BUILD_URL}console") }
-    aborted { sendTelegram ("😥 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Aborted \nLog: \n${env.BUILD_URL}console") }
-  }
 }
 def sendTelegram(message) {
     def encodedMessage = URLEncoder.encode(message, "UTF-8")
