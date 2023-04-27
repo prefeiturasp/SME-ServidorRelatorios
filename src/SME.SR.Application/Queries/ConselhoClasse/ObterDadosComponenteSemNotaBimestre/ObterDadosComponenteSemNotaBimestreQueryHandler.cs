@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace SME.SR.Application
     public class ObterDadosComponenteSemNotaBimestreQueryHandler : IRequestHandler<ObterDadosComponenteSemNotaBimestreQuery, IEnumerable<GrupoMatrizComponenteSemNotaBimestre>>
     {
         private readonly IMediator mediator;
+        private readonly IComponenteCurricularRepository componenteCurricularRepository;
 
-        public ObterDadosComponenteSemNotaBimestreQueryHandler(IMediator mediator)
+        public ObterDadosComponenteSemNotaBimestreQueryHandler(IMediator mediator, IComponenteCurricularRepository componenteCurricularRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
         }
 
         public async Task<IEnumerable<GrupoMatrizComponenteSemNotaBimestre>> Handle(ObterDadosComponenteSemNotaBimestreQuery request, CancellationToken cancellationToken)
@@ -74,11 +77,16 @@ namespace SME.SR.Application
             return lstGruposMatrizCompSemNota;
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorTurma(string codigoTurma)
+        private async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> ObterComponentesCurricularesPorTurma(string codigoTurma)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery()
+            var componentes = await componenteCurricularRepository.ListarComponentes();
+            var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+
+            return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery()
             {
-                CodigoTurma = codigoTurma
+                CodigosTurma = new string[] { codigoTurma },
+                ComponentesCurriculares = componentes,
+                GruposMatriz = gruposMatriz
             });
         }
     }

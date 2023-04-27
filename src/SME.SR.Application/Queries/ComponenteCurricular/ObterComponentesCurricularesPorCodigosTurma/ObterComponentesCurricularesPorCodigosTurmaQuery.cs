@@ -9,5 +9,17 @@ namespace SME.SR.Application
         public string[] CodigosTurma { get; set; }
         public IEnumerable<ComponenteCurricular> ComponentesCurriculares { get; set; }
         public IEnumerable<ComponenteCurricularGrupoMatriz> GruposMatriz { get; set; }
+
+        public ObterComponentesCurricularesPorCodigosTurmaQuery(string[] codigosTurma, IEnumerable<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
+        {
+            CodigosTurma = codigosTurma;
+            ComponentesCurriculares = componentesCurriculares;
+            GruposMatriz = gruposMatriz;
+        }
+
+        public ObterComponentesCurricularesPorCodigosTurmaQuery()
+        {
+            
+        }
     }
 }

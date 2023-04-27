@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace SME.SR.Application
     public class ObterDadosComponenteComNotaBimestreQueryHandler : IRequestHandler<ObterDadosComponenteComNotaBimestreQuery, IEnumerable<GrupoMatrizComponenteComNotaBimestre>>
     {
         private IMediator mediator;
+        private readonly IComponenteCurricularRepository componenteCurricularRepository;
 
-        public ObterDadosComponenteComNotaBimestreQueryHandler(IMediator mediator)
+        public ObterDadosComponenteComNotaBimestreQueryHandler(IMediator mediator, IComponenteCurricularRepository componenteCurricularRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
+            this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof (componenteCurricularRepository));
         }
 
         public async Task<IEnumerable<GrupoMatrizComponenteComNotaBimestre>> Handle(ObterDadosComponenteComNotaBimestreQuery request, CancellationToken cancellationToken)
@@ -39,7 +42,7 @@ namespace SME.SR.Application
                 var lstCompComNota = new List<ComponenteComNotaBimestre>();
                 ComponenteFrequenciaRegenciaBimestre compRegenciaComNota = null;
 
-                foreach (var disciplina in grupoDisciplinasMatriz)
+                foreach (var disciplina in grupoDisciplinasMatriz.OrderBy(g=> g.Disciplina).ToList())
                 {
                     // Carrega Frequencia Aluno
                     var frequenciaAluno = await mediator.Send(new ObterFrequenciaAlunoQuery()
@@ -83,12 +86,7 @@ namespace SME.SR.Application
 
         private async Task<ComponenteFrequenciaRegenciaBimestre> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Usuario usuario)
         {
-            var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesRegenciaQuery()
-            {
-                Turma = turma,
-                CdComponenteCurricular = disciplina.CodDisciplina,
-                Usuario = usuario
-            });
+            var componentesRegencia = await ObterComponentesRegenciaDaTurma(turma.Codigo);
 
             if (componentesRegencia == null || !componentesRegencia.Any())
                 return null;            
@@ -127,12 +125,27 @@ namespace SME.SR.Application
                 PermiteRegistroFrequencia = disciplina.Frequencia
             };
 
-            foreach (var componenteRegencia in componentesRegencia)
+            foreach (var componenteRegencia in componentesRegencia.OrderBy(c=> c.Disciplina).ToList())
             {
-                conselhoClasseComponente.ComponentesCurriculares.Add(ObterNotasRegencia(componenteRegencia, periodoEscolar, notasConselhoClasse, notasFechamento, turma));
+                var componente = new ComponenteCurricularPorTurma()
+                {
+                    Disciplina = componenteRegencia.Disciplina,
+                    CodDisciplina = componenteRegencia.CodDisciplina
+                };
+
+                conselhoClasseComponente.ComponentesCurriculares.Add(ObterNotasRegencia(componente, periodoEscolar, notasConselhoClasse, notasFechamento, turma));
             }
 
             return conselhoClasseComponente;
+        }
+
+        private async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> ObterComponentesRegenciaDaTurma(string codigoTurma)
+        {
+            var componentes = await componenteCurricularRepository.ListarComponentes();
+            var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+
+            var componentesDaTurma = await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(new string[] {codigoTurma}, componentes, gruposMatriz));
+            return componentesDaTurma.Any() ? componentesDaTurma.Where(c=> c.Regencia).ToList() : null;
         }
 
         private ComponenteRegenciaComNotaBimestre ObterNotasRegencia(ComponenteCurricularPorTurma componenteCurricular, PeriodoEscolar periodoEscolar, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Turma turma)
@@ -255,9 +268,20 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorTurma(string codigoTurma)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery()
+            var componentes = await componenteCurricularRepository.ListarComponentes();
+            var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+
+            var componentesDaTurma =  await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(new string[] { codigoTurma }, componentes, gruposMatriz));
+
+            return componentesDaTurma.Select(c => new ComponenteCurricularPorTurma()
             {
-                CodigoTurma = codigoTurma
+                Disciplina = c.Disciplina,
+                CodDisciplina = c.CodDisciplina,
+                Frequencia = c.Frequencia,
+                LancaNota = c.LancaNota,
+                Regencia = c.Regencia,
+                TerritorioSaber = c.TerritorioSaber,
+                GrupoMatriz = c.GrupoMatriz
             });
         }
 
