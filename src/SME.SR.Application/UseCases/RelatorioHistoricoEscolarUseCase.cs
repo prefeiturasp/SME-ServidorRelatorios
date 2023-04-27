@@ -74,6 +74,8 @@ namespace SME.SR.Application
             var turmasCodigo = todasTurmas.Select(a => a.Codigo);
             var alunosCodigo = todosAlunos.Select(a => a.Codigo);
 
+            await CarregarObservacoes(filtros, alunosCodigo);
+
             IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>> historicoUes = null;
 
             if (todosAlunos != null && todosAlunos.Any())
@@ -462,6 +464,14 @@ namespace SME.SR.Application
 
             var resultado = sb.ToString().Replace("\t", "");
             return resultado.Substring(0, resultado.Length - 2);
+        }
+
+        private async Task CarregarObservacoes(FiltroHistoricoEscolarDto filtroDto, IEnumerable<string> alunosCodigos)
+        {
+            if (filtroDto.Alunos == null || !filtroDto.Alunos.Any())
+            {
+                filtroDto.Alunos = await mediator.Send(new ObterObservacoesDosAlunosNoHistoricoEscolarQuery(alunosCodigos.ToArray()));
+            }
         }
     }
 }
