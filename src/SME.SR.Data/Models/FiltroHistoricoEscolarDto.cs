@@ -17,10 +17,4 @@ namespace SME.SR.Data
         public int Semestre { get; set; }
         public Usuario Usuario { get; set; }
     }
-
-    public class FiltroHistoricoEscolarAlunosDto
-    {
-        public string AlunoCodigo { get; set; }
-        public string ObservacaoComplementar { get; set; }
-    }
 }
