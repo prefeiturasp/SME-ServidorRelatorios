@@ -8,6 +8,7 @@ using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.Xml;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,12 @@ namespace SME.SR.Application
             var relatorio = new RelatorioFrequenciaIndividualDto();
             var alunosSelecionados = new List<AlunoNomeDto>();
             var turma = await ObterDadosDaTurma(request.FiltroRelatorio.TurmaCodigo);
+            var componenteCurricularId = await VerificaSeComponenteEhTerritorioERetornaCodigoExtenso(turma.Codigo, Convert.ToInt64(long.Parse(request.FiltroRelatorio.ComponenteCurricularId)));
+
+            var componentesIds = componenteCurricularId.ToString().Equals(request.FiltroRelatorio.ComponenteCurricularId)
+                ? new string[] { componenteCurricularId.ToString() }
+                : new string[] { componenteCurricularId.ToString(), request.FiltroRelatorio.ComponenteCurricularId };
+
             await MapearCabecalho(relatorio, request.FiltroRelatorio, turma);
 
             var tipoCalendarioId = await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma));
@@ -42,7 +49,7 @@ namespace SME.SR.Application
                 await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
 
             int aulasDadas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(turma.Codigo, tipoCalendarioId,
-                long.Parse(request.FiltroRelatorio.ComponenteCurricularId),
+                componentesIds,
                 int.Parse(request.FiltroRelatorio.Bimestre)));
 
             var bimestre = int.Parse(request.FiltroRelatorio.Bimestre);
@@ -105,12 +112,12 @@ namespace SME.SR.Application
 
                     var dadosFrequencia = (await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(
                         bimestreItem.ToString(), codigosAlunos, request.FiltroRelatorio.TurmaCodigo,
-                        TipoFrequenciaAluno.PorDisciplina, request.FiltroRelatorio.ComponenteCurricularId))).ToList();
+                        TipoFrequenciaAluno.PorDisciplina, componentesIds))).ToList();
 
                     if (request.FiltroRelatorio.ImprimirFrequenciaDiaria)
                         frequenciasDiarias = await mediator.Send(new ObterFrequenciaAlunoDiariaQuery(
                             request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo,
-                            request.FiltroRelatorio.ComponenteCurricularId));
+                            componentesIds));
                     else
                         dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(
                             alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo,
@@ -149,6 +156,23 @@ namespace SME.SR.Application
             }
 
             return relatorioFinal;
+        }
+
+        private async Task<long> VerificaSeComponenteEhTerritorioERetornaCodigoExtenso(string turmaCodigo, long componenteCurricularId)
+        {
+            bool verificaSeEhTerritorio = await mediator.Send(new VerificaSeComponenteEhTerritorioQuery(componenteCurricularId));
+
+            if (verificaSeEhTerritorio)
+            {
+                var componentesCurricularesTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(turmaCodigo, new long[] { componenteCurricularId }));
+
+                if (componentesCurricularesTurma.Any() && componentesCurricularesTurma != null)
+                    return componentesCurricularesTurma.FirstOrDefault().CodigoTerritorioSaber > 0 
+                        ? componentesCurricularesTurma.FirstOrDefault().ObterCodigoComponenteCurricular(turmaCodigo)
+                        : componenteCurricularId;
+            }
+
+            return componenteCurricularId;
         }
 
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, RelatorioFrequenciaIndividualAlunosDto aluno)
