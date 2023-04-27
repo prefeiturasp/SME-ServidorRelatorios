@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -37,16 +37,9 @@ namespace SME.SR.Application
             if (recomendacoes == null || 
                 (!ContemRecomendacoesAluno(recomendacoes) &&
                  !ContemRecomendacoesFamilia(recomendacoes))
-               )
-            {
-                var recomendacoesGeral = await conselhoClasseRecomendacaoRepository.ObterTodos();
-
-                return new RecomendacaoConselhoClasseAluno
-                {
-                    RecomendacoesAluno = MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Aluno).Select(b => b.Recomendacao)),
-                    RecomendacoesFamilia = MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Familia).Select(b => b.Recomendacao)),
-                };
-            }
+               ) 
+              return null;
+            
 
             return FormatarRecomendacoes(recomendacoes);
         }
