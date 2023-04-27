@@ -37,7 +37,7 @@ pipeline {
         }
 	    
         stage('Deploy'){
-            when { anyOf {  branch 'master'; branch 'main' || env.branchname == 'homolog' || env.branchname == 'release' } }        
+            when { anyOf {  branch 'master'; branch 'main' ; branch 'homolog'; branch 'release'; branch 'release-r2'; } }        
             steps {
                 script{
                     if ( env.branchname == 'main' ||  env.branchname == 'master' ) {
@@ -48,11 +48,11 @@ pipeline {
                         }
                     }
 					
-					withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
-						sh('cp $config '+"$home"+'/.kube/config')
-						sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
-						sh('rm -f '+"$home"+'/.kube/config')
-					}
+                          withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
+                            sh('cp $config '+"$home"+'/.kube/config')
+                            sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
+                            sh('rm -f '+"$home"+'/.kube/config')
+                          }
                 }
             }           
         }    
