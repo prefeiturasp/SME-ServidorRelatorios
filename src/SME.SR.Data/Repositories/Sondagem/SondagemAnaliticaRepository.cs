@@ -231,7 +231,7 @@ namespace SME.SR.Data
                                 ? TotalSemPreenchimentoTerceiroAnoEscrita(anoTurma, quantidadeTotalAlunosEol)
                                 : TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(anoTurma, quantidadeTotalAlunosEol);
 
-                            var semPreenchimentoRelatorio = totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum();//valorSemPreenchimento > 0 ? (totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0;
+                            var semPreenchimentoRelatorio = totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum();
 
                             var totalDeAlunosNaSondagem = anoTurma.Key == TURMA_TERCEIRO_ANO ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio)
                                                                                                  : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
