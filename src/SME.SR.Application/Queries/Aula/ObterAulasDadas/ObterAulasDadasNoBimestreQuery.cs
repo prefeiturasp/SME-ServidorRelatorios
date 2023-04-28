@@ -11,12 +11,20 @@ namespace SME.SR.Application
         {
             TurmaCodigo = turmaCodigo;
             TipoCalendarioId = tipoCalendarioId;
-            ComponenteCurricularCodigo = componenteCurricularCodigo;
+            ComponentesCurricularesCodigo = new string[] { componenteCurricularCodigo.ToString() };
+            Bimestre = bimestre;
+        }
+
+        public ObterAulasDadasNoBimestreQuery(string turmaCodigo, long tipoCalendarioId, string[] componentesCurricularesCodigo, int bimestre)
+        {
+            TurmaCodigo = turmaCodigo;
+            TipoCalendarioId = tipoCalendarioId;
+            ComponentesCurricularesCodigo = componentesCurricularesCodigo;
             Bimestre = bimestre;
         }
 
         public string TurmaCodigo { get; set; }
-        public long ComponenteCurricularCodigo { get; set; }
+        public string[] ComponentesCurricularesCodigo { get; set; }
         public long TipoCalendarioId { get; set; }
         public int Bimestre { get; set; }
     }

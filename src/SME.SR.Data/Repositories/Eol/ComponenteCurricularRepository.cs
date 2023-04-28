@@ -382,5 +382,15 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<long>(sql, new { componenteCurricularId});
             }
         }
+
+        public async Task<bool> VerificaSeComponenteEhTerritorio(long componenteCurricularId)
+        {
+            string sql = "select eh_territorio from componente_curricular where id = @componenteCurricularId";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<bool>(sql, new { componenteCurricularId });
+            }
+        }
     }
 }
