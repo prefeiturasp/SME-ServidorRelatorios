@@ -785,7 +785,7 @@ namespace SME.SR.Data
                                                                         x.AnoTurma == anoTurmaItem.Key.AnoTurma &&
                                                                         x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta &&
                                                                         x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO).ToList();
-
+                        
                         totalDeAlunos = ObterTotalAlunosOuTotalRespostas_NumerosIAD(perguntasRespostasUe, totalDeAlunos);
                         
                         var relatorioSondagemAnaliticoNumero = relatorioSondagemAnaliticoNumeroIad.Respostas.Where(x => x.Ano.ToString() == anoTurmaItem.Key.AnoTurma && x.Ue == ue.TituloTipoEscolaNome).FirstOrDefault();
@@ -920,10 +920,11 @@ namespace SME.SR.Data
                         if (string.IsNullOrEmpty(descricaoPergunta)) continue;
 
                         var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma).Select(x => x.QuantidadeAluno).Sum();
-
+                        
                         var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo &&
                                                                         x.AnoTurma == anoTurmaItem.Key.AnoTurma &&
-                                                                        x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta).ToList();
+                                                                        x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta &&
+                                                                        x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO).ToList();
 
                         totalDeAlunos = ObterTotalAlunosOuTotalRespostas_AditivoMultiplicativo(perguntasRespostasUe, totalDeAlunos);
 
