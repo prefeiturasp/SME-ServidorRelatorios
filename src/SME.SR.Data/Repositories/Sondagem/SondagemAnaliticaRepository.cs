@@ -331,18 +331,17 @@ namespace SME.SR.Data
                             var quantidadeTotalAlunosEol = 0;
                             var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).ToList();
 
-                            if (turmasComSondagem.Any())
+                            if (turmasComSondagem.Any() && filtro.AnoLetivo > ANO_ESCOLAR_2022)
                                 quantidadeTotalAlunosEol = await ObterTotalAlunosAtivosPorTurmaEPeriodo(turmasComSondagem, periodoFixo.DataFim);
                             else
                                 quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
-                            var semPreenchimento = (quantidadeTotalAlunosEol - (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum()
-                                                                                                                  + anoTurma.Select(x => x.Nivel3).Sum() + anoTurma.Select(x => x.Nivel4).Sum()));
+                            var totalRepostas = (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
+                                                + anoTurma.Select(x => x.Nivel4).Sum());
 
+                            var semPreenchimento = quantidadeTotalAlunosEol < totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
 
-
-
-                            int valorSemTotalPreenchimento = anoComValorSemPreenchimento.Where(x => x.Ano == anoTurma.Key).Select(x => x.Valor).Sum();
+                            var valorSemTotalPreenchimento = semPreenchimento >= 0 ? semPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum();
 
                             var totalDeAlunosNaSondagem = TotaldeAlunosPorAnoLeitura(semPreenchimento, anoTurma, valorSemTotalPreenchimento);
 
@@ -353,7 +352,7 @@ namespace SME.SR.Data
                                 Nivel2 = anoTurma.Select(x => x.Nivel2).Sum(),
                                 Nivel3 = anoTurma.Select(x => x.Nivel3).Sum(),
                                 Nivel4 = anoTurma.Select(x => x.Nivel4).Sum(),
-                                SemPreenchimento = valorSemTotalPreenchimento > 0 ? (semPreenchimento >= 0 ? semPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0,
+                                SemPreenchimento = semPreenchimento,
                                 TotalDeAlunos = totalDeAlunosNaSondagem,
                                 Ano = int.Parse(anoTurma.Key),
                                 TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurma.Key),
@@ -383,7 +382,6 @@ namespace SME.SR.Data
 
 
             return (semPreenchimento + (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum() + anoTurma.Select(x => x.Nivel4).Sum()));
-
         }
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeituraDeVozAlta(FiltroRelatorioAnaliticoSondagemDto filtro)
