@@ -19,7 +19,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<int> ObterAulasDadas(string codigoTurma, string componenteCurricularCodigo, long tipoCalendarioId, int bimestre)
+        public async Task<int> ObterAulasDadas(string codigoTurma, string[] componentesCurricularesCodigo, long tipoCalendarioId, int bimestre)
         {
             var query = new StringBuilder(@"select
 	                        Coalesce(SUM(a.quantidade) filter (
@@ -48,13 +48,13 @@ namespace SME.SR.Data
 	                        and not tp.excluido
 	                        and ap.tipo_calendario_id = @tipoCalendarioId
 	                        and ap.turma_id = @codigoTurma
-	                        and ap.disciplina_id = @componenteCurricularCodigo
+	                        and ap.disciplina_id = any(@componentesCurricularesCodigo)
                             and p.bimestre = @bimestre");
           
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componenteCurricularCodigo, bimestre });
+                return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componentesCurricularesCodigo, bimestre });
             }
         }
 
