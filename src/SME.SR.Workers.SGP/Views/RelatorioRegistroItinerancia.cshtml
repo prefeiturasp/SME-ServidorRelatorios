@@ -351,12 +351,17 @@
                             @{
                                 var descritivoEstudante = registros.Alunos.ToList()[i].DescritivoEstudante;
                                 int numeroLinhasDE = CalcularLinhas(descritivoEstudante.Length);
-                                if (!quebrou) {
+                                @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasDE))
+                                if (!quebrou)
+                                {
+                                    if (i > 0)
+                                    {
+                                        @Html.Raw(EspacoEmBranco());
+                                        contadorQuebrarPagina++;
+                                     }
                                     @Html.Raw(MontarLinhaSimples(estudante))
                                     contadorQuebrarPagina++;
                                 }
-
-                                @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasDE))
                                 MontarSecoes("DESCRITIVO DO ESTUDANTE", descritivoEstudante);
 
                                 int numeroLinhasAS = CalcularLinhas(acompanhamentoSituacao.Length); 
@@ -366,13 +371,6 @@
                                 int numeroLinhasEncaminhamentos = CalcularLinhas(!string.IsNullOrEmpty(encaminhamentos) ? encaminhamentos.Length : 0); 
                                 @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasEncaminhamentos))
                                 @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", encaminhamentos))
-
-                                @if (!quebrou)
-                                {
-                                    @Html.Raw(EspacoEmBranco());
-                                    contadorQuebrarPagina++;
-                                }
-
                             }
 
                         </tbody>
