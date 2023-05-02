@@ -50,9 +50,12 @@ namespace SME.SR.Application
                 Regencia = componenteCurricular.EhRegencia(componentesApiEol) || componenteCurricular.ComponentePlanejamentoRegencia,
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
                 BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
-                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId)
+                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == VerificaGrupoMatrizTerritorio(componenteCurricular, componenteCurricularEol?.GrupoMatrizId))
             };
         }
+
+        private long VerificaGrupoMatrizTerritorio(ComponenteCurricular componenteCurricular, long? grupoMatrizEol = 0)
+            => componenteCurricular.TerritorioSaber ? componenteCurricular.GrupoMatrizId : grupoMatrizEol.Value;
 
         private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol)
         {
@@ -114,6 +117,7 @@ namespace SME.SR.Application
             var componentesTerritorioApiEol = componentesApiEol?.Where(x => x.TerritorioSaber)?.ToList();
             if (componentesTerritorioApiEol != null && componentesTerritorioApiEol.Any())
             {
+                long grupoMatrizId = componentesTerritorioApiEol.FirstOrDefault().GrupoMatrizId;
                 var codigoDisciplinasTerritorio = componentesCurriculares.Where(x => componentesTerritorioApiEol.Any(z => x.Codigo == z.Codigo))?.Select(t => t.Codigo)?.Distinct();
 
                 if (codigoDisciplinasTerritorio != null && codigoDisciplinasTerritorio.Any())
@@ -137,7 +141,8 @@ namespace SME.SR.Application
                                     Codigo = componenteTerritorio.FirstOrDefault().ObterCodigoComponenteCurricular(territorio.Key),
                                     Descricao = componenteTerritorio.FirstOrDefault().ObterDescricaoComponenteCurricular(),
                                     TipoEscola = tipoEscola,
-                                    TerritorioSaber = true
+                                    TerritorioSaber = true,
+                                    GrupoMatrizId = grupoMatrizId
                                 });
                             }
                         }

@@ -479,7 +479,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string componenteCurricularId)
+        public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string[] componentesCurricularesIds)
         {
             var query = new StringBuilder(@"select 
 	                                            extract(year from periodo_inicio) as AnoBimestre,
@@ -495,8 +495,9 @@ namespace SME.SR.Data
                                             and fa.tipo = @tipoFrequencia
                                             and fa.codigo_aluno = any(@codigosAlunos)  
                                             and fa.turma_id = @turmaCodigo ");
-            if (!string.IsNullOrEmpty(componenteCurricularId))
-                query.AppendLine(" and fa.disciplina_id = @componenteCurricularId");
+
+            if (componentesCurricularesIds.Any() && componentesCurricularesIds != null)
+                query.AppendLine(" and fa.disciplina_id = any(@componentesCurricularesIds)");
 
             if (bimestre != "-99")
                 query.AppendLine("and fa.bimestre = @numeroBimestre ");
@@ -504,7 +505,7 @@ namespace SME.SR.Data
             query.AppendLine(@" group by 
                                 fa.bimestre,
                                 fa.codigo_aluno,fa.periodo_inicio;");
-            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia, componenteCurricularId };
+            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia, componentesCurricularesIds };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -642,7 +643,7 @@ namespace SME.SR.Data
                                                                     string[] codigosAlunos, 
                                                                     string bimestre, 
                                                                     string turmaCodigo, 
-                                                                    string componenteCurricularId)
+                                                                    string[] componentesCurricularesIds)
         {
             var condicaoBimestre = string.Empty;
 
@@ -671,7 +672,7 @@ namespace SME.SR.Data
                             AND NOT a.excluido
 	                        AND rfa.codigo_aluno = any(@codigosAlunos)
 	                        AND t.turma_id = @turmaCodigo 
-                            AND a.disciplina_id = @componenteCurricularId
+                            AND a.disciplina_id = any(@componentesCurricularesIds)
  						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.codigo_aluno, pe.bimestre
                         ORDER BY pe.bimestre, rfa.codigo_aluno, a.data_aula desc";
 
@@ -680,7 +681,7 @@ namespace SME.SR.Data
                 codigosAlunos,
                 bimestre = int.Parse(bimestre),
                 turmaCodigo,
-                componenteCurricularId
+                componentesCurricularesIds
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
