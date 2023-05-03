@@ -328,13 +328,9 @@ namespace SME.SR.Data
                         var turmas = await ObterQuantidadeTurmaPorAno(filtro, itemUe.Key);
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
-                            var quantidadeTotalAlunosEol = 0;
                             var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).ToList();
 
-                            if (turmasComSondagem.Any() && filtro.AnoLetivo > ANO_ESCOLAR_2022)
-                                quantidadeTotalAlunosEol = await ObterTotalAlunosAtivosPorTurmaEPeriodo(turmasComSondagem, periodoFixo.DataFim);
-                            else
-                                quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
+                            var quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
                             var totalRepostas = (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
                                                 + anoTurma.Select(x => x.Nivel4).Sum());
