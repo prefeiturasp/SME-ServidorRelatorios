@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
                 await ObterFiltrosRelatorio(relatorioDto, parametros);
 
-                relatorioDto.Registros = await mediator.Send(new ObterItineranciasQuery(parametros.Itinerancias));
+                relatorioDto.Registros = await mediator.Send(new ObterListagemItineranciasQuery(parametros.Itinerancias));
                 
                 await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistroItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
             }

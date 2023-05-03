@@ -262,6 +262,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioEncaminhamentosNaapaDetalhadoUseCase, RelatorioEncaminhamentosNAAPADetalhadoUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosNAAPAUseCase, RelatorioEncaminhamentosNAAPAUseCase>();
             services.TryAddScoped<IRelatorioAnaliticoSondagemUseCase, RelatorioAnaliticoSondagemUseCase>();
+            services.TryAddScoped<IRelatorioListagemItineranciasUseCase, RelatorioListagemItineranciasUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)

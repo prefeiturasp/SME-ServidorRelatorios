@@ -12,5 +12,6 @@ namespace SME.SR.Data
         Task<IEnumerable<ItineranciaObjetivoDto>> ObterObjetivosPorItineranciaIds(long[] ids);
         Task<IEnumerable<ItineranciaQuestaoDto>> ObterQuestoesPorItineranciaIds(long[] ids);
         Task<IEnumerable<ItineranciaAlunoDto>> ObterAlunosPorItineranciaIds(long[] ids);
+        Task<IEnumerable<ListagemItineranciaDto>> ObterItinerancias(FiltroRelatorioListagemItineranciasDto filtro);
     }
 }
