@@ -27,7 +27,7 @@ namespace SME.SR.Application
             {
                 DreCodigo = "108100",
                 UeCodigo = "",
-                AnoLetivo = 2023,
+                AnoLetivo = 2021,
                 UsuarioNome = "Jailson",
                 UsuarioRf = "9999",
                 CodigosPAAIResponsavel = new string[] {"8239614", "7940017", "8160376" },
@@ -44,7 +44,7 @@ namespace SME.SR.Application
                 relatorioDto.Registros = MapearDTO(itinerancias);
 
                 PreencherFiltrosRelatorio(relatorioDto, parametros);
-                //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemRegistrosItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemRegistrosItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
             }
             catch
             {

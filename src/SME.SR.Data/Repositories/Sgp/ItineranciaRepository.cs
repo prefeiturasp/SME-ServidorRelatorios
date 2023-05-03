@@ -100,7 +100,7 @@ namespace SME.SR.Data.Interfaces
             var condicao = string.Empty;
 
             if (filtro.AnoLetivo > 0)
-                condicao += " and i.ano_letivo = ANY(@anoLetivo) ";
+                condicao += " and i.ano_letivo = @anoLetivo ";
 
             return condicao;
         }
