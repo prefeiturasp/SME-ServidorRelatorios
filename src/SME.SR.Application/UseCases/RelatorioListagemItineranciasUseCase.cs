@@ -2,6 +2,7 @@
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,16 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
-
             try
             {
+                var itinerancias = (await mediator.Send(new ObterListagemItineranciasQuery(parametros))).ToList();
+                if (itinerancias == null || !itinerancias.Any())
+                    throw new NegocioException("Nenhuma informação para os filtros informados.");
+
                 var relatorioDto = new RelatorioListagemRegistrosItineranciaDto();
+                relatorioDto.Registros = MapearDTO(itinerancias);
 
                 PreencherFiltrosRelatorio(relatorioDto, parametros);
-
-                relatorioDto.Registros = MapearDTO((await mediator.Send(new ObterListagemItineranciasQuery(parametros))).ToList());
-                
                 //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemRegistrosItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
             }
             catch
@@ -63,6 +65,8 @@ namespace SME.SR.Application
             relatorioDto.Usuario = parametros.UsuarioNome;
             relatorioDto.RF = parametros.UsuarioRf;
             relatorioDto.DataSolicitacao = DateTime.Now;
+            relatorioDto.Dre = parametros.DreCodigo.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault()?.Dre;
+            relatorioDto.Ue = parametros.UeCodigo.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault()?.Ue;
         }
     }
 }
