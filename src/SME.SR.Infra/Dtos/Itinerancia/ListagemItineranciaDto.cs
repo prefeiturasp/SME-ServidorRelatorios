@@ -17,6 +17,7 @@ namespace SME.SR.Infra
         public string UeCodigo { get; set; }
         public string UeNome { get; set; }
         public TipoEscola TipoEscola { get; set; }
+        public string DreCodigo { get; set; }
         public string DreNome { get; set; }
         public string DreAbreviacao { get; set; }
 

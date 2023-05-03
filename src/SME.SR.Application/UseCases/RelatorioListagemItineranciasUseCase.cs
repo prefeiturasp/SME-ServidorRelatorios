@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
@@ -26,11 +27,11 @@ namespace SME.SR.Application
             {
                 var relatorioDto = new RelatorioListagemRegistrosItineranciaDto();
 
-                await ObterFiltrosRelatorio(relatorioDto, parametros);
+                PreencherFiltrosRelatorio(relatorioDto, parametros);
 
                 relatorioDto.Registros = MapearDTO((await mediator.Send(new ObterListagemItineranciasQuery(parametros))).ToList());
                 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemRegistrosItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
+                //await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemRegistrosItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
             }
             catch
             {
@@ -38,27 +39,30 @@ namespace SME.SR.Application
             }
         }
 
-        private List<RegistroListagemItineranciaDto> MapearDTO(List<ListagemItineranciaDto> itinerancias)
+        private IEnumerable<RegistroListagemItineranciaDto> MapearDTO(List<ListagemItineranciaDto> itinerancias)
         {
-            var retorno = itinerancias.Select(itinerancia => 
-                                            new RegistroListagemItineranciaDto(
-                                                itinerancia.DreAbreviacao
-                                                itinerancia.DreAbreviacao,
-                                                $"{itinerancia.UeCodigo} - {itinerancia.TipoEscola.ShortName()} {itinerancia.UeNome}",
-                                                itinerancia.DataVisita.ToString("dd/MM/yyyy"),
-                                                string.Join("|", itinerancia.Objetivos.Select(objetivo => $"{objetivo.Nome}{(!string.IsNullOrEmpty(objetivo.Descricao) ? $": {objetivo.Descricao}" : string.Empty)}")),
-                                                string.Join(";", itinerancia.Alunos.Select(aluno => $"{aluno.Nome} ({aluno.Codigo})")),
-                                                itinerancia.Situacao.Name(),
-                                                $"{itinerancia.ResponsavelPaaiNome} ({itinerancia.ResponsavelPaaiLoginRf})"
+            var retorno = itinerancias.OrderBy(itinerancia => itinerancia.DreCodigo)
+                            .ThenBy(itinerancia => itinerancia.TipoEscola.ShortName())            
+                            .ThenBy(itinerancia => itinerancia.UeNome)
+                            .ThenBy(itinerancia => itinerancia.DataVisita)
+                            .Select(itinerancia => 
+                                    new RegistroListagemItineranciaDto(
+                                        itinerancia.DreAbreviacao,
+                                        $"{itinerancia.UeCodigo} - {itinerancia.TipoEscola.ShortName()} {itinerancia.UeNome}",
+                                        itinerancia.DataVisita,
+                                        string.Join("|", itinerancia.Objetivos.Select(objetivo => $"{objetivo.Nome}{(!string.IsNullOrEmpty(objetivo.Descricao) ? $": {objetivo.Descricao}" : string.Empty)}")),
+                                        string.Join(";", itinerancia.Alunos.Select(aluno => $"{aluno.Nome} ({aluno.Codigo})")),
+                                        itinerancia.Situacao.Name(),
+                                        $"{itinerancia.ResponsavelPaaiNome} ({itinerancia.ResponsavelPaaiLoginRf})"
                 ));
-
+            return retorno;
         }
 
-        private async Task ObterFiltrosRelatorio(RelatorioListagemRegistrosItineranciaDto relatorioDto, FiltroRelatorioListagemItineranciasDto parametros)
+        private void PreencherFiltrosRelatorio(RelatorioListagemRegistrosItineranciaDto relatorioDto, FiltroRelatorioListagemItineranciasDto parametros)
         {
             relatorioDto.Usuario = parametros.UsuarioNome;
             relatorioDto.RF = parametros.UsuarioRf;
-            relatorioDto.DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy");
+            relatorioDto.DataSolicitacao = DateTime.Now;
         }
     }
 }
