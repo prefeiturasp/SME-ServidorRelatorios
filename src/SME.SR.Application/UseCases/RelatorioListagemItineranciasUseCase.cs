@@ -22,18 +22,8 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            //var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
-            var parametros = new FiltroRelatorioListagemItineranciasDto()
-            {
-                DreCodigo = "",
-                UeCodigo = "",
-                AnoLetivo = 2022,
-                UsuarioNome = "Jailson Volnei",
-                UsuarioRf = "9999999",
-                CodigosPAAIResponsavel = new string[] {"8239614", "7940017", "8160376" },
-                SituacaoIds = new int[] {5}
-            };
-
+            var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
+            
             try
             {
                 var itinerancias = (await mediator.Send(new ObterListagemItineranciasQuery(parametros))).ToList();

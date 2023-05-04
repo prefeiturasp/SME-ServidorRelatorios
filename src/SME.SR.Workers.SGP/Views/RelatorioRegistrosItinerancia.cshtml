@@ -9,8 +9,58 @@
 
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 52;
-    int contadorPagina = 0;
-    bool quebrou = false;
+
+    const int TAMANHO_MAX_NOME_PAAI_RESPONSAVEL = 40;
+    const int QDADE_LINHAS_CABECALHO_GERAL = 9;
+    const int QDADE_LINHAS_CABECALHO_SECAO_ITINERANCIA = 5;
+    const int QDADE_LINHAS_LINHA_UNICA = 1;
+    const int QDADE_CHARS_POR_LINHA = 105;
+    const string LABEL_CRIANCAS_ESTUDANTES = "CRIANÇAS/ESTUDANTES: ";
+    const string LABEL_PAAI_RESPONSAVEL = "PAAI RESPONSÁVEL: ";
+    const string LABEL_SITUACAO = "SITUAÇÃO: ";
+
+
+    int RetornarQdadeLinhasPrevistas(int qdadeChars) {
+        var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
+        //if (retorno > 1) retorno = (int) (retorno * 0.5);
+        if (qdadeChars % QDADE_CHARS_POR_LINHA > 0)
+            retorno++;
+        return retorno;
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLQuebraPagina()
+    {
+        contadorQuebrarPagina = 0;
+        var str = @"<div style='page-break-before:always' />";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLAberturaTable()
+    {
+        var str = @"<table class='tabela-cabecalho'> <tbody> ";
+        return Html.Raw(str);
+    }
+
+    Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLFechamentoTable()
+    {
+        var str = @"</tbody></table>";
+        return Html.Raw(str);
+    }
+
+
+    void AvaliarQuebraPagina(int numeroLinhasPrevistas, bool efetuaFechamentoAberturaTables = true)
+    {
+        bool quebra = (contadorQuebrarPagina + numeroLinhasPrevistas) > contadorMaximoLinhasPorPagina;
+        if (!quebra)
+            return;
+
+        if (efetuaFechamentoAberturaTables) 
+            @MontarHTMLFechamentoTable();
+        @MontarHTMLQuebraPagina();
+        MontarCabecalho();
+        if (efetuaFechamentoAberturaTables)
+            @MontarHTMLAberturaTable()
+    }
 
     void MontarCabecalho()
     {
@@ -37,7 +87,7 @@
                 </tbody>
             </table>
         </div>
-        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_CABECALHO_GERAL;
     }
     
     void MontarCabecalhoSecao(string Dre, string Ue) {
@@ -56,7 +106,7 @@
             </tr>
         </tbody>
         </table>
-        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
     }
 
     void MontarDataVisitaItinerancia(DateTime dataVisita)
@@ -64,30 +114,41 @@
         <tr>
             <td class="fundo-cinza-escuro centralizar" colspan="2"><strong>DATA DA VISITA:</strong> @dataVisita.ToString("dd/MM/yyyy")</td>
         </tr>
-        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
     }
 
     void MontarObjetivosItinerancia(string objetivos)
     {
+        var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(objetivos.Length) +
+                                                      QDADE_LINHAS_LINHA_UNICA;
+        AvaliarQuebraPagina(qdadeLinhasPrevista);
+
         MontarTitulo("OBJETIVOS DA ITINERÂNCIA");
         <tr>
             <td class="alinhar-esquerda td-descricao" colspan="2"><span class="span-descricao">@objetivos</span></td>
         </tr>
+        contadorQuebrarPagina += qdadeLinhasPrevista;
     }
 
     void MontarCriancasItinerancia(string criancas)
     {
+        var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(criancas.Length + LABEL_CRIANCAS_ESTUDANTES.Length);
+        AvaliarQuebraPagina(qdadeLinhasPrevista);
         <tr>
-            <td class="espaco-esquerda-7 alinhar-esquerda td-descricao" colspan="2"><strong>CRIANÇAS/ESTUDANTES:</strong> @criancas</td>
+            <td class="espaco-esquerda-7 alinhar-esquerda td-descricao" colspan="2"><strong>@LABEL_CRIANCAS_ESTUDANTES</strong><span class="span-descricao">@criancas</span></td>
         </tr>
+        contadorQuebrarPagina += qdadeLinhasPrevista;
     }
 
     void MontarPAAIResponsavelSituacao(string paai, string situacao)
     {
+        var qdadeLinhasPrevista = paai.Length > TAMANHO_MAX_NOME_PAAI_RESPONSAVEL ? 2 : 1;
+        AvaliarQuebraPagina(qdadeLinhasPrevista);
         <tr>
-            <td class='espaco-esquerda-7 alinhar-esquerda td-descricao'><strong>PAAI RESPONSÁVEL:</strong> @paai</td>
-            <td class='espaco-esquerda-7 alinhar-esquerda td-descricao width-30'><strong>SITUAÇÃO:</strong> @situacao</td>
+            <td class='espaco-esquerda-7 alinhar-esquerda'><strong>@LABEL_PAAI_RESPONSAVEL</strong>@paai</td>
+            <td class='espaco-esquerda-7 alinhar-esquerda width-30'><strong>@LABEL_SITUACAO</strong>@situacao</td>
         </tr>
+        contadorQuebrarPagina += qdadeLinhasPrevista;
     }
 
     void MontarTitulo(string valor)
@@ -95,7 +156,6 @@
         <tr>
             <td class="fundo-cinza centralizar" colspan="2"><strong>@valor</strong></td>
         </tr>
-        contadorQuebrarPagina = contadorQuebrarPagina + 1;
     }
 }
 <!DOCTYPE html>
@@ -248,29 +308,35 @@
     <div>
         @{
             MontarCabecalho();
-
             @foreach (var itineranciaDreUe in Model.Registros.GroupBy(itinerancia => new { itinerancia.Dre, itinerancia.Ue }))
             {
                 @if (mostrarAgrupamento)
                 {
+                    var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(itineranciaDreUe.FirstOrDefault().Objetivos.Length) +
+                                                                            QDADE_LINHAS_LINHA_UNICA + QDADE_LINHAS_LINHA_UNICA + QDADE_LINHAS_LINHA_UNICA;
+                    AvaliarQuebraPagina(qdadeLinhasPrevista, false);
                     MontarCabecalhoSecao(@itineranciaDreUe.Key.Dre, @itineranciaDreUe.Key.Ue);
                 }
                 <table class="tabela-cabecalho">
                     <tbody>
 
-                    @foreach (var itineranciaDataVisita in itineranciaDreUe.GroupBy(itinerancia => itinerancia.DataVisita))
-                    {
-                        MontarDataVisitaItinerancia(itineranciaDataVisita.Key);
-                        @foreach (var itinerancia in itineranciaDataVisita)
+                        @foreach (var itineranciaDataVisita in itineranciaDreUe.GroupBy(itinerancia => itinerancia.DataVisita))
                         {
-                            MontarObjetivosItinerancia(itinerancia.Objetivos);
-                            MontarCriancasItinerancia(!String.IsNullOrEmpty(itinerancia.Alunos) ? itinerancia.Alunos : "Registro sem crianças/estudantes vinculados");
-                            MontarPAAIResponsavelSituacao(itinerancia.ResponsavelPaai, itinerancia.Situacao);
+                            var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(itineranciaDataVisita.FirstOrDefault().Objetivos.Length) +
+                                                       QDADE_LINHAS_LINHA_UNICA + QDADE_LINHAS_LINHA_UNICA;
+                            AvaliarQuebraPagina(qdadeLinhasPrevista);
+                            MontarDataVisitaItinerancia(itineranciaDataVisita.Key);
+                            @foreach (var itinerancia in itineranciaDataVisita)
+                            {
+                                MontarObjetivosItinerancia(itinerancia.Objetivos);
+                                MontarCriancasItinerancia(!String.IsNullOrEmpty(itinerancia.Alunos) ? itinerancia.Alunos : "Registro sem crianças/estudantes vinculados");
+                                MontarPAAIResponsavelSituacao(itinerancia.ResponsavelPaai, itinerancia.Situacao);
+                            }
                         }
-                    }
                     </tbody>
                 </table>
-                <br />                
+                <br />    
+                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
             }
         }
             </div>
