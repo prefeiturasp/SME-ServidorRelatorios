@@ -25,11 +25,11 @@ namespace SME.SR.Application
             //var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
             var parametros = new FiltroRelatorioListagemItineranciasDto()
             {
-                DreCodigo = "108100",
+                DreCodigo = "",
                 UeCodigo = "",
                 AnoLetivo = 2021,
-                UsuarioNome = "Jailson",
-                UsuarioRf = "9999",
+                UsuarioNome = "Jailson Volnei",
+                UsuarioRf = "99999999",
                 CodigosPAAIResponsavel = new string[] {"8239614", "7940017", "8160376" },
                 SituacaoIds = new int[] {2, 3, 4}
             };

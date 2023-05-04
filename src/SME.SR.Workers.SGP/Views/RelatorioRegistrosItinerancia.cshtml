@@ -1,0 +1,278 @@
+﻿@model SME.SR.Infra.RelatorioListagemRegistrosItineranciaDto;
+
+@{
+    const string TODAS = "TODAS";
+
+    var mostrarDre = Model.Dre == TODAS;
+    var mostrarUe = Model.Ue == TODAS;
+    var mostrarAgrupamento = mostrarDre || mostrarUe;
+
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 52;
+    int contadorPagina = 0;
+    bool quebrou = false;
+
+    void MontarCabecalho()
+    {
+        <div>
+            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+        </div>
+        <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class='titulo-relatorio'>RELATÓRIO DE REGISTRO DE ITINERÂNCIA</div>
+        <div class='fonte-14 header-pagina'>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td class='espaco-esquerda-15 width-22 espacamento7'><strong>DRE:</strong> @Model.Dre</td>
+                        <td class='espaco-esquerda-15 espacamento7' colspan="2"><strong>UE:</strong> @Model.Ue</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class='tblTopo'>
+                <tbody>
+                    <tr>
+                        <td class='espaco-esquerda-15 width-70 espacamento7 sem-border-top'><strong>USUÁRIO:</strong> @Model.Usuario</td>
+                        <td class='espaco-esquerda-15 espacamento7 sem-border-top' colspan="2"><strong>DATA IMPRESSÃO:</strong> @Model.DataSolicitacao.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+    }
+    
+    void MontarCabecalhoSecao(string Dre, string Ue) {
+        <table class="tabela-cabecalho">
+        <tbody>
+            <tr>
+                @if (mostrarDre)
+                {
+                <td class='fundo-cinza-escuro espaco-esquerda-15 width-22 sem-border-bottom'><strong>DRE:</strong> @Dre</td>
+                }
+
+                @if (mostrarUe)
+                {
+                <td class='fundo-cinza-escuro espaco-esquerda-15 sem-border-bottom' colspan="2"><strong>UE:</strong> @Ue</td>
+                }
+            </tr>
+        </tbody>
+        </table>
+        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    }
+
+    void MontarDataVisitaItinerancia(DateTime dataVisita)
+    {
+        <tr>
+            <td class="fundo-cinza-escuro centralizar" colspan="2"><strong>DATA DA VISITA:</strong> @dataVisita.ToString("dd/MM/yyyy")</td>
+        </tr>
+        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    }
+
+    void MontarObjetivosItinerancia(string objetivos)
+    {
+        MontarTitulo("OBJETIVOS DA ITINERÂNCIA");
+        <tr>
+            <td class="alinhar-esquerda td-descricao" colspan="2"><span class="span-descricao">@objetivos</span></td>
+        </tr>
+    }
+
+    void MontarCriancasItinerancia(string criancas)
+    {
+        <tr>
+            <td class="espaco-esquerda-7 alinhar-esquerda td-descricao" colspan="2"><strong>CRIANÇAS/ESTUDANTES:</strong> @criancas</td>
+        </tr>
+    }
+
+    void MontarPAAIResponsavelSituacao(string paai, string situacao)
+    {
+        <tr>
+            <td class='espaco-esquerda-7 alinhar-esquerda td-descricao'><strong>PAAI RESPONSÁVEL:</strong> @paai</td>
+            <td class='espaco-esquerda-7 alinhar-esquerda td-descricao width-30'><strong>SITUAÇÃO:</strong> @situacao</td>
+        </tr>
+    }
+
+    void MontarTitulo(string valor)
+    {
+        <tr>
+            <td class="fundo-cinza centralizar" colspan="2"><strong>@valor</strong></td>
+        </tr>
+        contadorQuebrarPagina = contadorQuebrarPagina + 1;
+    }
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE REGISTRO DE ITINERÂNCIA</title>
+</head>
+<body class="body-relatorio">
+    <style>
+        .tblTopo th, td {
+            margin-top: 5px;
+            padding: 3px;
+            text-align: left;
+        }
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: "Roboto Mono", monospace !important;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .header-pagina {
+            margin-top: 43px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .centralizar {
+            text-align: center;
+        }
+
+        .td-descricao {
+            max-width: 784px;
+            height: auto;
+            word-wrap: break-word
+        }
+
+        .span-descricao {
+            padding: 16px;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+
+        td span {
+            font-size: 12px;
+        }
+
+        .tabela-cabecalho tr {
+            font-size: 14px;
+            height: 24px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .espaco-esquerda-7 {
+            padding-left: 7px;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .fundo-cinza-escuro {
+            background-color: #DADADA;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .espacamento7 {
+            padding: 7px;
+        }
+
+        .sem-border-top {
+            border-top: 0;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .img-logo-sgp {
+            height: 63px;
+            float: left;
+        }
+
+        .width-22 {
+            width: 22%;
+        }
+
+        .width-30 {
+            width: 33%;
+        }
+
+        .width-70 {
+            width: 70%;
+        }
+    </style>
+    <div>
+        @{
+            MontarCabecalho();
+
+            @foreach (var itineranciaDreUe in Model.Registros.GroupBy(itinerancia => new { itinerancia.Dre, itinerancia.Ue }))
+            {
+                @if (mostrarAgrupamento)
+                {
+                    MontarCabecalhoSecao(@itineranciaDreUe.Key.Dre, @itineranciaDreUe.Key.Ue);
+                }
+                <table class="tabela-cabecalho">
+                    <tbody>
+
+                    @foreach (var itineranciaDataVisita in itineranciaDreUe.GroupBy(itinerancia => itinerancia.DataVisita))
+                    {
+                        MontarDataVisitaItinerancia(itineranciaDataVisita.Key);
+                        @foreach (var itinerancia in itineranciaDataVisita)
+                        {
+                            MontarObjetivosItinerancia(itinerancia.Objetivos);
+                            MontarCriancasItinerancia(!String.IsNullOrEmpty(itinerancia.Alunos) ? itinerancia.Alunos : "Registro sem crianças/estudantes vinculados");
+                            MontarPAAIResponsavelSituacao(itinerancia.ResponsavelPaai, itinerancia.Situacao);
+                        }
+                    }
+                    </tbody>
+                </table>
+                <br />                
+            }
+        }
+            </div>
+        </body>
+        </html>
