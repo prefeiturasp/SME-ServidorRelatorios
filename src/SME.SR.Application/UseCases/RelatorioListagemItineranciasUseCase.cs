@@ -22,18 +22,8 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            //var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
-            var parametros = new FiltroRelatorioListagemItineranciasDto()
-            {
-                DreCodigo = "108100",
-                UeCodigo = "",
-                AnoLetivo = 2021,
-                UsuarioNome = "Jailson",
-                UsuarioRf = "9999",
-                CodigosPAAIResponsavel = new string[] {"8239614", "7940017", "8160376" },
-                SituacaoIds = new int[] {2, 3, 4}
-            };
-
+            var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
+            
             try
             {
                 var itinerancias = (await mediator.Send(new ObterListagemItineranciasQuery(parametros))).ToList();
@@ -44,7 +34,7 @@ namespace SME.SR.Application
                 relatorioDto.Registros = MapearDTO(itinerancias);
 
                 PreencherFiltrosRelatorio(relatorioDto, parametros);
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemRegistrosItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioRegistrosItinerancia", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "itinerancia"));
             }
             catch
             {
@@ -62,7 +52,7 @@ namespace SME.SR.Application
                                     new RegistroListagemItineranciaDto(
                                         itinerancia.DreAbreviacao,
                                         $"{itinerancia.UeCodigo} - {itinerancia.TipoEscola.ShortName()} {itinerancia.UeNome}",
-                                        itinerancia.DataVisita,
+                                        itinerancia.DataVisita.Date,
                                         string.Join("|", itinerancia.Objetivos.Select(objetivo => $"{objetivo.Nome}{(!string.IsNullOrEmpty(objetivo.Descricao) ? $": {objetivo.Descricao}" : string.Empty)}")),
                                         string.Join(";", itinerancia.Alunos.Select(aluno => $"{aluno.Nome} ({aluno.Codigo})")),
                                         itinerancia.Situacao.Name(),
@@ -73,8 +63,7 @@ namespace SME.SR.Application
 
         private void PreencherFiltrosRelatorio(RelatorioListagemRegistrosItineranciaDto relatorioDto, FiltroRelatorioListagemItineranciasDto parametros)
         {
-            relatorioDto.Usuario = parametros.UsuarioNome;
-            relatorioDto.RF = parametros.UsuarioRf;
+            relatorioDto.Usuario = $"{ parametros.UsuarioNome} ({parametros.UsuarioRf})";
             relatorioDto.DataSolicitacao = DateTime.Now;
             relatorioDto.Dre = parametros.DreCodigo.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault()?.Dre;
             relatorioDto.Ue = parametros.UeCodigo.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault()?.Ue;
