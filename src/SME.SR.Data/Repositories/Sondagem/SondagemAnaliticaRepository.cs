@@ -209,6 +209,7 @@ namespace SME.SR.Data
 
                 foreach (var itemDre in agrupamentoPorDre)
                 {
+                    var obterTotalAlunosAtivosPorPeriodoEAnoTurma  = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio, periodoFixo.DataFim, string.Empty, itemDre.Key)).ToList();
                     var relatorioSondagemAnaliticoEscritaDto = new RelatorioSondagemAnaliticoEscritaDto();
                     var agrupamentoPorUe = itemDre.GroupBy(x => x.UeCodigo).Distinct().ToList();
                     var ueLista = (await ueRepository.ObterPorCodigos(agrupamentoPorUe.Select(x => x.Key).ToArray())).ToList();
@@ -216,14 +217,13 @@ namespace SME.SR.Data
                     {
                         var turmas = await ObterQuantidadeTurmaPorAno(filtro, itemUe.Key);
                         var agrupamentoPorAnoTurma = itemUe.GroupBy(x => x.AnoTurma).ToList();
-                        var quantidadeTotalAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio, periodoFixo.DataFim, itemUe.Key, itemDre.Key)).ToList();
+                        var quantidadeTotalAlunosPorAno = obterTotalAlunosAtivosPorPeriodoEAnoTurma.Where(x => x.UeCodigo == itemUe.Key); 
 
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
 
                             var quantidadeTotalAlunosEol = 0;
-                            var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).ToList();
-
+                            var Ue = ueLista.FirstOrDefault(x => x.Codigo == itemUe.Key);
                             quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
                             var totalSemPreenchimento = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma)
@@ -237,7 +237,7 @@ namespace SME.SR.Data
                                 : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
 
 
-                            var Ue = ueLista.FirstOrDefault(x => x.Codigo == itemUe.Key);
+                            
                             var respostaSondagemAnaliticoEscritaDto = new RespostaSondagemAnaliticoEscritaDto
                             {
                                 PreSilabico = anoTurma.Select(x => x.PreSilabico).Sum(),
