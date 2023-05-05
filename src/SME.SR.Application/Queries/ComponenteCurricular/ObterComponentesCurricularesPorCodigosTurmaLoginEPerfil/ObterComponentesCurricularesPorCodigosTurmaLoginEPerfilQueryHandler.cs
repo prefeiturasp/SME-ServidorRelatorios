@@ -35,18 +35,19 @@ namespace SME.SR.Application
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
         private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
-        {            
+        {
             return componentesCurriculares?.Select(c => MapearParaDto(c, componentesApiEol, grupoMatrizes));
         }
 
         private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo);
+            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo || x.Codigo == componenteCurricular.CodigoTerritorioSaber);
 
             return new ComponenteCurricularPorTurmaRegencia
             {
                 CodigoTurma = componenteCurricular.CodigoTurma,
                 CodDisciplina = componenteCurricular.Codigo,
+                CodigoTerritorioSaber = componenteCurricular.CodigoTerritorioSaber,
                 CodDisciplinaPai = componenteCurricular.CodigoComponentePai(componentesApiEol),
                 Compartilhada = componenteCurricular.EhCompartilhada(componentesApiEol),
                 Disciplina = componenteCurricular.Descricao.Trim(),
@@ -98,7 +99,7 @@ namespace SME.SR.Application
                                                                         return retorno;
                                                                     });
 
-                            componentesCurriculares.AddRange(componentesParaInserir);                           
+                            componentesCurriculares.AddRange(componentesParaInserir);
                         }
                     }
                 }
@@ -129,7 +130,7 @@ namespace SME.SR.Application
                     {
                         var tipoEscola = componentesCurriculares.FirstOrDefault().TipoEscola;
 
-                        territoriosBanco = territoriosBanco.OrderBy(o=> o.CodigoTerritorioSaber).ThenBy(t=> t.CodigoExperienciaPedagogica);
+                        territoriosBanco = territoriosBanco.OrderBy(o => o.CodigoTerritorioSaber).ThenBy(t => t.CodigoExperienciaPedagogica);
 
                         foreach (var territorio in territoriosBanco.GroupBy(t => t.CodigoTurma))
                         {
@@ -146,11 +147,13 @@ namespace SME.SR.Application
                                 componentesCurriculares.Add(new Data.ComponenteCurricular()
                                 {
                                     CodigoTurma = territorio.Key,
-                                    Codigo = componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular, 
-                                    Descricao = componenteTerritorio.FirstOrDefault().ObterDescricaoComponenteCurricular(),
+                                    Codigo = componenteTerritorio.FirstOrDefault()?.ObterCodigoComponenteCurricular(componenteTerritorio.First().CodigoTurma) ?? 0,
+                                    CodigoTerritorioSaber = componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular,
+                                    Descricao = componenteTerritorio.FirstOrDefault()?.ObterDescricaoComponenteCurricular(),
                                     TipoEscola = tipoEscola,
                                     TerritorioSaber = true,
                                     OrdemTerritorioSaber = ordemComponentesTerritorioSaber,
+                                    GrupoMatrizId = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteTerritorio.FirstOrDefault().CodigoComponenteCurricular)?.GrupoMatrizId ?? 0
                                 });
                             }
                         }
