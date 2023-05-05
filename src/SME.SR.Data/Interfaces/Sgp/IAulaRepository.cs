@@ -7,7 +7,7 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IAulaRepository
     {
-        Task<int> ObterAulasDadas(string codigoTurma, string[] componentesCurricularsCodigo, long tipoCalendarioId, int bimestre, string professorTitularRf = null);
+        Task<int> ObterAulasDadas(string codigoTurma, string[] componentesCurricularesCodigo, long tipoCalendarioId, int bimestre, string professorTitularRf = null);
         Task<AulaPrevista> ObterAulaPrevistaFiltro(long tipoCalendarioId, string turmaId, string disciplinaId);        
         Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(string componenteCurricularId, int bimestre, long tipoCalendarioId);
         Task<bool> VerificaExisteAulaCadastrada(long turmaId, string componenteCurricularId, int bimestre, long tipoCalendarioId);

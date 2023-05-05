@@ -15,7 +15,7 @@ namespace SME.SR.Application
             Bimestre = bimestre;
         }
 
-        public ObterAulasDadasNoBimestreQuery(string turmaCodigo, long tipoCalendarioId, string[] componentesCurricularesCodigo, int bimestre)
+        public ObterAulasDadasNoBimestreQuery(string turmaCodigo, long tipoCalendarioId, string[] componentesCurricularesCodigo, int bimestre, string professorTitularRf = null)
         {
             TurmaCodigo = turmaCodigo;
             TipoCalendarioId = tipoCalendarioId;
