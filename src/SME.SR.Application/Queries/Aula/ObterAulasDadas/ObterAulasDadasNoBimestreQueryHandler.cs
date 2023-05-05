@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<int> Handle(ObterAulasDadasNoBimestreQuery request, CancellationToken cancellationToken)
             => await aulaRepository.ObterAulasDadas(request.TurmaCodigo,
-                                                    request.ComponenteCurricularCodigo.ToString(),
+                                                    request.ComponentesCurricularesCodigo,
                                                     request.TipoCalendarioId,
                                                     request.Bimestre);
     }

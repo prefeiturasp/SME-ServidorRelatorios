@@ -677,7 +677,7 @@ namespace SME.SR.Data.Repositories.Sondagem
 	                       case when mpc.""Ordem{i}Ideia"" = 'A' then 'Acertou'
 	                            when mpc.""Ordem{i}Ideia"" = 'E' then 'Errou'
 	                            when mpc.""Ordem{i}Ideia"" = 'NR' then 'Não resolveu'
-	                            else 'Sem preenchimento' end AS ""RespostaDescricao"",
+	                            else 'Sem Preenchimento' end AS ""RespostaDescricao"",
 	                       {i} as ""OrdemPergunta""
 	                       from ""{tabela}"" mpc
                     where mpc.""AnoLetivo"" = @AnoLetivo and mpc.""Semestre"" = @Bimestre {filtroUeDre}
@@ -690,7 +690,7 @@ namespace SME.SR.Data.Repositories.Sondagem
 	                       case when mpc.""Ordem{i}Resultado"" = 'A' then 'Acertou'
 	                            when mpc.""Ordem{i}Resultado"" = 'E' then 'Errou'
 	                            when mpc.""Ordem{i}Resultado"" = 'NR' then 'Não resolveu'
-	                            else 'Sem preenchimento' end AS ""RespostaDescricao"",
+	                            else 'Sem Preenchimento' end AS ""RespostaDescricao"",
 	                       {i} as ""OrdemPergunta""       
 	                       from ""{tabela}"" mpc
                     where mpc.""AnoLetivo"" = @AnoLetivo and mpc.""Semestre"" = @Bimestre  {filtroUeDre}";

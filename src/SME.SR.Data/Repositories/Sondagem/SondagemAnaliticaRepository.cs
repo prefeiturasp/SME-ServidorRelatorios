@@ -23,6 +23,8 @@ namespace SME.SR.Data
         private readonly string TURMA_TERCEIRO_ANO = "3";
         private readonly string DESCRICAO_SEMPREENCHIMENTO = "Sem Preenchimento";
         private readonly int ANO_ESCOLAR_2022 = 2022;
+        private readonly int ANO_ESCOLAR_2023 = 2023;
+        private readonly int PRIMEIRO_PERIODO = 1;
 
         public SondagemAnaliticaRepository(VariaveisAmbiente variaveisAmbiente, IAlunoRepository alunoRepository, IDreRepository dreRepository, IUeRepository ueRepository
             , ISondagemRelatorioRepository sondagemRelatorioRepository, ITurmaRepository turmaRepository)
@@ -199,7 +201,7 @@ namespace SME.SR.Data
             {
                 dtoConsulta = (await conexao.QueryAsync<TotalRespostasAnaliticoEscritaDto>(sql, parametros)).ToList();
             }
-            var anoComValorSemPreenchimento = dtoConsulta.Select(s => new { Ano = s.AnoTurma, Valor = s.SemPreenchimento }).ToList();
+            
             var agrupamentoPorDre = dtoConsulta.Where(x => x.DreCodigo != null).GroupBy(x => x.DreCodigo).Distinct().ToList();
             if (agrupamentoPorDre.Any())
             {
@@ -222,23 +224,19 @@ namespace SME.SR.Data
                             var quantidadeTotalAlunosEol = 0;
                             var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).ToList();
 
-                            if (turmasComSondagem.Any())
+                            if (turmasComSondagem.Any() && filtro.AnoLetivo > ANO_ESCOLAR_2022)
                                 quantidadeTotalAlunosEol = await ObterTotalAlunosAtivosPorTurmaEPeriodo(turmasComSondagem, periodoFixo.DataFim);
                             else
                                 quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
 
-                            var totalSemPreenchimento = anoTurma.Key == TURMA_TERCEIRO_ANO
+                            var totalSemPreenchimento = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma)
                                     ? TotalSemPreenchimentoTerceiroAnoEscrita(anoTurma, quantidadeTotalAlunosEol)
                                     : TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(anoTurma, quantidadeTotalAlunosEol);
 
+                            var semPreenchimentoRelatorio = totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum();
 
-
-                            int valorSemPreenchimento = anoComValorSemPreenchimento.Where(x => x.Ano == anoTurma.Key).Select(x => x.Valor).Sum();
-
-                            var semPreenchimentoRelatorio = valorSemPreenchimento > 0 ? (totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0;
-
-                            var totalDeAlunosNaSondagem = anoTurma.Key == TURMA_TERCEIRO_ANO ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio)
+                            var totalDeAlunosNaSondagem = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma) ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio)
                                                                                                  : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
 
 
@@ -276,18 +274,26 @@ namespace SME.SR.Data
             return retorno;
         }
 
+        private bool EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(FiltroRelatorioAnaliticoSondagemDto filtro, IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma)
+        {
+            return (anoTurma.Key == TURMA_TERCEIRO_ANO && (filtro.AnoLetivo <= ANO_ESCOLAR_2023 && filtro.Periodo == PRIMEIRO_PERIODO));
+        }
         private static int TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int quantidadeTotalAlunosEol)
         {
-            return (quantidadeTotalAlunosEol - (anoTurma.Select(x => x.PreSilabico).Sum() + anoTurma.Select(x => x.SilabicoSemValor).Sum()
-                                                                                                                  + anoTurma.Select(x => x.SilabicoComValor).Sum()
-                                                                                                                  + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()
-                                                                                                                  + anoTurma.Select(x => x.Alfabetico).Sum()));
+            var totalRepostas = ((anoTurma.Select(x => x.PreSilabico).Sum() + anoTurma.Select(x => x.SilabicoSemValor).Sum()
+                                                               + anoTurma.Select(x => x.SilabicoComValor).Sum()
+                                                               + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()
+                                                               + anoTurma.Select(x => x.Alfabetico).Sum()));
+
+            return quantidadeTotalAlunosEol < totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
         }
 
         private static int TotalSemPreenchimentoTerceiroAnoEscrita(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int quantidadeTotalAlunosEol)
         {
-            return (quantidadeTotalAlunosEol - (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
-                                                                        + anoTurma.Select(x => x.Nivel4).Sum()));
+            var totalRepostas = (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
+                                 + anoTurma.Select(x => x.Nivel4).Sum());
+            
+            return quantidadeTotalAlunosEol < totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
         }
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
@@ -324,18 +330,17 @@ namespace SME.SR.Data
                             var quantidadeTotalAlunosEol = 0;
                             var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).ToList();
 
-                            if (turmasComSondagem.Any())
+                            if (turmasComSondagem.Any() && filtro.AnoLetivo > ANO_ESCOLAR_2022)
                                 quantidadeTotalAlunosEol = await ObterTotalAlunosAtivosPorTurmaEPeriodo(turmasComSondagem, periodoFixo.DataFim);
                             else
                                 quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
-                            var semPreenchimento = (quantidadeTotalAlunosEol - (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum()
-                                                                                                                  + anoTurma.Select(x => x.Nivel3).Sum() + anoTurma.Select(x => x.Nivel4).Sum()));
+                            var totalRepostas = (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
+                                                + anoTurma.Select(x => x.Nivel4).Sum());
 
+                            var semPreenchimento = quantidadeTotalAlunosEol < totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
 
-
-
-                            int valorSemTotalPreenchimento = anoComValorSemPreenchimento.Where(x => x.Ano == anoTurma.Key).Select(x => x.Valor).Sum();
+                            var valorSemTotalPreenchimento = semPreenchimento >= 0 ? semPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum();
 
                             var totalDeAlunosNaSondagem = TotaldeAlunosPorAnoLeitura(semPreenchimento, anoTurma, valorSemTotalPreenchimento);
 
@@ -346,7 +351,7 @@ namespace SME.SR.Data
                                 Nivel2 = anoTurma.Select(x => x.Nivel2).Sum(),
                                 Nivel3 = anoTurma.Select(x => x.Nivel3).Sum(),
                                 Nivel4 = anoTurma.Select(x => x.Nivel4).Sum(),
-                                SemPreenchimento = valorSemTotalPreenchimento > 0 ? (semPreenchimento >= 0 ? semPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum()) : 0,
+                                SemPreenchimento = semPreenchimento,
                                 TotalDeAlunos = totalDeAlunosNaSondagem,
                                 Ano = int.Parse(anoTurma.Key),
                                 TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurma.Key),
@@ -376,7 +381,6 @@ namespace SME.SR.Data
 
 
             return (semPreenchimento + (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum() + anoTurma.Select(x => x.Nivel4).Sum()));
-
         }
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeituraDeVozAlta(FiltroRelatorioAnaliticoSondagemDto filtro)
@@ -785,10 +789,9 @@ namespace SME.SR.Data
                                                                         x.AnoTurma == anoTurmaItem.Key.AnoTurma &&
                                                                         x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta &&
                                                                         x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO).ToList();
-                        var totalRespostas = perguntasRespostasUe.Sum(x => x.QtdRespostas);
-                        if (totalDeAlunos < totalRespostas) 
-                             totalDeAlunos = totalRespostas;
-
+                        
+                        totalDeAlunos = ObterTotalAlunosOuTotalRespostas_NumerosIAD(perguntasRespostasUe, totalDeAlunos);
+                        
                         var relatorioSondagemAnaliticoNumero = relatorioSondagemAnaliticoNumeroIad.Respostas.Where(x => x.Ano.ToString() == anoTurmaItem.Key.AnoTurma && x.Ue == ue.TituloTipoEscolaNome).FirstOrDefault();
                         if (relatorioSondagemAnaliticoNumero == null)
                         {
@@ -921,6 +924,13 @@ namespace SME.SR.Data
                         if (string.IsNullOrEmpty(descricaoPergunta)) continue;
 
                         var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma).Select(x => x.QuantidadeAluno).Sum();
+                        
+                        var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo &&
+                                                                        x.AnoTurma == anoTurmaItem.Key.AnoTurma &&
+                                                                        x.OrdemPergunta == anoTurmaItem.Key.OrdemPergunta &&
+                                                                        x.RespostaDescricao != DESCRICAO_SEMPREENCHIMENTO).ToList();
+
+                        totalDeAlunos = ObterTotalAlunosOuTotalRespostas_AditivoMultiplicativo(perguntasRespostasUe, totalDeAlunos);
 
                         var respostaSondagemAnaliticoCampoAditivoMultiplicativoDto = relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Where(x => x.Ano == int.Parse(anoTurmaItem.Key.AnoTurma) && x.Ue == ue.TituloTipoEscolaNome).FirstOrDefault();
                         if (respostaSondagemAnaliticoCampoAditivoMultiplicativoDto == null)
@@ -935,7 +945,7 @@ namespace SME.SR.Data
                             relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Add(respostaSondagemAnaliticoCampoAditivoMultiplicativoDto);
                         }
 
-                        var perguntasRespostasUe = dtoConsultaDados.Where(x => x.CodigoUe == ue.Codigo).ToList();
+                        
                         var respostaSondagemAnaliticoOrdem = ObterRespostaSondagemAnaliticoOrdemDto(perguntasRespostasUe, anoTurmaItem.Key.AnoTurma,
                                                                                                     anoTurmaItem.Key.OrdemPergunta, descricaoPergunta,
                                                                                                     totalDeAlunos);
@@ -1218,13 +1228,34 @@ namespace SME.SR.Data
             return orderTitle;
 
         }
+
+        private int ObterTotalAlunosOuTotalRespostas_AditivoMultiplicativo(List<PerguntaRespostaOrdemDto> perguntasRespostasUe, int totalAlunos)
+        {
+            var totalRespostas = 0;
+            if (perguntasRespostasUe != null && perguntasRespostasUe.Any())
+                totalRespostas = perguntasRespostasUe.GroupBy(pergunta => pergunta.SubPerguntaDescricao).Select(subpergunta => subpergunta.Sum(x => x.QtdRespostas)).Max();
+            if (totalAlunos < totalRespostas)
+                return totalRespostas;
+            return totalAlunos;
+        }
+
+        private int ObterTotalAlunosOuTotalRespostas_NumerosIAD(List<PerguntaRespostaOrdemDto> perguntasRespostasUe, int totalAlunos)
+        {
+            var totalRespostas = 0;
+            if (perguntasRespostasUe != null && perguntasRespostasUe.Any())
+                totalRespostas = perguntasRespostasUe.Sum(x => x.QtdRespostas);
+            if (totalAlunos < totalRespostas)
+                return totalRespostas;
+            return totalAlunos;
+        }
+
         private RespostaOrdemMatematicaDto ObterRespostaSondagemAnaliticoOrdemDto(List<PerguntaRespostaOrdemDto> perguntasRepostasUe,
                                                                                   string anoTurma, int ordemPergunta, string descricaoPergunta, int totalDeAlunos)
         {
             var respostaSondagemAnaliticoIdeiaDto = new RespostaMatematicaDto();
             var respostaSondagemAnaliticoResultadoDto = new RespostaMatematicaDto();
 
-            var perguntasRespostas = perguntasRepostasUe.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Ideia").ToList();
+            var perguntasRespostas = perguntasRepostasUe.Where(x => x.SubPerguntaDescricao == "Ideia").ToList();
             respostaSondagemAnaliticoIdeiaDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoIdeiaDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoIdeiaDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
@@ -1233,7 +1264,7 @@ namespace SME.SR.Data
                                     respostaSondagemAnaliticoIdeiaDto.NaoResolveu;
             respostaSondagemAnaliticoIdeiaDto.SemPreenchimento = totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
 
-            perguntasRespostas = perguntasRepostasUe?.Where(x => x.AnoTurma == anoTurma && x.OrdemPergunta == ordemPergunta && x.SubPerguntaDescricao == "Resultado").ToList();
+            perguntasRespostas = perguntasRepostasUe?.Where(x => x.SubPerguntaDescricao == "Resultado").ToList();
             respostaSondagemAnaliticoResultadoDto.Acertou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Acertou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoResultadoDto.Errou = perguntasRespostas?.Where(x => x.RespostaDescricao == "Errou").Select(x => x.QtdRespostas).Sum() ?? 0;
             respostaSondagemAnaliticoResultadoDto.NaoResolveu = perguntasRespostas?.Where(x => x.RespostaDescricao == "Não resolveu").Select(x => x.QtdRespostas).Sum() ?? 0;
