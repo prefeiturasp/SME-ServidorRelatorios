@@ -17,7 +17,7 @@ namespace SME.SR.Application
         }
         public Task<IEnumerable<AusenciaBimestreDto>> Handle(ObterAusenciaPorAlunoTurmaBimestreQuery request, CancellationToken cancellationToken)
         {
-            return frequenciaAlunoRepository.ObterAusenciaPorAlunoTurmaBimestre(request.AlunosCodigo,request.TurmaCodigo,request.Bimestre);
+            return frequenciaAlunoRepository.ObterAusenciaPorAlunoTurmaBimestre(request.AlunosCodigo,request.TurmaCodigo,request.Bimestre, request.DisciplinasId);
         }
     }
 }

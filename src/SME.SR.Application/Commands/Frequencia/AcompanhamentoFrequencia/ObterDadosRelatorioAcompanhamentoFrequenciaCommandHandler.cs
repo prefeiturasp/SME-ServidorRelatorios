@@ -121,7 +121,7 @@ namespace SME.SR.Application
                     else
                         dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(
                             alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo,
-                            request.FiltroRelatorio.Bimestre));
+                            request.FiltroRelatorio.Bimestre, componentesCurricularesId.ToArray()));
 
                     await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, turma, periodosEscolares, aulasDadas, bimestreItem);
                 }

@@ -513,7 +513,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre)
+        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre, string[] disciplinasId = null)
         {
             var query = @" select
  	                         afa.codigo_aluno as codigoAluno,
@@ -534,6 +534,9 @@ namespace SME.SR.Data
             if (bimestre != "-99")
                 query += " and pe.bimestre = @numeroBimestre ";
 
+            if (disciplinasId != null && disciplinasId.Any())
+                query += " and a.disciplina_id = any(@disciplinasId) ";
+
             query += @" and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                 order by pe.bimestre,a.data_aula desc; ";
 
@@ -541,7 +544,8 @@ namespace SME.SR.Data
             {
                 alunosCodigo,
                 turmaCodigo,
-                numeroBimestre = Convert.ToInt32(bimestre)
+                numeroBimestre = Convert.ToInt32(bimestre),
+                disciplinasId
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))

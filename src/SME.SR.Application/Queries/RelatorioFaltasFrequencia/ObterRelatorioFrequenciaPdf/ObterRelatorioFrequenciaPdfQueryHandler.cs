@@ -482,7 +482,8 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                         var novoComponente = new RelatorioFrequenciaComponenteDto();
                         novoComponente.CodigoComponente = componente.CodigoComponente;
                         novoComponente.NomeComponente = componente.NomeComponente.ToUpper();
-                        var totalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(componente.Alunos.FirstOrDefault(c => c.CodigoTurma != null).CodigoTurma, tipoCalendarioId, long.Parse(componente.CodigoComponente), numeroBimestre));
+                        var totalAulas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(componente.Alunos.FirstOrDefault(c => c.CodigoTurma != null).CodigoTurma, tipoCalendarioId,
+                                                                                                new long[] { long.Parse(componente.CodigoComponente) }, numeroBimestre));
                         foreach (var aluno in componente.Alunos)
                         {
                             var novoAluno = new RelatorioFrequenciaAlunoDto();
