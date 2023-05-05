@@ -15,6 +15,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
+        private const long CODIGO_EDFISICA = 6;
 
         public ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,
                                                                               IMediator mediator)
@@ -124,6 +125,9 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 ComponentesCurriculares = componentesCurriculares,
                 GruposMatriz = gruposMatriz
             });
+
+            if(modalidade == Modalidade.EJA)
+                componentes = componentes.Where(w => w.CodDisciplina != CODIGO_EDFISICA).ToList();
 
             return componentes.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);
         }
