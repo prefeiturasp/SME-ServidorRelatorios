@@ -10,6 +10,7 @@ namespace SME.SR.Data.Interfaces
     {
         Task<double> ObterFrequenciaGlobal(string codigoTurma, string codigoAluno);
         Task<FrequenciaAluno> ObterPorAlunoDataDisciplina(string codigoAluno, DateTime dataAtual, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma);
+        Task<FrequenciaAluno> ObterPorAlunoTurmasDisciplinasDataAsync(string codigoAluno, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string turmaCodigo, int bimestre);
         Task<FrequenciaAluno> ObterPorAlunoBimestreAsync(string codigoAluno, int bimestre, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string codigoTurma);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorDisciplinaBimestres(string codigoTurma, string codigoAluno, int? bimestre);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorComponentesBimestresTurmas(string[] componentesCurriculares, int[] bimestres, string[] turmasCodigos);
@@ -27,11 +28,10 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorTurmas(string[] codigosturma);
         Task<IEnumerable<FrequenciaAlunoRetornoDto>> ObterFrequenciasAlunosPorFiltro(string[] codigosturma, string componenteCurricularId, int bimestre);
         Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[]codigosAlunos,string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string[] ComponentesCurricularesIds);
-        Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre);
+        Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre, string[] componentesCurricularesIds = null);
         Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre, string codigoUe, Modalidade modalidade,
             int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe);
         Task<IEnumerable<FrequenciaAlunoConsolidadoRelatorioDto>> ObterFrequenciaAlunosRelatorio(string[] turmasCodigo, string bimestre, string componenteCurricularId);
-        Task<FrequenciaAluno> ObterPorAlunoTurmasDisciplinasDataAsync(string codigoAluno, TipoFrequenciaAluno tipoFrequencia, string disciplinaId, string turmaCodigo, int bimestre);
-        Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(string[] codigosAlunos, string bimestre, string turmaCodigo, string[] componentesCurricularesIds);
+        Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(string[] codigosAlunos, string bimestre, string turmaCodigo, string[] componentesCurricularesIdsstring, string professorTitularRf = null);
     }
 }

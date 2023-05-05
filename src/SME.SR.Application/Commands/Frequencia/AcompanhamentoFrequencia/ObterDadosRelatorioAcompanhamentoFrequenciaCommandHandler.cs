@@ -33,14 +33,22 @@ namespace SME.SR.Application
             var relatorio = new RelatorioFrequenciaIndividualDto();
             var alunosSelecionados = new List<AlunoNomeDto>();
             var turma = await ObterDadosDaTurma(request.FiltroRelatorio.TurmaCodigo);
-            var componenteCurricularId = await VerificaSeComponenteEhTerritorioERetornaCodigoExtenso(turma.Codigo, Convert.ToInt64(long.Parse(request.FiltroRelatorio.ComponenteCurricularId)));
 
-            var componentesIds = componenteCurricularId.ToString().Equals(request.FiltroRelatorio.ComponenteCurricularId)
-                ? new string[] { componenteCurricularId.ToString() }
-                : new string[] { componenteCurricularId.ToString(), request.FiltroRelatorio.ComponenteCurricularId };
+            var componentesIds = new List<string> { request.FiltroRelatorio.ComponenteCurricularId };
+            string profTitular = null;
+            bool ehTerritorioSaber = await mediator.Send(new VerificaSeComponenteEhTerritorioQuery(long.Parse(request.FiltroRelatorio.ComponenteCurricularId)));
+            if (ehTerritorioSaber)
+            {
+                var componenteCurricularId = await ObterCodigoExtensoComponentTerritorioSaber(turma.Codigo, long.Parse(request.FiltroRelatorio.ComponenteCurricularId));
+                if (componenteCurricularId != 0)
+                {
+                    componentesIds.Add(componenteCurricularId.ToString());
+                    profTitular = await ObterRfProfTitular(request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.ComponenteCurricularId);
+                }
+            }
+                        
 
             await MapearCabecalho(relatorio, request.FiltroRelatorio, turma);
-
             var tipoCalendarioId = await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma));
             if (tipoCalendarioId == default)
                 throw new NegocioException("O tipo de calendário da turma não foi encontrado.");
@@ -49,8 +57,8 @@ namespace SME.SR.Application
                 await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
 
             int aulasDadas = await mediator.Send(new ObterAulasDadasNoBimestreQuery(turma.Codigo, tipoCalendarioId,
-                componentesIds,
-                int.Parse(request.FiltroRelatorio.Bimestre)));
+                componentesIds.ToArray(),
+                int.Parse(request.FiltroRelatorio.Bimestre), profTitular));
 
             var bimestre = int.Parse(request.FiltroRelatorio.Bimestre);
 
@@ -112,16 +120,16 @@ namespace SME.SR.Application
 
                     var dadosFrequencia = (await mediator.Send(new ObterFrequenciaAlunoPorCodigoBimestreQuery(
                         bimestreItem.ToString(), codigosAlunos, request.FiltroRelatorio.TurmaCodigo,
-                        TipoFrequenciaAluno.PorDisciplina, componentesIds))).ToList();
+                        TipoFrequenciaAluno.PorDisciplina, componentesIds.ToArray()))).ToList();
 
                     if (request.FiltroRelatorio.ImprimirFrequenciaDiaria)
                         frequenciasDiarias = await mediator.Send(new ObterFrequenciaAlunoDiariaQuery(
                             request.FiltroRelatorio.Bimestre, codigosAlunos, request.FiltroRelatorio.TurmaCodigo,
-                            componentesIds));
+                            componentesIds.ToArray(), profTitular));
                     else
                         dadosAusencia = await mediator.Send(new ObterAusenciaPorAlunoTurmaBimestreQuery(
                             alunosSelecionados.Select(s => s.Codigo).ToArray(), request.FiltroRelatorio.TurmaCodigo,
-                            request.FiltroRelatorio.Bimestre));
+                            request.FiltroRelatorio.Bimestre, componentesIds.ToArray()));
 
                     await MapearAlunos(alunosSelecionados, relatorio, dadosFrequencia, turma, periodosEscolares, aulasDadas, bimestreItem);
                 }
@@ -158,21 +166,26 @@ namespace SME.SR.Application
             return relatorioFinal;
         }
 
-        private async Task<long> VerificaSeComponenteEhTerritorioERetornaCodigoExtenso(string turmaCodigo, long componenteCurricularId)
+        private async Task<long> ObterCodigoExtensoComponentTerritorioSaber(string turmaCodigo, long componenteCurricularId)
         {
-            bool verificaSeEhTerritorio = await mediator.Send(new VerificaSeComponenteEhTerritorioQuery(componenteCurricularId));
-
-            if (verificaSeEhTerritorio)
+            var componentesCurricularesTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(turmaCodigo, new long[] { componenteCurricularId }));
+            if (componentesCurricularesTurma.Any() && componentesCurricularesTurma != null)
+                return componentesCurricularesTurma.FirstOrDefault().CodigoTerritorioSaber > 0 
+                    ? componentesCurricularesTurma.FirstOrDefault().ObterCodigoComponenteCurricular(turmaCodigo)
+                    : 0;
+            return 0;
+        }
+        
+        private async Task<string> ObterRfProfTitular(string codigoTurma, string componenteCurricularId)
+        {
+            var professores = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(new string[] { codigoTurma }))).ToList();
+            var profTitular = professores.Where(prof => prof.ComponenteCurricularId == componenteCurricularId).FirstOrDefault()?.ProfessorRf;
+            if (profTitular == null)
             {
-                var componentesCurricularesTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(turmaCodigo, new long[] { componenteCurricularId }));
-
-                if (componentesCurricularesTurma.Any() && componentesCurricularesTurma != null)
-                    return componentesCurricularesTurma.FirstOrDefault().CodigoTerritorioSaber > 0 
-                        ? componentesCurricularesTurma.FirstOrDefault().ObterCodigoComponenteCurricular(turmaCodigo)
-                        : componenteCurricularId;
+                var professoresAtribuicaoExterna = await mediator.Send(new ObterProfessorTitularExternoComponenteCurricularPorTurmaQuery(new string[] { codigoTurma }));
+                profTitular = professoresAtribuicaoExterna.Where(prof => prof.ComponenteCurricularId == componenteCurricularId).FirstOrDefault()?.ProfessorRf;
             }
-
-            return componenteCurricularId;
+            return profTitular;
         }
 
         private void MapearBimestre(IEnumerable<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, RelatorioFrequenciaIndividualAlunosDto aluno)
