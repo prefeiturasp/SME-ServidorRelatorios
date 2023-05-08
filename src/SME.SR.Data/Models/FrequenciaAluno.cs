@@ -75,6 +75,7 @@ namespace SME.SR.Data
         public int TotalPresencas { get; set; }
         public int TotalRemotos { get; set; }
         public string TurmaId { get; set; }
+        public string Professor { get; set; }
 
         /// <summary>
         /// Lista montada para particularidade de cálculo para o ano de 2020.

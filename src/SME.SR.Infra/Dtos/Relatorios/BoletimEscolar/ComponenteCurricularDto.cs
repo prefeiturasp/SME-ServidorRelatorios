@@ -36,5 +36,7 @@ namespace SME.SR.Infra
 
         public string FrequenciaFinal { get; set; }
         public long Grupo { get; set; }
+        public string Professor { get; set; }
+        public bool TerritorioSaber { get; set; }
     }
 }
