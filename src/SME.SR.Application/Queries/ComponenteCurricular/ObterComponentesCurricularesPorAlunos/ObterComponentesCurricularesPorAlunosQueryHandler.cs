@@ -154,6 +154,7 @@ namespace SME.SR.Application
                         TerritorioSaber = cpCompleto.TerritorioSaber,
                         TipoEscola = cpTurma.TipoEscola,
                         OrdemTerritorioSaber = cpCompleto.OrdemComponenteTerritorioSaber,
+                        Professor = cpCompleto.Professor
                     }).ToList();
         }
 

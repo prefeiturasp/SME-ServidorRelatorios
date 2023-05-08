@@ -111,7 +111,8 @@ namespace SME.SR.Data
 		                                    fa.total_ausencias TotalAusencias, 
 		                                    fa.total_compensacoes TotalCompensacoes,
 		                                    fa.periodo_escolar_id PeriodoEscolarId,
-		                                    row_number() over (partition by fa.codigo_aluno, fa.disciplina_id, fa.periodo_escolar_id order by fa.id desc) sequencia
+                                            fa.professor_rf Professor,
+		                                    row_number() over (partition by fa.codigo_aluno, fa.disciplina_id, fa.periodo_escolar_id, fa.professor_rf order by fa.id desc) sequencia
 		                                     from frequencia_aluno fa 
 		                                    inner join turma t on t.turma_id = fa.turma_id
 			                                where fa.codigo_aluno = ANY(@codigosAluno)

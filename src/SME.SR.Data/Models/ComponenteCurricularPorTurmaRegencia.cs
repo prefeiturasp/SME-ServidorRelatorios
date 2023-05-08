@@ -17,6 +17,7 @@ namespace SME.SR.Data
         public bool BaseNacional { get; set; }
         public ComponenteCurricularGrupoMatriz GrupoMatriz { get; set; }
         public int? OrdemComponenteTerritorioSaber { get; set; }
+        public string Professor { get; set; }
         public string ObterDisciplina()
         {
             var tamnhoDisciplina = Disciplina.Length;
