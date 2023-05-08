@@ -8,5 +8,6 @@ namespace SME.SR.Infra
         public string TurmaCodigo { get; set; }
         public int AulasQuantidade { get; set; }
         public int Bimestre { get; set; }
+        public string Professor { get; set; }
     }
 }
