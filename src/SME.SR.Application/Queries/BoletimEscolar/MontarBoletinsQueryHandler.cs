@@ -207,7 +207,8 @@ namespace SME.SR.Application
                         boletim.ComponentesCurriculares.Add(
                             new ComponenteCurricularDto()
                             {
-                                Codigo = componente.CodDisciplina.ToString(),
+                                Codigo = componente.CodDisciplina.ToString(), 
+                                CodigoTerritorioSaber = componente.CodigoTerritorioSaber.ToString(),
                                 Nome = componente.Disciplina,
                                 Nota = componente.LancaNota,
                                 Frequencia = componente.Frequencia,
@@ -267,7 +268,7 @@ namespace SME.SR.Application
                     var transformarNotaEmConceito = !notas.Where(n => !string.IsNullOrEmpty(n.NotaConceito))
                         .All(n => n.NotaConceito.ToCharArray().Where(c => c != '.').All(c => char.IsDigit(c)));
 
-                    var frequenciasAlunoComponente = frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo && (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
+                    var frequenciasAlunoComponente = frequenciasAluno?.Where(f => (f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber) && (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
                     var frequenciasTurmaComponente = frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
                     var registroFrequenciaComponenteCurricular = registroFrequencia.Where(rf => rf.ComponenteCurricularCodigo == componenteCurricular.Codigo);
                     var frequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoComponente, conselhoClasseBimestres, registroFrequenciaComponenteCurricular);
