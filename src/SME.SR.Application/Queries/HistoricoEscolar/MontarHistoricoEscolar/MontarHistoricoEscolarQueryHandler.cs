@@ -72,7 +72,7 @@ namespace SME.SR.Application
                         ResponsaveisUe = responsaveisUe,
                         EstudosRealizados = estudosRealizados.Count > 0 ? estudosRealizados : null,
                         DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key),
-                        ObservacaoComplementar = request.ObservacaoComplementar
+                        ObservacaoComplementar = request.FiltroHistoricoAlunos?.FirstOrDefault(filtro => filtro.AlunoCodigo == aluno.Key)?.ObservacaoComplementar ?? string.Empty
                     };
 
                     listaRetorno.Add(historicoDto);
@@ -412,7 +412,7 @@ namespace SME.SR.Application
                     frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
                 }
 
-                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? "100" : "100";
+                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? FrequenciaAluno.FormatarPercentual(100) : FrequenciaAluno.FormatarPercentual(100);
             }
             else
                 return null;
@@ -429,7 +429,7 @@ namespace SME.SR.Application
                 frequenciaAluno.TotalCompensacoes += frequencia.TotalCompensacoes;
             }
 
-            return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? "100" : "100";
+            return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? FrequenciaAluno.FormatarPercentual(100) : FrequenciaAluno.FormatarPercentual(100);
         }
 
         private string ObterNotaComponentePorTurma(Turma turma, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias)

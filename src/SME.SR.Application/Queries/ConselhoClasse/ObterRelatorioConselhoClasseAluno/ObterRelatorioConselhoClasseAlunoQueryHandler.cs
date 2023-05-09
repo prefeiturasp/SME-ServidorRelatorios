@@ -84,7 +84,7 @@ namespace SME.SR.Application
 
                 SentrySdk.AddBreadcrumb($"Obtendo frequencia global do aluno {request.CodigoAluno}", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 if (!fechamentoTurma.Turma.AnoLetivo.Equals(2020))
-                    relatorio.AlunoFrequenciaGlobal = (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno)).ToString();
+                    relatorio.AlunoFrequenciaGlobal = !string.IsNullOrEmpty(request.FrequenciaGlobal) ? request.FrequenciaGlobal : (await ObterFrequenciaGlobalPorAluno(fechamentoTurma.Turma.Codigo, request.CodigoAluno));
 
                 if (bimestre.HasValue)
                 {
@@ -148,9 +148,9 @@ namespace SME.SR.Application
                    request.FechamentoTurmaId,
                    request.CodigoAluno);
 
-                relatorio.RecomendacaoAluno = recomendacoes.RecomendacoesAluno;
-                relatorio.RecomendacaoFamilia = recomendacoes.RecomendacoesFamilia;
-                relatorio.AnotacoesPedagogicas = recomendacoes.AnotacoesPedagogicas;
+                relatorio.RecomendacaoAluno = recomendacoes?.RecomendacoesAluno;
+                relatorio.RecomendacaoFamilia = recomendacoes?.RecomendacoesFamilia;
+                relatorio.AnotacoesPedagogicas = recomendacoes?.AnotacoesPedagogicas;
 
                 SentrySdk.AddBreadcrumb("Obtendo ObterAnotacoesAluno", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
                 var anotacoes = await ObterAnotacoesAluno(
@@ -184,8 +184,9 @@ namespace SME.SR.Application
             var totalDisciplinas = 0;
             listaGrupoMatrizComponenteComNotaFinal.ToList().ForEach(gmc =>
             {
-                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
-                somaPercentuaisFrequencia += gmc.ComponentesComNotaRegencia?.Frequencia ?? 0;
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => !string.IsNullOrEmpty(cn.Frequencia)).Sum(gn => double.Parse(gn.Frequencia));
+                var percentualFrequencia = gmc.ComponentesComNotaRegencia?.Frequencia;
+                somaPercentuaisFrequencia += string.IsNullOrEmpty(percentualFrequencia) ? 0 : double.Parse(percentualFrequencia);
                 totalDisciplinas += gmc.ComponentesComNota.Count();
                 totalDisciplinas += gmc.ComponentesComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
             });
@@ -198,8 +199,9 @@ namespace SME.SR.Application
             var totalDisciplinas = 0;
             listaGrupoMatrizComponenteComNotaBimestre.ToList().ForEach(gmc =>
             {
-                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => cn.Frequencia.HasValue).Sum(gn => gn.Frequencia.Value);
-                somaPercentuaisFrequencia += gmc.ComponenteComNotaRegencia?.Frequencia ?? 0;
+                somaPercentuaisFrequencia += gmc.ComponentesComNota.Where(cn => !string.IsNullOrEmpty(cn.Frequencia)).Sum(gn => double.Parse(gn.Frequencia));
+                var percentualFrequencia = gmc.ComponenteComNotaRegencia?.Frequencia;
+                somaPercentuaisFrequencia += string.IsNullOrEmpty(percentualFrequencia) ? 0 : double.Parse(percentualFrequencia);
                 totalDisciplinas += gmc.ComponentesComNota.Count();
                 totalDisciplinas += gmc.ComponenteComNotaRegencia?.ComponentesCurriculares.Count ?? 0;
             });
@@ -240,13 +242,14 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<double> ObterFrequenciaGlobalPorAluno(string codigoTurma, string codigoAluno)
+        private async Task<string> ObterFrequenciaGlobalPorAluno(string codigoTurma, string codigoAluno)
         {
-            return await mediator.Send(new ObterFrequenciaGlobalPorAlunoQuery()
+            var frequenciaGlobal = await mediator.Send(new ObterFrequenciaGlobalPorAlunoQuery()
             {
                 CodigoTurma = codigoTurma,
                 CodigoAluno = codigoAluno
             });
+            return FrequenciaAluno.FormatarPercentual(frequenciaGlobal);
         }
 
         private async Task<RecomendacaoConselhoClasseAluno> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno)

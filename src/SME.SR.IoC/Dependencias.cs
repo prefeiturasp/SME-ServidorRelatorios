@@ -199,6 +199,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IEncaminhamentoNAAPASecaoRepository), typeof(EncaminhamentoNAAPASecaoRepository));
 
             services.TryAddScoped(typeof(ISondagemAnaliticaRepository), typeof(SondagemAnaliticaRepository));
+            services.TryAddScoped(typeof(IHistoricoEscolarObservacaoRepository), typeof(HistoricoEscolarObservacaoRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -261,6 +262,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioEncaminhamentosNaapaDetalhadoUseCase, RelatorioEncaminhamentosNAAPADetalhadoUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosNAAPAUseCase, RelatorioEncaminhamentosNAAPAUseCase>();
             services.TryAddScoped<IRelatorioAnaliticoSondagemUseCase, RelatorioAnaliticoSondagemUseCase>();
+            services.TryAddScoped<IRelatorioListagemItineranciasUseCase, RelatorioListagemItineranciasUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)

@@ -37,12 +37,10 @@ pipeline {
         }
 	    
         stage('Deploy'){
-            when { anyOf {  branch 'master'; branch 'main'; branch 'development'; branch 'release'; branch 'release-r2'; } }        
+            when { anyOf {  branch 'master'; branch 'main' ; branch 'homolog'; branch 'release'; branch 'release-r2'; } }        
             steps {
                 script{
-                    if ( env.branchname == 'main' ||  env.branchname == 'master' || env.branchname == 'homolog' || env.branchname == '_release' ) {
-                        sendTelegram("🤩 [Deploy ${env.branchname}] Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nMe aprove! \nLog: \n${env.BUILD_URL}")
-
+                    if ( env.branchname == 'main' ||  env.branchname == 'master' ) {
                          withCredentials([string(credentialsId: 'aprovadores-sgp', variable: 'aprovadores')]) {
                             timeout(time: 24, unit: "HOURS") {
                                 input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: "${aprovadores}"
@@ -50,22 +48,15 @@ pipeline {
                         }
                     }
 					
-					withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
-						sh('cp $config '+"$home"+'/.kube/config')
-						sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
-						sh('rm -f '+"$home"+'/.kube/config')
-					}
+                          withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
+                            sh('cp $config '+"$home"+'/.kube/config')
+                            sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
+                            sh('rm -f '+"$home"+'/.kube/config')
+                          }
                 }
             }           
         }    
     }
-
-  post {
-    success { sendTelegram("🚀 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Success \nLog: \n${env.BUILD_URL}console") }
-    unstable { sendTelegram("💣 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Unstable \nLog: \n${env.BUILD_URL}console") }
-    failure { sendTelegram("💥 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Failure \nLog: \n${env.BUILD_URL}console") }
-    aborted { sendTelegram ("😥 Job Name: ${JOB_NAME} \nBuild: ${BUILD_DISPLAY_NAME} \nStatus: Aborted \nLog: \n${env.BUILD_URL}console") }
-  }
 }
 def sendTelegram(message) {
     def encodedMessage = URLEncoder.encode(message, "UTF-8")

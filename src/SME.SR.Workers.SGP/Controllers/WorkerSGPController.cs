@@ -395,6 +395,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/listagem-itinerancias")]
+        [Action("relatorios/listagem-itinerancias", typeof(IRelatorioListagemItineranciasUseCase))]
+        public async Task<bool> ListarItinerancias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioListagemItineranciasUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]

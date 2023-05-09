@@ -9,6 +9,7 @@ namespace SME.SR.Application
         public long ConselhoClasseId { get; set; }
         public string CodigoAluno { get; set; }
         public Usuario Usuario { get; set; }
+        public string FrequenciaGlobal { get; set; }
     }
 }
 

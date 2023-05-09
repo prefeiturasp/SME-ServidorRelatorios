@@ -346,21 +346,22 @@
                         var estudante = registros.Alunos.ToList()[i].Estudante;
                         var acompanhamentoSituacao = registros.Alunos.ToList()[i].AcompanhamentoSituacao;
                         var encaminhamentos = registros.Alunos.ToList()[i].Encaminhamentos;
-
-                        QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);
-                        @if (!quebrou && i > 0)
-                        {
-                            @Html.Raw(EspacoEmBranco());
-                            contadorQuebrarPagina++;
-                        }
+                        
                         <tbody>
                             @{
-                                @Html.Raw(MontarLinhaSimples(estudante))
-                                contadorQuebrarPagina++;
-
                                 var descritivoEstudante = registros.Alunos.ToList()[i].DescritivoEstudante;
                                 int numeroLinhasDE = CalcularLinhas(descritivoEstudante.Length);
                                 @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasDE))
+                                if (!quebrou)
+                                {
+                                    if (i > 0)
+                                    {
+                                        @Html.Raw(EspacoEmBranco());
+                                        contadorQuebrarPagina++;
+                                     }
+                                    @Html.Raw(MontarLinhaSimples(estudante))
+                                    contadorQuebrarPagina++;
+                                }
                                 MontarSecoes("DESCRITIVO DO ESTUDANTE", descritivoEstudante);
 
                                 int numeroLinhasAS = CalcularLinhas(acompanhamentoSituacao.Length); 
