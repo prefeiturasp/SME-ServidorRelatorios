@@ -169,9 +169,9 @@ namespace SME.SR.Data.Interfaces
                             retorno = itinerancia;
                             lookup.Add(itinerancia.Id, retorno);
                         }
-                        if (!string.IsNullOrEmpty(objetivo.Nome))
+                        if (!string.IsNullOrEmpty(objetivo.Nome) && !retorno.Objetivos.Any(x => x.Nome == objetivo.Nome))
                             retorno.Objetivos.Add(new ObjetivoItineranciaDto { Nome = objetivo.Nome, Descricao = objetivo.Descricao });
-                        if (!string.IsNullOrEmpty(aluno.Codigo))
+                        if (!string.IsNullOrEmpty(aluno.Codigo) && !retorno.Alunos.Any(x => x.Codigo == aluno.Codigo))
                             retorno.Alunos.Add(new AlunoItineranciaDto { Nome = null, Codigo = aluno.Codigo });
 
                         return retorno;
