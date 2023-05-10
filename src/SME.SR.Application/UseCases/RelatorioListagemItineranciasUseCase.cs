@@ -46,7 +46,7 @@ namespace SME.SR.Application
             var retorno = itinerancias.OrderBy(itinerancia => itinerancia.DreCodigo)
                             .ThenBy(itinerancia => itinerancia.TipoEscola.ShortName())            
                             .ThenBy(itinerancia => itinerancia.UeNome)
-                            .ThenBy(itinerancia => itinerancia.DataVisita)
+                            .ThenByDescending(itinerancia => itinerancia.DataVisita)
                             .Select(itinerancia => 
                                     new RegistroListagemItineranciaDto(
                                         itinerancia.DreAbreviacao,
