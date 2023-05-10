@@ -23,7 +23,6 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
-           
             try
             {
                 var itinerancias = (await mediator.Send(new ObterListagemItineranciasQuery(parametros))).ToList();
