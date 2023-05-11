@@ -116,5 +116,29 @@ namespace SME.SR.Data
             new { ueId })).FirstOrDefault();
 
         }
+        public async Task<Ue> ObterUeComDrePorCodigo(string codigoUe)
+        {
+            var query = @"select
+	                        ue.ue_id as UeCodigo,
+	                        ue.tipo_escola as TipoEscola,
+	                        ue.*,
+	                        dre.*,
+	                        dre.dre_id as DreCodigo
+                        from
+	                        ue
+                        inner join dre on
+	                        dre.id = ue.dre_id
+                        where
+	                        ue.ue_id = @codigoUe";
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
+            return (await conexao.QueryAsync<Ue, Dre, Ue>(query, (ue, dre) =>
+                {
+                    ue.AdicionarDre(dre);
+                    return ue;
+                },
+                new { codigoUe })).FirstOrDefault();
+
+        }
     }
 }

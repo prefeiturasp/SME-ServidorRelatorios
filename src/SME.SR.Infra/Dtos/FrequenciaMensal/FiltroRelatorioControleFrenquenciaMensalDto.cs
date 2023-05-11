@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace SME.SR.Infra.Dtos.FrequenciaMensal
 {
@@ -17,9 +19,12 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public int Semestre { get; set; }
         public string CodigoTurma { get; set; }
         public string[] AlunosCodigo { get; set; }
-        public List<string> MesesReferencias { get; set; }
+        public IList<string> MesesReferencias { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
         public string NomeUsuario { get; set; }
         public string CodigoRf { get; set; }
+
+        public bool TodosAlunos => !AlunosCodigo.Any();
+        public bool TodosMeses => MesesReferencias.Contains("-99");
     }
 }
