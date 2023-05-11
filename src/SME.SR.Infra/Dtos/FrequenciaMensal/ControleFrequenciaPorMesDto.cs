@@ -4,6 +4,10 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
 {
     public class ControleFrequenciaPorMesDto
     {
+        public ControleFrequenciaPorMesDto()
+        {
+            FrequenciaComponente = new List<ControleFrequenciaPorComponenteDto>();
+        }
         public string Mes { get; set; }
         public List<ControleFrequenciaPorComponenteDto> FrequenciaComponente { get; set; }
     }

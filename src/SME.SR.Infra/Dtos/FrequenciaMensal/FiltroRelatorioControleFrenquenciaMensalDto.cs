@@ -4,6 +4,11 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
 {
     public class FiltroRelatorioControleFrenquenciaMensalDto
     {
+        public FiltroRelatorioControleFrenquenciaMensalDto()
+        {
+            MesesReferencias = new List<string>();
+            AlunosCodigo = new List<string>().ToArray();
+        }
         public bool ExibirHistorico { get; set; }
         public int AnoLetivo { get; set; }
         public string CodigoDre { get; set; }
