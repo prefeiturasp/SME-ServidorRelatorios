@@ -21,7 +21,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<TurmaComponenteQtdAulasDto>> ObterTotalAulasPorDisciplinaETurmaEBimestre(string[] turmasCodigo, string[] componentesCurricularesId, long tipoCalendarioId, int[] bimestres)
         {
             var query = new StringBuilder();
-            query.AppendLine(@"select a.disciplina_id as ComponenteCurricularCodigo, a.turma_id as TurmaCodigo, p.bimestre as Bimestre, 
+            query.AppendLine(@"select a.disciplina_id as ComponenteCurricularCodigo, a.turma_id as TurmaCodigo, p.bimestre as Bimestre, a.professor_rf as Professor,
                 COALESCE(SUM(a.quantidade),0) AS AulasQuantidade from 
             aula a 
             inner join registro_frequencia rf on 
@@ -39,10 +39,10 @@ namespace SME.SR.Data
             if (componentesCurricularesId != null && componentesCurricularesId.Length > 0)
                 query.AppendLine("and a.disciplina_id = any(@componentesCurricularesId) ");
 
-            query.AppendLine("and a.turma_id = any(@turmasCodigo) group by a.disciplina_id, a.turma_id, p.bimestre");
-            
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-                return await conexao.QueryAsync<TurmaComponenteQtdAulasDto>(query.ToString(), new { turmasCodigo, componentesCurricularesId, tipoCalendarioId, bimestres });
+            query.AppendLine("and a.turma_id = any(@turmasCodigo) group by a.disciplina_id, a.turma_id, p.bimestre, a.professor_rf");
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            return await conexao.QueryAsync<TurmaComponenteQtdAulasDto>(query.ToString(), new { turmasCodigo, componentesCurricularesId, tipoCalendarioId, bimestres });
         }
 
         public async Task<IEnumerable<TurmaComponenteDataAulaQuantidadeDto>> ObterAulasPorTurmasComponentesTipoCalendarioBimestres(string[] turmasCodigo, string[] componentesCurricularesId, long tipoCalendarioId, int[] bimestres)

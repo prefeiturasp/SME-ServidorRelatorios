@@ -6,15 +6,16 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-   public class ObterFrequenciasRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<string, FrequenciaAluno>>>
+    public class ObterFrequenciasRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<string, FrequenciaAluno>>>
     {
-        public ObterFrequenciasRelatorioBoletimQuery(string[] codigosAluno, int anoLetivo, Modalidade modalidade, int semestre, string[] turmaCodigos)
+        public ObterFrequenciasRelatorioBoletimQuery(string[] codigosAluno, int anoLetivo, Modalidade modalidade, int semestre, string[] turmaCodigos, string professor = null)
         {
             CodigosAluno = codigosAluno;
             AnoLetivo = anoLetivo;
             Modalidade = modalidade;
             Semestre = semestre;
             TurmaCodigos = turmaCodigos;
+            Professor = professor;
         }
 
         public string[] CodigosAluno { get; set; }
@@ -22,5 +23,6 @@ namespace SME.SR.Application
         public Modalidade Modalidade { get; }
         public int Semestre { get; }
         public string[] TurmaCodigos { get; set; }
+        public string Professor { get; set; }
     }
 }

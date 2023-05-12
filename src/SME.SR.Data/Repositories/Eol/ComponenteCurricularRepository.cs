@@ -174,14 +174,15 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmasEProfessor(string login, string[] codigosTurma)
         {
-            var query = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
+            var query = @$"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
                                                     cc.cd_componente_curricular) as Codigo,
                                                 iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
                                                     cc.dc_componente_curricular) as Descricao,
                                                 esc.tp_escola                    as TipoEscola,
                                                 dtt.qt_hora_duracao              as TurnoTurma,
 				                                serie_ensino.sg_resumida_serie   as AnoTurma,
-                                                te.cd_turma_escola               as CodigoTurma
+                                                te.cd_turma_escola               as CodigoTurma,
+                                                vsc.cd_registro_funcional        as Professor
                                 from turma_escola (nolock) te
                                             inner join escola (nolock) esc ON te.cd_escola = esc.cd_escola
                                     --Serie Ensino
@@ -204,10 +205,8 @@ namespace SME.SR.Data
                                     and pcc.dt_cancelamento is null
                                     --Atribuição
                                             inner join atribuicao_aula (nolock) aa
-                                                    on (gcc.cd_grade = aa.cd_grade and gcc.cd_componente_curricular = aa.cd_componente_curricular
-                                                                                    and aa.cd_serie_grade = serie_turma_grade.cd_serie_grade)
-                                                        or
-                                                        (pgcc.cd_grade = aa.cd_grade and pgcc.cd_componente_curricular = aa.cd_componente_curricular)
+                                                    on ((gcc.cd_grade = aa.cd_grade and gcc.cd_componente_curricular = aa.cd_componente_curricular and aa.cd_serie_grade = serie_turma_grade.cd_serie_grade)
+                                                        or (pgcc.cd_grade = aa.cd_grade and pgcc.cd_componente_curricular = aa.cd_componente_curricular))
                                                         and aa.dt_cancelamento is null and aa.dt_disponibilizacao_aulas is null and
                                                         aa.an_atribuicao = year(getdate())
                                             inner join v_cargo_base_cotic (nolock) vcbc on aa.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor
@@ -217,13 +216,13 @@ namespace SME.SR.Data
                                         inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
 						where te.cd_turma_escola in @codigosTurma
 							and te.st_turma_escola in ('O', 'A', 'C')
-							and vsc.cd_registro_funcional = @login";
+							{(!string.IsNullOrWhiteSpace(login) ? " and vsc.cd_registro_funcional = @login " : string.Empty)}";
 
             var parametros = new { Login = login, CodigosTurma = codigosTurma };
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros, commandTimeout: 60);
             }
         }
 

@@ -29,7 +29,7 @@ namespace SME.SR.Application
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
             var alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurmas.Select(ct => ct.ToString()));
             var codigoAlunos = alunos.Select(x => int.Parse(x.CodigoAluno.ToString())).ToArray();
-            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos.Select(ca => (long)ca).ToArray(), null));           
+            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos.Select(ca => (long)ca).ToArray(), null));
 
             var turmasCodigosFiltrado = turmasAlunos
                 .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.RegularCodigo != null)
@@ -46,7 +46,7 @@ namespace SME.SR.Application
             var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId));
             var componentesCurricularesCompletos = await ObterComponentesCurriculares(request, todosComponentes, gruposMatriz, componentesDasTurmas);
             var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental);
-            
+
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
 
             var componentesRegencia = ObterCodigosComponentesRegenciaClasse(todosComponentes, componentesDasTurmas);
@@ -134,14 +134,15 @@ namespace SME.SR.Application
         private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesCurricularesCompletos, IEnumerable<DisciplinaDto> disciplinasDaTurma, bool ehFundamental)
         {
             return (from cpTurma in componentesDasTurmas
-                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.CodDisciplina)
-                    join disciplina in disciplinasDaTurma on (cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
+                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.TerritorioSaber ? cpCompleto.CodigoTerritorioSaber : cpCompleto.CodDisciplina)
+                    join disciplina in disciplinasDaTurma on (cpCompleto.TerritorioSaber ? cpCompleto.CodigoTerritorioSaber : cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
                     select new ComponenteCurricularPorTurma()
                     {
                         CodigoAluno = cpTurma.CodigoAluno,
                         CodigoTurma = cpTurma.CodigoTurma,
                         CodDisciplina = cpCompleto.CodDisciplina,
                         CodDisciplinaPai = cpTurma.CodigoComponentePai(componentes),
+                        CodigoTerritorioSaber = cpCompleto.CodigoTerritorioSaber,
                         BaseNacional = cpCompleto.BaseNacional,
                         Compartilhada = cpCompleto.Compartilhada,
                         Disciplina = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.ObterDisciplina() : disciplina.ObterDisciplina(),
@@ -153,6 +154,7 @@ namespace SME.SR.Application
                         TerritorioSaber = cpCompleto.TerritorioSaber,
                         TipoEscola = cpTurma.TipoEscola,
                         OrdemTerritorioSaber = cpCompleto.OrdemComponenteTerritorioSaber,
+                        Professor = cpCompleto.Professor
                     }).ToList();
         }
 
@@ -179,9 +181,9 @@ namespace SME.SR.Application
             {
                 var componentesCurriculares = await componenteCurricularRepository.ObterComponentesPorAlunos(codigosTurmas, alunosCodigos, anoLetivo, semestre, consideraHistorico);
                 return componentesCurriculares.AsEnumerable();
-            }                            
+            }
         }
 
-        
+
     }
 }

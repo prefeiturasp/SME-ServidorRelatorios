@@ -101,7 +101,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos, string professor = null)
         {
             var query = @$"select * 
 	                            from( 
@@ -112,7 +112,8 @@ namespace SME.SR.Data
 		                                    fa.total_ausencias TotalAusencias, 
 		                                    fa.total_compensacoes TotalCompensacoes,
 		                                    fa.periodo_escolar_id PeriodoEscolarId,
-		                                    row_number() over (partition by fa.codigo_aluno, fa.disciplina_id, fa.periodo_escolar_id order by fa.id desc) sequencia
+                                            fa.professor_rf Professor,
+		                                    row_number() over (partition by fa.codigo_aluno, fa.disciplina_id, fa.periodo_escolar_id, fa.professor_rf order by fa.id desc) sequencia
 		                                     from frequencia_aluno fa 
 		                                    inner join turma t on t.turma_id = fa.turma_id
 			                                where fa.codigo_aluno = ANY(@codigosAluno)
@@ -120,11 +121,12 @@ namespace SME.SR.Data
 	                                          and t.ano_letivo = @anoLetivo
 	                                          and t.modalidade_codigo = @modalidade
 	                                          and t.semestre = @semestre
-	                                          {(turmaCodigos?.Length > 0 ? "and t.turma_id = ANY(@turmaCodigos)" : string.Empty)}
+	                                          {(turmaCodigos?.Length > 0 ? " and t.turma_id = ANY(@turmaCodigos) " : string.Empty)}
+                                              {(!string.IsNullOrWhiteSpace(professor) ? " and (fa.professor_rf = @professor or fa.professor_rf is null) " : string.Empty)}
 		                            )rf 
 	                            where rf.sequencia = 1;";
 
-            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos};
+            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos, professor };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -192,7 +194,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade,codigoTurmas });
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade, codigoTurmas });
             }
         }
 
@@ -606,7 +608,7 @@ namespace SME.SR.Data
                             and t.modalidade_codigo = @modalidade";
 
             if (codigoDre != "-99")
-                query +=  " and d.dre_id = @codigoDre";
+                query += " and d.dre_id = @codigoDre";
 
             if (codigoUe != "-99")
                 query += " and u.ue_id = @codigoUe";

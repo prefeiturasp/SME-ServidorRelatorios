@@ -10,6 +10,7 @@ namespace SME.SR.Infra
     {
         [JsonIgnore]
         public string Codigo { get; set; }
+        public string CodigoTerritorioSaber { get; set; }
 
         public bool Nota { get; set; }
 
@@ -36,5 +37,7 @@ namespace SME.SR.Infra
 
         public string FrequenciaFinal { get; set; }
         public long Grupo { get; set; }
+        public string Professor { get; set; }
+        public bool TerritorioSaber { get; set; }
     }
 }

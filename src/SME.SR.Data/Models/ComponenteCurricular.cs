@@ -15,6 +15,7 @@ namespace SME.SR.Data
         public string CodigoTurma { get; set; }
         public string AnoTurma { get; set; }
         public long Codigo { get; set; }
+        public long CodigoTerritorioSaber { get; set; }
         public string Descricao { get; set; }
         public string DescricaoFormatada => string.IsNullOrWhiteSpace(Descricao) ? string.Empty : Descricao.Trim();
         public bool TerritorioSaber { get; set; }
@@ -29,6 +30,7 @@ namespace SME.SR.Data
         public bool BaseNacional { get; set; }
         public string DescricaoInfantil { get; set; }
         public int? OrdemTerritorioSaber { get; set; }
+        public string Professor { get; set; }
 
         public long? CodigoComponentePai(IEnumerable<ComponenteCurricularApiEol> componentesApiEol) => componentesApiEol?
                                             .FirstOrDefault(w => w.IdComponenteCurricular == Codigo)?.IdComponenteCurricularPai;
