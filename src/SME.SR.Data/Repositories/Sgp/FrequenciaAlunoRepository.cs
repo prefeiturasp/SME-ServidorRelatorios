@@ -804,8 +804,10 @@ namespace SME.SR.Data
                     turmaCodigo,
                     alunosCodigo
                 };
-                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-                return await conexao.QueryAsync<ConsultaRelatorioFrequenciaControleMensalDto>(sql.ToString(), parametros);
+                using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+                { 
+                    return await conexao.QueryAsync<ConsultaRelatorioFrequenciaControleMensalDto>(sql.ToString(), parametros);    
+                }
         }
     }
 }
