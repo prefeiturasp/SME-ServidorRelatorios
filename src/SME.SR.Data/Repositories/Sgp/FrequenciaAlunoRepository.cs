@@ -697,7 +697,7 @@ namespace SME.SR.Data
             var todosMeses = mes.Contains("-99");
             var sql = new StringBuilder(); 
                 sql.AppendLine(@"with controle as(");
-                sql.AppendLine(@"SELECT a.disciplina_id as disciplinaid,");
+                sql.AppendLine(@"SELECT  rfa.codigo_aluno as CodigoAluno, a.disciplina_id as disciplinaid,");
                 sql.AppendLine(@"       cc.descricao_sgp as NomeComponente,");
                 sql.AppendLine(@"       count(quantidade) TotalAula,");
                 sql.AppendLine(@"       totalTipo.total AS TotalTipoFrequencia,");
@@ -781,7 +781,7 @@ namespace SME.SR.Data
                    sql.AppendLine(@"  AND extract(month FROM a.data_aula)   = any(@mes) ");
                 sql.AppendLine(@"  AND a.turma_id = @turmaCodigo ");
                 
-                sql.AppendLine(@"GROUP BY a.disciplina_id,");
+                sql.AppendLine(@"GROUP BY rfa.codigo_aluno, a.disciplina_id,");
                 sql.AppendLine(@"         cc.descricao_sgp, ");
                 sql.AppendLine(@"         totalTipo.total,");
                 sql.AppendLine(@"         totalTipo.valorFrequencia,");
@@ -806,7 +806,7 @@ namespace SME.SR.Data
                 };
                 using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
                 { 
-                    return await conexao.QueryAsync<ConsultaRelatorioFrequenciaControleMensalDto>(sql.ToString(), parametros);    
+                    return await conexao.QueryAsync<ConsultaRelatorioFrequenciaControleMensalDto>(sql.ToString(), parametros);
                 }
         }
     }
