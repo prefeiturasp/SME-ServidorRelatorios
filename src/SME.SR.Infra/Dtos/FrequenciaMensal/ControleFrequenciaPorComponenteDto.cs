@@ -6,7 +6,7 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
     {
         public ControleFrequenciaPorComponenteDto()
         {
-            FrequenciaPorAula = new List<ControleFrequenciaPorAulaDto>();
+            FrequenciaPorTipo = new List<ControleFrequenciaPorTipoDto>();
         }
         public string NomeComponente { get; set; }
         public string FrequenciaDoPeriodo { get; set; }
