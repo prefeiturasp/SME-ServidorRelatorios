@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SME.SR.Infra.Dtos.FrequenciaMensal
 {
     public class FiltroRelatorioControleFrenquenciaMensalDto
     {
+        public FiltroRelatorioControleFrenquenciaMensalDto()
+        {
+            MesesReferencias = new List<string>();
+            AlunosCodigo = new List<string>().ToArray();
+        }
         public bool ExibirHistorico { get; set; }
         public int AnoLetivo { get; set; }
         public string CodigoDre { get; set; }
@@ -12,9 +18,12 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public int Semestre { get; set; }
         public string CodigoTurma { get; set; }
         public string[] AlunosCodigo { get; set; }
-        public List<string> MesesReferencias { get; set; }
+        public IList<string> MesesReferencias { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
         public string NomeUsuario { get; set; }
         public string CodigoRf { get; set; }
+
+        public bool TodosAlunos => !AlunosCodigo.Any();
+        public bool TodosMeses => MesesReferencias.Contains("-99");
     }
 }

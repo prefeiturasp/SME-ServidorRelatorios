@@ -395,8 +395,8 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        [HttpGet()]
-        [Action("/relatorios/frequencia/controle-mensal", typeof(IRelatorioFrequenciaControleMensalUseCase))]
+        [HttpGet("relatorios/controle-frequencia-mensal")]
+        [Action("relatorios/controle-frequencia-mensal", typeof(IRelatorioFrequenciaControleMensalUseCase))]
         public async Task<bool> FrequenciaControleMensal([FromQuery] FiltroRelatorioDto request,[FromServices]  IRelatorioFrequenciaControleMensalUseCase useCase)
         {
             await useCase.Executar(request);
