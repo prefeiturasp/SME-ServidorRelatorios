@@ -27,8 +27,10 @@ namespace SME.SR.Application.UseCases
             var ueComDre = await ObterUeComDrePorCodigo(filtro.CodigoUe);
             var dadosTurma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtro.CodigoTurma));
 
+            var valorSemestre = filtro.Semestre !=null ? int.Parse(filtro.Semestre) : 0;
+
             var frequencias = await mediator.Send(new ObterFrequenciaRealatorioControleMensalQuery(filtro.AnoLetivo,filtro.MesesReferencias.ToArray(),filtro.CodigoUe
-                                                                                                                                                    ,filtro.CodigoDre,(int)filtro.Modalidade,filtro.Semestre,filtro.CodigoTurma,
+                                                                                                                                                    ,filtro.CodigoDre,(int)filtro.Modalidade,valorSemestre,filtro.CodigoTurma,
                                                                                                                                                     filtro.AlunosCodigo));
             
             
