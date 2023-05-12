@@ -8,7 +8,8 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         {
             FrequenciaComponente = new List<ControleFrequenciaPorComponenteDto>();
         }
-        public string Mes { get; set; }
+        public string MesDescricao { get; set; }
+        public int Mes { get; set; }
         public List<ControleFrequenciaPorComponenteDto> FrequenciaComponente { get; set; }
     }
 }
