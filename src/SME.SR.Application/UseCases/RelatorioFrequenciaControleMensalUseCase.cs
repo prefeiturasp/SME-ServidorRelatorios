@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SME.SR.Application.Interfaces;
@@ -25,7 +26,13 @@ namespace SME.SR.Application.UseCases
             var filtro = request.ObterObjetoFiltro<FiltroRelatorioControleFrenquenciaMensalDto>();
             var ueComDre = await ObterUeComDrePorCodigo(filtro.CodigoUe);
             var dadosTurma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtro.CodigoTurma));
-   
+
+            var frequencias = await mediator.Send(new ObterFrequenciaRealatorioControleMensalQuery(filtro.AnoLetivo,filtro.MesesReferencias.ToArray(),filtro.CodigoUe
+                                                                                                                                                    ,filtro.CodigoDre,(int)filtro.Modalidade,filtro.Semestre,filtro.CodigoTurma,
+                                                                                                                                                    filtro.AlunosCodigo));
+            
+            
+            
             var controFrequenciaMensal = new ControleFrequenciaMensalDto
             {
                 Ano = filtro.AnoLetivo,

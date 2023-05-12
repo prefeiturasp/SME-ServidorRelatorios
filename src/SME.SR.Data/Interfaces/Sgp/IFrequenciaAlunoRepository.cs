@@ -3,6 +3,7 @@ using SME.SR.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SME.SR.Infra.Dtos.FrequenciaMensal;
 
 namespace SME.SR.Data.Interfaces
 {
@@ -32,5 +33,6 @@ namespace SME.SR.Data.Interfaces
             int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe);
         Task<IEnumerable<FrequenciaAlunoConsolidadoRelatorioDto>> ObterFrequenciaAlunosRelatorio(string[] turmasCodigo, string bimestre, string componenteCurricularId);
         Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(string[] codigosAlunos, string bimestre, string turmaCodigo, string[] componentesCurricularesIds);
+        Task<IEnumerable<ConsultaRelatorioFrequenciaControleMensalDto>> ObterFrequenciaControleMensal(int anoLetivo, string[] mes, string ueCodigo, string dreCodigo, int modalidade, int semestre, string turmaCodigo, string[] alunosCodigo);
     }
 }
