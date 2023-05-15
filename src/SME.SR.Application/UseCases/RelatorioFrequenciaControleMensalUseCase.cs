@@ -54,7 +54,7 @@ namespace SME.SR.Application.UseCases
                 var controFrequenciaMensal = new ControleFrequenciaMensalDto
                 {
                     Ano = filtro.AnoLetivo,
-                    Usuario = $"{filtro.NomeUsuario}(${filtro.CodigoRf})",
+                    Usuario = $"{filtro.NomeUsuario}({filtro.CodigoRf})",
                     Dre = ueComDre.Dre.Abreviacao,
                     Ue = ueComDre.NomeRelatorio,
                     Turma = dadosTurma.NomeRelatorio,
@@ -70,8 +70,7 @@ namespace SME.SR.Application.UseCases
                     var mes = new ControleFrequenciaPorMesDto
                     {
                         Mes = mesAgrupado.Key,
-                        MesDescricao = ObterNomeMes(mesAgrupado.Key),
-                        FrequenciaGlobal = "%"
+                        MesDescricao = ObterNomeMes(mesAgrupado.Key)
                     };
                     var componentesAgrupado = mesAgrupado.OrderBy(x =>x.OrdemExibicaoComponente).GroupBy(x => x.NomeComponente);
                     foreach (var componenteAgrupado in componentesAgrupado)
@@ -83,9 +82,9 @@ namespace SME.SR.Application.UseCases
                             NomeComponente = componenteAgrupado.Key,
                             FrequenciaDoPeriodo = $"{frequenciaPeriodoComponente}%"
                         };
-                        MapearTipoPresencas(componenteAgrupado,componente);
-                        MapearTipoCompensacoes(componenteAgrupado, componente);
-                        MapearTipoAulas(componenteAgrupado, componente);
+                        MapearTipoPresencas(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante);
+                        MapearTipoCompensacoes(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante);
+                        MapearTipoAulas(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante);
                         mes.FrequenciaComponente.Add(componente);
                     }
 
@@ -113,10 +112,10 @@ namespace SME.SR.Application.UseCases
         }
 
 
-        private static void MapearTipoPresencas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado,ControleFrequenciaPorComponenteDto componente)
+        private static void MapearTipoPresencas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado,ControleFrequenciaPorComponenteDto componente,string codAluno)
         {
             var tipoFrequenciaPrensenca = new List<int> {1, 3};
-            var presencas = componenteAgrupado.Where(p => tipoFrequenciaPrensenca.Contains(p.TipoFrequencia)).ToList();
+            var presencas = componenteAgrupado.Where(p => tipoFrequenciaPrensenca.Contains(p.TipoFrequencia) && p.CodigoAluno == codAluno).ToList();
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
                 TipoFrequencia = "Presenças",
@@ -136,9 +135,9 @@ namespace SME.SR.Application.UseCases
 
             componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
         }
-        private static void MapearTipoCompensacoes(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente)
+        private static void MapearTipoCompensacoes(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente,string codAluno)
         {
-            var compensacoes = componenteAgrupado.Where(p => p.DataCompensacao != null).ToList();
+            var compensacoes = componenteAgrupado.Where(p => p.DataCompensacao != null && p.TipoFrequencia == (int)TipoFrequencia.F && p.CodigoAluno == codAluno).ToList();
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
                 TipoFrequencia = "Compensações",
@@ -151,7 +150,7 @@ namespace SME.SR.Application.UseCases
                 {
                     DiaSemanaSigla = compensacao.DiaSemana,
                     DiaSemanaNumero = compensacao.Dia,
-                    Valor = compensacao.TotalTipoFrequencia
+                    Valor = compensacao.TotalCompensacao ?? 0,
                 };
                 controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
             }
@@ -159,13 +158,13 @@ namespace SME.SR.Application.UseCases
             componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
         }
         
-        private static void MapearTipoAulas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente)
+        private static void MapearTipoAulas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente,string codAlunos)
         {
-            var aulas = componenteAgrupado.ToList();
+            var aulas = componenteAgrupado.Where(x => x.CodigoAluno == codAlunos).ToList();
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
                 TipoFrequencia = "Aulas",
-                TotalDoPeriodo = aulas.Select(t => t.TotalAula).Sum(),
+                TotalDoPeriodo = aulas.Select(t => t.TotalAula).Count(),
             };
 
             foreach (var aula in aulas)
