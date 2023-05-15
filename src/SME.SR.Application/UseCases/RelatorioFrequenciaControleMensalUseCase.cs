@@ -22,9 +22,14 @@ namespace SME.SR.Application.UseCases
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var retorno = new List<ControleFrequenciaMensalDto>();
+            var controles = new List<ControleFrequenciaMensalDto>();
 
-            retorno = await MapearDtoRetorno(request);
+            controles = await MapearDtoRetorno(request);
+
+            if (controles == null || !controles.Any())
+                throw new NegocioException("Não há dados para o Relatório de controle de frequência mensal");
+
+            await mediator.Send(new GerarRelatoricoControleDeFrequenciaMensalExcelCommand(controles,request.CodigoCorrelacao));
         }
 
         private async Task<List<ControleFrequenciaMensalDto>> MapearDtoRetorno(FiltroRelatorioDto request)
