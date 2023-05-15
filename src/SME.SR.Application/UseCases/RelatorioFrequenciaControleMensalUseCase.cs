@@ -36,6 +36,10 @@ namespace SME.SR.Application.UseCases
         {
             var retorno = new List<ControleFrequenciaMensalDto>();
             var filtro = request.ObterObjetoFiltro<FiltroRelatorioControleFrenquenciaMensalDto>();
+            
+            if (filtro.TipoFormatoRelatorio != TipoFormatoRelatorio.Xlsx)
+                throw new NegocioException("Relatório disponível somente no formata Excel");
+            
             var ueComDre = await ObterUeComDrePorCodigo(filtro.CodigoUe);
             var dadosTurma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtro.CodigoTurma));
             
@@ -72,7 +76,7 @@ namespace SME.SR.Application.UseCases
                         Mes = mesAgrupado.Key,
                         MesDescricao = ObterNomeMes(mesAgrupado.Key)
                     };
-                    var componentesAgrupado = mesAgrupado.OrderBy(x =>x.OrdemExibicaoComponente).GroupBy(x => x.NomeComponente);
+                    var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x =>x.OrdemExibicaoComponente).GroupBy(x => x.NomeComponente);
                     foreach (var componenteAgrupado in componentesAgrupado)
                     {
                         var frequenciaPeriodoComponente = PercentualFrequenciaComponente(componenteAgrupado);
@@ -82,9 +86,11 @@ namespace SME.SR.Application.UseCases
                             NomeComponente = componenteAgrupado.Key,
                             FrequenciaDoPeriodo = $"{frequenciaPeriodoComponente}%"
                         };
-                        MapearTipoPresencas(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante);
-                        MapearTipoCompensacoes(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante);
-                        MapearTipoAulas(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante);
+                        var aulas = componenteAgrupado.Where(x => x.CodigoAluno == controFrequenciaMensal.CodigoCriancaEstudante).ToList();
+
+                        MapearTipoAulas(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante,aulas);
+                        MapearTipoPresencas(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante,aulas);
+                        MapearTipoCompensacoes(componenteAgrupado, componente, controFrequenciaMensal.CodigoCriancaEstudante,aulas);
                         mes.FrequenciaComponente.Add(componente);
                     }
 
@@ -112,7 +118,7 @@ namespace SME.SR.Application.UseCases
         }
 
 
-        private static void MapearTipoPresencas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado,ControleFrequenciaPorComponenteDto componente,string codAluno)
+        private static void MapearTipoPresencas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente, string codAluno, List<ConsultaRelatorioFrequenciaControleMensalDto> aulas)
         {
             var tipoFrequenciaPrensenca = new List<int> {1, 3};
             var presencas = componenteAgrupado.Where(p => tipoFrequenciaPrensenca.Contains(p.TipoFrequencia) && p.CodigoAluno == codAluno).ToList();
@@ -121,7 +127,7 @@ namespace SME.SR.Application.UseCases
                 TipoFrequencia = "Presenças",
                 TotalDoPeriodo = presencas.Select(t => t.TotalTipoFrequencia).Sum(),
             };
-
+            
             foreach (var presenca in presencas)
             {
                 var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
@@ -132,10 +138,24 @@ namespace SME.SR.Application.UseCases
                 };
                 controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
             }
+            var aulasSemPresencas = aulas.Except(presencas);
+            if (aulasSemPresencas.Any())
+            {
+                foreach (var aula in aulasSemPresencas)
+                {
+                    var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
+                    {
+                        DiaSemanaSigla = aula.DiaSemana,
+                        DiaSemanaNumero = aula.Dia,
+                        Valor = 0
+                    };
+                    controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
+                }
+            }
 
             componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
         }
-        private static void MapearTipoCompensacoes(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente,string codAluno)
+        private static void MapearTipoCompensacoes(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente, string codAluno, List<ConsultaRelatorioFrequenciaControleMensalDto> aulas)
         {
             var compensacoes = componenteAgrupado.Where(p => p.DataCompensacao != null && p.TipoFrequencia == (int)TipoFrequencia.F && p.CodigoAluno == codAluno).ToList();
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
@@ -155,12 +175,26 @@ namespace SME.SR.Application.UseCases
                 controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
             }
 
+            var aulasSemCompensacoes = aulas.Except(compensacoes);
+            if (aulasSemCompensacoes.Any())
+            {
+                foreach (var aula in aulas)
+                {
+                    var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
+                    {
+                        DiaSemanaSigla = aula.DiaSemana,
+                        DiaSemanaNumero = aula.Dia,
+                        Valor = 0
+                    };
+                    controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
+                }
+            }
+
             componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
         }
         
-        private static void MapearTipoAulas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente,string codAlunos)
+        private static void MapearTipoAulas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente, string codAlunos, List<ConsultaRelatorioFrequenciaControleMensalDto> aulas)
         {
-            var aulas = componenteAgrupado.Where(x => x.CodigoAluno == codAlunos).ToList();
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
                 TipoFrequencia = "Aulas",

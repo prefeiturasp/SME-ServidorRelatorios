@@ -4,6 +4,6 @@
     {
         public string DiaSemanaSigla { get; set; }
         public int DiaSemanaNumero { get; set; }
-        public int Valor { get; set; }
+        public int Valor { get; set; } = 0;
     }
 }

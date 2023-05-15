@@ -742,7 +742,7 @@ namespace SME.SR.Data
             if (!todosAlunos)
                 sql.AppendLine(@"     and rfa.codigo_aluno = any(@alunosCodigo) ");
             if (!todosMeses)
-                sql.AppendLine(@"     AND extract(month FROM a.data_aula) = any(@mes) ");
+                sql.AppendLine(@"     AND extract(month FROM a.data_aula)::text  = any(@mes) ");
             sql.AppendLine(@"     AND a.turma_id = @turmaCodigo  and a.ue_id = @ueCodigo   ");
             sql.AppendLine(@"   GROUP BY rfa.codigo_aluno,disciplina_id,");
             sql.AppendLine(@"            valor,");
@@ -762,7 +762,7 @@ namespace SME.SR.Data
             if (!todosAlunos)
                 sql.AppendLine(@"     and rfa.codigo_aluno = any(@alunosCodigo)");
             if (!todosMeses)
-                sql.AppendLine(@"     AND extract(month FROM a.data_aula)  = any(@mes) ");
+                sql.AppendLine(@"     AND extract(month FROM a.data_aula)::text   = any(@mes) ");
             sql.AppendLine(@"     AND a.turma_id  = @turmaCodigo and a.ue_id = @ueCodigo  ");
 
             sql.AppendLine(@"   GROUP BY  rfa.codigo_aluno, a.disciplina_id,");
@@ -778,7 +778,7 @@ namespace SME.SR.Data
             sql.AppendLine(@"  and t.ano_letivo  = @anoLetivo ");
             sql.AppendLine(@"  and t.modalidade_codigo = @modalidade ");
             if (!todosMeses)
-                sql.AppendLine(@"  AND extract(month FROM a.data_aula)   = any(@mes) ");
+                sql.AppendLine(@"  AND extract(month FROM a.data_aula)::text    = any(@mes) ");
             sql.AppendLine(@"  AND a.turma_id = @turmaCodigo ");
             sql.AppendLine(@"GROUP BY rfa.codigo_aluno, a.disciplina_id,");
             sql.AppendLine(@"         cc.descricao_sgp, ");
@@ -805,7 +805,8 @@ namespace SME.SR.Data
             };
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return  await conexao.QueryAsync<ConsultaRelatorioFrequenciaControleMensalDto>(sql.ToString(), parametros);
+                var resultadoConsulta  = await conexao.QueryAsync<ConsultaRelatorioFrequenciaControleMensalDto>(sql.ToString(), parametros);
+                return resultadoConsulta;
             }
         }
     }
