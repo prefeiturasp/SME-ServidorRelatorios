@@ -245,7 +245,7 @@ namespace SME.SR.Data
                                             fa.total_aulas as totalAulas, fa.total_compensacoes as totalCompensacoes, fa.tipo as Tipo, fa.total_ausencias as totalAusencias,
                                             row_number() over (partition by fa.codigo_aluno, fa.turma_id, fa.bimestre, fa.disciplina_id order by fa.id desc) as sequencia
                                             from frequencia_aluno fa 
-                                            where 1=1 ");
+                                            where 1=1 and fa.total_aulas <> 0 ");
 
             if (componentesCurriculares.Any())
                 query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
