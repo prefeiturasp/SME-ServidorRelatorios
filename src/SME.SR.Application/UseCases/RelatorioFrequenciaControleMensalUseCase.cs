@@ -33,7 +33,7 @@ namespace SME.SR.Application.UseCases
             var filtro = request.ObterObjetoFiltro<FiltroRelatorioControleFrenquenciaMensalDto>();
             var ueComDre = await ObterUeComDrePorCodigo(filtro.CodigoUe);
             var dadosTurma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtro.CodigoTurma));
-            double totalFrequenciaDoPeriodo = 0;
+            
 
             var valorSemestre = filtro.Semestre != null ? int.Parse(filtro.Semestre) : 0;
 
@@ -56,16 +56,17 @@ namespace SME.SR.Application.UseCases
                     CodigoCriancaEstudante = dadosAluno.Codigo,
                     NomeCriancaEstudante = dadosAluno.Nome,
                     DataImpressao = DateTime.Now.ToString("dd/MM/yyyy"),
-                    FrequenciaGlobal = "%"
                 };
                 var agrupadoPorMes = alunoFrequencia.GroupBy(x => x.Mes);
 
                 foreach (var mesAgrupado in agrupadoPorMes)
                 {
+                    double totalFrequenciaDoPeriodo = 0;
                     var mes = new ControleFrequenciaPorMesDto
                     {
                         Mes = mesAgrupado.Key,
                         MesDescricao = ObterNomeMes(mesAgrupado.Key),
+                        FrequenciaGlobal = "%"
                     };
                     var componentesAgrupado = mesAgrupado.OrderBy(x =>x.OrdemExibicaoComponente).GroupBy(x => x.NomeComponente);
                     foreach (var componenteAgrupado in componentesAgrupado)
@@ -82,10 +83,11 @@ namespace SME.SR.Application.UseCases
                         MapearTipoAulas(componenteAgrupado, componente);
                         mes.FrequenciaComponente.Add(componente);
                     }
+
+                    mes.FrequenciaGlobal = $"{(totalFrequenciaDoPeriodo / componentesAgrupado.Count())}%";
                     controFrequenciaMensal.FrequenciaMes.Add(mes);
                 }
 
-                var quantidadeComponentes = controFrequenciaMensal.FrequenciaMes.Select(x => x.FrequenciaComponente).Count();
                 retorno.Add(controFrequenciaMensal);
             }
 
