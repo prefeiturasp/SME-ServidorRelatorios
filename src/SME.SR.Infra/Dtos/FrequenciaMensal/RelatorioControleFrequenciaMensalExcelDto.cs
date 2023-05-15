@@ -12,7 +12,6 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public string NomeCriancaEstudante { get; set; }
         public string CodigoCriancaEstudante { get; set; }
         public string Usuario { get; set; }
-        public string FrequenciaGlobal { get; set; }
         public string DataImpressao { get; set; }
         public List<FrequenciaPorMesExcelDto> FrequenciasMeses { get; set; }
     }
@@ -20,6 +19,7 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
     public class FrequenciaPorMesExcelDto
     {
         public string Mes { get; set; }
+        public string FrequenciaGlobal { get; set; }
         public DataTable TabelaDeDado { get; set; }
     }
 }
