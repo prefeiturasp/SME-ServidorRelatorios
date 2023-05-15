@@ -10,6 +10,7 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         }
         public string MesDescricao { get; set; }
         public int Mes { get; set; }
+        public string FrequenciaGlobal { get; set; }
         public List<ControleFrequenciaPorComponenteDto> FrequenciaComponente { get; set; }
     }
 }

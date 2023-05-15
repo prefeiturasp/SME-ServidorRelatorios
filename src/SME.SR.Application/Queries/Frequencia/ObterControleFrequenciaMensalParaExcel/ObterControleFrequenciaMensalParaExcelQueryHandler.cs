@@ -42,7 +42,6 @@ namespace SME.SR.Application
                 NomeCriancaEstudante = dto.NomeCriancaEstudante,
                 Dre = dto.Dre,
                 Ue = dto.Ue,
-                FrequenciaGlobal = dto.FrequenciaGlobal,
                 DataImpressao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Turma = dto.Turma,
                 Usuario = dto.Usuario,
@@ -65,7 +64,7 @@ namespace SME.SR.Application
 
                 AdicionarLinhas(frequenciaMes.FrequenciaComponente, data, frequenciaMes.Mes);
 
-                frequenciasMeses.Add(new FrequenciaPorMesExcelDto() { Mes = frequenciaMes.MesDescricao, TabelaDeDado = data });
+                frequenciasMeses.Add(new FrequenciaPorMesExcelDto() { Mes = frequenciaMes.MesDescricao, FrequenciaGlobal = frequenciaMes.FrequenciaGlobal, TabelaDeDado = data });
             }
             
             return frequenciasMeses;
