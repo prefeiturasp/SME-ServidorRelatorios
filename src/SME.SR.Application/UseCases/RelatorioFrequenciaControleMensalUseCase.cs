@@ -33,6 +33,7 @@ namespace SME.SR.Application.UseCases
             var filtro = request.ObterObjetoFiltro<FiltroRelatorioControleFrenquenciaMensalDto>();
             var ueComDre = await ObterUeComDrePorCodigo(filtro.CodigoUe);
             var dadosTurma = await mediator.Send(new ObterTurmaPorCodigoQuery(filtro.CodigoTurma));
+            double totalFrequenciaDoPeriodo = 0;
 
             var valorSemestre = filtro.Semestre != null ? int.Parse(filtro.Semestre) : 0;
 
@@ -55,7 +56,7 @@ namespace SME.SR.Application.UseCases
                     CodigoCriancaEstudante = dadosAluno.Codigo,
                     NomeCriancaEstudante = dadosAluno.Nome,
                     DataImpressao = DateTime.Now.ToString("dd/MM/yyyy"),
-                    FrequenciaGlobal = "0000%"
+                    FrequenciaGlobal = "%"
                 };
                 var agrupadoPorMes = alunoFrequencia.GroupBy(x => x.Mes);
 
@@ -69,28 +70,113 @@ namespace SME.SR.Application.UseCases
                     var componentesAgrupado = mesAgrupado.OrderBy(x =>x.OrdemExibicaoComponente).GroupBy(x => x.NomeComponente);
                     foreach (var componenteAgrupado in componentesAgrupado)
                     {
+                        var frequenciaPeriodoComponente = PercentualFrequenciaComponente(componenteAgrupado);
+                        totalFrequenciaDoPeriodo += frequenciaPeriodoComponente;
                         var componente = new ControleFrequenciaPorComponenteDto
                         {
                             NomeComponente = componenteAgrupado.Key,
-                            FrequenciaDoPeriodo =  "0000%"
+                            FrequenciaDoPeriodo = $"{frequenciaPeriodoComponente}%"
                         };
-                        var tipoFrequenciaPrensenca = new List<int> {1, 3};
-
-
+                        MapearTipoPresencas(componenteAgrupado,componente);
+                        MapearTipoCompensacoes(componenteAgrupado, componente);
+                        MapearTipoAulas(componenteAgrupado, componente);
                         mes.FrequenciaComponente.Add(componente);
                     }
                     controFrequenciaMensal.FrequenciaMes.Add(mes);
                 }
 
-
+                var quantidadeComponentes = controFrequenciaMensal.FrequenciaMes.Select(x => x.FrequenciaComponente).Count();
                 retorno.Add(controFrequenciaMensal);
             }
 
             return retorno;
         }
 
+        private static double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)
+        {
+            var totalAulas = componenteAgrupado.Sum(x => x.TotalAula);
+            var numeroFaltasNaoCompensadas = componenteAgrupado.Where(x => x.TotalTipoFrequencia == (int) TipoFrequencia.F && x.DataCompensacao == null).Sum(s => s.TotalTipoFrequencia);
 
-        public async Task<Ue> ObterUeComDrePorCodigo(string codigoUe)
+            if (totalAulas == 0)
+                return 0;
+            
+            var percentual = 100 - (((double) numeroFaltasNaoCompensadas / totalAulas) * 100);
+            var percentualArredondado = Math.Round(percentual, 2);
+            return percentualArredondado;
+        }
+
+
+        private static void MapearTipoPresencas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado,ControleFrequenciaPorComponenteDto componente)
+        {
+            var tipoFrequenciaPrensenca = new List<int> {1, 3};
+            var presencas = componenteAgrupado.Where(p => tipoFrequenciaPrensenca.Contains(p.TipoFrequencia)).ToList();
+            var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
+            {
+                TipoFrequencia = "Presenças",
+                TotalDoPeriodo = presencas.Select(t => t.TotalTipoFrequencia).Sum(),
+            };
+
+            foreach (var presenca in presencas)
+            {
+                var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
+                {
+                    DiaSemanaSigla = presenca.DiaSemana,
+                    DiaSemanaNumero = presenca.Dia,
+                    Valor = presenca.TotalTipoFrequencia
+                };
+                controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
+            }
+
+            componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
+        }
+        private static void MapearTipoCompensacoes(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente)
+        {
+            var compensacoes = componenteAgrupado.Where(p => p.DataCompensacao != null).ToList();
+            var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
+            {
+                TipoFrequencia = "Compensações",
+                TotalDoPeriodo = compensacoes.Select(t => t.TotalTipoFrequencia).Sum(),
+            };
+
+            foreach (var compensacao in compensacoes)
+            {
+                var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
+                {
+                    DiaSemanaSigla = compensacao.DiaSemana,
+                    DiaSemanaNumero = compensacao.Dia,
+                    Valor = compensacao.TotalTipoFrequencia
+                };
+                controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
+            }
+
+            componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
+        }
+        
+        private static void MapearTipoAulas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente)
+        {
+            var aulas = componenteAgrupado.ToList();
+            var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
+            {
+                TipoFrequencia = "Aulas",
+                TotalDoPeriodo = aulas.Select(t => t.TotalAula).Sum(),
+            };
+
+            foreach (var aula in aulas)
+            {
+                var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
+                {
+                    DiaSemanaSigla = aula.DiaSemana,
+                    DiaSemanaNumero = aula.Dia,
+                    Valor = aula.TotalTipoFrequencia
+                };
+                controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
+            }
+
+            componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
+        }
+
+
+        private async Task<Ue> ObterUeComDrePorCodigo(string codigoUe)
         {
             return await mediator.Send(new ObterUeComDrePorCodigoUeQuery(codigoUe));
         }
