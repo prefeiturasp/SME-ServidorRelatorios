@@ -4,6 +4,7 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
 {
     public class ConsultaRelatorioFrequenciaControleMensalDto
     {
+        public string CodigoAluno { get; set; }
         public string DisciplinaId { get; set; }
         public string NomeComponente { get; set; }
         public int TotalAula { get; set; }
