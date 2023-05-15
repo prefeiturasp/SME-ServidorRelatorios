@@ -19,9 +19,10 @@ namespace SME.SR.Application
         private const int LINHA_NOME_RELATORIO = 3;
         private const int LINHA_CABECALHO_DRE_UE = 6;
         private const int LINHA_CABECALHO_ESTUDANTE = 7;
-        private const int LINHA_CABECALHO_TURMA_FREQ = 8;
+        private const int LINHA_CABECALHO_TURMA = 8;
         private const int LINHA_CABECALHO_USUARIO_DATA = 9;
         private const int LINHA_MES = 11;
+        private const int LINHA_MES_FREQUENCIA = 12;
         private const int LINHA_TABELA = 13;
         private const int LINHA_SUBCABELHO = 14;
 
@@ -50,7 +51,7 @@ namespace SME.SR.Application
                     foreach (var dtoExcelMes in dtoExcel.FrequenciasMeses)
                     {
                         colunaFinal += 1;
-                        AdicionarColunaMes(worksheet, dtoExcelMes.Mes, colunaFinal, dtoExcelMes.TabelaDeDado.Columns.Count);
+                        AdicionarColunaMes(worksheet, dtoExcelMes, colunaFinal, dtoExcelMes.TabelaDeDado.Columns.Count);
                         worksheet.Cell(LINHA_TABELA, colunaFinal).InsertData(dtoExcelMes.TabelaDeDado);
                         AdicionarEstilo(worksheet, dtoExcelMes.TabelaDeDado.Rows.Count, colunaFinal);
                         colunaFinal += dtoExcelMes.TabelaDeDado.Columns.Count;
@@ -66,12 +67,16 @@ namespace SME.SR.Application
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
 
-        private void AdicionarColunaMes(IXLWorksheet worksheet, string mes, int colunaFinal, int totalColuna)
+        private void AdicionarColunaMes(IXLWorksheet worksheet, FrequenciaPorMesExcelDto dto, int colunaFinal, int totalColuna)
         {
-            worksheet.Cell(LINHA_MES, colunaFinal).Value = $"Mês: {mes}";
+            worksheet.Cell(LINHA_MES, colunaFinal).Value = $"Mês: {dto.Mes}";
             var rangeMes = worksheet.Range(LINHA_MES, colunaFinal, LINHA_MES, colunaFinal + totalColuna);
             rangeMes.Merge().Style.Font.Bold = true;
             AdicinarFonte(rangeMes);
+            worksheet.Cell(LINHA_MES_FREQUENCIA, colunaFinal).Value = $"Frequência global do mês: {dto.FrequenciaGlobal}";
+            var rangeFreq = worksheet.Range(LINHA_MES_FREQUENCIA, colunaFinal, LINHA_MES_FREQUENCIA, colunaFinal + totalColuna);
+            rangeFreq.Merge().Style.Font.Bold = true;
+            AdicinarFonte(rangeFreq);
         }
 
         private void MontarCabecalho(IXLWorksheet worksheet, RelatorioControleFrequenciaMensalExcelDto dto, int totalColunas)
@@ -94,8 +99,8 @@ namespace SME.SR.Application
             worksheet.Cell(LINHA_CABECALHO_ESTUDANTE, 1).Value = $"Criança/Estudante: {dto.NomeCriancaEstudante} ({dto.CodigoCriancaEstudante})";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_ESTUDANTE, 1, LINHA_CABECALHO_ESTUDANTE, totalColunas));
 
-            worksheet.Cell(LINHA_CABECALHO_TURMA_FREQ, 1).Value = $"Turma: {dto.Turma}    Frequência global do mês: {dto.FrequenciaGlobal}";
-            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_TURMA_FREQ, 1, LINHA_CABECALHO_TURMA_FREQ, totalColunas));
+            worksheet.Cell(LINHA_CABECALHO_TURMA, 1).Value = $"Turma: {dto.Turma}";
+            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_TURMA, 1, LINHA_CABECALHO_TURMA, totalColunas));
 
             worksheet.Cell(LINHA_CABECALHO_USUARIO_DATA, 1).Value = $"Usuário: {dto.Usuario}    Data de impressão: {dto.DataImpressao}";
             AdicinarFonte(worksheet.Range(LINHA_CABECALHO_USUARIO_DATA, 1, LINHA_CABECALHO_USUARIO_DATA, totalColunas));
@@ -133,7 +138,7 @@ namespace SME.SR.Application
             AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_NOME_SISTEMA);
             AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_NOME_RELATORIO);
             AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_CABECALHO_ESTUDANTE);
-            AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_CABECALHO_TURMA_FREQ);
+            AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_CABECALHO_TURMA);
             AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_CABECALHO_USUARIO_DATA);
             AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_MES);
         }
