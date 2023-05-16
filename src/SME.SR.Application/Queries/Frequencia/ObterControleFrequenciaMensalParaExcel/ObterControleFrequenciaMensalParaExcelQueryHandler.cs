@@ -28,7 +28,6 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
-                SentrySdk.CaptureException(ex);
                 throw ex;
             }
         }

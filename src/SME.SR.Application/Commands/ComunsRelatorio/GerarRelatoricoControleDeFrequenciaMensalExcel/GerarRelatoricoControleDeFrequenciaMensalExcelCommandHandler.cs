@@ -188,12 +188,6 @@ namespace SME.SR.Application
         private void AdicionarEstiloCabecalhoLinha(IXLWorksheet worksheet, int ultimaColunaUsada, int linha)
         {
             var range = worksheet.Range(linha, 1, linha, ultimaColunaUsada);
-            //range.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-            //range.Style.Border.SetOutsideBorderColor(XLColor.Black);
-
-            //range.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
-            //range.Style.Border.SetInsideBorderColor(XLColor.Black);
-
             range.Style.Font.SetFontSize(10);
             range.Style.Font.SetFontName("Arial");
         }
