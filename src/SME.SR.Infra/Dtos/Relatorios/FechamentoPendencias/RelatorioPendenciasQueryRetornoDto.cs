@@ -34,6 +34,8 @@ namespace SME.SR.Infra
         public bool OutrasPendencias { get; set; }
         public bool ExibirDetalhes { get { return !PendenciaSemDetalhe.Contains(Tipo); }}
         public int Tipo { get; set; }
+        public int QuantidadeDeAulas { get; set; }
+        public int QuantidadeDeDias { get; set; }
         public void AdicionaDetalhe(string detalhe)
         {
             if (!string.IsNullOrEmpty(detalhe) && !Detalhes.Contains(detalhe))
