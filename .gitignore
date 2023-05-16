@@ -276,3 +276,4 @@ src/SME.SGP.Api/healthchecksdb
 src/SME.SR.Workers.SGP/Properties/launchSettings.json
 
 appsettings.Development.json
+src/SME.SR.Workers.SGP/healthchecksdb

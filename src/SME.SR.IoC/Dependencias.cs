@@ -22,6 +22,7 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
+using SME.SR.Application.UseCases;
 using SME.SR.Data.Interfaces.Sondagem;
 
 namespace SME.SR.IoC
@@ -263,6 +264,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioEncaminhamentosNAAPAUseCase, RelatorioEncaminhamentosNAAPAUseCase>();
             services.TryAddScoped<IRelatorioAnaliticoSondagemUseCase, RelatorioAnaliticoSondagemUseCase>();
             services.TryAddScoped<IRelatorioListagemItineranciasUseCase, RelatorioListagemItineranciasUseCase>();
+            services.TryAddScoped<IRelatorioFrequenciaControleMensalUseCase, RelatorioFrequenciaControleMensalUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)

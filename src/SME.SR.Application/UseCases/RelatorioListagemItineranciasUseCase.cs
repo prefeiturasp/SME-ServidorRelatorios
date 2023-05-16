@@ -23,7 +23,6 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var parametros = request.ObterObjetoFiltro<FiltroRelatorioListagemItineranciasDto>();
-            
             try
             {
                 var itinerancias = (await mediator.Send(new ObterListagemItineranciasQuery(parametros))).ToList();
@@ -63,7 +62,7 @@ namespace SME.SR.Application
 
         private void PreencherFiltrosRelatorio(RelatorioListagemRegistrosItineranciaDto relatorioDto, FiltroRelatorioListagemItineranciasDto parametros)
         {
-            relatorioDto.Usuario = $"{ parametros.UsuarioNome} ({parametros.UsuarioRf})";
+            relatorioDto.Usuario = $"{ parametros.UsuarioLogadoNome} ({parametros.UsuarioLogadoRf})";
             relatorioDto.DataSolicitacao = DateTime.Now;
             relatorioDto.Dre = parametros.DreCodigo.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault()?.Dre;
             relatorioDto.Ue = parametros.UeCodigo.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault()?.Ue;

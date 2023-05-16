@@ -35,5 +35,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<DisciplinaDto>> ObterDisciplinasPorIds(long[] ids);
 
         Task<long> ObterGrupoMatrizIdPorComponenteCurricularId(long componenteCurricularId);
+
+        Task<bool> VerificaSeComponenteEhTerritorio(long componenteCurricularId);
     }
 }
