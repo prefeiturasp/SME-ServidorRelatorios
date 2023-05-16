@@ -4,9 +4,11 @@ namespace SME.SR.Infra
 {
     public class RelatorioPendenciasQueryRetornoDto
     {
+        private List<int> PendenciaSemDetalhe;
         public RelatorioPendenciasQueryRetornoDto()
         {
             Detalhes = new List<string>();
+            PendenciaSemDetalhe = new List<int>() { (int)Infra.TipoPendencia.Frequencia, (int)Infra.TipoPendencia.PlanoAula, (int)Infra.TipoPendencia.DiarioBordo };
         }
 
         public string PendenciaId { get; set; }
@@ -30,6 +32,7 @@ namespace SME.SR.Infra
         public string AprovadorRf { get; set; }
         public string TipoPendencia { get; set; }
         public bool OutrasPendencias { get; set; }
+        public bool ExibirDetalhes { get { return !PendenciaSemDetalhe.Contains(Tipo); }}
         public int Tipo { get; set; }
         public void AdicionaDetalhe(string detalhe)
         {

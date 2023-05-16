@@ -1,4 +1,5 @@
-﻿@model SME.SR.Infra.RelatorioPendenciasDto
+﻿@using SME.SR.Infra;
+@model SME.SR.Infra.RelatorioPendenciasDto
 @{
     double contadorQuebrarPagina = 0;
     int contadorCaracteresExtensos = 45;
@@ -73,11 +74,19 @@
         </table>
     }
 
-    void MontarCabecalhoDetalhamento()
+    void MontarCabecalhoDetalhamento(bool exibirDetalhamento)
     {
         <thead>
             <th style="width: 40%;">DESCRIÇÃO DA PENDÊNCIA</th>
-            <th style="width: 60%;">DETALHAMENTO</th>
+            @if (exibirDetalhamento)
+            {
+                @Html.Raw("<th style='width: 60%;'>DETALHAMENTO</th>")
+            }
+            else
+            {
+                @Html.Raw("<th style='width: 30%;'>TOTAL DE DIAS PENDENTES</th>")
+                @Html.Raw("<th style='width: 30%;'>TOTAL DE AULAS PENDENTES</th>")
+            }
         </thead>
     }
 
@@ -86,11 +95,11 @@
         @Html.Raw("</td></tr></tbody></table>")
     }
 
-    void MontarLinhaDetalhamento(string tituloPendencia, int numeroCaracteresDescricaoPendencias)
+    void MontarLinhaDetalhamento(RelatorioPendenciasPendenciaDto pendencias, int numeroCaracteresDescricaoPendencias)
     {
-        int numeroCaracteresTituloPendencias = tituloPendencia.Length;
+        int numeroCaracteresTituloPendencias = pendencias.Titulo.Length;
 
-        if (numeroCaracteresDescricaoPendencias < numeroCaracteresTituloPendencias)
+        if (numeroCaracteresDescricaoPendencias > 0 && numeroCaracteresDescricaoPendencias < numeroCaracteresTituloPendencias)
         {
             int numeroLinhas = numeroCaracteresDescricaoPendencias / contadorMaximoCaracteresPorLinhaDescricao;
             if (numeroLinhas > 1)
@@ -99,34 +108,46 @@
             }
         }
 
-        @Html.Raw("<tbody><tr><td>");
-        @Html.Raw(tituloPendencia)
-        @Html.Raw("</td><td>");
+        @Html.Raw("<tbody><tr><td>")
+        @Html.Raw(pendencias.Titulo)
+        
+        if (!pendencias.ExibirDetalhamento)
+        {
+            @Html.Raw("</td><td>")
+            @Html.Raw(pendencias.TotalDeDiasPendentes)
+            @Html.Raw("</td><td>")
+            @Html.Raw(pendencias.TotalDeAulasPendentes)
+            @Html.Raw("</td>")
+        } 
+        else
+        {
+            @Html.Raw("</td><td>")
+        }
     }
 
-    void MontarParteDetalhamento(string tituloPendencia, int numeroCaracteresDescricaoPendencias)
+    void MontarParteDetalhamento(RelatorioPendenciasPendenciaDto pendencias, int numeroCaracteresDescricaoPendencias)
     {
         @Html.Raw("<table class='tabela-alunos estilo-texto'>");
-        MontarCabecalhoDetalhamento();
+        MontarCabecalhoDetalhamento(pendencias.ExibirDetalhamento);
         contadorQuebrarPagina++;
-        MontarLinhaDetalhamento(tituloPendencia, numeroCaracteresDescricaoPendencias);
+        MontarLinhaDetalhamento(pendencias, numeroCaracteresDescricaoPendencias);
     }
 
-    void MontarQuebraPagina(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias, int numeroCaracteresDetalhamentoPendencias)
+    void MontarQuebraPagina(RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias, int numeroCaracteresDetalhamentoPendencias)
     {
         contadorQuebrarPagina = 0;
         MontarDetalhamentoRodape();
         @Html.Raw("<div style='page-break-before:always'></div>");
         MontarCabecalho();
         MontarTitulos(nomeBimestre, nomeComponente, temOutrasPendencias);
-        MontarParteDetalhamento(pendencias.Titulo, numeroCaracteresDetalhamentoPendencias);
+        MontarParteDetalhamento(pendencias, numeroCaracteresDetalhamentoPendencias);
         quebrou = true;
     }
 
     void MontarDetalhamentoPendencia(SME.SR.Infra.RelatorioPendenciasPendenciaDto pendencias, string nomeBimestre, string nomeComponente, bool temOutrasPendencias)
     {
         int iContadorCaracteres = 0;
-        var descricaoPendencia = pendencias.DescricaoPendencia;
+        var descricaoPendencia = pendencias.ExibirDetalhamento ? pendencias.DescricaoPendencia : null;
         int numeroCaracteresDescricaoPendencias = descricaoPendencia != null ? descricaoPendencia.Length : 0;
 
         @while (iContadorCaracteres != numeroCaracteresDescricaoPendencias)
@@ -142,7 +163,7 @@
             {
                 if (!quebrou)
                 {
-                    MontarParteDetalhamento(pendencias.Titulo, numeroCaracteresDescricaoPendencias);
+                    MontarParteDetalhamento(pendencias, numeroCaracteresDescricaoPendencias);
                 }
 
                 var qntCaracteresParaBuscar = numeroCaracteresDescricaoPendencias - iContadorCaracteres < contadorMaximoCaracteresPorLinha ? numeroCaracteresDescricaoPendencias - iContadorCaracteres : contadorMaximoCaracteresPorLinha;
@@ -158,10 +179,10 @@
 
         if (descricaoPendencia == null)
         {
-            MontarParteDetalhamento(pendencias.DescricaoPendencia, 0);
+            MontarParteDetalhamento(pendencias, 0);
         }
 
-        if (pendencias.Detalhes.Count > 0)
+        if (pendencias.ExibirDetalhamento && pendencias.Detalhes.Count > 0)
         {
             foreach (var detalhes in pendencias.Detalhes)
             {
@@ -189,7 +210,7 @@
             @Html.Raw(instrucao)
 
             int numeroCaracteresInstrucaos = instrucao.Length;
-            int numeroLinhas = numeroCaracteresDescricaoPendencias / numeroCaracteresDescricaoPendencias;
+            int numeroLinhas = numeroCaracteresDescricaoPendencias > 0 ? numeroCaracteresDescricaoPendencias / numeroCaracteresDescricaoPendencias : 0;
 
             if (numeroLinhas > 0)
             {

@@ -25,6 +25,9 @@ namespace SME.SR.Infra
         public bool ExibirAprovacao { get; set; }
         public IList<string> Detalhes { get; set; }
         public string Instrucao { get; set; }
+        public bool ExibirDetalhamento { get; set; }
+        public int? TotalDeDiasPendentes { get; set; }
+        public int? TotalDeAulasPendentes { get; set; }
 
         public string[] DetalhamentoPendenciaArray 
         { 
