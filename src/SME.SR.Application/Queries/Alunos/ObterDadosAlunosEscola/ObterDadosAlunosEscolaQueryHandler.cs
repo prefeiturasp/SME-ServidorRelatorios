@@ -22,14 +22,14 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<DadosAlunosEscolaDto>> Handle(ObterDadosAlunosEscolaQuery request, CancellationToken cancellationToken)
         {
-            var cacheChave = $"dados-alunos-escola:{request.CodigoEscola}";
+            var cacheChave = $"dados-alunos-escola:{request.CodigoUe}";
             var cacheAlunos = repositorioCache.Obter(cacheChave);
 
             if (cacheAlunos != null)
                 return JsonConvert.DeserializeObject<List<DadosAlunosEscolaDto>>(cacheAlunos);
             else
             {
-                var listaAlunos = await alunoRepository.ObterDadosAlunosEscola(request.CodigoEscola, request.AnoLetivo,request.CodigosAlunos);
+                var listaAlunos = await alunoRepository.ObterDadosAlunosEscola(request.CodigoUe, request.CodigoDre, request.AnoLetivo,request.CodigosAlunos);
                 var json = JsonConvert.SerializeObject(listaAlunos);
                 await repositorioCache.SalvarAsync(cacheChave, json);
                 return listaAlunos;

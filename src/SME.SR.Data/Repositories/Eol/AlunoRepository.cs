@@ -1591,7 +1591,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string codigoEscola, int anoLetivo, string[] codigosAlunos)
+        public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string ueCodigo, string dreCodigo, int anoLetivo, string[] codigosAlunos)
         {
             var sql = @" with matriculas as (
 						select distinct CodigoAluno, NomeAluno, DataNascimento, NomeSocialAluno, CodigoSituacaoMatricula, SituacaoMatricula, te.cd_escola AS CodigoEscola,
@@ -1602,12 +1602,17 @@ namespace SME.SR.Data
 						DataSituacao, DataMatricula, PossuiDeficiencia, NomeResponsavel, TipoResponsavel, CelularResponsavel,
 						DataAtualizacaoContato, CodigoTurma, CodigoMatricula, AnoLetivo, row_number() over (partition by CodigoMatricula order by DataSituacao desc) as Sequencia
 						from alunos_matriculas_norm nm(NOLOCK)
-						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma	
+						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
+						inner join v_cadastro_unidade_educacao ue ON te.cd_escola = ue.cd_unidade_educacao
 						where 1=1 ";
-
-            if (!string.IsNullOrEmpty(codigoEscola) && codigoEscola != "-99")
-                sql += @" and te.cd_escola = @codigoEscola ";
-            else
+            
+			if (!string.IsNullOrEmpty(ueCodigo) && ueCodigo != "-99")
+                sql += @" AND ue.cd_unidade_educacao = @ueCodigo ";
+            
+			if (!string.IsNullOrEmpty(dreCodigo) && dreCodigo != "-99")
+                sql += @" AND ue.cd_unidade_administrativa_referencia = @dreCodigo ";
+            
+			if (codigosAlunos != null && codigosAlunos.Any())
                 sql += $" and CodigoAluno in (#codigosAlunos) ";
 
             sql += @" and te.an_letivo = @anoLetivo )
@@ -1616,9 +1621,12 @@ namespace SME.SR.Data
 								where sequencia in (1,2)
 								and CodigoSituacaoMatricula <> 4";
 
+			if (codigosAlunos != null && codigosAlunos.Any())
+				sql = sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'");
+
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'"), new { codigoEscola, anoLetivo });
+                return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql, new { ueCodigo, dreCodigo, anoLetivo });
             }
         }
 

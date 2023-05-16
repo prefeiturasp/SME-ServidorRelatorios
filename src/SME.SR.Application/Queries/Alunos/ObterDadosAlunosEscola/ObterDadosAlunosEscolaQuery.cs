@@ -6,14 +6,16 @@ namespace SME.SR.Application
 {
     public class ObterDadosAlunosEscolaQuery : IRequest<IEnumerable<DadosAlunosEscolaDto>>
     {
-        public ObterDadosAlunosEscolaQuery(string codigoEscola, int anoLetivo, string[] codigosAlunos)
+        public ObterDadosAlunosEscolaQuery(string codigoEscola, string codigoDre, int anoLetivo, string[] codigosAlunos)
         {
-            CodigoEscola = codigoEscola;
+            CodigoUe = codigoEscola;
             AnoLetivo = anoLetivo;
             CodigosAlunos = codigosAlunos;
+            CodigoDre = codigoDre;
         }
 
-        public string CodigoEscola { get; set; }
+        public string CodigoUe { get; set; }
+        public string CodigoDre { get; set; }
         public int AnoLetivo { get; set; }
         public string[] CodigosAlunos { get; set; }
     }
