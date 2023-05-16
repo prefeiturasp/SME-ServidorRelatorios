@@ -310,7 +310,7 @@ namespace SME.SR.Application
         private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)
         {
             var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
-                notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre)?.NotaConceito;
+                notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre && nc.NotaConceito != null)?.NotaConceito;
 
             retorno = transformarNotaEmConceito && decimal.TryParse(retorno, out decimal valor) ?
                 TransformarNotaEmConceito(decimal.Parse(retorno, CultureInfo.InvariantCulture)) : retorno;
