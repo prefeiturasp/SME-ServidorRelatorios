@@ -205,8 +205,8 @@ namespace SME.SR.Data
                                     and pcc.dt_cancelamento is null
                                     --Atribuição
                                             inner join atribuicao_aula (nolock) aa
-                                                    on ((gcc.cd_grade = aa.cd_grade and gcc.cd_componente_curricular = aa.cd_componente_curricular and aa.cd_serie_grade = serie_turma_grade.cd_serie_grade)
-                                                        or (pgcc.cd_grade = aa.cd_grade and pgcc.cd_componente_curricular = aa.cd_componente_curricular))
+                                                    on (gcc.cd_grade = aa.cd_grade and gcc.cd_componente_curricular = aa.cd_componente_curricular and aa.cd_serie_grade = serie_turma_grade.cd_serie_grade)
+                                                        or (pgcc.cd_grade = aa.cd_grade and pgcc.cd_componente_curricular = aa.cd_componente_curricular)
                                                         and aa.dt_cancelamento is null and aa.dt_disponibilizacao_aulas is null and
                                                         aa.an_atribuicao = year(getdate())
                                             inner join v_cargo_base_cotic (nolock) vcbc on aa.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor
