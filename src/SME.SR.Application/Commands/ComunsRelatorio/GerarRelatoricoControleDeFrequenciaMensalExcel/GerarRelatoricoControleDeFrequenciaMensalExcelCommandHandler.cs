@@ -53,7 +53,7 @@ namespace SME.SR.Application
                         colunaFinal += 1;
                         AdicionarColunaMes(worksheet, dtoExcelMes, colunaFinal, dtoExcelMes.TabelaDeDado.Columns.Count);
                         worksheet.Cell(LINHA_TABELA, colunaFinal).InsertData(dtoExcelMes.TabelaDeDado);
-                        AdicionarEstilo(worksheet, dtoExcelMes.TabelaDeDado.Rows.Count, colunaFinal);
+                        AdicionarEstilo(worksheet, dtoExcelMes.TabelaDeDado.Rows.Count, colunaFinal, dtoExcelMes.TabelaDeDado.Columns.Count);
                         colunaFinal += dtoExcelMes.TabelaDeDado.Columns.Count;
                     }
                 }
@@ -118,13 +118,13 @@ namespace SME.SR.Application
             range.Style.Font.FontName = "Arial";
         }
 
-        private void AdicionarEstilo(IXLWorksheet worksheet, int totalRegistro, int colunaFinal)
+        private void AdicionarEstilo(IXLWorksheet worksheet, int totalRegistro, int colunaFinal, int ultimaColunaMes)
         {
             int ultimaColunaUsada = worksheet.LastColumnUsed().ColumnNumber();
             int ultimaLinhaUsada = worksheet.LastRowUsed().RowNumber();
 
             AdicionarEstiloCabecalho(worksheet, ultimaColunaUsada);
-            AdicionarEstiloCorpo(worksheet, ultimaColunaUsada, ultimaLinhaUsada, totalRegistro, colunaFinal);
+            AdicionarEstiloCorpo(worksheet, ultimaLinhaUsada, totalRegistro, colunaFinal, ultimaColunaMes);
 
             worksheet.ShowGridLines = false;
 
@@ -143,31 +143,33 @@ namespace SME.SR.Application
             AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, LINHA_MES);
         }
 
-        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaColunaUsada, int ultimaLinhaUsada, int totalRegistro, int colunaFinal)
+        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaLinhaUsada, int totalRegistro, int colunaFinal, int ultimaColunaMes)
         {
-            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontName("Arial");
-            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            var ultimaColuna = (colunaFinal + ultimaColunaMes) - 1;
 
-            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetOutsideBorderColor(XLColor.Black);
+            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColuna).Style.Font.SetFontName("Arial");
+            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColuna).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
-            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
-            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColunaUsada).Style.Border.SetInsideBorderColor(XLColor.Black);
+            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColuna).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColuna).Style.Border.SetOutsideBorderColor(XLColor.Black);
 
-            worksheet.Range(LINHA_TABELA, colunaFinal, LINHA_TABELA, ultimaColunaUsada).Style.Font.SetFontSize(10);
-            worksheet.Range(LINHA_TABELA, colunaFinal, LINHA_TABELA, ultimaColunaUsada).Style.Font.Bold = true;
-            worksheet.Range(LINHA_TABELA, colunaFinal, LINHA_TABELA, ultimaColunaUsada).Style.Fill.BackgroundColor = XLColor.LightGray;
-            worksheet.Range(LINHA_SUBCABELHO, colunaFinal, LINHA_SUBCABELHO, ultimaColunaUsada).Style.Font.SetFontSize(10);
-            worksheet.Range(LINHA_SUBCABELHO, colunaFinal, LINHA_SUBCABELHO, ultimaColunaUsada).Style.Font.Bold = true;
-            worksheet.Range(LINHA_SUBCABELHO, colunaFinal, LINHA_SUBCABELHO, ultimaColunaUsada).Style.Fill.BackgroundColor = XLColor.LightGray;
-            worksheet.Range(LINHA_TABELA, colunaFinal + 2, ultimaLinhaUsada, ultimaColunaUsada).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColuna).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+            worksheet.Range(LINHA_TABELA, colunaFinal, ultimaLinhaUsada, ultimaColuna).Style.Border.SetInsideBorderColor(XLColor.Black);
+
+            worksheet.Range(LINHA_TABELA, colunaFinal, LINHA_TABELA, ultimaColuna).Style.Font.SetFontSize(10);
+            worksheet.Range(LINHA_TABELA, colunaFinal, LINHA_TABELA, ultimaColuna).Style.Font.Bold = true;
+            worksheet.Range(LINHA_TABELA, colunaFinal, LINHA_TABELA, ultimaColuna).Style.Fill.BackgroundColor = XLColor.LightGray;
+            worksheet.Range(LINHA_SUBCABELHO, colunaFinal, LINHA_SUBCABELHO, ultimaColuna).Style.Font.SetFontSize(10);
+            worksheet.Range(LINHA_SUBCABELHO, colunaFinal, LINHA_SUBCABELHO, ultimaColuna).Style.Font.Bold = true;
+            worksheet.Range(LINHA_SUBCABELHO, colunaFinal, LINHA_SUBCABELHO, ultimaColuna).Style.Fill.BackgroundColor = XLColor.LightGray;
+            worksheet.Range(LINHA_TABELA, colunaFinal + 2, ultimaLinhaUsada, ultimaColuna).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
             worksheet.Range(LINHA_TABELA, colunaFinal, LINHA_TABELA + 1, colunaFinal + 1).Merge();
-            worksheet.Range(LINHA_TABELA, ultimaColunaUsada - 1, LINHA_TABELA + 1, ultimaColunaUsada - 1).Merge();
-            worksheet.Range(LINHA_TABELA, ultimaColunaUsada, LINHA_TABELA + 1, ultimaColunaUsada).Merge();
+            worksheet.Range(LINHA_TABELA, ultimaColuna - 1, LINHA_TABELA + 1, ultimaColuna - 1).Merge();
+            worksheet.Range(LINHA_TABELA, ultimaColuna, LINHA_TABELA + 1, ultimaColuna).Merge();
 
             Merge(worksheet, colunaFinal, totalRegistro);
-            Merge(worksheet, ultimaColunaUsada, totalRegistro);
+            Merge(worksheet, ultimaColuna, totalRegistro);
         }
 
         private void Merge(IXLWorksheet worksheet, int coluna, int totalRegistro)
