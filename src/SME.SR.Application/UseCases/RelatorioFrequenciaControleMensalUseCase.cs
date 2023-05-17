@@ -101,7 +101,7 @@ namespace SME.SR.Application.UseCases
                 retorno.Add(controFrequenciaMensal);
             }
 
-            return retorno;
+            return retorno.OrderBy(controle => controle.NomeCriancaEstudante).ToList();
         }
 
         private static double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)
