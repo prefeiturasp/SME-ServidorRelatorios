@@ -175,21 +175,18 @@ namespace SME.SR.Application.UseCases
                 controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
             }
 
-            var aulasSemCompensacoes = aulas.Except(compensacoes);
-            if (aulasSemCompensacoes.Any())
+            var aulasSemCompensacoes = aulas.Where(a => !compensacoes.Any(c => c.DataAula == a.DataAula)).ToList();
+            foreach (var aula in aulasSemCompensacoes)
             {
-                foreach (var aula in aulas)
+                var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
                 {
-                    var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
-                    {
-                        DiaSemanaSigla = aula.DiaSemana,
-                        DiaSemanaNumero = aula.Dia,
-                        Valor = 0
-                    };
-                    controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
-                }
+                    DiaSemanaSigla = aula.DiaSemana,
+                    DiaSemanaNumero = aula.Dia,
+                    Valor = 0
+                };
+                controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
             }
-
+            
             componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
         }
         
