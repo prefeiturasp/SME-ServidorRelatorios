@@ -106,13 +106,16 @@ namespace SME.SR.Application.UseCases
 
         private static double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)
         {
-            var totalAulas = componenteAgrupado.Sum(x => x.TotalAula);
-            var numeroFaltasNaoCompensadas = componenteAgrupado.Where(x => x.TotalTipoFrequencia == (int) TipoFrequencia.F && x.DataCompensacao == null).Sum(s => s.TotalTipoFrequencia);
+            var totalAulas = componenteAgrupado.FirstOrDefault().TotalAula;
+            var tipoFrequenciaPrensenca = new List<int> { (int)TipoFrequencia.R, (int)TipoFrequencia.C };
+            var numeroPresenca = componenteAgrupado.Where(x => x.DataCompensacao == null && tipoFrequenciaPrensenca.Contains(x.TipoFrequencia)).Sum(s => s.TotalTipoFrequencia);
+            var numeroCompensacao = componenteAgrupado.Where(x => x.TotalCompensacao.HasValue).Sum(x => x.TotalCompensacao.Value);
+            var totalPresenca = numeroPresenca + numeroCompensacao;
 
             if (totalAulas == 0)
                 return 0;
             
-            var percentual = 100 - (((double) numeroFaltasNaoCompensadas / totalAulas) * 100);
+            var percentual = ((double)totalPresenca / totalAulas) * 100;
             var percentualArredondado = Math.Round(percentual, 2);
             return percentualArredondado;
         }
@@ -195,7 +198,7 @@ namespace SME.SR.Application.UseCases
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
                 TipoFrequencia = "Aulas",
-                TotalDoPeriodo = aulas.Select(t => t.TotalAula).Count(),
+                TotalDoPeriodo = aulas.FirstOrDefault().TotalAula,
             };
 
             foreach (var aula in aulas)
