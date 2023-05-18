@@ -80,7 +80,7 @@ namespace SME.SR.Data
 
             var frequenciaAluno = await conexao.QueryFirstOrDefaultAsync<FrequenciaAluno>(FrequenciaAlunoConsultas.FrequenciaGlobal, parametros);
 
-            if (frequenciaAluno == null)
+            if (frequenciaAluno == null || frequenciaAluno.TotalAulas == 0)
                 return string.Empty;
 
             return frequenciaAluno.PercentualFrequenciaFormatado;

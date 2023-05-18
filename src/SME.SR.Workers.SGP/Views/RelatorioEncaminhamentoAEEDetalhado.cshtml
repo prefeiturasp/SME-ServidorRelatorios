@@ -212,11 +212,11 @@
     void GerarLinhaNecessidadeEspecial(InformacaoEscolarAlunoDto informacaoEscolar)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_LINHA_UNICA;
-        var frequenciaGlobal = !string.IsNullOrWhiteSpace(informacaoEscolar.FrequenciaGlobal) ? Math.Round(double.Parse(informacaoEscolar.FrequenciaGlobal), 2).ToString($"N2", System.Globalization.CultureInfo.CurrentCulture) : null;
+        var frequenciaGlobal = string.IsNullOrWhiteSpace(informacaoEscolar.FrequenciaGlobal) ? null : $"{informacaoEscolar.FrequenciaGlobal}%";
         <tr>
             <td class="espacamento10">@informacaoEscolar.DescricaoNecessidadeEspecial</td>
             <td class="espacamento10">@informacaoEscolar.DescricaoRecurso</td>
-            <td class="espacamento10">@frequenciaGlobal%</td>
+            <td class="espacamento10">@frequenciaGlobal</td>
         </tr>
     }
 
