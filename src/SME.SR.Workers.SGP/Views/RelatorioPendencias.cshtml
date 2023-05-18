@@ -4,14 +4,17 @@
     double contadorQuebrarPagina = 0;
     int contadorCaracteresExtensos = 45;
     int contadorMaximoLinhasPorPagina = 46;
+    int contadorMaximoLinhasPorPaginaSemDetalhe = 41;
     int contadorPagina = 0;
     bool quebrou = false;
     int contadorMaximoCaracteresPorLinha = 115;
     int contadorMaximoCaracteresPorLinhaDescricao = 35;
 
-    string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente, bool temOutrasPendencias = false)
+    string VerificaQuebra(int linhas, string nomeBimestre, string nomeComponente, bool exibirDetalhe = true, bool temOutrasPendencias = false)
     {
-        if (contadorQuebrarPagina + linhas >= contadorMaximoLinhasPorPagina)
+        var totalLinhaPagina = exibirDetalhe ? contadorMaximoLinhasPorPagina : contadorMaximoLinhasPorPaginaSemDetalhe;
+
+        if (contadorQuebrarPagina + linhas >= totalLinhaPagina)
         {
             contadorQuebrarPagina = 0;
             contadorPagina = contadorPagina + 1;
@@ -238,7 +241,7 @@
 
         MontarDetalhamentoPendencia(pendencias, nomeBimestre, nomeComponente, temOutrasPendencias);
 
-        VerificaQuebra(2, nomeBimestre, nomeComponente, temOutrasPendencias);
+        VerificaQuebra(2, nomeBimestre, nomeComponente, pendencias.ExibirDetalhamento, temOutrasPendencias);
 
         if (pendencias.ExibirAprovacao)
         {
