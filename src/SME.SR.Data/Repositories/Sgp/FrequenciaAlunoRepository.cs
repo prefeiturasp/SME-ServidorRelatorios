@@ -697,7 +697,10 @@ namespace SME.SR.Data
             var todosMeses = mes.Contains("-99");
             var sql = new StringBuilder();
             sql.AppendLine(@"with controle as(");
-            sql.AppendLine(@"SELECT  rfa.codigo_aluno as CodigoAluno, a.disciplina_id as disciplinaid,");
+            sql.AppendLine(@"SELECT ccgm.nome as NomeGrupo,");
+            sql.AppendLine(@"       a.disciplina_id as disciplinaid,");
+            sql.AppendLine(@"       cc.descricao_sgp as NomeComponente,");
+            sql.AppendLine(@"       rfa.codigo_aluno as CodigoAluno, ");
             sql.AppendLine(@"       cc.descricao_sgp as NomeComponente, ");
             sql.AppendLine(@"       count(quantidade) TotalAula,");
             sql.AppendLine(@"       totalTipo.total AS TotalTipoFrequencia,");
@@ -722,7 +725,9 @@ namespace SME.SR.Data
             sql.AppendLine(@"INNER JOIN registro_frequencia rf ON rfa.registro_frequencia_id = rf.id");
             sql.AppendLine(@"INNER JOIN aula a ON rfa.aula_id = a.id");
             sql.AppendLine(@" inner join componente_curricular cc on cc.id = a.disciplina_id::int8");
-            sql.AppendLine(@" inner join componente_curricular_grupo_area_ordenacao ccgao on cc.grupo_matriz_id = ccgao.grupo_matriz_id ");
+            sql.AppendLine(@" inner join componente_curricular_grupo_matriz ccgm on cc.grupo_matriz_id = ccgm.id ");
+            sql.AppendLine(@" inner join componente_curricular_area_conhecimento ccac on cc.area_conhecimento_id = ccac.id");
+            sql.AppendLine(@" inner join componente_curricular_grupo_area_ordenacao ccgao on ccgm.id = ccgao.grupo_matriz_id  and ccac.id =ccgao.area_conhecimento_id ");
             sql.AppendLine(@" and cc.area_conhecimento_id = ccgao.area_conhecimento_id");
             sql.AppendLine(@" inner join ue u on a.ue_id = u.ue_id  ");
             sql.AppendLine(@"  inner join dre d on u.dre_id = d.id  ");
@@ -780,16 +785,18 @@ namespace SME.SR.Data
             if (!todosMeses)
                 sql.AppendLine(@"  AND extract(month FROM a.data_aula)::text    = any(@mes) ");
             sql.AppendLine(@"  AND a.turma_id = @turmaCodigo ");
-            sql.AppendLine(@"GROUP BY rfa.codigo_aluno, a.disciplina_id,");
-            sql.AppendLine(@"         cc.descricao_sgp, ");
+            sql.AppendLine(@"GROUP BY ccgm.nome,");
+            sql.AppendLine(@"		 a.disciplina_id,");
+            sql.AppendLine(@"         rfa.codigo_aluno, ");
+            sql.AppendLine(@"         cc.descricao_sgp,");
             sql.AppendLine(@"         totalTipo.total,");
             sql.AppendLine(@"         totalTipo.valorFrequencia,");
             sql.AppendLine(@"         totalTipo.data_aula,");
             sql.AppendLine(@"         totalCompensacao,");
             sql.AppendLine(@"         compensacao.data_aula, ");
-            sql.AppendLine(@"         ccgao.ordem, ");
+            sql.AppendLine(@"         ccgao.ordem,");
             sql.AppendLine(@"         pe.bimestre ");
-            sql.AppendLine(@" ORDER BY ccgao.ordem,totalTipo.data_aula )");
+            sql.AppendLine(@"ORDER BY ccgm.nome,cc.descricao_sgp)");
             sql.AppendLine(@" select * from controle ");
 
             var parametros = new

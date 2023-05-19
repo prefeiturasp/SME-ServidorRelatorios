@@ -76,7 +76,7 @@ namespace SME.SR.Application.UseCases
                         Mes = mesAgrupado.Key,
                         MesDescricao = ObterNomeMes(mesAgrupado.Key)
                     };
-                    var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x =>x.OrdemExibicaoComponente).GroupBy(x => x.NomeComponente);
+                    var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x =>x.NomeGrupo).ThenBy(t => t.NomeComponente).GroupBy(x => x.NomeComponente);
                     foreach (var componenteAgrupado in componentesAgrupado)
                     {
                         var frequenciaPeriodoComponente = PercentualFrequenciaComponente(componenteAgrupado);

@@ -7,6 +7,7 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public string CodigoAluno { get; set; }
         public string DisciplinaId { get; set; }
         public string NomeComponente { get; set; }
+        public string NomeGrupo { get; set; }
         public int TotalAula { get; set; }
         public int TotalTipoFrequencia { get; set; }
         public int TipoFrequencia { get; set; }
