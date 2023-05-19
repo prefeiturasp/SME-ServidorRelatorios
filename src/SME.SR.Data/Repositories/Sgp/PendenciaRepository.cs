@@ -136,6 +136,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao, 
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        0 as AnoLetivo,
@@ -152,9 +154,7 @@ namespace SME.SR.Data
                             'Calendário' as TipoPendencia,
                             true as OutrasPendencias,
                             p.tipo,
-                            '' as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            '' as Detalhe
                         from pendencia_calendario_ue pcu 
                         inner join pendencia p 
 	                        on pcu.pendencia_id  = p.id
@@ -193,6 +193,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao, 
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        0 as AnoLetivo,
@@ -209,9 +211,7 @@ namespace SME.SR.Data
                             'Calendário' as TipoPendencia,
                             true as OutrasPendencias,
                             p.tipo,
-                            ps.descricao ||' ('|| ppe.quantidade_eventos ||')' as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            ps.descricao ||' ('|| ppe.quantidade_eventos ||')' as Detalhe
                          from pendencia_calendario_ue pcu 
                         inner join pendencia_parametro_evento ppe 
                             on ppe.pendencia_calendario_ue_id = pcu.id
@@ -506,6 +506,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
                             d.abreviacao as DreNome,
                             te.descricao || ' - ' || u.nome as UeNome,
                             t.ano_letivo as AnoLetivo,
@@ -526,9 +528,7 @@ namespace SME.SR.Data
                             'AEE' as TipoPendencia,
                             true as OutrasPendencias,
                             p.tipo,
-                            '' as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            '' as Detalhe
                         from pendencia_plano_aee ppa
                         inner join pendencia p 
                             on p.id = ppa.pendencia_id
@@ -575,6 +575,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
                             d.abreviacao as DreNome,
                             te.descricao || ' - ' || u.nome as UeNome,
                             t.ano_letivo as AnoLetivo,
@@ -595,9 +597,7 @@ namespace SME.SR.Data
                             'AEE' as TipoPendencia,
                             true as OutrasPendencias,
                             p.tipo,
-                            '' as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            '' as Detalhe
                         from pendencia_encaminhamento_aee pea
                         inner join pendencia p 
                             on p.id = pea.pendencia_id
@@ -647,6 +647,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
                             d.abreviacao as DreNome,
                             te.descricao || ' - ' || u.nome as UeNome,
                             t.ano_letivo as AnoLetivo,
@@ -667,9 +669,7 @@ namespace SME.SR.Data
                             'Diário de Classe' as TipoPendencia,
                             true as OutrasPendencias,
                             p.tipo,
-                            cast(pria.codigo_aluno as varchar) as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            cast(pria.codigo_aluno as varchar) as Detalhe
                         from pendencia_registro_individual pri 
                         inner join pendencia_registro_individual_aluno pria 
 	                        on pri.id = pria.pendencia_registro_individual_id
@@ -716,6 +716,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao, 
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -736,9 +738,7 @@ namespace SME.SR.Data
                             'Diário de Classe' as TipoPendencia,
                             false as OutrasPendencias,
                             p.tipo,
-                            to_char(a.data_aula, 'dd/MM') ||' - '|| coalesce(pa.motivo, '') as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            to_char(a.data_aula, 'dd/MM') ||' - '|| coalesce(pa.motivo, '') as Detalhe
                         from pendencia_aula pa
                         inner join pendencia p 
 	                        on pa.pendencia_id  = p.id
@@ -796,6 +796,8 @@ namespace SME.SR.Data
 	                            p.descricao as Descricao,
 	                            p.situacao,
                                 p.instrucao,
+                                p.qtde_aulas as QuantidadeDeAulas,
+                                p.qtde_dias as QuantidadeDeDias,
                                 d.abreviacao as DreNome,
                                 te.descricao || ' - ' || u.nome as UeNome,
                                 t.ano_letivo as AnoLetivo,
@@ -816,9 +818,7 @@ namespace SME.SR.Data
                                 'Diário de Classe' as TipoPendencia,
                                 false as OutrasPendencias,
                                 p.tipo,
-                                to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe,
-                                p.qtde_aulas as QuantidadeDeAulas,
-                                p.qtde_dias as QuantidadeDeDias
+                                to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
                             from pendencia_devolutiva pd 
 	                            inner join pendencia p on pd.pendencia_id = p.id
 	                            inner join turma t on t.id = pd.turma_id 
@@ -857,6 +857,8 @@ namespace SME.SR.Data
 	                    p.descricao as Descricao,
 	                    p.situacao,
                         p.instrucao,
+                        p.qtde_aulas as QuantidadeDeAulas,
+                        p.qtde_dias as QuantidadeDeDias,
                         d.abreviacao as DreNome,
                         te.descricao || ' - ' || u.nome as UeNome,
                         t.ano_letivo as AnoLetivo,
@@ -877,9 +879,7 @@ namespace SME.SR.Data
                         'Diário de Classe' as TipoPendencia,
                         false as OutrasPendencias,
                         p.tipo,
-                        to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe,
-                        p.qtde_aulas as QuantidadeDeAulas,
-                        p.qtde_dias as QuantidadeDeDias
+                        to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
                     from pendencia_diario_bordo pdb 
 	                    inner join pendencia p on pdb.pendencia_id = p.id
 	                    inner join aula a on a.id = pdb.aula_id
