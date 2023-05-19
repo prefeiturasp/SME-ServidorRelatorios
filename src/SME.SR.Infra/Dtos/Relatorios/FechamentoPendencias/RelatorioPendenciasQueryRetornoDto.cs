@@ -8,7 +8,7 @@ namespace SME.SR.Infra
         public RelatorioPendenciasQueryRetornoDto()
         {
             Detalhes = new List<string>();
-            PendenciaSemDetalhe = new List<int>() { (int)Infra.TipoPendencia.Frequencia, (int)Infra.TipoPendencia.PlanoAula, (int)Infra.TipoPendencia.DiarioBordo };
+            PendenciaSemDetalhe = new List<int>() { (int)Infra.TipoPendencia.Frequencia, (int)Infra.TipoPendencia.PlanoAula, (int)Infra.TipoPendencia.DiarioBordo, (int)Infra.TipoPendencia.AulasSemFrequenciaNaDataDoFechamento, (int)Infra.TipoPendencia.AulasSemPlanoAulaNaDataDoFechamento };
         }
 
         public string PendenciaId { get; set; }
@@ -34,8 +34,8 @@ namespace SME.SR.Infra
         public bool OutrasPendencias { get; set; }
         public bool ExibirDetalhes { get { return !PendenciaSemDetalhe.Contains(Tipo); }}
         public int Tipo { get; set; }
-        public int QuantidadeDeAulas { get; set; }
-        public int QuantidadeDeDias { get; set; }
+        public long? QuantidadeDeAulas { get; set; }
+        public long? QuantidadeDeDias { get; set; }
         public void AdicionaDetalhe(string detalhe)
         {
             if (!string.IsNullOrEmpty(detalhe) && !Detalhes.Contains(detalhe))

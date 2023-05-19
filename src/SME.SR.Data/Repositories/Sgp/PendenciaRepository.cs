@@ -256,6 +256,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -276,9 +278,7 @@ namespace SME.SR.Data
                             'Fechamento' as TipoPendencia,
                             false as OutrasPendencias,
                             p.tipo,
-                            '' as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            '' as Detalhe
                         from pendencia_fechamento pf
                         inner join pendencia p 
 	                        on pf.pendencia_id  = p.id
@@ -338,6 +338,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || ue.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -358,9 +360,7 @@ namespace SME.SR.Data
                             'Fechamento' as TipoPendencia,
                             false as OutrasPendencias,
                             p.tipo,
-                            coalesce(cc.descricao_sgp, cc.descricao) ||' - '|| coalesce(u.nome, '') ||'('|| u.rf_codigo ||')' as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            coalesce(cc.descricao_sgp, cc.descricao) ||' - '|| coalesce(u.nome, '') ||'('|| u.rf_codigo ||')' as Detalhe
                         from pendencia_professor pp
                         inner join componente_curricular cc on cc.id = pp.componente_curricular_id
                         inner join usuario u on u.rf_codigo = pp.professor_rf
@@ -419,6 +419,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || ue.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -439,9 +441,7 @@ namespace SME.SR.Data
                             'Fechamento' as TipoPendencia,
                             false as OutrasPendencias,
                             p.tipo,
-                            '' as Detalhe,
-                            p.qtde_aulas as QuantidadeDeAulas,
-                            p.qtde_dias as QuantidadeDeDias
+                            '' as Detalhe
                         from pendencia_professor pp
                         inner join componente_curricular cc on cc.id = pp.componente_curricular_id
                         inner join usuario u on u.rf_codigo = pp.professor_rf
