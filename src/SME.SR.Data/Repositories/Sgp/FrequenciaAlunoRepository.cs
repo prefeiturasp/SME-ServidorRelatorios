@@ -719,16 +719,13 @@ namespace SME.SR.Data
             sql.AppendLine(@"       end DiaSemana,");
             sql.AppendLine(@"       TotalCompensacao,");
             sql.AppendLine(@"       compensacao.data_aula as DataCompensacao, ");
-            sql.AppendLine(@"      ccgao.ordem as OrdemExibicaoComponente,");
             sql.AppendLine(@"       pe.bimestre ");
             sql.AppendLine(@"FROM registro_frequencia_aluno rfa");
             sql.AppendLine(@"INNER JOIN registro_frequencia rf ON rfa.registro_frequencia_id = rf.id");
             sql.AppendLine(@"INNER JOIN aula a ON rfa.aula_id = a.id");
-            sql.AppendLine(@" inner join componente_curricular cc on cc.id = a.disciplina_id::int8");
-            sql.AppendLine(@" inner join componente_curricular_grupo_matriz ccgm on cc.grupo_matriz_id = ccgm.id ");
-            sql.AppendLine(@" inner join componente_curricular_area_conhecimento ccac on cc.area_conhecimento_id = ccac.id");
-            sql.AppendLine(@" inner join componente_curricular_grupo_area_ordenacao ccgao on ccgm.id = ccgao.grupo_matriz_id  and ccac.id =ccgao.area_conhecimento_id ");
-            sql.AppendLine(@" and cc.area_conhecimento_id = ccgao.area_conhecimento_id");
+            sql.AppendLine(@" left join componente_curricular cc on cc.id = a.disciplina_id::int8");
+            sql.AppendLine(@" left join componente_curricular_grupo_matriz ccgm on cc.grupo_matriz_id = ccgm.id ");
+            sql.AppendLine(@" left join componente_curricular_area_conhecimento ccac on cc.area_conhecimento_id = ccac.id");
             sql.AppendLine(@" inner join ue u on a.ue_id = u.ue_id  ");
             sql.AppendLine(@"  inner join dre d on u.dre_id = d.id  ");
             sql.AppendLine(@"inner join tipo_calendario tc on a.tipo_calendario_id = tc.id ");
@@ -775,7 +772,6 @@ namespace SME.SR.Data
             sql.AppendLine(@"         a.data_aula,");
             sql.AppendLine(@"         totalCompensacao,");
             sql.AppendLine(@"         compensacao.data_aula, ");
-            sql.AppendLine(@"         ccgao.ordem,");
             sql.AppendLine(@"         pe.bimestre ");
             sql.AppendLine(@"ORDER BY ccgm.nome,cc.descricao_sgp)");
             sql.AppendLine(@" select * from controle ");
