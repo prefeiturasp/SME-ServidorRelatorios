@@ -94,7 +94,7 @@ namespace SME.SR.Application
                 linhaSiglaDia[$"{mes}_{dias.Key}"] = dias.Value;
             }
 
-            linhaSiglaDia[$"{mes}_TotalDoPeriodo"] = "Total do Período";
+            linhaSiglaDia[$"{mes}_TotalDoPeriodo"] = "Total";
             linhaSiglaDia[$"{mes}_FrequenciaDoPeriodo"] = "Frequência do Período";
 
             data.Rows.Add(linhaSiglaDia);

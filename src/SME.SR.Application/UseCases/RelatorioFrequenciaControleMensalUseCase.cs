@@ -94,7 +94,7 @@ namespace SME.SR.Application.UseCases
                         mes.FrequenciaComponente.Add(componente);
                     }
 
-                    mes.FrequenciaGlobal = $"{(totalFrequenciaDoPeriodo / componentesAgrupado.Count())}%";
+                    mes.FrequenciaGlobal = $"{Math.Round(totalFrequenciaDoPeriodo / componentesAgrupado.Count(), 2)}%";
                     controFrequenciaMensal.FrequenciaMes.Add(mes);
                 }
 
@@ -106,7 +106,7 @@ namespace SME.SR.Application.UseCases
 
         private static double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)
         {
-            var totalAulas = componenteAgrupado.FirstOrDefault().TotalAula;
+            var totalAulas = componenteAgrupado.Sum(aula => aula.TotalAula);
             var tipoFrequenciaPrensenca = new List<int> { (int)TipoFrequencia.R, (int)TipoFrequencia.C };
             var numeroPresenca = componenteAgrupado.Where(x => x.DataCompensacao == null && tipoFrequenciaPrensenca.Contains(x.TipoFrequencia)).Sum(s => s.TotalTipoFrequencia);
             var numeroCompensacao = componenteAgrupado.Where(x => x.TotalCompensacao.HasValue).Sum(x => x.TotalCompensacao.Value);
@@ -114,8 +114,8 @@ namespace SME.SR.Application.UseCases
 
             if (totalAulas == 0)
                 return 0;
-            
-            var percentual = ((double)totalPresenca / totalAulas) * 100;
+
+            var percentual = (((double)totalPresenca / totalAulas) * 100);
             var percentualArredondado = Math.Round(percentual, 2);
             return percentualArredondado;
         }
@@ -198,7 +198,7 @@ namespace SME.SR.Application.UseCases
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
                 TipoFrequencia = "Aulas",
-                TotalDoPeriodo = aulas.FirstOrDefault().TotalAula,
+                TotalDoPeriodo = aulas.Sum(aula => aula.TotalAula),
             };
 
             foreach (var aula in aulas)

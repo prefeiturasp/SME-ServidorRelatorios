@@ -702,20 +702,20 @@ namespace SME.SR.Data
             sql.AppendLine(@"       cc.descricao_sgp as NomeComponente,");
             sql.AppendLine(@"       rfa.codigo_aluno as CodigoAluno, ");
             sql.AppendLine(@"       cc.descricao_sgp as NomeComponente, ");
-            sql.AppendLine(@"       count(quantidade) TotalAula,");
-            sql.AppendLine(@"       totalTipo.total AS TotalTipoFrequencia,");
-            sql.AppendLine(@"       totalTipo.valorFrequencia as TipoFrequencia,");
-            sql.AppendLine(@"       totalTipo.data_aula as DataAula,");
-            sql.AppendLine(@"       extract('month' from totalTipo.data_aula) as Mes,");
-            sql.AppendLine(@"       extract('day' from totalTipo.data_aula) as Dia,");
+            sql.AppendLine(@"       a.quantidade TotalAula,");
+            sql.AppendLine(@"       count(valor) AS TotalTipoFrequencia,");
+            sql.AppendLine(@"       valor as TipoFrequencia,");
+            sql.AppendLine(@"       a.data_aula as DataAula,");
+            sql.AppendLine(@"       extract('month' from a.data_aula) as Mes,");
+            sql.AppendLine(@"       extract('day' from a.data_aula) as Dia,");
             sql.AppendLine(@"       case ");
-            sql.AppendLine(@"         when extract(dow from totalTipo.data_aula)=0 THEN 'DOM'");
-            sql.AppendLine(@"         when extract(dow from totalTipo.data_aula)=1 THEN 'SEG'");
-            sql.AppendLine(@"         when extract(dow from totalTipo.data_aula)=2 THEN 'TER'");
-            sql.AppendLine(@"         when extract(dow from totalTipo.data_aula)=3 THEN 'QUA'");
-            sql.AppendLine(@"         when extract(dow from totalTipo.data_aula)=4 THEN 'QUI'");
-            sql.AppendLine(@"         when extract(dow from totalTipo.data_aula)=5 THEN 'SEX'");
-            sql.AppendLine(@"         when extract(dow from totalTipo.data_aula)=6 THEN 'SAB'");
+            sql.AppendLine(@"         when extract(dow from a.data_aula)=0 THEN 'DOM'");
+            sql.AppendLine(@"         when extract(dow from a.data_aula)=1 THEN 'SEG'");
+            sql.AppendLine(@"         when extract(dow from a.data_aula)=2 THEN 'TER'");
+            sql.AppendLine(@"         when extract(dow from a.data_aula)=3 THEN 'QUA'");
+            sql.AppendLine(@"         when extract(dow from a.data_aula)=4 THEN 'QUI'");
+            sql.AppendLine(@"         when extract(dow from a.data_aula)=5 THEN 'SEX'");
+            sql.AppendLine(@"         when extract(dow from a.data_aula)=6 THEN 'SAB'");
             sql.AppendLine(@"       end DiaSemana,");
             sql.AppendLine(@"       TotalCompensacao,");
             sql.AppendLine(@"       compensacao.data_aula as DataCompensacao, ");
@@ -735,25 +735,6 @@ namespace SME.SR.Data
             sql.AppendLine(@"inner join periodo_escolar pe on tc.periodo = pe.id ");
             sql.AppendLine(@"INNER JOIN turma t ON t.turma_id  = a.turma_id");
             sql.AppendLine(@"LEFT JOIN");
-            sql.AppendLine(@"  (SELECT rfa.codigo_aluno,disciplina_id,");
-            sql.AppendLine(@"          a.id aulaId,");
-            sql.AppendLine(@"          a.data_aula,");
-            sql.AppendLine(@"          count(valor) total,");
-            sql.AppendLine(@"          valor valorFrequencia");
-            sql.AppendLine(@"   FROM registro_frequencia_aluno rfa");
-            sql.AppendLine(@"   INNER JOIN registro_frequencia rf ON rfa.registro_frequencia_id = rf.id");
-            sql.AppendLine(@"   INNER JOIN aula a ON rfa.aula_id = a.id");
-            sql.AppendLine(@"   WHERE NOT rfa.excluido AND NOT rf.excluido AND NOT a.excluido");
-            if (!todosAlunos)
-                sql.AppendLine(@"     and rfa.codigo_aluno = any(@alunosCodigo) ");
-            if (!todosMeses)
-                sql.AppendLine(@"     AND extract(month FROM a.data_aula)::text  = any(@mes) ");
-            sql.AppendLine(@"     AND a.turma_id = @turmaCodigo  and a.ue_id = @ueCodigo   ");
-            sql.AppendLine(@"   GROUP BY rfa.codigo_aluno,disciplina_id,");
-            sql.AppendLine(@"            valor,");
-            sql.AppendLine(@"            a.data_aula,");
-            sql.AppendLine(@"            a.id) totalTipo ON totalTipo.disciplina_id = a.disciplina_id and totalTipo.codigo_aluno =rfa.codigo_aluno ");
-            sql.AppendLine(@"LEFT JOIN");
             sql.AppendLine(@"  (SELECT DISTINCT  rfa.codigo_aluno, a.id idAula,");
             sql.AppendLine(@"                   a.data_aula,");
             sql.AppendLine(@"                   a.disciplina_id,");
@@ -772,7 +753,7 @@ namespace SME.SR.Data
 
             sql.AppendLine(@"   GROUP BY  rfa.codigo_aluno, a.disciplina_id,");
             sql.AppendLine(@"            a.data_aula,");
-            sql.AppendLine(@"            a.id) compensacao ON compensacao.idAula = totalTipo.aulaId  and compensacao.codigo_aluno =rfa.codigo_aluno ");
+            sql.AppendLine(@"            a.id) compensacao ON compensacao.idAula = a.id and compensacao.codigo_aluno = rfa.codigo_aluno ");
             sql.AppendLine(@"WHERE NOT rfa.excluido AND NOT rf.excluido  AND NOT a.excluido");
             if (!todosAlunos)
                 sql.AppendLine(@"  and rfa.codigo_aluno= any(@alunosCodigo) ");
@@ -789,9 +770,9 @@ namespace SME.SR.Data
             sql.AppendLine(@"		 a.disciplina_id,");
             sql.AppendLine(@"         rfa.codigo_aluno, ");
             sql.AppendLine(@"         cc.descricao_sgp,");
-            sql.AppendLine(@"         totalTipo.total,");
-            sql.AppendLine(@"         totalTipo.valorFrequencia,");
-            sql.AppendLine(@"         totalTipo.data_aula,");
+            sql.AppendLine(@"         a.quantidade,");
+            sql.AppendLine(@"         rfa.valor,");
+            sql.AppendLine(@"         a.data_aula,");
             sql.AppendLine(@"         totalCompensacao,");
             sql.AppendLine(@"         compensacao.data_aula, ");
             sql.AppendLine(@"         ccgao.ordem,");
