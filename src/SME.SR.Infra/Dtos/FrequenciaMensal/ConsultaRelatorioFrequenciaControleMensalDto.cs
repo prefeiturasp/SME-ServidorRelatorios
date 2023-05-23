@@ -17,6 +17,5 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public string DiaSemana { get; set; }
         public int? TotalCompensacao { get; set; }
         public DateTime? DataCompensacao { get; set; }
-        public int OrdemExibicaoComponente { get; set; }
     }
 }
