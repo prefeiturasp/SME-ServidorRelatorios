@@ -23,6 +23,10 @@ namespace SME.SR.Data
                                                             string[] turmasCodigo, long[] componentesCodigo, int bimestre, bool pendenciaResolvida, int[] tipoPendenciaGrupo, string usuarioRf, bool exibirHistorico)
         {
             StringBuilder query = new StringBuilder();
+
+            if (tipoPendenciaGrupo == null || tipoPendenciaGrupo.Length == 0)
+                tipoPendenciaGrupo = new int[] { (int)TipoPendenciaGrupo.Todos };
+
             if (tipoPendenciaGrupo.Count() == 1)
             {
                 int pendencia = tipoPendenciaGrupo[0];
@@ -132,6 +136,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao, 
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        0 as AnoLetivo,
@@ -187,6 +193,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao, 
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        0 as AnoLetivo,
@@ -248,6 +256,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -328,6 +338,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || ue.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -407,6 +419,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || ue.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -492,6 +506,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
                             d.abreviacao as DreNome,
                             te.descricao || ' - ' || u.nome as UeNome,
                             t.ano_letivo as AnoLetivo,
@@ -559,6 +575,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
                             d.abreviacao as DreNome,
                             te.descricao || ' - ' || u.nome as UeNome,
                             t.ano_letivo as AnoLetivo,
@@ -629,6 +647,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao,
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
                             d.abreviacao as DreNome,
                             te.descricao || ' - ' || u.nome as UeNome,
                             t.ano_letivo as AnoLetivo,
@@ -696,6 +716,8 @@ namespace SME.SR.Data
 	                        p.descricao as Descricao,
 	                        p.situacao,
                             p.instrucao, 
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
 	                        d.abreviacao as DreNome,
 	                        te.descricao || ' - ' || u.nome as UeNome,
 	                        t.ano_letivo as AnoLetivo,
@@ -774,6 +796,8 @@ namespace SME.SR.Data
 	                            p.descricao as Descricao,
 	                            p.situacao,
                                 p.instrucao,
+                                p.qtde_aulas as QuantidadeDeAulas,
+                                p.qtde_dias as QuantidadeDeDias,
                                 d.abreviacao as DreNome,
                                 te.descricao || ' - ' || u.nome as UeNome,
                                 t.ano_letivo as AnoLetivo,
@@ -833,6 +857,8 @@ namespace SME.SR.Data
 	                    p.descricao as Descricao,
 	                    p.situacao,
                         p.instrucao,
+                        p.qtde_aulas as QuantidadeDeAulas,
+                        p.qtde_dias as QuantidadeDeDias,
                         d.abreviacao as DreNome,
                         te.descricao || ' - ' || u.nome as UeNome,
                         t.ano_letivo as AnoLetivo,
@@ -853,7 +879,7 @@ namespace SME.SR.Data
                         'Diário de Classe' as TipoPendencia,
                         false as OutrasPendencias,
                         p.tipo,
-                         to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
+                        to_char(a.data_aula, 'dd/MM/yyyy') as Detalhe
                     from pendencia_diario_bordo pdb 
 	                    inner join pendencia p on pdb.pendencia_id = p.id
 	                    inner join aula a on a.id = pdb.aula_id
