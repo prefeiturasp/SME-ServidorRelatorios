@@ -84,7 +84,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(string componenteCurricularId, int bimestre, long tipoCalendarioId)
+        public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(long turmaId, string componenteCurricularId, int bimestre, long tipoCalendarioId)
         {
             var query = @"select 1
                            from aula a
@@ -93,7 +93,7 @@ namespace SME.SR.Data
                           where not a.excluido
                             and a.tipo_aula = 1
                             and a.disciplina_id::bigint = @componenteCurricularId
-                            and t.id = :turmaId
+                            and t.id = @turmaId
                             and pe.tipo_calendario_id = @tipoCalendarioId
                             and pe.bimestre = @bimestre
                           group by a.data_aula, a.professor_rf
@@ -101,7 +101,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return (await conexao.QueryAsync<int>(query, new { componenteCurricularId, bimestre, tipoCalendarioId })).Any();
+                return (await conexao.QueryAsync<int>(query, new {turmaId, componenteCurricularId = Convert.ToInt64(componenteCurricularId), bimestre, tipoCalendarioId })).Any();
             }
         }
        
