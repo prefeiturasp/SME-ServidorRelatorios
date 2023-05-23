@@ -5,6 +5,7 @@ namespace SME.SR.Infra
         public int AnoLetivo { get; set; }
         public string DreNome { get; set; }
         public string UeNome { get; set; }
+        public string UeOrdenacao { get; set; }
         public string TurmaNome { get; set; }
         public string AlunoNome { get; set; }
         public string AlunoCodigo { get; set; }
