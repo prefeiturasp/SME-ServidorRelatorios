@@ -19,132 +19,83 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre)
         {
-            var query = new StringBuilder(); 
-            query.AppendLine("drop table if exists tmp_lista_fechamento_conselho;");
-            query.AppendLine("create temporary table tmp_lista_fechamento_conselho as");
-            query.AppendLine("select distinct t.turma_id,");
-            query.AppendLine("                fa.aluno_codigo,");
-            query.AppendLine("                ftd.fechamento_turma_id,");
-            query.AppendLine("                coalesce(ccn.componente_curricular_codigo, fn.disciplina_id) disciplina_id,");
-            query.AppendLine("                ftd.id fechamento_turma_disciplina_id,");
-            query.AppendLine("                pe.bimestre,");
-            query.AppendLine("                pe.periodo_inicio,");
-            query.AppendLine("                pe.periodo_fim,");
-            query.AppendLine("                coalesce(ccn.id, fn.id) nota_id,");
-            query.AppendLine("                coalesce(ccn.conceito_id, fn.conceito_id) conceito_id,");
-            query.AppendLine("                coalesce(cv2.valor, cv.valor) valor_conceito,");
-            query.AppendLine("                coalesce(ccn.nota, fn.nota) nota,");
-            query.AppendLine("                ccn.id is not null eh_conceito");
-            query.AppendLine("    from turma t");
-            query.AppendLine("        inner join fechamento_turma ft");
-            query.AppendLine("            on t.id = ft.turma_id");
-            query.AppendLine("        inner join fechamento_turma_disciplina ftd");
-            query.AppendLine("            on ft.id = ftd.fechamento_turma_id");            
-            query.AppendLine("        inner join fechamento_aluno fa");
-            query.AppendLine("            on ftd.id = fa.fechamento_turma_disciplina_id");            
-            query.AppendLine("        left join fechamento_nota fn");
-            query.AppendLine("            on fa.id = fn.fechamento_aluno_id");            
-            query.AppendLine("        left join periodo_escolar pe");
-            query.AppendLine("            on ft.periodo_escolar_id = pe.id");
-            query.AppendLine("        left join conceito_valores cv");
-            query.AppendLine("            on fn.conceito_id = cv.id");
-            query.AppendLine("        left join conselho_classe cc");
-            query.AppendLine("            on ft.id = cc.fechamento_turma_id and");
-            query.AppendLine("               not cc.excluido");
-            query.AppendLine("        left join conselho_classe_aluno cca");
-            query.AppendLine("            on cc.id = cca.conselho_classe_id and");
-            query.AppendLine("               fa.aluno_codigo = cca.aluno_codigo and");
-            query.AppendLine("               not cca.excluido");
-            query.AppendLine("        left join conselho_classe_nota ccn");
-            query.AppendLine("            on cca.id = ccn.conselho_classe_aluno_id and");
-            query.AppendLine("               ftd.disciplina_id = ccn.componente_curricular_codigo and");
-            query.AppendLine("               not ccn.excluido");
-            query.AppendLine("        left join conceito_valores cv2");
-            query.AppendLine("            on ccn.conceito_id = cv2.id");
-            query.AppendLine("where t.ano_letivo = @anoLetivo and");
-            query.AppendLine("      t.modalidade_codigo = @modalidade and");
-            query.AppendLine("      t.semestre = @semestre and");
-            query.AppendLine("      t.turma_id = any(@codigosTurmas) and");
-            query.AppendLine("      fa.aluno_codigo = any(@codigosAluno) and");
-            query.AppendLine("      not ft.excluido;");
-            query.AppendLine("drop table if exists tmp_lista_conselho_fechamento;");
-            query.AppendLine("create temporary table tmp_lista_conselho_fechamento as");
-            query.AppendLine("select distinct t.turma_id,");
-            query.AppendLine("                cca.aluno_codigo,");
-            query.AppendLine("                ccn.componente_curricular_codigo,");
-            query.AppendLine("                ftd.fechamento_turma_disciplina_id,");
-            query.AppendLine("                pe.bimestre,");
-            query.AppendLine("                pe.periodo_inicio,");
-            query.AppendLine("                pe.periodo_fim,");
-            query.AppendLine("                ccn.id nota_id,");
-            query.AppendLine("                ccn.conceito_id conceito_id,");
-            query.AppendLine("                cv.valor valor_conceito,");
-            query.AppendLine("                ccn.nota nota,");
-            query.AppendLine("                true eh_conceito");
-            query.AppendLine("    from conselho_classe_aluno cca");
-            query.AppendLine("        inner join conselho_classe cc");
-            query.AppendLine("            on cca.conselho_classe_id = cc.id");
-            query.AppendLine("        inner join fechamento_turma ft");
-            query.AppendLine("            on cc.fechamento_turma_id = ft.id");
-            query.AppendLine("        inner join turma t");
-            query.AppendLine("            on ft.turma_id = t.id");
-            query.AppendLine("        inner join conselho_classe_nota ccn");
-            query.AppendLine("            on cca.id = ccn.conselho_classe_aluno_id");
-            query.AppendLine("        left join conceito_valores cv");
-            query.AppendLine("            on ccn.conceito_id = cv.id");
-            query.AppendLine("        left join periodo_escolar pe");
-            query.AppendLine("            on ft.periodo_escolar_id = pe.id");
-            query.AppendLine("        left join tmp_lista_fechamento_conselho ftd");
-            query.AppendLine("            on ft.id = ftd.fechamento_turma_id and");
-            query.AppendLine("               cca.aluno_codigo = ftd.aluno_codigo and");
-            query.AppendLine("               ccn.componente_curricular_codigo = ftd.disciplina_id and");
-            query.AppendLine("               pe.bimestre = ftd.bimestre");
-            query.AppendLine("where t.ano_letivo = @anoLetivo and");
-            query.AppendLine("      t.modalidade_codigo = @modalidade and");
-            query.AppendLine("      t.semestre = @semestre and");
-            query.AppendLine("      t.turma_id = any(@codigosTurmas) and");
-            query.AppendLine("      cca.aluno_codigo = any(@codigosAluno) and");
-            query.AppendLine("      not cca.excluido and");
-            query.AppendLine("      not cc.excluido and");
-            query.AppendLine("      not ft.excluido and");
-            query.AppendLine("      not ccn.excluido and");
-            query.AppendLine("      not ft.excluido;");
-            query.AppendLine("with lista_juncao as (");
-            query.AppendLine("select turma_id,");
-            query.AppendLine("       aluno_codigo,");
-            query.AppendLine("       disciplina_id,");
-            query.AppendLine("       fechamento_turma_disciplina_id,");
-            query.AppendLine("       bimestre,");
-            query.AppendLine("       periodo_inicio,");
-            query.AppendLine("       periodo_fim,");
-            query.AppendLine("       nota_id,");
-            query.AppendLine("       conceito_id,");
-            query.AppendLine("       valor_conceito,");
-            query.AppendLine("       nota,");
-            query.AppendLine("       eh_conceito");
-            query.AppendLine("    from tmp_lista_fechamento_conselho");
-            query.AppendLine("union");
-            query.AppendLine("select *");
-            query.AppendLine("    from tmp_lista_conselho_fechamento),");
-            query.AppendLine("lista_sequenciada as (");
-            query.AppendLine("select *,");
-            query.AppendLine("       row_number() over (partition by aluno_codigo, bimestre, disciplina_id order by eh_conceito desc, nota_id desc) sequencia");
-            query.AppendLine("    from lista_juncao)");
-            query.AppendLine("select turma_id CodigoTurma,");
-            query.AppendLine("       aluno_codigo CodigoAluno,");
-            query.AppendLine("       disciplina_id CodigoComponenteCurricular,");
-            query.AppendLine("       fechamento_turma_disciplina_id fechamentoDisciplina,");
-            query.AppendLine("       bimestre,");
-            query.AppendLine("       periodo_inicio PeriodoInicio,");
-            query.AppendLine("       periodo_fim PeriodoFim,");
-            query.AppendLine("       nota_id NotaId,");
-            query.AppendLine("       conceito_id ConceitoId,");
-            query.AppendLine("       valor_conceito Conceito,");
-            query.AppendLine("       nota Nota");
-            query.AppendLine("    from lista_sequenciada a");
-            query.AppendLine("        inner join componente_curricular cc");
-            query.AppendLine("            on a.disciplina_id = cc.id");
-            query.AppendLine("where sequencia = 1;");
+            var query = @"  --> Notas bimestrais
+                            select distinct t.turma_id CodigoTurma,
+                                    cccat.aluno_codigo CodigoAluno,
+                                    cccatn.componente_curricular_id CodigoComponenteCurricular,        
+                                    Max(ftd.id) fechamentoDisciplina,
+	                                cccatn.bimestre,       
+                                    pe.periodo_inicio PeriodoInicio,
+                                    pe.periodo_fim PeriodoFim,
+                                    cccatn.id NotaId,	                                   
+                                    cccatn.conceito_id ConceitoId,
+                                    cv.valor Conceito,
+	                                cccatn.nota	                                  
+                            from consolidado_conselho_classe_aluno_turma_nota cccatn
+                            join consolidado_conselho_classe_aluno_turma cccat on cccat.id = cccatn.consolidado_conselho_classe_aluno_turma_id 
+                            join componente_curricular cc on cc.id = cccatn.componente_curricular_id 
+                            join turma t on t.id = cccat.turma_id 
+                            join fechamento_turma ft on ft.turma_id = t.id 
+                            join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id and ftd.disciplina_id = cccatn.componente_curricular_id 
+                            join periodo_escolar pe on ft.periodo_escolar_id = pe.id and pe.bimestre = cccatn.bimestre 
+                            left join conceito_valores cv on cccatn.conceito_id = cv.id
+                            where t.ano_letivo = @anoLetivo 
+                                  and t.modalidade_codigo = @modalidade 
+                                  and t.semestre = @semestre 
+                                  and t.turma_id = any(@codigosTurmas) 
+                                  and cccat.aluno_codigo = any(@codigosAluno) 
+                                  and not ft.excluido 
+                                  and not ftd.excluido       
+                            group by t.turma_id,
+                                    cccat.aluno_codigo,
+                                    cccatn.componente_curricular_id,        
+	                               cccatn.bimestre,       
+                                    pe.periodo_inicio,
+                                    pe.periodo_fim,
+                                    cccatn.conceito_id,
+                                    cv.valor,
+	                               cccatn.nota,
+	                               cccatn.id   
+
+                            Union all
+
+                            --> Notas finais (sem bimestres)
+                            select distinct t.turma_id,
+                                    cccat.aluno_codigo,
+                                    cccatn.componente_curricular_id,        
+                                    Max(ftd.id) fechamento_turma_disciplina_id,
+	                                null::int Bimestre,       
+                                    null::date periodo_inicio,
+                                    null::date periodo_fim,
+                                    cccatn.id NotaId,	                                   
+                                    cccatn.conceito_id ConceitoId,
+                                    cv.valor Conceito,
+	                                cccatn.nota
+                            from consolidado_conselho_classe_aluno_turma_nota cccatn
+                            join consolidado_conselho_classe_aluno_turma cccat on cccat.id = cccatn.consolidado_conselho_classe_aluno_turma_id 
+                            join componente_curricular cc on cc.id = cccatn.componente_curricular_id 
+                            join turma t on t.id = cccat.turma_id 
+                            join fechamento_turma ft on ft.turma_id = t.id and ft.periodo_escolar_id is null
+                            join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id and ftd.disciplina_id = cccatn.componente_curricular_id 
+                            left join conceito_valores cv on cccatn.conceito_id = cv.id
+                            where t.ano_letivo = @anoLetivo 
+                                  and t.modalidade_codigo = @modalidade 
+                                  and t.semestre = @semestre 
+                                  and t.turma_id = any(@codigosTurmas) 
+                                  and cccat.aluno_codigo = any(@codigosAluno) 
+                                  and not ft.excluido 
+                                  and not ftd.excluido  
+                                  and cccatn.bimestre is null
+                            group by t.turma_id,
+                                    cccat.aluno_codigo,
+                                    cccatn.componente_curricular_id,        
+                                    cccatn.conceito_id,
+                                    cv.valor,
+	                               cccatn.nota,
+	                               cccatn.id 
+
+                            order by CodigoAluno, bimestre,CodigoComponenteCurricular ";
+            
 
             var parametros = new
             {
