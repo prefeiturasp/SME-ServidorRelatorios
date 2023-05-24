@@ -33,24 +33,48 @@ namespace SME.SR.Application
             foreach (long turmaId in request.Filtros.Turmas)
             {
                 var aulasPrevistasTurma = new List<AulaPrevistaBimestreQuantidade>();
-                foreach (long componenteCurricularId in request.Filtros.ComponentesCurriculares)
+
+                if (request.Filtros.ComponentesCurriculares.Any())
                 {
-
-                    var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
-                    var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares, turma.Codigo);
-
-                    var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
-
-                    if (aulasPrevistasBimestresComponente.Any())
+                    foreach (long componenteCurricularId in request.Filtros.ComponentesCurriculares)
                     {
-                        foreach(var aula in aulasPrevistasBimestresComponente)
+
+                        var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
+                        var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares, turma.Codigo);
+
+                        var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
+
+                        if (aulasPrevistasBimestresComponente.Any())
                         {
-                            var componenteAula = componentesCurriculares.Where(c => c.CodDisciplina == aula.ComponenteCurricularId).FirstOrDefault();
-                            aula.ComponenteCurricularNome = componenteAula.Disciplina;
-                            aulasPrevistasTurma.Add(aula);
+                            foreach (var aula in aulasPrevistasBimestresComponente)
+                            {
+                                var componenteAula = componentesCurriculares.Where(c => c.CodDisciplina == aula.ComponenteCurricularId).FirstOrDefault();
+                                aula.ComponenteCurricularNome = componenteAula.Disciplina;
+                                aulasPrevistasTurma.Add(aula);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
+                    var componentesDaTurma = await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery(turma.Codigo));
+
+                    foreach (long componenteCurricularId in componentesDaTurma.Select(c => c.CodDisciplina))
+                    {                        
+                        var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
+
+                        if (aulasPrevistasBimestresComponente.Any())
+                        {
+                            foreach (var aula in aulasPrevistasBimestresComponente)
+                            {
+                                var componenteAula = componentesDaTurma.Where(c => c.CodDisciplina == aula.ComponenteCurricularId).FirstOrDefault();
+                                aula.ComponenteCurricularNome = componenteAula.Disciplina;
+                                aulasPrevistasTurma.Add(aula);
+                            }
+                        }
+                    }
+                }                
 
                 if (aulasPrevistasTurma.Any())
                     dto.Turmas.Add(await MapearParaTurmaDto(aulasPrevistasTurma, request.Filtros.Bimestres, turmaId, tipoCalendarioId, request.Filtros.ModalidadeTurma));
@@ -150,7 +174,7 @@ namespace SME.SR.Application
             //2 ou mais aulas normais criadas no mesmo dia por um professor de regência de classe do fundamental na mesma turma
             if (regencia)
             {
-                var verificaAulaCriadaProfessor = await mediator.Send(new VerificarAulasNormaisCriadasProfessorRegenciaQuery(componenteCurricularId.ToString(), bimestre, tipoCalendarioId));
+                var verificaAulaCriadaProfessor = await mediator.Send(new VerificarAulasNormaisCriadasProfessorRegenciaQuery(turmaId, componenteCurricularId.ToString(), bimestre, tipoCalendarioId));
                 if (!verificaAulaCriadaProfessor)
                     return true;
             }            
