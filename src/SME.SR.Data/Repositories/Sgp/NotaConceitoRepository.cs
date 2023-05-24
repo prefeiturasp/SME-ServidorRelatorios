@@ -172,7 +172,21 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaFinalAsync(string[] codigosAlunos, int anoLetivo, int[] modalidade, int semestre, int[] tiposTurma)
         {
-            var query = "select * from f_ata_final_obter_notas_turmas_alunos(@anoLetivo, @modalidade, @semestre, @tiposTurma, @codigosAlunos)";
+            var query = @"select t.id as IdTurma, t.turma_id as CodigoTurma, t.tipo_turma as TipoTurma, cccat.aluno_codigo as CodigoAluno,
+                           cccatn.componente_curricular_id CodigoComponenteCurricular, coalesce(ccp.aprovado, false) as Aprovado,
+                           cccatn.id as NotaId, cccatn.conceito_id as ConceitoId, cccatn.bimestre as Bimestre, 
+                           cv.valor as Conceito, cccatn.nota as Nota
+                           from turma t 
+                           inner join consolidado_conselho_classe_aluno_turma cccat on t.id = cccat.turma_id   
+                           inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = cccat.id 
+                           left join conselho_classe_parecer ccp on ccp.id = cccat.parecer_conclusivo_id 
+                           left join conceito_valores cv on cv.id = cccatn.conceito_id 
+                           where not cccat.excluido 
+                             and cccat.aluno_codigo = any(@codigosAlunos)
+                             and t.ano_letivo = @anoLetivo 
+                             and t.modalidade_codigo = any(@modalidade) 
+                             and t.semestre = @semestre 
+                             and t.tipo_turma = any(@tiposTurma)";
 
             var parametros = new
             {
@@ -185,16 +199,14 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
-                                                NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
-                    , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito) =>
+                return await conexao.QueryAsync<NotasAlunoBimestre, NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
+                    , (notasFrequenciaAlunoBimestre, notaConceito) =>
                     {
-                        notasFrequenciaAlunoBimestre.PeriodoEscolar = periodoEscolar;
                         notasFrequenciaAlunoBimestre.NotaConceito = notaConceito;
 
                         return notasFrequenciaAlunoBimestre;
                     }
-                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId", commandTimeout:6000);
+                    , parametros, splitOn: "CodigoTurma,NotaId", commandTimeout:6000);
             }
         }
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaBimestralAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma, int bimestre)

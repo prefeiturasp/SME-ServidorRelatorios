@@ -5,6 +5,7 @@ namespace SME.SR.Data
     public class NotasAlunoBimestre
     {
         public long ConselhoClasseAlunoId { get; set; }
+        public long IdTurma { get; set; }
         public string CodigoTurma { get; set; }
         public TipoTurma TipoTurma { get; set; }
 
