@@ -239,9 +239,9 @@ namespace SME.SR.Data
                           from fechamento_turma ft
                          left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
                          inner join turma t on t.id = ft.turma_id 
-                         inner join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
-                         inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id
-                         inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id
+                         inner join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id and not ftd.excluido
+                         inner join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id and not fa.excluido
+                         inner join fechamento_nota fn on fn.fechamento_aluno_id = fa.id and not fn.excluido
                          left join conceito_valores cvf on fn.conceito_id = cvf.id
                          left join conselho_classe cc on cc.fechamento_turma_id = ft.id
                          left join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and cca.aluno_codigo = fa.aluno_codigo 
@@ -262,9 +262,9 @@ namespace SME.SR.Data
                           from fechamento_turma ft
                           left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
                          inner join turma t on t.id = ft.turma_id 
-                         inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
-                         inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id
-                         inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id 
+                         inner join conselho_classe cc on cc.fechamento_turma_id = ft.id and not cc.excluido
+                         inner join conselho_classe_aluno cca on cca.conselho_classe_id  = cc.id and not cca.excluido
+                         inner join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and not ccn.excluido
                          left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
                           left join conceito_valores cvc on ccn.conceito_id = cvc.id
                           left join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id

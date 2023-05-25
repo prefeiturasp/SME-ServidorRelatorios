@@ -24,7 +24,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> Handle(ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery request, CancellationToken cancellationToken)
         {
-            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma, request.ValidarAbrangenciaProfessor);
+            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma, request.ValidarAbrangenciaProfessor, request.NecessitaRetornoRfProfessor);
 
             await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares, request.ComponentesCurriculares);
 
@@ -193,7 +193,7 @@ namespace SME.SR.Application
             return territoriosComProfessores;
         }
 
-        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string[] codigosTurma, bool validarAbrangenciaProfessor = true)
+        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string[] codigosTurma, bool validarAbrangenciaProfessor = true, bool necessitaRetornoRfProfessor = true)
         {
             var componentesCurriculares = new List<ComponenteCurricular>();
 
@@ -208,8 +208,8 @@ namespace SME.SR.Application
                 }
                 else
                 {
-                    var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmasEProfessor(null, codigosTurma);
-                    componentesCurriculares.AddRange(componentesDaTurma.DistinctBy(c=> c.Codigo));
+                    var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmasEProfessor(null, codigosTurma, necessitaRetornoRfProfessor);
+                    componentesCurriculares.AddRange(necessitaRetornoRfProfessor ? componentesDaTurma.DistinctBy(c => c.Codigo) : componentesDaTurma);
                 }
                 AdicionarComponentesProfessorEmebs(componentesCurriculares);
             }

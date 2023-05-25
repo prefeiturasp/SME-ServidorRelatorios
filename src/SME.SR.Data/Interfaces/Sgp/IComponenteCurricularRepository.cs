@@ -8,7 +8,7 @@ namespace SME.SR.Data.Interfaces
     {
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma);
 
-        Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmasEProfessor(string login, string[] codigosTurma);
+        Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmasEProfessor(string login, string[] codigosTurma, bool necessitaRetornoRfProfessor = true);
 
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurma(string codigoTurma);
 
