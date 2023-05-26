@@ -291,11 +291,11 @@ namespace SME.SR.Data
                 queryComplementar.AppendLine(" and t.semestre = @semestre ");
             }
 
-            var query = $@"select distinct * from (
+            var query = $@"(
                             {queryRegular}
-                            union all 
+                            union 
                             {queryComplementar}
-                           ) x";
+                           )";
 
             var parametros = new
             {
