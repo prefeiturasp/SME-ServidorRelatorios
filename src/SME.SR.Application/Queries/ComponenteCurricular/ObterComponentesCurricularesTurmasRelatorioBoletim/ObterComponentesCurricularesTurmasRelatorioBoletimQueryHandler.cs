@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +56,8 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
                     var componentesRegenciaPorTurma = await mediator.Send(new ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery()
                     {
-                        CodigosTurma = componentesRegentes.Select(r => r.CodigoTurma).Distinct().ToArray(),
-                        CdComponentesCurriculares = componentesRegentes.Select(r => r.CodDisciplina).Distinct().ToArray(),
+                        CodigosTurma = componentesRegentes.Select(r => r.CodigoTurma).ToArray(),
+                        CdComponentesCurriculares = componentesRegentes.DistinctBy(c=> c.CodDisciplina).Select(r => r.CodDisciplina).ToArray(),
                         CodigoUe = request.CodigoUe,
                         Modalidade = request.Modalidade,
                         ComponentesCurriculares = componentes,
@@ -69,7 +70,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                         componentesMapeados = componentesMapeados.Select(c =>
                         {
                             if (c.Regencia)
-                                c.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(r => r.Key == c.CodigoTurma).ToList();
+                                c.ComponentesCurricularesRegencia = componentesRegenciaPorTurma.FirstOrDefault(r => r.Key == c.CodigoTurma)?.ToList();
 
                             return c;
 

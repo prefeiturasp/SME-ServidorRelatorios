@@ -153,7 +153,8 @@ namespace SME.SR.Application
                 GruposMatriz = gruposMatriz,
                 Usuario = request.Usuario,
                 ValidarAbrangenciaProfessor = false,
-                EhEJA = request.Modalidade == Modalidade.EJA
+                EhEJA = request.Modalidade == Modalidade.EJA,
+                NecessitaRetornoRfProfessor = true
             });
         }
 
