@@ -12,5 +12,6 @@ namespace SME.SR.Application
         public Usuario Usuario { get; set; }
         public bool ValidarAbrangenciaProfessor { get; set; }
         public bool EhEJA { get; set; }
+        public bool NecessitaRetornoRfProfessor { get; set; }
     }
 }
