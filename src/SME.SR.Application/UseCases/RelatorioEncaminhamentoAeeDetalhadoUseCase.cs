@@ -54,12 +54,17 @@ namespace SME.SR.Application
                 relatorios.Add(relatorio);
             }
 
+            relatorios = relatorios.OrderBy(relatorio => relatorio.Cabecalho.UeOrdenacao)
+                                   .ThenBy(relatorio => relatorio.Cabecalho.Aluno)
+                                   .ToList();
+
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioEncaminhamentoAEEDetalhado", relatorios, request.CodigoCorrelacao, tipoDePaginacao:EnumTipoDePaginacao.PaginaSemTotalPaginas));
         }
 
         private static void ObterCabecalho(EncaminhamentoAeeDto encaminhamentoAee, RelatorioEncaminhamentoAeeDetalhadoDto relatorioEncaminhamentoAeeDetalhado)
         {
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.DreNome = encaminhamentoAee.DreAbreviacao;
+            relatorioEncaminhamentoAeeDetalhado.Cabecalho.UeOrdenacao = $"{encaminhamentoAee.TipoEscola.ShortName()} {encaminhamentoAee.UeNome}";
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.UeNome = $"{encaminhamentoAee.UeCodigo} - {encaminhamentoAee.TipoEscola.ShortName()} {encaminhamentoAee.UeNome}";
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.AnoLetivo = encaminhamentoAee.AnoLetivo;
             relatorioEncaminhamentoAeeDetalhado.Cabecalho.Aluno = $"{encaminhamentoAee.AlunoNome} ({encaminhamentoAee.AlunoCodigo})";
