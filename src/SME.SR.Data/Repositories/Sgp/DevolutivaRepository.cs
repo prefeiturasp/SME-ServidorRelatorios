@@ -96,18 +96,22 @@ namespace SME.SR.Data
             if (bimestres != null && bimestres.Any())
                 query.AppendLine(" and pe.bimestre = Any(@bimestres)");
 
+            var parametros = new { ueId, turmas, bimestres, ano };
+
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                var retorno = await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto>(query.ToString()
-                    , (devolutiva, aula, turma, periodoEscolar) =>
+                var retorno = await conexao.QueryAsync<DevolutivaDto, DataAulaDto, TurmaNomeDto, PeriodoEscolarDto, DevolutivaDto, DevolutivaDto>(query.ToString()
+                    ,(devolutiva, aula, turma, periodoEscolar, nomeComponente) =>
                     {
                         aula.Turma = turma;
                         aula.PeriodoEscolar = periodoEscolar;
                         devolutiva.Aula = aula;
+                        devolutiva.ComponenteCurricular = nomeComponente.ComponenteCurricular;
 
                         return devolutiva;
                     }
-                    , new { ueId, turmas, bimestres, ano });
+                    ,parametros, 
+                    splitOn: "id, id, id, ComponenteCurricular");
 
                 return retorno;
             }
