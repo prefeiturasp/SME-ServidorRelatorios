@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;

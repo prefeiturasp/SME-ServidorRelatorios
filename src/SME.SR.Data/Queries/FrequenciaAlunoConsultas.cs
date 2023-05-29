@@ -9,7 +9,7 @@
                             turma_id TurmaId, periodo_escolar_id PeriodoEscolarId";
 
         internal static string FrequenciaGlobal = @"select 
-	    coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
+	    coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),0) FrequenciaGlobal
         from frequencia_aluno fa
        where tipo = 2
         and codigo_aluno = @codigoAluno

@@ -27,12 +27,6 @@ namespace SME.SR.Application
         {
             try
             {
-
-                SentrySdk.AddBreadcrumb("Iniciando obter Dados", "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-                SentrySdk.AddBreadcrumb("CONNECTION STRING DO EOL" + variaveisAmbiente.ConnectionStringEol.ToLower().Replace("password", "tchetche"), "4.1 - ObterRelatorioConselhoClasseAlunoQueryHandler");
-
-
                 var fechamentoTurma = await ObterFechamentoTurmaPorId(request.FechamentoTurmaId);
 
                 if (fechamentoTurma == null)
