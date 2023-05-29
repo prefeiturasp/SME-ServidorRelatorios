@@ -15,6 +15,6 @@ namespace SME.SR.Application
         }
 
         public Task<bool> Handle(VerificarAulasNormaisCriadasProfessorRegenciaQuery request, CancellationToken cancellationToken)
-                => aulaRepository.VerificaExisteAulaCadastradaProfessorRegencia(request.ComponenteCurricularId, request.Bimestre, request.TipoCalendarioId);
+                => aulaRepository.VerificaExisteAulaCadastradaProfessorRegencia(request.Turmaid, request.ComponenteCurricularId, request.Bimestre, request.TipoCalendarioId);
     }
 }

@@ -69,7 +69,7 @@ namespace SME.SR.Application
 
                     var alunos = await mediator.Send(new ObterAlunosPorTurmasQuery(turmas.Select(c => c.Id)));
 
-                    var dadosAlunosEscolas = await mediator.Send(new ObterDadosAlunosEscolaQuery(ue.Codigo, filtro.AnoLetivo,
+                    var dadosAlunosEscolas = await mediator.Send(new ObterDadosAlunosEscolaQuery(ue.Codigo, dre.Codigo, filtro.AnoLetivo,
                         alunos.Select(c => c.CodigoAluno.ToString()).ToArray()));
 
                     var agrupamento = dadosAlunosEscolas.Where(x => filtro.CodigosTurmas.ToList().Contains(x.CodigoTurma.ToString())).ToList().OrderBy(x => x.CodigoAluno)
@@ -123,34 +123,37 @@ namespace SME.SR.Application
             IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
             var retornoMapeado = new List<FrequenciaGlobalDto>();
-            var alunosEscola = await mediator.Send(new ObterDadosAlunosEscolaQuery(filtro.CodigoUe, filtro.AnoLetivo, retornoQuery.Select(c => c.CodigoEol).ToArray()));
-
-            var agrupamento = alunosEscola.OrderBy(x => x.CodigoAluno).GroupBy(x => new { x.CodigoAluno, x.NomeAluno, x.CodigoTurma });
-
-            foreach (var item in retornoQuery)
+            
+            foreach (var agrupamentoUe in retornoQuery.GroupBy(x => x.UeCodigo))
             {
-                var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol && c.FirstOrDefault().CodigoTurma == item.TurmaCodigo );
-                var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes);
+                var alunosEscola = await mediator.Send(new ObterDadosAlunosEscolaQuery(agrupamentoUe.Key, filtro.CodigoDre, filtro.AnoLetivo, null));
+                var agrupamento = alunosEscola.OrderBy(x => x.CodigoAluno).GroupBy(x => new { x.CodigoAluno, x.NomeAluno, x.CodigoTurma });
 
-                if (dadosSituacaoAluno.ImprimirRelatorio)
+                foreach (var item in agrupamentoUe)
                 {
-                    var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
-                        .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+                    var alunoAgrupado = agrupamento.Where(c => c.FirstOrDefault().CodigoAluno.ToString() == item.CodigoEol && c.FirstOrDefault().CodigoTurma == item.TurmaCodigo);
+                    var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes);
 
-                    retornoMapeado.Add(new FrequenciaGlobalDto()
+                    if (dadosSituacaoAluno.ImprimirRelatorio)
                     {
-                        SiglaDre = item.DreSigla,
-                        DreCodigo = item.DreCodigo,
-                        UeNome = string.Concat(item.DescricaoTipoEscola, " - ", item.UeNome),
-                        UeCodigo = item.UeCodigo,
-                        Mes = item.Mes,
-                        TurmaCodigo = item.TurmaCodigo,
-                        Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
-                        CodigoEOL = item.CodigoEol,
-                        Estudante = dadosSituacaoAluno.NomeFinalAluno,
-                        NumeroChamadda = aluno.NumeroAlunoChamada,
-                        PercentualFrequencia = item.Percentual
-                    });
+                        var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
+                            .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+
+                        retornoMapeado.Add(new FrequenciaGlobalDto()
+                        {
+                            SiglaDre = item.DreSigla,
+                            DreCodigo = item.DreCodigo,
+                            UeNome = string.Concat(item.DescricaoTipoEscola, " - ", item.UeNome),
+                            UeCodigo = item.UeCodigo,
+                            Mes = item.Mes,
+                            TurmaCodigo = item.TurmaCodigo,
+                            Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
+                            CodigoEOL = item.CodigoEol,
+                            Estudante = dadosSituacaoAluno.NomeFinalAluno,
+                            NumeroChamadda = aluno.NumeroAlunoChamada,
+                            PercentualFrequencia = item.Percentual
+                        });
+                    }
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
@@ -101,7 +102,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos, string professor = null)
         {
             var query = @$"select * 
 	                            from( 
@@ -112,7 +113,8 @@ namespace SME.SR.Data
 		                                    fa.total_ausencias TotalAusencias, 
 		                                    fa.total_compensacoes TotalCompensacoes,
 		                                    fa.periodo_escolar_id PeriodoEscolarId,
-		                                    row_number() over (partition by fa.codigo_aluno, fa.disciplina_id, fa.periodo_escolar_id order by fa.id desc) sequencia
+                                            fa.professor_rf Professor,
+		                                    row_number() over (partition by fa.codigo_aluno, fa.disciplina_id, fa.periodo_escolar_id, fa.professor_rf order by fa.id desc) sequencia
 		                                     from frequencia_aluno fa 
 		                                    inner join turma t on t.turma_id = fa.turma_id
 			                                where fa.codigo_aluno = ANY(@codigosAluno)
@@ -120,11 +122,12 @@ namespace SME.SR.Data
 	                                          and t.ano_letivo = @anoLetivo
 	                                          and t.modalidade_codigo = @modalidade
 	                                          and t.semestre = @semestre
-	                                          {(turmaCodigos?.Length > 0 ? "and t.turma_id = ANY(@turmaCodigos)" : string.Empty)}
+	                                          {(turmaCodigos?.Length > 0 ? " and t.turma_id = ANY(@turmaCodigos) " : string.Empty)}
+                                              {(!string.IsNullOrWhiteSpace(professor) ? " and (fa.professor_rf = @professor or fa.professor_rf is null) " : string.Empty)}
 		                            )rf 
 	                            where rf.sequencia = 1;";
 
-            var parametros = new {codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos};
+            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos, professor };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -192,7 +195,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<FrequenciaAluno>(query, new {codigosAluno, anoLetivo, modalidade, codigoTurmas});
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade, codigoTurmas });
             }
         }
 
@@ -209,7 +212,7 @@ namespace SME.SR.Data
                                             fa.total_aulas as totalAulas, fa.total_compensacoes as totalCompensacoes, fa.tipo as Tipo, fa.total_ausencias as totalAusencias,
                                             row_number() over (partition by fa.codigo_aluno, fa.turma_id, fa.bimestre, fa.disciplina_id order by fa.id desc) as sequencia
                                             from frequencia_aluno fa 
-                                            where 1=1 ");
+                                            where 1=1 and fa.total_aulas <> 0 ");
 
             if (componentesCurriculares.Any())
                 query.AppendLine("and disciplina_id = any(@componentesCurriculares)");
@@ -482,20 +485,20 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAlunoConsolidadoDto>> ObterFrequenciaAlunosPorCodigoBimestre(string[] codigosAlunos, string bimestre, string turmaCodigo, TipoFrequenciaAluno tipoFrequencia, string[] componentesCurricularesIds)
         {
-            var query = new StringBuilder(@"select 
-	                                            extract(year from periodo_inicio) as AnoBimestre,
-                                                fa.bimestre,
-	                                            sum(fa.total_aulas) as TotalAula,
-	                                            sum(fa.total_presencas) as TotalPresencas,
-	                                            sum(fa.total_remotos) as TotalRemotos,
-	                                            sum(fa.total_ausencias) as TotalAusencias,
-	                                            sum(fa.total_compensacoes) as TotalCompensacoes,
-	                                            fa.codigo_aluno as CodigoAluno
-                                            from frequencia_aluno fa
-                                            where not fa.excluido 
-                                            and fa.tipo = @tipoFrequencia
-                                            and fa.codigo_aluno = any(@codigosAlunos)  
-                                            and fa.turma_id = @turmaCodigo ");
+            var query = new StringBuilder(@"select extract(year from periodo_inicio) as AnoBimestre,
+                                                faa.bimestre,
+	                                            sum(faa.total_aulas) as TotalAula,
+	                                            sum(faa.total_presencas) as TotalPresencas,
+	                                            sum(faa.total_remotos) as TotalRemotos,
+	                                            sum(faa.total_ausencias) as TotalAusencias,
+	                                            sum(faa.total_compensacoes) as TotalCompensacoes,
+	                                            faa.codigo_aluno as CodigoAluno from (
+                                                        select fa.*,  row_number() over (partition by turma_id, codigo_aluno, bimestre, disciplina_id, tipo order by id desc) sequencia
+                                                        from frequencia_aluno fa
+                                                        where not fa.excluido 
+                                                        and fa.tipo = @tipoFrequencia
+                                                        and fa.codigo_aluno = any(@codigosAlunos)  
+                                                        and fa.turma_id = @turmaCodigo ");
 
             if (componentesCurricularesIds.Any() && componentesCurricularesIds != null)
                 query.AppendLine(" and fa.disciplina_id = any(@componentesCurricularesIds)");
@@ -503,10 +506,11 @@ namespace SME.SR.Data
             if (bimestre != "-99")
                 query.AppendLine("and fa.bimestre = @numeroBimestre ");
 
+            query.AppendLine(@" ) as faa where faa.sequencia = 1");
             query.AppendLine(@" group by 
-                                fa.bimestre,
-                                fa.codigo_aluno,fa.periodo_inicio;");
-            var parametros = new {codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia, componentesCurricularesIds};
+                                faa.bimestre,
+                                faa.codigo_aluno,faa.periodo_inicio;");
+            var parametros = new { codigosAlunos, numeroBimestre = Convert.ToInt32(bimestre), turmaCodigo, tipoFrequencia, componentesCurricularesIds };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -514,7 +518,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre)
+        public async Task<IEnumerable<AusenciaBimestreDto>> ObterAusenciaPorAlunoTurmaBimestre(string[] alunosCodigo, string turmaCodigo, string bimestre, string[] componentesCurricularesIds = null)
         {
             var query = @" select
  	                         afa.codigo_aluno as codigoAluno,
@@ -535,6 +539,9 @@ namespace SME.SR.Data
             if (bimestre != "-99")
                 query += " and pe.bimestre = @numeroBimestre ";
 
+            if (componentesCurricularesIds != null && componentesCurricularesIds.Any())
+                query += " and a.disciplina_id = any(@componentesCurricularesIds) ";
+
             query += @" and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                 order by pe.bimestre,a.data_aula desc; ";
 
@@ -542,7 +549,8 @@ namespace SME.SR.Data
             {
                 alunosCodigo,
                 turmaCodigo,
-                numeroBimestre = Convert.ToInt32(bimestre)
+                numeroBimestre = Convert.ToInt32(bimestre),
+                componentesCurricularesIds
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
@@ -641,10 +649,11 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(
-            string[] codigosAlunos,
-            string bimestre,
-            string turmaCodigo,
-            string[] componentesCurricularesIds)
+                                                                    string[] codigosAlunos, 
+                                                                    string bimestre, 
+                                                                    string turmaCodigo, 
+                                                                    string[] componentesCurricularesIds,
+                                                                    string professorTitularRf = null)
         {
             var condicaoBimestre = string.Empty;
 
@@ -674,6 +683,7 @@ namespace SME.SR.Data
 	                        AND rfa.codigo_aluno = any(@codigosAlunos)
 	                        AND t.turma_id = @turmaCodigo 
                             AND a.disciplina_id = any(@componentesCurricularesIds)
+                           {(!string.IsNullOrEmpty(professorTitularRf) ? " and a.professor_rf = @professorTitularRf" : string.Empty)}
  						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.codigo_aluno, pe.bimestre
                         ORDER BY pe.bimestre, rfa.codigo_aluno, a.data_aula desc";
 
@@ -682,7 +692,8 @@ namespace SME.SR.Data
                 codigosAlunos,
                 bimestre = int.Parse(bimestre),
                 turmaCodigo,
-                componentesCurricularesIds
+                componentesCurricularesIds,
+                professorTitularRf
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);

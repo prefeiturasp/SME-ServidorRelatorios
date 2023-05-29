@@ -297,9 +297,11 @@ namespace SME.SR.Application
                                                 notasAlunos, frequencias, mediasFrequencia, ac)?.OrderBy(o => o.Nome).ToList()
                     }).ToList()
                 };
+
+                return baseNacional.ObterAreasComNotaValida;
             }
 
-            return baseNacional.ObterAreasComNotaValida;
+            return baseNacional;
         }
 
         private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
