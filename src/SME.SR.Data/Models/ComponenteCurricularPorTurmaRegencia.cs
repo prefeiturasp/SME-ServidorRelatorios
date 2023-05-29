@@ -7,6 +7,7 @@ namespace SME.SR.Data
         public string CodigoTurma { get; set; }
         public long CodDisciplina { get; set; }
         public long? CodDisciplinaPai { get; set; }
+        public long CodigoTerritorioSaber { get; set; }
         public string Disciplina { get; set; }
         public bool Regencia { get; set; }
         public bool Compartilhada { get; set; }
@@ -16,6 +17,7 @@ namespace SME.SR.Data
         public bool BaseNacional { get; set; }
         public ComponenteCurricularGrupoMatriz GrupoMatriz { get; set; }
         public int? OrdemComponenteTerritorioSaber { get; set; }
+        public string Professor { get; set; }
         public string ObterDisciplina()
         {
             var tamnhoDisciplina = Disciplina.Length;

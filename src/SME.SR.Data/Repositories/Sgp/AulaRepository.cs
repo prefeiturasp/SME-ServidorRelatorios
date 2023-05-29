@@ -19,9 +19,9 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<int> ObterAulasDadas(string codigoTurma, string[] componentesCurricularesCodigo, long tipoCalendarioId, int bimestre)
+        public async Task<int> ObterAulasDadas(string codigoTurma, string[] componentesCurricularesCodigo, long tipoCalendarioId, int bimestre, string professorTitularRf = null)
         {
-            var query = new StringBuilder(@"select
+            var query = new StringBuilder($@"select
 	                        Coalesce(SUM(a.quantidade) filter (
 	                        where a.tipo_aula = 1
 	                        and rf.id is not null), 0) as AulasQuantidade
@@ -31,12 +31,14 @@ namespace SME.SR.Data
 	                        p.tipo_calendario_id = tp.id
                         left join aula_prevista ap on
 	                        ap.tipo_calendario_id = p.tipo_calendario_id
+                            {(!string.IsNullOrEmpty(professorTitularRf) ? " and ap.criado_rf = @professorTitularRf " : string.Empty)}
                         left join aula_prevista_bimestre apb on
 	                        ap.id = apb.aula_prevista_id
 	                        and p.bimestre = apb.bimestre
                         left join aula a on
 	                        a.turma_id = ap.turma_id
 	                        and a.disciplina_id = ap.disciplina_id
+                            {(!string.IsNullOrEmpty(professorTitularRf) ? " and a.professor_rf = @professorTitularRf " : string.Empty)}
 	                        and a.tipo_calendario_id = p.tipo_calendario_id
 	                        and a.data_aula between p.periodo_inicio and p.periodo_fim
 	                        and (a.id is null
@@ -54,7 +56,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componentesCurricularesCodigo, bimestre });
+                return await conexao.QuerySingleOrDefaultAsync<int>(query.ToString(), new { tipoCalendarioId, codigoTurma, componentesCurricularesCodigo, bimestre, professorTitularRf });
             }
         }
 
@@ -82,7 +84,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(string componenteCurricularId, int bimestre, long tipoCalendarioId)
+        public async Task<bool> VerificaExisteAulaCadastradaProfessorRegencia(long turmaId, string componenteCurricularId, int bimestre, long tipoCalendarioId)
         {
             var query = @"select 1
                            from aula a
@@ -91,7 +93,7 @@ namespace SME.SR.Data
                           where not a.excluido
                             and a.tipo_aula = 1
                             and a.disciplina_id::bigint = @componenteCurricularId
-                            and t.id = :turmaId
+                            and t.id = @turmaId
                             and pe.tipo_calendario_id = @tipoCalendarioId
                             and pe.bimestre = @bimestre
                           group by a.data_aula, a.professor_rf
@@ -99,7 +101,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return (await conexao.QueryAsync<int>(query, new { componenteCurricularId, bimestre, tipoCalendarioId })).Any();
+                return (await conexao.QueryAsync<int>(query, new {turmaId, componenteCurricularId = Convert.ToInt64(componenteCurricularId), bimestre, tipoCalendarioId })).Any();
             }
         }
        
