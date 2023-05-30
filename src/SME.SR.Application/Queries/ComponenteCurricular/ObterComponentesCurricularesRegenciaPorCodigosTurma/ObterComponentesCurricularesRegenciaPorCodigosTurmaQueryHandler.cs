@@ -36,7 +36,8 @@ namespace SME.SR.Application
                     GruposMatriz = request.GruposMatriz,
                     Usuario = request.Usuario,
                     ValidarAbrangenciaProfessor = request.ValidarAbrangenciaProfessor,
-                    EhEJA = request.Modalidade == Modalidade.EJA
+                    EhEJA = request.Modalidade == Modalidade.EJA,
+                    NecessitaRetornoRfProfessor = false
                 });
 
                 return componentesCurriculares.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);

@@ -161,7 +161,7 @@ namespace SME.SR.Application
                 throw new NegocioException("As turmas selecionadas não possuem fechamento.");
             }
         }
-       
+
         private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool trazerAlunosInativos)
         {
             return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()

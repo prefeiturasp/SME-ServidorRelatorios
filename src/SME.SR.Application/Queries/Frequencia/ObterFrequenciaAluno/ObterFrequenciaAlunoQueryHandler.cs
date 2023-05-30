@@ -12,19 +12,16 @@ namespace SME.SR.Application
     public class ObterFrequenciaAlunoQueryHandler : IRequestHandler<ObterFrequenciaAlunoQuery, FrequenciaAluno>
     {
         private readonly IFrequenciaAlunoRepository frequenciaRepository;
-        private readonly IAulaRepository aulaRepository;
         private readonly IPeriodoEscolarRepository periodoEscolarRepository;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
         private readonly IRegistroFrequenciaRepository registroFrequenciaRepository;
 
         public ObterFrequenciaAlunoQueryHandler(IFrequenciaAlunoRepository frequenciaRepository,
-                                                IAulaRepository aulaRepository,
                                                 IPeriodoEscolarRepository periodoEscolarRepository,
                                                 ITipoCalendarioRepository tipoCalendarioRepository,
                                                 IRegistroFrequenciaRepository registroFrequenciaRepository)
         {
             this.frequenciaRepository = frequenciaRepository ?? throw new ArgumentNullException(nameof(frequenciaRepository));
-            this.aulaRepository = aulaRepository ?? throw new ArgumentNullException(nameof(aulaRepository));
             this.periodoEscolarRepository = periodoEscolarRepository ?? throw new ArgumentNullException(nameof(periodoEscolarRepository));
             this.tipoCalendarioRepository = tipoCalendarioRepository ?? throw new ArgumentNullException(nameof(tipoCalendarioRepository));
             this.registroFrequenciaRepository = registroFrequenciaRepository ?? throw new ArgumentNullException(nameof(registroFrequenciaRepository));
@@ -92,9 +89,9 @@ namespace SME.SR.Application
                         // Se não tem ausencia não vai ter registro de frequencia então soma apenas aulas do bimestre
                         var aula = totalAulas.FirstOrDefault(a => a.Bimestre == periodoEscolarTurma.Bimestre);
                         frequenciaAluno.TotalAulas += aula != null ? aula.AulasQuantidade : 0;
-                        
+
                     }
-                        
+
                 }
 
                 return frequenciaAluno;
