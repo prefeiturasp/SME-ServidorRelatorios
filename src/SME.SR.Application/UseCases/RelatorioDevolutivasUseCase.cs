@@ -95,10 +95,10 @@ namespace SME.SR.Application
 
         private async Task<string> ObterTurma(IEnumerable<long> turmas)
         {
-            if (turmas.Any(t => t == -99))
+            if (!turmas.Any())
                 return "Todas";
 
-            if (turmas.Count() == 1 && !turmas.Any(t => t == -99))
+            if (turmas.Count() == 1)
             {
                 var turmaDto = await mediator.Send(new ObterTurmaPorIdQuery(turmas.First()));                
                 return turmaDto == null ? string.Empty : turmaDto.NomeRelatorio;
