@@ -35,7 +35,7 @@ namespace SME.SR.Infra.Dtos
         {
             get
             {
-                return $"{TotalPercentualFrequencia}%";
+                return TotalAula == 0 ? "" : $"{TotalPercentualFrequencia}%";
             }
         }
     }
