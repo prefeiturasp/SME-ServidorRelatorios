@@ -222,10 +222,7 @@ namespace SME.SR.Data
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
 
-                            var quantidadeTotalAlunosEol = 0;
-                            var Ue = ueLista.FirstOrDefault(x => x.Codigo == itemUe.Key);
-                            quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
-
+                            var quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
                             var totalSemPreenchimento = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma)
                                     ? TotalSemPreenchimentoTerceiroAnoEscrita(anoTurma, quantidadeTotalAlunosEol)
                                     : TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(anoTurma, quantidadeTotalAlunosEol);
@@ -237,7 +234,7 @@ namespace SME.SR.Data
                                 : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
 
 
-                            
+                            var Ue = ueLista.FirstOrDefault(x => x.Codigo == itemUe.Key);
                             var respostaSondagemAnaliticoEscritaDto = new RespostaSondagemAnaliticoEscritaDto
                             {
                                 PreSilabico = anoTurma.Select(x => x.PreSilabico).Sum(),
