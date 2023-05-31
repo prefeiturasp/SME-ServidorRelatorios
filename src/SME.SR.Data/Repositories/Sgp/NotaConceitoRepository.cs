@@ -136,8 +136,10 @@ namespace SME.SR.Data
                              and cccat.aluno_codigo = any(@codigosAlunos)
                              and t.ano_letivo = @anoLetivo 
                              and t.modalidade_codigo = any(@modalidade) 
-                             and t.semestre = @semestre 
-                             and t.tipo_turma = any(@tiposTurma)";
+                             and t.semestre = @semestre";
+
+            if (tiposTurma.Length > 0)
+                query += " and t.tipo_turma = any(@tiposTurma)";
 
             var parametros = new
             {
