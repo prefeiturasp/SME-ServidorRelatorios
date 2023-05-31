@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Globalization;
 
 namespace SME.SR.Infra.Dtos
 {
     public class FrequenciaAlunoConsolidadoDto
     {
+        public const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
         public int Bimestre { get; set; }
         public int TotalAula { get; set; }
         public int TotalPresencas { get; set; }
@@ -21,9 +23,10 @@ namespace SME.SR.Infra.Dtos
                     return 0;
 
                 var porcentagem = 100 - ((double)NumeroFaltasNaoCompensadas / TotalAula) * 100;
-                return Math.Round(porcentagem > 100 ? 100 : porcentagem, 2);
+                return ArredondarPercentual(porcentagem > 100 ? 100 : porcentagem);
             }
-        }
+        }        
+        public static double ArredondarPercentual(double percentual) => Math.Round(percentual, PERCENTUAL_FREQUENCIA_PRECISAO);
         public string BimestreFormatado
         {
             get
@@ -35,7 +38,7 @@ namespace SME.SR.Infra.Dtos
         {
             get
             {
-                return TotalAula == 0 ? "" : $"{TotalPercentualFrequencia}%";
+                return TotalAula == 0 ? "" : $"{TotalPercentualFrequencia.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%";
             }
         }
     }
