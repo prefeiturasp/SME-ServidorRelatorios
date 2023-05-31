@@ -224,7 +224,7 @@ namespace SME.SR.Data
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros, commandTimeout: 60);
+                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros,commandTimeout:180);
             }
         }
 
