@@ -270,9 +270,7 @@ namespace SME.SR.Data
 	                        on ft.turma_id = t.id
                         where not ft.excluido 
                            and not cc.excluido 
-                           and ft.periodo_escolar_id is null
-                           and cca.aluno_codigo = any(@codigoAlunos) 
-                           and cca.conselho_classe_parecer_id = any(@codigoPareceresConclusivos);
+                           and cca.aluno_codigo = any(@codigoAlunos);
 
                         -- Obter turma regular
                         drop table if exists tempAlunosTurmasRegulares;
