@@ -53,8 +53,6 @@ namespace SME.SR.Application
                     if (request.RelatorioFrequenciaGlobal)
                         AdicionarZeroNaUeFrequênciaGlobal(workbook);
 
-                    var planilha = workbook.Worksheets.First(w => w.Name == "Frequência Global");
-
                     workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
                 }
 
