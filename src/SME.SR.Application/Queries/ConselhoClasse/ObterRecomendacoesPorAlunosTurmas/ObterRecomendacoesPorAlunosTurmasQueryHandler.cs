@@ -70,10 +70,9 @@ namespace SME.SR.Application
                         recomendacao.AnotacoesPedagogicas = UtilHtml.FormatarHtmlParaTexto(recomendacao.AnotacoesPedagogicas);
                         recomendacao.RecomendacoesAluno = concatenaRecomendacaoAluno.ToString();
                         recomendacao.RecomendacoesFamilia = concatenaRecomendacaoFamilia.ToString();
-
-                        recomendacoesASeremExibidas.Add(recomendacao);
                     }
 
+                    recomendacoesASeremExibidas.Add(recomendacao);
                 }
             }
 
