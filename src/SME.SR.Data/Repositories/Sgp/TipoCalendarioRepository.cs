@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Text;
@@ -64,6 +65,30 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<long>(query.ToString(), new { anoLetivo, modalidade = (int)modalidade, dataReferencia });
+            }
+        }
+
+        public async Task<TipoCalendario> ObterPorTurma(Turma turma)
+        {
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine("select *");
+            query.AppendLine("from tipo_calendario t");
+            query.AppendLine("where t.excluido = false");
+            query.AppendLine("and t.ano_letivo = @anoLetivo");
+            query.AppendLine("and t.modalidade = @modalidade");
+
+            DateTime dataReferencia = DateTime.MinValue;
+            if (turma.ModalidadeTipoCalendario == ModalidadeTipoCalendario.EJA)
+            {
+                var periodoReferencia = turma.Semestre == 1 ? "periodo_inicio < @dataReferencia" : "periodo_fim > @dataReferencia";
+                query.AppendLine($"and exists(select 0 from periodo_escolar p where tipo_calendario_id = t.id and {periodoReferencia})");
+
+                dataReferencia = new DateTime(turma.AnoLetivo, turma.Semestre == 1 ? 6 : 8, 1);
+            }
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryFirstOrDefaultAsync<TipoCalendario>(query.ToString(), new { turma.AnoLetivo, modalidade = (int)turma.ModalidadeTipoCalendario, dataReferencia });
             }
         }
     }
