@@ -150,6 +150,9 @@ namespace SME.SR.Application
                                 pendenciaParaAdicionar.Instrucao = pendenciaDoComponenteDaTurma.Instrucao;
                                 pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
                                 pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;
+                                pendenciaParaAdicionar.QuantidadeDeDias = pendenciaDoComponenteDaTurma.QuantidadeDeDias;
+                                pendenciaParaAdicionar.QuantidadeDeAulas = pendenciaDoComponenteDaTurma.QuantidadeDeAulas;
+                                pendenciaParaAdicionar.ExibirDetalhamento = pendenciaDoComponenteDaTurma.ExibirDetalhes;
 
                                 if (filtros.ExibirDetalhamento)
                                 {
@@ -219,6 +222,10 @@ namespace SME.SR.Application
                 pendenciaParaAdicionar.Instrucao = item.Instrucao;
                 pendenciaParaAdicionar.TipoPendencia = item.TipoPendencia;
                 pendenciaParaAdicionar.OutrasPendencias = item.OutrasPendencias;
+                pendenciaParaAdicionar.QuantidadeDeAulas = item.QuantidadeDeAulas;
+                pendenciaParaAdicionar.QuantidadeDeDias = item.QuantidadeDeDias;
+                pendenciaParaAdicionar.ExibirDetalhamento = item.ExibirDetalhes;
+                
 
                 if (exibirDetalhamento)
                 {

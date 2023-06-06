@@ -28,6 +28,8 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroHistoricoEscolar;
             var filtros = request.ObterObjetoFiltro<FiltroHistoricoEscolarDto>();
 
+            filtros.AlunosCodigo = filtros.Alunos.Select(aluno => aluno.AlunoCodigo).ToArray();
+
             var legenda = await ObterLegenda();
 
             var cabecalho = await MontarCabecalho(filtros);
@@ -43,6 +45,7 @@ namespace SME.SR.Application
             var alunosTransferenciaSemHistorico = alunosTurmasTransferencia.Where(tf => !alunosTurmas.Select(a => a.Aluno.Codigo).Contains(tf.Aluno.Codigo));
 
             var todosAlunosTurmas = new List<AlunoTurmasHistoricoEscolarDto>();
+            
 
             if (alunosTransferenciaSemHistorico != null && alunosTransferenciaSemHistorico.Any())
             {
@@ -71,6 +74,8 @@ namespace SME.SR.Application
 
             var turmasCodigo = todasTurmas.Select(a => a.Codigo);
             var alunosCodigo = todosAlunos.Select(a => a.Codigo);
+
+            await CarregarObservacoes(filtros, alunosCodigo);
 
             IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>> historicoUes = null;
 
@@ -141,7 +146,7 @@ namespace SME.SR.Application
                 || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis, filtros.InformarObservacoesComplementares ? filtros.ObservacaoComplementar : null));
+                    historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis, filtros.Alunos));
 
             if ((turmasEja != null && turmasEja.Any() && filtros.Modalidade == Modalidade.EJA) 
                 || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
@@ -460,6 +465,14 @@ namespace SME.SR.Application
 
             var resultado = sb.ToString().Replace("\t", "");
             return resultado.Substring(0, resultado.Length - 2);
+        }
+
+        private async Task CarregarObservacoes(FiltroHistoricoEscolarDto filtroDto, IEnumerable<string> alunosCodigos)
+        {
+            if (filtroDto.Alunos == null || !filtroDto.Alunos.Any())
+            {
+                filtroDto.Alunos = await mediator.Send(new ObterObservacoesDosAlunosNoHistoricoEscolarQuery(alunosCodigos.ToArray()));
+            }
         }
     }
 }
