@@ -20,6 +20,7 @@ namespace SME.SR.Data
 
         public async Task<long> ObterPorAnoLetivoEModalidade(int anoLetivo, ModalidadeTipoCalendario modalidade, int semestre = 0)
         {
+
             var query = TipoCalendarioConsultas.ObterPorAnoLetivoEModalidade(modalidade, semestre);
 
             DateTime dataReferencia = DateTime.MinValue;
@@ -29,15 +30,17 @@ namespace SME.SR.Data
             var parametros = new { AnoLetivo = anoLetivo, Modalidade = (int)modalidade, DataReferencia = dataReferencia };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
                 return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
+            }
         }
 
         public async Task<TipoCalendarioDto> ObterPorId(long id)
         {
             var query = "select tc.ano_letivo as anoLetivo, tc.id, tc.nome from tipo_calendario tc where tc.id = @id";
-                        
+
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            return await conexao.QueryFirstOrDefaultAsync<TipoCalendarioDto>(query, new { id });           
+            return await conexao.QueryFirstOrDefaultAsync<TipoCalendarioDto>(query, new { id });
 
         }
 
