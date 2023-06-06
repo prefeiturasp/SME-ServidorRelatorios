@@ -16,8 +16,8 @@
                     <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
                         <p style="width: 48px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
                     </th>
-                    <td class="titulo" style="width: 14.5%;" rowspan="4">Àrea de conhecimento</td>
-                    <td class="titulo" style="width: 14.5%;" rowspan="4">Componentes curriculares</td>
+                    <td class="titulo" style="width: 14.5%;" rowspan="3">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 14.5%;" rowspan="3">Componentes curriculares</td>
                     <td class="titulo" colspan="8">Resultado final</td>
                 </tr>
                 <tr>
@@ -35,26 +35,6 @@
                     <td class="texto-centralizado">II</td>
                     <td class="texto-centralizado">I</td>
                     <td class="texto-centralizado">II</td>
-                </tr>
-                <tr>
-                    <td class="texto-centralizado coluna-nota">C</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">C</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">C</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
                 </tr>
                 @Html.Raw(ObterLinhasBaseNacional())
                 @Html.Raw(ObterLinhasDiversificadas())
@@ -222,14 +202,14 @@
 
         linhas = "<tr>";
         linhas += $"<td class='subTitulo texto-centralizado' colspan='3'>{titulo}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiraEtapaCiclo1}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundaEtapaCiclo1}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiraEtapaCiclo2}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundaEtapaCiclo2}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiraEtapaCiclo3}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundaEtapaCiclo3}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiraEtapaCiclo4}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundaEtapaCiclo4}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.PrimeiraEtapaCiclo1}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.SegundaEtapaCiclo1}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.PrimeiraEtapaCiclo2}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.SegundaEtapaCiclo2}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.PrimeiraEtapaCiclo3}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.SegundaEtapaCiclo3}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.PrimeiraEtapaCiclo4}</td>";
+        linhas += $"<td class='texto-centralizado'>{@parecerFrequencia.SegundaEtapaCiclo4}</td>";
         linhas += "</tr>";
 
         return linhas;
