@@ -10,8 +10,6 @@ namespace SME.SR.Data
         public TipoTurma TipoTurma { get; set; }
 
         public long TurmaComplementarId { get; set; }
-        public long fechamentoDisciplina { get; set; }
-
         public string CodigoAluno { get; set; }
 
         public string CodigoComponenteCurricular { get; set; }

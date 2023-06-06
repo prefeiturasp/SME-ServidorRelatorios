@@ -372,7 +372,6 @@ namespace SME.SR.Application
         private string ObterNotaBimestreFinal(IEnumerable<NotasAlunoBimestre> notasComponente)
         {
             var nota = notasComponente
-                .OrderByDescending(nf => nf.fechamentoDisciplina)?
                 .FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito;
 
             if (!notasComponente.All(nc => nc.NotaConceito.Nota.HasValue) && decimal.TryParse(nota, out decimal valor))
