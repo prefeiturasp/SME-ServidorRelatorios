@@ -23,7 +23,6 @@ namespace SME.SR.Data
                             select distinct t.turma_id CodigoTurma,
                                     cccat.aluno_codigo CodigoAluno,
                                     cccatn.componente_curricular_id CodigoComponenteCurricular,        
-                                    Max(ftd.id) fechamentoDisciplina,
 	                                cccatn.bimestre,       
                                     pe.periodo_inicio PeriodoInicio,
                                     pe.periodo_fim PeriodoFim,
@@ -36,7 +35,6 @@ namespace SME.SR.Data
                             join componente_curricular cc on cc.id = cccatn.componente_curricular_id 
                             join turma t on t.id = cccat.turma_id 
                             join fechamento_turma ft on ft.turma_id = t.id 
-                            join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id and ftd.disciplina_id = cccatn.componente_curricular_id 
                             join periodo_escolar pe on ft.periodo_escolar_id = pe.id and pe.bimestre = cccatn.bimestre 
                             left join conceito_valores cv on cccatn.conceito_id = cv.id
                             where t.ano_letivo = @anoLetivo 
@@ -44,8 +42,7 @@ namespace SME.SR.Data
                                   and t.semestre = @semestre 
                                   and t.turma_id = any(@codigosTurmas) 
                                   and cccat.aluno_codigo = any(@codigosAluno) 
-                                  and not ft.excluido 
-                                  and not ftd.excluido       
+                                  and not ft.excluido      
                             group by t.turma_id,
                                     cccat.aluno_codigo,
                                     cccatn.componente_curricular_id,        
@@ -56,14 +53,11 @@ namespace SME.SR.Data
                                     cv.valor,
 	                               cccatn.nota,
 	                               cccatn.id   
-
                             Union all
-
                             --> Notas finais (sem bimestres)
                             select distinct t.turma_id,
                                     cccat.aluno_codigo,
                                     cccatn.componente_curricular_id,        
-                                    Max(ftd.id) fechamento_turma_disciplina_id,
 	                                null::int Bimestre,       
                                     null::date periodo_inicio,
                                     null::date periodo_fim,
@@ -76,7 +70,6 @@ namespace SME.SR.Data
                             join componente_curricular cc on cc.id = cccatn.componente_curricular_id 
                             join turma t on t.id = cccat.turma_id 
                             join fechamento_turma ft on ft.turma_id = t.id and ft.periodo_escolar_id is null
-                            join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id and ftd.disciplina_id = cccatn.componente_curricular_id 
                             left join conceito_valores cv on cccatn.conceito_id = cv.id
                             where t.ano_letivo = @anoLetivo 
                                   and t.modalidade_codigo = @modalidade 
@@ -84,7 +77,6 @@ namespace SME.SR.Data
                                   and t.turma_id = any(@codigosTurmas) 
                                   and cccat.aluno_codigo = any(@codigosAluno) 
                                   and not ft.excluido 
-                                  and not ftd.excluido  
                                   and cccatn.bimestre is null
                             group by t.turma_id,
                                     cccat.aluno_codigo,
@@ -93,7 +85,6 @@ namespace SME.SR.Data
                                     cv.valor,
 	                               cccatn.nota,
 	                               cccatn.id 
-
                             order by CodigoAluno, bimestre,CodigoComponenteCurricular ";
             
 
