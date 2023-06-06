@@ -81,7 +81,7 @@ namespace SME.SR.Infra.RelatorioPaginado
                 AdicionarSecaoPagina(ObterQuantidadeLinhaDadosHistorico(historicoEscolar), paginas, historicoEscolar, TabelaHistoricoTodosAnos);
                 AdicionarSecaoPagina(ObterQuantidadeLinhaEstudoRealizado(historicoEscolar), paginas, historicoEscolar, SecaoViewHistoricoEscolar.EstudosRealizados);
 
-                if (historicoEscolar.DadosTransferencia == null)
+                if (historicoEscolar.ContemDadosTransferencia())
                     CarregarSecoesObservacoes(historicoEscolar, paginas);
 
                 paginas.Add(PaginaAtual);

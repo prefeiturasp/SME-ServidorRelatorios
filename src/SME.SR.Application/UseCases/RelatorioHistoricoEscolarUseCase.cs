@@ -252,14 +252,15 @@ namespace SME.SR.Application
         private async Task EnviaRelatorioFundamental(IEnumerable<HistoricoEscolarFundamentalDto> resultadoFinalFundamental, Guid codigoCorrelacao)
         {
             var relatorioPaginados = new RelatorioPaginadoHistoricoEscolarFundamental(resultadoFinalFundamental);
-
             await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginado(), codigoCorrelacao));
         }
 
         private async Task EnviaRelatorioEJA(IEnumerable<HistoricoEscolarEJADto> resultadoFinalEJA, Guid codigoCorrelacao)
         {
-            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalEJA });
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarEja/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));
+            /*var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalEJA });
+            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarEja/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));*/
+            var relatorioPaginados = new RelatorioPaginadoHistoricoEscolarEJA(resultadoFinalEJA);
+            await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginado(), codigoCorrelacao));
         }
 
         private async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoAtoUe(string ueCodigo)
