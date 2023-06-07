@@ -20,5 +20,7 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma, int id);
         Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoEFechamentoTurma(long fechamentoTurmaId, string codigoAluno);
+
+        Task<IEnumerable<ConselhoDeClasseAlunoIdDto>> ObterConselhoDeClasseAlunoId(long[] turmaIds, string[] codigosAlunos);
     }
 }

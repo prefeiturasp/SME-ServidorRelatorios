@@ -42,6 +42,10 @@ namespace SME.SR.Application
                 relatoriosPlanoAee.Add(relatorioPlanoAee);
             }
 
+            relatoriosPlanoAee = relatoriosPlanoAee.OrderBy(relatorio => relatorio.Cabecalho.UeOrdenacao)
+                                                   .ThenBy(relatorio => relatorio.Cabecalho.AlunoNome)
+                                                   .ToList();
+
             await mediator.Send(new GerarRelatorioHtmlPDFPlanoAeeCommand(relatoriosPlanoAee, request.CodigoCorrelacao));
         }
 
@@ -53,6 +57,7 @@ namespace SME.SR.Application
             relatorioPlanoAee.Cabecalho.DreNome = planoAee.DreAbreviacao;
             relatorioPlanoAee.Cabecalho.SituacaoPlano = planoAee.SituacaoPlano.Name();
             relatorioPlanoAee.Cabecalho.TurmaNome = $"{planoAee.Modalidade.ShortName()} - {planoAee.TurmaNome}";
+            relatorioPlanoAee.Cabecalho.UeOrdenacao = $"{planoAee.TipoEscola.ShortName()} {planoAee.UeNome}";
             relatorioPlanoAee.Cabecalho.UeNome = $"{planoAee.UeCodigo} - {planoAee.TipoEscola.ShortName()} {planoAee.UeNome}";
             relatorioPlanoAee.Cabecalho.VersaoPlano = $"v{planoAee.VersaoPlano} - {planoAee.DataVersaoPlano:dd/MM/yyyy}";
         }

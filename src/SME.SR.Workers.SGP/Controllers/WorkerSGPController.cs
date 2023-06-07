@@ -387,6 +387,22 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/listagem-itinerancias")]
+        [Action("relatorios/listagem-itinerancias", typeof(IRelatorioListagemItineranciasUseCase))]
+        public async Task<bool> ListarItinerancias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioListagemItineranciasUseCase relatorioUseCase)
+        {
+            await relatorioUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/controle-frequencia-mensal")]
+        [Action("relatorios/controle-frequencia-mensal", typeof(IRelatorioFrequenciaControleMensalUseCase))]
+        public async Task<bool> FrequenciaControleMensal([FromQuery] FiltroRelatorioDto request,[FromServices]  IRelatorioFrequenciaControleMensalUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
