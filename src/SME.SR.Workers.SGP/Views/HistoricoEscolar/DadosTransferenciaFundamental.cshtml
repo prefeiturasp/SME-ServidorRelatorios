@@ -26,16 +26,7 @@
                     <td class="texto-centralizado" colspan="2">3º Bimestre</td>
                     <td class="texto-centralizado" colspan="2">4º Bimestre</td>
                 </tr>
-                <tr>
-                    <td class="texto-centralizado">N</td>
-                    <td class="texto-centralizado">F</td>
-                    <td class="texto-centralizado">N</td>
-                    <td class="texto-centralizado">F</td>
-                    <td class="texto-centralizado">N</td>
-                    <td class="texto-centralizado">F</td>
-                    <td class="texto-centralizado">N</td>
-                    <td class="texto-centralizado">F</td>
-                </tr>
+                @Html.Raw(ObterLinhasTiposNotasConceito())
                 @Html.Raw(ObterLinhasBaseNacional())
                 @Html.Raw(ObterLinhasDiversificadas())
                 @Html.Raw(ObterLinhasEnriquecimentoCurricular())
@@ -43,6 +34,22 @@
             </table>
             @Html.Raw(ObterLegenda())
         </div>
+    }
+
+    string ObterLinhasTiposNotasConceito()
+    {
+        var linhas = "<tr>";
+        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
+        linhas += "</tr>";
+        return linhas;
+    }
+
+    string RetornarTipoNotaFrequencia(string tipoNotaConceito)
+    {
+        return $"<td class={"texto-centralizado coluna-nota"}>{tipoNotaConceito}</td> <td class={"texto-centralizado coluna-nota"}>F</td>";
     }
 
     int ObterTotalLinhasBaseNacional()

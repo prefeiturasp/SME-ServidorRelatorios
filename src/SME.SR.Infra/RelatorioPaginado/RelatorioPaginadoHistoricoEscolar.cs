@@ -80,10 +80,8 @@ namespace SME.SR.Infra.RelatorioPaginado
                 PaginaAtual = CriaPagina(historicoEscolar, pagina);
                 AdicionarSecaoPagina(ObterQuantidadeLinhaDadosHistorico(historicoEscolar), paginas, historicoEscolar, TabelaHistoricoTodosAnos);
                 AdicionarSecaoPagina(ObterQuantidadeLinhaEstudoRealizado(historicoEscolar), paginas, historicoEscolar, SecaoViewHistoricoEscolar.EstudosRealizados);
-
-                if (historicoEscolar.ContemDadosTransferencia())
+                if (!historicoEscolar.ContemDadosTransferencia())
                     CarregarSecoesObservacoes(historicoEscolar, paginas);
-
                 paginas.Add(PaginaAtual);
             }
 
@@ -94,7 +92,7 @@ namespace SME.SR.Infra.RelatorioPaginado
         {
             var paginas = new List<RelatorioPaginadoHistoricoEscolarDto>();
 
-            if (historicoEscolar.DadosTransferencia != null)
+            if (historicoEscolar.ContemDadosTransferencia())
             {
                 PaginaAtual = CriaPagina(historicoEscolar, pagina);
                 AdicionarSecaoPagina(ObterQuantidadeLinhasTransferencia(historicoEscolar), paginas, historicoEscolar, TabelaAnoAtual);

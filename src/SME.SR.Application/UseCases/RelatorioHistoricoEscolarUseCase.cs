@@ -152,7 +152,7 @@ namespace SME.SR.Application
                 || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
                     resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                         frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                        historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
+                        historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis, filtros.Alunos));
 
             if (resultadoFundMedio != null && resultadoFundMedio.Any())
             {
@@ -257,8 +257,6 @@ namespace SME.SR.Application
 
         private async Task EnviaRelatorioEJA(IEnumerable<HistoricoEscolarEJADto> resultadoFinalEJA, Guid codigoCorrelacao)
         {
-            /*var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalEJA });
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarEja/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));*/
             var relatorioPaginados = new RelatorioPaginadoHistoricoEscolarEJA(resultadoFinalEJA);
             await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginado(), codigoCorrelacao));
         }
