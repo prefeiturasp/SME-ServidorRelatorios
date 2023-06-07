@@ -56,7 +56,7 @@ namespace SME.SR.Application
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
             var ultimoBimestrePeriodoFechamento = await ObterUltimoBimestrePeriodoFechamento(request.AnoLetivo);
             var alunosFoto = await ObterFotosAlunos(alunosPorTurma.Select(a => a.Key)?.ToArray());
-            var notas = await ObterNotasAlunos(alunosAPesquisarTurmas, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
+            var notas = await ObterNotasAlunos(alunosAPesquisarTurmas, codigosTurma, request.AnoLetivo, request.Modalidade, request.Semestre, tiposNota);
             var pareceresConclusivos = await ObterPareceresConclusivos(dre.Codigo, ue.Codigo, turmas, request.AnoLetivo, request.Modalidade, request.Semestre);
             var possuiTerritorioNosComponentes = componentesCurriculares.Any(a => a.Any(cc => cc.TerritorioSaber));
             var frequencias = await ObterFrequenciasAlunos(alunosAPesquisarTurmas, request.AnoLetivo, request.Modalidade, request.Semestre, turmas.Select(t => t.Codigo).ToArray(), request.Usuario.EhProfessor() && possuiTerritorioNosComponentes ? request.Usuario.Login : null);
@@ -197,9 +197,9 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre)
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string[] codigosTurma, int anoLetivo, Modalidade modalidade, int semestre, IDictionary<string, string> tipoNotas)
         {
-            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, codigosTurma, anoLetivo, (int)modalidade, semestre));
+            return await mediator.Send(new ObterNotasRelatorioBoletimQuery(alunosCodigo, codigosTurma, anoLetivo, (int)modalidade, semestre, tipoNotas));
         }
 
         private async Task<IEnumerable<IGrouping<string, FrequenciaAluno>>> ObterFrequenciasAlunos(string[] alunosCodigo, int anoLetivo, Modalidade modalidade, int semestre, string[] turmaCodigo, string professor = null)
