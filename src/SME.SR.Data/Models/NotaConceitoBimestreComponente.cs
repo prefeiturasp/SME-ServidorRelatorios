@@ -7,7 +7,7 @@ namespace SME.SR.Data
 {
     public class NotaConceitoBimestreComponente
     {
-        private readonly TipoNota? _tipoNota;
+        private TipoNota? _tipoNota;
 
         public NotaConceitoBimestreComponente()
         {
@@ -30,6 +30,10 @@ namespace SME.SR.Data
         public int NotaId { get; set; }
         public bool Aprovado { get; set; }
 
+        public void CarregarTipoNota(TipoNota? tipoNota)
+        {
+            _tipoNota = tipoNota;
+        }
 
         private string ObterNotaConceito()
         {
