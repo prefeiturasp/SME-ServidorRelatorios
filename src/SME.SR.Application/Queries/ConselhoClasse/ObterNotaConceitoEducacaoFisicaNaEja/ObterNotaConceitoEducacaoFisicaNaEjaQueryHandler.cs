@@ -59,11 +59,8 @@ namespace SME.SR.Application
                 periodoFechamentoBimestre.PeriodoFechamentoFim :
                 (await ObterPeriodoUltimoBimestre(turma)).PeriodoFim;
 
-            var tipoNota = await ObterNotaTipo(turma, dataReferencia);
-            if (tipoNota == null)
-                throw new NegocioException("Não foi possível identificar o tipo de nota da turma");
+            return await ObterNotaTipo(turma, dataReferencia);
 
-            return tipoNota;
         }
 
         private async Task<string> ObterNotaTipo(Turma turma, DateTime dataReferencia)
@@ -71,7 +68,7 @@ namespace SME.SR.Application
             var cicloId = await cicloRepository.ObterCicloIdPorAnoModalidade(turma.Ano, turma.ModalidadeCodigo);
 
             if (cicloId == null)
-                throw new NegocioException("Não foi encontrado o ciclo da turma informada");
+                return string.Empty;
 
             return await notaTipoRepository.ObterPorCicloIdDataAvalicacao(cicloId, dataReferencia);
         }

@@ -96,7 +96,7 @@ namespace SME.SR.Data
             if (periodoFechamentoBimestre != null)
                 return new PeriodoFechamentoVigenteDto() { PeriodoFechamentoInicio = periodoFechamentoBimestre.InicioDoFechamento, PeriodoFechamentoFim = periodoFechamentoBimestre.FinalDoFechamento };
 
-            var periodoReabertura = await ObterReaberturaFechamentoBimestrePorDataReferencia(bimestre, dataReferencia, tipoCalendario.Id, turma.Ue.Dre.Codigo, turma.Ue.Codigo);
+            var periodoReabertura = await ObterReaberturaFechamentoBimestrePorDataReferencia(bimestre, dataReferencia, tipoCalendario.Id, turma.Dre.Codigo, turma.Ue.Codigo);
 
             if (periodoReabertura != null)
                 return new PeriodoFechamentoVigenteDto() { PeriodoFechamentoInicio = periodoReabertura.Inicio, PeriodoFechamentoFim = periodoReabertura.Fim };
@@ -109,14 +109,14 @@ namespace SME.SR.Data
             var bimestreWhere = $"and frb.bimestre = {(bimestre > 0 ? " @bimestre" : bimetreQuery)}";
 
             var query = $@"select 
-                            fr.id
+                            fr.id,
 							fr.descricao,
 							fr.dre_id as DreId,
 							fr.excluido ,
 							fr.fim ,
 							fr.inicio ,
 							fr.migrado ,
-							fr.tipo_calendario_id as TipoCalendarioId
+							fr.tipo_calendario_id as TipoCalendarioId,
 							fr.ue_id as UeId,
 							fr.aprovador_id as AprovadorId,
 							fr.aprovado_em as AprovadoEm

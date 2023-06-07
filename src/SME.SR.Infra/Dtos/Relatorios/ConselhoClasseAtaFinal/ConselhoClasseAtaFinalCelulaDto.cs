@@ -11,5 +11,6 @@ namespace SME.SR.Infra
         public int Coluna { get; set; }
         public string Valor { get; set; }
         public string AlunoCodigo { get; set; }
+        public int? Bimestre { get; set; }
     }
 }

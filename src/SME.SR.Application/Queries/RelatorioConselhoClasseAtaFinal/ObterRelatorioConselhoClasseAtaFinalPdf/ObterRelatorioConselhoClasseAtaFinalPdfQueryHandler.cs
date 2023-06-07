@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -78,8 +79,6 @@ namespace SME.SR.Application
                 throw new NegocioException(erros.ToString());
             }
 
-
-
             return relatoriosTurmas.OrderBy(a => a.Cabecalho.Turma).ToList();
         }
 
@@ -88,9 +87,11 @@ namespace SME.SR.Application
                 var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
                 var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
                 var alunos = await ObterAlunos(turma.Codigo);
+                
+                if (alunos == null || !alunos.Any())
+                    return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
+                
                 var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
-
-                var alunosNotasConceito = await mediator.Send(new ObterNotaConceitoEducacaoFisicaNaEjaQuery(alunosCodigos, turma));
 
                 var tiposTurma = new List<int>() { (int)turma.TipoTurma };
                 if (turma.TipoTurma == TipoTurma.Regular)
@@ -155,7 +156,7 @@ namespace SME.SR.Application
                         Aprovado = nf.Aprovado
                     }));
                 }
-
+                var alunosNotasConceito = await mediator.Send(new ObterNotaConceitoEducacaoFisicaNaEjaQuery(alunosCodigos, turma));
                 var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea, alunosNotasConceito);
                 return MontarEstruturaPaginada(dadosRelatorio);
         }
@@ -190,8 +191,6 @@ namespace SME.SR.Application
         {
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
-
-            var alunosNotasConceito = await mediator.Send(new ObterNotaConceitoEducacaoFisicaNaEjaQuery(alunosCodigos, turma));
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });            
             if (notas == null || !notas.Any()) return default;
@@ -249,40 +248,36 @@ namespace SME.SR.Application
                     Aprovado = nf.Aprovado
                 }));
             }
-
+            var alunosNotasConceito = await mediator.Send(new ObterNotaConceitoEducacaoFisicaNaEjaQuery(alunosCodigos, turma));
             var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesCurriculares,
                 notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea, alunosNotasConceito);
             return MontarEstruturaPaginada(dadosRelatorio);
         }
-        private string MontarNota(double? notaComponenteNotaConceito, bool alunoTipoNotaConceito, long? componenteCurricularCodigo)
+        private string ConverterNotaEmConceito(double? notaComponenteNotaConceito)
         {
-            if (alunoTipoNotaConceito && COMPONENTECURRICULARCODIGOEDFISICA.Equals(componenteCurricularCodigo))
-            {
-                if (notaComponenteNotaConceito < NOTA_CONCEITO_CINCO)
-                    return ConceitoValores.NS.ToString();
-                else if (notaComponenteNotaConceito >= NOTA_CONCEITO_CINCO && notaComponenteNotaConceito < NOTA_CONCEITO_SETE)
-                    return ConceitoValores.S.ToString();
-                else if (notaComponenteNotaConceito >= NOTA_CONCEITO_SETE)
-                    return ConceitoValores.P.ToString();
-                else return notaComponenteNotaConceito?.ToString();
-            }
-            else
-                return notaComponenteNotaConceito?.ToString();
+            if (notaComponenteNotaConceito < NOTA_CONCEITO_CINCO)
+                return ConceitoValores.NS.ToString();
+            else if (notaComponenteNotaConceito >= NOTA_CONCEITO_CINCO && notaComponenteNotaConceito < NOTA_CONCEITO_SETE)
+                return ConceitoValores.S.ToString();
+            else if (notaComponenteNotaConceito >= NOTA_CONCEITO_SETE)
+                return ConceitoValores.P.ToString();
+            else return notaComponenteNotaConceito?.ToString();
         }
 
-        private void MapearNotasCelular(List<ConselhoClasseAtaFinalLinhaDto> linhas, IEnumerable<AlunoNotaTipoNotaDtoEducacaoFisicaDto> alunosNotasConceito)
+        private void MapearNotas(List<ConselhoClasseAtaFinalLinhaDto> linhas, IEnumerable<AlunoNotaTipoNotaDtoEducacaoFisicaDto> alunosNotasConceito)
         {
-            for (int linha = 0; linha < linhas.Count; linha++)
+            foreach (var linha in linhas)
             {
-                for (int celula = 0; celula < linhas[linha].Celulas.Count; celula++)
+                for (var celula = 0; celula < linha.Celulas.Count(x => x.Bimestre !=null && COMPONENTECURRICULARCODIGOEDFISICA.Equals(x.ComponenteCurricular)); celula++)
                 {
                     double? nota = null;
-                    if(!string.IsNullOrEmpty(linhas[linha].Celulas[celula].Valor.Trim()))
-                        nota =  double.Parse(linhas[linha].Celulas[celula].Valor);
+                    var valor = string.Join("", Regex.Split(linha.Celulas[celula].Valor.Trim(), @"[^\d]"));
+                    if (!string.IsNullOrEmpty(valor))
+                        nota =  double.Parse(valor);
                     
-                    var componenteCodigo = linhas[linha].Celulas[celula].ComponenteCurricular;
-                    var ehTipoConceito = alunosNotasConceito.FirstOrDefault(x => x.AlunoCodigo == linhas[linha].Celulas[celula].AlunoCodigo).EhConceito;
-                    linhas[linha].Celulas[celula].Valor = MontarNota(nota, ehTipoConceito, componenteCodigo);
+                    var ehTipoConceito = alunosNotasConceito.FirstOrDefault(x => x.AlunoCodigo == linha.Celulas[celula].AlunoCodigo).EhConceito;
+                    if(ehTipoConceito)
+                       linha.Celulas[celula].Valor = ConverterNotaEmConceito(nota);
                 }
             }
         }
@@ -528,13 +523,13 @@ namespace SME.SR.Application
 
                             if (matriculadoDepois != null && bimestre < matriculadoDepois)
                             {
-                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "-", ++coluna, aluno.CodigoAluno.ToString());
+                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "-", ++coluna, aluno.CodigoAluno.ToString(),bimestre);
                                 continue;
                             }
 
                             if (bimestre > ultimoBimestreAtivo)
                             {
-                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "-", ++coluna, aluno.CodigoAluno.ToString());
+                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "-", ++coluna, aluno.CodigoAluno.ToString(),bimestre);
                                 continue;
                             }
                             
@@ -562,14 +557,14 @@ namespace SME.SR.Application
                                                         possuiComponente ? (componente.LancaNota ?
                                                             notaConceito?.NotaConceito ?? "" :
                                                             notaConceito?.Sintese) : "-",
-                                                        ++coluna, aluno.CodigoAluno.ToString());
+                                                        ++coluna, aluno.CodigoAluno.ToString(),bimestre);
 
                                 if(ultimoBimestreAtivo > 0)
                                     possuiConselhoUltimoBimestreAtivo = bimestre == ultimoBimestreAtivo;
                                 continue;
                             }
 
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna, aluno.CodigoAluno.ToString());
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : "-", ++coluna, aluno.CodigoAluno.ToString(),bimestre);
 
                         }
 
@@ -639,7 +634,7 @@ namespace SME.SR.Application
 
                 linhas.Add(linhaDto);
             }
-            MapearNotasCelular(linhas, alunosNotasConceito);
+            MapearNotas(linhas, alunosNotasConceito);
             return linhas;
         }
 
