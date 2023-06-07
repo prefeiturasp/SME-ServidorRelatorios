@@ -37,6 +37,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 var aulasDaTurma = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.CodigosTurma, tipoCalendarioId, componentesDasTurmas.Select(x => x.Codigo.ToString()).ToArray(), request.Bimestres));
                 var componentesSemRegencia = componentesRegencia.Where(r => !r.Regencia);
                 var componentesComAula = aulasDaTurma.Select(a => a.ComponenteCurricularCodigo).ToList();
+                var componentesCodigosRegencia = componentesRegencia.Where(r => r.Regencia).Select(a => a.CodDisciplina).ToList();
 
                 if (componentesSemRegencia.Any())
                     foreach(var componente in componentesSemRegencia)
@@ -45,7 +46,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     }
 
                 componentesDasTurmas = componentesDasTurmas.Where(x => componentesComAula.Contains(x.Codigo.ToString())
-                || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.Codigo.ToString())));
+                || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.Codigo.ToString())) || componentesCodigosRegencia.Contains(x.Codigo));
             }
 
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));           
