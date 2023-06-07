@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SME.SR.Application
 {
-    public class MontarHistoricoEscolarQuery : IRequest<IEnumerable<HistoricoEscolarDTO>>
+    public class MontarHistoricoEscolarQuery : IRequest<IEnumerable<HistoricoEscolarFundamentalDto>>
     {
         public MontarHistoricoEscolarQuery(Dre dre, Ue ue, IEnumerable<AreaDoConhecimento> areasConhecimento,
                                             IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>> componentesCurricularesTurmas,
