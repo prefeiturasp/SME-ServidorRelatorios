@@ -489,7 +489,7 @@ namespace SME.SR.Data
                                   from historico_matricula_turma_escola
                                   where cd_turma_escola = @CodigoTurma
                                     and cd_situacao_aluno in (1, 6, 10, 13)) mat_tur
-                                     inner join v_historico_matricula_cotic v_mat_pro on v_mat_pro.cd_matricula = mat_tur.cd_matricula
+                                     inner join v_matricula_cotic v_mat_pro on v_mat_pro.cd_matricula = mat_tur.cd_matricula
                                      inner join turma_escola_grade_programa tegp on mat_tur.cd_turma_escola = tegp.cd_turma_escola
                                      inner join escola_grade eg on eg.cd_escola_grade = tegp.cd_escola_grade and dt_fim is null
                                      inner join grade_componente_curricular gcc on eg.cd_grade = gcc.cd_grade;

@@ -5,12 +5,11 @@ namespace SME.SR.Data
     public class NotasAlunoBimestre
     {
         public long ConselhoClasseAlunoId { get; set; }
+        public long IdTurma { get; set; }
         public string CodigoTurma { get; set; }
         public TipoTurma TipoTurma { get; set; }
 
         public long TurmaComplementarId { get; set; }
-        public long fechamentoDisciplina { get; set; }
-
         public string CodigoAluno { get; set; }
 
         public string CodigoComponenteCurricular { get; set; }

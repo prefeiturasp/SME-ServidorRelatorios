@@ -148,7 +148,7 @@ namespace SME.SR.Workers.SGP.Services
 
                 await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, nex, LogNivel.Negocio);
 
-                transacao.CaptureException(nex);
+                transacao?.CaptureException(nex);
             }
             catch (Exception ex)
             {
@@ -158,7 +158,7 @@ namespace SME.SR.Workers.SGP.Services
 
                 await RegistrarLogErro(ea.RoutingKey, filtroRelatorio, ex, LogNivel.Critico);
 
-                transacao.CaptureException(ex);
+                transacao?.CaptureException(ex);
             }
             finally
             {
