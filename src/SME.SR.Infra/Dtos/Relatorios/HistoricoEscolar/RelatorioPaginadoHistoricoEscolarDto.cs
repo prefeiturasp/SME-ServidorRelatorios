@@ -6,6 +6,6 @@ namespace SME.SR.Infra
     {
         public int Pagina { get; set; }
         public List<SecaoViewHistoricoEscolar> SecoesPorPagina {  get; set; }
-        public HistoricoEscolarDTO HistoricoEscolar { get; set; }
+        public HistoricoEscolarDto HistoricoEscolar { get; set; }
     }
 }

@@ -1,30 +1,29 @@
 ﻿@using SME.SR.Infra;
 
-@model HistoricoEscolarFundamentalDto
-
+@model HistoricoEscolarEJADto
+@{
+    var totalLinhasCabecalho = 3;
+}
 @{
     if (Model.DadosTransferencia != null)
     {
         var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
-        var margemBaseNacional = 7 * totalLinhasBaseNacional;
         <div>
             <table class='tabela margin-top'>
                 <tr class="cabecalho-principal">
-                    <td class="cabecalho-titulo" colspan="12">TRANSFERÊNCIA DO ANO LETIVO ATÉ: @Model.DadosTransferencia.Data</td>
+                    <td class="cabecalho-titulo" colspan="7">TRANSFERÊNCIA DO ANO LETIVO ATÉ: @Model.DadosTransferencia.Data</td>
                 </tr>
                 <tr>
                     <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
-                        <p style="width: 25px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
+                        <p style="width: 9px;margin: auto;">BASE NACIONAL COMUM</p>
                     </th>
-                    <td class="titulo" style="width: 18%;" rowspan="3">Àrea de conhecimento</td>
-                    <td class="titulo" style="width: 18%;" rowspan="3">Componentes curriculares</td>
-                    <td class="titulo" colspan="8">@Model.DadosTransferencia.Descricao</td>
+                    <td class="titulo" style="width: 30%;" rowspan="@totalLinhasCabecalho">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 30%;" rowspan="@totalLinhasCabecalho">Componentes curriculares</td>
+                    <td class="titulo" colspan="4">@Model.DadosTransferencia.Descricao</td>
                 </tr>
                 <tr>
                     <td class="texto-centralizado" colspan="2">1º Bimestre</td>
                     <td class="texto-centralizado" colspan="2">2º Bimestre</td>
-                    <td class="texto-centralizado" colspan="2">3º Bimestre</td>
-                    <td class="texto-centralizado" colspan="2">4º Bimestre</td>
                 </tr>
                 @Html.Raw(ObterLinhasTiposNotasConceito())
                 @Html.Raw(ObterLinhasBaseNacional())
@@ -39,10 +38,8 @@
     string ObterLinhasTiposNotasConceito()
     {
         var linhas = "<tr>";
-        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia?.TipoNota);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia.TipoNota);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosTransferencia.TipoNota);
         linhas += "</tr>";
         return linhas;
     }
@@ -54,7 +51,6 @@
 
     int ObterTotalLinhasBaseNacional()
     {
-        var totalLinhasCabecalho = 3;
         var totalLinhasComponentes = 0;
         var areasConhecimento = Model.DadosTransferencia?.BaseNacionalComum?.AreasDeConhecimento;
 
@@ -114,10 +110,6 @@
             linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaPrimeiroBimestre)}</ td >";
             linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoSegundoBimestre)}</ td >";
             linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaSegundoBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoTerceiroBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaTerceiroBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.NotaConceitoQuartoBimestre)}</ td >";
-            linhas += $"<td class='texto-centralizado coluna-nota-transf'>{ObterNotaConceito(componente.FrequenciaQuartoBimestre)}</ td >";
             linhas += "</tr>";
 
             adicionarPrimeiraLinha = true;

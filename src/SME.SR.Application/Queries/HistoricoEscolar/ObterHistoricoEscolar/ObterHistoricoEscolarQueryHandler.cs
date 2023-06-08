@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterHistoricoEscolarQueryHandler : IRequestHandler<ObterHistoricoEscolarQuery, IEnumerable<HistoricoEscolarDTO>>
+    public class ObterHistoricoEscolarQueryHandler : IRequestHandler<ObterHistoricoEscolarQuery, IEnumerable<HistoricoEscolarFundamentalDto>>
     {
         public ObterHistoricoEscolarQueryHandler()
         {
         }
 
-        public Task<IEnumerable<HistoricoEscolarDTO>> Handle(ObterHistoricoEscolarQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<HistoricoEscolarFundamentalDto>> Handle(ObterHistoricoEscolarQuery request, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }
