@@ -8,7 +8,6 @@
     if (Model.DadosTransferencia != null)
     {
         var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
-        var margemBaseNacional = 4 * totalLinhasBaseNacional;
         <div>
             <table class='tabela margin-top'>
                 <tr class="cabecalho-principal">
@@ -16,10 +15,10 @@
                 </tr>
                 <tr>
                     <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
-                        <p style="width: 25px;margin-left: @margemBaseNacional%;">BASE NACIONAL COMUM</p>
+                        <p style="width: 9px;margin: auto;">BASE NACIONAL COMUM</p>
                     </th>
-                    <td class="titulo" style="width: 18%;" rowspan="@totalLinhasCabecalho">Àrea de conhecimento</td>
-                    <td class="titulo" style="width: 18%;" rowspan="@totalLinhasCabecalho">Componentes curriculares</td>
+                    <td class="titulo" style="width: 30%;" rowspan="@totalLinhasCabecalho">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 30%;" rowspan="@totalLinhasCabecalho">Componentes curriculares</td>
                     <td class="titulo" colspan="4">@Model.DadosTransferencia.Descricao</td>
                 </tr>
                 <tr>
