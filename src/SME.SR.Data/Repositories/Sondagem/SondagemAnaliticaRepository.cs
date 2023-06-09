@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Microsoft.ApplicationInsights.Metrics.Extensibility;
+using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Models;
@@ -209,7 +210,6 @@ namespace SME.SR.Data
 
                 foreach (var itemDre in agrupamentoPorDre)
                 {
-                    var obterTotalAlunosAtivosPorPeriodoEAnoTurma  = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio, periodoFixo.DataFim, string.Empty, itemDre.Key)).ToList();
                     var relatorioSondagemAnaliticoEscritaDto = new RelatorioSondagemAnaliticoEscritaDto();
                     var agrupamentoPorUe = itemDre.GroupBy(x => x.UeCodigo).Distinct().ToList();
                     var ueLista = (await ueRepository.ObterPorCodigos(agrupamentoPorUe.Select(x => x.Key).ToArray())).ToList();
@@ -217,8 +217,7 @@ namespace SME.SR.Data
                     {
                         var turmas = await ObterQuantidadeTurmaPorAno(filtro, itemUe.Key);
                         var agrupamentoPorAnoTurma = itemUe.GroupBy(x => x.AnoTurma).ToList();
-                        var quantidadeTotalAlunosPorAno = obterTotalAlunosAtivosPorPeriodoEAnoTurma.Where(x => x.UeCodigo == itemUe.Key); 
-
+                        var quantidadeTotalAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio, periodoFixo.DataFim, itemUe.Key, itemDre.Key)).ToList();
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
 
@@ -227,11 +226,11 @@ namespace SME.SR.Data
                                     ? TotalSemPreenchimentoTerceiroAnoEscrita(anoTurma, quantidadeTotalAlunosEol)
                                     : TotalSemPreenchimentoPrimeiroSegundoAnoEscrita(anoTurma, quantidadeTotalAlunosEol);
 
-                            var semPreenchimentoRelatorio = totalSemPreenchimento >= 0 ? totalSemPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum();
-                            
-                            
-                            var totalDeAlunosNaSondagem = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma) ? TotalAlunosEscritaTerceiroAno(anoTurma, totalSemPreenchimento, semPreenchimentoRelatorio)
-                                : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, totalSemPreenchimento, anoTurma.Key, semPreenchimentoRelatorio);
+                            var semPreenchimentoRelatorio = anoTurma.Select(x => x.SemPreenchimento).Sum() > 0 ? anoTurma.Select(x => x.SemPreenchimento).Sum() : 0;
+
+                            var totalDeAlunosNaSondagem = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma) 
+                                                                ? TotalAlunosEscritaTerceiroAno(anoTurma, semPreenchimentoRelatorio)
+                                                                : TotalAlunosEscritaPrimeiroSegundoAno(anoTurma, semPreenchimentoRelatorio);
 
 
                             var Ue = ueLista.FirstOrDefault(x => x.Codigo == itemUe.Key);
@@ -246,7 +245,7 @@ namespace SME.SR.Data
                                 Nivel3 = anoTurma.Select(x => x.Nivel3).Sum(),
                                 Nivel4 = anoTurma.Select(x => x.Nivel4).Sum(),
                                 Alfabetico = anoTurma.Select(x => x.Alfabetico).Sum(),
-                                SemPreenchimento = semPreenchimentoRelatorio,
+                                SemPreenchimento =  semPreenchimentoRelatorio,
                                 TotalDeAlunos = totalDeAlunosNaSondagem,
                                 Ano = int.Parse(anoTurma.Key),
                                 TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurma.Key),
@@ -279,7 +278,7 @@ namespace SME.SR.Data
                                                                + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()
                                                                + anoTurma.Select(x => x.Alfabetico).Sum()));
 
-            return quantidadeTotalAlunosEol < totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
+            return quantidadeTotalAlunosEol <= totalRepostas ? 0  : quantidadeTotalAlunosEol - totalRepostas;
         }
 
         private static int TotalSemPreenchimentoTerceiroAnoEscrita(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int quantidadeTotalAlunosEol)
@@ -287,8 +286,9 @@ namespace SME.SR.Data
             var totalRepostas = (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
                                  + anoTurma.Select(x => x.Nivel4).Sum());
             
-            return quantidadeTotalAlunosEol < totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
+            return quantidadeTotalAlunosEol <= totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
         }
+
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
@@ -515,29 +515,14 @@ namespace SME.SR.Data
             return retorno;
         }
 
-        private int TotalAlunosEscritaTerceiroAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int totalSemPreenchimento, int valorSemPreenchimento)
+        private int TotalAlunosEscritaTerceiroAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int valorSemPreenchimento)
         {
-
-            if (valorSemPreenchimento == 0)
-            {
-                return (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
-                                               + anoTurma.Select(x => x.Nivel4).Sum());
-            }
-
-            return (totalSemPreenchimento + anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
+            return (valorSemPreenchimento + anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
                                                             + anoTurma.Select(x => x.Nivel4).Sum());
         }
-        private int TotalAlunosEscritaPrimeiroSegundoAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int totalSemPreenchimento, string ano, int valorSemPreenchimento)
+        private int TotalAlunosEscritaPrimeiroSegundoAno(IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma, int valorSemPreenchimento)
         {
-            if (valorSemPreenchimento == 0)
-            {
-                return (anoTurma.Select(x => x.PreSilabico).Sum() + anoTurma.Select(x => x.SilabicoSemValor).Sum()
-                                                                                                  + anoTurma.Select(x => x.SilabicoComValor).Sum()
-                                                                                                  + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()
-                                                                                                  + anoTurma.Select(x => x.Alfabetico).Sum());
-            }
-
-            return (totalSemPreenchimento + (anoTurma.Select(x => x.PreSilabico).Sum() + anoTurma.Select(x => x.SilabicoSemValor).Sum()
+            return (valorSemPreenchimento + (anoTurma.Select(x => x.PreSilabico).Sum() + anoTurma.Select(x => x.SilabicoSemValor).Sum()
                                                                                   + anoTurma.Select(x => x.SilabicoComValor).Sum()
                                                                                   + anoTurma.Select(x => x.Alfabetico).Sum()
                                                                                   + anoTurma.Select(x => x.SilabicoAlfabetico).Sum()));
