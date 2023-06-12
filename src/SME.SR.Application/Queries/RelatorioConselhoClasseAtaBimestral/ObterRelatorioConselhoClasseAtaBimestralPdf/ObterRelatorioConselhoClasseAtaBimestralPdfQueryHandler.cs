@@ -64,7 +64,6 @@ namespace SME.SR.Application
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
             var tiposTurma = new List<int>() { (int)turma.TipoTurma };
-            var notaTipoValor = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, filtro.AnoLetivo));
 
             if (turma.TipoTurma == TipoTurma.Regular)
                 tiposTurma.Add((int)TipoTurma.EdFisica);
@@ -130,7 +129,7 @@ namespace SME.SR.Application
 
             foreach (var nota in notas)
             {
-                notasFinais.AddRange(nota.Select(nf => new NotaConceitoBimestreComponente(notaTipoValor.TipoNota)
+                notasFinais.AddRange(nota.Select(nf => new NotaConceitoBimestreComponente()
                 {
                     AlunoCodigo = nf.CodigoAluno,
                     Nota = nf.NotaConceito.Nota,

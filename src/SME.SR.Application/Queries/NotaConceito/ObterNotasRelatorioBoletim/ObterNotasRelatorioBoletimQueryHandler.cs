@@ -34,7 +34,6 @@ namespace SME.SR.Application
                 {
                     var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
                     var notasAlunosPagina = await notasConceitoRepository.ObterNotasTurmasAlunos(alunosPagina.ToArray(), arrTurma, request.AnoLetivo, request.Modalidade, request.Semestre);
-                    CarregarTipoNota(request.TipoNotas, codTurma, notasAlunosPagina);
                     notasRetorno.AddRange(notasAlunosPagina.ToList());
                     cont += alunosPagina.Count();
                     i++;
@@ -46,29 +45,6 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
 
             return notasRetorno.GroupBy(nf => nf.CodigoAluno);
-        }
-
-        private void CarregarTipoNota(IDictionary<string, string> tipoNotas, string codigoTurma, IEnumerable<NotasAlunoBimestre> notas)
-        {
-            var tipoNota = ObterTipoNotaPorTurma(tipoNotas, codigoTurma);
-
-            if (tipoNota != null)
-            {
-                foreach(var nota in notas)
-                {
-                    nota.NotaConceito.CarregarTipoNota(tipoNota);
-                }
-            }
-        }
-
-        private TipoNota? ObterTipoNotaPorTurma(IDictionary<string, string> tipoNotas, string codigoTurma)
-        {
-            const string CONCEITO = "Conceito";
-
-            if (tipoNotas.ContainsKey(codigoTurma))
-                return tipoNotas[codigoTurma] == CONCEITO ? TipoNota.Conceito : TipoNota.Nota;
-
-            return null;
         }
     }
 }

@@ -8,14 +8,13 @@ namespace SME.SR.Application
 {
     public class ObterNotasRelatorioBoletimQuery : IRequest<IEnumerable<IGrouping<string, NotasAlunoBimestre>>>
     {
-        public ObterNotasRelatorioBoletimQuery(string[] codigosAlunos, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre, IDictionary<string, string> tipoNotas)
+        public ObterNotasRelatorioBoletimQuery(string[] codigosAlunos, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre)
         {
             CodigosAlunos = codigosAlunos;
             CodigosTurmas = codigosTurmas;
             AnoLetivo = anoLetivo;
             Modalidade = modalidade;
             Semestre = semestre;
-            TipoNotas = tipoNotas;
         }
 
         public string[] CodigosAlunos { get; set; }
@@ -23,6 +22,5 @@ namespace SME.SR.Application
         public int AnoLetivo { get; }
         public int Modalidade { get; }
         public int Semestre { get; }
-        public IDictionary<string, string> TipoNotas {  get; set; } 
     }
 }
