@@ -66,53 +66,58 @@ namespace SME.SR.Application
    
                 foreach (var aluno in alunos)
                 {
-                    // verifica PossuiConselho bimestre
                     var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
-                    
-                    var tipoNota = tiposNota[turma.Codigo];
-                    var boletimEscolarAlunoDto = new BoletimEscolarDetalhadoAlunoDto()
+                   
+                    var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
+
+                    if (conselhoClassBimestres != null && conselhoClassBimestres.Any())
                     {
-                        TipoNota = tipoNota
-                    };
-
-                    var componentesAluno = componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key);
-                    foreach (var turmaAluno in aluno)
-                    {                       
-                        if (componentesAluno != null && componentesAluno.Any())
+                        var tipoNota = tiposNota[turma.Codigo];
+                        var boletimEscolarAlunoDto = new BoletimEscolarDetalhadoAlunoDto()
                         {
-                            await MapearGruposEComponentes(
-                            componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()),
-                            boletimEscolarAlunoDto);
-                        }                            
+                            TipoNota = tipoNota
+                        };
+
+                        var componentesAluno = componentesCurriculares.FirstOrDefault(c => c.Key == aluno.Key);
+                        foreach (var turmaAluno in aluno)
+                        {
+                            if (componentesAluno != null && componentesAluno.Any())
+                            {
+                                await MapearGruposEComponentes(
+                                componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()),
+                                boletimEscolarAlunoDto);
+                            }
+                        }
+
+                        var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        var frequenciasAluno =
+                            frequencia?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        var frequenciasTurma = frequencia?.SelectMany(a => a).Where(f => f.TurmaId == turma.Codigo);
+
+                        if (notasAluno != null && notasAluno.Any())
+                            SetarNotasFrequencia(boletimEscolarAlunoDto, notasAluno, frequenciasAluno, frequenciasTurma, mediasFrequencia, registroFrequencia, periodoAtual);
+
+                        var frequeciaGlobal =
+                            frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
+                        var percentualFrequenciaGlobal =
+                            frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
+                        var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c =>
+                            c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
+                        var recomendacao = recomendacoes?.FirstOrDefault(r =>
+                            r.TurmaCodigo == turma.Codigo && r.AlunoCodigo == aluno.Key);
+                        var ciclo = ciclos.FirstOrDefault(c =>
+                            c.Modalidade == turma.ModalidadeCodigo && c.Ano == turma.Ano);
+                        var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
+
+                        boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
+                            aluno.FirstOrDefault().NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
+                        boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
+                        boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
+                        boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
+                        boletimEscolarAlunoDto.ExibirRecomendacoes = request.ExibirRecomendacao;
+                        boletinsAlunos.Add(boletimEscolarAlunoDto);
                     }
-
-                    var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                    var frequenciasAluno =
-                        frequencia?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                    var frequenciasTurma = frequencia?.SelectMany(a => a).Where(f => f.TurmaId == turma.Codigo);
-
-                    if (notasAluno != null && notasAluno.Any())
-                        SetarNotasFrequencia(boletimEscolarAlunoDto, notasAluno, frequenciasAluno, frequenciasTurma, mediasFrequencia, registroFrequencia, periodoAtual);
-
-                    var frequeciaGlobal =
-                        frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                    var percentualFrequenciaGlobal =
-                        frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
-                    var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c =>
-                        c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
-                    var recomendacao = recomendacoes?.FirstOrDefault(r =>
-                        r.TurmaCodigo == turma.Codigo && r.AlunoCodigo == aluno.Key);
-                    var ciclo = ciclos.FirstOrDefault(c =>
-                        c.Modalidade == turma.ModalidadeCodigo && c.Ano == turma.Ano);
-                    var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
-
-                    boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                        aluno.FirstOrDefault().NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
-                    boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
-                    boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
-                    boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
-                    boletimEscolarAlunoDto.ExibirRecomendacoes = request.ExibirRecomendacao;
-                    boletinsAlunos.Add(boletimEscolarAlunoDto);
+                    
                 }
 
                 if (!boletinsAlunos.Any())
