@@ -186,6 +186,55 @@
                 str += "</tr>";
                 contadorQuebrarPagina += componenteCurricular.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples;
             }
+           
+
+            if(grupos[i].ComponenteCurricularRegencia != null)
+            {
+                componenteCurricularRegencia = grupos[i].ComponenteCurricularRegencia;
+
+                foreach (var componente in grupos[i].ComponenteCurricularRegencia.ComponentesCurriculares)
+                {
+                    if (!componente.Nota)
+                        exibeLegendaSintese = true;
+
+                    if (!string.IsNullOrEmpty(componente.NotaBimestre1) && (componente.NotaBimestre1.Contains("P") || componente.NotaBimestre1.Contains("S")))
+                        exibeLegendaConceito = true;
+
+                    var frequenciaFinal = string.IsNullOrEmpty(componenteCurricularRegencia.FrequenciaFinal) ? "" : (componenteCurricularRegencia.FrequenciaFinal != "-" ? $"{componenteCurricularRegencia.FrequenciaFinal}%" : componenteCurricularRegencia.FrequenciaFinal);
+
+                    if (componente == grupos[i].ComponenteCurricularRegencia.ComponentesCurriculares.First())
+                    {
+                        str += $@"<tr class='corpo'>
+<td class='valor-titulo'>{componente.Nome}</td>
+<td class='centro-valor'>{componente.NotaBimestre1}</td>
+<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre1}</td>
+<td class='centro-valor'>{componente.NotaBimestre2}</td>
+<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre2}</td>
+<td class='centro-valor'>{componente.NotaBimestre3}</td>
+<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre3}</td>
+<td class='centro-valor'>{componente.NotaBimestre4}</td>
+<td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{componenteCurricularRegencia.FrequenciaBimestre4}</td>";
+                        str += possuiNotaFinal ? $@"<td class='centro-valor'>{componente.NotaFinal}</td><td class='centro-valor' rowspan='{componenteCurricularRegencia.ComponentesCurriculares.Count}'>{frequenciaFinal}</td>" : "";
+                        str += $@"</tr>";
+                    }
+                    else
+                    {
+                        str += $@"<tr class='corpo'>
+<td class='valor-titulo'>{componente.Nome}</td>
+<td class='centro-valor'>{componente.NotaBimestre1}</td>
+<td class='centro-valor'>{componente.NotaBimestre2}</td>
+<td class='centro-valor'>{componente.NotaBimestre3}</td>
+<td class='centro-valor'>{componente.NotaBimestre4}</td>";
+                        str += possuiNotaFinal ? $@"<td class='centro-valor'>{componente.NotaFinal}</td>" : "";
+                        str += "</tr>";
+                    }
+
+
+
+                    contadorQuebrarPagina += componente.Nome.Length >= numeroCaracteresComponentesCurriculares ? contadorLinhaDupla : contadorLinhaSimples;
+                }
+            }
+
             str += "</table>";
             var quebra = VerificaQuebra();
             if (quebra != String.Empty)
@@ -194,7 +243,7 @@
                 if (i != grupos.Count - 1)
                     str += ComponentesCurricularesCabecalho(notaConceito, possuiNotaFinal);
                 quebrou = true;
-            }
+            }           
         }
 
         if (exibeLegendaSintese || exibeLegendaConceito)
