@@ -486,6 +486,8 @@ namespace SME.SR.Application
                     return frequenciaFinal.PercentualFrequenciaFinal?.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
                 }
 
+                if (!(frequenciasAluno.Any(x => x.PeriodoEscolarId == null)))
+                    return "";
                 return frequenciaFinal.PercentualFrequenciaFormatado;
             }
         }
@@ -493,6 +495,8 @@ namespace SME.SR.Application
         private string ObterSintese(IEnumerable<FrequenciaAluno> frequenciasComponente,
             IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
         {
+            if (!frequenciasComponente.Any(x => x.PeriodoEscolarId == null))
+                return "-";
             var percentualFrequencia = ObterPercentualDeFrequencia(frequenciasComponente);
 
             var sintese = percentualFrequencia >= ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota)
