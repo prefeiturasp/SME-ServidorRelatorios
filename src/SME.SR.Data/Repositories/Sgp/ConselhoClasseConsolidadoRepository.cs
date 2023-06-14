@@ -85,7 +85,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<NotasAlunoBimestreBoletimSimplesDto>> ObterNotasBoletimPorAlunoTurma(string[] alunosCodigos, string[] turmasCodigos, int semestre)
         {
-            var query = new StringBuilder(@"select cccat.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
+            var query = new StringBuilder(@"select t.turma_id CodigoTurma, cccat.aluno_codigo CodigoAluno,
                                  cccatn.componente_curricular_id CodigoComponenteCurricular,
                                  coalesce(cccatn.bimestre, 0) as Bimestre, coalesce((cast (cccatn.nota as varchar)),cv.valor) as NotaConceito
                               from consolidado_conselho_classe_aluno_turma cccat 

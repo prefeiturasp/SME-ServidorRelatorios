@@ -362,9 +362,9 @@ namespace SME.SR.Application
         {
             if (TurmaEhEjaEdFisica(codigoComponente, turmas))
             {
-                var codigoTurmaEdFisica = turmas.FirstOrDefault(t => t.TipoTurma == TipoTurma.EdFisica)?.Codigo;
+                var codigoTurmaRegular = turmas.FirstOrDefault(t => t.EhEja && t.TipoTurma == TipoTurma.EdFisica)?.RegularCodigo;
 
-                return notas?.Where(n => n.CodigoTurma == codigoTurmaEdFisica && n.CodigoComponenteCurricular == codigoComponente) ?? null;
+                return notas?.Where(n => n.CodigoTurma == codigoTurmaRegular && n.CodigoComponenteCurricular == codigoComponente) ?? null;
             }
 
             return notas?.Where(n => n.CodigoComponenteCurricular == codigoComponente) ?? null;
