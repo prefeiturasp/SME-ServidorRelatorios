@@ -179,7 +179,7 @@ namespace SME.SR.Application
             var componentesTurmaComAreaSemOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && !w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(b => b.AreaDoConhecimento.Nome).ThenBy(b => b.Disciplina).ToList();
 
             var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null && !w.TerritorioSaber).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
-            var componentesTerritorioSaber = componentesCurricularesPorTurma.Where(w => w.TerritorioSaber).OrderBy(o => o.OrdemTerritorioSaber).ToList();
+            var componentesTerritorioSaber = componentesCurricularesPorTurma.Where(w => w.TerritorioSaber).OrderBy(c=> c.Disciplina).ThenBy(o => o.OrdemTerritorioSaber).ToList();
             var componentesTurma = componentesTurmaComAreaOrdem.Concat(componentesTurmaSemArea).Concat(componentesTerritorioSaber).Concat(componentesTurmaComAreaSemOrdem);
 
             foreach (var componente in componentesTurma)
