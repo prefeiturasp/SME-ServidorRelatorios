@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -69,8 +70,11 @@ namespace SME.SR.Data
 
         private string QueryCompletaCodigosTurmasAlunosAnosAnteriores()
         {
-            return $@"SELECT DISTINCT turesc.cd_turma_escola as CodigoTurma,aluno.cd_aluno as CodigoAluno
-                        FROM turma_escola turesc
+            var query = new StringBuilder($@"
+                       SELECT CodigoTurma FROM (
+                       SELECT DISTINCT turesc.cd_turma_escola as CodigoTurma,
+                       ROW_NUMBER() OVER (PARTITION BY matrTurma.cd_matricula ORDER BY matrTurma.dt_situacao_aluno desc) as sequencia
+                       FROM turma_escola turesc
                        INNER JOIN historico_matricula_turma_escola matrTurma ON matrTurma.cd_turma_escola = turesc.cd_turma_escola
                        INNER JOIN v_historico_matricula_cotic matricula ON matricula.cd_matricula = matrTurma.cd_matricula
                        INNER JOIN v_aluno_cotic aluno ON matricula.cd_aluno = aluno.cd_aluno              
@@ -78,7 +82,13 @@ namespace SME.SR.Data
                          and turesc.cd_tipo_turma IN (@tiposTurmaNormalizado)
                          and turesc.an_letivo = @anoLetivo
                          and ((matrTurma.cd_situacao_aluno in (1, 6, 10, 13, 5) and matrTurma.dt_situacao_aluno <= @data)
-                           or (matrTurma.cd_situacao_aluno not in (1, 6, 10, 13, 5) and matrTurma.dt_situacao_aluno > @data))";
+                           or (matrTurma.cd_situacao_aluno not in (1, 6, 10, 13, 5) and matrTurma.dt_situacao_aluno > @data))
+                        ) as turmas
+                        WHERE sequencia = 1 ");
+            query.AppendLine(" union all ");
+            query.AppendLine(QueryCompletaCodigosTurmasAnoAtual());
+
+            return query.ToString();
         }
 
         public async Task<IEnumerable<int>> BuscarCodigosTurmasAlunoPorAnoLetivoAlunoAsync(int anoLetivo, string[] codigoAlunos, IEnumerable<int> tiposTurma, bool consideraHistorico = false, DateTime? dataReferencia = null, string ueCodigo = null)

@@ -732,8 +732,12 @@ namespace SME.SR.Application
             if (turma.EhEja && turma.TipoTurma == TipoTurma.EdFisica)
             {
                 var codigoAlunos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+                var tiposTurmas = new List<int> { (int)turma.TipoTurma };
 
-                return (await mediator.Send(new ObterTurmasRegularesQuery(codigoAlunos))).ToArray();
+                tiposTurmas.AddRange(turma.ObterTiposRegularesDiferentes());
+
+                return (await mediator.Send(new ObterTurmaCodigosAlunoPorAnoLetivoAlunoTipoTurmaQuery(turma.AnoLetivo, codigoAlunos,
+                                    tiposTurmas, turma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year, DateTimeExtension.HorarioBrasilia()))).Select(x => x.ToString()).ToArray();
             }
 
             return new string[] { turma.Codigo };

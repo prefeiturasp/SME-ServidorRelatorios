@@ -1309,30 +1309,6 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
                 return await conexao.QueryAsync<TurmaItinerarioEnsinoMedioDto>(query);
         }
-
-        public async Task<IEnumerable<string>> ObterCodigoTurmaRegulares(string[] codigosTurmas)
-        {
-            var query = @" select distinct tr.turma_id as RegularCodigo
-                            from 
-	                            conselho_classe_aluno cca
-                            inner join 
-	                            conselho_classe_aluno_turma_complementar ccat
-	                            on cca.id = ccat.conselho_classe_aluno_id
-                            inner join 
-	                            conselho_classe cc
-	                            on cc.id = cca.conselho_classe_id
-                            inner join
-	                            fechamento_turma ft
-	                            on cc.fechamento_turma_id = ft.id
-                            inner join 
-	                            turma tr
-	                            on tr.id = ft.turma_id
-	                        where cca.aluno_codigo = ANY(@codigosTurmas)";
-
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
-
-            return await conexao.QueryAsync<string>(query, new { codigosTurmas });
-        }
     }
 }
 
