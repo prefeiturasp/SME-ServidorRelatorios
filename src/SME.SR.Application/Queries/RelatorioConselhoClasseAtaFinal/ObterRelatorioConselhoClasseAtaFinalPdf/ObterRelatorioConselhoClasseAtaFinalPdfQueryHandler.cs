@@ -99,9 +99,11 @@ namespace SME.SR.Application
                 else
                     tiposTurma.Add((int)TipoTurma.Regular);
 
-                var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, filtro.Semestre, tiposTurma.ToArray());
+                var codigosDeTurmas = await ObterCodigoDeTurmas(turma, alunos);
+                var notas = await ObterNotasAlunos(alunosCodigos, codigosDeTurmas.ToArray(), turma.AnoLetivo, turma.ModalidadeCodigo, filtro.Semestre, tiposTurma.ToArray());
+            
                 if (notas == null || !notas.Any())
-                    return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
 
                 var cabecalho = await ObterCabecalho(turma.Codigo);
                 var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
@@ -191,8 +193,8 @@ namespace SME.SR.Application
         {
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
-
-            var notas = await ObterNotasAlunos(alunosCodigos, turma.Codigo, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });            
+            var codigosDeTurmas = await ObterCodigoDeTurmas(turma, alunos);
+            var notas = await ObterNotasAlunos(alunosCodigos, codigosDeTurmas.ToArray(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });            
             if (notas == null || !notas.Any()) return default;
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
@@ -894,12 +896,28 @@ namespace SME.SR.Application
 
             return modelPagina.GruposMatriz.FirstOrDefault(x => x.Id == disciplina.IdGrupoMatriz);
         }
-        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string codigoTurma, int anoLetivo, Modalidade modalidade, int semestre, int[] tiposTurma)
+        private async Task<IEnumerable<IGrouping<string, NotasAlunoBimestre>>> ObterNotasAlunos(string[] alunosCodigo, string[] codigosTurmas, int anoLetivo, Modalidade modalidade, int semestre, int[] tiposTurma)
         {
-            return await mediator.Send(new ObterNotasRelatorioAtaFinalQuery(alunosCodigo, codigoTurma, anoLetivo, (int)modalidade, semestre, tiposTurma));
+            return await mediator.Send(new ObterNotasRelatorioAtaFinalQuery(alunosCodigo, codigosTurmas, anoLetivo, (int)modalidade, semestre, tiposTurma));
         }
 
         private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> ObterComponentesCurricularesTurmasRelatorio(string[] turmaCodigo, string codigoUe, Modalidade modalidade)
-            => await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery(turmaCodigo, codigoUe, modalidade));        
+            => await mediator.Send(new ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery(turmaCodigo, codigoUe, modalidade));
+
+        private async Task<string[]> ObterCodigoDeTurmas(Turma turma, IEnumerable<AlunoSituacaoAtaFinalDto> alunos)
+        {
+            if (turma.EhEja && turma.TipoTurma == TipoTurma.EdFisica)
+            {
+                var codigoAlunos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+                var tiposTurmas = new List<int> { (int)turma.TipoTurma };
+
+                tiposTurmas.AddRange(turma.ObterTiposRegularesDiferentes());
+
+                return (await mediator.Send(new ObterTurmaCodigosAlunoPorAnoLetivoAlunoTipoTurmaQuery(turma.AnoLetivo, codigoAlunos,
+                                    tiposTurmas, turma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year, DateTimeExtension.HorarioBrasilia()))).Select(x => x.ToString()).ToArray();
+            }
+
+            return new string[] { turma.Codigo };
+        }
     }
 }
