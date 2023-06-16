@@ -233,7 +233,7 @@ namespace SME.SR.Application
                 {
                     AlunoCodigo = nf.CodigoAluno,
                     Nota = nf.NotaConceito.Nota,
-                    Bimestre = nf.PeriodoEscolar?.Bimestre,
+                    Bimestre = nf.NotaConceito.Bimestre,
                     ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
