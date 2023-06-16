@@ -1,11 +1,8 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using SME.SR.Application;
 using SME.SR.Infra;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using static SME.SR.Infra.Enumeradores;
 
 namespace SME.SR.Workers.SGP
 {
@@ -20,12 +17,19 @@ namespace SME.SR.Workers.SGP
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
-            var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
-            var relatorio = await mediator.Send(relatorioQuery);
+            try
+            {
+                request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroBoletim;
+                var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioBoletimEscolarQuery>();
+                var relatorio = await mediator.Send(relatorioQuery);
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples",
-                relatorio, request.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBoletimEscolarSimples",
+                    relatorio, request.CodigoCorrelacao));
+            }
+            catch (Exception ex)
+            {
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Boletim - {ex}", LogNivel.Critico));
+            }
         }
     }
 }

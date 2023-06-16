@@ -396,7 +396,7 @@
 
 		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId) =>
 			$@"WITH lista AS (
-				SELECT DISTINCT mte.cd_turma_escola,
+				SELECT DISTINCT ue.cd_unidade_educacao,
 								m.cd_aluno,
 								se.sg_resumida_serie
 				FROM v_matricula_cotic m
@@ -429,7 +429,7 @@
 				UNION
 
 				SELECT
-					mte.cd_turma_escola,
+					ue.cd_unidade_educacao,
 					matr.cd_aluno,
 					se.sg_resumida_serie
 				FROM
@@ -460,8 +460,8 @@
 					  AND mte.nr_chamada_aluno is not null
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
 					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)})
-			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
-				FROM lista group by sg_resumida_serie ";
+			SELECT cd_unidade_educacao as UeCodigo,sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
+				FROM lista group by cd_unidade_educacao,sg_resumida_serie ";
 
 
 

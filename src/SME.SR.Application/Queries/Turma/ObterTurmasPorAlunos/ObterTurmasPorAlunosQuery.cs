@@ -6,7 +6,7 @@ namespace SME.SR.Application
 {
     public class ObterTurmasPorAlunosQuery : IRequest<IEnumerable<AlunosTurmasCodigosDto>>
     {
-        public ObterTurmasPorAlunosQuery(long[] alunosCodigos, long[] pareceresConclusivosIds)
+        public ObterTurmasPorAlunosQuery(long[] alunosCodigos, long[] pareceresConclusivosIds = null)
         {
             AlunosCodigos = alunosCodigos;
             PareceresConclusivosIds = pareceresConclusivosIds;
