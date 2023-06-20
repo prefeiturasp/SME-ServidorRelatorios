@@ -40,7 +40,7 @@ namespace SME.SR.Application
             if (!turmasCodigosFiltrado.Any())
                 turmasCodigosFiltrado = request.CodigosTurmas;
 
-            var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, codigoAlunos, request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
+            var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, codigoAlunos.Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesId));
             var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId));
