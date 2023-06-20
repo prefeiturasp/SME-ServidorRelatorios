@@ -449,6 +449,7 @@ namespace SME.SR.Application
                 bool possuiComponente = true;
                 bool existeFrequenciaRegistradaTurmaAno = false;
                 bool possuiConselhoUltimoBimestreAtivo = false;
+                var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.CodigoAluno.ToString(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
@@ -484,7 +485,7 @@ namespace SME.SR.Application
                         foreach (var bimestre in bimestres)
                         {
                             var possuiConselho = notasFinais.Any(n => n.Bimestre == bimestre
-                            && n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0);
+                            && n.AlunoCodigo == aluno.CodigoAluno.ToString() && conselhoClassBimestres.Any(a => a == bimestre));
 
                             if (matriculadoDepois != null && bimestre < matriculadoDepois)
                             {
@@ -538,7 +539,7 @@ namespace SME.SR.Application
                         var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
                         var notaConceitofinal = notasFinais.OrderByDescending(n => n.Aprovado).ThenByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
+                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) && conselhoClassBimestres.Any(a => a == c.Bimestre) &&
                                                 aluno.Ativo);
 
         
@@ -562,29 +563,29 @@ namespace SME.SR.Application
 
                         if (possuiComponente)
                         {
-                            if (turma.AnoLetivo.Equals(2020))
-                            {
-                                frequencia = frequenciaAluno == null || frequenciaAluno.TotalAusencias == 0
-                                    ?
-                                    frequencia100Formatada
-                                    :
-                                    frequenciaAluno.PercentualFrequenciaFinal.ToString();
-                            }
-                            else
-                            {
-                                frequencia = "";
-                                if (frequenciaAluno != null && frequenciaAluno.TotalAulas != 0 && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo))
+                                if (turma.AnoLetivo.Equals(2020))
                                 {
-                                    frequencia = frequenciaAluno.PercentualFrequencia > 0
-                                    ? frequenciaAluno.PercentualFrequenciaFormatado
-                                    : 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+                                    frequencia = frequenciaAluno == null || frequenciaAluno.TotalAusencias == 0
+                                        ?
+                                        frequencia100Formatada
+                                        :
+                                        frequenciaAluno.PercentualFrequenciaFinal.ToString();
                                 }
-                                else if (frequenciaAluno == null && turmaPossuiFrequenciaRegistrada)
+                                else
                                 {
-                                    frequencia = frequencia100Formatada;
+                                    frequencia = "";
+                                    if (frequenciaAluno != null && frequenciaAluno.TotalAulas != 0 && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo))
+                                    {
+                                        frequencia = frequenciaAluno.PercentualFrequencia > 0
+                                        ? frequenciaAluno.PercentualFrequenciaFormatado
+                                        : 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
+                                    }
+                                    else if (frequenciaAluno == null && turmaPossuiFrequenciaRegistrada)
+                                    {
+                                        frequencia = frequencia100Formatada;
+                                    }
                                 }
                             }
-                        }
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                 componente.CodDisciplina,
