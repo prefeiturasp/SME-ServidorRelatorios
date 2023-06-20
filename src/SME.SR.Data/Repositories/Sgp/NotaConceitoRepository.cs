@@ -23,7 +23,7 @@ namespace SME.SR.Data
                             select distinct t.turma_id CodigoTurma,
                                     cccat.aluno_codigo CodigoAluno,
                                     cccatn.componente_curricular_id CodigoComponenteCurricular,        
-	                                cccatn.bimestre,       
+	                                coalesce(cccatn.bimestre, 0) as Bimestre,       
                                     pe.periodo_inicio PeriodoInicio,
                                     pe.periodo_fim PeriodoFim,
                                     cccatn.id NotaId,	                                   
@@ -46,7 +46,7 @@ namespace SME.SR.Data
                             group by t.turma_id,
                                     cccat.aluno_codigo,
                                     cccatn.componente_curricular_id,        
-	                               cccatn.bimestre,       
+	                               coalesce(cccatn.bimestre, 0),       
                                     pe.periodo_inicio,
                                     pe.periodo_fim,
                                     cccatn.conceito_id,
@@ -58,7 +58,7 @@ namespace SME.SR.Data
                             select distinct t.turma_id,
                                     cccat.aluno_codigo,
                                     cccatn.componente_curricular_id,        
-	                                null::int Bimestre,       
+	                                0 Bimestre,       
                                     null::date periodo_inicio,
                                     null::date periodo_fim,
                                     cccatn.id NotaId,	                                   
@@ -77,7 +77,7 @@ namespace SME.SR.Data
                                   and t.turma_id = any(@codigosTurmas) 
                                   and cccat.aluno_codigo = any(@codigosAluno) 
                                   and not ft.excluido 
-                                  and cccatn.bimestre is null
+                                  and (cccatn.bimestre is null or cccatn.bimestre = 0)
                             group by t.turma_id,
                                     cccat.aluno_codigo,
                                     cccatn.componente_curricular_id,        
@@ -116,7 +116,7 @@ namespace SME.SR.Data
         {
             var query = @"select t.id as IdTurma, t.turma_id as CodigoTurma, t.tipo_turma as TipoTurma, cccat.aluno_codigo as CodigoAluno,
                            cccatn.componente_curricular_id CodigoComponenteCurricular, coalesce(ccp.aprovado, false) as Aprovado,
-                           cccatn.id as NotaId, cccatn.conceito_id as ConceitoId, cccatn.bimestre as Bimestre, 
+                           cccatn.id as NotaId, cccatn.conceito_id as ConceitoId, coalesce(cccatn.bimestre, 0) as Bimestre, 
                            cv.valor as Conceito, cccatn.nota as Nota
                            from turma t 
                            inner join consolidado_conselho_classe_aluno_turma cccat on t.id = cccat.turma_id   
