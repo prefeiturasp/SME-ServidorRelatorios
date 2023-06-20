@@ -77,7 +77,7 @@ namespace SME.SR.Data
                                   and t.turma_id = any(@codigosTurmas) 
                                   and cccat.aluno_codigo = any(@codigosAluno) 
                                   and not ft.excluido 
-                                  and (cccatn.bimestre is null or cccatn.bimestre = 0)
+                                  and coalesce(cccatn.bimestre, 0) = 0
                             group by t.turma_id,
                                     cccat.aluno_codigo,
                                     cccatn.componente_curricular_id,        
