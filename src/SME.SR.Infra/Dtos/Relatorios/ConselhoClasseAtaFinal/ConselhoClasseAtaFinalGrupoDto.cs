@@ -16,7 +16,7 @@ namespace SME.SR.Infra
         public int QuantidadeColunas { get; set; }
         public List<ConselhoClasseAtaFinalComponenteDto> ComponentesCurriculares { get; set; }
 
-        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres)
+        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres, bool lancaNota = true, bool lancaFrequencia = true)
         {
             var componenteCurricularDto = new ConselhoClasseAtaFinalComponenteDto()
             {
@@ -25,16 +25,26 @@ namespace SME.SR.Infra
                 IdGrupoMatriz = idGrupoMatriz
             };
 
-            // Colunas dos Bimestres
-            foreach(var bimestre in bimestres)
-                componenteCurricularDto.AdicionarColuna($"{bimestre}º");
-            componenteCurricularDto.AdicionarColuna("SF");
+            if (lancaNota)
+            {
+                // Colunas dos Bimestres
+                foreach (var bimestre in bimestres)
+                    componenteCurricularDto.AdicionarColuna($"{bimestre}º");
+                componenteCurricularDto.AdicionarColuna("SF");
+            }
+
+            if (lancaFrequencia)
+                AdicionarColunasFrequencia(componenteCurricularDto);
+
+            ComponentesCurriculares.Add(componenteCurricularDto);
+        }
+
+        private void AdicionarColunasFrequencia(ConselhoClasseAtaFinalComponenteDto componenteCurricularDto)
+        {
             // Colunas de Frequencia
             componenteCurricularDto.AdicionarColuna("F");
             componenteCurricularDto.AdicionarColuna("CA");
             componenteCurricularDto.AdicionarColuna("%");
-
-            ComponentesCurriculares.Add(componenteCurricularDto);
         }
     }
 }
