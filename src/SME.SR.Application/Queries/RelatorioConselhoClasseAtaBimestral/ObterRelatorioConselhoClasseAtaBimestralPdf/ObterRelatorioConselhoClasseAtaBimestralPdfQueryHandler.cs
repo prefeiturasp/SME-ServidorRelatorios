@@ -71,8 +71,9 @@ namespace SME.SR.Application
                 tiposTurma.Add((int)TipoTurma.Regular);
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray(), filtro.Bimestre);
+            var codigosDeTurmas = await ObterCodigoDeTurmas(turma, alunos);
 
-            notas = notas.Where(n => n.Key.Equals(turma.Codigo));
+            notas = notas.Where(n => codigosDeTurmas.Contains(n.Key));
 
             if (notas == null || !notas.Any())
                 return Enumerable.Empty<ConselhoClasseAtaBimestralPaginaDto>();
@@ -247,7 +248,7 @@ namespace SME.SR.Application
             {
                 for (int h = 0; h < quantidadePaginasHorizontal; h++)
                 {
-                    bool ehPaginaFinal = (h + 1) == quantidadePaginasHorizontal;
+                    bool ehPaginaFinal = h == quantidadePaginasHorizontal;
                     if (ehPaginaFinal)
                         continue;
 
@@ -724,6 +725,19 @@ namespace SME.SR.Application
                 return (2, "S");
 
             return (1, "P");
+        }
+
+        private async Task<string[]> ObterCodigoDeTurmas(Turma turma, IEnumerable<AlunoSituacaoAtaFinalDto> alunos)
+        {
+            if (turma.EhEja && turma.TipoTurma == TipoTurma.EdFisica)
+            {
+                var codigoAlunos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+
+                return (await mediator.Send(new ObterTurmaCodigosAlunoPorAnoLetivoAlunoTipoTurmaQuery(turma.AnoLetivo, codigoAlunos,
+                                    turma.ObterTiposRegularesDiferentes(), turma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year, DateTimeExtension.HorarioBrasilia()))).Select(x => x.ToString()).ToArray();
+            }
+
+            return new string[] { turma.Codigo };
         }
     }
 }
