@@ -232,14 +232,7 @@
                     <tr class="@(linha.Inativo ? " estudante-inativo" : "" )">
                         <td class="alinhar-centro">@linha.Id</td>
 
-                        @if (linha.Inativo)
-                        {
-                            <td class="alinhar-esquerda fonte-8">@linha.Nome (@linha.Situacao)</td>
-                        }
-                        else
-                        {
-                            <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
-                        }
+                        <td class="alinhar-esquerda fonte-8">@linha.Nome</td>
 
                         @foreach (var grupoMatriz in Model.GruposMatriz)
                         {
