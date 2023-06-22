@@ -85,7 +85,7 @@ namespace SME.SR.Application
                             {
                                 await MapearGruposEComponentes(
                                 componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.CodigoTurma.ToString()),
-                                boletimEscolarAlunoDto);
+                                boletimEscolarAlunoDto, turmas.Any(turma => turma.EhEja));
                             }
                         }
 
@@ -157,7 +157,8 @@ namespace SME.SR.Application
 
         private async Task MapearGruposEComponentes(
             IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma,
-            BoletimEscolarDetalhadoAlunoDto boletim)
+            BoletimEscolarDetalhadoAlunoDto boletim,
+            bool ehEja)
         {
             var componentesOrdenados =
                 await mediator.Send(
@@ -196,7 +197,7 @@ namespace SME.SR.Application
                         if (componente.Regencia && componente.ComponentesCurricularesRegencia != null &&
                             componente.ComponentesCurricularesRegencia.Any())
                         {
-                            grupo.ComponenteCurricularRegencia = new ComponenteCurricularRegenciaDto()
+                            var componenteCurricular = new ComponenteCurricularRegenciaDto()
                             {
                                 Codigo = componente.CodDisciplina.ToString(),
                                 Frequencia = componente.Frequencia
@@ -205,9 +206,9 @@ namespace SME.SR.Application
                             foreach (var componenteRegencia in componente.ComponentesCurricularesRegencia.OrderBy(a =>
                                 a.Disciplina))
                             {
-                                if (!grupo.ComponenteCurricularRegencia.ComponentesCurriculares.Any(g =>
+                                if (!componenteCurricular.ComponentesCurriculares.Any(g =>
                                     g.Codigo == componenteRegencia.CodDisciplina.ToString()))
-                                    grupo.ComponenteCurricularRegencia.ComponentesCurriculares.Add(
+                                    componenteCurricular.ComponentesCurriculares.Add(
                                         new ComponenteCurricularRegenciaNotaDto()
                                         {
                                             Codigo = componenteRegencia.CodDisciplina.ToString(),
@@ -215,6 +216,11 @@ namespace SME.SR.Application
                                             Nota = componenteRegencia.LancaNota
                                         });
                             }
+
+                            if (ehEja)
+                                boletim.ComponenteCurricularRegencia = componenteCurricular;
+                            else
+                                grupo.ComponenteCurricularRegencia = componenteCurricular;
                         }
                         else if (!componente.Regencia)
                         {
