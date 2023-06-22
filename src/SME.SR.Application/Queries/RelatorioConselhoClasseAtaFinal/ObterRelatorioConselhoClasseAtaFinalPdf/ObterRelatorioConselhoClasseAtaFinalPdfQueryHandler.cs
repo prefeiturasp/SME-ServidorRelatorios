@@ -358,7 +358,10 @@ namespace SME.SR.Application
                     foreach (var grupoMatriz in modelPagina.GruposMatriz)
                     {
                         grupoMatriz.QuantidadeColunas = modelPagina.Linhas.First().Celulas.Where(x => x.GrupoMatriz == grupoMatriz.Id).Count();
+                        grupoMatriz.ComponentesCurriculares = grupoMatriz.ComponentesCurriculares.OrderBy(componente => !componente.Regencia).ToList();
                     }
+
+                    modelPagina.GruposMatriz = modelPagina.GruposMatriz.OrderBy(grupo => !grupo.Regencia).ThenBy(grupo => grupo.Id).ToList();
 
                     modelsPaginas.Add(modelPagina);
                 }
@@ -404,13 +407,15 @@ namespace SME.SR.Application
                 {
                     var componentes = componenteRegencia.ComponentesCurricularesRegencia.ToList();
 
+                    componentes.ForEach(componente => { componente.Frequencia = false; });
+
                     componentes.Add(new ComponenteCurricularPorTurmaRegencia()
                     {
                         LancaNota = false,
                         Frequencia = true,
                         CodDisciplina = CODIGO_FREQUENCIA,
                         Disciplina = "Frequência",
-                        Regencia = false,
+                        Regencia = true
                     });
 
                     componenteRegencia.ComponentesCurricularesRegencia = componentes;
@@ -629,7 +634,7 @@ namespace SME.SR.Application
 
         private bool ApresentarFrequencia(ComponenteCurricularPorTurma componente, bool possuiFrequencia)
         {
-            return (componente.Frequencia && (!componente.Regencia || (componente.Regencia && !possuiFrequencia)));
+            return (componente.Frequencia || (componente.Regencia && !possuiFrequencia));
         }
 
         private List<ConselhoClasseAtaFinalCelulaDto> ObterCelulasFrequencias(
@@ -835,7 +840,7 @@ namespace SME.SR.Application
                     foreach (var componenteCurricular in componentes)
                     {
                         if (!grupoMatrizDto.ComponentesCurriculares.Any(a => a.Id == componenteCurricular.CodDisciplina))
-                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres, componenteCurricular.LancaNota, componenteCurricular.Frequencia && !componenteCurricular.Regencia);
+                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres, componenteCurricular.Regencia, componenteCurricular.LancaNota, componenteCurricular.Frequencia);
                     }
 
                     relatorio.GruposMatriz.Add(grupoMatrizDto);

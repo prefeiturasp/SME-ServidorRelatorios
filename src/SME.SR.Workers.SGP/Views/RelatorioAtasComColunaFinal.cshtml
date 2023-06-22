@@ -94,7 +94,8 @@
         }
 
         .tabela-alunos tr {
-            font-size: 7px;
+            font-size: 8px;
+            font-weight: bold;
         }
 
         .fonte-10 {
@@ -105,8 +106,8 @@
             font-size: 8px !important;
         }
 
-        .fonte-7 {
-            font-size: 7px !important;
+        .fonte-9 {
+            font-size: 9px !important;
         }
 
         .fonte-14 {
@@ -179,30 +180,44 @@
 
         <table class="tabela-alunos">
             <thead>
-                <tr class="fonte-8">
-                    <th colspan="2"></th>
+                @{
+                    <tr>
+                        <th rowspan="2" colspan="2"></th>
+                        @foreach (var grupoMatriz in Model.GruposMatriz)
+                        {
+                            if (grupoMatriz.Regencia)
+                            {
+                                var totalColunaRegencia = grupoMatriz.ComponentesCurriculares.Where(componente => componente.Regencia).Sum(componente => componente.Colunas.Count);
+                                
+                                <th class="fonte-9" colspan="@totalColunaRegencia">Regência de Classe</th>
+                            }
+
+                            foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares.Where(componente => !componente.Regencia))
+                            {
+                                <th rowspan="2" colspan="@componenteCurricular.Colunas.Count">@componenteCurricular.Nome</th>
+                            }
+                        }
+                        @if (Model.FinalHorizontal)
+                        {
+                            <th rowspan="2" colspan="4">Anual</th>
+                        }
+                    </tr>
+                  }
+                <tr>
                     @foreach (var grupoMatriz in Model.GruposMatriz)
                     {
                         foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                         {
-                            if (Model.EhEJA)
+                            if (componenteCurricular.Regencia)
                             {
-                                <th colspan="6">@componenteCurricular.Nome</th>
-                            }
-                            else
-                            {
-                                <th colspan="@(componenteCurricular.Colunas.Count)">@componenteCurricular.Nome</th>
-                            }
+                                <th class="fonte-9" colspan="@(componenteCurricular.Colunas.Count)">@componenteCurricular.Nome</th>
+                            } 
                         }
-                    }
-                    @if (Model.FinalHorizontal)
-                    {
-                        <th colspan="4">Anual</th>
                     }
                 </tr>
                 <tr>
-                    <th class="fonte-8 tamanho-15 alinhar-centro">Nº</th>
-                    <th class="fonte-8 tamanho-125 alinhar-esquerda">Nome</th>
+                    <th class="fonte-9 tamanho-15 alinhar-centro">Nº</th>
+                    <th class="fonte-9 tamanho-125 alinhar-esquerda">Nome</th>
 
                     @foreach (var grupoMatriz in Model.GruposMatriz)
                     {
@@ -216,10 +231,10 @@
                     }
                     @if (Model.FinalHorizontal)
                     {
-                        <th>F</th>
-                        <th>CA</th>
-                        <th>%</th>
-                        <th>Parecer conclusivo</th>
+                        <th class="fonte-9">F</th>
+                        <th class="fonte-9">CA</th>
+                        <th class="fonte-9">%</th>
+                        <th class="fonte-9">Parecer conclusivo</th>
                     }
                 </tr>
             </thead>
