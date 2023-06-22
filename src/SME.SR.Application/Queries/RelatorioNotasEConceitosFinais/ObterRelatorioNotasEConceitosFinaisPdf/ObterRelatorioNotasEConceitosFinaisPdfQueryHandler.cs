@@ -364,7 +364,8 @@ namespace SME.SR.Application
 
                 foreach (var nota in notasTurma)
                 {
-                    nota.CarregaTipoNota(tipoNotaAluno[nota.AlunoCodigo]);
+                    if (tipoNotaAluno.ContainsKey(nota.AlunoCodigo))
+                        nota.CarregaTipoNota(tipoNotaAluno[nota.AlunoCodigo]);
                 }
             }
         }
