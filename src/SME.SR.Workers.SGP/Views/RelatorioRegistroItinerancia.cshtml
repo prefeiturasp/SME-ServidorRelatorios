@@ -38,9 +38,9 @@
 <table>
 <tbody>
 <tr>
-<td  width='65%' class='espaco-esquerda-15'>USUÁRIO: {Model.Usuario}</td>
+<td  width='63%' class='espaco-esquerda-15'>USUÁRIO: {Model.Usuario}</td>
 <td width='17%' class='espaco-esquerda-15'>RF: {Model.RF}</td>
-<td width='18%' class='espaco-esquerda-15'>DATA: {Model.DataSolicitacao}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.DataSolicitacao}</td>
 </tr>
 </tbody>
 </table>
@@ -189,7 +189,7 @@
 
             .body-relatorio {
                 margin: 0.5cm auto;
-                font-family: 'Roboto Mono';
+                font-family: 'Roboto Mono', monospace;
                 width: 21cm;
                 min-height: 29.7cm;
                 background: white;
@@ -311,69 +311,68 @@
                 <table class="tabela-cabecalho">
                     @{
                         var dataVisita = registros.DataVisita;
-                        bool temAlunos = registros?.Alunos?.Count() > 0;
-                        var numeroRegistros = temAlunos ? registros.Alunos.Count() : 1;
-                    }
-
-                    @for (var i = 0; i < numeroRegistros; i++)
-                    {
-                        var estudante = temAlunos ? registros.Alunos.ToList()[i].Estudante : "";
-                        var acompanhamentoSituacao = temAlunos ? registros.Alunos.ToList()[i].AcompanhamentoSituacao : registros.AcompanhamentoSituacao;
-                        var encaminhamentos = temAlunos ? registros.Alunos.ToList()[i].Encaminhamentos : registros.Encaminhamentos;
                         var dataRetorno = registros.DataRetorno;
 
-                        QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);
-
-                        if (i > 0 && i < registros?.Alunos?.Count() - 1 && !quebrou)
-                        {
-                            @Html.Raw(EspacoEmBranco());
-                            contadorQuebrarPagina++;
-                        }
-
                         <tbody>
-                            @if (temAlunos)
-                            {
-                                @Html.Raw(MontarLinhaSimples(estudante))
-                                contadorQuebrarPagina++;
-
-                            }
-
                             @Html.Raw(MontarLinhaSimples(dataVisita))
-
                             @{ contadorQuebrarPagina++; }
 
-                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, 4))
+                            @Html.Raw(MontarObjetivos(registros.Objetivos, "", registros.Dre, registros.Ue))
 
-                            @Html.Raw(MontarObjetivos(registros.Objetivos, estudante, registros.Dre, registros.Ue))
-
-                            @if (temAlunos)
+                            @if (!string.IsNullOrEmpty(registros.AcompanhamentoSituacao))
                             {
-                                var descritivoEstudante = registros.Alunos.ToList()[i].DescritivoEstudante;
-                                int numeroLinhasDE = CalcularLinhas(descritivoEstudante.Length);
-                                @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasDE))
-                                MontarSecoes("DESCRITIVO DO ESTUDANTE", descritivoEstudante);
+                                int numeroLinhasASGeral = CalcularLinhas(registros.AcompanhamentoSituacao.Length);
+                                @Html.Raw(QuebrarLinhas("", registros.Dre, registros.Ue, numeroLinhasASGeral, false))
+                                @Html.Raw(MontarSecoes("ACOMPANHAMENTO DA SITUAÇÃO", registros.AcompanhamentoSituacao))
                             }
 
-                            @{ int numeroLinhasAS = CalcularLinhas(acompanhamentoSituacao.Length); }
-                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasAS))
-                            @Html.Raw(MontarSecoes("ACOMPANHAMENTO DA SITUAÇÃO", acompanhamentoSituacao))
+                            @if (!string.IsNullOrEmpty(registros.Encaminhamentos))
+                            {
+                                int numeroLinhasEncaminhamentosGeral = CalcularLinhas(registros.Encaminhamentos.Length);
+                                @Html.Raw(QuebrarLinhas("", registros.Dre, registros.Ue, numeroLinhasEncaminhamentosGeral, false))
+                                @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", registros.Encaminhamentos))
 
-                            @{ int numeroLinhasEncaminhamentos = CalcularLinhas(!string.IsNullOrEmpty(encaminhamentos) ? encaminhamentos.Length : 0); }
-                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasEncaminhamentos))
-                            @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", encaminhamentos))
-
-                            @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue))
-                            
+                            }
                             @if(!String.IsNullOrEmpty(dataRetorno))
                             {
                                 @Html.Raw(MontarSecoes("DATA PARA RETORNO/VERIFICAÇÃO", dataRetorno, true))
-                            }
-
-                            @if (i < registros?.Alunos?.Count() - 1)
-                            {
-                                QuebrarLinhas(estudante, registros.Dre, registros.Ue, 2, false);
                                 contadorQuebrarPagina++;
                             }
+                        </tbody>
+                    }
+
+                    @for (var i = 0; i < registros.Alunos.Count(); i++)
+                    {
+                        var estudante = registros.Alunos.ToList()[i].Estudante;
+                        var acompanhamentoSituacao = registros.Alunos.ToList()[i].AcompanhamentoSituacao;
+                        var encaminhamentos = registros.Alunos.ToList()[i].Encaminhamentos;
+                        
+                        <tbody>
+                            @{
+                                var descritivoEstudante = registros.Alunos.ToList()[i].DescritivoEstudante;
+                                int numeroLinhasDE = CalcularLinhas(descritivoEstudante.Length);
+                                @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasDE))
+                                if (!quebrou)
+                                {
+                                    if (i > 0)
+                                    {
+                                        @Html.Raw(EspacoEmBranco());
+                                        contadorQuebrarPagina++;
+                                     }
+                                    @Html.Raw(MontarLinhaSimples(estudante))
+                                    contadorQuebrarPagina++;
+                                }
+                                MontarSecoes("DESCRITIVO DO ESTUDANTE", descritivoEstudante);
+
+                                int numeroLinhasAS = CalcularLinhas(acompanhamentoSituacao.Length); 
+                                @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasAS))
+                                @Html.Raw(MontarSecoes("ACOMPANHAMENTO DA SITUAÇÃO", acompanhamentoSituacao))
+
+                                int numeroLinhasEncaminhamentos = CalcularLinhas(!string.IsNullOrEmpty(encaminhamentos) ? encaminhamentos.Length : 0); 
+                                @Html.Raw(QuebrarLinhas(estudante, registros.Dre, registros.Ue, numeroLinhasEncaminhamentos))
+                                @Html.Raw(MontarSecoes("ENCAMINHAMENTOS", encaminhamentos))
+                            }
+
                         </tbody>
                     }
                 </table>
