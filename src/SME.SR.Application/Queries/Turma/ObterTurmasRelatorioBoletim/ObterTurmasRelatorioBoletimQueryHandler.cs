@@ -60,7 +60,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<Turma>> ObterTurmasPorFiltro(string ueCodigo, int anoLetivo, Modalidade modalidade, int semestre, Usuario usuario, bool consideraHistorico)
         {
-            return await mediator.Send(new ObterTurmasPorAbrangenciaFiltroQuery()
+            var turmaAbrangencia = await mediator.Send(new ObterTurmasPorAbrangenciaFiltroQuery()
             {
                 CodigoUe = ueCodigo,
                 AnoLetivo = anoLetivo,
@@ -72,6 +72,10 @@ namespace SME.SR.Application
                 PossuiFechamento = true,
                 SomenteEscolarizadas = true
             });
+
+            var codigoTumas = turmaAbrangencia.Select(turma => turma.Codigo).ToArray();
+
+            return await mediator.Send(new ObterTurmasPorCodigoQuery(codigoTumas));
         }
     }
 }

@@ -48,6 +48,8 @@ namespace SME.SR.Application
             if (notasPorTurmas.Any(n => n.ConselhoClasseAlunoId.HasValue && n.PossuiTurmaAssociada))
                 notasPorTurmas = await ObterTurmasAssociadas(notasPorTurmas);
 
+            await ConverteTipoNotaEJAEdFisica(notasPorTurmas);
+
             // Componentes curriculares
             var componentesCurriculares = await ObterComponentesCurriculares(notasPorTurmas, filtros.TipoNota);
 
@@ -181,7 +183,7 @@ namespace SME.SR.Application
             {
                 var associacao = turmasAssociadas.FirstOrDefault(t => t.ConselhoClasseAlunoId == nota.ConselhoClasseAlunoId);
 
-                var turmaAssociada = turmasAssociadasObj.FirstOrDefault(t => t.Codigo == associacao.TurmaComplementarId.ToString());
+                var turmaAssociada = turmasAssociadasObj.FirstOrDefault(t => t.Id == associacao.TurmaComplementarId);
 
                 nota.TurmaCodigo = turmaAssociada.Codigo;
                 nota.TurmaNome = turmaAssociada.Nome;
@@ -330,6 +332,41 @@ namespace SME.SR.Application
 
             relatorioNotasEConceitosFinaisDto.UsuarioNome = filtros.UsuarioNome;
             relatorioNotasEConceitosFinaisDto.UsuarioRF = filtros.UsuarioRf;
+        }
+
+        private async Task ConverteTipoNotaEJAEdFisica(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasConceitos)
+        {
+            const long ED_FISICA = 6;
+
+            var notasConceitosEdFisica = notasConceitos.Where(nc => nc.ComponenteCurricularCodigo == ED_FISICA);
+            var codigosTurmas = notasConceitosEdFisica?.Select(nc => nc.TurmaCodigo).Distinct().ToArray();
+
+            if (codigosTurmas.Any())
+            {
+                var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(codigosTurmas));
+                var turmasEja = turmas?.Where(turma => turma.EhEja && turma.TipoTurma == TipoTurma.EdFisica);
+
+                foreach(var turmaEja in turmasEja)
+                {
+                    await ConverteValorNotaPorTurmaEja(turmaEja, notasConceitosEdFisica);
+                }
+            }
+        }
+
+        private async Task ConverteValorNotaPorTurmaEja(Turma turmaEja, IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasConceitosEdFisica)
+        {
+            var notasTurma = notasConceitosEdFisica.Where(nc => nc.TurmaCodigo == turmaEja.Codigo);
+
+            if (notasTurma.Any())
+            {
+                var codigosAlunos = notasTurma.Select(nc => nc.AlunoCodigo)?.Distinct().ToArray();
+                var tipoNotaAluno = await mediator.Send(new ObterTipoTurmaRegularParaEdFisicaQuery(turmaEja, codigosAlunos));
+
+                foreach (var nota in notasTurma)
+                {
+                    nota.CarregaTipoNota(tipoNotaAluno[nota.AlunoCodigo]);
+                }
+            }
         }
     }
 }
