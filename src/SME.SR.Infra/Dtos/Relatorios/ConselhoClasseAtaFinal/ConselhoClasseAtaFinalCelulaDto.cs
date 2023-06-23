@@ -10,5 +10,6 @@ namespace SME.SR.Infra
         public long ComponenteCurricular { get; set; }
         public int Coluna { get; set; }
         public string Valor { get; set; }
+        public bool Regencia { get; set;  }
     }
 }

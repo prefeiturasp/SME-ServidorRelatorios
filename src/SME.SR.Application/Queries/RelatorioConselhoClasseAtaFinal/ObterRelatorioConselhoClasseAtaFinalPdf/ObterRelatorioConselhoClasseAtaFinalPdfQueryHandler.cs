@@ -366,7 +366,7 @@ namespace SME.SR.Application
                     {
                         List<ConselhoClasseAtaFinalCelulaDto> todasAsCelulas = linha.Celulas;
 
-                        linha.Celulas = todasAsCelulas.Where(x => gruposMatrizDestaPagina.Contains(x.GrupoMatriz) && idsDisciplinasDestaPagina.Contains(x.ComponenteCurricular)).Select(x => new ConselhoClasseAtaFinalCelulaDto { GrupoMatriz = x.GrupoMatriz, ComponenteCurricular = x.ComponenteCurricular, Coluna = x.Coluna, Valor = x.Valor }).ToList();
+                        linha.Celulas = todasAsCelulas.Where(x => gruposMatrizDestaPagina.Contains(x.GrupoMatriz) && idsDisciplinasDestaPagina.Contains(x.ComponenteCurricular)).Select(x => new ConselhoClasseAtaFinalCelulaDto { GrupoMatriz = x.GrupoMatriz, ComponenteCurricular = x.ComponenteCurricular, Coluna = x.Coluna, Valor = x.Valor, Regencia = x.Regencia }).ToList();
 
                         if (ehPaginaFinal)
                         {
@@ -561,13 +561,13 @@ namespace SME.SR.Application
 
                                 if (matriculadoDepois != null && bimestre < matriculadoDepois)
                                 {
-                                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, string.Empty, ++coluna);
+                                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, string.Empty, ++coluna, componente.Regencia) ;
                                     continue;
                                 }
 
                                 if (bimestre > ultimoBimestreAtivo)
                                 {
-                                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, string.Empty, ++coluna);
+                                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, string.Empty, ++coluna, componente.Regencia);
                                     continue;
                                 }
 
@@ -595,14 +595,14 @@ namespace SME.SR.Application
                                                             possuiComponente ? (componente.LancaNota ?
                                                                 notaConceito?.NotaConceito ?? "" :
                                                                 notaConceito?.Sintese) : string.Empty,
-                                                            ++coluna);
+                                                            ++coluna, componente.Regencia);
 
                                     if (ultimoBimestreAtivo > 0)
                                         possuiConselhoUltimoBimestreAtivo = bimestre == ultimoBimestreAtivo;
                                     continue;
                                 }
 
-                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : string.Empty, ++coluna);
+                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiComponente ? "" : string.Empty, ++coluna, componente.Regencia);
 
                             }
 
@@ -618,7 +618,7 @@ namespace SME.SR.Application
                                                 possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (componente.LancaNota ?
                                                     notaConceitofinal?.NotaConceito ?? "" :
                                                     notaConceitofinal?.Sintese ?? sintese) : string.Empty,
-                                                ++coluna);
+                                                ++coluna, componente.Regencia);
                         }
 
                         if (ApresentarFrequencia(componente, possuiComponenteFrequencia))
@@ -635,7 +635,7 @@ namespace SME.SR.Application
                                                                 turma,
                                                                 aluno,
                                                                 possuiConselhoUltimoBimestreAtivo,
-                                                                turmaPossuiFrequenciaRegistrada));
+                                                                turmaPossuiFrequenciaRegistrada, componente.Regencia));
                         } 
 
                         continue;
@@ -669,7 +669,8 @@ namespace SME.SR.Application
                             Turma turma,
                             AlunoSituacaoAtaFinalDto aluno,
                             bool possuiConselhoUltimoBimestreAtivo,
-                            bool turmaPossuiFrequenciaRegistrada)
+                            bool turmaPossuiFrequenciaRegistrada,
+                            bool regencia)
         {
             var celulasFrequencias = new List<ConselhoClasseAtaFinalCelulaDto>();
 
@@ -678,7 +679,8 @@ namespace SME.SR.Application
                 GrupoMatriz = idGrupo,
                 ComponenteCurricular = codDisciplina,
                 Coluna = ++coluna,
-                Valor = possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalAusencias.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty
+                Valor = possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalAusencias.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty,
+                Regencia = regencia
             });
 
             celulasFrequencias.Add(new ConselhoClasseAtaFinalCelulaDto()
@@ -686,7 +688,8 @@ namespace SME.SR.Application
                 GrupoMatriz = idGrupo,
                 ComponenteCurricular = codDisciplina,
                 Coluna = ++coluna,
-                Valor = possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty
+                Valor = possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty,
+                Regencia = regencia
             });
 
             celulasFrequencias.Add(new ConselhoClasseAtaFinalCelulaDto()
@@ -694,7 +697,8 @@ namespace SME.SR.Application
                 GrupoMatriz = idGrupo,
                 ComponenteCurricular = codDisciplina,
                 Coluna = ++coluna,
-                Valor = possuiComponente ? ObterFrequencia(frequenciaAluno, turma, aluno, possuiConselhoUltimoBimestreAtivo, turmaPossuiFrequenciaRegistrada) : string.Empty
+                Valor = possuiComponente ? ObterFrequencia(frequenciaAluno, turma, aluno, possuiConselhoUltimoBimestreAtivo, turmaPossuiFrequenciaRegistrada) : string.Empty,
+                Regencia = regencia
             });
 
             return celulasFrequencias;
