@@ -280,16 +280,39 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterComponenteCurricularGrupoAreaOrdenacaoQuery(listaGrupoMatrizId, listaAreaConhecimentoId));
         }
 
+        private int ObterTotalComponentesPorPagina(ConselhoClasseAtaFinalDto dadosRelatorio, int totalColunasPorPagina)
+        {
+            var colunas = 0;
+            var totalComponentes = 0;
+
+            foreach(var grupo in dadosRelatorio.GruposMatriz)
+            {
+                foreach(var componentes in grupo.ComponentesCurriculares)
+                {
+                    colunas += componentes.Colunas.Count;
+
+                    if (colunas <= totalColunasPorPagina) 
+                        totalComponentes++;
+                    else
+                        break;
+                }
+            }
+
+            return totalComponentes;
+        }
+
         private List<ConselhoClasseAtaFinalPaginaDto> MontarEstruturaPaginada(ConselhoClasseAtaFinalDto dadosRelatorio)
         {
-            var maximoComponentesPorPagina = 10;
-            var quantidadeDeLinhasPorPagina = 50;
+            var quantidadeDeLinhasPorPagina = 45;
+            var totalColunas = dadosRelatorio.GruposMatriz.Sum(grupo => grupo.ComponentesCurriculares.Sum(componente => componente.Colunas.Count));
+            var maximoColunasPorPagina = 52;
+            var maximoComponentesPorPagina = ObterTotalComponentesPorPagina(dadosRelatorio, maximoColunasPorPagina);
 
-            List<ConselhoClasseAtaFinalPaginaDto> modelsPaginas = new List<ConselhoClasseAtaFinalPaginaDto>();
+            List <ConselhoClasseAtaFinalPaginaDto> modelsPaginas = new List<ConselhoClasseAtaFinalPaginaDto>();
 
             List<ConselhoClasseAtaFinalComponenteDto> todasAsDisciplinas = dadosRelatorio.GruposMatriz.SelectMany(x => x.ComponentesCurriculares).ToList();
 
-            int quantidadePaginasHorizontal = CalcularPaginasHorizontal(maximoComponentesPorPagina, todasAsDisciplinas.Count() + 1);
+            int quantidadePaginasHorizontal = CalcularPaginasHorizontal(maximoColunasPorPagina, totalColunas);
 
             int quantidadePaginasVertical = (int)Math.Ceiling(dadosRelatorio.Linhas.Count / (decimal)quantidadeDeLinhasPorPagina);
 
@@ -358,7 +381,10 @@ namespace SME.SR.Application
                     foreach (var grupoMatriz in modelPagina.GruposMatriz)
                     {
                         grupoMatriz.QuantidadeColunas = modelPagina.Linhas.First().Celulas.Where(x => x.GrupoMatriz == grupoMatriz.Id).Count();
+                        grupoMatriz.ComponentesCurriculares = grupoMatriz.ComponentesCurriculares.OrderBy(componente => !componente.Regencia).ToList();
                     }
+
+                    modelPagina.GruposMatriz = modelPagina.GruposMatriz.OrderBy(grupo => !grupo.Regencia).ThenBy(grupo => grupo.Id).ToList();
 
                     modelsPaginas.Add(modelPagina);
                 }
@@ -404,13 +430,15 @@ namespace SME.SR.Application
                 {
                     var componentes = componenteRegencia.ComponentesCurricularesRegencia.ToList();
 
+                    componentes.ForEach(componente => { componente.Frequencia = false; });
+
                     componentes.Add(new ComponenteCurricularPorTurmaRegencia()
                     {
                         LancaNota = false,
                         Frequencia = true,
                         CodDisciplina = CODIGO_FREQUENCIA,
                         Disciplina = "Frequência",
-                        Regencia = false,
+                        Regencia = true
                     });
 
                     componenteRegencia.ComponentesCurricularesRegencia = componentes;
@@ -629,7 +657,7 @@ namespace SME.SR.Application
 
         private bool ApresentarFrequencia(ComponenteCurricularPorTurma componente, bool possuiFrequencia)
         {
-            return (componente.Frequencia && (!componente.Regencia || (componente.Regencia && !possuiFrequencia)));
+            return (componente.Frequencia || (componente.Regencia && !possuiFrequencia));
         }
 
         private List<ConselhoClasseAtaFinalCelulaDto> ObterCelulasFrequencias(
@@ -835,7 +863,7 @@ namespace SME.SR.Application
                     foreach (var componenteCurricular in componentes)
                     {
                         if (!grupoMatrizDto.ComponentesCurriculares.Any(a => a.Id == componenteCurricular.CodDisciplina))
-                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres, componenteCurricular.LancaNota, componenteCurricular.Frequencia && !componenteCurricular.Regencia);
+                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres, componenteCurricular.Regencia, componenteCurricular.LancaNota, componenteCurricular.Frequencia);
                     }
 
                     relatorio.GruposMatriz.Add(grupoMatrizDto);
@@ -924,9 +952,7 @@ namespace SME.SR.Application
 
         private int CalcularPaginasHorizontal(int maximoComponentesPorPagina, int contagemTodasDisciplinas)
         {
-            int contagemDisciplinas = contagemTodasDisciplinas;
-
-            return (int)(Math.Ceiling(contagemDisciplinas / (decimal)maximoComponentesPorPagina));
+            return (int)(Math.Ceiling(contagemTodasDisciplinas / (decimal)maximoComponentesPorPagina));
         }
 
         private ConselhoClasseAtaFinalGrupoDto VerificarGrupoMatrizNaPagina(ConselhoClasseAtaFinalDto modelCompleto, ConselhoClasseAtaFinalPaginaDto modelPagina, ConselhoClasseAtaFinalComponenteDto disciplina)

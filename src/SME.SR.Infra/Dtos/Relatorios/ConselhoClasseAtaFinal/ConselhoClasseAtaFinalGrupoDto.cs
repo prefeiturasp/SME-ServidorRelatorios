@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -15,14 +13,16 @@ namespace SME.SR.Infra
         public string Nome { get; set; }
         public int QuantidadeColunas { get; set; }
         public List<ConselhoClasseAtaFinalComponenteDto> ComponentesCurriculares { get; set; }
+        public bool Regencia { get { return ComponentesCurriculares.Exists(componente => componente.Regencia); } }
 
-        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres, bool lancaNota = true, bool lancaFrequencia = true)
+        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres, bool regencia, bool lancaNota = true, bool lancaFrequencia = true)
         {
             var componenteCurricularDto = new ConselhoClasseAtaFinalComponenteDto()
             {
                 Id = codDisciplina,
                 Nome = ComponenteCurricular,
-                IdGrupoMatriz = idGrupoMatriz
+                IdGrupoMatriz = idGrupoMatriz,
+                Regencia = regencia
             };
 
             if (lancaNota)
