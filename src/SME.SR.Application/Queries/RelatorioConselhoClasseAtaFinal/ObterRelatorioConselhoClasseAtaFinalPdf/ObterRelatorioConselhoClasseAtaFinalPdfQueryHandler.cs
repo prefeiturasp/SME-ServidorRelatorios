@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -762,13 +764,28 @@ namespace SME.SR.Application
             linhaDto.AdicionaCelula(99, 99, percentualFrequenciaAcumulado ?? frequencia100Formatada, COLUNA_PORCENTAGEM_FREQUENCIA);
 
             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
-            var textoParecer = parecerConclusivo?.ParecerConclusivo;
+            var textoParecer = ObterSiglaParecerConclusivo(parecerConclusivo);
             if (textoParecer == null)
             {
                 bool ativoOuConcluido = AlunoAtivo(aluno.CodigoSituacaoMatricula);
-                textoParecer = !ativoOuConcluido ? string.Concat(aluno.SituacaoMatricula, " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : SEM_PARECER_CONCLUSIVO;
+                textoParecer = !ativoOuConcluido ? string.Concat(ObterSiglaSituacaoMatricula(aluno), " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : SEM_PARECER_CONCLUSIVO;
             }
             linhaDto.AdicionaCelula(99, 99, textoParecer, COLUNA_PARECER_CONCLUSIVO);
+        }
+
+        private string ObterSiglaParecerConclusivo(ConselhoClasseParecerConclusivo parecerConclusivo)
+        {
+            if (parecerConclusivo != null)
+                return ParecerConclusivo.ObterSiglaParecer(parecerConclusivo.ParecerConclusivo) ?? parecerConclusivo.ParecerConclusivo;
+
+            return null;
+        }
+
+        private string ObterSiglaSituacaoMatricula(AlunoSituacaoAtaFinalDto aluno)
+        {
+            var sigla = aluno.CodigoSituacaoMatricula.GetAttribute<DisplayAttribute>().ShortName;
+
+            return string.IsNullOrEmpty(sigla) ? aluno.SituacaoMatricula : sigla;
         }
 
         private string ObterPercentualFrequenciaFinal(IEnumerable<FrequenciaAluno> frequenciasAluno, bool existeFrequenciaRegistradaTurma)
