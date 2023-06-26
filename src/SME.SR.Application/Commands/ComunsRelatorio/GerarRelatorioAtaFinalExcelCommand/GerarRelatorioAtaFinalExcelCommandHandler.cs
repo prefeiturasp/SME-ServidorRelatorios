@@ -195,25 +195,27 @@ namespace SME.SR.Application
 
                 var contagemCelulas = grupo.Count() - 1;
 
-                if (grupo.Key.Equals("Grupo99"))
+                if (grupo.Key.Equals("Grupo99Normal"))
                 {
                     worksheet.Range(LINHA_GRUPOS, indiceInicial, LINHA_COMPONENTES, indiceInicial + contagemCelulas).Merge();
                 }
                 else
                 {
-                    worksheet.Range(LINHA_GRUPOS, indiceInicial, LINHA_GRUPOS, indiceInicial + contagemCelulas).Merge();
-
-                    var componentes = listaTitulos.Where(t => t.StartsWith(grupo.Key)).GroupBy(g => g.Substring(g.IndexOf("Componente"), g.LastIndexOf('_')));
+                    if (grupo.Key.Contains("Regencia"))
+                        worksheet.Range(LINHA_GRUPOS, indiceInicial, LINHA_GRUPOS, indiceInicial + contagemCelulas).Merge();
+                    
+                    var componentesaAux = listaTitulos.Where(t => t.StartsWith(grupo.Key));      
+                    var componentes = componentesaAux.GroupBy(g => g.Substring(g.IndexOf("Componente"), g.LastIndexOf('_') - g.IndexOf("Componente")));
 
                     foreach (var componente in componentes)
                     {
                         itemInicial = componente.FirstOrDefault();
-
                         indiceInicial = tabelaDados.Columns[itemInicial].Ordinal + 1;
-
                         contagemCelulas = componente.Count() - 1;
-
                         worksheet.Range(LINHA_COMPONENTES, indiceInicial, LINHA_COMPONENTES, indiceInicial + contagemCelulas).Merge();
+                        if (!grupo.Key.Contains("Regencia"))
+                            worksheet.Range(LINHA_GRUPOS, indiceInicial, LINHA_COMPONENTES, indiceInicial + contagemCelulas).Merge();
+
                     }
                 }
             }
