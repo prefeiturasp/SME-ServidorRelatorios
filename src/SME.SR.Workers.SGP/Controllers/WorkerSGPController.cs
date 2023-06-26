@@ -27,7 +27,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorio/conselhoclasseturma")]
         [Action("relatorio/conselhoclasseturma", typeof(IRelatorioConselhoClasseTurmaUseCase))]
-        public async Task<bool> RelatorioConselhoClasseTurma([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase)
+        public async Task<bool> RelatorioConselhoClasseTurma([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseTurmaUseCase relatorioConselhoClasseTurmaUseCase)
         {
             await relatorioConselhoClasseTurmaUseCase.Executar(request);
             return true;
@@ -35,7 +35,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorio/conselhoclassealuno")]
         [Action("relatorio/conselhoclassealuno", typeof(IRelatorioConselhoClasseAlunoUseCase))]
-        public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request, IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
+        public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
         {
             SentrySdk.CaptureMessage("4 - relatorio/conselhoclassealuno");
             await relatorioConselhoClasseAlunoUseCase.Executar(request);
