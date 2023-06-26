@@ -109,44 +109,11 @@ namespace SME.SR.Application
                 if (grupo.Regencia)
                 {
                     linhaGrupos[colunaGrupo] = "Regência de Classe";
-                    foreach (var componente in componentesDoGrupo.Where(c => c.Regencia))
-                    {
-                        linhaComponentes[colunaGrupo] = componente.Nome;
-                        colunaGrupo += componente.Colunas.Count();
-
-                        foreach (var coluna in componente.Colunas)
-                        {
-                            linhaDetalhes[colunaDetalhe] = coluna.Nome;
-                            colunaDetalhe++;
-                        }
-                    }
-
-                    foreach (var componente in componentesDoGrupo.Where(c => !c.Regencia))
-                    {
-                        linhaGrupos[colunaGrupo] = componente.Nome;
-                        colunaGrupo += componente.Colunas.Count();
-                        
-                        foreach (var coluna in componente.Colunas)
-                        {
-                            linhaDetalhes[colunaDetalhe] = coluna.Nome;
-                            colunaDetalhe++;
-                        }
-                    }
+                    MontarLinhasGruposComponentes(componentesDoGrupo.Where(c => c.Regencia), linhaComponentes, ref colunaGrupo, linhaDetalhes, ref colunaDetalhe);
+                    MontarLinhasGruposComponentes(componentesDoGrupo.Where(c => !c.Regencia), linhaGrupos, ref colunaGrupo, linhaDetalhes, ref colunaDetalhe);
                 }
                 else
-                {
-                    foreach (var componente in componentesDoGrupo)
-                    {
-                        linhaGrupos[colunaGrupo] = componente.Nome;
-                        colunaGrupo += componente.Colunas.Count();
-                        
-                        foreach (var coluna in componente.Colunas)
-                        {
-                            linhaDetalhes[colunaDetalhe] = coluna.Nome;
-                            colunaDetalhe++;
-                        }
-                    }
-                }
+                    MontarLinhasGruposComponentes(componentesDoGrupo, linhaGrupos, ref colunaGrupo, linhaDetalhes, ref colunaDetalhe);
             }
 
             linhaGrupos["Grupo99Normal_Componente99_Coluna1"] = "Anual";
@@ -162,6 +129,20 @@ namespace SME.SR.Application
             dataTable.Rows.Add(linhaComponentes);
             dataTable.Rows.Add(linhaDetalhes);
         }
-    }
 
+        private void MontarLinhasGruposComponentes(IEnumerable<ConselhoClasseAtaFinalComponenteDto> componentes, DataRow linhaComponentes, ref int colunaGrupoComponente, DataRow linhaDetalhes, ref int colunaDetalhe)
+        {
+            foreach (var componente in componentes)
+            {
+                linhaComponentes[colunaGrupoComponente] = componente.Nome;
+                colunaGrupoComponente += componente.Colunas.Count();
+
+                foreach (var coluna in componente.Colunas)
+                {
+                    linhaDetalhes[colunaDetalhe] = coluna.Nome;
+                    colunaDetalhe++;
+                }
+            }
+        }
+    }
 }
