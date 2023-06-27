@@ -102,7 +102,8 @@ namespace SME.SR.Application
                                     conselhoClassBimestres,
                                     registroFrequencia,
                                     periodoAtual,
-                                    aulasPrevistas);
+                                    aulasPrevistas,
+                                    turmas);
                             }
 
                             var frequenciaGlobal = frequenciasGlobal?
@@ -229,7 +230,8 @@ namespace SME.SR.Application
         }
 
         private async Task SetarNotasFrequencia(RelatorioBoletimSimplesEscolarDto boletim, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma,
-            IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia, int periodoAtual, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
+            IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia, int periodoAtual, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas,
+            IEnumerable<Turma> turmas)
         {
             var aulasPrevistasTurma = aulasPrevistas.Where(a => a.TurmaCodigo == frequenciasTurma.FirstOrDefault().TurmaId);
 
@@ -281,7 +283,7 @@ namespace SME.SR.Application
 
                     if (componenteCurricular.Nota)
                     {
-                        var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
+                        var notasComponente = ObterNotasAluno(componenteCurricular.Codigo, notas, turmas); 
 
                         componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, BIMESTRE_1, transformarNotaEmConceito);
                         componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, BIMESTRE_2, transformarNotaEmConceito);
@@ -312,6 +314,28 @@ namespace SME.SR.Application
                     }
                 }
             }
+        }
+
+        private IEnumerable<NotasAlunoBimestreBoletimSimplesDto> ObterNotasAluno(
+                                                                    string codigoComponente, 
+                                                                    IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notas, 
+                                                                    IEnumerable<Turma> turmas)
+        {
+            if (TurmaEhEjaEdFisica(codigoComponente, turmas)) 
+            {
+                var codigoTurmaRegular = turmas.FirstOrDefault(t => t.EhEja && t.TipoTurma == TipoTurma.EdFisica)?.RegularCodigo;
+
+                return notas?.Where(n => n.CodigoTurma == codigoTurmaRegular && n.CodigoComponenteCurricular == codigoComponente) ?? null;
+            }
+
+            return notas?.Where(n => n.CodigoComponenteCurricular == codigoComponente) ?? null;
+        }
+
+        private bool TurmaEhEjaEdFisica(string codigoComponente, IEnumerable<Turma> turmas)
+        {
+            const string ED_FISICA = "6";
+
+            return codigoComponente == ED_FISICA && turmas.Any(t => t.EhEja && t.TipoTurma == TipoTurma.EdFisica);
         }
 
         private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)

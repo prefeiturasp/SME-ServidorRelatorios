@@ -77,6 +77,7 @@ namespace SME.SR.Data
                 }
             }
         }
+        public bool EhTurmaInfantil => ModalidadeCodigo == Infra.Modalidade.Infantil;
 
         public string NomePorFiltroModalidade(Modalidade? filtroModalidade)
         {
@@ -85,6 +86,10 @@ namespace SME.SR.Data
             else
                 return $"{ModalidadeCodigo.ShortName()} - {Nome}";
 
+        }
+        public bool EhTurmaEdFisicaOuItinerario()
+        {
+            return TipoTurma.EhUmDosValores(TipoTurma.EdFisica, TipoTurma.Itinerarios2AAno);
         }
 
         public IEnumerable<int> ObterTiposRegularesDiferentes()
