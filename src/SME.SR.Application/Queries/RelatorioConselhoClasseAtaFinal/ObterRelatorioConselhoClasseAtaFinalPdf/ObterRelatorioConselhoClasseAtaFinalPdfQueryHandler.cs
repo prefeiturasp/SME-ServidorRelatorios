@@ -233,7 +233,7 @@ namespace SME.SR.Application
                 {
                     AlunoCodigo = nf.CodigoAluno,
                     Nota = nf.NotaConceito.Nota,
-                    Bimestre = nf.PeriodoEscolar?.Bimestre,
+                    Bimestre = nf.NotaConceito.Bimestre,
                     ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
@@ -451,6 +451,7 @@ namespace SME.SR.Application
                 bool possuiComponente = true;
                 bool existeFrequenciaRegistradaTurmaAno = false;
                 bool possuiConselhoUltimoBimestreAtivo = false;
+                var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.CodigoAluno.ToString(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
@@ -486,7 +487,7 @@ namespace SME.SR.Application
                         foreach (var bimestre in bimestres)
                         {
                             var possuiConselho = notasFinais.Any(n => n.Bimestre == bimestre
-                            && n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0);
+                            && n.AlunoCodigo == aluno.CodigoAluno.ToString() && conselhoClasseBimestres.Any(a => a == bimestre));
 
                             if (matriculadoDepois != null && bimestre < matriculadoDepois)
                             {
@@ -543,7 +544,7 @@ namespace SME.SR.Application
                         var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
                         var notaConceitofinal = notasFinais.OrderByDescending(n => n.Aprovado).ThenByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                 && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
+                                                && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) && conselhoClasseBimestres.Any(a => a == c.Bimestre) &&
                                                 aluno.Ativo);
 
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
