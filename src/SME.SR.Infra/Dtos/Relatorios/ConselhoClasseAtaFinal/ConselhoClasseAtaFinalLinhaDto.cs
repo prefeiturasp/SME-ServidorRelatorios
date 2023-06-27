@@ -17,7 +17,7 @@ namespace SME.SR.Infra
         public bool Inativo { get; set; }
         public List<ConselhoClasseAtaFinalCelulaDto> Celulas { get; set; }
 
-        public void AdicionaCelula(long grupoMatriz, long componenteCurricular, string valor, int coluna,string alunoCodigo,int? bimestre = null)
+        public void AdicionaCelula(long grupoMatriz, long componenteCurricular, string valor, int coluna,string alunoCodigo,int? bimestre = null, bool regencia = false)
             => Celulas.Add(new ConselhoClasseAtaFinalCelulaDto()
             {
                 GrupoMatriz = grupoMatriz,
@@ -25,7 +25,8 @@ namespace SME.SR.Infra
                 Coluna = coluna,
                 Valor = valor,
                 AlunoCodigo = alunoCodigo,
-                Bimestre = bimestre
+                Bimestre = bimestre,
+                Regencia = regencia
             });
 
     }
