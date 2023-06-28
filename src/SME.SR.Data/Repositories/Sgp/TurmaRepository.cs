@@ -992,6 +992,7 @@ namespace SME.SR.Data
                             , t.semestre
                             , t.ano
                             , t.ano_letivo AnoLetivo
+                            , t.tipo_turma TipoTurma
                         from turma t
                        where t.id = ANY(@ids)";
 
@@ -1010,6 +1011,7 @@ namespace SME.SR.Data
                                 , t.semestre
                                 , t.ano
                                 , t.ano_letivo AnoLetivo
+                                , t.tipo_turma TipoTurma
                             from turma t
                            inner join ue on ue.id = t.ue_id 
                            where ue.ue_id = @ueCodigo
