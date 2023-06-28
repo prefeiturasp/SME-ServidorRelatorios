@@ -59,6 +59,9 @@ namespace SME.SR.Application
                                 historicoNota.NomeTurma = nomeTurma;
                             }                            
                         }
+
+                        await CarregarTipoNotaEdfisica(turma, historicoAlteracaoNotas);
+
                         if (historicoAlteracaoNotas != null && historicoAlteracaoNotas.Any())
                             listaTurmaAlteracaoNotasDto.Add(await MapearParaTurmaDto(historicoAlteracaoNotas, request.FiltroRelatorio.Bimestres, request.FiltroRelatorio.AnoLetivo, notaTipoValor.TipoNota));
                     }
@@ -187,8 +190,8 @@ namespace SME.SR.Application
                 UsuarioAlteracao = string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAlteracao) ? "" : ToTitleCase($"{historicoAlteracaoNotas.UsuarioAlteracao} ({historicoAlteracaoNotas.RfAlteracao})"),
                 Situacao = historicoAlteracaoNotas.Situacao == 0 ? " - " : historicoAlteracaoNotas.Situacao.Name(),
                 UsuarioAprovacao = !string.IsNullOrEmpty(historicoAlteracaoNotas.UsuarioAprovacao) ? $"{ToTitleCase(historicoAlteracaoNotas.UsuarioAprovacao)} ({historicoAlteracaoNotas.RfAprovacao})" : " - ",
-                NotaConceitoAnterior = tipoNotaConceito == TipoNota.Nota ? RetornarNota(historicoAlteracaoNotas.NotaAnterior) : RetornarConceito(historicoAlteracaoNotas.ConceitoAnteriorId),
-                NotaConceitoAtribuido = tipoNotaConceito == TipoNota.Nota ? RetornarNota(historicoAlteracaoNotas.NotaAtribuida) : RetornarConceito(historicoAlteracaoNotas.ConceitoAtribuidoId),
+                NotaConceitoAnterior = historicoAlteracaoNotas.ObterNotaConceitoAnterior(tipoNotaConceito),
+                NotaConceitoAtribuido = historicoAlteracaoNotas.ObterNotaConceitoAtribuido(tipoNotaConceito),
                 EmAprovacao = historicoAlteracaoNotas.EmAprovacao
             };
 
@@ -197,24 +200,33 @@ namespace SME.SR.Application
             return AlunosAlteracaoNotasDto;
         }
 
-        private string RetornarNota(double? nota)
-        {
-            if (nota.HasValue)
-                return nota.ToString();
-            return string.Empty;
-        }
-
-        private string RetornarConceito(TipoConceito? conceito)
-        {
-            if (conceito.HasValue)
-                return conceito.Name();
-            return string.Empty;
-        }
-
-
         public string ToTitleCase(string str)
         {
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
         }
+
+        private async Task CarregarTipoNotaEdfisica(Turma turma, List<HistoricoAlteracaoNotasDto> historicoAlteracao)
+        {
+            if (turma.EhEja && 
+                turma.TipoTurma == TipoTurma.EdFisica &&
+                historicoAlteracao != null && 
+                historicoAlteracao.Exists(historico => historico.TipoNota == TipoAlteracaoNota.Fechamento))
+            {
+                await ConverteValorNotaPorTurmaEja(turma, historicoAlteracao.FindAll(historico => historico.TipoNota == TipoAlteracaoNota.Fechamento));
+            }
+        }
+
+        private async Task ConverteValorNotaPorTurmaEja(Turma turmaEja, List<HistoricoAlteracaoNotasDto> historicoAlteracao)
+        {
+            var codigosAlunos = historicoAlteracao.Select(nc => nc.CodigoAluno)?.Distinct().ToArray();
+            var tipoNotaAluno = await mediator.Send(new ObterTipoTurmaRegularParaEdFisicaQuery(turmaEja, codigosAlunos));
+
+            foreach (var historico in historicoAlteracao)
+            {
+                if (tipoNotaAluno.ContainsKey(historico.CodigoAluno))
+                    historico.CarregaTipoNota(tipoNotaAluno[historico.CodigoAluno]);
+            }
+        }
+
     }
 }
