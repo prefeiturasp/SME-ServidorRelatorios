@@ -66,12 +66,12 @@ namespace SME.SR.Infra
 
         private ConceitoDto ObterConceitoPlenamenteSatisfatorio()
         {
-            return Nota.Value > 7 ? ObterConceito(TipoConceito.PlenamenteSatisfatorio) : null;
+            return Nota.Value >= 7 ? ObterConceito(TipoConceito.PlenamenteSatisfatorio) : null;
         }
 
         private ConceitoDto ObterConceitoSatisfatorio()
         {
-            return Nota.Value >= 5 && Nota.Value <= 7 ? ObterConceito(TipoConceito.Satisfatorio) : null;
+            return Nota.Value >= 5 && Nota.Value < 7 ? ObterConceito(TipoConceito.Satisfatorio) : null;
         }
 
         private ConceitoDto ObterConceitoNaoSatisfatorio()
