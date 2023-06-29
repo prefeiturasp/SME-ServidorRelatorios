@@ -454,8 +454,6 @@ namespace SME.SR.Application
 
             if (bimestre > periodoAtual && string.IsNullOrEmpty(notaConceito?.NotaConceito) && notasComponente.Any(x => x.PeriodoEscolar.PeriodoInicio.Year == DateTime.Now.Year))
                 return "-";
-            else if (notaConceito != null && notaConceito.ConceitoId.HasValue && decimal.TryParse(notaConceito?.NotaConceito, out decimal valor))
-                return ConverterNotaParaConceito(decimal.Parse(notaConceito.NotaConceito, CultureInfo.InvariantCulture)).conceito;
 
             return notaConceito?.NotaConceito;
         }
@@ -464,9 +462,6 @@ namespace SME.SR.Application
         {
             var nota = notasComponente
                 .FirstOrDefault(nf => (nf.NotaConceito?.Bimestre ?? 0) == 0)?.NotaConceito?.NotaConceito;
-
-            if (!notasComponente.All(nc => nc.NotaConceito.Nota.HasValue) && decimal.TryParse(nota, out decimal valor))
-                nota = ConverterNotaParaConceito(decimal.Parse(nota)).conceito;
 
             return !string.IsNullOrEmpty(nota) ? nota : "-";
         }
@@ -562,17 +557,6 @@ namespace SME.SR.Application
             else
                 return mediaFrequencias
                     .FirstOrDefault(mf => mf.Tipo == TipoParametroSistema.CompensacaoAusenciaPercentualFund2).Media;
-        }
-
-        private (int conceitoId, string conceito) ConverterNotaParaConceito(decimal nota)
-        {
-            if (nota < 5)
-                return (3, "NS");
-
-            if (nota < 7)
-                return (2, "S");
-
-            return (1, "P");
         }
     }
 }
