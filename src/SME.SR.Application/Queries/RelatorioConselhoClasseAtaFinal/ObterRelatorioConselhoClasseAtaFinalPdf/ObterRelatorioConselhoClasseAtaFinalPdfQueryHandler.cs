@@ -523,6 +523,7 @@ namespace SME.SR.Application
                 bool existeFrequenciaRegistradaTurmaAno = false;
                 bool possuiConselhoUltimoBimestreAtivo = false;
                 bool possuiComponenteFrequencia = false;
+                var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.CodigoAluno.ToString(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
@@ -565,7 +566,7 @@ namespace SME.SR.Application
                             foreach (var bimestre in bimestres)
                             {
                                 var possuiConselho = notasFinais.Any(n => n.Bimestre == bimestre
-                                && n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0);
+                                && n.AlunoCodigo == aluno.CodigoAluno.ToString() && conselhoClasseBimestres.Any(a => a == bimestre));
 
                                 if (matriculadoDepois != null && bimestre < matriculadoDepois)
                                 {
