@@ -22,7 +22,8 @@ namespace SME.SR.Infra
                 Id = codDisciplina,
                 Nome = ComponenteCurricular,
                 IdGrupoMatriz = idGrupoMatriz,
-                Regencia = regencia
+                Regencia = regencia,
+                LancaNota = lancaNota
             };
 
             if (lancaNota)

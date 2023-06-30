@@ -386,12 +386,8 @@ namespace SME.SR.Application
                     modelPagina.Linhas.AddRange(linhas);
 
                     foreach (var grupoMatriz in modelPagina.GruposMatriz)
-                    {
                         grupoMatriz.QuantidadeColunas = modelPagina.Linhas.First().Celulas.Where(x => x.GrupoMatriz == grupoMatriz.Id).Count();
-                        grupoMatriz.ComponentesCurriculares = grupoMatriz.ComponentesCurriculares.OrderBy(componente => !componente.Regencia)
-                                                                                                        .ThenBy(componente => componente.Id == CODIGO_FREQUENCIA)                
-                                                                                                        .ThenBy(componente => componente.Nome).ToList();
-                    }
+                     
 
                     modelPagina.GruposMatriz = modelPagina.GruposMatriz.OrderBy(grupo => !grupo.Regencia).ThenBy(grupo => grupo.Id).ToList();
 
@@ -904,7 +900,10 @@ namespace SME.SR.Application
                         componentesDoGrupo.AddRange(ObterComponentesDasAreasDeConhecimento(grupoMatriz.ComponentesCurriculares, area));
                     }
 
-                    grupoMatriz.ComponentesCurriculares = componentesDoGrupo;
+                    grupoMatriz.ComponentesCurriculares = componentesDoGrupo.OrderBy(componente => !componente.Regencia)
+                                                                                                            .ThenBy(componente => !componente.LancaNota)
+                                                                                                            .ThenBy(componente => componente.Id == CODIGO_FREQUENCIA)
+                                                                                                            .ThenBy(componente => componente.Nome).ToList(); 
 
                 }
             }
