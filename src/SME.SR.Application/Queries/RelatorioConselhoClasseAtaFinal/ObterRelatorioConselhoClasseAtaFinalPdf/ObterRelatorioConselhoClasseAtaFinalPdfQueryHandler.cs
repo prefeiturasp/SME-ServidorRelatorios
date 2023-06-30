@@ -388,7 +388,9 @@ namespace SME.SR.Application
                     foreach (var grupoMatriz in modelPagina.GruposMatriz)
                     {
                         grupoMatriz.QuantidadeColunas = modelPagina.Linhas.First().Celulas.Where(x => x.GrupoMatriz == grupoMatriz.Id).Count();
-                        grupoMatriz.ComponentesCurriculares = grupoMatriz.ComponentesCurriculares.OrderBy(componente => !componente.Regencia).ToList();
+                        grupoMatriz.ComponentesCurriculares = grupoMatriz.ComponentesCurriculares.OrderBy(componente => !componente.Regencia)
+                                                                                                        .ThenBy(componente => componente.Id == CODIGO_FREQUENCIA)                
+                                                                                                        .ThenBy(componente => componente.Nome).ToList();
                     }
 
                     modelPagina.GruposMatriz = modelPagina.GruposMatriz.OrderBy(grupo => !grupo.Regencia).ThenBy(grupo => grupo.Id).ToList();
