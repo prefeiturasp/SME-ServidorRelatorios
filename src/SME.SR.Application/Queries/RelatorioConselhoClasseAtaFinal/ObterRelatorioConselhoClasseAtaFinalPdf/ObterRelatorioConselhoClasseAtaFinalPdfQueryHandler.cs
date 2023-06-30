@@ -613,14 +613,24 @@ namespace SME.SR.Application
                                                     && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
                                                     aluno.Ativo);
 
-                            var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
+                            var possuiConselhoFinal = (notaConceitofinal != null) && conselhoClasseBimestres.Any(a => a == 0);
+                            if (possuiConselhoFinal)
+                            {
+                                var sintese = ObterSinteseAluno(frequenciaAluno?.PercentualFrequencia ?? 100, componente, compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
 
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
-                                                componente.CodDisciplina,
-                                                possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (componente.LancaNota ?
-                                                    notaConceitofinal?.NotaConceito ?? "" :
-                                                    notaConceitofinal?.Sintese ?? sintese) : string.Empty,
-                                                ++coluna, aluno.CodigoAluno.ToString(), null, componente.Regencia);
+                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
+                                                    componente.CodDisciplina,
+                                                    possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (componente.LancaNota ?
+                                                        notaConceitofinal?.NotaConceito ?? "" :
+                                                        notaConceitofinal?.Sintese ?? sintese) : string.Empty,
+                                                    ++coluna, aluno.CodigoAluno.ToString(), null, componente.Regencia);
+                            }
+                            else
+                                linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
+                                                    componente.CodDisciplina,
+                                                     possuiComponente ? "" : string.Empty,
+                                                    ++coluna, aluno.CodigoAluno.ToString(), null, componente.Regencia);
+
                         }
 
                         if (ApresentarFrequencia(componente, possuiComponenteFrequencia))
