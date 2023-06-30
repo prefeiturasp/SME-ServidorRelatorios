@@ -68,7 +68,7 @@ namespace SME.SR.Application
                 {
                     row[$"Grupo{celula.GrupoMatriz}{(celula.Regencia ? "Regencia" : "Normal")}_Componente{celula.ComponenteCurricular}_Coluna{celula.Coluna}"] = celula.Valor;
                 }
-
+                row["Inativo"] = linha.Key.Inativo;
                 dt.Rows.Add(row);
             }
         }
@@ -93,6 +93,7 @@ namespace SME.SR.Application
             dt.Columns.Add("Grupo99Normal_Componente99_Coluna2");
             dt.Columns.Add("Grupo99Normal_Componente99_Coluna3");
             dt.Columns.Add("Grupo99Normal_Componente99_Coluna4");
+            dt.Columns.Add("Inativo");
         }
 
         private void MontarComponentes(IEnumerable<ConselhoClasseAtaFinalGrupoDto> gruposMatriz, IEnumerable<IGrouping<long, ConselhoClasseAtaFinalComponenteDto>> componentes, DataTable dataTable)
@@ -124,6 +125,7 @@ namespace SME.SR.Application
             linhaDetalhes["Grupo99Normal_Componente99_Coluna2"] = "CA";
             linhaDetalhes["Grupo99Normal_Componente99_Coluna3"] = "%";
             linhaDetalhes["Grupo99Normal_Componente99_Coluna4"] = "Parecer Conclusivo";
+            linhaDetalhes["Inativo"] = "Inativo";
 
             dataTable.Rows.Add(linhaGrupos);
             dataTable.Rows.Add(linhaComponentes);

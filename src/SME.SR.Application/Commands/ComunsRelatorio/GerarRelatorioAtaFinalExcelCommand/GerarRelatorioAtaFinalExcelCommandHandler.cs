@@ -66,6 +66,8 @@ namespace SME.SR.Application
                         MergearTabela(worksheet, tabelaDados);
 
                         AdicionarEstilo(worksheet, tabelaDados);
+                        
+                        worksheet.Column(worksheet.Columns().Count()).Delete();
 
                         var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
@@ -136,26 +138,12 @@ namespace SME.SR.Application
 
             worksheet.Range(LINHA_COMPONENTES + 1, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Font.SetFontSize(5);
 
-            var linhasAlunosTransferidosComNumeroChamada = tabelaDados.Select("NumeroChamada <> '0' AND NomeAluno like '%(Transferido)%'");
-            foreach (DataRow linha in linhasAlunosTransferidosComNumeroChamada)
+            var linhasAlunosInativos = tabelaDados.AsEnumerable().Where(r => r.Field<string>("Inativo") == "True");
+            foreach (DataRow linha in linhasAlunosInativos)
             {
                 int indice = tabelaDados.Rows.IndexOf(linha);
                 worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
             }
-
-            var linhasAlunosDesistentesComNumeroChamada = tabelaDados.Select("NumeroChamada <> '0' AND NomeAluno like '%(Desistente)%'");
-            foreach (DataRow linha in linhasAlunosDesistentesComNumeroChamada)
-            {
-                int indice = tabelaDados.Rows.IndexOf(linha);
-                worksheet.Range(LINHA_GRUPOS + indice, 1, LINHA_GRUPOS + indice, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
-            }
-
-            var linhaInicialInativos = tabelaDados.AsEnumerable()
-                        .Where(r => r.Field<string>("NumeroChamada") == "0").FirstOrDefault();
-            var indiceLinhaInativos = tabelaDados.Rows.IndexOf(linhaInicialInativos);
-
-            if(indiceLinhaInativos != -1)
-                worksheet.Range(LINHA_GRUPOS + indiceLinhaInativos, 1, ultimaLinhaUsada, ultimaColunaUsada).Style.Fill.SetBackgroundColor(XLColor.LightGray);
 
             foreach (var celula in worksheet.Range(LINHA_COMPONENTES + 2, 1, ultimaLinhaUsada, ultimaColunaUsada).CellsUsed().Where(c => decimal.TryParse(c.Value.ToString().Replace(",", "."), out _)))
             {
