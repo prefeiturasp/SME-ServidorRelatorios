@@ -477,19 +477,11 @@ namespace SME.SR.Application
                 TipoParametro = TipoParametroSistema.CompensacaoAusenciaPercentualFund2
             }));
 
-            // Primmeiro alunos com numero de chamada
-            var alunosComNumeroChamada = await MontarLinhaAluno(alunos.Where(a => a.Ativo).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NumeroAlunoChamada),
+            var alunosComNumeroChamada = await MontarLinhaAluno(alunos.Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NomeAluno),
                 gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, alunosNotasConceito, qtdeDisciplinasLancamFrequencia,
                 compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
 
             relatorio.Linhas.AddRange(alunosComNumeroChamada);
-
-            // Depois alunos sem numero ordenados por nome
-            var alunosSemNumeroChamada = await MontarLinhaAluno(alunos.Where(a => !a.Ativo).Select(a => new AlunoSituacaoAtaFinalDto(a)).OrderBy(a => a.NomeAluno),
-                gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, alunosNotasConceito, qtdeDisciplinasLancamFrequencia,
-                compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2);
-
-            relatorio.Linhas.AddRange(alunosSemNumeroChamada);
         }
 
         private async Task<List<ConselhoClasseAtaFinalLinhaDto>> MontarLinhaAluno(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, 
