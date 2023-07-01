@@ -638,23 +638,35 @@ namespace SME.SR.Application
                             if (componente.Regencia)
                                 possuiComponenteFrequencia = true;
 
-                            linhaDto.Celulas.AddRange(ObterCelulasFrequencias(
-                                                                grupoMatriz.Key.Id,
-                                                                componente.Regencia ? CODIGO_FREQUENCIA : componente.CodDisciplina,
-                                                                componente.Regencia ? 0 : coluna,
-                                                                possuiComponente,
-                                                                frequenciaAluno,
-                                                                turma,
-                                                                aluno,
-                                                                possuiConselhoUltimoBimestreAtivo,
-                                                                turmaPossuiFrequenciaRegistrada, componente.Regencia));
+                            if (conselhoClasseBimestres.Any())
+                            {
+                                linhaDto.Celulas.AddRange(ObterCelulasFrequencias(
+                                                                    grupoMatriz.Key.Id,
+                                                                    componente.Regencia ? CODIGO_FREQUENCIA : componente.CodDisciplina,
+                                                                    componente.Regencia ? 0 : coluna,
+                                                                    possuiComponente,
+                                                                    frequenciaAluno,
+                                                                    turma,
+                                                                    aluno,
+                                                                    possuiConselhoUltimoBimestreAtivo,
+                                                                    turmaPossuiFrequenciaRegistrada, componente.Regencia));
+                            } else linhaDto.Celulas.AddRange(ObterCelulasFrequencias(
+                                                                    grupoMatriz.Key.Id,
+                                                                    componente.Regencia ? CODIGO_FREQUENCIA : componente.CodDisciplina,
+                                                                    componente.Regencia ? 0 : coluna,
+                                                                    componente.Regencia));
+
                         } 
 
                         continue;
                     }
                 }
 
-                TrataFrequenciaAnual(aluno, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, linhaDto, turma, qtdeDisciplinasLancamFrequencia, existeFrequenciaRegistradaTurmaAno);
+                if (conselhoClasseBimestres.Any())
+                    TrataFrequenciaAnual(aluno, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, linhaDto, turma, qtdeDisciplinasLancamFrequencia, existeFrequenciaRegistradaTurmaAno);
+                else
+                    TrataFrequenciaAnual(aluno, linhaDto); 
+                
 
                 linhas.Add(linhaDto);
             }
@@ -716,6 +728,30 @@ namespace SME.SR.Application
             return celulasFrequencias;
         }
 
+        private List<ConselhoClasseAtaFinalCelulaDto> ObterCelulasFrequencias(
+                            long idGrupo,
+                            long codDisciplina,
+                            int coluna,
+                            bool regencia)
+        {
+            var celulasFrequencias = new List<ConselhoClasseAtaFinalCelulaDto>();
+            var celulaFrequencia = new ConselhoClasseAtaFinalCelulaDto()
+            {
+                GrupoMatriz = idGrupo,
+                ComponenteCurricular = codDisciplina,
+                Coluna = ++coluna,
+                Valor = string.Empty,
+                Regencia = regencia
+            };
+            celulasFrequencias.Add(celulaFrequencia);
+            ++coluna;
+            celulasFrequencias.Add(celulaFrequencia);
+            ++coluna;
+            celulasFrequencias.Add(celulaFrequencia);
+            return celulasFrequencias;
+            return null;
+        }
+
         private string ObterFrequencia(
                             FrequenciaAluno frequencia, 
                             Turma turma, 
@@ -752,8 +788,8 @@ namespace SME.SR.Application
                                                             && c.ComponenteCurricularCodigo == componente.CodDisciplina
                                                             && c.Bimestre == bimestre);
 
-        private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos, 
-            IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, ConselhoClasseAtaFinalLinhaDto linhaDto, 
+        private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, IEnumerable<NotaConceitoBimestreComponente> notasFinais, IEnumerable<FrequenciaAluno> frequenciaAlunos,
+            IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, ConselhoClasseAtaFinalLinhaDto linhaDto,
             Turma turma, int qtdeDisciplinasLancamFrequencia = 0, bool turmaExisteFrequenciaRegistrada = false)
         {
             var frequenciaGlobalAluno = frequenciaAlunosGeral
@@ -765,14 +801,14 @@ namespace SME.SR.Application
             var possuiConselhoFinalParaAnual = notasFinais
                 .Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() && n.ConselhoClasseAlunoId != 0 && (!n.Bimestre.HasValue || n.Bimestre.Value == 0));
 
-            var percentualFrequencia2020 = Math.Round((((qtdeDisciplinasLancamFrequencia - frequenciasAluno.Count()) * 100) 
+            var percentualFrequencia2020 = Math.Round((((qtdeDisciplinasLancamFrequencia - frequenciasAluno.Count()) * 100)
                                                 + (decimal)frequenciasAluno.Sum(f => f.PercentualFrequenciaFinal)) / qtdeDisciplinasLancamFrequencia, 2);
 
-            string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequenciaFormatado 
+            string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequenciaFormatado
                 : ObterPercentualFrequenciaFinal(frequenciasAluno, turmaExisteFrequenciaRegistrada);
-            
+
             var percentualFrequenciaAcumulado = (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : percentualFrequenciaFinal);
-            
+
             linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture), COLUNA_AUSENCIA, aluno.CodigoAluno.ToString());
             linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture), COLUNA_COMPENSACAO, aluno.CodigoAluno.ToString());
             linhaDto.AdicionaCelula(99, 99, percentualFrequenciaAcumulado ?? frequencia100Formatada, COLUNA_PORCENTAGEM_FREQUENCIA,aluno.CodigoAluno.ToString());
@@ -785,6 +821,14 @@ namespace SME.SR.Application
                 textoParecer = !ativoOuConcluido ? string.Concat(ObterSiglaSituacaoMatricula(aluno), " em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : SEM_PARECER_CONCLUSIVO;
             }
             linhaDto.AdicionaCelula(99, 99, textoParecer, COLUNA_PARECER_CONCLUSIVO, aluno.CodigoAluno.ToString());
+        }
+
+        private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, ConselhoClasseAtaFinalLinhaDto linhaDto)
+        {
+            linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_AUSENCIA, aluno.CodigoAluno.ToString());
+            linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_COMPENSACAO, aluno.CodigoAluno.ToString());
+            linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_PORCENTAGEM_FREQUENCIA,aluno.CodigoAluno.ToString());
+            linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_PARECER_CONCLUSIVO, aluno.CodigoAluno.ToString());
         }
 
         private string ObterSiglaParecerConclusivo(ConselhoClasseParecerConclusivo parecerConclusivo)
