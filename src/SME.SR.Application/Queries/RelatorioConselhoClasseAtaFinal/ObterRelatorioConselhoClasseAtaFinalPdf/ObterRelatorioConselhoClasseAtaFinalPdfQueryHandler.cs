@@ -665,10 +665,10 @@ namespace SME.SR.Application
                 if (conselhoClasseBimestres.Any())
                     TrataFrequenciaAnual(aluno, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, linhaDto, turma, qtdeDisciplinasLancamFrequencia, existeFrequenciaRegistradaTurmaAno);
                 else
-                    TrataFrequenciaAnual(aluno, linhaDto); 
-                
+                    TrataFrequenciaAnual(aluno, linhaDto);
 
-                linhas.Add(linhaDto);
+                if (conselhoClasseBimestres.Any())
+                    linhas.Add(linhaDto);
             }
 
             return linhas;
