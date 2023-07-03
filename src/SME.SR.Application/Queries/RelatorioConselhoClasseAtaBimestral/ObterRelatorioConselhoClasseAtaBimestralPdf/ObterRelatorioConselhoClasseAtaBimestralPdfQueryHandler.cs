@@ -369,7 +369,7 @@ namespace SME.SR.Application
             var periodoEscolar = periodosEscolares.FirstOrDefault(a => a.Bimestre == bimestre);
 
             // Primmeiro alunos Ativos
-            var alunosAtivos = ObterAlunosAtivos(alunos, periodoEscolar);
+            var alunosAtivos = ObterAlunosAtivosNoPeriodo(alunos, periodoEscolar);
             var alunosComNumeroChamada = await MontarLinhaAluno(alunosAtivos, true,
                 gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, bimestre, anotacoes, qtdeDisciplinasLancamFrequencia,
                 compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2, alunosComRegistroFrequencia);
@@ -377,7 +377,7 @@ namespace SME.SR.Application
             relatorio.Linhas.AddRange(alunosComNumeroChamada);
 
             // Depois alunos Inativos
-            var alunosInativos = ObterAlunosInativos(alunos, periodoEscolar);
+            var alunosInativos = ObterAlunosInativosNoPeriodo(alunos, periodoEscolar);
             var alunosSemNumeroChamada = await MontarLinhaAluno(alunosInativos, false,
                 gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, bimestre, anotacoes, qtdeDisciplinasLancamFrequencia,
                 compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2, alunosComRegistroFrequencia);
@@ -385,15 +385,17 @@ namespace SME.SR.Application
             relatorio.Linhas.AddRange(alunosSemNumeroChamada);
         }
 
-        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
+        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativosNoPeriodo(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
             .Where(a => a.Inativo && a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim)
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
-        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosAtivos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
+        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosAtivosNoPeriodo(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
-            .Where(a => ((a.Ativo) && a.DataMatricula >= periodoEscolar.PeriodoInicio) || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim))
+            .Where(a => ((a.Ativo) && a.DataMatricula >= periodoEscolar.PeriodoInicio) 
+            || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim)
+            || ((a.Inativo) && a.DataMatricula <= periodoEscolar.PeriodoFim && a.DataSituacaoAluno > periodoEscolar.PeriodoFim))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
