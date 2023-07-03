@@ -440,13 +440,9 @@ namespace SME.SR.Application
 
         private string ObterFrequenciaBimestre(IEnumerable<FrequenciaAluno> frequenciasAlunoComponente,int bimestre,IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual, IEnumerable<int> conselhoClasseBimestres)
         {
-            var possuiFrequenciaTurma = aulasCadastradas?.Any(nf => nf.Bimestre == bimestre);
-
             var frequencia = !VerificaPossuiConselho(conselhoClasseBimestres, bimestre) ? "" :
                                     frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado
-                                         ?? (possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value
-                                        ? frequencia100Formatada
-                                        : string.Empty);
+                                         ?? string.Empty;
 
             if (!String.IsNullOrEmpty(frequencia))
                 frequencia = frequencia += "%";

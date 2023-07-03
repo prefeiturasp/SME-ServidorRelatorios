@@ -253,7 +253,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[] codigoPareceresConclusivos)
         {
-            var query = @"drop table if exists tempAlunosConselhoDeClasse;
+            var query = @$"drop table if exists tempAlunosConselhoDeClasse;
                         select distinct 
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        cc.id as ConselhoClasseId,
@@ -272,7 +272,7 @@ namespace SME.SR.Data
                            and not cc.excluido 
                            and ft.periodo_escolar_id is null
                            and cca.aluno_codigo = any(@codigoAlunos) 
-                           and cca.conselho_classe_parecer_id = any(@codigoPareceresConclusivos);
+                           {(codigoPareceresConclusivos != null ? "and cca.conselho_classe_parecer_id = any(@codigoPareceresConclusivos);" : ";")}
 
                         -- Obter turma regular
                         drop table if exists tempAlunosTurmasRegulares;
@@ -1307,6 +1307,39 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
                 return await conexao.QueryAsync<TurmaItinerarioEnsinoMedioDto>(query);
         }
+
+        public async Task<IEnumerable<Turma>> ObterTurmasComplementaresPorAlunos(string[] alunosCodigos)
+        {
+            var query = @"select distinct 
+    	                    t.turma_id Codigo
+                            , t.nome
+                            , t.modalidade_codigo  ModalidadeCodigo
+                            , t.semestre
+                            , t.ano
+                            , t.ano_letivo AnoLetivo    
+                            , tr.turma_id as RegularCodigo
+                            , tc.descricao Ciclo
+                        from conselho_classe_aluno cca
+                        inner join 
+                            conselho_classe_aluno_turma_complementar ccat on cca.id = ccat.conselho_classe_aluno_id
+                        inner join 
+                            conselho_classe cc on cc.id = cca.conselho_classe_id
+                        inner join
+                            fechamento_turma ft on cc.fechamento_turma_id = ft.id
+                        inner join 
+                            turma tr on tr.id = ft.turma_id
+                        inner join 
+                            turma t on t.id = ccat.turma_id
+                        inner join 
+                            tipo_ciclo_ano tca on tca.modalidade = t.modalidade_codigo and tca.ano = t.ano
+                        inner join tipo_ciclo tc on tc.id = tca.tipo_ciclo_id
+                    where cca.aluno_codigo = any(@alunosCodigos);";
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<Turma>(query, new { alunosCodigos });
+            }
+        }
+
     }
 }
 
