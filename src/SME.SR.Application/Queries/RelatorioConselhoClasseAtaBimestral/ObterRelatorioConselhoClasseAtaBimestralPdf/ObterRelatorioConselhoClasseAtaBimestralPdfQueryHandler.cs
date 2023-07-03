@@ -393,9 +393,8 @@ namespace SME.SR.Application
 
         private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosAtivosNoPeriodo(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
-            .Where(a => ((a.Ativo) && a.DataMatricula >= periodoEscolar.PeriodoInicio) 
-            || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim)
-            || ((a.Inativo) && a.DataMatricula <= periodoEscolar.PeriodoFim && a.DataSituacaoAluno > periodoEscolar.PeriodoFim))
+            .Where(a => ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim)
+                    || ((a.Inativo) && a.DataMatricula <= periodoEscolar.PeriodoFim && a.DataSituacaoAluno > periodoEscolar.PeriodoFim))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
