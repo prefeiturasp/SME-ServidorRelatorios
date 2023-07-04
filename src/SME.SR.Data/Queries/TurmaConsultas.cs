@@ -293,11 +293,12 @@ namespace SME.SR.Data
 							END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
 						mte.dt_situacao_aluno DataSituacaoAluno,
-						ISNULL(max(hm.dt_status_matricula), MAX(matr.dt_status_matricula)) DataMatricula
+						COALESCE(MIN(hmte.dt_situacao_aluno), MAX(hm.dt_status_matricula), MAX(matr.dt_status_matricula)) DataMatricula
 					FROM v_aluno_cotic aluno
 					INNER JOIN #tmpMatriculas TMT ON aluno.cd_aluno = TMT.matr_cd_aluno
 					INNER JOIN v_matricula_cotic matr ON TMT.matr_cd_aluno = matr.cd_aluno and matr.cd_matricula = TMT.matr_cd_matricula
 					INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+					LEFT JOIN historico_matricula_turma_escola hmte ON matr.cd_matricula = hmte.cd_matricula
 					LEFT JOIN v_historico_matricula_cotic hm ON matr.cd_matricula = hm.cd_matricula and matr.an_letivo = hm.an_letivo and hm.st_matricula <> 4
 					WHERE mte.cd_turma_escola = @turmaCodigo
 					group by
