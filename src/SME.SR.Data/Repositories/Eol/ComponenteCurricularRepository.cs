@@ -220,7 +220,7 @@ namespace SME.SR.Data
 							and te.st_turma_escola in ('O', 'A', 'C')
 							{(!string.IsNullOrWhiteSpace(login) ? " and vsc.cd_registro_funcional = @login " : string.Empty)}";
 
-            var parametros = new { Login = login, CodigosTurma = codigosTurma };
+            var parametros = new { Login = login, CodigosTurma = Array.ConvertAll(codigosTurma, codigo => int.Parse(codigo)) };
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
