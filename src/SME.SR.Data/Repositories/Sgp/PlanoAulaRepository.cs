@@ -120,17 +120,15 @@ namespace SME.SR.Data
                                    pa.descricao as ObjetivosEspecificos,
                                    pa.licao_casa as LicaoCasa,
                                    pa.recuperacao_aula as RecuperacaoContinua,
-                                   obj.codigo as ObjetivosSalecionados,
-                                   obj.QtdObjetivosSelecionados
+                                   string_agg(oa.codigo, '<br/>') as ObjetivosSalecionados,
+                                   count(oa.codigo) as QtdObjetivosSelecionados 
                               from aula a
                              inner join turma t on t.turma_id = a.turma_id
                              inner join ue on ue.id = t.ue_id 
                              inner join componente_curricular cc on cc.Id = a.disciplina_id::bigint
                               left join plano_aula pa on pa.aula_id = a.id
-                              left join (select oaa.plano_aula_id, string_agg(oa.codigo, '<br/>') as codigo, count(codigo) as QtdObjetivosSelecionados
-                                           from objetivo_aprendizagem_aula oaa 
-                                          inner join objetivo_aprendizagem oa on oa.id = oaa.objetivo_aprendizagem_id
-                                          group by oaa.plano_aula_id) obj on obj.plano_aula_id = pa.id
+                              left join objetivo_aprendizagem_aula oaa on oaa.plano_aula_id = pa.id 
+	                          left join objetivo_aprendizagem oa on oa.id = oaa.objetivo_aprendizagem_id 
                              left join tipo_calendario tc on tc.ano_letivo = @anoLetivo and tc.modalidade = @modalidadeCalendario and not tc.excluido
                              left join periodo_escolar pe on pe.tipo_calendario_id = tc.id and a.data_aula between pe.periodo_inicio and pe.periodo_fim 
                              where t.ano_letivo = @anoLetivo
@@ -151,7 +149,13 @@ namespace SME.SR.Data
                 query += " and a.turma_id = @codigoTurma ";
 
             if (semestre > 0)
-                query += " and t.semestre = @semestre ";            
+                query += " and t.semestre = @semestre ";
+
+            query += @"group by a.id, a.aula_cj, t.nome,
+                        cc.descricao_sgp, pe.bimestre, a.data_aula,
+                        a.quantidade, pa.criado_em, pa.criado_por,
+                        pa.criado_rf, pa.descricao, pa.licao_casa,
+                        pa.recuperacao_aula, oaa.plano_aula_id";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
