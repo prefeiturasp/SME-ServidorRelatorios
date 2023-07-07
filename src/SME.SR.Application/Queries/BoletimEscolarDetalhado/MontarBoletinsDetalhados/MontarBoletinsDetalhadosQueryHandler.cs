@@ -21,6 +21,7 @@ namespace SME.SR.Application
         private const int BIMESTRE_2 = 2;
         private const int BIMESTRE_3 = 3;
         private const int BIMESTRE_4 = 4;
+        private const int BIMESTRE_FINAL = 0;
         private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
         private readonly IMediator mediator;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
@@ -298,7 +299,7 @@ namespace SME.SR.Application
                         componenteCurricular.NotaBimestre2 = ObterNotaBimestre(notaFrequenciaComponenteComPeriodo, BIMESTRE_2, periodoAtual, conselhoClasseBimestres);
                         componenteCurricular.NotaBimestre3 = ObterNotaBimestre(notaFrequenciaComponenteComPeriodo, BIMESTRE_3, periodoAtual, conselhoClasseBimestres);
                         componenteCurricular.NotaBimestre4 = ObterNotaBimestre(notaFrequenciaComponenteComPeriodo, BIMESTRE_4, periodoAtual, conselhoClasseBimestres);
-                        componenteCurricular.NotaFinal = ObterNotaBimestreFinal(notaFrequenciaComponente);
+                        componenteCurricular.NotaFinal = ObterNotaBimestreFinal(notaFrequenciaComponente, BIMESTRE_FINAL, conselhoClasseBimestres);
 
                         if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
                             boletimEscolar.PossuiNotaFinalRegencia = true;
@@ -330,7 +331,7 @@ namespace SME.SR.Application
                             componenteCurricular.NotaBimestre2 = ObterNotaBimestre(notasComponenteComPeriodoEscolar, BIMESTRE_2, periodoAtual, conselhoClasseBimestres);
                             componenteCurricular.NotaBimestre3 = ObterNotaBimestre(notasComponenteComPeriodoEscolar, BIMESTRE_3, periodoAtual, conselhoClasseBimestres);
                             componenteCurricular.NotaBimestre4 = ObterNotaBimestre(notasComponenteComPeriodoEscolar, BIMESTRE_4, periodoAtual, conselhoClasseBimestres);
-                            componenteCurricular.NotaFinal = ObterNotaBimestreFinal(notasComponente);
+                            componenteCurricular.NotaFinal = ObterNotaBimestreFinal(notasComponente, BIMESTRE_FINAL, conselhoClasseBimestres);
                             
                             if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
                                 boletimEscolar.PossuiNotaFinal = true;
@@ -403,7 +404,7 @@ namespace SME.SR.Application
                             componenteCurricular.NotaBimestre2 = ObterNotaBimestre(notaFrequenciaComponenteComPeriodo, BIMESTRE_2, periodoAtual, conselhoClasseBimestres);
                             componenteCurricular.NotaBimestre3 = ObterNotaBimestre(notaFrequenciaComponenteComPeriodo, BIMESTRE_3, periodoAtual, conselhoClasseBimestres);
                             componenteCurricular.NotaBimestre4 = ObterNotaBimestre(notaFrequenciaComponenteComPeriodo, BIMESTRE_4, periodoAtual, conselhoClasseBimestres);
-                            componenteCurricular.NotaFinal = ObterNotaBimestreFinal(notaFrequenciaComponente);
+                            componenteCurricular.NotaFinal = ObterNotaBimestreFinal(notaFrequenciaComponente, BIMESTRE_FINAL, conselhoClasseBimestres);
 
                             if (!string.IsNullOrEmpty(componenteCurricular.NotaFinal))
                                 boletimEscolar.PossuiNotaFinalRegencia = true;
@@ -427,10 +428,10 @@ namespace SME.SR.Application
             return notaConceito?.NotaConceito;
         }
 
-        private string ObterNotaBimestreFinal(IEnumerable<NotasAlunoBimestre> notasComponente)
+        private string ObterNotaBimestreFinal(IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre, IEnumerable<int> conselhoClasseBimestres)
         {
-            var nota = notasComponente
-                .FirstOrDefault(nf => nf.PeriodoEscolar == null)?.NotaConceito?.NotaConceito;
+            var nota = !VerificaPossuiConselho(conselhoClasseBimestres, bimestre) ? "" : notasComponente
+                .FirstOrDefault(nf => nf.PeriodoEscolar.Bimestre == bimestre)?.NotaConceito?.NotaConceito;
 
             if (!notasComponente.All(nc => nc.NotaConceito.Nota.HasValue) && decimal.TryParse(nota, out decimal valor))
                 nota = ConverterNotaParaConceito(decimal.Parse(nota)).conceito;
