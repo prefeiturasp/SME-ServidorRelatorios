@@ -163,7 +163,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QuerySingleOrDefaultAsync<bool>(query, parametros);
+                return await conexao.QueryFirstOrDefaultAsync<bool>(query, parametros);
             }
         }
 
