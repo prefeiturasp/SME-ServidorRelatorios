@@ -188,10 +188,12 @@ namespace SME.SR.Application
 
                     grupos.Add(grupo);
                 }
+                if (grupo.ComponentesCurriculares == null)
+                    grupo.ComponentesCurriculares = new List<ComponenteCurricularDto>();
 
                 var grupoMatrizAgrupadosAreaOrdem = grupoMatriz.GroupBy(a => a.AreaDoConhecimento.Ordem != null);
 
-                foreach(var gruposOrdem in grupoMatrizAgrupadosAreaOrdem.OrderByDescending(g=> g.Key))
+                foreach (var gruposOrdem in grupoMatrizAgrupadosAreaOrdem.OrderByDescending(g=> g.Key))
                 {
                     foreach (var componente in gruposOrdem.OrderBy(a => a.Disciplina))
                     {
@@ -225,9 +227,6 @@ namespace SME.SR.Application
                         }
                         else if (!componente.Regencia)
                         {
-                            if (grupo.ComponentesCurriculares == null)
-                                grupo.ComponentesCurriculares = new List<ComponenteCurricularDto>();
-
                             if (!grupo.ComponentesCurriculares.Any(g => !g.TerritorioSaber && g.Codigo == componente.CodDisciplina.ToString()) ||
                                 !grupo.ComponentesCurriculares.Any(g => g.TerritorioSaber && g.Codigo == componente.CodDisciplina.ToString() && g.Professor == componente.Professor))
                             {
