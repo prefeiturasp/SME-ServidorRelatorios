@@ -195,12 +195,12 @@ namespace SME.SR.Data
                                     ON grade.cd_serie_ensino = serie_ensino.cd_serie_ensino
                             {(necessitaRetornoRfProfessor
                             ? @"--Atribuição
-                                    inner join atribuicao_aula (nolock) aa
+                                    left join atribuicao_aula (nolock) aa
                                             on (gcc.cd_grade = aa.cd_grade and gcc.cd_componente_curricular = aa.cd_componente_curricular and aa.cd_serie_grade = serie_turma_grade.cd_serie_grade)
                                                 and aa.dt_cancelamento is null and aa.dt_disponibilizacao_aulas is null and
                                                 aa.an_atribuicao = year(getdate())
-                                    inner join v_cargo_base_cotic (nolock) vcbc on aa.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor
-                                    inner join v_servidor_cotic (nolock) vsc on vcbc.cd_servidor = vsc.cd_servidor" 
+                                    left join v_cargo_base_cotic (nolock) vcbc on aa.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor
+                                    left join v_servidor_cotic (nolock) vsc on vcbc.cd_servidor = vsc.cd_servidor" 
                             : string.Empty)} 
                                 inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
 						where te.cd_turma_escola in @codigosTurma
@@ -227,12 +227,12 @@ namespace SME.SR.Data
                             inner join componente_curricular (nolock) pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular and pcc.dt_cancelamento is null
                         {(necessitaRetornoRfProfessor
                         ? @"--Atribuição
-                            inner join atribuicao_aula (nolock) aa
+                            left join atribuicao_aula (nolock) aa
                                     on (pgcc.cd_grade = aa.cd_grade and pgcc.cd_componente_curricular = aa.cd_componente_curricular)
                                         and aa.dt_cancelamento is null and aa.dt_disponibilizacao_aulas is null and
                                         aa.an_atribuicao = year(getdate())
-                            inner join v_cargo_base_cotic (nolock) vcbc on aa.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor
-                            inner join v_servidor_cotic (nolock) vsc on vcbc.cd_servidor = vsc.cd_servidor "
+                            left join v_cargo_base_cotic (nolock) vcbc on aa.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor
+                            left join v_servidor_cotic (nolock) vsc on vcbc.cd_servidor = vsc.cd_servidor "
                         : string.Empty)} 
                             inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
                         where te.cd_turma_escola in @codigosTurma
