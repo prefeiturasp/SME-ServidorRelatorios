@@ -253,7 +253,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[] codigoPareceresConclusivos)
         {
-            var query = @"drop table if exists tempAlunosConselhoDeClasse;
+            var query = $@"drop table if exists tempAlunosConselhoDeClasse;
                         select distinct 
 	                        cca.aluno_codigo as AlunoCodigo,
 	                        cc.id as ConselhoClasseId,
@@ -270,7 +270,7 @@ namespace SME.SR.Data
 	                        on ft.turma_id = t.id
                         where not ft.excluido 
                            and not cc.excluido 
-                           and ft.periodo_escolar_id is null
+                           {(codigoPareceresConclusivos != null ? "and ft.periodo_escolar_id is null" : "")}
                            and cca.aluno_codigo = any(@codigoAlunos)";
 
             if (codigoPareceresConclusivos != null)
