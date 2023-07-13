@@ -219,12 +219,12 @@ namespace SME.SR.Data
                         from turma_escola (nolock) te
                             inner join escola (nolock) esc ON te.cd_escola = esc.cd_escola
                         --Programa
-                            inner join tipo_programa (nolock) tp on te.cd_tipo_programa = tp.cd_tipo_programa
                             inner join turma_escola_grade_programa (nolock) tegp on tegp.cd_turma_escola = te.cd_turma_escola
                             inner join escola_grade (nolock) teg on teg.cd_escola_grade = tegp.cd_escola_grade
                             inner join grade (nolock) pg on pg.cd_grade = teg.cd_grade
                             inner join grade_componente_curricular (nolock) pgcc on pgcc.cd_grade = teg.cd_grade
                             inner join componente_curricular (nolock) pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular and pcc.dt_cancelamento is null
+                            left join tipo_programa (nolock) tp on te.cd_tipo_programa = tp.cd_tipo_programa
                         {(necessitaRetornoRfProfessor
                         ? @"--Atribuição
                             left join atribuicao_aula (nolock) aa
