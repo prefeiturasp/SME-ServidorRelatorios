@@ -197,7 +197,7 @@ namespace SME.SR.Application
         {
             var componentesCurriculares = new List<ComponenteCurricular>();
 
-            componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesPorTurmas(codigosTurma));
+            componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesCurricularesPorTurmas(codigosTurma));
             
             AdicionarComponentesProfessorEmebs(componentesCurriculares);
             
