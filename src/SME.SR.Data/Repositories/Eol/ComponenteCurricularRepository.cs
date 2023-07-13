@@ -172,6 +172,56 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
         }
 
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorTurmas(string[] codigosTurma)
+        {
+            var query = @$"select distinct cc.cd_componente_curricular as Codigo,
+                                cc.dc_componente_curricular as Descricao,
+                                esc.tp_escola                    as TipoEscola,
+                                dtt.qt_hora_duracao              as TurnoTurma,
+                                serie_ensino.sg_resumida_serie   as AnoTurma,
+                                te.cd_turma_escola               as CodigoTurma  
+                            from turma_escola (nolock) te
+                            inner join escola (nolock) esc ON te.cd_escola = esc.cd_escola
+                            --Serie Ensino
+                                inner join serie_turma_escola (nolock) ON serie_turma_escola.cd_turma_escola = te.cd_turma_escola
+                                inner join serie_turma_grade (nolock) ON serie_turma_grade.cd_turma_escola = serie_turma_escola.cd_turma_escola
+                                inner join escola_grade (nolock) ON serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
+                                inner join grade (nolock) ON escola_grade.cd_grade = grade.cd_grade
+                                inner join grade_componente_curricular (nolock) gcc on gcc.cd_grade = grade.cd_grade
+                                inner join componente_curricular (nolock) cc on cc.cd_componente_curricular = gcc.cd_componente_curricular
+                                    and cc.dt_cancelamento is null
+                                inner join serie_ensino (nolock)
+                                    ON grade.cd_serie_ensino = serie_ensino.cd_serie_ensino                             
+                                inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
+						where te.cd_turma_escola in @codigosTurma
+							and te.st_turma_escola in ('O', 'A', 'C')
+                        union all
+                        select distinct pcc.cd_componente_curricular as Codigo,
+                                        pcc.dc_componente_curricular as Descricao,
+                                        esc.tp_escola                    as TipoEscola,
+                                        dtt.qt_hora_duracao              as TurnoTurma,
+                                        ''   as AnoTurma,
+                                        te.cd_turma_escola               as CodigoTurma  
+                        from turma_escola (nolock) te
+                            inner join escola (nolock) esc ON te.cd_escola = esc.cd_escola
+                        --Programa
+                            inner join turma_escola_grade_programa (nolock) tegp on tegp.cd_turma_escola = te.cd_turma_escola
+                            inner join escola_grade (nolock) teg on teg.cd_escola_grade = tegp.cd_escola_grade
+                            inner join grade (nolock) pg on pg.cd_grade = teg.cd_grade
+                            inner join grade_componente_curricular (nolock) pgcc on pgcc.cd_grade = teg.cd_grade
+                            inner join componente_curricular (nolock) pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular and pcc.dt_cancelamento is null                        
+                            inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
+                        where te.cd_turma_escola in @codigosTurma
+                            and te.st_turma_escola in ('O', 'A', 'C') ";                         
+
+            var parametros = new { CodigosTurma = Array.ConvertAll(codigosTurma, codigo => int.Parse(codigo)) };
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros,commandTimeout:180);
+            }
+        }
+        
         public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string[] turmasCodigo, IEnumerable<long> componentesCurricularesId)
         {
             var query = @"select
