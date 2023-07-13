@@ -224,7 +224,6 @@ namespace SME.SR.Data
                             inner join grade (nolock) pg on pg.cd_grade = teg.cd_grade
                             inner join grade_componente_curricular (nolock) pgcc on pgcc.cd_grade = teg.cd_grade
                             inner join componente_curricular (nolock) pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular and pcc.dt_cancelamento is null
-                            left join tipo_programa (nolock) tp on te.cd_tipo_programa = tp.cd_tipo_programa
                         {(necessitaRetornoRfProfessor
                         ? @"--Atribuição
                             inner join atribuicao_aula (nolock) aa
