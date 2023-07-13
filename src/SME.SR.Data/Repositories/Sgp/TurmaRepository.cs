@@ -1313,7 +1313,7 @@ namespace SME.SR.Data
             var query = $@";with tempTurmaRegularConselhoAluno as
                             (select distinct 
                                 t.turma_id as TurmaCodigo,
-                                null as TurmaRegularCodigo,
+                                null as RegularCodigo,
                                 t.modalidade_codigo Modalidade,
                                 cca.aluno_codigo as AlunoCodigo,
                                 t.ano,
@@ -1357,7 +1357,7 @@ namespace SME.SR.Data
                             ), tempTurmaComplementarConselhoAluno as
                             (select distinct 
                                 t.turma_id as TurmaCodigo,
-                                tr.turma_id as TurmaRegularCodigo,
+                                tr.turma_id as RegularCodigo,
                                 t.modalidade_codigo Modalidade,
                                 cca.aluno_codigo as AlunoCodigo,
                                 t.ano,
@@ -1395,7 +1395,7 @@ namespace SME.SR.Data
                             select 
                                 *
                             from 
-                                (select TurmaCodigo,TurmaRegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
+                                (select TurmaCodigo,RegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
                             union
                                 (select * from tempTurmaComplementarConselhoAluno)";
 
