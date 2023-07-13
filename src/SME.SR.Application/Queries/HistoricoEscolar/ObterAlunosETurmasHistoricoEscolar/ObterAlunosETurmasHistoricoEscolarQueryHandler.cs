@@ -33,7 +33,7 @@ namespace SME.SR.Application
                 IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(request.CodigoAlunos);
 
                 //Obter as turmas dos Alunos
-                var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigoAlunos, pareceresConclusivosIds.ToArray()));
+                var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosComParecerQuery(request.CodigoAlunos, pareceresConclusivosIds.ToArray()));
                 if (!turmasDosAlunos.Any())
                     return retorno;
 
@@ -77,7 +77,7 @@ namespace SME.SR.Application
                     IEnumerable<AlunoHistoricoEscolar> informacoesDosAlunos = await ObterInformacoesDosAlunos(codigoAlunos);
 
                     //Obter as turmas dos Alunos
-                    var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos, pareceresConclusivosIds.ToArray()));
+                    var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosComParecerQuery(codigoAlunos, pareceresConclusivosIds.ToArray()));
                     if (!turmasDosAlunos.Any())
                         return retorno;
 
