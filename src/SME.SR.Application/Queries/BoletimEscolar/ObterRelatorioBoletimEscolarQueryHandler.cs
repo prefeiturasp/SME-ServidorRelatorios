@@ -32,9 +32,9 @@ namespace SME.SR.Application
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
             var codigosTurma = turmas.OrderBy(tb => tb.Nome).Select(t => t.Codigo).ToArray();
             var mediasFrequencia = await ObterMediasFrequencia();
-            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo, request.ConsideraInativo);
+            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo, request.ConsideraInativo, request.AnoLetivo);
             var alunosAPesquisarTurmas = request.AlunosCodigo.Any() ? request.AlunosCodigo : alunosPorTurma.Select(a => a.Key);
-            var turmasComplementaresEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(codigosTurma, alunosAPesquisarTurmas.ToArray()));
+            var turmasComplementaresEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(codigosTurma, alunosAPesquisarTurmas.ToArray(), request.AnoLetivo));
 
             codigosTurma = codigosTurma.Concat(turmasComplementaresEdFisica.Select(tcf => tcf.Codigo).ToArray()).ToArray();
 
@@ -162,13 +162,14 @@ namespace SME.SR.Application
             }
         }
        
-        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool trazerAlunosInativos)
+        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool trazerAlunosInativos, int anoLetivo)
         {
             return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
             {
                 CodigosAlunos = alunosCodigo,
                 CodigosTurma = turmasCodigo,
-                TrazerAlunosInativos = trazerAlunosInativos
+                TrazerAlunosInativos = trazerAlunosInativos,
+                AnoLetivo = anoLetivo
             });
         }
 
