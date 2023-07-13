@@ -19,7 +19,7 @@ namespace SME.SR.Application
         }
         public async Task<IEnumerable<Turma>> Handle(ObterTurmasComplementaresEdFisicaQuery request, CancellationToken cancellationToken)
         {
-            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigosAlunos.Select(ca => long.Parse(ca)).ToArray(), null));
+            var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigosAlunos.Select(ca => long.Parse(ca)).ToArray(), request.AnoLetivo));
             var turmasComplementaresEdFisica = new List<Turma>();
 
             turmasAlunos
