@@ -234,7 +234,6 @@ namespace SME.SR.Data
                         grade_tur.cd_turma_escola as CodigoTurma
 					from
 						turma_grade_territorio_experiencia grade_ter
-						left join tipo_programa tp on te.cd_tipo_programa = tp.cd_tipo_programa
 						inner join território_saber ter on ter.cd_territorio_saber = grade_ter.cd_territorio_saber
 						inner join tipo_experiencia_pedagogica exp on exp.cd_experiencia_pedagogica = grade_ter.cd_experiencia_pedagogica
                         inner join serie_turma_grade grade_tur on grade_tur.cd_serie_grade = grade_ter.cd_serie_grade
