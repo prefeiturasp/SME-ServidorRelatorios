@@ -438,7 +438,7 @@ namespace SME.SR.Application
             return !string.IsNullOrEmpty(nota) ? nota : "-";
         }
 
-        private string ObterFrequenciaBimestre(IEnumerable<FrequenciaAluno> frequenciasAlunoComponente,int bimestre,IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual, IEnumerable<int> conselhoClasseBimestres)
+        private string ObterFrequenciaBimestre(IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, int bimestre, IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual, IEnumerable<int> conselhoClasseBimestres)
         {
             var frequencia = !VerificaPossuiConselho(conselhoClasseBimestres, bimestre) ? "" :
                                     frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado

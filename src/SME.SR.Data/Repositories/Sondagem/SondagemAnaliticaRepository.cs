@@ -330,7 +330,7 @@ namespace SME.SR.Data
                             var totalRepostas = (anoTurma.Select(x => x.Nivel1).Sum() + anoTurma.Select(x => x.Nivel2).Sum() + anoTurma.Select(x => x.Nivel3).Sum()
                                                 + anoTurma.Select(x => x.Nivel4).Sum());
 
-                            var semPreenchimento = quantidadeTotalAlunosEol < totalRepostas ? 0 : quantidadeTotalAlunosEol - totalRepostas;
+                            var semPreenchimento = anoTurma.Select(x => x.SemPreenchimento).Sum() > 0 ? anoTurma.Select(x => x.SemPreenchimento).Sum() : 0;
 
                             var valorSemTotalPreenchimento = semPreenchimento >= 0 ? semPreenchimento : anoTurma.Select(x => x.SemPreenchimento).Sum();
 
