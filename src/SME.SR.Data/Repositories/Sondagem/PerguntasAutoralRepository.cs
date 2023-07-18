@@ -19,7 +19,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<PerguntasAutoralDto>> ObterPerguntasPorComponenteAnoTurma(int anoTurma, int anoLetivo, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
+        public async Task<IEnumerable<PerguntasAutoralDto>> ObterPerguntasPorComponenteAnoTurma(int anoTurma, int anoLetivo, int bimestre, ComponenteCurricularSondagemEnum? componenteCurricularSondagem)
         {
             StringBuilder query = new StringBuilder();
 
@@ -27,8 +27,9 @@ namespace SME.SR.Data
             query.Append(" from \"Pergunta\" p ");
             query.Append(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" ");
             query.Append(" inner join \"PerguntaResposta\" pr on pr.\"PerguntaId\" = p.\"Id\" ");
+            query.Append(" left join \"PerguntaAnoEscolarBimestre\" paeb ON paeb.\"PerguntaAnoEscolarId\" = pae.\"Id\"");
             query.Append(" inner join \"Resposta\" r on pr.\"RespostaId\" = r.\"Id\"  where 1=1 ");
-
+            
             if (anoTurma > 0)
                 query.Append("and \"AnoEscolar\" = @anoTurma ");
 
@@ -42,9 +43,17 @@ namespace SME.SR.Data
 
             query.Append("or @anoLetivo <= (case when pae.\"FimVigencia\" is null then 0 else EXTRACT(YEAR FROM pae.\"FimVigencia\") end)) ");
 
+            query.Append(" and (paeb.\"Id\" is null");
+            query.Append(" and not exists(select 1 from \"PerguntaAnoEscolar\" pae");
+            query.Append("                inner join \"PerguntaAnoEscolarBimestre\" paeb ON paeb.\"PerguntaAnoEscolarId\" = pae.\"Id\"");
+            query.Append("                where pae.\"AnoEscolar\" = @anoTurma");
+            query.Append("                  and (pae.\"FimVigencia\" is null and extract(year from pae.\"InicioVigencia\") <= @anoLetivo)");
+            query.Append("                  and paeb.\"Bimestre\" = @bimestre)");
+            query.Append(" or paeb.\"Bimestre\" = @bimestre)");
+
             query.Append("order by pae.\"Ordenacao\", pr.\"Ordenacao\"");
 
-            var parametros = new { anoTurma, anoLetivo = anoLetivo, componenteCurricularId = componenteCurricularSondagem.Name(), grupoProficiencia = ProficienciaSondagemEnum.Numeros};
+            var parametros = new { anoTurma, anoLetivo = anoLetivo, bimestre, componenteCurricularId = componenteCurricularSondagem.Name(), grupoProficiencia = ProficienciaSondagemEnum.Numeros};
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
             return await conexao.QueryAsync<PerguntasAutoralDto>(query.ToString(), parametros);
