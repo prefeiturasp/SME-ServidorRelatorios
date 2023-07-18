@@ -387,7 +387,7 @@ namespace SME.SR.Application
 
         private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativosNoPeriodo(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
-            .Where(a => a.Inativo && a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim)
+            .Where(a => a.Inativo && a.DataSituacaoAluno.Date >= periodoEscolar.PeriodoInicio)
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
