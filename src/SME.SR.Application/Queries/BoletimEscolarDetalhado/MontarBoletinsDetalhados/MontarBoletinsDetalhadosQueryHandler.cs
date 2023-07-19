@@ -228,6 +228,7 @@ namespace SME.SR.Application
                                     new ComponenteCurricularDto()
                                     {
                                         Codigo = componente.CodDisciplina.ToString(),
+                                        CodigoTerritorioSaber = componente.CodigoTerritorioSaber.ToString(),
                                         Nome = componente.Disciplina,
                                         Nota = componente.LancaNota,
                                         Frequencia = componente.Frequencia,
@@ -309,6 +310,10 @@ namespace SME.SR.Application
                     {
                         var frequenciasAlunoComponente =
                             frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo && (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
+
+                        if (!frequenciasAlunoComponente.Any() && componenteCurricular.TerritorioSaber)
+                            frequenciasAlunoComponente = VerificaSeHaRegistrosComOutroCodigoTerritorio(componenteCurricular, frequenciasAluno);
+                      
                         var frequenciasTurmaComponente =
                             frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
 
@@ -406,6 +411,9 @@ namespace SME.SR.Application
                 }
             }
         }
+
+        private IEnumerable<FrequenciaAluno> VerificaSeHaRegistrosComOutroCodigoTerritorio(ComponenteCurricularDto componenteCurricular, IEnumerable<FrequenciaAluno> frequenciasAluno)
+         => frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber && componenteCurricular.TerritorioSaber);
 
         private string ObterNotaBimestre(IEnumerable<NotasAlunoBimestre> notasComponente, int bimestre, int periodoAtual)
         {

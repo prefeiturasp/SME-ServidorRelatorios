@@ -108,7 +108,7 @@ namespace SME.SR.Data
 	                            from( 
 		                            select fa.codigo_aluno CodigoAluno, t.turma_id as TurmaId, t.ano_letivo as AnoTurma, 
 		                                    t.modalidade_codigo as ModalidadeTurma, fa.tipo, fa.disciplina_id DisciplinaId, 
-		                                    fa.periodo_inicio PeriodoInicio, fa.periodo_fim PeriodoFim, fa.bimestre, 
+		                                    fa.periodo_inicio PeriodoInicio, fa.periodo_fim PeriodoFim, fa.bimestre, fa.id as Id,
 		                                    fa.total_aulas TotalAulas,
 		                                    fa.total_ausencias TotalAusencias, 
 		                                    fa.total_compensacoes TotalCompensacoes,
@@ -123,7 +123,6 @@ namespace SME.SR.Data
 	                                          and t.modalidade_codigo = @modalidade
 	                                          and t.semestre = @semestre
 	                                          {(turmaCodigos?.Length > 0 ? " and t.turma_id = ANY(@turmaCodigos) " : string.Empty)}
-                                              {(!string.IsNullOrWhiteSpace(professor) ? " and (fa.professor_rf = @professor or fa.professor_rf is null) " : string.Empty)}
 		                            )rf 
 	                            where rf.sequencia = 1;";
 
