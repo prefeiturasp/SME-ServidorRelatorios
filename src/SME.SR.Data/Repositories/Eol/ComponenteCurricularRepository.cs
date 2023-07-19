@@ -172,62 +172,56 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
         }
 
-        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmasEProfessor(string login, string[] codigosTurma, bool necessitaRetornoRfProfessor = true)
+        public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorTurmas(string[] codigosTurma)
         {
-            var query = @$"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
-                                                    cc.cd_componente_curricular) as Codigo,
-                                                iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
-                                                    cc.dc_componente_curricular) as Descricao,
-                                                esc.tp_escola                    as TipoEscola,
-                                                dtt.qt_hora_duracao              as TurnoTurma,
-				                                serie_ensino.sg_resumida_serie   as AnoTurma,
-                                                te.cd_turma_escola               as CodigoTurma
-                                              {(necessitaRetornoRfProfessor ? @" , vsc.cd_registro_funcional        as Professor" : string.Empty)}  
-                                from turma_escola (nolock) te
-                                            inner join escola (nolock) esc ON te.cd_escola = esc.cd_escola
-                                    --Serie Ensino
-                                            left join serie_turma_escola (nolock) ON serie_turma_escola.cd_turma_escola = te.cd_turma_escola
-                                            left join serie_turma_grade (nolock) ON serie_turma_grade.cd_turma_escola = serie_turma_escola.cd_turma_escola
-                                            left join escola_grade (nolock) ON serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
-                                            left join grade (nolock) ON escola_grade.cd_grade = grade.cd_grade
-                                            left join grade_componente_curricular (nolock) gcc on gcc.cd_grade = grade.cd_grade
-                                            left join componente_curricular (nolock) cc on cc.cd_componente_curricular = gcc.cd_componente_curricular
+            var query = @$"select distinct cc.cd_componente_curricular as Codigo,
+                                cc.dc_componente_curricular as Descricao,
+                                esc.tp_escola                    as TipoEscola,
+                                dtt.qt_hora_duracao              as TurnoTurma,
+                                serie_ensino.sg_resumida_serie   as AnoTurma,
+                                te.cd_turma_escola               as CodigoTurma  
+                            from turma_escola (nolock) te
+                            inner join escola (nolock) esc ON te.cd_escola = esc.cd_escola
+                            --Serie Ensino
+                                inner join serie_turma_escola (nolock) ON serie_turma_escola.cd_turma_escola = te.cd_turma_escola
+                                inner join serie_turma_grade (nolock) ON serie_turma_grade.cd_turma_escola = serie_turma_escola.cd_turma_escola
+                                inner join escola_grade (nolock) ON serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
+                                inner join grade (nolock) ON escola_grade.cd_grade = grade.cd_grade
+                                inner join grade_componente_curricular (nolock) gcc on gcc.cd_grade = grade.cd_grade
+                                inner join componente_curricular (nolock) cc on cc.cd_componente_curricular = gcc.cd_componente_curricular
                                     and cc.dt_cancelamento is null
-                                            left join serie_ensino (nolock)
-                                                    ON grade.cd_serie_ensino = serie_ensino.cd_serie_ensino
-                                    -- Programa
-                                            left join tipo_programa (nolock) tp on te.cd_tipo_programa = tp.cd_tipo_programa
-                                            left join turma_escola_grade_programa (nolock) tegp on tegp.cd_turma_escola = te.cd_turma_escola
-                                            left join escola_grade (nolock) teg on teg.cd_escola_grade = tegp.cd_escola_grade
-                                            left join grade (nolock) pg on pg.cd_grade = teg.cd_grade
-                                            left join grade_componente_curricular (nolock) pgcc on pgcc.cd_grade = teg.cd_grade
-                                            left join componente_curricular (nolock) pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular
-                                    and pcc.dt_cancelamento is null
-                                   {(necessitaRetornoRfProfessor
-                                   ? @"--Atribuição
-                                            inner join atribuicao_aula (nolock) aa
-                                                    on (gcc.cd_grade = aa.cd_grade and gcc.cd_componente_curricular = aa.cd_componente_curricular and aa.cd_serie_grade = serie_turma_grade.cd_serie_grade)
-                                                        or (pgcc.cd_grade = aa.cd_grade and pgcc.cd_componente_curricular = aa.cd_componente_curricular)
-                                                        and aa.dt_cancelamento is null and aa.dt_disponibilizacao_aulas is null and
-                                                        aa.an_atribuicao = year(getdate())
-                                            inner join v_cargo_base_cotic (nolock) vcbc on aa.cd_cargo_base_servidor = vcbc.cd_cargo_base_servidor
-                                            inner join v_servidor_cotic (nolock) vsc on vcbc.cd_servidor = vsc.cd_servidor" 
-                                   : string.Empty)} 
-                                --          left join funcao_atividade_cargo_servidor facs on aa.cd_cargo_base_servidor = facs.cd_cargo_base_servidor
-                                --     and facs.dt_cancelamento is null and facs.dt_fim_funcao_atividade is null
-                                        inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
+                                inner join serie_ensino (nolock)
+                                    ON grade.cd_serie_ensino = serie_ensino.cd_serie_ensino                             
+                                inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
 						where te.cd_turma_escola in @codigosTurma
 							and te.st_turma_escola in ('O', 'A', 'C')
-							{(!string.IsNullOrWhiteSpace(login) ? " and vsc.cd_registro_funcional = @login " : string.Empty)}";
+                        union all
+                        select distinct pcc.cd_componente_curricular as Codigo,
+                                        pcc.dc_componente_curricular as Descricao,
+                                        esc.tp_escola                    as TipoEscola,
+                                        dtt.qt_hora_duracao              as TurnoTurma,
+                                        ''   as AnoTurma,
+                                        te.cd_turma_escola               as CodigoTurma  
+                        from turma_escola (nolock) te
+                            inner join escola (nolock) esc ON te.cd_escola = esc.cd_escola
+                        --Programa
+                            inner join turma_escola_grade_programa (nolock) tegp on tegp.cd_turma_escola = te.cd_turma_escola
+                            inner join escola_grade (nolock) teg on teg.cd_escola_grade = tegp.cd_escola_grade
+                            inner join grade (nolock) pg on pg.cd_grade = teg.cd_grade
+                            inner join grade_componente_curricular (nolock) pgcc on pgcc.cd_grade = teg.cd_grade
+                            inner join componente_curricular (nolock) pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular and pcc.dt_cancelamento is null                        
+                            inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
+                        where te.cd_turma_escola in @codigosTurma
+                            and te.st_turma_escola in ('O', 'A', 'C') ";                         
 
-            var parametros = new { Login = login, CodigosTurma = codigosTurma };
+            var parametros = new { CodigosTurma = Array.ConvertAll(codigosTurma, codigo => int.Parse(codigo)) };
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 return await conexao.QueryAsync<ComponenteCurricular>(query, parametros,commandTimeout:180);
             }
         }
-
+        
         public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string[] turmasCodigo, IEnumerable<long> componentesCurricularesId)
         {
             var query = @"select

@@ -33,8 +33,13 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
                 var alunoPossuiConselho = await AlunoPossuiConselhoClasseCadastrado(request.ConselhoClasseId, codigoAluno);
 
                 if (alunoPossuiConselho)
-                    lstRelatorioAlunos.Add(await ObterRelatorioConselhoClasseAluno(request.ConselhoClasseId, request.FechamentoTurmaId,
-                                                                                   codigoAluno, request.Usuario));
+                {
+                   var dadosAlunoConselho = await ObterRelatorioConselhoClasseAluno(request.ConselhoClasseId, request.FechamentoTurmaId,
+                                                                                   codigoAluno, request.Usuario);
+                   if(dadosAlunoConselho != null)
+                        lstRelatorioAlunos.Add(dadosAlunoConselho);
+                }
+                    
             }
 
             return lstRelatorioAlunos;
@@ -71,7 +76,7 @@ namespace SME.SR.Application.Queries.ConselhoClasse.ObterRelatorioConselhoClasse
                 Usuario = usuario
             });
 
-            return retorno.Relatorio.FirstOrDefault();
+            return retorno.Relatorio?.FirstOrDefault() ?? null;
         }
     }
 }

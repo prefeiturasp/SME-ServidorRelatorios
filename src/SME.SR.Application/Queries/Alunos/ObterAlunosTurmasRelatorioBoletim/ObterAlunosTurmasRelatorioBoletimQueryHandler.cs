@@ -28,7 +28,7 @@ namespace SME.SR.Application
             var alunos = Enumerable.Empty<Aluno>();
             var alunosOrdenadosPorSituacao = Enumerable.Empty<Aluno>();
 
-            var turmasEdFisica = (await turmaRepository.ObterPorAlunosEParecerConclusivo(request.CodigosAlunos.Select(ca => long.Parse(ca)).ToArray(), null))
+            var turmasEdFisica = (await turmaRepository.ObterPorAlunos(request.CodigosAlunos.Select(ca => long.Parse(ca)).ToArray(), request.AnoLetivo))
                     .Where(te => te.TipoTurma == TipoTurma.EdFisica && request.CodigosTurma.Contains(te.RegularCodigo))
                     .Distinct()
                     .ToArray();

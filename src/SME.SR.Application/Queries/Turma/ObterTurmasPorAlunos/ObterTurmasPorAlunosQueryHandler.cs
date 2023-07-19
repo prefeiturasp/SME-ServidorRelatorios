@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<AlunosTurmasCodigosDto>> Handle(ObterTurmasPorAlunosQuery request, CancellationToken cancellationToken)
         {
-            return await turmaRepository.ObterPorAlunosEParecerConclusivo(request.AlunosCodigos, request.PareceresConclusivosIds);
+            return await turmaRepository.ObterPorAlunos(request.AlunosCodigos, request.AnoLetivo);
         }
 
     }

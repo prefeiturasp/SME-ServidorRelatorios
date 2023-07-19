@@ -25,7 +25,7 @@ namespace SME.SR.Data
 	                                                c.aluno_codigo AlunoCodigo,
 	                                                c.parecer_conclusivo_id ParecerConclusivoId,
 	                                                t.turma_id TurmaCodigo,
-	                                                cccatn.bimestre
+	                                                coalesce(cccatn.bimestre, 0) as Bimestre
                                                 from
 	                                                consolidado_conselho_classe_aluno_turma c inner join turma t on c.turma_id = t.id
                                                 inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = c.id
@@ -45,7 +45,7 @@ namespace SME.SR.Data
 	                                            t.turma_id TurmaCodigo,
 	                                            u.nome as NomeUe,
 	                                            t.nome as NomeTurma,
-	                                            cccatn.bimestre,
+	                                            coalesce(cccatn.bimestre, 0) as Bimestre,
 	                                            t.modalidade_codigo as ModalidadeCodigo,
 	                                            count(cccat.id) filter(where cccat.status = 0) as NaoIniciado,
 	                                            count(cccat.id) filter(where cccat.status = 1) as EmAndamento,
@@ -62,7 +62,7 @@ namespace SME.SR.Data
                                               and not cccat.excluido ");
 
             if (bimestres != null)
-                query.AppendLine(" and cccatn.bimestre = ANY(@bimestres) ");
+                query.AppendLine(" and coalesce(cccatn.bimestre, 0) = ANY(@bimestres) ");
 
             if (semestre > 0)
                 query.AppendLine(" and t.semestre = @semestre ");
@@ -73,8 +73,8 @@ namespace SME.SR.Data
             if (!exibirHistorico)
                 query.AppendLine(" and not t.historica ");
 
-            query.AppendLine(@" group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, cccatn.bimestre, t.modalidade_codigo
-                                order by u.nome, t.nome, cccatn.bimestre;");
+            query.AppendLine(@" group by u.ue_id, t.turma_id, t.id, u.nome, t.nome, coalesce(cccatn.bimestre, 0), t.modalidade_codigo
+                                order by u.nome, t.nome, coalesce(cccatn.bimestre, 0);");
 
             var parametros = new { dreCodigo, modalidade, bimestres, situacao, anoLetivo, semestre };
 
