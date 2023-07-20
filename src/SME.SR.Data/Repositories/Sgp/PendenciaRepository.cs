@@ -413,7 +413,7 @@ namespace SME.SR.Data
                 query.AppendLine($" and pe.bimestre  = @bimestre");
 
             query.AppendLine(" union all");
-            query.AppendLine(@"select distinct
+            query.AppendLine(@$"select distinct
                             p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
@@ -463,6 +463,7 @@ namespace SME.SR.Data
                               on usu.id = pu.usuario_id 
                         where t.ano_letivo = @anoLetivo
                         and p.tipo <> 15
+                        and p.tipo <> {(int)TipoPendencia.ComponenteSemAula}
                         and d.dre_id  = @dreCodigo
                         and ue.ue_id  = @ueCodigo
                         and not p.excluido ");
@@ -910,6 +911,64 @@ namespace SME.SR.Data
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
             if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
                 query.AppendLine($" and (a.disciplina_id::bigint = any(@componentesCodigo) or pdb.componente_curricular_id = any(@componentesCodigo)) ");
+
+            query.AppendLine(" union all  ");
+            query.AppendLine(@$"select distinct
+                            p.id || usu.rf_codigo as pendenciaId,
+                            p.titulo,
+	                        p.descricao as Descricao,
+	                        p.situacao,
+                            p.instrucao, 
+                            p.qtde_aulas as QuantidadeDeAulas,
+                            p.qtde_dias as QuantidadeDeDias,
+	                        d.abreviacao as DreNome,
+	                        te.descricao || ' - ' || u.nome as UeNome,
+	                        t.ano_letivo as AnoLetivo,
+	                        t.modalidade_codigo as ModalidadeCodigo,
+	                        t.semestre,
+                            t.nome || case t.ano when '0' then '' else ' - ' || t.ano || 'ºANO' end as TurmaNome,
+                            t.turma_id as TurmaCodigo,
+	                        pp.componente_curricular_id as DisciplinaId,
+	                        pe.bimestre,
+                            usu.nome as criador,
+                            usu.login as criadorRf,
+	                        p.alterado_por as aprovador,
+	                        p.alterado_rf as aprovadorRf,
+                            'Diário de Classe' as TipoPendencia,
+                            false as OutrasPendencias,
+                            p.tipo,
+                            pp.professor_rf as Detalhe
+                        from pendencia_professor pp
+                        inner join pendencia p on pp.pendencia_id = p.id
+                        inner join turma t on t.id = pp.turma_id
+                        inner join ue u  on t.ue_id = u.id
+                        inner join dre d on u.dre_id = d.id
+                        inner join tipo_escola te on te.cod_tipo_escola_eol = u.tipo_escola
+                        inner join pendencia_usuario pu on pu.pendencia_id = p.id
+                        inner join usuario usu on usu.id = pu.usuario_id
+                        inner join periodo_escolar pe on pe.id = pp.periodo_escolar_id
+                        where t.ano_letivo = @anoLetivo
+                        and d.dre_id = @dreCodigo
+                        and u.ue_id = @ueCodigo
+                        and p.situacao in(1, 2)
+                        and p.tipo = {(int)TipoPendencia.ComponenteSemAula}
+                        and not p.excluido");
+
+            if (modalidadeId > 0)
+                query.AppendLine(" and t.modalidade_codigo = @modalidadeId");
+            if (!string.IsNullOrEmpty(usuarioRf) && usuarioRf.Length > 0)
+                query.AppendLine(" and usu.login = @usuarioRf ");
+            if (semestre.HasValue)
+                query.AppendLine($" and t.semestre = @semestre ");
+            if (exibirHistorico)
+                query.AppendLine(" and t.historica  = true ");
+            if (semestre.HasValue)
+                query.AppendLine($" and t.semestre = @semestre ");
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
+                query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
+            if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
+                query.AppendLine($" and pp.componente_curricular_id = any(@componentesCodigo) ");
+
             return query.ToString();
         }
     }
