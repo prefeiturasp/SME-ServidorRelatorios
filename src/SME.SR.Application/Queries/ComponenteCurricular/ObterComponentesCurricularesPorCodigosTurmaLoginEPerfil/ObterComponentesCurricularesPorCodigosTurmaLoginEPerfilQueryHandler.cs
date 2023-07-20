@@ -24,7 +24,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> Handle(ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery request, CancellationToken cancellationToken)
         {
-            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigosTurma, request.ValidarAbrangenciaProfessor, request.NecessitaRetornoRfProfessor);
+            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.CodigosTurma);
 
             await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares, request.ComponentesCurriculares);
 
@@ -199,26 +199,14 @@ namespace SME.SR.Application
             return territoriosComProfessores;
         }
 
-        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string[] codigosTurma, bool validarAbrangenciaProfessor = true, bool necessitaRetornoRfProfessor = true)
+        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string[] codigosTurma)
         {
             var componentesCurriculares = new List<ComponenteCurricular>();
 
-            var gruposAbrangenciaApiEol = await permissaoRepository.ObterTodosGrupos();
-
-            var grupoAbrangencia = gruposAbrangenciaApiEol.FirstOrDefault(c => c.GrupoID == idPerfil);
-            if (grupoAbrangencia != null)
-            {
-                if (grupoAbrangencia.Abrangencia == TipoAbrangencia.Professor && validarAbrangenciaProfessor)
-                {
-                    componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesPorTurmasEProfessor(login, codigosTurma));
-                }
-                else
-                {
-                    var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmasEProfessor(null, codigosTurma, necessitaRetornoRfProfessor);
-                    componentesCurriculares.AddRange(necessitaRetornoRfProfessor ? componentesDaTurma.DistinctBy(c => c.Codigo) : componentesDaTurma);
-                }
-                AdicionarComponentesProfessorEmebs(componentesCurriculares);
-            }
+            componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesCurricularesPorTurmas(codigosTurma));
+            
+            AdicionarComponentesProfessorEmebs(componentesCurriculares);
+            
             return componentesCurriculares;
         }
 
