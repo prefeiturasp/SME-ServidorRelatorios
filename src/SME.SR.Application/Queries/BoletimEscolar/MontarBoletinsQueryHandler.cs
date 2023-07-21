@@ -60,9 +60,9 @@ namespace SME.SR.Application
                     {
                         var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
-                        var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
+                        var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
-                        if (conselhoClassBimestres != null && conselhoClassBimestres.Any())
+                        if (conselhoClasseBimestres != null && conselhoClasseBimestres.Any())
                         {
                             var boletimAluno = new RelatorioBoletimSimplesEscolarDto();
 
@@ -96,7 +96,7 @@ namespace SME.SR.Application
                                     frequenciasAluno,
                                     frequenciasTurma,
                                     mediasFrequenciaAnoLetivo ?? mediasFrequencia,
-                                    conselhoClassBimestres,
+                                    conselhoClasseBimestres,
                                     registroFrequencia,
                                     periodoAtual,
                                     aulasPrevistas);
@@ -311,9 +311,9 @@ namespace SME.SR.Application
             }
         }
 
-        private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)
+        private string ObterNotaBimestre(IEnumerable<int> conselhoClasseBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)
         {
-            var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
+            var retorno = !VerificaPossuiConselho(conselhoClasseBimestres, bimestre) ? "" :
                 notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre && nc.NotaConceito != null)?.NotaConceito;
 
             retorno = transformarNotaEmConceito && decimal.TryParse(retorno, out decimal valor) ?
@@ -322,14 +322,14 @@ namespace SME.SR.Application
             return String.IsNullOrEmpty(retorno) ? String.Empty : retorno;
         }
 
-        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClassBimestres, int bimestre)
+        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClasseBimestres, int bimestre)
         {
-            return conselhoClassBimestres.Any(a => a == bimestre);
+            return conselhoClasseBimestres.Any(a => a == bimestre);
         }  
 
-        private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, int bimestre)
+        private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClasseBimestres, IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, int bimestre)
         {
-            var frequencia = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
+            var frequencia = !VerificaPossuiConselho(conselhoClasseBimestres, bimestre) ? "" :
                 frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ?? string.Empty;
 
             return String.IsNullOrEmpty(frequencia) ? String.Empty : frequencia;

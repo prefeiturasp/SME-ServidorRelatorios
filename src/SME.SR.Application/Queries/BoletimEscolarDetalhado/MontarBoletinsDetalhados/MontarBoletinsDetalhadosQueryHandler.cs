@@ -548,9 +548,9 @@ namespace SME.SR.Application
 
             return (1, "P");
         }
-        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClassBimestres, int bimestre)
+        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClasseBimestres, int bimestre)
         {
-            return conselhoClassBimestres.Any(a => a == bimestre);
+            return conselhoClasseBimestres.Any(a => a == bimestre);
         }
     }
 }
