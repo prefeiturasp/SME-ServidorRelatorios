@@ -102,7 +102,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos, string professor = null)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos)
         {
             var query = @$"select * 
 	                            from( 
@@ -126,7 +126,7 @@ namespace SME.SR.Data
 		                            )rf 
 	                            where rf.sequencia = 1;";
 
-            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos, professor };
+            var parametros = new { codigosAluno, anoLetivo, modalidade, semestre, turmaCodigos};
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {

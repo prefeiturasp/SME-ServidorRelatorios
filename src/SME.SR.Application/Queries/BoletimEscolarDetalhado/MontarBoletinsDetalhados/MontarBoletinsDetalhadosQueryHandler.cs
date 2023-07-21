@@ -188,7 +188,9 @@ namespace SME.SR.Application
                     grupos.Add(grupo);
                 }
 
-                var grupoMatrizAgrupadosAreaOrdem = grupoMatriz.GroupBy(a => a.AreaDoConhecimento.Ordem != null);
+                var grupoMatrizAgrupadosAreaOrdem = grupoMatriz.Any(g=> g.TerritorioSaber)
+                                                    ? grupoMatriz.OrderBy(g=> g.DescricaoCompletaTerritorio).GroupBy(a => a.AreaDoConhecimento.Ordem != null)
+                                                    : grupoMatriz.GroupBy(a => a.AreaDoConhecimento.Ordem != null);
 
                 foreach(var gruposOrdem in grupoMatrizAgrupadosAreaOrdem.OrderByDescending(g=> g.Key))
                 {
@@ -448,7 +450,9 @@ namespace SME.SR.Application
 
         private string ObterFrequenciaBimestre(IEnumerable<FrequenciaAluno> frequenciasAlunoComponente,int bimestre,IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual, IEnumerable<int> conselhoClasseBimestres)
         {
-            var frequencia = frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ?? string.Empty;
+            var frequencia = !VerificaPossuiConselho(conselhoClasseBimestres,bimestre) 
+                ? ""
+                : frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ?? string.Empty;
 
             if (!String.IsNullOrEmpty(frequencia))
                 frequencia = frequencia += "%";
