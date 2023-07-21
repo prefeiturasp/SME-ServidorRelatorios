@@ -269,12 +269,10 @@ namespace SME.SR.Application
             {
                 foreach (var componenteCurricular in boletim.ComponentesCurriculares)
                 {
-                    var frequenciasAlunoComponente = 
-                            frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo 
-                            && (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
-
-                    if (!frequenciasAlunoComponente.Any() && componenteCurricular.TerritorioSaber)
-                        frequenciasAlunoComponente = VerificaSeHaRegistrosComOutroCodigoTerritorio(componenteCurricular, frequenciasAluno);
+                    var frequenciasAlunoComponente =
+                         frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber
+                         && (!componenteCurricular.TerritorioSaber
+                              || (componenteCurricular.TerritorioSaber && !string.IsNullOrEmpty(componenteCurricular.Professor) ? f.Professor == componenteCurricular.Professor : true)));
 
                     var frequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoComponente, BIMESTRE_FINAL, conselhoClasseBimestres);
 
@@ -312,10 +310,6 @@ namespace SME.SR.Application
                 }
             }
         }
-
-        private IEnumerable<FrequenciaAluno> VerificaSeHaRegistrosComOutroCodigoTerritorio(ComponenteCurricularDto componenteCurricular, IEnumerable<FrequenciaAluno> frequenciasAluno)
-            => frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber && componenteCurricular.TerritorioSaber);
-
 
         private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)
         {
