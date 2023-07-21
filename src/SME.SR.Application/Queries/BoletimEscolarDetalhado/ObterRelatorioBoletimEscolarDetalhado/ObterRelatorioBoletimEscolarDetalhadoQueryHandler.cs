@@ -32,7 +32,13 @@ namespace SME.SR.Application
             var ciclos = await ObterCiclosPorAnoModalidade(request.Modalidade);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
             var mediasFrequencia = await ObterMediasFrequencia();
-            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, false, request.AnoLetivo);
+            
+            var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
+            var periodoEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
+            var dataInicioPeriodoEscolar = periodoEscolares?.OrderBy(p => p.Bimestre).FirstOrDefault().PeriodoInicio ?? null;
+
+            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, false, request.AnoLetivo, dataInicioPeriodoEscolar);
             var alunosAPesquisarTurmas = request.AlunosCodigo.Any() ? request.AlunosCodigo : alunosPorTurma.Select(a => a.Key).ToArray();
             var turmasComplementaresEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(turmas.Select(t => t.Codigo).ToArray(), alunosAPesquisarTurmas.ToArray(), request.AnoLetivo));
 
@@ -43,7 +49,7 @@ namespace SME.SR.Application
                 if (request.Modalidade == Modalidade.Medio && turmasComplementaresEM.Any())
                 {
                     turmas = turmasComplementaresEM;
-                    alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, true, request.AnoLetivo);
+                    alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, true, request.AnoLetivo, dataInicioPeriodoEscolar);
                     alunosPorTurma = alunosPorTurma.OrderBy(a => a.Key);
                 }
             }
@@ -89,6 +95,25 @@ namespace SME.SR.Application
 
             return new List<Turma>() { };
         }
+
+        private ModalidadeTipoCalendario DefinirTipoModalidadeCalendario(ObterRelatorioBoletimEscolarDetalhadoQuery request)
+        {
+            var modalidadeCalendario = ModalidadeTipoCalendario.FundamentalMedio;
+
+            switch (request.Modalidade)
+            {
+                case Modalidade.Infantil:
+                    modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
+                    break;
+
+                case Modalidade.EJA:
+                    modalidadeCalendario = ModalidadeTipoCalendario.EJA;
+                    break;
+            }
+
+            return modalidadeCalendario;
+        }
+
         private async Task<int> ObterUltimoBimestrePeriodoFechamento(int anoLetivo)
         {
             return await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(anoLetivo));
@@ -168,7 +193,7 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool consideraInativo, bool consideraNovoEM, int anoLetivo)
+        private async Task<IEnumerable<IGrouping<string, Aluno>>> ObterAlunosPorTurmasRelatorio(string[] turmasCodigo, string[] alunosCodigo, bool consideraInativo, bool consideraNovoEM, int anoLetivo, DateTime? dataInicioPeriodoEscolar = null)
         {
             return await mediator.Send(new ObterAlunosTurmasRelatorioBoletimQuery()
             {
@@ -176,7 +201,8 @@ namespace SME.SR.Application
                 CodigosTurma = turmasCodigo,
                 TrazerAlunosInativos = consideraInativo,
                 ConsideraNovoEM = consideraNovoEM,
-                AnoLetivo = anoLetivo
+                AnoLetivo = anoLetivo,
+                DataInicioPeriodoEscolar = dataInicioPeriodoEscolar
             });
         }
 
