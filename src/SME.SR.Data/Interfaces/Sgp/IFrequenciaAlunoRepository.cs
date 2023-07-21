@@ -17,7 +17,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaPorComponentesBimestresTurmas(string[] componentesCurriculares, int[] bimestres, string[] turmasCodigos);
         Task<IEnumerable<string>> ObterAlunosComRegistroFrequenciaPorTurmaBimestre(string turmaCodigo, int bimestre);
         Task<DateTime?> ObterUltimaFrequenciaRegistradaProfessor(string professorRf);
-        Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos, string professor = null);
+        Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunos(string[] codigosAluno, int anoLetivo, int modalidade, int semestre, string[] turmaCodigos);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciasPorTurmasAlunosParaHistoricoEscolar(string[] codigosAluno, int anoLetivo, int modalidade, int semestre);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGlobalAlunos(string[] codigosAluno, int anoLetivo, int modalidade, string[] codigoTurmas);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string[] turmasCodigo, string[] componentesCurricularesId, long tipoCalendarioId);

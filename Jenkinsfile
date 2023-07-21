@@ -23,7 +23,7 @@ pipeline {
         }
 
         stage('Build') {
-          when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'release'; branch 'release-r2'; } } 
+          when { anyOf { branch 'master'; branch 'main'; branch 'pre-prod'; branch "story/*"; branch 'development'; branch 'release'; branch 'release-r2'; } } 
           steps {
             script {
               imagename1 = "registry.sme.prefeitura.sp.gov.br/${env.branchname}/sme-sr-worker"   
@@ -37,10 +37,10 @@ pipeline {
         }
 	    
         stage('Deploy'){
-            when { anyOf {  branch 'master'; branch 'main' ; branch 'homolog'; branch 'release'; branch 'release-r2'; } }        
+            when { anyOf {  branch 'master'; branch 'main' ; branch 'pre-prod'; branch 'homolog'; branch 'release'; branch 'release-r2'; } }        
             steps {
                 script{
-                    if ( env.branchname == 'main' ||  env.branchname == 'master' ) {
+                    if ( env.branchname == 'main' ||  env.branchname == 'master' ||  env.branchname == 'pre-prod' ) {
                          withCredentials([string(credentialsId: 'aprovadores-sgp', variable: 'aprovadores')]) {
                             timeout(time: 24, unit: "HOURS") {
                                 input message: 'Deseja realizar o deploy?', ok: 'SIM', submitter: "${aprovadores}"
