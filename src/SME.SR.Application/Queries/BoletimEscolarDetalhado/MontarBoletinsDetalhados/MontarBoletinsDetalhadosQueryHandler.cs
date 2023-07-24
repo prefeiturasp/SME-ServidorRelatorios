@@ -189,7 +189,9 @@ namespace SME.SR.Application
                     grupos.Add(grupo);
                 }
 
-                var grupoMatrizAgrupadosAreaOrdem = grupoMatriz.GroupBy(a => a.AreaDoConhecimento.Ordem != null);
+                var grupoMatrizAgrupadosAreaOrdem = grupoMatriz.Any(g=> g.TerritorioSaber)
+                                                    ? grupoMatriz.OrderBy(g=> g.DescricaoCompletaTerritorio).GroupBy(a => a.AreaDoConhecimento.Ordem != null)
+                                                    : grupoMatriz.GroupBy(a => a.AreaDoConhecimento.Ordem != null);
 
                 foreach(var gruposOrdem in grupoMatrizAgrupadosAreaOrdem.OrderByDescending(g=> g.Key))
                 {
@@ -235,6 +237,7 @@ namespace SME.SR.Application
                                     new ComponenteCurricularDto()
                                     {
                                         Codigo = componente.CodDisciplina.ToString(),
+                                        CodigoTerritorioSaber = componente.CodigoTerritorioSaber.ToString(),
                                         Nome = componente.Disciplina,
                                         Nota = componente.LancaNota,
                                         Frequencia = componente.Frequencia,
@@ -315,7 +318,10 @@ namespace SME.SR.Application
                     foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                     {
                         var frequenciasAlunoComponente =
-                            frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo && (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
+                            frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber
+                             && (!componenteCurricular.TerritorioSaber 
+                                  || (componenteCurricular.TerritorioSaber && !string.IsNullOrEmpty(componenteCurricular.Professor) ? f.Professor == componenteCurricular.Professor : true)));
+                      
                         var frequenciasTurmaComponente =
                             frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
 
@@ -439,9 +445,11 @@ namespace SME.SR.Application
             return !string.IsNullOrEmpty(nota) ? nota : "-";
         }
 
-        private string ObterFrequenciaBimestre(IEnumerable<FrequenciaAluno> frequenciasAlunoComponente,int bimestre,IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual, IEnumerable<int> conselhoClasseBimestres)
+        private string ObterFrequenciaBimestre(IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, int bimestre, IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual, IEnumerable<int> conselhoClasseBimestres)
         {
-            var frequencia = frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ?? string.Empty;
+            var frequencia = !VerificaPossuiConselho(conselhoClasseBimestres,bimestre) 
+                ? ""
+                : frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ?? string.Empty;
 
             if (!String.IsNullOrEmpty(frequencia))
                 frequencia = frequencia += "%";
@@ -540,9 +548,9 @@ namespace SME.SR.Application
 
             return (1, "P");
         }
-        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClassBimestres, int bimestre)
+        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClasseBimestres, int bimestre)
         {
-            return conselhoClassBimestres.Any(a => a == bimestre);
+            return conselhoClasseBimestres.Any(a => a == bimestre);
         }
     }
 }
