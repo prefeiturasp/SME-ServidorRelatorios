@@ -57,5 +57,11 @@ namespace SME.SR.Infra
 
         [Display(Name = "AEE", GroupName = "AEE")]
         AEE = 18,
+
+        [Display(Name = "Pendências de Devolutivas", GroupName = "Diario de Classe")]
+        Devolutiva = 19,
+
+        [Display(Name = "Pendências de turma/componente sem aula", GroupName = "Diario de Classe")]
+        ComponenteSemAula = 20
     }
 }
