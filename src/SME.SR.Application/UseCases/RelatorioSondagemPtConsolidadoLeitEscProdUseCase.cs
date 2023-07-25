@@ -267,9 +267,13 @@ namespace SME.SR.Application
                 .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
 
             int totalRespostas = 0;
+            int totalAlunosParticipantesSondagem = alunosPorAno;
 
-            if(respAgrupado.Any())
+            if (respAgrupado.Any())
+            {
                 totalRespostas = respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
+                totalAlunosParticipantesSondagem = respAgrupado.Sum(r => r.Value);
+            }
 
             foreach (var item in respAgrupado)
             {
@@ -279,22 +283,24 @@ namespace SME.SR.Application
                 {
                     itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
                     itemRetorno.Quantidade = item.Value;
-                    itemRetorno.Percentual = Math.Round((item.Value / (decimal)alunosPorAno) * 100, 2);
-                    itemRetorno.Total = alunosPorAno;
+                    itemRetorno.Percentual = Math.Round((item.Value / (decimal)totalAlunosParticipantesSondagem) * 100, 2);
+                    itemRetorno.Total = totalAlunosParticipantesSondagem;
                     respostas.Add(itemRetorno);
                 }                   
             }            
 
             if (alunosPorAno > totalRespostas && !respostas.Any(x => x.Percentual == 100))
             {
-                var totalSemPreenchimento = alunosPorAno - totalRespostas;
+                var totalSemPreenchimento = respAgrupado.Any(r=> string.IsNullOrEmpty(r.Label)) 
+                    ? respAgrupado.FirstOrDefault(r=> string.IsNullOrEmpty(r.Label)).Value 
+                    : alunosPorAno - totalRespostas;
 
                 RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
                 itemRetorno.Resposta = MontarTextoProficiencia(string.Empty);
                 itemRetorno.Quantidade = totalSemPreenchimento;
-                itemRetorno.Percentual = Math.Round(((decimal)totalSemPreenchimento / (decimal)alunosPorAno) * 100, 2);
-                itemRetorno.Total = alunosPorAno;
+                itemRetorno.Percentual = Math.Round(((decimal)totalSemPreenchimento / (decimal)totalAlunosParticipantesSondagem) * 100, 2);
+                itemRetorno.Total = totalAlunosParticipantesSondagem;
                 respostas.Add(itemRetorno);
             }
 
