@@ -76,7 +76,7 @@ namespace SME.SR.Application.UseCases
                         Mes = mesAgrupado.Key,
                         MesDescricao = ObterNomeMes(mesAgrupado.Key)
                     };
-                    var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x =>x.OrdemExibicaoComponente).GroupBy(x => x.NomeComponente);
+                    var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x =>x.NomeGrupo).ThenBy(t => t.NomeComponente).GroupBy(x => x.NomeComponente);
                     foreach (var componenteAgrupado in componentesAgrupado)
                     {
                         var frequenciaPeriodoComponente = PercentualFrequenciaComponente(componenteAgrupado);
@@ -94,25 +94,28 @@ namespace SME.SR.Application.UseCases
                         mes.FrequenciaComponente.Add(componente);
                     }
 
-                    mes.FrequenciaGlobal = $"{(totalFrequenciaDoPeriodo / componentesAgrupado.Count())}%";
+                    mes.FrequenciaGlobal = $"{Math.Round(totalFrequenciaDoPeriodo / componentesAgrupado.Count(), 2)}%";
                     controFrequenciaMensal.FrequenciaMes.Add(mes);
                 }
 
                 retorno.Add(controFrequenciaMensal);
             }
 
-            return retorno;
+            return retorno.OrderBy(controle => controle.NomeCriancaEstudante).ToList();
         }
 
         private static double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)
         {
-            var totalAulas = componenteAgrupado.Sum(x => x.TotalAula);
-            var numeroFaltasNaoCompensadas = componenteAgrupado.Where(x => x.TotalTipoFrequencia == (int) TipoFrequencia.F && x.DataCompensacao == null).Sum(s => s.TotalTipoFrequencia);
+            var totalAulas = componenteAgrupado.Sum(aula => aula.TotalAula);
+            var tipoFrequenciaPrensenca = new List<int> { (int)TipoFrequencia.R, (int)TipoFrequencia.C };
+            var numeroPresenca = componenteAgrupado.Where(x => x.DataCompensacao == null && tipoFrequenciaPrensenca.Contains(x.TipoFrequencia)).Sum(s => s.TotalTipoFrequencia);
+            var numeroCompensacao = componenteAgrupado.Where(x => x.TotalCompensacao.HasValue).Sum(x => x.TotalCompensacao.Value);
+            var totalPresenca = numeroPresenca + numeroCompensacao;
 
             if (totalAulas == 0)
                 return 0;
-            
-            var percentual = 100 - (((double) numeroFaltasNaoCompensadas / totalAulas) * 100);
+
+            var percentual = (((double)totalPresenca / totalAulas) * 100);
             var percentualArredondado = Math.Round(percentual, 2);
             return percentualArredondado;
         }
@@ -175,21 +178,18 @@ namespace SME.SR.Application.UseCases
                 controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
             }
 
-            var aulasSemCompensacoes = aulas.Except(compensacoes);
-            if (aulasSemCompensacoes.Any())
+            var aulasSemCompensacoes = aulas.Where(a => !compensacoes.Any(c => c.DataAula == a.DataAula)).ToList();
+            foreach (var aula in aulasSemCompensacoes)
             {
-                foreach (var aula in aulas)
+                var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
                 {
-                    var controleFrequenciaPorAulaDto = new ControleFrequenciaPorAulaDto
-                    {
-                        DiaSemanaSigla = aula.DiaSemana,
-                        DiaSemanaNumero = aula.Dia,
-                        Valor = 0
-                    };
-                    controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
-                }
+                    DiaSemanaSigla = aula.DiaSemana,
+                    DiaSemanaNumero = aula.Dia,
+                    Valor = 0
+                };
+                controleFrequenciaPorTipoDto.FrequenciaPorAula.Add(controleFrequenciaPorAulaDto);
             }
-
+            
             componente.FrequenciaPorTipo.Add(controleFrequenciaPorTipoDto);
         }
         
@@ -198,7 +198,7 @@ namespace SME.SR.Application.UseCases
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
                 TipoFrequencia = "Aulas",
-                TotalDoPeriodo = aulas.Select(t => t.TotalAula).Count(),
+                TotalDoPeriodo = aulas.Sum(aula => aula.TotalAula),
             };
 
             foreach (var aula in aulas)

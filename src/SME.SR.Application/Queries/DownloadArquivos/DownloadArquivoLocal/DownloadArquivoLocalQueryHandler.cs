@@ -23,8 +23,6 @@ namespace SME.SR.Application.Commands.RetornarRelatorioPronto
             var nomeArquivo = Path.Combine(request.PastaFisicaCaminho, request.ArquivoNome);
             var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
 
-            await mediator.Send(new SalvarLogViaRabbitCommand($"Caminho arquivo para download: {caminhoArquivo}", LogNivel.Informacao));
-
             var arquivo = await File.ReadAllBytesAsync(caminhoArquivo);
 
             if (arquivo != null)

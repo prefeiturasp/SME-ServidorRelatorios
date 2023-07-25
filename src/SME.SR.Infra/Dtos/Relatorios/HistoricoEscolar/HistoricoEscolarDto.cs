@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
-    public class HistoricoEscolarDTO
+    public abstract class HistoricoEscolarDto
     {
         [JsonProperty("nomeDre")]
         public string NomeDre { get; set; }
@@ -12,11 +12,7 @@ namespace SME.SR.Infra
         [JsonProperty("informacoesAluno")]
         public InformacoesAlunoDto InformacoesAluno { get; set; }
         [JsonProperty("ciclos")]
-        public List<CicloDto> Ciclos { get; set; }
-       
-        [JsonProperty("historicoEscolar")]
-        public HistoricoEscolarNotasFrequenciaDto DadosHistorico { get; set; }
-
+        public List<CicloDto> Ciclos { get; set; }      
         [JsonProperty("legenda")]
         public LegendaDto Legenda { get; set; }
         public Modalidade Modalidade { get; set; }
@@ -35,5 +31,8 @@ namespace SME.SR.Infra
 
         [JsonProperty("observacaoComplementar")]
         public string ObservacaoComplementar { get; set; }
+
+        public virtual bool ContemDadosHistorico() => false;
+        public virtual bool ContemDadosTransferencia() => DadosTransferencia != null;
     }
 }

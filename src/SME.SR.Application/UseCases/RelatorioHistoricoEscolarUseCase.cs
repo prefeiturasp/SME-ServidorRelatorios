@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 using SME.SR.Data;
 using SME.SR.Data.Models;
@@ -133,7 +134,7 @@ namespace SME.SR.Application
             var turmasEja = turmasHistorico.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
             var turmasFundMedio = turmasHistorico.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
 
-            IEnumerable<HistoricoEscolarDTO> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
+            IEnumerable<HistoricoEscolarFundamentalDto> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
             IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null, resultadoFinalEJA = null;
             IEnumerable<TransferenciaDto> resultadoTransferencia = null;
 
@@ -151,7 +152,7 @@ namespace SME.SR.Application
                 || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo == Modalidade.EJA)))
                     resultadoEJA = await mediator.Send(new MontarHistoricoEscolarEJAQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                         frequencias, tipoNotas, resultadoTransferencia, turmasEja?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
-                        historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis));
+                        historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis, filtros.Alunos));
 
             if (resultadoFundMedio != null && resultadoFundMedio.Any())
             {
@@ -237,7 +238,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterFrequenciasRelatorioHistoricoEscolarQuery(alunosCodigo, anoLetivo, modalidade, semestre));
         }
 
-        private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarDTO> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
+        private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarFundamentalDto> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
         {
             var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalMedio });
             await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacaoMedio, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));
@@ -248,17 +249,16 @@ namespace SME.SR.Application
             return await mediator.Send(new GerarCodigoCorrelacaoSGPCommand(codigoCorrelacaoMedio));
         }
 
-        private async Task EnviaRelatorioFundamental(IEnumerable<HistoricoEscolarDTO> resultadoFinalFundamental, Guid codigoCorrelacao)
+        private async Task EnviaRelatorioFundamental(IEnumerable<HistoricoEscolarFundamentalDto> resultadoFinalFundamental, Guid codigoCorrelacao)
         {
-            var relatorioPaginados = new RelatorioPaginadoHistoricoEscolar(resultadoFinalFundamental);
-
-            await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginadoFundamental(), codigoCorrelacao));
+            var relatorioPaginados = new RelatorioPaginadoHistoricoEscolarFundamental(resultadoFinalFundamental);
+            await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginado(), codigoCorrelacao));
         }
 
         private async Task EnviaRelatorioEJA(IEnumerable<HistoricoEscolarEJADto> resultadoFinalEJA, Guid codigoCorrelacao)
         {
-            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalEJA });
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarEja/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));
+            var relatorioPaginados = new RelatorioPaginadoHistoricoEscolarEJA(resultadoFinalEJA);
+            await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginado(), codigoCorrelacao));
         }
 
         private async Task<IEnumerable<EnderecoEAtosDaUeDto>> ObterEnderecoAtoUe(string ueCodigo)

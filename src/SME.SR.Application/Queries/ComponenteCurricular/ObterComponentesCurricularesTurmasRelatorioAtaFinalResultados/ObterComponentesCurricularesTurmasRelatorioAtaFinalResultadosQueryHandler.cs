@@ -15,6 +15,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
+        private const long CODIGO_EDFISICA = 6;
 
         public ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,
                                                                               IMediator mediator)
@@ -36,6 +37,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 var aulasDaTurma = await mediator.Send(new ObterTotalAulasTurmaEBimestreEComponenteCurricularQuery(request.CodigosTurma, tipoCalendarioId, componentesDasTurmas.Select(x => x.Codigo.ToString()).ToArray(), request.Bimestres));
                 var componentesSemRegencia = componentesRegencia.Where(r => !r.Regencia);
                 var componentesComAula = aulasDaTurma.Select(a => a.ComponenteCurricularCodigo).ToList();
+                var componentesCodigosRegencia = componentesRegencia.Where(r => r.Regencia).Select(a => a.CodDisciplina).ToList();
 
                 if (componentesSemRegencia.Any())
                     foreach(var componente in componentesSemRegencia)
@@ -44,7 +46,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     }
 
                 componentesDasTurmas = componentesDasTurmas.Where(x => componentesComAula.Contains(x.Codigo.ToString())
-                || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.Codigo.ToString())));
+                || totalAulasSemFrequencia.Any(t => t.ComponenteCurricularId.Equals(x.Codigo.ToString())) || componentesCodigosRegencia.Contains(x.Codigo));
             }
 
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));           
@@ -124,6 +126,9 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 ComponentesCurriculares = componentesCurriculares,
                 GruposMatriz = gruposMatriz
             });
+
+            if(modalidade == Modalidade.EJA)
+                componentes = componentes.Where(w => w.CodDisciplina != CODIGO_EDFISICA).ToList();
 
             return componentes.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);
         }

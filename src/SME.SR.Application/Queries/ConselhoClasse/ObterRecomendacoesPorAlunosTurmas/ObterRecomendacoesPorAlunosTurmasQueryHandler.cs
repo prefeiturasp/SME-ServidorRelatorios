@@ -32,8 +32,8 @@ namespace SME.SR.Application
 
                 foreach (var recomendacao in recomendacoes)
                 {
-                    recomendacao.RecomendacoesAluno = recomendacao?.RecomendacoesAluno ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Aluno).Select(b => b.Recomendacao));
-                    recomendacao.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Familia).Select(b => b.Recomendacao));
+                    recomendacao.RecomendacoesAluno = UtilHtml.FormatarHtmlParaTexto(recomendacao?.RecomendacoesAluno) ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Aluno).Select(b => b.Recomendacao));
+                    recomendacao.RecomendacoesFamilia = UtilHtml.FormatarHtmlParaTexto(recomendacao?.RecomendacoesFamilia) ?? MontaTextUlLis(recomendacoesGeral.Where(a => a.Tipo == ConselhoClasseRecomendacaoTipo.Familia).Select(b => b.Recomendacao));
                 }
             }
 
@@ -70,10 +70,9 @@ namespace SME.SR.Application
                         recomendacao.AnotacoesPedagogicas = UtilHtml.FormatarHtmlParaTexto(recomendacao.AnotacoesPedagogicas);
                         recomendacao.RecomendacoesAluno = concatenaRecomendacaoAluno.ToString();
                         recomendacao.RecomendacoesFamilia = concatenaRecomendacaoFamilia.ToString();
-
-                        recomendacoesASeremExibidas.Add(recomendacao);
                     }
 
+                    recomendacoesASeremExibidas.Add(recomendacao);
                 }
             }
 

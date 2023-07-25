@@ -258,10 +258,10 @@ namespace SME.SR.Application
         {
             var componenteCurricularCodigo = componenteCurricular.CodDisciplina;
             // Busca nota do conselho de classe consultado
-            var notaComponente = notasConselhoClasseAluno.FirstOrDefault(c => c.ComponenteCurricularCodigo == componenteCurricularCodigo);
+            var notaComponente = notasConselhoClasseAluno?.FirstOrDefault(c => c.ComponenteCurricularCodigo == componenteCurricularCodigo);
             if (notaComponente == null)
                 // Sugere nota final do fechamento
-                notaComponente = notasFechamentoAluno.FirstOrDefault(c => c.ComponenteCurricularCodigo == componenteCurricularCodigo && c.Bimestre == bimestre);
+                notaComponente = notasFechamentoAluno?.FirstOrDefault(c => c.ComponenteCurricularCodigo == componenteCurricularCodigo && c.Bimestre == bimestre);
 
             return notaComponente?.NotaConceito.ToString();
         }

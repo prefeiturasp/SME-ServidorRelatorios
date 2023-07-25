@@ -1,5 +1,6 @@
 ﻿using DinkToPdf.Contracts;
 using MediatR;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Sentry;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -16,12 +17,16 @@ namespace SME.SR.Application
     {
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
+        private readonly IHtmlHelper htmlHelper;
 
-        public GerarRelatorioAtaFinalHtmlParaPdfCommandHandler(IConverter converter,
-                                                       IServicoFila servicoFila)
+        public GerarRelatorioAtaFinalHtmlParaPdfCommandHandler(
+                                                               IConverter converter,
+                                                               IServicoFila servicoFila,
+                                                               IHtmlHelper htmlHelper)
         {
             this.converter = converter;
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
+            this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
         }
 
         public async Task<bool> Handle(GerarRelatorioAtaFinalHtmlParaPdfCommand request, CancellationToken cancellationToken)
@@ -30,9 +35,7 @@ namespace SME.SR.Application
 
             foreach (var modelPagina in request.Paginas)
             {
-                string html = string.Empty;
-
-                html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
+                string html = await htmlHelper.RenderRazorViewToString(request.NomeTemplate, modelPagina);
 
                 html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
                 html = html.Replace("logo.png", SmeConstants.LogoSme);
@@ -53,22 +56,6 @@ namespace SME.SR.Application
             }
 
             return true;
-        }
-
-        private string GerarHtmlRazor<T>(T model, string nomeDoArquivoDoTemplate)
-        {
-            //TODO TRATRAR EM AMBIENTE DE DESENVOLVIMENTO PARA REMOVER SME.SR.Workers.SGP
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var nomeArquivo = $"wwwroot/templates/{nomeDoArquivoDoTemplate}";
-            var caminhoArquivo = Path.Combine($"{caminhoBase}", nomeArquivo);
-
-            string templateBruto = File.ReadAllText(caminhoArquivo);
-
-            RazorProcessor processor = new RazorProcessor();
-
-            string templateProcessado = processor.ProcessarTemplate(model, templateBruto, nomeDoArquivoDoTemplate);
-
-            return templateProcessado;
         }
     }
 }

@@ -71,8 +71,9 @@ namespace SME.SR.Application
                 tiposTurma.Add((int)TipoTurma.Regular);
 
             var notas = await ObterNotasAlunos(alunosCodigos, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, tiposTurma.ToArray(), filtro.Bimestre);
+            var codigosDeTurmas = await ObterCodigoDeTurmas(turma, alunos);
 
-            notas = notas.Where(n => n.Key.Equals(turma.Codigo));
+            notas = notas.Where(n => codigosDeTurmas.Contains(n.Key));
 
             if (notas == null || !notas.Any())
                 return Enumerable.Empty<ConselhoClasseAtaBimestralPaginaDto>();
@@ -133,7 +134,7 @@ namespace SME.SR.Application
                 {
                     AlunoCodigo = nf.CodigoAluno,
                     Nota = nf.NotaConceito.Nota,
-                    Bimestre = nf.PeriodoEscolar.Bimestre,
+                    Bimestre = nf.NotaConceito.Bimestre,
                     ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
@@ -247,7 +248,7 @@ namespace SME.SR.Application
             {
                 for (int h = 0; h < quantidadePaginasHorizontal; h++)
                 {
-                    bool ehPaginaFinal = (h + 1) == quantidadePaginasHorizontal;
+                    bool ehPaginaFinal = h == quantidadePaginasHorizontal;
                     if (ehPaginaFinal)
                         continue;
 
@@ -369,7 +370,7 @@ namespace SME.SR.Application
             var periodoEscolar = periodosEscolares.FirstOrDefault(a => a.Bimestre == bimestre);
 
             // Primmeiro alunos Ativos
-            var alunosAtivos = ObterAlunosAtivos(alunos, periodoEscolar);
+            var alunosAtivos = ObterAlunosAtivosNoPeriodo(alunos, periodoEscolar);
             var alunosComNumeroChamada = await MontarLinhaAluno(alunosAtivos, true,
                 gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, bimestre, anotacoes, qtdeDisciplinasLancamFrequencia,
                 compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2, alunosComRegistroFrequencia);
@@ -377,7 +378,7 @@ namespace SME.SR.Application
             relatorio.Linhas.AddRange(alunosComNumeroChamada);
 
             // Depois alunos Inativos
-            var alunosInativos = ObterAlunosInativos(alunos, periodoEscolar);
+            var alunosInativos = ObterAlunosInativosNoPeriodo(alunos, periodoEscolar);
             var alunosSemNumeroChamada = await MontarLinhaAluno(alunosInativos, false,
                 gruposMatrizes, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, turma, listaTurmasAlunos, bimestre, anotacoes, qtdeDisciplinasLancamFrequencia,
                 compensacaoAusenciaPercentualRegenciaClasse, compensacaoAusenciaPercentualFund2, alunosComRegistroFrequencia);
@@ -385,15 +386,16 @@ namespace SME.SR.Application
             relatorio.Linhas.AddRange(alunosSemNumeroChamada);
         }
 
-        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
+        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosInativosNoPeriodo(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
             .Where(a => a.Inativo && a.DataSituacaoAluno.Date < periodoEscolar.PeriodoFim)
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
-        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosAtivos(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
+        private IEnumerable<AlunoSituacaoAtaFinalDto> ObterAlunosAtivosNoPeriodo(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, PeriodoEscolar periodoEscolar)
             => alunos
-            .Where(a => ((a.Ativo) && a.DataMatricula >= periodoEscolar.PeriodoInicio) || ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim))
+            .Where(a => ((a.Ativo) && a.DataMatricula <= periodoEscolar.PeriodoFim)
+                    || ((a.Inativo) && a.DataMatricula <= periodoEscolar.PeriodoFim && a.DataSituacaoAluno > periodoEscolar.PeriodoFim))
             .Select(a => new AlunoSituacaoAtaFinalDto(a))
             .OrderBy(a => a.NumeroAlunoChamada);
 
@@ -724,6 +726,19 @@ namespace SME.SR.Application
                 return (2, "S");
 
             return (1, "P");
+        }
+
+        private async Task<string[]> ObterCodigoDeTurmas(Turma turma, IEnumerable<AlunoSituacaoAtaFinalDto> alunos)
+        {
+            if (turma.EhEja && turma.TipoTurma == TipoTurma.EdFisica)
+            {
+                var codigoAlunos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+
+                return (await mediator.Send(new ObterTurmaCodigosAlunoPorAnoLetivoAlunoTipoTurmaQuery(turma.AnoLetivo, codigoAlunos,
+                                    turma.ObterTiposRegularesDiferentes(), turma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year, DateTimeExtension.HorarioBrasilia()))).Select(x => x.ToString()).ToArray();
+            }
+
+            return new string[] { turma.Codigo };
         }
     }
 }

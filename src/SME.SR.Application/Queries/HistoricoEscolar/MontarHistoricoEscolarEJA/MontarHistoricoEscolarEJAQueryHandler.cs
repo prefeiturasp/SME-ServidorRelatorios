@@ -67,9 +67,10 @@ namespace SME.SR.Application
                         Modalidade = agrupamentoTurmas.Key,
                         DadosData = request.DadosData,
                         ResponsaveisUe = responsaveisUe,
-                        Legenda = ObterLegenda(notasAluno, request.Transferencias, request.Legenda),
+                        Legenda = ObterLegenda(notasAluno, request.Transferencias, request.Legenda, (componentesDaTurma.Any(cc => !cc.LancaNota))),
                         EstudosRealizados = ObterHistoricoUes(uesHistorico),
-                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key)
+                        DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key),
+                        ObservacaoComplementar = request.FiltroHistoricoAlunos?.FirstOrDefault(filtro => filtro.AlunoCodigo == aluno.Key)?.ObservacaoComplementar ?? string.Empty
                     };
 
                     listaRetorno.Add(historicoDto);
@@ -80,14 +81,15 @@ namespace SME.SR.Application
             return await Task.FromResult(listaRetorno);
         }
 
-        private LegendaDto ObterLegenda(IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<TransferenciaDto> transferencias, LegendaDto legenda)
+        private LegendaDto ObterLegenda(IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<TransferenciaDto> transferencias, LegendaDto legenda, bool contemComponentesNaoLancamNotas = false)
         {
             var legendaRetorno = new LegendaDto() { Texto = String.Empty };
-            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.ConceitoId != null)) ||
+            if ((notasAluno != null && notasAluno.Any(c => (c.NotaConceito.ConceitoId ?? 0) != 0)) ||
                 (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Satisfatório"))))
                 legendaRetorno.Texto = legenda.TextoConceito;
 
-            if ((notasAluno != null && notasAluno.Any(c => c.NotaConceito.Sintese != null)) ||
+            if ((notasAluno != null && notasAluno.Any(c => !String.IsNullOrEmpty(c.NotaConceito.Sintese) )) ||
+                contemComponentesNaoLancamNotas ||
                 (transferencias != null && transferencias.Any(x => x.Legenda.Texto.Contains("Frequente"))))
                 legendaRetorno.Texto = legendaRetorno.Texto != String.Empty ? $"{legendaRetorno.Texto},{legenda.TextoSintese}" : legenda.TextoSintese;
 

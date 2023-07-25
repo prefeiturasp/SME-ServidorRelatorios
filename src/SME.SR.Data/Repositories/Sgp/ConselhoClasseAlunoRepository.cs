@@ -163,7 +163,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QuerySingleOrDefaultAsync<bool>(query, parametros);
+                return await conexao.QueryFirstOrDefaultAsync<bool>(query, parametros);
             }
         }
 
@@ -181,6 +181,24 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<RecomendacoesAlunoFamiliaDto>(sql, new { codigoAluno, codigoTurma, id});
+            }
+        }
+
+        public async Task<IEnumerable<ConselhoDeClasseAlunoIdDto>> ObterConselhoDeClasseAlunoId(long[] turmaIds, string[] codigosAlunos)
+        {
+            string sql = @" select cca.id as ConselhoClasseAlunoId, cca.aluno_codigo as AlunoCodigo, ft.turma_id as TurmaId
+                            from fechamento_turma ft
+                            inner join conselho_classe cc on cc.fechamento_turma_id = ft.id
+                            inner join conselho_classe_aluno cca on cca.conselho_classe_id = cc.id
+                            where not cc.excluido 
+                            and not ft.excluido 
+                            and not cca.excluido 
+                            and ft.turma_id = ANY(@turmaIds)
+                            and cca.aluno_codigo = ANY(@codigosAlunos)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<ConselhoDeClasseAlunoIdDto>(sql, new { turmaIds, codigosAlunos });
             }
         }
     }

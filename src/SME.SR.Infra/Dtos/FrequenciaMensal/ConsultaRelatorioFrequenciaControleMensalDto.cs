@@ -7,6 +7,7 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public string CodigoAluno { get; set; }
         public string DisciplinaId { get; set; }
         public string NomeComponente { get; set; }
+        public string NomeGrupo { get; set; }
         public int TotalAula { get; set; }
         public int TotalTipoFrequencia { get; set; }
         public int TipoFrequencia { get; set; }
@@ -15,7 +16,6 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public int Dia { get; set; }
         public string DiaSemana { get; set; }
         public int? TotalCompensacao { get; set; }
-        public DateTime DataCompensacao { get; set; }
-        public int OrdemExibicaoComponente { get; set; }
+        public DateTime? DataCompensacao { get; set; }
     }
 }
