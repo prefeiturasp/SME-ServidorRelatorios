@@ -830,8 +830,8 @@ namespace SME.SR.Data
 						  INNER JOIN turma_escola te2 ON mte.cd_turma_escola = te2.cd_turma_escola
 						      LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
 						  	WHERE mte.cd_turma_escola in @codigosTurma and aluno.cd_aluno in @codigosAluno
-						  	and mte.dt_situacao_aluno =
-						  		(select max(mte2.dt_situacao_aluno) from v_historico_matricula_cotic  matr2
+						  	and CAST(mte.dt_situacao_aluno as date) =
+						  		(select CAST(max(mte2.dt_situacao_aluno) as date) from v_historico_matricula_cotic  matr2
 						  		INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 						  		where
 						  		mte2.cd_turma_escola in @codigosTurma
