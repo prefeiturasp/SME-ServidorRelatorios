@@ -33,7 +33,7 @@ namespace SME.SR.Application
 
             var turmasDetalhe = await mediator.Send(new ObterTurmasDetalhePorCodigoQuery(codigosTurma));
             //Obter as turmas dos Alunos
-            var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigosAlunos, pareceresConclusivosIds.ToArray()));
+            var turmasDosAlunos = await mediator.Send(new ObterTurmasPorAlunosComParecerQuery(request.CodigosAlunos, pareceresConclusivosIds.ToArray()));
             var turmasRegularesDosAlunos = turmasDosAlunos?.Where(x => x.TipoTurma == TipoTurma.Regular).ToList();
             if (turmasRegularesDosAlunos == null || !turmasRegularesDosAlunos.Any())
                 return new List<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>>();
