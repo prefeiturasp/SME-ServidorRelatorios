@@ -2,6 +2,7 @@
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -75,8 +76,10 @@ namespace SME.SR.Application
 
             var lstTurmasTipoNota = new Dictionary<string, string>();
 
+            turmas = turmas.Any() ? turmas.DistinctBy(t => t.Codigo).ToList() : turmas;
+
             foreach (var turma in turmas)
-                lstTurmasTipoNota.Add(turma.Codigo, notasTipo.FirstOrDefault(nt => nt.Ciclo == tipoCiclos.FirstOrDefault(tp => tp.Ano == turma.Ano).Id).TipoNota);
+                lstTurmasTipoNota.Add(turma.Codigo, notasTipo?.FirstOrDefault(nt => nt.Ciclo == tipoCiclos?.FirstOrDefault(tp => tp.Ano == turma.Ano)?.Id)?.TipoNota);
 
             return lstTurmasTipoNota;
         }
