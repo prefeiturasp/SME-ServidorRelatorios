@@ -15,12 +15,15 @@ namespace SME.SR.Application
     {
         private readonly IAlunoRepository alunoRepository;
         private readonly ITurmaRepository turmaRepository;
+        private readonly IMediator mediator;
 
         public ObterAlunosTurmasRelatorioBoletimQueryHandler(IAlunoRepository alunoRepository,
-                                                             ITurmaRepository turmaRepository)
+                                                             ITurmaRepository turmaRepository,
+                                                             IMediator mediator)
         {
             this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
             this.turmaRepository = turmaRepository ?? throw new ArgumentNullException(nameof(turmaRepository));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<IEnumerable<IGrouping<string, Aluno>>> Handle(ObterAlunosTurmasRelatorioBoletimQuery request, CancellationToken cancellationToken)
@@ -47,9 +50,12 @@ namespace SME.SR.Application
             if (!alunosOrdenadosPorSituacao.Any())
                 throw new NegocioException("Não foi possível localizar os alunos");
 
-            var resultadoAlunos = request.TrazerAlunosInativos ? alunosOrdenadosPorSituacao.OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString())
+            var resultadoAlunos = request.TrazerAlunosInativos 
+                                                ? alunosOrdenadosPorSituacao.Where(a=> a.Ativo || !a.Ativo && a.DataSituacao > request.DataInicioPeriodoEscolar)
+                                                    .OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString())
                                                 : alunosOrdenadosPorSituacao.Where(al => al.Ativo)
                                                     .OrderBy(a => a.ObterNomeFinal()).GroupBy(a => a.CodigoAluno.ToString());
+            
             if (!resultadoAlunos.Any())
                 throw new NegocioException("Não foi possível localizar alunos com os filtros definidos.");
 
