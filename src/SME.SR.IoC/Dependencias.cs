@@ -265,6 +265,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioAnaliticoSondagemUseCase, RelatorioAnaliticoSondagemUseCase>();
             services.TryAddScoped<IRelatorioListagemItineranciasUseCase, RelatorioListagemItineranciasUseCase>();
             services.TryAddScoped<IRelatorioFrequenciaControleMensalUseCase, RelatorioFrequenciaControleMensalUseCase>();
+            services.TryAddScoped<IRelatorioListagemOcorrenciasUseCase, RelatorioListagemOcorrenciasUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
