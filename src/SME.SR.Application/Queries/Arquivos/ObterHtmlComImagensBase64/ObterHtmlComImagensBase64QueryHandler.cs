@@ -33,7 +33,6 @@ namespace SME.SR.Application
                 foreach (var img in nodes)
                 {
                     var caminho = img.Attributes["src"].Value;
-                    var tagCompleta = img.OuterHtml;
                     var arquivoBase64 = await ObterArquivoRemotoBase64(caminho, request.EscalaHorizontal, request.EscalaVertical);
                     registroFormatado = registroFormatado.Replace(caminho, arquivoBase64);
 
