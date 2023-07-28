@@ -1,6 +1,10 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using MediatR;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -30,7 +34,7 @@ namespace SME.SR.Application
             if (request.Url.StartsWith("data:") && request.Url.Contains(";base64,"))
                 return request.Url;
 
-            if(request.Url.StartsWith(PROTOCOLO_HTTP) || request.Url.StartsWith(PROTOCOLO_HTTPS))
+            if (request.Url.StartsWith(PROTOCOLO_HTTP) || request.Url.StartsWith(PROTOCOLO_HTTPS))
             {
                 using (var client = new HttpClient())
                 {
@@ -40,18 +44,26 @@ namespace SME.SR.Application
                     {
                         using (var memoryStream = new MemoryStream(await arquivo.Content.ReadAsByteArrayAsync()))
                         {
-                            var imagem = new Bitmap(memoryStream);
-                            var rawFormat = imagem.RawFormat;
+                            try
+                            {
+                                var imagem = new Bitmap(memoryStream);
+                                var rawFormat = imagem.RawFormat;
 
-                            imagem = (Bitmap)FixImageOrientation(imagem);
+                                imagem = (Bitmap)FixImageOrientation(imagem);
 
-                            var codecs = ImageCodecInfo
-                                .GetImageDecoders();
+                                var codecs = ImageCodecInfo
+                                    .GetImageDecoders();
 
-                            string mimeType = codecs.FirstOrDefault(c => c.FormatID == rawFormat.Guid).MimeType;
-                            var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal, request.EscalaVertical);
+                                string mimeType = codecs.FirstOrDefault(c => c.FormatID == rawFormat.Guid).MimeType;
+                                var imagemBase64 = RedimencionarImagem(imagem, request.EscalaHorizontal, request.EscalaVertical);
 
-                            return $"data:{mimeType};base64,{imagemBase64}";
+                                return $"data:{mimeType};base64,{imagemBase64}";
+                            }
+                            catch (Exception ex)
+                            {
+                                await mediator.Send(new SalvarLogViaRabbitCommand($"Ocorreu um erro ao obter a imagem da origem {request.Url}", LogNivel.Critico, ex.Message));
+                                return string.Empty;
+                            }
                         }
                     }
                     else
