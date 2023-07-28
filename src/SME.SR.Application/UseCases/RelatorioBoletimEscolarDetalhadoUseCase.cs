@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,13 +20,18 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            if (request.Action == "relatorios/acompanhamento-aprendizagem-escolaaqui" ||
+                request.Action == "relatorios/boletimescolardetalhadoescolaaqui")
+                request.RelatorioEscolaAqui = true;
+
             if (request.RelatorioEscolaAqui)
             {
                 request.RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
                 request.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosBoletimDetalhadoEscolaAqui;
                 var relatorioQuery = request.ObterObjetoFiltro<ObterDadosMensagemEscolaAquiQuery>();
                 relatorioQuery.Modalidade = ObterModalidade(relatorioQuery.ModalidadeCodigo);
-                relatorioQuery.Usuario = await ObterUsuarioLogado(request.UsuarioLogadoRF);
+                if (relatorioQuery.Usuario == null)
+                    relatorioQuery.Usuario = await ObterUsuarioLogado(request.UsuarioLogadoRF);
                 var relatorio = await mediator.Send(relatorioQuery);
                 relatorioQuery.CodigoArquivo = request.CodigoCorrelacao;
                 var mensagemdados = UtilJson.ConverterApenasCamposNaoNulos(relatorioQuery);
