@@ -14,5 +14,6 @@ namespace SME.SR.Data.Interfaces
         Task<UsuarioCoreSSO> ObterDadosCoreSSO(string codigoRf);
         Task<IEnumerable<HistoricoReinicioSenhaDto>> ObterHistoricoReinicioSenhaUsuarioPorDre(string CodigoDre);
         Task<IEnumerable<PrioridadePerfil>> ObterListaPrioridadePerfil();
+        Task<IEnumerable<Usuario>> ObterNomesUsuariosPorRfs(string[] codigosRfs);
     }
 }

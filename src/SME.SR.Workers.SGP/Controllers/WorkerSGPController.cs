@@ -13,7 +13,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -102,7 +102,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpPost("relatorios/frequencia")]
         [Action("relatorios/frequencia", typeof(IRelatorioFrequenciasUseCase))]
         public async Task<bool> RelatorioFrequencias([FromBody] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
-       {
+        {
             await relatorioFaltasFrequenciasUseCase.Executar(request);
             return true;
         }
@@ -324,8 +324,8 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/ocorrencias")]
-        [Action("relatorios/ocorrencias",typeof(IRelatorioOcorrenciasUseCase))]
-        public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request,[FromServices] IRelatorioOcorrenciasUseCase useCase)
+        [Action("relatorios/ocorrencias", typeof(IRelatorioOcorrenciasUseCase))]
+        public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioOcorrenciasUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
@@ -338,15 +338,15 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
-        
+
         [HttpGet("relatorios/planoaee")]
         [Action("relatorios/planoaee", typeof(IRelatorioPlanoAeeUseCase))]
         public async Task<bool> RelatorioPlanoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAeeUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
-        }   
-        
+        }
+
         [HttpGet("relatorios/planosaee")]
         [Action("relatorios/planosaee", typeof(IRelatorioPlanosAeeUseCase))]
         public async Task<bool> RelatorioPlanosAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanosAeeUseCase useCase)
@@ -370,7 +370,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
-        
+
         [HttpGet("relatorios/encaminhamentonaapadetalhado")]
         [Action("relatorios/encaminhamentonaapadetalhado", typeof(IRelatorioEncaminhamentosNaapaDetalhadoUseCase))]
         public async Task<bool> RelatorioEncaminhamentoNaapaDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaDetalhadoUseCase detalhadoUseCase)
@@ -405,7 +405,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorios/controle-frequencia-mensal")]
         [Action("relatorios/controle-frequencia-mensal", typeof(IRelatorioFrequenciaControleMensalUseCase))]
-        public async Task<bool> FrequenciaControleMensal([FromQuery] FiltroRelatorioDto request,[FromServices]  IRelatorioFrequenciaControleMensalUseCase useCase)
+        public async Task<bool> FrequenciaControleMensal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaControleMensalUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
@@ -415,6 +415,29 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/listagem-ocorrencias", typeof(IRelatorioFrequenciaControleMensalUseCase))]
         public async Task<bool> ListagemOcorrencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioListagemOcorrenciasUseCase useCase)
         {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/listagem-ocorrencias-teste")]
+        [Action("relatorios/listagem-ocorrencias", typeof(IRelatorioFrequenciaControleMensalUseCase))]
+        public async Task<bool> ListagemOcorrencias([FromServices] IRelatorioListagemOcorrenciasUseCase useCase)
+        {
+            var request = new FiltroRelatorioDto
+            {
+                Mensagem = JsonConvert.SerializeObject(new FiltroRelatorioListagemOcorrenciasDto
+                {
+                    CodigoDre = "-99",
+                    CodigoUe = "-99",
+                    AnoLetivo = 2023,
+                    ExibirHistorico = false,
+                    CodigosTurma = new string[] { "-99" },
+                    OcorrenciaTipoIds = new long[] { -99 },
+                    Modalidade = -99,
+                    Semestre = 0
+                })
+            };
+
             await useCase.Executar(request);
             return true;
         }
