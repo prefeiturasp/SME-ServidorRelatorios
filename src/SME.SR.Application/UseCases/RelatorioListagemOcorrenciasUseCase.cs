@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using Sentry;
 using SME.SR.Application.Interfaces;
-using SME.SR.Application.Queries.Ocorrencia.ObterListagemOcorrencias;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
 using System;
@@ -18,20 +16,12 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            try
-            {
-                var filtros = request.ObterObjetoFiltro<FiltroRelatorioListagemOcorrenciasDto>();
-                
-                var relatorioDto = await mediator.Send(new ObterListagemOcorrenciasQuery(filtros.ExibirHistorico, filtros.AnoLetivo, filtros.CodigoDre, filtros.CodigoUe, filtros.Modalidade, filtros.Semestre, filtros.CodigosTurma, filtros.DataInicio, filtros.DataFim, filtros.OcorrenciaTipoIds, filtros.ImprimirDescricaoOcorrencia));
-                PreencherFiltrosRelatorio(relatorioDto, filtros);
+            var filtros = request.ObterObjetoFiltro<FiltroRelatorioListagemOcorrenciasDto>();
 
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemOcorrencias", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "ocorrencia"));
-            }
-            catch (Exception ex)
-            {
-                SentrySdk.CaptureException(ex);
-                throw ex;
-            }
+            var relatorioDto = await mediator.Send(new ObterListagemOcorrenciasQuery(filtros.ExibirHistorico, filtros.AnoLetivo, filtros.CodigoDre, filtros.CodigoUe, filtros.Modalidade, filtros.Semestre, filtros.CodigosTurma, filtros.DataInicio, filtros.DataFim, filtros.OcorrenciaTipoIds, filtros.ImprimirDescricaoOcorrencia));
+            PreencherFiltrosRelatorio(relatorioDto, filtros);
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemOcorrencias", relatorioDto, request.CodigoCorrelacao, diretorioComplementar: "ocorrencia"));
         }
 
         private void PreencherFiltrosRelatorio(RelatorioListagemOcorrenciasDto relatorioDto, FiltroRelatorioListagemOcorrenciasDto filtros)
