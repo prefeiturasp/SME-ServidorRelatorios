@@ -10,6 +10,6 @@ namespace SME.SR.Infra
         public string Usuario { get; set; }
         public DateTime DataSolicitacao { get; set; }
 
-        public IEnumerable<RelatorioListagemOcorrenciasRegistroDto> Registro { get; set; }
+        public IEnumerable<RelatorioListagemOcorrenciasRegistroDto> Registros { get; set; }
     }
 }

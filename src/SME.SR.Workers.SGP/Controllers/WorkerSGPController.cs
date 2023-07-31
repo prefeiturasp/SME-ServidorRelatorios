@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
@@ -12,7 +13,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -414,6 +415,32 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/listagem-ocorrencias", typeof(IRelatorioFrequenciaControleMensalUseCase))]
         public async Task<bool> ListagemOcorrencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioListagemOcorrenciasUseCase useCase)
         {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/listagem-ocorrencias-teste")]
+        [Action("relatorios/listagem-ocorrencias", typeof(IRelatorioFrequenciaControleMensalUseCase))]
+        public async Task<bool> ListagemOcorrencias([FromServices] IRelatorioListagemOcorrenciasUseCase useCase)
+        {
+            var request = new FiltroRelatorioDto
+            {
+                Mensagem = JsonConvert.SerializeObject(new FiltroRelatorioListagemOcorrenciasDto
+                {
+                    CodigoDre = "-99",
+                    CodigoUe = "-99",
+                    AnoLetivo = 2022,
+                    ExibirHistorico = false,
+                    CodigosTurma = new string[] { "-99" },
+                    OcorrenciaTipoIds = new long[] { -99 },
+                    Modalidade = -99,
+                    Semestre = 0,
+                    NomeUsuario = "CLEODEONIRA ALONSO DE CARVALHO MORAES",
+                    CodigoRf = "1122334"
+                }),
+                CodigoCorrelacao = Guid.NewGuid(),
+            };
+
             await useCase.Executar(request);
             return true;
         }

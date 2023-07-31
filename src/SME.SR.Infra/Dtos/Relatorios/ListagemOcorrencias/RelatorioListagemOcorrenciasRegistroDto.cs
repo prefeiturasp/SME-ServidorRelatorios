@@ -24,6 +24,12 @@ namespace SME.SR.Infra
         public Modalidade Modalidade { get; set; }
         public string TurmaNome { get; set; }
         public TipoTurnoEOL TipoTurno { get; set; }
+        public string TurmaDescricao {
+            get
+            {
+                return $"{Modalidade.ShortName()}-{TurmaNome}-{TipoTurno.Name()}";
+            }
+        }
 
         public DateTime DataOcorrencia { get; set; }
         public string OcorrenciaTipo { get; set; }

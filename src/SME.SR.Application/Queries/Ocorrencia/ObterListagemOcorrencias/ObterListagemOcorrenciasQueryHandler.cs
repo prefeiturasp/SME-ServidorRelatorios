@@ -22,9 +22,9 @@ namespace SME.SR.Application.Queries.Ocorrencia.ObterListagemOcorrencias
         public async Task<RelatorioListagemOcorrenciasDto> Handle(ObterListagemOcorrenciasQuery request, CancellationToken cancellationToken)
         {
             var relatorio = new RelatorioListagemOcorrenciasDto();
-            relatorio.Registro = await ocorrenciaRepository.ObterListagemOcorrenciasAsync(request.AnoLetivo, request.CodigoDre, request.CodigoUe, request.Modalidade, request.Semestre, request.CodigosTurma, request.DataInicio, request.DataFim, request.OcorrenciaTipoIds);
+            relatorio.Registros = await ocorrenciaRepository.ObterListagemOcorrenciasAsync(request.AnoLetivo, request.CodigoDre, request.CodigoUe, request.Modalidade, request.Semestre, request.CodigosTurma, request.DataInicio, request.DataFim, request.OcorrenciaTipoIds);
 
-            var ocorrenciaIds = relatorio.Registro.Select(t => t.OcorrenciaId).ToArray();
+            var ocorrenciaIds = relatorio.Registros.Select(t => t.OcorrenciaId).ToArray();
             var alunos = await ocorrenciaRepository.ObterAlunosOcorrenciasPorIdsAsync(ocorrenciaIds);
             var servidores = await ocorrenciaRepository.ObterServidoresOcorrenciasPorIds(ocorrenciaIds);
 
@@ -54,7 +54,7 @@ namespace SME.SR.Application.Queries.Ocorrencia.ObterListagemOcorrencias
                 nomesServidores = null;
             }
 
-            foreach (var registro in relatorio.Registro)
+            foreach (var registro in relatorio.Registros)
             {
                 if (alunos.Any(t => t.OcorrenciaId == registro.OcorrenciaId))
                     registro.Alunos = alunos.Where(t => t.OcorrenciaId == registro.OcorrenciaId);
