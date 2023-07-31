@@ -1,0 +1,44 @@
+﻿@model SME.SR.Infra.RelatorioListagemOcorrenciasDto;
+
+
+@{
+
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 52;
+    int contadorPagina = 0;
+    bool quebrou = false;
+
+   string MontarCabecalho(string dre, string ue)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 9;
+        var str =
+            $@"<div>
+<img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP' />
+</div>
+<div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+<div class='titulo-relatorio'>REGISTRO DE ITINERÂNCIA</div>
+<div class='fonte-14 header-pagina'>
+<table class='tblTopo'>
+<tbody>
+<tr>
+<td  width='30%' class='espaco-esquerda-15 sem-border-bottom'>DRE: {dre}</td>
+<td width='70%' class='espaco-esquerda-15 sem-border-bottom'>UE: {ue}</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td  width='63%' class='espaco-esquerda-15'>USUÁRIO: {Model.Usuario}</td>
+<td width='20%' class='espaco-esquerda-15'>DATA: {Model.DataSolicitacao}</td>
+</tr>
+</tbody>
+</table>
+</div>
+";
+
+        return str;
+    }
+}
+
+@MontarCabecalho(Model.Dre, Model.Ue)
