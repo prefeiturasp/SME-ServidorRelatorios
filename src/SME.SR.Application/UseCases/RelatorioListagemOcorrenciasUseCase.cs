@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
-using SME.SR.Application.Queries.Ocorrencia.ObterListagemOcorrencias;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
 using System;
