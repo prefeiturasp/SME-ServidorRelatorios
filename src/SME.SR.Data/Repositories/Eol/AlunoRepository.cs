@@ -842,7 +842,7 @@ namespace SME.SR.Data
 						  	INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
 						  	INNER JOIN turma_escola te3 ON mte3.cd_turma_escola = te3.cd_turma_escola
 						  	WHERE mte.cd_matricula = mte3.cd_matricula
-						  		AND mte.cd_turma_escola in @codigosTurma
+						  		AND mte3.cd_turma_escola in @codigosTurma
 						  		AND matr3.cd_aluno = matr.cd_aluno
 						  		AND te3.cd_tipo_turma = te2.cd_tipo_turma)						  
 						  SELECT
