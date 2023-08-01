@@ -40,7 +40,7 @@ namespace SME.SR.Application
                 var professoresAtribuicaoExterna = await mediator.Send(new ObterProfessorTitularExternoComponenteCurricularPorTurmaQuery(turmaCodigo));
                 professores.AddRange(professoresAtribuicaoExterna);
             }
-            
+
 
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo, turma.AnoLetivo));
             if (alunosEol == null || !alunosEol.Any())
@@ -60,7 +60,6 @@ namespace SME.SR.Application
 
             var ocorrencias = await mediator.Send(new ObterOcorenciasPorTurmaEAlunoQuery(parametros.TurmaId, parametros.AlunoCodigo, periodoInicioFim.DataInicio, periodoInicioFim.DataFim));
 
-
             if (filtro.RelatorioEscolaAqui)
             {
                 var mensagemdados = await MapearDadosParaGerarMensagem(filtro);
@@ -71,8 +70,9 @@ namespace SME.SR.Application
             }
             else
             {
+                var mensagemTitulo = $"Relatório do Acompanhamento da Aprendizagem - {turma.NomeRelatorio}";
                 var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: false));
-                await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao));
+                await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, mensagemTitulo: mensagemTitulo));
             }
         }
 

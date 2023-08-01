@@ -144,7 +144,7 @@ namespace SME.SR.Data
 
                         --Serie Ensino
                              left join serie_turma_escola ON serie_turma_escola.cd_turma_escola = te.cd_turma_escola
-                             left join serie_turma_grade ON serie_turma_grade.cd_turma_escola = serie_turma_escola.cd_turma_escola
+                             left join serie_turma_grade ON serie_turma_grade.cd_turma_escola = serie_turma_escola.cd_turma_escola and serie_turma_grade.dt_fim is null
                              left join escola_grade ON serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
                              left join grade ON escola_grade.cd_grade = grade.cd_grade
                              left join grade_componente_curricular gcc on gcc.cd_grade = grade.cd_grade
