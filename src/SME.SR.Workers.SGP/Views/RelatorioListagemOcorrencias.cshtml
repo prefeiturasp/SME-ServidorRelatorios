@@ -5,6 +5,8 @@
 
     int contadorQuebrarPagina = 0;
     int contadorMaximoLinhasPorPagina = 52;
+    int contadorMaximoCaracterePorLinha = 70;
+
     int contadorPagina = 0;
     bool quebrou = false;
 
@@ -37,11 +39,16 @@
         </div>
     }
 
-    string MontasDadosOcorrencia()
+    string MontarDadosOcorrencia()
     {
         var registros = Model.Registros.ToList();
 
-        registros.AddRange(Model.Registros);
+        registros.AddRange(Model.Registros.Select(t =>
+        {
+            t.Descricao = "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum";
+            return t;
+        }));
+
         registros.AddRange(Model.Registros);
         registros.AddRange(Model.Registros);
 
@@ -58,6 +65,9 @@
                     </tr>
                 </tbody>
             </table>
+
+            contadorQuebrarPagina += 1;
+
             @MontarDadosAlunos(registro.Alunos)
             @MontarDadosServidores(registro.Servidores)
             <table>
@@ -72,10 +82,48 @@
                         <td class="espaco-esquerda-15 fundo-cinza"><span class="negrito">DESCRIÇÃO </span></td>
                     </tr>
                     <tr>
-                        <td class="alinhar-esquerda espaco-esquerda-15">@Html.Raw(registro.Descricao)</td>
+                        <td class="alinhar-esquerda espaco-esquerda-15">
+                            @MontarDescricao(registro.Descricao)
+                        </td>
                     </tr>
                 </tbody>
             </table>
+
+            
+        }
+
+        return default;
+    }
+
+    string MontarDescricao(string descricao)
+    {
+        int iContadorCaracteres = 0;
+        int contadorMaximoCaracteresPorLinha = 250;
+
+        @while (iContadorCaracteres != descricao.Length)
+        {
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
+            {
+                contadorQuebrarPagina = 0;
+
+                Html.Raw("</td ></tr>");
+                Html.Raw("</tbody></table>");
+                Html.Raw("<div style='page-break-before:always'></div>");
+                MontarCabecalho();
+                @Html.Raw("<table><tbody>");
+                @Html.Raw("<tr><td class='alinhar-esquerda espaco-esquerda-15'>")
+            }
+            else
+            {
+                int diminuirCaracteres = descricao.Length - iContadorCaracteres;
+                var qntCaracteresParaBuscar = diminuirCaracteres < contadorMaximoCaracteresPorLinha ? diminuirCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                <span>
+                    @Html.Raw(textParaExibir)
+                </span>
+            }
+            contadorQuebrarPagina++;
         }
 
         return default;
@@ -258,7 +306,7 @@
 <body class="body-relatorio">
     @{
         MontarCabecalho();
-        MontasDadosOcorrencia();
+        MontarDadosOcorrencia();
     }
 </body>
 </html>
