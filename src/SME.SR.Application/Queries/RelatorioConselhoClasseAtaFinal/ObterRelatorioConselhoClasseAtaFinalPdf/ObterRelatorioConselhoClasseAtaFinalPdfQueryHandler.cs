@@ -86,6 +86,7 @@ namespace SME.SR.Application
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
             var tiposTurma = new List<int>() { (int)turma.TipoTurma };
             if (turma.TipoTurma == TipoTurma.Regular)
@@ -99,6 +100,8 @@ namespace SME.SR.Application
 
             var cabecalho = await ObterCabecalho(turma.Codigo);
             var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
+
+            var codigosTurmasRelacionadasRegular = (await mediator.Send(new ObterTurmasPorAlunosQuery(alunosCodigosLong, turma.AnoLetivo))).Where(b => b.TipoTurma != TipoTurma.EdFisica).Select(b => b.TurmaCodigo).Distinct();
           
             var informacoesAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray(), turma.AnoLetivo));
             informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x=> x.Codigo == i.CodigoTurma.ToString()) && (i.CodigoSituacaoMatricula != SituacaoMatriculaAluno.RemanejadoSaida));
@@ -107,7 +110,7 @@ namespace SME.SR.Application
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
             var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
 
-            var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.Select(long.Parse).ToArray(), filtro.AnoLetivo));
+            var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigosLong, filtro.AnoLetivo));
             listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
 
             var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
@@ -121,6 +124,13 @@ namespace SME.SR.Application
                 {
                     if (checarTurma.TipoTurma == TipoTurma.Regular)
                         pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
+                }
+            }
+            else if(turma.TipoTurma == TipoTurma.EdFisica)
+            {
+                foreach (var codigoTurmaRelacionada in codigosTurmasRelacionadasRegular)
+                {
+                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(codigoTurmaRelacionada));
                 }
             }
             else
