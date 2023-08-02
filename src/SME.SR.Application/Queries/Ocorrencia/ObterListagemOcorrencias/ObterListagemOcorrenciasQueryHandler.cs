@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Queries.Ocorrencia.ObterListagemOcorrencias
+namespace SME.SR.Application
 {
     public class ObterListagemOcorrenciasQueryHandler : IRequestHandler<ObterListagemOcorrenciasQuery, RelatorioListagemOcorrenciasDto>
     {
@@ -22,7 +22,7 @@ namespace SME.SR.Application.Queries.Ocorrencia.ObterListagemOcorrencias
         public async Task<RelatorioListagemOcorrenciasDto> Handle(ObterListagemOcorrenciasQuery request, CancellationToken cancellationToken)
         {
             var relatorio = new RelatorioListagemOcorrenciasDto();
-            relatorio.Registros = await ocorrenciaRepository.ObterListagemOcorrenciasAsync(request.AnoLetivo, request.CodigoDre, request.CodigoUe, request.Modalidade, request.Semestre, request.CodigosTurma, request.DataInicio, request.DataFim, request.OcorrenciaTipoIds);
+            relatorio.Registros = await ocorrenciaRepository.ObterListagemOcorrenciasAsync(request.AnoLetivo, request.CodigoDre, request.CodigoUe, request.Modalidade, request.Semestre, request.CodigosTurma, request.DataInicio, request.DataFim, request.OcorrenciaTipoIds, request.ImprimirDescricaoOcorrencia);
 
             var ocorrenciaIds = relatorio.Registros.Select(t => t.OcorrenciaId).ToArray();
             var alunos = await ocorrenciaRepository.ObterAlunosOcorrenciasPorIdsAsync(ocorrenciaIds);
@@ -63,6 +63,7 @@ namespace SME.SR.Application.Queries.Ocorrencia.ObterListagemOcorrencias
                     registro.Servidores = servidores.Where(t => t.OcorrenciaId == registro.OcorrenciaId);
             }
 
+            relatorio.Registros = relatorio.Registros.OrderByDescending(t => t.DataOcorrencia);
             return relatorio;
         }
     }

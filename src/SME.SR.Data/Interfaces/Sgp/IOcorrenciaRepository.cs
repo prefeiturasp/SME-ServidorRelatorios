@@ -9,7 +9,7 @@ namespace SME.SR.Data.Interfaces
     {
         Task<IEnumerable<AcompanhamentoAprendizagemOcorrenciaDto>> ObterOcorenciasPorTurmaEAluno(long turmaId, long? alunoCodigo, DateTime dataInicio, DateTime dataFim);
         Task<IEnumerable<OcorrenciasPorCodigoTurmaDto>> ObterOcorrenciasCodigoETurma(long turmaId, long[] ocorrenciaIds);
-        Task<IEnumerable<RelatorioListagemOcorrenciasRegistroDto>> ObterListagemOcorrenciasAsync(int anoLetivo, string codigoDre, string codigoUe, int modalidade, int semestre, string[] codigosTurma, DateTime? dataInicio, DateTime? dataFim, long[] ocorrenciaTipoIds);
+        Task<IEnumerable<RelatorioListagemOcorrenciasRegistroDto>> ObterListagemOcorrenciasAsync(int anoLetivo, string codigoDre, string codigoUe, int modalidade, int semestre, string[] codigosTurma, DateTime? dataInicio, DateTime? dataFim, long[] ocorrenciaTipoIds, bool imprimirDescricaoOcorrencia);
         Task<IEnumerable<RelatorioListagemOcorrenciasRegistroAlunoDto>> ObterAlunosOcorrenciasPorIdsAsync(int[] ocorrenciaIds);
         Task<IEnumerable<RelatorioListagemOcorrenciasRegistroServidorDto>> ObterServidoresOcorrenciasPorIds(int[] ocorrenciaIds);
     }

@@ -5,11 +5,10 @@ namespace SME.SR.Infra
 {
     public class RelatorioListagemOcorrenciasDto
     {
-        public string Dre { get; set; }
-        public string Ue { get; set; }
         public string Usuario { get; set; }
         public DateTime DataSolicitacao { get; set; }
-
+        public bool ImprimirDescricaoOcorrencia { get; set; }
+        public IEnumerable<UeDto> Ues { get; set; }
         public IEnumerable<RelatorioListagemOcorrenciasRegistroDto> Registros { get; set; }
     }
 }

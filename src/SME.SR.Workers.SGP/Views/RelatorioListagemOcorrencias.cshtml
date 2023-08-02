@@ -2,15 +2,11 @@
 @model SME.SR.Infra.RelatorioListagemOcorrenciasDto;
 
 @{
-
     int contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 52;
-    int contadorMaximoCaracterePorLinha = 70;
+    int contadorMaximoLinhasPorPagina = 55;
+    int contadorMaximoCaracteresPorLinha = 78;
 
-    int contadorPagina = 0;
-    bool quebrou = false;
-
-    void MontarCabecalho()
+    void MontarCabecalho(UeDto ue)
     {
         contadorQuebrarPagina = contadorQuebrarPagina + 7;
 
@@ -23,8 +19,8 @@
             <table class="tblTopo">
                 <tbody>
                     <tr>
-                        <td width="30%" class="espaco-esquerda-15 sem-border-bottom"><span class="negrito">DRE:</span> @Model.Dre</td>
-                        <td width="70%" class="espaco-esquerda-15 sem-border-bottom"><span class="negrito">UE:</span> @Model.Ue</td>
+                        <td width="30%" class="espaco-esquerda-15 sem-border-bottom"><span class="negrito">DRE:</span> @ue.Dre.Abreviacao</td>
+                        <td width="70%" class="espaco-esquerda-15 sem-border-bottom"><span class="negrito">UE:</span> @ue.Nome</td>
                     </tr>
                 </tbody>
             </table>
@@ -32,31 +28,25 @@
                 <tbody>
                     <tr>
                         <td width="63%" class="espaco-esquerda-15"><span class="negrito">USUÁRIO:</span> @Model.Usuario</td>
-                        <td width="37%" class="espaco-esquerda-15"><span class="negrito">DATA IMPRESSÃO:</span> @Model.DataSolicitacao</td>
+                        <td width="37%" class="espaco-esquerda-15"><span class="negrito">DATA IMPRESSÃO:</span> @Model.DataSolicitacao.ToString("dd/MM/yyyy")</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     }
 
-    string MontarDadosOcorrencia()
+    string MontarDadosOcorrencia(UeDto ue)
     {
-        var registros = Model.Registros.ToList();
-
-        registros.AddRange(Model.Registros.Select(t =>
+        var registros = Model.Registros.Where(t => t.UeCodigo == ue.CodigoUe);
+        foreach (var registro in registros)
         {
-            t.Descricao = "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum";
-            return t;
-        }));
+            var totalLinhasRegistro = ObterTotalLinhasRegistro(registro);
 
-        registros.AddRange(Model.Registros);
-        registros.AddRange(Model.Registros);
+            if (contadorQuebrarPagina + totalLinhasRegistro > contadorMaximoLinhasPorPagina)
+                QuebrarPagina(ue);
 
-        Model.Registros = registros;
+            contadorQuebrarPagina += totalLinhasRegistro;
 
-
-        foreach (var registro in Model.Registros)
-        {
             <table class="mt-25">
                 <tbody>
                     <tr>
@@ -66,10 +56,9 @@
                 </tbody>
             </table>
 
-            contadorQuebrarPagina += 1;
-
             @MontarDadosAlunos(registro.Alunos)
             @MontarDadosServidores(registro.Servidores)
+
             <table>
                 <tbody>
                     <tr>
@@ -78,39 +67,69 @@
                     <tr>
                         <td class="alinhar-esquerda espaco-esquerda-15 fundo-cinza"><span class="negrito">TÍTULO:</span> @registro.Titulo</td>
                     </tr>
-                    <tr>
-                        <td class="espaco-esquerda-15 fundo-cinza"><span class="negrito">DESCRIÇÃO </span></td>
-                    </tr>
-                    <tr>
-                        <td class="alinhar-esquerda espaco-esquerda-15">
-                            @MontarDescricao(registro.Descricao)
-                        </td>
-                    </tr>
+
+                    @if (Model.ImprimirDescricaoOcorrencia)
+                    {
+                        <tr>
+                            <td class="espaco-esquerda-15 fundo-cinza"><span class="negrito">DESCRIÇÃO </span></td>
+                        </tr>
+                        <tr>
+                            <td class="alinhar-esquerda espaco-esquerda-15">
+                                @MontarDescricao(ue, registro.Descricao)
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
-
-            
         }
 
         return default;
     }
 
-    string MontarDescricao(string descricao)
+    string QuebrarPagina(UeDto ue)
+    {
+        contadorQuebrarPagina = 0;
+        @Html.Raw("<div style='page-break-before:always'></div>")
+        MontarCabecalho(ue);
+
+        return default;
+    }
+
+    int ObterTotalLinhasRegistro(RelatorioListagemOcorrenciasRegistroDto registro)
+    {
+        var contador = 4;
+
+        if (registro.Alunos != null && registro.Alunos.Any())
+        {
+            if (registro.Alunos.Count() > 1)
+                contador++;
+
+            contador += registro.Alunos.Count();
+        }
+
+        if (registro.Servidores != null && registro.Servidores.Any())
+        {
+            contador++;
+            contador += registro.Servidores.Count();
+        }
+
+        return contador;
+    }
+
+    string MontarDescricao(UeDto ue, string descricao)
     {
         int iContadorCaracteres = 0;
-        int contadorMaximoCaracteresPorLinha = 250;
+
+        contadorQuebrarPagina += 2;
 
         @while (iContadorCaracteres != descricao.Length)
         {
             if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
             {
-                contadorQuebrarPagina = 0;
-
-                Html.Raw("</td ></tr>");
-                Html.Raw("</tbody></table>");
-                Html.Raw("<div style='page-break-before:always'></div>");
-                MontarCabecalho();
-                @Html.Raw("<table><tbody>");
+                @Html.Raw("</td ></tr>")
+                @Html.Raw("</tbody></table>")
+                QuebrarPagina(ue);
+                @Html.Raw("<table><tbody>")
                 @Html.Raw("<tr><td class='alinhar-esquerda espaco-esquerda-15'>")
             }
             else
@@ -305,8 +324,21 @@
 </head>
 <body class="body-relatorio">
     @{
-        MontarCabecalho();
-        MontarDadosOcorrencia();
+        var primeiroRegistro = true;
+        foreach (var ue in Model.Ues)
+        {
+            if (!primeiroRegistro)
+            {
+                @Html.Raw("<div style='page-break-before:always'></div>")
+                contadorQuebrarPagina = 0;
+            }
+            else
+                primeiroRegistro = false;
+
+
+            MontarCabecalho(ue);
+            MontarDadosOcorrencia(ue);
+        }
     }
 </body>
 </html>

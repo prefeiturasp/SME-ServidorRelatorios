@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -83,10 +82,11 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<RelatorioListagemOcorrenciasRegistroDto>> ObterListagemOcorrenciasAsync(int anoLetivo, string codigoDre, string codigoUe, int modalidade, int semestre, string[] codigosTurma, DateTime? dataInicio, DateTime? dataFim, long[] ocorrenciaTipoIds)
+        public async Task<IEnumerable<RelatorioListagemOcorrenciasRegistroDto>> ObterListagemOcorrenciasAsync(int anoLetivo, string codigoDre, string codigoUe, int modalidade, int semestre, string[] codigosTurma, DateTime? dataInicio, DateTime? dataFim, long[] ocorrenciaTipoIds, bool imprimirDescricaoOcorrencia)
         {
             var query = @"select
 	                        o.id as ocorrenciaId,
+                            d.dre_id as dreCodigo,
 	                        d.abreviacao as dreabreviacao,
 	                        u.ue_id as uecodigo,
 	                        u.nome as uenome,
@@ -96,9 +96,12 @@ namespace SME.SR.Data
 	                        t.tipo_turno as tipoTurno,
 	                        o.data_ocorrencia as dataOcorrencia,
 	                        ot.descricao as ocorrenciaTipo,
-	                        o.titulo,
-	                        o.descricao 
-                        from ocorrencia o
+	                        o.titulo";
+
+            if (imprimirDescricaoOcorrencia)
+                query += " ,o.descricao ";
+
+            query += @" from ocorrencia o
                         left join ocorrencia_tipo ot on ot.id = o.ocorrencia_tipo_id 
                         left join turma t on t.id = o.turma_id
                         left join ue u on u.id = t.ue_id
@@ -120,14 +123,16 @@ namespace SME.SR.Data
             if (semestre > 0)
                 query += " and t.semestre = @semestre ";
 
-            if (!codigosTurma.Contains("-99"))
+            if (codigosTurma != null && !codigosTurma.Contains("-99"))
                 query += " and t.turma_id = any(@codigosTurma) ";
 
             if (dataInicio.HasValue && dataFim.HasValue)
                 query += " and o.data_ocorrencia between @dataInicio and @dataFim ";
 
-            if (!ocorrenciaTipoIds.Contains(-99))
+            if (ocorrenciaTipoIds != null && !ocorrenciaTipoIds.Contains(-99))
                 query += " and o.ocorrencia_tipo_id = any(@ocorrenciaTipoIds) ";
+
+            query += " order by o.data_ocorrencia desc";
 
             var parametros = new
             {

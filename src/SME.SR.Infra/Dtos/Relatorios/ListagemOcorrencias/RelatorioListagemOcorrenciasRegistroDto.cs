@@ -7,6 +7,7 @@ namespace SME.SR.Infra
     public class RelatorioListagemOcorrenciasRegistroDto
     {
         public int OcorrenciaId { get; set; }
+        public string DreCodigo { get; set; }
         public string DreAbreviacao { get; set; }
 
         public string UeCodigo { get; set; }
@@ -24,7 +25,8 @@ namespace SME.SR.Infra
         public Modalidade Modalidade { get; set; }
         public string TurmaNome { get; set; }
         public TipoTurnoEOL TipoTurno { get; set; }
-        public string TurmaDescricao {
+        public string TurmaDescricao
+        {
             get
             {
                 return $"{Modalidade.ShortName()}-{TurmaNome}-{TipoTurno.Name()}";

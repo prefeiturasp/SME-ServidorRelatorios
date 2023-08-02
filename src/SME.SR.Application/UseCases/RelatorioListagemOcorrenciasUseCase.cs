@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,8 +23,15 @@ namespace SME.SR.Application
             if (relatorioDto.Registros == null || !relatorioDto.Registros.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-
             PreencherFiltrosRelatorio(relatorioDto, filtros);
+
+            if (filtros.ImprimirDescricaoOcorrencia)
+            {
+                foreach (var registro in relatorioDto.Registros)
+                {
+                    registro.Descricao = string.IsNullOrEmpty(registro.Descricao) ? null : UtilHtml.FormatarHtmlParaTexto(registro.Descricao);
+                }
+            }
 
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioListagemOcorrencias", relatorioDto, request.CodigoCorrelacao));
         }
@@ -33,8 +40,30 @@ namespace SME.SR.Application
         {
             relatorioDto.Usuario = $"{filtros.NomeUsuario} ({filtros.CodigoRf})";
             relatorioDto.DataSolicitacao = DateTime.Now;
-            relatorioDto.Dre = filtros.CodigoDre.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault().DreAbreviacao;
-            relatorioDto.Ue = filtros.CodigoUe.EstaFiltrandoTodas() ? "TODAS" : relatorioDto.Registros.FirstOrDefault().UeDescricao;
+            relatorioDto.ImprimirDescricaoOcorrencia = filtros.ImprimirDescricaoOcorrencia;
+
+            relatorioDto.Ues = relatorioDto.Registros
+                .GroupBy(t =>
+                new
+                {
+                    t.UeCodigo,
+                    t.UeDescricao,
+                    t.TipoEscola,
+                    t.DreAbreviacao
+                })
+                .Select(t =>
+                    new UeDto
+                    {
+                        CodigoUe = t.Key.UeCodigo,
+                        Nome = t.Key.UeDescricao,
+                        TipoEscola = t.Key.TipoEscola,
+                        Dre = new DreDto
+                        {
+                            Abreviacao = t.Key.DreAbreviacao
+                        }
+                    })
+                .OrderBy(t => t.Dre.Codigo)
+                .ThenBy(t => t.Nome);
         }
     }
 }
