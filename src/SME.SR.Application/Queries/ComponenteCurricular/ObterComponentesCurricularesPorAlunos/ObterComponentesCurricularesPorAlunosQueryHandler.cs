@@ -147,6 +147,7 @@ namespace SME.SR.Application
                         BaseNacional = cpCompleto.BaseNacional,
                         Compartilhada = cpCompleto.Compartilhada,
                         Disciplina = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.ObterDisciplina() : disciplina.ObterDisciplina(),
+                        DescricaoCompletaTerritorio = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.Disciplina : string.Empty,
                         GrupoMatriz = cpCompleto.GrupoMatriz,
                         AreaDoConhecimento = cpTurma.ObterAreaDoConhecimento(areasConhecimento),
                         LancaNota = cpCompleto.LancaNota,

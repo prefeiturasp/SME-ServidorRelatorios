@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,5 +14,6 @@ namespace SME.SR.Application
         public bool TrazerAlunosInativos { get; set; }
         public bool ConsideraNovoEM { get; set; }
         public int AnoLetivo { get; set; }
+        public DateTime? DataInicioPeriodoEscolar { get; set; }
     }
 }
