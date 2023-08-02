@@ -25,8 +25,6 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
         private readonly ITipoCalendarioRepository tipoCalendarioRepository;
 
-        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
-
         public MontarBoletinsQueryHandler(IMediator mediator,
                                           ITipoCalendarioRepository tipoCalendarioRepository)
         {
@@ -62,11 +60,10 @@ namespace SME.SR.Application
                     {
                         var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
-                        var conselhoClassBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
+                        var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
-                        if (conselhoClassBimestres != null && conselhoClassBimestres.Any())
+                        if (conselhoClasseBimestres != null && conselhoClasseBimestres.Any())
                         {
-
                             var boletimAluno = new RelatorioBoletimSimplesEscolarDto();
 
                             if (!componentesCurriculares.Any(c => c.Key == aluno.Key))
@@ -99,7 +96,7 @@ namespace SME.SR.Application
                                     frequenciasAluno,
                                     frequenciasTurma,
                                     mediasFrequenciaAnoLetivo ?? mediasFrequencia,
-                                    conselhoClassBimestres,
+                                    conselhoClasseBimestres,
                                     registroFrequencia,
                                     periodoAtual,
                                     aulasPrevistas,
@@ -245,14 +242,11 @@ namespace SME.SR.Application
                 if (boletim.ComponenteCurricularRegencia.Frequencia)
                 {
                     var frequenciasAlunoRegencia = frequenciasAluno?.Where(f => f.DisciplinaId == boletim.ComponenteCurricularRegencia.Codigo);
-                    var frequenciasTurmaRegencia = frequenciasTurma?.Where(f => f.DisciplinaId == boletim.ComponenteCurricularRegencia.Codigo);
-                    var aulasCadastradas = registroFrequencia?.Where(f => f.ComponenteCurricularCodigo == boletim.ComponenteCurricularRegencia.Codigo);
-                    var aulasPrevistasComponente = aulasPrevistasTurma.Where(a => a.ComponenteCurricularCodigo == boletim.ComponenteCurricularRegencia.Codigo);
 
-                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre1 = ObterFrequenciaBimestre(frequenciasAlunoRegencia, frequenciasTurmaRegencia, BIMESTRE_1, aulasCadastradas, periodoAtual);
-                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre2 = ObterFrequenciaBimestre(frequenciasAlunoRegencia, frequenciasTurmaRegencia, BIMESTRE_2, aulasCadastradas, periodoAtual);
-                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre3 = ObterFrequenciaBimestre(frequenciasAlunoRegencia, frequenciasTurmaRegencia, BIMESTRE_3, aulasCadastradas, periodoAtual);
-                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre4 = ObterFrequenciaBimestre(frequenciasAlunoRegencia, frequenciasTurmaRegencia, BIMESTRE_4, aulasCadastradas, periodoAtual);
+                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre1 = ObterFrequenciaBimestre(conselhoClasseBimestres,frequenciasAlunoRegencia, BIMESTRE_1);
+                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre2 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoRegencia, BIMESTRE_2);
+                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre3 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoRegencia, BIMESTRE_3);
+                    boletim.ComponenteCurricularRegencia.FrequenciaBimestre4 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoRegencia, BIMESTRE_4);
 
                     boletim.ComponenteCurricularRegencia.FrequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoRegencia, BIMESTRE_FINAL, conselhoClasseBimestres);
                 }
@@ -277,8 +271,11 @@ namespace SME.SR.Application
             {
                 foreach (var componenteCurricular in boletim.ComponentesCurriculares)
                 {
-                    var frequenciasAlunoComponente = frequenciasAluno?.Where(f => (f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber) && (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
-                    var frequenciasTurmaComponente = frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
+                    var frequenciasAlunoComponente =
+                         frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber
+                         && (!componenteCurricular.TerritorioSaber
+                              || (componenteCurricular.TerritorioSaber && !string.IsNullOrEmpty(componenteCurricular.Professor) ? f.Professor == componenteCurricular.Professor : true)));
+
                     var frequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoComponente, BIMESTRE_FINAL, conselhoClasseBimestres);
 
                     if (componenteCurricular.Nota)
@@ -306,10 +303,10 @@ namespace SME.SR.Application
                             .Where(f => f.ComponenteCurricularCodigo == componenteCurricular.Codigo &&
                                 (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
 
-                        componenteCurricular.FrequenciaBimestre1 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, frequenciasTurmaComponente, BIMESTRE_1, aulasCadastradas, periodoAtual);
-                        componenteCurricular.FrequenciaBimestre2 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, frequenciasTurmaComponente, BIMESTRE_2, aulasCadastradas, periodoAtual);
-                        componenteCurricular.FrequenciaBimestre3 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, frequenciasTurmaComponente, BIMESTRE_3, aulasCadastradas, periodoAtual);
-                        componenteCurricular.FrequenciaBimestre4 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, frequenciasTurmaComponente, BIMESTRE_4, aulasCadastradas, periodoAtual);
+                        componenteCurricular.FrequenciaBimestre1 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, BIMESTRE_1);
+                        componenteCurricular.FrequenciaBimestre2 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, BIMESTRE_2);
+                        componenteCurricular.FrequenciaBimestre3 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, BIMESTRE_3);
+                        componenteCurricular.FrequenciaBimestre4 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, BIMESTRE_4);
                         componenteCurricular.FrequenciaFinal = frequenciaFinal ?? string.Empty;
                     }
                 }
@@ -338,9 +335,9 @@ namespace SME.SR.Application
             return codigoComponente == ED_FISICA && turmas.Any(t => t.EhEja && t.TipoTurma == TipoTurma.EdFisica);
         }
 
-        private string ObterNotaBimestre(IEnumerable<int> conselhoClassBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)
+        private string ObterNotaBimestre(IEnumerable<int> conselhoClasseBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)
         {
-            var retorno = !VerificaPossuiConselho(conselhoClassBimestres, bimestre) ? "" :
+            var retorno = !VerificaPossuiConselho(conselhoClasseBimestres, bimestre) ? "" :
                 notasComponente?.FirstOrDefault(nc => nc.Bimestre == bimestre && nc.NotaConceito != null)?.NotaConceito;
 
             retorno = transformarNotaEmConceito && decimal.TryParse(retorno, out decimal valor) ?
@@ -349,28 +346,15 @@ namespace SME.SR.Application
             return String.IsNullOrEmpty(retorno) ? String.Empty : retorno;
         }
 
-        private string ObterFrequenciaBimestre(IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, IEnumerable<FrequenciaAluno> frequenciasTurmaComponente, int bimestre, IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual)
+        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClasseBimestres, int bimestre)
         {
-            var possuiFrequenciaTurma = aulasCadastradas?.Any(nf => nf.Bimestre == bimestre);
+            return conselhoClasseBimestres.Any(a => a == bimestre);
+        }  
 
-            var frequencia = frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ??
-                                 (frequenciasAlunoComponente.Any(fa => fa.Bimestre == bimestre) && possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? frequencia100Formatada : string.Empty);
-
-            return string.IsNullOrEmpty(frequencia) ? string.Empty : frequencia;
-        }
-
-        private bool VerificaPossuiConselho(IEnumerable<int> conselhoClassBimestres, int bimestre)
+        private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClasseBimestres, IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, int bimestre)
         {
-            return conselhoClassBimestres.Any(a => a == bimestre);
-        }
-
-        private string ObterFrequenciaBimestre(IEnumerable<int> conselhoClasseBimestres, IEnumerable<FrequenciaAluno> frequenciasAlunoComponente, IEnumerable<FrequenciaAluno> frequenciasTurmaComponente, int bimestre, IEnumerable<TurmaComponenteQtdAulasDto> aulasCadastradas, int periodoAtual)
-        {
-            var possuiFrequenciaTurma = aulasCadastradas?.Any(nf => nf.Bimestre == bimestre);
-
             var frequencia = !VerificaPossuiConselho(conselhoClasseBimestres, bimestre) ? "" :
-                frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ??
-                (frequenciasAlunoComponente.Any(fa => fa.Bimestre == bimestre) && possuiFrequenciaTurma.HasValue && possuiFrequenciaTurma.Value ? frequencia100Formatada : string.Empty);
+                frequenciasAlunoComponente?.FirstOrDefault(nf => nf.Bimestre == bimestre)?.PercentualFrequenciaFormatado ?? string.Empty;
 
             return String.IsNullOrEmpty(frequencia) ? String.Empty : frequencia;
         }
