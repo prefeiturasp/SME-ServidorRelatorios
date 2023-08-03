@@ -26,7 +26,7 @@
         public const string RotaRelatoriosSolicitadosCalendarioEscolar = "sr.relatorios.solicitados.calendárioescolar";
 
         public const string RotaRelatoriosSolicitadosRegistroItinerancia = "sr.relatorios.solicitados.registroitinerancia";
-        
+
         public const string RotaRelatoriosSolicitadosPendencias = "sr.relatorios.solicitados.pendencias";
 
         public const string RotaRelatoriosSolicitadosAcompanhamentoFechamento = "sr.relatorios.solicitados.acompanhamentofechamento";
@@ -84,5 +84,6 @@
         public const string RotaRelatoriosSolicitadosAnaliticoSondagemTodasDresUes = "sr.relatorios.solicitados.sondagem.analitico.todas.dres.ues";
         public const string RotaRelatoriosSolicitadosListagemRegistrosItinerancia = "sr.relatorios.solicitados.listagem.registrositinerancia";
         public const string RotaRelatoriosSolicitadosControleFrequenciaMensal = "sr.relatorios.solicitados.controle.frequencia.mensal";
+        public const string RotaRelatoriosSolicitadosListagemOcorrencias = "sr.relatorios.solicitados.listagem.ocorrencias";
     }
 }
