@@ -1,15 +1,12 @@
 ﻿using MediatR;
 using SME.SR.Data;
-using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterNomesUsuariosPorRfsQuery : IRequest<IEnumerable<Usuario>>
+    public class ObterNomesServidoresPorRfsQuery : IRequest<IEnumerable<Funcionario>>
     {
-        public ObterNomesUsuariosPorRfsQuery(string[] codigosRfs)
+        public ObterNomesServidoresPorRfsQuery(string[] codigosRfs)
         {
             CodigosRfs = codigosRfs;
         }

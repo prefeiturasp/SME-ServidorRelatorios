@@ -418,33 +418,6 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
-        //[HttpGet("relatorios/listagem-ocorrencias-teste")]
-        //[Action("relatorios/listagem-ocorrencias", typeof(IRelatorioFrequenciaControleMensalUseCase))]
-        //public async Task<bool> ListagemOcorrencias([FromServices] IRelatorioListagemOcorrenciasUseCase useCase)
-        //{
-        //    var request = new FiltroRelatorioDto
-        //    {
-        //        Mensagem = JsonConvert.SerializeObject(new FiltroRelatorioListagemOcorrenciasDto
-        //        {
-        //            CodigoDre = "-99",
-        //            CodigoUe = "-99",
-        //            AnoLetivo = 2022,
-        //            ExibirHistorico = false,
-        //            CodigosTurma = new string[] { "-99" },
-        //            OcorrenciaTipoIds = new long[] { -99 },
-        //            Modalidade = -99,
-        //            Semestre = 0,
-        //            NomeUsuario = "CLEODEONIRA ALONSO DE CARVALHO MORAES",
-        //            CodigoRf = "1122334",
-        //            ImprimirDescricaoOcorrencia = true
-        //        }),
-        //        CodigoCorrelacao = Guid.NewGuid(),
-        //    };
-
-        //    await useCase.Executar(request);
-        //    return true;
-        //}
-
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]

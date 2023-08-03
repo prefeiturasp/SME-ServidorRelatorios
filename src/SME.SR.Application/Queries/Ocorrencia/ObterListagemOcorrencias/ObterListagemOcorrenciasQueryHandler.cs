@@ -44,12 +44,12 @@ namespace SME.SR.Application
             if (servidores.Any())
             {
                 var codigosRfs = servidores.Select(t => t.CodigoRF).ToArray();
-                var nomesServidores = await mediator.Send(new ObterNomesUsuariosPorRfsQuery(codigosRfs));
+                var nomesServidores = await mediator.Send(new ObterNomesServidoresPorRfsQuery(codigosRfs));
                 foreach (var servidor in servidores)
                 {
-                    var nomeServidor = nomesServidores.FirstOrDefault(t => t.CodigoRf == servidor.CodigoRF);
+                    var nomeServidor = nomesServidores.FirstOrDefault(t => t.CodigoRF == int.Parse(servidor.CodigoRF));
                     if (nomeServidor != null)
-                        servidor.Nome = nomeServidor.Nome;
+                        servidor.Nome = nomeServidor.NomeServidor;
                 }
                 nomesServidores = null;
             }
