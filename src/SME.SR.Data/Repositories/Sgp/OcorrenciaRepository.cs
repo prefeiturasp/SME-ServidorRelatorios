@@ -114,9 +114,6 @@ namespace SME.SR.Data
             if (codigoUe != "-99")
                 query += " and u.ue_id = @codigoUe ";
 
-            if (codigoUe != "-99")
-                query += " and u.ue_id = @codigoUe ";
-
             if (modalidade != -99)
                 query += " and t.modalidade_codigo = @modalidade ";
 
@@ -127,7 +124,7 @@ namespace SME.SR.Data
                 query += " and t.turma_id = any(@codigosTurma) ";
 
             if (dataInicio.HasValue && dataFim.HasValue)
-                query += " and o.data_ocorrencia between @dataInicio and @dataFim ";
+                query += " and o.data_ocorrencia::date between @dataInicio and @dataFim ";
 
             if (ocorrenciaTipoIds != null && !ocorrenciaTipoIds.Contains(-99))
                 query += " and o.ocorrencia_tipo_id = any(@ocorrenciaTipoIds) ";
