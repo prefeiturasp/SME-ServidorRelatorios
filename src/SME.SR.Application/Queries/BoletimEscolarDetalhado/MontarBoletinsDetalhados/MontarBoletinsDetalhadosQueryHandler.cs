@@ -165,7 +165,7 @@ namespace SME.SR.Application
                 await mediator.Send(
                     new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurricularesPorTurma));
 
-            var gruposMatrizes = componentesCurricularesPorTurma.GroupBy(cc => cc.GrupoMatriz).ToList();
+            var gruposMatrizes = componentesCurricularesPorTurma.OrderBy(cc => cc.GrupoMatriz.Id).GroupBy(cc => cc.GrupoMatriz).ToList();
 
             var grupos = boletim.Grupos;
 
