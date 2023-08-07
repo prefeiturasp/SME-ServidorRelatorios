@@ -25,8 +25,8 @@ namespace SME.SR.Application
             var relatorio = new RelatorioAtribuicaoCjDto();
 
             await MontarCabecalho(relatorio, filtros.DreCodigo, filtros.UeCodigo, filtros.Modalidade,
-                                  filtros.Semestre, filtros.TurmaCodigo, filtros.UsuarioRf,
-                                  request.UsuarioLogadoRF);
+                              filtros.Semestre, filtros.TurmaCodigo, filtros.UsuarioRf,
+                              request.UsuarioLogadoRF);
 
             var lstAtribuicaoEsporadica = await mediator.Send(new ObterAtribuicoesEsporadicasPorFiltroQuery(filtros.AnoLetivo,
                                                                                                                filtros.UsuarioRf,
@@ -45,16 +45,54 @@ namespace SME.SR.Application
                 Semestre = filtros.Semestre
             });
 
-            var lstServidores = new List<string>();
+            var cargosServidores = new List<ServidorCargoDto>();
+            var lstProfServidorTitulares = new List<ProfessorTitularComponenteCurricularDto>();
 
-            lstServidores.AddRange(lstAtribuicaoEsporadica.Select(s => s.ProfessorRf));
-            lstServidores.AddRange(lstAtribuicaoCJ.Select(cj => cj.ProfessorRf));
+            if (string.IsNullOrEmpty(filtros.DreCodigo))
+            {
+                var dreAtribuicoes = new Dictionary<string, List<string>>();
+                var todasDresComAtribuicao = new List<string>();
+                var atribuicoesEsporadicasAgrupadas = lstAtribuicaoEsporadica?.GroupBy(l => l.DreId);
+                var atribuicoesCJAgrupadas = lstAtribuicaoCJ?.GroupBy(l => l.DreId).ToList();
 
-            var lstServidoresArray = lstServidores?.Distinct().ToArray();
+                if (atribuicoesCJAgrupadas.Any())
+                    todasDresComAtribuicao.AddRange(atribuicoesCJAgrupadas.Select(a => a.Key));
 
-            var cargosServidores = await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray));
+                if (atribuicoesEsporadicasAgrupadas.Any() && filtros.ExibirAtribuicoesExporadicas)
+                    todasDresComAtribuicao.AddRange(atribuicoesEsporadicasAgrupadas.Select(a => a.Key));
 
-            var lstProfServidorTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray));
+                todasDresComAtribuicao = todasDresComAtribuicao.Distinct().ToList();
+
+                foreach (var dre in todasDresComAtribuicao)
+                {
+                    var servidoresDaDre = new List<string>();
+
+                    if (lstAtribuicaoEsporadica.Any(l => l.DreId == dre) && filtros.ExibirAtribuicoesExporadicas)
+                        servidoresDaDre.AddRange(lstAtribuicaoEsporadica.Where(l => l.DreId == dre).Select(r => r.ProfessorRf));
+
+                    if (lstAtribuicaoCJ.Any(l => l.DreId == dre))
+                        servidoresDaDre.AddRange(lstAtribuicaoCJ.Where(l => l.DreId == dre).Select(r => r.ProfessorRf));
+
+                    var lstServidoresArray = servidoresDaDre?.Distinct().ToArray();
+
+                    cargosServidores.AddRange((await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray))).ToList());
+
+                    if (lstServidoresArray.Any())
+                        lstProfServidorTitulares = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray))).ToList();
+                }
+            }
+            else
+            {
+                var lstServidores = new List<string>();
+                lstServidores.AddRange(lstAtribuicaoEsporadica.Select(s => s.ProfessorRf));
+                lstServidores.AddRange(lstAtribuicaoCJ.Select(cj => cj.ProfessorRf));
+
+                var lstServidoresArray = lstServidores?.Distinct().ToArray();
+                cargosServidores = (await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray))).ToList();
+
+                if (lstServidoresArray.Any())
+                    lstProfServidorTitulares = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray))).ToList();
+            }
 
             if (filtros.ExibirAtribuicoesExporadicas)
                 AdicionarAtribuicoesEsporadicas(relatorio, lstAtribuicaoEsporadica, cargosServidores);
