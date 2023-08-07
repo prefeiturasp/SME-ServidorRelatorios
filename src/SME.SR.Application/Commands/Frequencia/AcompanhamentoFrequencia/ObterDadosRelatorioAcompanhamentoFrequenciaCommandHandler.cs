@@ -46,7 +46,7 @@ namespace SME.SR.Application
                     profTitular = await ObterRfProfTitular(request.FiltroRelatorio.TurmaCodigo, request.FiltroRelatorio.ComponenteCurricularId);
                 }
             }
-                        
+
 
             await MapearCabecalho(relatorio, request.FiltroRelatorio, turma);
             var tipoCalendarioId = await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma));
@@ -170,12 +170,12 @@ namespace SME.SR.Application
         {
             var componentesCurricularesTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(turmaCodigo, new long[] { componenteCurricularId }));
             if (componentesCurricularesTurma.Any() && componentesCurricularesTurma != null)
-                return componentesCurricularesTurma.FirstOrDefault().CodigoTerritorioSaber > 0 
+                return componentesCurricularesTurma.FirstOrDefault().CodigoTerritorioSaber > 0
                     ? componentesCurricularesTurma.FirstOrDefault().ObterCodigoComponenteCurricular(turmaCodigo)
                     : 0;
             return 0;
         }
-        
+
         private async Task<string> ObterRfProfTitular(string codigoTurma, string componenteCurricularId)
         {
             var professores = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(new string[] { codigoTurma }))).ToList();
@@ -286,9 +286,9 @@ namespace SME.SR.Application
 
             if (dadosComponente != null && dadosComponente.Any())
                 return dadosComponente.FirstOrDefault().Disciplina;
-           
+
             return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(Convert.ToInt64(componenteCodigo)));
-        } 
+        }
 
         private async Task MapearAlunos(IEnumerable<AlunoNomeDto> alunos, RelatorioFrequenciaIndividualDto relatorio, List<FrequenciaAlunoConsolidadoDto> dadosFrequenciaDto, Turma turma, IEnumerable<PeriodoEscolar> periodosEscolares, int aulasDadas, int bimestre)
         {
@@ -296,7 +296,8 @@ namespace SME.SR.Application
             {
                 var descricaoSituacaoAluno = string.Empty;
 
-                var situacaoAluno = (await alunoRepository.ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo));
+                var situacaoAluno = await alunoRepository
+                    .ObterAlunosPorTurmaCodigoParaRelatorioAcompanhamentoAprendizagem(long.Parse(turma.Codigo), long.Parse(aluno.Codigo), turma.AnoLetivo);
 
                 if (situacaoAluno != null && situacaoAluno.Any())
                 {
@@ -308,9 +309,10 @@ namespace SME.SR.Application
 
                     descricaoSituacaoAluno = ultimaSituacaoAluno.Ativo ? string.Empty : await ObterSituacao(ultimaSituacaoAluno, ehInfantil, periodosEscolares, turma);
                 }
+
                 var relatorioFrequenciaIndividualAlunosDto = new RelatorioFrequenciaIndividualAlunosDto
                 {
-                    NomeAluno = $"{aluno.Nome} ({aluno.Codigo}) {descricaoSituacaoAluno}",
+                    NomeAluno = $"{(aluno.NomeSocial ?? aluno.Nome)} ({aluno.Codigo}) {descricaoSituacaoAluno}",
                     CodigoAluno = aluno.Codigo
                 };
 
@@ -332,9 +334,8 @@ namespace SME.SR.Application
                 if (dadosFrequenciaDto != null && dadosFrequenciaDto.Where(x => x.CodigoAluno == aluno.Codigo).Any())
                 {
                     if (relatorio != null)
-                    {
                         MapearBimestre(dadosFrequenciaDto, relatorioFrequenciaIndividualAlunosDto);
-                    }
+
                     relatorio.Alunos.Add(relatorioFrequenciaIndividualAlunosDto);
                 }
                 else
