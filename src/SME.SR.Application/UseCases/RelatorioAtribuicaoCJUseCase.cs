@@ -24,109 +24,102 @@ namespace SME.SR.Application
 
             var relatorio = new RelatorioAtribuicaoCjDto();
 
-            try
+            await MontarCabecalho(relatorio, filtros.DreCodigo, filtros.UeCodigo, filtros.Modalidade,
+                              filtros.Semestre, filtros.TurmaCodigo, filtros.UsuarioRf,
+                              request.UsuarioLogadoRF);
+
+            var lstAtribuicaoEsporadica = await mediator.Send(new ObterAtribuicoesEsporadicasPorFiltroQuery(filtros.AnoLetivo,
+                                                                                                               filtros.UsuarioRf,
+                                                                                                               filtros.DreCodigo,
+                                                                                                               filtros.UsuarioRf,
+                                                                                                               filtros.UeCodigo));
+
+            var lstAtribuicaoCJ = await mediator.Send(new ObterAtribuicoesCJPorFiltroQuery()
             {
-                await MontarCabecalho(relatorio, filtros.DreCodigo, filtros.UeCodigo, filtros.Modalidade,
-                                  filtros.Semestre, filtros.TurmaCodigo, filtros.UsuarioRf,
-                                  request.UsuarioLogadoRF);
+                AnoLetivo = filtros.AnoLetivo,
+                DreCodigo = filtros.DreCodigo,
+                UeId = filtros.UeCodigo,
+                UsuarioRf = filtros.UsuarioRf,
+                TurmaId = filtros.TurmaCodigo,
+                Modalidade = filtros.Modalidade,
+                Semestre = filtros.Semestre
+            });
 
-                var lstAtribuicaoEsporadica = await mediator.Send(new ObterAtribuicoesEsporadicasPorFiltroQuery(filtros.AnoLetivo,
-                                                                                                                   filtros.UsuarioRf,
-                                                                                                                   filtros.DreCodigo,
-                                                                                                                   filtros.UsuarioRf,
-                                                                                                                   filtros.UeCodigo));
+            var cargosServidores = new List<ServidorCargoDto>();
+            var lstProfServidorTitulares = new List<ProfessorTitularComponenteCurricularDto>();
 
-                var lstAtribuicaoCJ = await mediator.Send(new ObterAtribuicoesCJPorFiltroQuery()
+            if (string.IsNullOrEmpty(filtros.DreCodigo))
+            {
+                var dreAtribuicoes = new Dictionary<string, List<string>>();
+                var todasDresComAtribuicao = new List<string>();
+                var atribuicoesEsporadicasAgrupadas = lstAtribuicaoEsporadica?.GroupBy(l => l.DreId);
+                var atribuicoesCJAgrupadas = lstAtribuicaoCJ?.GroupBy(l => l.DreId).ToList();
+
+                if (atribuicoesCJAgrupadas.Any())
+                    todasDresComAtribuicao.AddRange(atribuicoesCJAgrupadas.Select(a => a.Key));
+
+                if (atribuicoesEsporadicasAgrupadas.Any() && filtros.ExibirAtribuicoesExporadicas)
+                    todasDresComAtribuicao.AddRange(atribuicoesEsporadicasAgrupadas.Select(a => a.Key));
+
+                todasDresComAtribuicao = todasDresComAtribuicao.Distinct().ToList();
+
+                foreach (var dre in todasDresComAtribuicao)
                 {
-                    AnoLetivo = filtros.AnoLetivo,
-                    DreCodigo = filtros.DreCodigo,
-                    UeId = filtros.UeCodigo,
-                    UsuarioRf = filtros.UsuarioRf,
-                    TurmaId = filtros.TurmaCodigo,
-                    Modalidade = filtros.Modalidade,
-                    Semestre = filtros.Semestre
-                });
+                    var servidoresDaDre = new List<string>();
 
-                var cargosServidores = new List<ServidorCargoDto>();
-                var lstProfServidorTitulares = new List<ProfessorTitularComponenteCurricularDto>();
+                    if (lstAtribuicaoEsporadica.Any(l => l.DreId == dre) && filtros.ExibirAtribuicoesExporadicas)
+                        servidoresDaDre.AddRange(lstAtribuicaoEsporadica.Where(l => l.DreId == dre).Select(r => r.ProfessorRf));
 
-                if (string.IsNullOrEmpty(filtros.DreCodigo))
-                {
-                    var dreAtribuicoes = new Dictionary<string, List<string>>();
-                    var todasDresComAtribuicao = new List<string>();
-                    var atribuicoesEsporadicasAgrupadas = lstAtribuicaoEsporadica?.GroupBy(l => l.DreId);
-                    var atribuicoesCJAgrupadas = lstAtribuicaoCJ?.GroupBy(l => l.DreId).ToList();
+                    if (lstAtribuicaoCJ.Any(l => l.DreId == dre))
+                        servidoresDaDre.AddRange(lstAtribuicaoCJ.Where(l => l.DreId == dre).Select(r => r.ProfessorRf));
 
-                    if (atribuicoesCJAgrupadas.Any())
-                        todasDresComAtribuicao.AddRange(atribuicoesCJAgrupadas.Select(a => a.Key));
+                    var lstServidoresArray = servidoresDaDre?.Distinct().ToArray();
 
-                    if (atribuicoesEsporadicasAgrupadas.Any() && filtros.ExibirAtribuicoesExporadicas)
-                        todasDresComAtribuicao.AddRange(atribuicoesEsporadicasAgrupadas.Select(a => a.Key));
+                    cargosServidores.AddRange((await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray))).ToList());
 
-                    todasDresComAtribuicao = todasDresComAtribuicao.Distinct().ToList();    
-
-                    foreach (var dre in todasDresComAtribuicao)
-                    {
-                        var servidoresDaDre = new List<string>();
-
-                        if(lstAtribuicaoEsporadica.Any(l=> l.DreId == dre) && filtros.ExibirAtribuicoesExporadicas)
-                            servidoresDaDre.AddRange(lstAtribuicaoEsporadica.Where(l=> l.DreId == dre).Select(r=> r.ProfessorRf));
-
-                        if (lstAtribuicaoCJ.Any(l => l.DreId == dre))
-                            servidoresDaDre.AddRange(lstAtribuicaoCJ.Where(l => l.DreId == dre).Select(r => r.ProfessorRf));
-
-                        var lstServidoresArray = servidoresDaDre?.Distinct().ToArray();
-
-                        cargosServidores.AddRange((await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray))).ToList());
-
-                        if (lstServidoresArray.Any())
-                            lstProfServidorTitulares = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray))).ToList();
-                    }
-                }
-                else
-                {
-                    var lstServidores = new List<string>();
-                    lstServidores.AddRange(lstAtribuicaoEsporadica.Select(s => s.ProfessorRf));
-                    lstServidores.AddRange(lstAtribuicaoCJ.Select(cj => cj.ProfessorRf));
-
-                    var lstServidoresArray = lstServidores?.Distinct().ToArray();
-                    cargosServidores = (await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray))).ToList();
-
-                    if(lstServidoresArray.Any()) 
+                    if (lstServidoresArray.Any())
                         lstProfServidorTitulares = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray))).ToList();
                 }
-                    
-                if (filtros.ExibirAtribuicoesExporadicas)
-                    AdicionarAtribuicoesEsporadicas(relatorio, lstAtribuicaoEsporadica, cargosServidores);
-
-                var turmasId = lstAtribuicaoCJ.Select(t => t.Turma.Codigo)?.Distinct().ToArray();
-
-                var componentesId = lstAtribuicaoCJ.Select(t => t.ComponenteCurricularId.ToString())?.Distinct().ToArray();
-
-                var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasId));
-
-                var aulas = Enumerable.Empty<AulaVinculosDto>();
-
-                if (filtros.ExibirAulas)
-                    aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId, componentesId, true));
-
-                AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstProfServidorTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
-                                       filtros.TipoVisualizacao, filtros.ExibirAulas, filtros.Modalidade);
-
-                if (string.IsNullOrEmpty(filtros.DreCodigo) || string.IsNullOrEmpty(filtros.UeCodigo))
-                {
-                    relatorio.ExibirDre = true;
-                    relatorio = await mediator.Send(new AgruparRelatorioAtribuicaoCJPorDreUeQuery(relatorio));
-                }
-
-                OrdernarRelatorio(relatorio, filtros.TipoVisualizacao);
-
-                await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtribuioesCj", relatorio, request.CodigoCorrelacao));
             }
-            catch(Exception ex)
+            else
             {
-                var a = ex;
+                var lstServidores = new List<string>();
+                lstServidores.AddRange(lstAtribuicaoEsporadica.Select(s => s.ProfessorRf));
+                lstServidores.AddRange(lstAtribuicaoCJ.Select(cj => cj.ProfessorRf));
+
+                var lstServidoresArray = lstServidores?.Distinct().ToArray();
+                cargosServidores = (await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray))).ToList();
+
+                if (lstServidoresArray.Any())
+                    lstProfServidorTitulares = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray))).ToList();
             }
+
+            if (filtros.ExibirAtribuicoesExporadicas)
+                AdicionarAtribuicoesEsporadicas(relatorio, lstAtribuicaoEsporadica, cargosServidores);
+
+            var turmasId = lstAtribuicaoCJ.Select(t => t.Turma.Codigo)?.Distinct().ToArray();
+
+            var componentesId = lstAtribuicaoCJ.Select(t => t.ComponenteCurricularId.ToString())?.Distinct().ToArray();
+
+            var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasId));
+
+            var aulas = Enumerable.Empty<AulaVinculosDto>();
+
+            if (filtros.ExibirAulas)
+                aulas = await mediator.Send(new ObterAulaVinculosPorTurmaComponenteQuery(turmasId, componentesId, true));
+
+            AdicionarAtribuicoesCJ(relatorio, lstAtribuicaoCJ, lstProfTitulares, lstProfServidorTitulares, lstAtribuicaoEsporadica, cargosServidores, aulas,
+                                   filtros.TipoVisualizacao, filtros.ExibirAulas, filtros.Modalidade);
+
+            if (string.IsNullOrEmpty(filtros.DreCodigo) || string.IsNullOrEmpty(filtros.UeCodigo))
+            {
+                relatorio.ExibirDre = true;
+                relatorio = await mediator.Send(new AgruparRelatorioAtribuicaoCJPorDreUeQuery(relatorio));
+            }
+
+            OrdernarRelatorio(relatorio, filtros.TipoVisualizacao);
+
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioAtribuioesCj", relatorio, request.CodigoCorrelacao));
 
         }
 
