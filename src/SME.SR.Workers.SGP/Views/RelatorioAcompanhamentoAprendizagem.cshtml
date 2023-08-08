@@ -120,7 +120,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr class="quebra-linha">
           <td class='borda-padrao'>
             <div class="quebra-conteudo-editor padding-conteudo-editor">@Html.Raw(percursoIndividual)</div>
           </td>
@@ -139,7 +139,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr class="quebra-linha">
           <td class='@tdTbodyInterno'>
             @Html.Raw(observacao)
           </td>
@@ -187,7 +187,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr style="height: 100px">
+        <tr class="quebra-linha" style="height: 100px">
           <td class='@tdTbodyInterno' />
         </tr>
       </tbody>
@@ -301,6 +301,19 @@
       padding-left: 25px !important;
       padding-right: 25px !important;
     }
+
+    .quebra-linha {
+		word-break: break-word;
+	}
+
+    .MsoNormal {
+        margin-right: 0% !important;
+    }
+
+    .MsoNoSpacing {
+        margin-right: 0% !important;
+    }
+
   </style>
 </head>
 
@@ -313,7 +326,7 @@
       foreach (var aluno in alunosOrdenados)
       {
 
-        <table style='page-break-after:always'>
+        <table style='page-break-after:always;'>
           <thead>
             <tr>
               <th class="th-header-principal">
