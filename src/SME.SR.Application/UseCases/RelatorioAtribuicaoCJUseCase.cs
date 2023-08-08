@@ -78,7 +78,7 @@ namespace SME.SR.Application
                     cargosServidores.AddRange((await mediator.Send(new ObterCargosAtividadesPorRfQuery(lstServidoresArray))).ToList());
 
                     if (lstServidoresArray.Any())
-                        lstProfServidorTitulares = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray))).ToList();
+                        lstProfServidorTitulares.AddRange((await mediator.Send(new ObterProfessorTitularComponenteCurricularPorCodigosRfQuery(lstServidoresArray))).ToList());
                 }
             }
             else
@@ -101,7 +101,21 @@ namespace SME.SR.Application
 
             var componentesId = lstAtribuicaoCJ.Select(t => t.ComponenteCurricularId.ToString())?.Distinct().ToArray();
 
-            var lstProfTitulares = await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasId));
+            var lstProfTitulares = new List<ProfessorTitularComponenteCurricularDto>();
+            
+            if(!string.IsNullOrEmpty(filtros.DreCodigo))
+                lstProfTitulares.AddRange(await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasId)));
+            else
+            {
+                foreach(var dreId in lstAtribuicaoCJ?.Select(l=> l.DreId).Distinct().ToList())
+                {
+                    var atribuicoesCJDre = lstAtribuicaoCJ.Where(l => l.DreId == dreId)?.ToList();
+                    var turmasIdDre = atribuicoesCJDre?.Select(a => a.Turma.Codigo).Distinct().ToArray();
+
+                    if(turmasIdDre != null && turmasIdDre.Any())
+                        lstProfTitulares.AddRange(await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmasIdDre)));
+                }
+            }
 
             var aulas = Enumerable.Empty<AulaVinculosDto>();
 
