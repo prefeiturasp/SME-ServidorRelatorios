@@ -246,7 +246,7 @@ namespace SME.SR.Application
                 {
                     AlunoCodigo = nf.CodigoAluno,
                     Nota = nf.NotaConceito.Nota,
-                    Bimestre = nf.PeriodoEscolar?.Bimestre,
+                    Bimestre = nf.NotaConceito.Bimestre,
                     ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
                     ConceitoId = nf.NotaConceito.ConceitoId,
                     Conceito = nf.NotaConceito.Conceito,
@@ -448,6 +448,8 @@ namespace SME.SR.Application
             List<ConselhoClasseAtaFinalLinhaDto> linhas = new List<ConselhoClasseAtaFinalLinhaDto>();
             var tipoNota = await mediator.Send(new ObterTipoNotaPorTurmaQuery(turma, turma.AnoLetivo));
 
+            var alunosCodigos = alunos.Select(a => a.CodigoAluno.ToString()).ToArray();
+            var turmaComplementar = await ObterTurmasComplementares(alunosCodigos,turma);
             for (var i = 0; i < alunos.Count(); i++)
             {
                 var aluno = alunos.ElementAt(i);
@@ -531,6 +533,9 @@ namespace SME.SR.Application
                                             : RetornaValorPadraoNotaAtaFinal(notasFinais, aluno, componente, bimestre);
                                 }                                       
 
+                                if (turmaComplementar != null && turmaComplementar.EhEja && turmaComplementar.RegularCodigo != null && componente.CodDisciplina == 6)
+                                    ConverterNotaAlunoNumerica(notaConceito);
+
                                 linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                         componente.CodDisciplina,
                                                         possuiComponente ? (componente.LancaNota ?
@@ -555,7 +560,6 @@ namespace SME.SR.Application
                                                 && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) && conselhoClasseBimestres.Any(a => a == c.Bimestre) &&
                                                 aluno.Ativo);
 
-        
                         linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                             componente.CodDisciplina,
                                             possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (componente.LancaNota ?
@@ -615,6 +619,37 @@ namespace SME.SR.Application
             }
 
             return linhas;
+        }
+
+        private async Task<Turma> ObterTurmasComplementares(string[] alunosCodigos,Turma turma)
+        {
+            var turmasComplementares = await mediator.Send(new ObterTurmasComplementaresPorAlunosQuery(alunosCodigos));
+            var turmasComplementaresFiltrada = new Turma(); 
+            if (turmasComplementares != null)
+            {
+                turmasComplementaresFiltrada = turmasComplementares.FirstOrDefault(t => t.RegularCodigo == turma.Codigo && t.Semestre == turma.Semestre);
+            }
+            return turmasComplementaresFiltrada;
+        }
+
+        private void ConverterNotaAlunoNumerica(NotaConceitoBimestreComponente notasAluno)
+        {
+            if (notasAluno != null)
+                if (notasAluno.Nota >= 7)
+                {
+                    notasAluno.ConceitoId = 1;
+                    notasAluno.Conceito = "P";
+                }
+                else if (notasAluno.Nota >= 5 && notasAluno.Nota <= 7)
+                {
+                    notasAluno.ConceitoId = 2;
+                    notasAluno.Conceito = "S";
+                }
+                else
+                { 
+                    notasAluno.ConceitoId = 3;
+                    notasAluno.Conceito = "NS";
+                }
         }
 
         private NotaConceitoBimestreComponente RetornaValorPadraoNotaAtaFinal(IEnumerable<NotaConceitoBimestreComponente> notasFinais, AlunoSituacaoAtaFinalDto aluno, 
