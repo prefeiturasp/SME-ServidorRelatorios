@@ -27,7 +27,7 @@ namespace SME.SR.Application
                 .ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(request.AnoLetivo, request.TipoCalendarioId, request.AlunosCodigo, request.CodigoTurma);
 
             var totalAulasComComponentes = await registroFrequenciaRepository
-                .ObterTotalAulasPorDisciplinaETurmaEBimestre(new string[] { request.CodigoTurma },
+                .ObterTotalAulasPorDisciplinaETurmaEBimestre(request.CodigoTurma,
                                                              new string[] { }, 
                                                              request.TipoCalendarioId, 
                                                              new int[] { 1, 2, 3, 4 });
@@ -41,25 +41,25 @@ namespace SME.SR.Application
             return TratarFrequenciaAnualAluno(frequenciaTurma, quantidadeTotalAulas, request.CodigoTurma);
         }
 
-        private IEnumerable<FrequenciaAluno> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, int totalAulas, string codigoTurma)
+        private IEnumerable<FrequenciaAluno> TratarFrequenciaAnualAluno(IEnumerable<FrequenciaAluno> frequenciaTurma, int totalAulas, string[] codigoTurmas)
         {
             var frequenciaGlobalAlunos = new List<FrequenciaAluno>();
 
-            var agrupamentoAluno = frequenciaTurma.GroupBy(g => (g.CodigoAluno));
+            var agrupamentoAluno = frequenciaTurma.GroupBy(g => g.CodigoAluno);
 
             foreach (var aluno in agrupamentoAluno)
             {
-                int totalAulasNaTurma = aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalAulas);
-                int totalAusencias = aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalAusencias) > totalAulasNaTurma
+                int totalAulasNaTurma = aluno.Where(a => codigoTurmas.Contains(a.TurmaId)).Sum(s => s.TotalAulas);
+                int totalAusencias = aluno.Where(a => codigoTurmas.Contains(a.TurmaId)).Sum(s => s.TotalAusencias) > totalAulasNaTurma
                     ? totalAulasNaTurma
-                    : aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalAusencias);
+                    : aluno.Where(a => codigoTurmas.Contains(a.TurmaId)).Sum(s => s.TotalAusencias);
 
                 var frequenciaAluno = new FrequenciaAluno()
                 {
                     CodigoAluno = aluno.Key,
                     TotalAulas = totalAulasNaTurma,
                     TotalAusencias = totalAusencias,
-                    TotalCompensacoes = aluno.Where(a => a.TurmaId.Equals(codigoTurma)).Sum(s => s.TotalCompensacoes),
+                    TotalCompensacoes = aluno.Where(a => codigoTurmas.Contains(a.TurmaId)).Sum(s => s.TotalCompensacoes),
                 };
 
                 frequenciaGlobalAlunos.Add(frequenciaAluno);
