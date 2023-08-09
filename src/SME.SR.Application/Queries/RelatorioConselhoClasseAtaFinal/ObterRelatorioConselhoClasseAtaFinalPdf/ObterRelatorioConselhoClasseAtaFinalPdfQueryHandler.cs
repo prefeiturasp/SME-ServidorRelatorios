@@ -85,6 +85,9 @@ namespace SME.SR.Application
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo);
+
+            alunos = alunos?.Where(a => a.Ativo || a.Inativo && a.DataSituacaoAluno > periodosEscolares?.OrderBy(p => p.PeriodoInicio).FirstOrDefault().PeriodoInicio).ToList() ?? alunos;
+
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
             var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
