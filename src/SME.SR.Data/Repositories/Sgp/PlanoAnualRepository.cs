@@ -35,7 +35,8 @@ namespace SME.SR.Data
 						join ue on t.ue_id = ue.id
 						join tipo_escola te on ue.tipo_escola = te.id
 					    join dre on ue.dre_id = dre.id
-						where pa.id = @Id";
+						where pa.id = @Id
+						  and pa.excluido = false";
 
             var parametros = new { Id};
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
@@ -54,7 +55,12 @@ namespace SME.SR.Data
 					    join planejamento_anual_objetivos_aprendizagem paoa on paoa.planejamento_anual_componente_id = pac.id 
 					    join periodo_escolar pe on pe.id = pape.periodo_escolar_id 
 					    join objetivo_aprendizagem oa on oa.id = paoa.objetivo_aprendizagem_id 
-						where pa.id = @Id";
+						where pa.id = @Id
+						  and pape.excluido = false
+					      and pa.excluido = false
+					      and pac.excluido = false
+					      and (paoa.excluido is null or paoa.excluido = false)
+			         order by pe.bimestre,oa.codigo ";
 
 	        var parametros = new { Id};
 	        using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
