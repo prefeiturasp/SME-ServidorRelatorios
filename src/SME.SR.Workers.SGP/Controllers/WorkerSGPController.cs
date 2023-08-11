@@ -436,5 +436,13 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
         #endregion App Escola Aqui
+        
+        [HttpGet("relatorios/plano-anual")]
+        [Action("relatorios/plano-anual", typeof(IRelatorioPlanoAnualUseCase))]
+        public async Task<bool> RelatorioPlanoAnual([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAnualUseCase relatorioPlanoAnualUseCase)
+        {
+            await relatorioPlanoAnualUseCase.Executar(request);
+            return true;
+        }
     }
 }
