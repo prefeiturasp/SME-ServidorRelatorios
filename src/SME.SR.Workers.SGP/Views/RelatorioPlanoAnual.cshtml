@@ -1,0 +1,274 @@
+﻿@using SME.SR.Infra.Utilitarios
+@model SME.SR.Infra.RelatorioPlanoAnualDto
+@{
+    int contadorQuebrarPagina = 0;
+    int qtdeCaracteresPorLinha = 120;
+    int contadorMaximoLinhasPorPagina = 47;
+    int contadorPagina = 0;
+
+    void IncrementarPagina(int qtdeCaracteres)
+    {
+        contadorQuebrarPagina += qtdeCaracteres > qtdeCaracteresPorLinha ? qtdeCaracteres / qtdeCaracteresPorLinha + 1 : 1;
+    }
+    
+    bool TerminouPagina()
+    {
+        return contadorQuebrarPagina >= contadorMaximoLinhasPorPagina;
+    }
+    
+    string VerificaQuebra()
+    {
+        if (TerminouPagina())
+            return QuebrarPagina();
+        
+        return string.Empty;
+
+    }
+
+    string QuebrarPagina()
+    {
+        contadorQuebrarPagina = 0;
+
+        var str = MontarCabecalho();
+        return $@"<div style='page-break-before:always' />" + str;
+    }
+
+    string MontaCabecalhoBimestresObjetivos(int bimestre)
+    {
+        contadorQuebrarPagina += 2;
+        return $@"<table>
+                <tr>
+                    <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>{bimestre}º BIMESTRE</td>
+                </tr>
+                <tr>
+                    <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>OBJETIVOS DE APRENDIZAGEM</td>
+                </tr>
+                </table> ";
+    }
+
+    string MontarCabecalho()
+    {
+        contadorQuebrarPagina += 6;
+        var str =
+           $@"<div>
+	            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
+            </div>
+            <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+            <div class='titulo-relatorio'>RELATÓRIO DE PLANO AEE</div>
+            <div class='fonte-14 header-pagina'>
+	            <table class='tblTopo'>
+		            <tbody>
+		            <tr>
+			            <td class='espaco-esquerda-15 espacamento10'><strong>ANO LETIVO:</strong> {Model.AnoLetivo}</td>
+			            <td class='espaco-esquerda-15 espacamento10'><strong>DRE:</strong> {Model.DreNome}</td>
+			            <td class='espaco-esquerda-15 espacamento10' colspan='2'><strong>UE:</strong> {Model.UeNome}</td>
+		            </tr>
+		            <tr>
+			            <td class='espaco-esquerda-15 espacamento10'><strong>TURMA:</strong> {Model.Turma}</td>
+			            <td class='espaco-esquerda-15 espacamento10' colspan='3'><strong>COMPONENTE CURRICULAR:</strong> {Model.ComponenteCurricular}</td>
+		            </tr>
+                    </tbody>
+	            </table>
+                <table class='tblTopo'>
+		          <tbody>
+		            <tr>
+			            <td class='espaco-esquerda-15 espacamento10 sem-borda-superior' colspan='3'><strong>USUARIO:</strong> {Model.Usuario}</td>			            
+			            <td class='espaco-esquerda-15 width-30 espacamento10 sem-borda-superior'><strong>DATA IMPRESSÃO:</strong> {Model.DataImpressao}</td>
+		            </tr>		            
+		            </tbody>
+	            </table>
+            </div>";
+
+        return str;
+    }
+
+    string CabecalhoCodigoDescricaoObjetivoAprendizagem()
+    {
+        contadorQuebrarPagina++;
+        
+       return @"<table> 
+                 <tbody> 
+                  <tr> 
+                    <td class='espacamento5 negrito centralizado fundo-cinza'>CÓDIGO</td> 
+                    <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO</td>         
+                 </tr> ";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Plano Anual</title>
+</head>
+
+<body class="body-rel-plano-anual">
+    <style>
+        .body-rel-plano-anual {
+            margin: 0.5cm auto;
+            font-family: 'Roboto Mono';
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+        .header-pagina td {
+            text-align: left;
+            padding-left: 15px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+        }
+        
+        .fonte-14 {
+            font-size: 14px !important;
+        }     
+               
+        .centralizado {
+            text-align: center;
+        }
+        
+        .padding10 {
+            padding: 10px;
+        }
+
+        .tb-cabecalho {
+            background-color: #f3f3f3;
+            text-align: left;
+            font-size: 16px;
+            padding: 10px;
+            border-bottom: none;
+            padding-left: 20px;
+        }        
+
+        .h-50 {
+            height: 50px;
+        }
+
+        .m-30 {
+            margin-top: 30px;
+        }   
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+        
+        .espacamento5 {
+            padding: 5px;
+        } 
+        
+        .sem-borda-superior {
+            border-top:hidden;
+        }
+        
+        .width-30 {
+          width: 30%;
+        }  
+    </style>
+    <div>
+        @Html.Raw(MontarCabecalho())
+        <div>
+            @{
+                @foreach (var bimestreDescricaoPlanejamento in Model.Bimestres)
+                {
+                    if (contadorQuebrarPagina >= contadorMaximoLinhasPorPagina - 5)
+                        @Html.Raw(QuebrarPagina())
+                    else
+                        Html.Raw(VerificaQuebra());
+                            
+                    @Html.Raw(MontaCabecalhoBimestresObjetivos(bimestreDescricaoPlanejamento.Bimestre))
+                    contadorQuebrarPagina++;
+                    @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
+                    
+                    @foreach (var objetivo in bimestreDescricaoPlanejamento.Objetivos)
+                    {
+                        if (TerminouPagina())
+                        {
+                            @Html.Raw("</tbody></table>");
+                            @Html.Raw(QuebrarPagina());
+                            @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
+                        }
+                        IncrementarPagina(objetivo.Codigo.Length + objetivo.Descricao.Length);     
+                        
+                        <tr>
+                            <td class='espacamento5'>@objetivo.Codigo</td>
+                            <td class='espacamento5'>@objetivo.Descricao</td>
+                        </tr>
+                    }
+                    @Html.Raw("</tbody></table>");
+                    @Html.Raw(VerificaQuebra())
+                    IncrementarPagina(bimestreDescricaoPlanejamento.DescricaoPlanejamento.Length);
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO DO PLANEJAMENTO</td>
+                        </tr>
+                        <tr>
+                            <td class="espacamento5">@UtilRegex.RemoverTagsHtml(bimestreDescricaoPlanejamento.DescricaoPlanejamento)</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    @Html.Raw(VerificaQuebra())
+                }
+            }
+        </div>
+        
+    </div>
+</body>
+
+</html>
+
+
+
+
