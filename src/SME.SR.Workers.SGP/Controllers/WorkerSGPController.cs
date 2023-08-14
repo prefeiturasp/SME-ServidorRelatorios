@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
@@ -102,7 +101,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpPost("relatorios/frequencia")]
         [Action("relatorios/frequencia", typeof(IRelatorioFrequenciasUseCase))]
         public async Task<bool> RelatorioFrequencias([FromBody] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciasUseCase relatorioFaltasFrequenciasUseCase)
-       {
+        {
             await relatorioFaltasFrequenciasUseCase.Executar(request);
             return true;
         }
@@ -332,8 +331,8 @@ namespace SME.SR.Workers.SGP.Controllers
         }
 
         [HttpGet("relatorios/ocorrencias")]
-        [Action("relatorios/ocorrencias",typeof(IRelatorioOcorrenciasUseCase))]
-        public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request,[FromServices] IRelatorioOcorrenciasUseCase useCase)
+        [Action("relatorios/ocorrencias", typeof(IRelatorioOcorrenciasUseCase))]
+        public async Task<bool> RelatorioOcorrencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioOcorrenciasUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
@@ -346,15 +345,15 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
-        
+
         [HttpGet("relatorios/planoaee")]
         [Action("relatorios/planoaee", typeof(IRelatorioPlanoAeeUseCase))]
         public async Task<bool> RelatorioPlanoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAeeUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
-        }   
-        
+        }
+
         [HttpGet("relatorios/planosaee")]
         [Action("relatorios/planosaee", typeof(IRelatorioPlanosAeeUseCase))]
         public async Task<bool> RelatorioPlanosAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanosAeeUseCase useCase)
@@ -378,7 +377,7 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
-        
+
         [HttpGet("relatorios/encaminhamentonaapadetalhado")]
         [Action("relatorios/encaminhamentonaapadetalhado", typeof(IRelatorioEncaminhamentosNaapaDetalhadoUseCase))]
         public async Task<bool> RelatorioEncaminhamentoNaapaDetalhado([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioEncaminhamentosNaapaDetalhadoUseCase detalhadoUseCase)
@@ -413,7 +412,15 @@ namespace SME.SR.Workers.SGP.Controllers
 
         [HttpGet("relatorios/controle-frequencia-mensal")]
         [Action("relatorios/controle-frequencia-mensal", typeof(IRelatorioFrequenciaControleMensalUseCase))]
-        public async Task<bool> FrequenciaControleMensal([FromQuery] FiltroRelatorioDto request,[FromServices]  IRelatorioFrequenciaControleMensalUseCase useCase)
+        public async Task<bool> FrequenciaControleMensal([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaControleMensalUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/listagem-ocorrencias")]
+        [Action("relatorios/listagem-ocorrencias", typeof(IRelatorioListagemOcorrenciasUseCase))]
+        public async Task<bool> ListagemOcorrencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioListagemOcorrenciasUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
@@ -437,5 +444,13 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
         #endregion App Escola Aqui
+        
+        [HttpGet("relatorios/plano-anual")]
+        [Action("relatorios/plano-anual", typeof(IRelatorioPlanoAnualUseCase))]
+        public async Task<bool> RelatorioPlanoAnual([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAnualUseCase relatorioPlanoAnualUseCase)
+        {
+            await relatorioPlanoAnualUseCase.Executar(request);
+            return true;
+        }
     }
 }
