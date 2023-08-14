@@ -85,5 +85,6 @@
         public const string RotaRelatoriosSolicitadosListagemRegistrosItinerancia = "sr.relatorios.solicitados.listagem.registrositinerancia";
         public const string RotaRelatoriosSolicitadosControleFrequenciaMensal = "sr.relatorios.solicitados.controle.frequencia.mensal";
         public const string RotaRelatoriosSolicitadosListagemOcorrencias = "sr.relatorios.solicitados.listagem.ocorrencias";
+        public const string RotaRelatoriosSolicitatosPlanoAnual = "sr.relatorios.solicitados.planoanual";
     }
 }
