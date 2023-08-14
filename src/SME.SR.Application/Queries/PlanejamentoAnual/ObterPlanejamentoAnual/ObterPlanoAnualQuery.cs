@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterPlanoAnualQuery : IRequest<PlanoAnualDto>
+    public class ObterPlanoAnualQuery : IRequest<IEnumerable<PlanoAnualBimestreObjetivosDto>>
     {
         public ObterPlanoAnualQuery(long id)
         {

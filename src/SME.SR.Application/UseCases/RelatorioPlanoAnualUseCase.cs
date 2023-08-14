@@ -4,6 +4,8 @@ using SME.SR.Infra;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SME.SR.Data;
+using SME.SR.Infra.Utilitarios;
 
 namespace SME.SR.Workers.SGP
 {
@@ -20,11 +22,33 @@ namespace SME.SR.Workers.SGP
         {
             var filtros = request.ObterObjetoFiltro<FiltroPlanoAnualDto>();
 
-            var planoAnualDto = await mediator.Send(new ObterPlanoAnualQuery(filtros.Id));
-            planoAnualDto.Usuario = filtros.Usuario;
-            planoAnualDto.Objetivos = await mediator.Send(new ObterObjetivosAprendizagemPlanejamentoAnualQuery(filtros.Id));
+            var planoAnualBimestreObjetivosDtos = await mediator.Send(new ObterPlanoAnualQuery(filtros.Id));
 
-            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAnual", planoAnualDto, request.CodigoCorrelacao));
+            var planoAnual = planoAnualBimestreObjetivosDtos.FirstOrDefault();
+            var cabecalho = new RelatorioPlanoAnualDto()
+            {
+                AnoLetivo = planoAnual.AnoLetivo,
+                DreNome = planoAnual.DreNome,
+                UeNome = $"{planoAnual.UeCodigo} - {planoAnual.TipoEscola.ShortName()} {planoAnual.UeNome}",
+                Turma = $"{planoAnual.ModalidadeTurma.ShortName()} - {planoAnual.TurmaNome}{planoAnual.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}",
+                ComponenteCurricular = planoAnual.ComponenteCurricular,
+                Usuario = filtros.Usuario,
+                DataImpressao = DateTimeExtension.HorarioBrasilia().Date.ToString("dd/MM/yyyy"),
+                Bimestres = planoAnualBimestreObjetivosDtos
+                    .GroupBy(s=> new { s.Bimestre, s.DescricaoPlanejamento})
+                    .Select(a=> new BimestreDescricaoPlanejamentoDto 
+                    { 
+                        Bimestre = a.Key.Bimestre, 
+                        DescricaoPlanejamento = a.Key.DescricaoPlanejamento, 
+                        Objetivos = a.Select(o=> new ObjetivoAprendizagemPlanoAnualDto
+                        {
+                            Codigo = o.ObjetivoCodigo, 
+                            Descricao = o.ObjetivoDescricao
+                        }).ToList() 
+                    }).OrderBy(o=> o.Bimestre)
+            };
+            
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPlanoAnual", cabecalho, request.CodigoCorrelacao));
         }
     }
 }

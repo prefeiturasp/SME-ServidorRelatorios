@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SME.SR.Infra
 {
-    public class BimestreDescricaoObjetivosPlanoAnualDto
+    public class BimestreDescricaoPlanejamentoDto
     {
         public int Bimestre { get; set; }
         public string DescricaoPlanejamento { get; set; }

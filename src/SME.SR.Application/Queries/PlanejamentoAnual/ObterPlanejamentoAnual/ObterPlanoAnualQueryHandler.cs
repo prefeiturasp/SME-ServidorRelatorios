@@ -2,12 +2,13 @@
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterPlanoAnualQueryHandler : IRequestHandler<ObterPlanoAnualQuery, PlanoAnualDto>
+    public class ObterPlanoAnualQueryHandler : IRequestHandler<ObterPlanoAnualQuery, IEnumerable<PlanoAnualBimestreObjetivosDto>>
     {
         private readonly IPlanoAnualRepository planoAnualRepository;
         
@@ -15,7 +16,7 @@ namespace SME.SR.Application
         {
             this.planoAnualRepository = planoAnualRepository ?? throw new ArgumentNullException(nameof(planoAnualRepository));
         }
-        public async Task<PlanoAnualDto> Handle(ObterPlanoAnualQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PlanoAnualBimestreObjetivosDto>> Handle(ObterPlanoAnualQuery request, CancellationToken cancellationToken)
         {
             var planoAnual = await planoAnualRepository.ObterPorId(request.Id);
 
