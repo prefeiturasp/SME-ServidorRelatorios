@@ -93,6 +93,13 @@
                     <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO</td>         
                  </tr> ";
     }
+
+    string RetornarSomenteTexto(string texto)
+    {
+        var textoTratado = UtilRegex.RemoverTagsHtml(texto);
+        textoTratado = UtilRegex.RemoverTagsHtmlMultiMidia(textoTratado);
+        return textoTratado;
+    }
 }
 
 <!DOCTYPE html>
@@ -254,12 +261,11 @@
                             <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO DO PLANEJAMENTO</td>
                         </tr>
                         <tr>
-                            <td class="espacamento5">@UtilRegex.RemoverTagsHtml(bimestreDescricaoPlanejamento.DescricaoPlanejamento)</td>
+                            <td class="espacamento5">@RetornarSomenteTexto(bimestreDescricaoPlanejamento.DescricaoPlanejamento)</td>
                         </tr>
                         </tbody>
                     </table>
                     <br>
-                    @Html.Raw(VerificaQuebra())
                 }
             }
         </div>
