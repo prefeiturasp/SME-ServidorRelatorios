@@ -341,7 +341,7 @@ namespace SME.SR.Data
 					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 					LEFT JOIN alunos_matriculas_norm amn on amn.CodigoMatricula  = mte.cd_matricula 
 					INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
-					WHERE mte.cd_turma_escola = @turmaCodigo
+					WHERE mte.cd_turma_escola = @turmaCodigo and amn.CodigoTurma = @turmaCodigo
 						and mte.dt_situacao_aluno =
 							(select max(mte2.dt_situacao_aluno) 
 							    from v_historico_matricula_cotic  matr2
