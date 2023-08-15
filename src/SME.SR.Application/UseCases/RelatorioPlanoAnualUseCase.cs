@@ -39,7 +39,7 @@ namespace SME.SR.Workers.SGP
                     .Select(a=> new BimestreDescricaoPlanejamentoDto 
                     { 
                         Bimestre = a.Key.Bimestre, 
-                        DescricaoPlanejamento = a.Key.DescricaoPlanejamento, 
+                        DescricaoPlanejamento = UtilRegex.RemoverTagsHtml(UtilRegex.RemoverTagsHtmlMultiMidia(a.Key.DescricaoPlanejamento)),
                         Objetivos = a.Select(o=> new ObjetivoAprendizagemPlanoAnualDto
                         {
                             Codigo = o.ObjetivoCodigo, 
