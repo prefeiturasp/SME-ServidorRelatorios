@@ -46,7 +46,7 @@ namespace SME.SR.Workers.SGP
                         {
                             Codigo = o.ObjetivoCodigo, 
                             Descricao = o.ObjetivoDescricao
-                        }).ToList() : new List<ObjetivoAprendizagemPlanoAnualDto>() 
+                        }).ToList() : Enumerable.Empty<ObjetivoAprendizagemPlanoAnualDto>() 
                     }).OrderBy(o=> o.Bimestre)
             };
             
