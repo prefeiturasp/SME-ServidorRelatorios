@@ -13,5 +13,6 @@ namespace SME.SR.Infra
         public string DataImpressao { get; set; } = DateTimeExtension.HorarioBrasilia().Date.ToString("dd/MM/yyyy");
         public string Turma { get; set; }
         public IEnumerable<BimestreDescricaoPlanejamentoDto> Bimestres { get; set; }
+        public bool ExibeObjetivos { get; set; }
     }
 }

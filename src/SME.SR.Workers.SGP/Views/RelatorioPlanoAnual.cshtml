@@ -35,15 +35,22 @@
 
     string MontaCabecalhoBimestresObjetivos(int bimestre)
     {
-        contadorQuebrarPagina += 2;
-        return $@"<table>
+        contadorQuebrarPagina++;
+        
+        var str = $@"<table>
                 <tr>
                     <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>{bimestre}º BIMESTRE</td>
-                </tr>
-                <tr>
-                    <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>OBJETIVOS DE APRENDIZAGEM</td>
-                </tr>
-                </table> ";
+                </tr> ";
+
+        if (Model.ExibeObjetivos)
+        {
+            contadorQuebrarPagina++;
+            str += $@"<tr>
+                        <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>OBJETIVOS DE APRENDIZAGEM</td>
+                    </tr>";
+        }
+        
+        return str + " </table> ";
     }
 
     string MontarCabecalho()
@@ -228,23 +235,28 @@
                             
                     @Html.Raw(MontaCabecalhoBimestresObjetivos(bimestreDescricaoPlanejamento.Bimestre))
                     contadorQuebrarPagina++;
-                    @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
-                    
-                    @foreach (var objetivo in bimestreDescricaoPlanejamento.Objetivos)
+
+                    if (Model.ExibeObjetivos)
                     {
-                        if (TerminouPagina())
+                        @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
+                    
+                        @foreach (var objetivo in bimestreDescricaoPlanejamento.Objetivos)
                         {
-                            @Html.Raw("</tbody></table>");
-                            @Html.Raw(QuebrarPagina());
-                            @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
-                        }
-                        IncrementarPagina(objetivo.Codigo.Length + objetivo.Descricao.Length);     
+                            if (TerminouPagina())
+                            {
+                                @Html.Raw("</tbody></table>");
+                                @Html.Raw(QuebrarPagina());
+                                @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
+                            }
+                            IncrementarPagina(objetivo.Codigo.Length + objetivo.Descricao.Length);     
                         
-                        <tr>
-                            <td class='espacamento5'>@objetivo.Codigo</td>
-                            <td class='espacamento5'>@objetivo.Descricao</td>
-                        </tr>
+                            <tr>
+                                <td class='espacamento5'>@objetivo.Codigo</td>
+                                <td class='espacamento5'>@objetivo.Descricao</td>
+                            </tr>
+                        }
                     }
+                        
                     @Html.Raw("</tbody></table>");
                     @Html.Raw(VerificaQuebra())
                     IncrementarPagina(bimestreDescricaoPlanejamento.DescricaoPlanejamento.Length);
