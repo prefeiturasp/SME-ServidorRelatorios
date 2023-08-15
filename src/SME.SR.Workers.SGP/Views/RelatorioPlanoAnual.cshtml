@@ -10,6 +10,22 @@
     {
         contadorQuebrarPagina += qtdeCaracteres > qtdeCaracteresPorLinha ? qtdeCaracteres / qtdeCaracteresPorLinha + 1 : 1;
     }
+
+    string GerarDescricaoPlanejamento(string descricao)
+    {
+        IncrementarPagina(descricao.Length);
+        
+        return $@"<table>
+                    <tbody>
+                    <tr>
+                        <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO DO PLANEJAMENTO</td>
+                    </tr>
+                    <tr>
+                        <td class='espacamento5'>{descricao}</td>
+                    </tr>
+                    </tbody>
+                </table>";
+    }
     
     bool TerminouPagina()
     {
@@ -234,7 +250,6 @@
                         Html.Raw(VerificaQuebra());
                             
                     @Html.Raw(MontaCabecalhoBimestresObjetivos(bimestreDescricaoPlanejamento.Bimestre))
-                    contadorQuebrarPagina++;
 
                     if (Model.ExibeObjetivos)
                     {
@@ -259,17 +274,21 @@
                         
                     @Html.Raw("</tbody></table>");
                     @Html.Raw(VerificaQuebra())
-                    IncrementarPagina(bimestreDescricaoPlanejamento.DescricaoPlanejamento.Length);
-                    <table>
-                        <tbody>
-                        <tr>
-                            <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO DO PLANEJAMENTO</td>
-                        </tr>
-                        <tr>
-                            <td class="espacamento5">@bimestreDescricaoPlanejamento.DescricaoPlanejamento</td>
-                        </tr>
-                        </tbody>
-                    </table>
+
+                    var qtdeCaracteresRemanescentes = ((contadorMaximoLinhasPorPagina - contadorQuebrarPagina) * qtdeCaracteresPorLinha)*2;
+                    if (bimestreDescricaoPlanejamento.DescricaoPlanejamento.Length > qtdeCaracteresRemanescentes)
+                    {
+                        var descricao = bimestreDescricaoPlanejamento.DescricaoPlanejamento;
+                        var descricaoParcial = descricao.Substring(0, qtdeCaracteresRemanescentes);
+                        @Html.Raw(GerarDescricaoPlanejamento(descricaoParcial))
+                        @Html.Raw(VerificaQuebra())
+                        var descricaoRestante = descricao.Substring(qtdeCaracteresRemanescentes + 1);
+                        @Html.Raw(GerarDescricaoPlanejamento(descricaoRestante))
+                    }
+                    else
+                    {
+                        @Html.Raw(GerarDescricaoPlanejamento(bimestreDescricaoPlanejamento.DescricaoPlanejamento));    
+                    }
                     <br>
                 }
             }
