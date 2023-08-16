@@ -67,7 +67,7 @@ namespace SME.SR.Application
    
                 foreach (var aluno in alunos)
                 {
-                    var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
+                    var turma = turmas.First(t => aluno.Any(a => t.TipoTurma == TipoTurma.Regular && (t.EtapaEnsino == 6 || t.EtapaEnsino == 9 || t.EtapaEnsino == 17) && a.CodigoTurma.ToString() == t.Codigo));
                    
                     var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
@@ -111,14 +111,13 @@ namespace SME.SR.Application
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                            aluno.FirstOrDefault().NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
+                            aluno.FirstOrDefault(b => b.CodigoTurma.ToString() == turma.Codigo).NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
                         boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
                         boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
                         boletimEscolarAlunoDto.ExibirRecomendacoes = request.ExibirRecomendacao;
                         boletinsAlunos.Add(boletimEscolarAlunoDto);
                     }
-                    
                 }
 
                 if (!boletinsAlunos.Any())
