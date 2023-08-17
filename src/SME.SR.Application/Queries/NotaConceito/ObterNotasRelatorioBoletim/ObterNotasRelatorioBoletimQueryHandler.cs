@@ -22,7 +22,7 @@ namespace SME.SR.Application
         {
             var notasRetorno = new List<NotasAlunoBimestre>();
             var alunosCodigos = request.CodigosAlunos;
-            int alunosPorPagina = 100;
+            int alunosPorPagina = 200;
 
             foreach (string codTurma in request.CodigosTurmas)
             {
