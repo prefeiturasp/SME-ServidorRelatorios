@@ -1338,19 +1338,7 @@ namespace SME.SR.Data
                             where not ft.excluido 
                                 and not cc.excluido 
                                 and cca.aluno_codigo = any(@codigoAlunos) 
-                                {(anoLetivo.HasValue ? "and t.ano_letivo = @anoLetivo" : string.Empty)}
-                                and not exists (select 1
-                                from
-                                    fechamento_turma ft2
-                                inner join conselho_classe cc2 on
-                                    cc2.fechamento_turma_id = ft2.id
-                                inner join conselho_classe_aluno cca2 on
-                                    cca2.conselho_classe_id = cc2.id
-                                 where not ft2.excluido 
-                                    and not cc2.excluido 
-                                    and ft2.turma_id = ft.turma_id 
-                                    and	cca2.aluno_codigo = cca.aluno_codigo 
-                                    and ft2.periodo_escolar_id is null)
+                                {(anoLetivo.HasValue ? "and t.ano_letivo = @anoLetivo" : string.Empty)}                                
                             ), tempConselhoAlunos as 
                             -- Obter turmas complementares
                             (select 
