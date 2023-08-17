@@ -313,34 +313,35 @@ namespace SME.SR.Data
 
 					SELECT  aluno.cd_aluno CodigoAluno,
 					    aluno.nm_aluno NomeAluno,
-					    mte.cd_situacao_aluno CodigoSituacaoMatricula,
+					    COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) CodigoSituacaoMatricula,
 					    CASE
-						    WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
-						    WHEN mte.cd_situacao_aluno = 2 THEN 'Desistente'
-						    WHEN mte.cd_situacao_aluno = 3 THEN 'Transferido'
-						    WHEN mte.cd_situacao_aluno = 4 THEN 'Vínculo Indevido'
-						    WHEN mte.cd_situacao_aluno = 5 THEN 'Concluído'
-						    WHEN mte.cd_situacao_aluno = 6 THEN 'Pendente de Rematrícula'
-						    WHEN mte.cd_situacao_aluno = 7 THEN 'Falecido'
-						    WHEN mte.cd_situacao_aluno = 8 THEN 'Não Compareceu'
-						    WHEN mte.cd_situacao_aluno = 10 THEN 'Rematriculado'
-						    WHEN mte.cd_situacao_aluno = 11 THEN 'Deslocamento'
-						    WHEN mte.cd_situacao_aluno = 12 THEN 'Cessado'
-						    WHEN mte.cd_situacao_aluno = 13 THEN 'Sem continuidade'
-						    WHEN mte.cd_situacao_aluno = 14 THEN 'Remanejado Saída'
-						    WHEN mte.cd_situacao_aluno = 15 THEN 'Reclassificado Saída'
-							WHEN mte.cd_situacao_aluno = 16 THEN 'Transferido SED'
-							WHEN mte.cd_situacao_aluno = 17 THEN 'Dispensado Ed. Física'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 1 THEN 'Ativo'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 2 THEN 'Desistente'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 3 THEN 'Transferido'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 4 THEN 'Vínculo Indevido'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 5 THEN 'Concluído'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 6 THEN 'Pendente de Rematrícula'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 7 THEN 'Falecido'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 8 THEN 'Não Compareceu'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 10 THEN 'Rematriculado'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 11 THEN 'Deslocamento'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 12 THEN 'Cessado'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 13 THEN 'Sem continuidade'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 14 THEN 'Remanejado Saída'
+						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 15 THEN 'Reclassificado Saída'
+							WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 16 THEN 'Transferido SED'
+							WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 17 THEN 'Dispensado Ed. Física'
 						    ELSE 'Fora do domínio liberado pela PRODAM'
 						    END SituacaoMatricula,
 						mte.nr_chamada_aluno NumeroAlunoChamada,
-						mte.dt_situacao_aluno DataSituacaoAluno,
+						COALESCE(amn.DataSituacao, mte.dt_situacao_aluno) DataSituacaoAluno,
 						(select MIN(dt_situacao_aluno) from historico_matricula_turma_escola where cd_matricula = matr.cd_matricula) DataMatricula
 					FROM v_aluno_cotic aluno
 					INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 					INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
+					LEFT JOIN alunos_matriculas_norm amn on amn.CodigoMatricula  = mte.cd_matricula 
 					INNER JOIN turma_escola te ON mte.cd_turma_escola = te.cd_turma_escola
-					WHERE mte.cd_turma_escola = @turmaCodigo
+					WHERE mte.cd_turma_escola = @turmaCodigo and amn.CodigoTurma = @turmaCodigo
 						and mte.dt_situacao_aluno =
 							(select max(mte2.dt_situacao_aluno) 
 							    from v_historico_matricula_cotic  matr2
