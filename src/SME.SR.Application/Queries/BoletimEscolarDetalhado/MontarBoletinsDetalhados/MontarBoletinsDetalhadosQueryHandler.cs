@@ -67,7 +67,9 @@ namespace SME.SR.Application
    
                 foreach (var aluno in alunos)
                 {
-                    var turma = turmas.First(t => aluno.Any(a => t.TipoTurma == TipoTurma.Regular && (t.EtapaEnsino == 6 || t.EtapaEnsino == 9 || t.EtapaEnsino == 17) && a.CodigoTurma.ToString() == t.Codigo));
+                    var EtapasEnsinoMedioRegular = new int[] { 6, 9, 17 };
+
+                    var turma = turmas.First(t => aluno.Any(a => t.TipoTurma == TipoTurma.Regular && EtapasEnsinoMedioRegular.Contains(t.EtapaEnsino) && a.CodigoTurma.ToString() == t.Codigo));
                    
                     var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
