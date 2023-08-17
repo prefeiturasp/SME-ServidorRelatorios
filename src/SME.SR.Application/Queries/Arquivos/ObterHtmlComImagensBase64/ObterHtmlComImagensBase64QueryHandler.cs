@@ -29,12 +29,21 @@ namespace SME.SR.Application
             doc.LoadHtml(registroFormatado);
             var nodes = doc.DocumentNode.SelectNodes(@"//img[@src]");
             if (nodes != null)
+            {
                 foreach (var img in nodes)
                 {
                     var caminho = img.Attributes["src"].Value;
                     var arquivoBase64 = await ObterArquivoRemotoBase64(caminho, request.EscalaHorizontal, request.EscalaVertical);
                     registroFormatado = registroFormatado.Replace(caminho, arquivoBase64);
+
+                    if (string.IsNullOrEmpty(arquivoBase64))
+                        foreach (var atribute in img.Attributes)
+                        {
+                            if (!string.IsNullOrEmpty(atribute.Value))
+                                registroFormatado = registroFormatado.Replace(atribute.Value, string.Empty);
+                        }
                 }
+            }
 
             return registroFormatado;
         }

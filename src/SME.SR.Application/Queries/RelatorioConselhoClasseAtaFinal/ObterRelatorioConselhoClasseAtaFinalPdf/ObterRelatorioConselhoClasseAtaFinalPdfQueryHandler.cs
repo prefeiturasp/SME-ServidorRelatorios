@@ -91,6 +91,7 @@ namespace SME.SR.Application
                     return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
                 
                 var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
                 var tiposTurma = new List<int>() { (int)turma.TipoTurma };
                 if (turma.TipoTurma == TipoTurma.Regular)
@@ -104,34 +105,43 @@ namespace SME.SR.Application
                 if (notas == null || !notas.Any())
                 return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
 
-                var cabecalho = await ObterCabecalho(turma.Codigo);
-                var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
+            var cabecalho = await ObterCabecalho(turma.Codigo);
+            var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
 
-                var informacoesAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray(), turma.AnoLetivo));
-                informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x => x.Codigo == i.CodigoTurma.ToString()) && (i.CodigoSituacaoMatricula != SituacaoMatriculaAluno.RemanejadoSaida));
-                notas = notas.Where(x => informacoesAlunos.Select(j => j.CodigoTurma.ToString()).ToList().Contains(x.Key));
-                var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
-                var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
-                var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
+            var codigosTurmasRelacionadasRegular = (await mediator.Send(new ObterTurmasPorAlunosQuery(alunosCodigosLong, turma.AnoLetivo)))?.Where(b => b.TipoTurma != TipoTurma.EdFisica).Select(b => b.TurmaCodigo).Distinct();
+          
+            var informacoesAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray(), turma.AnoLetivo));
+            informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x=> x.Codigo == i.CodigoTurma.ToString()) && (i.CodigoSituacaoMatricula != SituacaoMatriculaAluno.RemanejadoSaida));
+            notas = notas.Where(x => informacoesAlunos.Select(j => j.CodigoTurma.ToString()).ToList().Contains(x.Key));
+            var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
+            var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
 
-                var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.Select(long.Parse).ToArray(), filtro.AnoLetivo));
-                listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
+            var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigosLong, filtro.AnoLetivo));
+            listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
 
                 var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
                 listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
 
                 var pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
 
-                if (turma.TipoTurma == TipoTurma.Itinerarios2AAno)
+            if (turma.TipoTurma == TipoTurma.Itinerarios2AAno)
+            {
+                foreach (var checarTurma in turmas.Where(t => t.Codigo != turma.Codigo))
                 {
-                    foreach (var checarTurma in turmas.Where(t => t.Codigo != turma.Codigo))
-                    {
-                        if (checarTurma.TipoTurma == TipoTurma.Regular)
-                            pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
-                    }
+                    if (checarTurma.TipoTurma == TipoTurma.Regular)
+                        pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
                 }
-                else
-                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(turma.Codigo));
+            }
+            else if(turma.TipoTurma == TipoTurma.EdFisica)
+            {
+                foreach (var codigoTurmaRelacionada in codigosTurmasRelacionadasRegular)
+                {
+                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(codigoTurmaRelacionada));
+                }
+            }
+            else
+                pareceresConclusivos.AddRange(await ObterPareceresConclusivos(turma.Codigo));
 
                 var componentesDaTurma = componentesCurriculares.SelectMany(cc => cc).ToList();
                 var componentesCurricularesPorTurma = ObterComponentesCurricularesTurma(componentesDaTurma);

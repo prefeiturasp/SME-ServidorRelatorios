@@ -4,6 +4,7 @@ pipeline {
       kubeconfig = getKubeconf(env.branchname)
       registryCredential = 'jenkins_registry'
       deployment1 = "${env.branchname == 'release-r2' ? 'sme-sr-workers-r2' : 'sme-sr-workers' }"
+      namespace = "${env.branchname == 'pre-prod' ? 'sme-relatorios-d1' : 'sme-relatorios' }"
     }
   
     agent {
@@ -50,7 +51,7 @@ pipeline {
 					
                           withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
                             sh('cp $config '+"$home"+'/.kube/config')
-                            sh "kubectl rollout restart deployment/${deployment1} -n sme-relatorios"
+                            sh "kubectl rollout restart deployment/${deployment1} -n ${namespace}"
                             sh('rm -f '+"$home"+'/.kube/config')
                           }
                 }
