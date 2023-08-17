@@ -161,11 +161,11 @@ namespace SME.SR.Application
 
         private bool VerificaTurmaEnsinoMedioRegular(int etapa)
         {
-            var EtapaEnsinoMedioRegularEnsinoMedio = EtapaEnsino.EnsinoMedio;
-            var EtapaEnsinoMedioRegularMagisterio = EtapaEnsino.Magisterio;
-            var EtapaEnsinoMedioRegularEnsinoMedioEspecial = EtapaEnsino.EnsinoMedioEspecial;
+            var etapaEnsinoMedioRegularEnsinoMedio = EtapaEnsino.EnsinoMedio;
+            var etapaEnsinoMedioRegularMagisterio = EtapaEnsino.Magisterio;
+            var etapaEnsinoMedioRegularEnsinoMedioEspecial = EtapaEnsino.EnsinoMedioEspecial;
 
-            if (etapa.Equals((int)EtapaEnsinoMedioRegularEnsinoMedio) || etapa.Equals((int)EtapaEnsinoMedioRegularMagisterio) || etapa.Equals((int)EtapaEnsinoMedioRegularEnsinoMedioEspecial))
+            if (etapa.Equals((int)etapaEnsinoMedioRegularEnsinoMedio) || etapa.Equals((int)etapaEnsinoMedioRegularMagisterio) || etapa.Equals((int)etapaEnsinoMedioRegularEnsinoMedioEspecial))
                 return true;
 
             return false;
