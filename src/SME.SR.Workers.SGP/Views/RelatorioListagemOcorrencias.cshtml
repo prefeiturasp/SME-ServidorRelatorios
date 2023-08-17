@@ -1,0 +1,344 @@
+﻿@using SME.SR.Infra;
+@model SME.SR.Infra.RelatorioListagemOcorrenciasDto;
+
+@{
+    int contadorQuebrarPagina = 0;
+    int contadorMaximoLinhasPorPagina = 55;
+    int contadorMaximoCaracteresPorLinha = 78;
+
+    void MontarCabecalho(UeDto ue)
+    {
+        contadorQuebrarPagina = contadorQuebrarPagina + 7;
+
+        <div>
+            <img class="img-logo-sgp" src="logoMono.png" alt="Logo SGP" />
+        </div>
+        <div class="titulo-sgp">SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
+        <div class="titulo-relatorio">REGISTRO DE OCORRÊNCIA</div>
+        <div class="fonte-14 header-pagina">
+            <table class="tblTopo">
+                <tbody>
+                    <tr>
+                        <td width="30%" class="espaco-esquerda-15 sem-border-bottom"><span class="negrito">DRE:</span> @ue.Dre.Abreviacao</td>
+                        <td width="70%" class="espaco-esquerda-15 sem-border-bottom"><span class="negrito">UE:</span> @ue.Nome</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width="63%" class="espaco-esquerda-15"><span class="negrito">USUÁRIO:</span> @Model.Usuario</td>
+                        <td width="37%" class="espaco-esquerda-15"><span class="negrito">DATA IMPRESSÃO:</span> @Model.DataSolicitacao.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+
+    string MontarDadosOcorrencia(UeDto ue)
+    {
+        var registros = Model.Registros.Where(t => t.UeCodigo == ue.CodigoUe);
+        foreach (var registro in registros)
+        {
+            var totalLinhasRegistro = ObterTotalLinhasRegistro(registro);
+
+            if (contadorQuebrarPagina + totalLinhasRegistro > contadorMaximoLinhasPorPagina)
+                QuebrarPagina(ue);
+
+            contadorQuebrarPagina += totalLinhasRegistro;
+
+            <table class="mt-25">
+                <tbody>
+                    <tr>
+                        <td width="40%" class="alinhar-esquerda espaco-esquerda-15 sem-border-bottom"><span class="negrito">DATA OCORRÊNCIA:</span> @registro.DataOcorrencia.ToString("dd/MM/yyyy") </td>
+                        <td width="60%" class="alinhar-esquerda espaco-esquerda-15 sem-border-bottom"><span class="negrito">TURMA:</span> @registro.TurmaDescricao </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            @MontarDadosAlunos(registro.Alunos)
+            @MontarDadosServidores(registro.Servidores)
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="alinhar-esquerda espaco-esquerda-15 fundo-cinza"><span class="negrito">TIPO DA OCORRÊNCIA:</span> @registro.OcorrenciaTipo</td>
+                    </tr>
+                    <tr>
+                        <td class="alinhar-esquerda espaco-esquerda-15 fundo-cinza"><span class="negrito">TÍTULO:</span> @registro.Titulo</td>
+                    </tr>
+
+                    @if (Model.ImprimirDescricaoOcorrencia)
+                    {
+                        <tr>
+                            <td class="espaco-esquerda-15 fundo-cinza"><span class="negrito">DESCRIÇÃO </span></td>
+                        </tr>
+                        <tr>
+                            <td class="alinhar-esquerda espaco-esquerda-15">
+                                @MontarDescricao(ue, registro.Descricao)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        return default;
+    }
+
+    string QuebrarPagina(UeDto ue)
+    {
+        contadorQuebrarPagina = 0;
+        @Html.Raw("<div style='page-break-before:always'></div>")
+        MontarCabecalho(ue);
+
+        return default;
+    }
+
+    int ObterTotalLinhasRegistro(RelatorioListagemOcorrenciasRegistroDto registro)
+    {
+        var contador = 4;
+
+        if (registro.Alunos != null && registro.Alunos.Any())
+        {
+            if (registro.Alunos.Count() > 1)
+                contador++;
+
+            contador += registro.Alunos.Count();
+        }
+
+        if (registro.Servidores != null && registro.Servidores.Any())
+        {
+            contador++;
+            contador += registro.Servidores.Count();
+        }
+
+        return contador;
+    }
+
+    string MontarDescricao(UeDto ue, string descricao)
+    {
+        int iContadorCaracteres = 0;
+
+        contadorQuebrarPagina += 2;
+
+        @while (iContadorCaracteres != descricao.Length)
+        {
+            if (contadorQuebrarPagina + 1 > contadorMaximoLinhasPorPagina)
+            {
+                @Html.Raw("</td ></tr>")
+                @Html.Raw("</tbody></table>")
+                QuebrarPagina(ue);
+                @Html.Raw("<table><tbody>")
+                @Html.Raw("<tr><td class='alinhar-esquerda espaco-esquerda-15'>")
+            }
+            else
+            {
+                int diminuirCaracteres = descricao.Length - iContadorCaracteres;
+                var qntCaracteresParaBuscar = diminuirCaracteres < contadorMaximoCaracteresPorLinha ? diminuirCaracteres : contadorMaximoCaracteresPorLinha;
+                var textParaExibir = descricao.Substring(iContadorCaracteres, qntCaracteresParaBuscar);
+                iContadorCaracteres += textParaExibir.Length;
+                <span>
+                    @Html.Raw(textParaExibir)
+                </span>
+            }
+            contadorQuebrarPagina++;
+        }
+
+        return default;
+    }
+
+    string MontarDadosAlunos(IEnumerable<RelatorioListagemOcorrenciasRegistroAlunoDto> alunos)
+    {
+        if (alunos != null && alunos.Any())
+        {
+            @if (alunos.Count() == 1)
+            {
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="alinhar-esquerda espaco-esquerda-15 sem-border-bottom fundo-cinza">
+                                <span class="negrito">CRIANÇA/ESTUDANTE</span> @alunos.FirstOrDefault().AlunoDescricao;
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <table class="alinhar-esquerda">
+                    <tbody>
+                        <tr>
+                            <td width="70%" class="alinhar-esquerda espaco-esquerda-15"><span class="negrito">CRIANÇA/ESTUDANTE</span></td>
+                            <td width="30%" class="alinhar-esquerda espaco-esquerda-15"><span class="negrito">CÓDIGO</span></td>
+                        </tr>
+
+                        @foreach (var aluno in alunos)
+                        {
+                            <tr>
+                                <td width="70%" class="alinhar-esquerda espaco-esquerda-15 sem-border-bottom">@aluno.Nome</td>
+                                <td width="30%" class="alinhar-esquerda espaco-esquerda-15 sem-border-bottom">@aluno.CodigoAluno</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+
+        return default;
+    }
+
+    string MontarDadosServidores(IEnumerable<RelatorioListagemOcorrenciasRegistroServidorDto> servidores)
+    {
+        if (servidores != null && servidores.Any())
+        {
+            <table>
+                <tbody>
+                    <tr>
+                        <td width="70%" class="espaco-esquerda-15 alinhar-esquerda"> <span class="negrito">SERVIDOR(ES):</span></td>
+                        <td width="30%" class="espaco-esquerda-15 alinhar-esquerda"><span class="negrito">RF</span></td>
+                    </tr>
+
+                    @foreach (var servidor in servidores)
+                    {
+                        <tr>
+                            <td width="70%" class="espaco-esquerda-15 sem-border-bottom alinhar-esquerda">@servidor.Nome</td>
+                            <td width="30%" class="espaco-esquerda-15 sem-border-bottom alinhar-esquerda">@servidor.CodigoRF</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        return default;
+    }
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório Listagem de Ocorrências</title>
+
+    <style>
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: 'Roboto Mono';
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo-sgp {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .titulo-relatorio {
+            text-align: right;
+            font-size: 14.5px;
+            margin-top: 7px;
+        }
+
+
+        .header-pagina {
+            margin-top: 33px;
+            margin-bottom: 22px;
+        }
+
+            .header-pagina td {
+                text-align: left;
+            }
+
+        table {
+            display: table;
+            width: 100%;
+            border-color: #42474a;
+            empty-cells: show;
+            border: none;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f3f3f3;
+        }
+
+        th {
+            border: 1px solid #42474a;
+            font-weight: normal;
+        }
+
+        td {
+            border: 1px solid #42474a;
+            text-align: center;
+        }
+
+        .tabela-eventos tr {
+            font-size: 12px;
+            height: 24px;
+        }
+
+        .mt-25 {
+            margin-top: 25px;
+        }
+
+        .fonte-14 {
+            font-size: 14px !important;
+        }
+
+        .alinhar-esquerda {
+            text-align: left;
+        }
+
+        .espaco-esquerda-15 {
+            padding-left: 15px;
+        }
+
+        .negrito {
+            font-weight: bold;
+        }
+
+        .sem-border-bottom {
+            border-bottom: 0;
+        }
+
+        .thLimpo {
+            background-color: #ffffff;
+            border-top: 0;
+            border-bottom: 0;
+            height: 22px;
+        }
+
+        .img-logo-sgp {
+            height: 64px;
+            float: left;
+        }
+
+        .fundo-cinza {
+            background-color: #f3f3f3;
+        }
+    </style>
+</head>
+<body class="body-relatorio">
+    @{
+        var primeiroRegistro = true;
+        foreach (var ue in Model.Ues)
+        {
+            if (!primeiroRegistro)
+            {
+                @Html.Raw("<div style='page-break-before:always'></div>")
+                contadorQuebrarPagina = 0;
+            }
+            else
+                primeiroRegistro = false;
+
+
+            MontarCabecalho(ue);
+            MontarDadosOcorrencia(ue);
+        }
+    }
+</body>
+</html>

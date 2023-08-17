@@ -12,6 +12,8 @@ namespace SME.SR.Infra
         public long IdGrupoMatriz { get; set; }
         public long Id { get; set; }
         public string Nome { get; set; }
+        public bool Regencia {  get; set; }
+        public bool LancaNota { get; set; }
         public List<ConselhoClasseAtaFinalColunaDto> Colunas { get; set; }
 
         public void AdicionarColuna(string nome)

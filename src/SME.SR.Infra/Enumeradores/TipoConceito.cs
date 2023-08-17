@@ -5,10 +5,10 @@ namespace SME.SR.Infra
     public enum TipoConceito
     {
         [Display(Name = "P")]
-        Nota = 1,
+        PlenamenteSatisfatorio = 1,
         [Display(Name = "S")]
-        Conceito = 2,
+        Satisfatorio = 2,
         [Display(Name = "NS")]
-        Sintese = 3
+        NaoSatisfatorio = 3
     }
 }

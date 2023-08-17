@@ -1,6 +1,6 @@
 ﻿@using SME.SR.Infra;
 
-@model HistoricoEscolarDTO
+@model HistoricoEscolarFundamentalDto
 
 @{
     if (Model.DadosHistorico != null)
@@ -36,26 +36,7 @@
                     <td class="texto-centralizado" colspan="2">8º ano</td>
                     <td class="texto-centralizado" colspan="2">9º ano</td>
                 </tr>
-                <tr>
-                    <td class="texto-centralizado coluna-nota">C</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">C</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">C</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                    <td class="texto-centralizado coluna-nota">N</td>
-                    <td class="texto-centralizado coluna-nota">F</td>
-                </tr>
+                @Html.Raw(ObterLinhasTiposNotasConceito())
                 @Html.Raw(ObterLinhasBaseNacional())
                 @Html.Raw(ObterLinhasDiversificadas())
                 @Html.Raw(ObterLinhasEnriquecimentoCurricular())
@@ -67,6 +48,26 @@
         </div>
     }
 
+    string ObterLinhasTiposNotasConceito()
+    {
+        var linhas = "<tr>";
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.PrimeiroAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SegundoAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.TerceiroAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.QuartoAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.QuintoAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SextoAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SetimoAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.OitavoAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.NonoAno);
+        linhas += "</tr>";
+        return linhas;
+    }
+
+    string RetornarTipoNotaFrequencia(string tipoNotaConceito)
+    {
+        return $"<td class={"texto-centralizado coluna-nota"}>{tipoNotaConceito}</td> <td class={"texto-centralizado coluna-nota"}>F</td>";
+    }
 
     int ObterTotalLinhasBaseNacional()
     {
