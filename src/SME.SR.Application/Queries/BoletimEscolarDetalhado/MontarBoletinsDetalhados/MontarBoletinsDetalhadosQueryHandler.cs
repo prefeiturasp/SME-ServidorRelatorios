@@ -67,10 +67,12 @@ namespace SME.SR.Application
    
                 foreach (var aluno in alunos)
                 {
-                    var EtapasEnsinoMedioRegular = new int[] { 6, 9, 17 };
+                    var turma = turmas.FirstOrDefault(t => aluno.Any(a => t.TipoTurma == TipoTurma.Regular && VerificaTurmaEnsinoMedioRegular(t.EtapaEnsino) && a.CodigoTurma.ToString() == t.Codigo));
 
-                    var turma = turmas.First(t => aluno.Any(a => t.TipoTurma == TipoTurma.Regular && EtapasEnsinoMedioRegular.Contains(t.EtapaEnsino) && a.CodigoTurma.ToString() == t.Codigo));
-                   
+                    if(turma == null)
+                        turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
+
+
                     var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
 
                     if (conselhoClasseBimestres != null && conselhoClasseBimestres.Any())
@@ -155,6 +157,18 @@ namespace SME.SR.Application
                 AnoLetivo = anoLetivo,
                 NomeAluno = nomeAluno
             };
+        }
+
+        private bool VerificaTurmaEnsinoMedioRegular(int etapa)
+        {
+            var EtapaEnsinoMedioRegularEnsinoMedio = EtapaEnsino.EnsinoMedio;
+            var EtapaEnsinoMedioRegularMagisterio = EtapaEnsino.Magisterio;
+            var EtapaEnsinoMedioRegularEnsinoMedioEspecial = EtapaEnsino.EnsinoMedioEspecial;
+
+            if (etapa.Equals((int)EtapaEnsinoMedioRegularEnsinoMedio) || etapa.Equals((int)EtapaEnsinoMedioRegularMagisterio) || etapa.Equals((int)EtapaEnsinoMedioRegularEnsinoMedioEspecial))
+                return true;
+
+            return false;
         }
 
         private async Task MapearGruposEComponentes(
