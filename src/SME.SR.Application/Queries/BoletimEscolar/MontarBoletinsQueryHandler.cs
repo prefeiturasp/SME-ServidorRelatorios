@@ -146,7 +146,11 @@ namespace SME.SR.Application
 
             foreach (string turma in turmas.OrderBy(t => t))
             {
-                var alunosTurma = boletinsAlunos.Where(a => a.Cabecalho.NumeroTurma == turma).OrderBy(a => a.Cabecalho.NomeAlunoOrdenacao).ToList();
+                var alunosTurma = boletinsAlunos
+                    .Where(a => a.ComponentesCurriculares != null && a.Cabecalho.NumeroTurma == turma)
+                    .OrderBy(a => a.Cabecalho.NomeAlunoOrdenacao)
+                    .ToList();
+
                 boletinsOrdenados.AddRange(alunosTurma);
             }
 
