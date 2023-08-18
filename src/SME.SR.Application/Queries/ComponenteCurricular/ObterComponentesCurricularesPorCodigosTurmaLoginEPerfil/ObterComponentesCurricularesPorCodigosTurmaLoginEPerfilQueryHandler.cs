@@ -151,19 +151,24 @@ namespace SME.SR.Application
 
                             foreach (var componenteTerritorio in territorios)
                             {
-                                ordemComponentesTerritorioSaber++;                                
-                                componentesCurriculares.Add(new Data.ComponenteCurricular()
+                                ordemComponentesTerritorioSaber++;
+                                var componenteTerritorioPorTurma = componenteTerritorio.Where(b => b.CodigoTurma == territorio.Key);
+
+                                if (componenteTerritorioPorTurma.Any())
                                 {
-                                    CodigoTurma = territorio.Key,
-                                    Codigo = componenteTerritorio.FirstOrDefault()?.ObterCodigoComponenteCurricular(componenteTerritorio.First().CodigoTurma) ?? 0,
-                                    CodigoTerritorioSaber = componenteTerritorio.FirstOrDefault()?.CodigoComponenteCurricular ?? 0,
-                                    Descricao = componenteTerritorio.FirstOrDefault()?.ObterDescricaoComponenteCurricular(),
-                                    TipoEscola = tipoEscola,
-                                    TerritorioSaber = true,
-                                    OrdemTerritorioSaber = ordemComponentesTerritorioSaber,
-                                    GrupoMatrizId = componenteTerritorio.FirstOrDefault()?.GrupoMatrizId ?? 0,
-                                    Professor = componenteTerritorio.FirstOrDefault()?.Professor
-                                });
+                                    componentesCurriculares.Add(new Data.ComponenteCurricular()
+                                    {
+                                        CodigoTurma = territorio.Key,
+                                        Codigo = componenteTerritorioPorTurma.FirstOrDefault()?.ObterCodigoComponenteCurricular(componenteTerritorioPorTurma.First().CodigoTurma) ?? 0,
+                                        CodigoTerritorioSaber = componenteTerritorioPorTurma.FirstOrDefault()?.CodigoComponenteCurricular ?? 0,
+                                        Descricao = componenteTerritorioPorTurma.FirstOrDefault()?.ObterDescricaoComponenteCurricular(),
+                                        TipoEscola = tipoEscola,
+                                        TerritorioSaber = true,
+                                        OrdemTerritorioSaber = ordemComponentesTerritorioSaber,
+                                        GrupoMatrizId = componenteTerritorioPorTurma.FirstOrDefault()?.GrupoMatrizId ?? 0,
+                                        Professor = componenteTerritorioPorTurma.FirstOrDefault()?.Professor
+                                    });
+                                }
                             }
                         }
                     }
