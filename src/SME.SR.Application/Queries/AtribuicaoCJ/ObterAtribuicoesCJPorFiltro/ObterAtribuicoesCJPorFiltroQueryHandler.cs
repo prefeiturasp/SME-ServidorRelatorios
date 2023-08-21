@@ -20,7 +20,7 @@ namespace SME.SR.Application
         {
             var lstAtribuicoes = await atribuicaoCJRepository.ObterPorFiltros(request.Modalidade,
                                                         request.TurmaId, request.UeId, request.ComponenteCurricularId, request.UsuarioRf,
-                                                        request.UsuarioNome, true, anoLetivo: request.AnoLetivo);
+                                                        request.UsuarioNome, true, request.DreCodigo, anoLetivo: request.AnoLetivo);
 
             return lstAtribuicoes;
         }
