@@ -92,8 +92,6 @@ namespace SME.SR.Application
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
             var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
-            var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
-
             var turmasCodigos = new string[] { turma.Codigo }; 
             var codigosTurmasEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(turmasCodigos, alunosCodigos, turma.AnoLetivo));
 
