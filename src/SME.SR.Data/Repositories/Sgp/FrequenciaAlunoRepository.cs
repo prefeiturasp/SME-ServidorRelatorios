@@ -297,7 +297,7 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(int anoTurma, long tipoCalendarioId, string[] alunosCodigo, string turmaCodigo)
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(int anoTurma, long tipoCalendarioId, string[] alunosCodigo, string[] turmaCodigo)
         {
             var query = new StringBuilder($@"with lista as (
                            select fa.id Id
@@ -307,7 +307,7 @@ namespace SME.SR.Data
                                 , fa.total_ausencias as TotalAusencias
                                 , fa.total_compensacoes as TotalCompensacoes
                                 {(tipoCalendarioId > 0 ? ", pe.bimestre Bimestre" : string.Empty)}
-                                , row_number() over (partition by fa.codigo_aluno, fa.periodo_escolar_id, fa.tipo, fa.disciplina_id order by fa.id desc) sequencia
+                                , row_number() over (partition by fa.codigo_aluno, fa.turma_id, fa.periodo_escolar_id, fa.tipo, fa.disciplina_id order by fa.id desc) sequencia
                             from frequencia_aluno fa
                             inner join turma t on fa.turma_id = t.turma_id ");
 
@@ -318,7 +318,7 @@ namespace SME.SR.Data
                                       and t.ano_letivo = @anoTurma 
                                       and fa.codigo_aluno = any(@alunosCodigo)
                                       and t.tipo_turma in(1,2,7) 
-                                      and t.turma_id = @turmaCodigo");
+                                      and fa.turma_id = any(@turmaCodigo)");
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
