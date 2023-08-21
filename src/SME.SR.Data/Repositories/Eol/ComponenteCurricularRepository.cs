@@ -387,5 +387,23 @@ namespace SME.SR.Data
                 return await conexao.QueryFirstOrDefaultAsync<bool>(sql, new { componenteCurricularId });
             }
         }
+        
+        public async Task<IEnumerable<ComponenteCurricularApiEol>> ObterComponentesCurricularesAPIEol()
+        {
+            var query = @"SELECT ccp.Id,
+                            cc.IdComponenteCurricular, 
+                            cc.EhRegencia, 
+                            cc.EhTerritorio,
+                            cc.Descricao,
+                            ccp.idcomponentecurricularpai,
+                            ccp.vigencia
+                     FROM ComponenteCurricular cc
+                        LEFT JOIN componentecurricularpai ccp on cc.idcomponentecurricular = ccp.idcomponentecurricular";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
+            {
+                return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
+            }
+        }
     }
 }
