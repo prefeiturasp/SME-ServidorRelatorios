@@ -10,6 +10,5 @@ namespace SME.SR.Data
         Task<IEnumerable<Funcionario>> ObterFuncionariosPorCargoUe(string codigoCargo, string codigoUe);
         Task<IEnumerable<Funcionario>> ObterNomesServidoresPorRfs(string[] codigosRfs);
         Task<IEnumerable<Guid>> ObterPerfisUsuarioPorRf(string usuarioRf);
-        Task<IEnumerable<DisciplinaTerritorioSaberDto>> BuscarDisciplinaTerritorioDosSaberesAsync(string codigoTurma, IEnumerable<long> codigosComponentesCurriculares);
     }
 }

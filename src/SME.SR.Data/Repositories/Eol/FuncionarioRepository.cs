@@ -188,39 +188,5 @@ namespace SME.SR.Data
 
             return sb.ToString();
         }
-        
-        public async Task<IEnumerable<DisciplinaTerritorioSaberDto>> BuscarDisciplinaTerritorioDosSaberesAsync(string codigoTurma, IEnumerable<long> codigosComponentesCurriculares)
-        {
-	        var query = @"select
-						grade_ter.cd_experiencia_pedagogica as CodigoExperienciaPedagogica,
-						grade_ter.cd_territorio_saber as CodigoTerritorioSaber,
-						ter.dc_territorio_saber as DescricaoTerritorioSaber,
-						exp.dc_experiencia_pedagogica as DescricaoExperienciaPedagogica,
-						Convert(date, dt_inicio) as DataInicio,
-						grade_ter.cd_componente_curricular as CodigoComponenteCurricular
-					from
-						turma_grade_territorio_experiencia grade_ter
-						inner join território_saber ter on ter.cd_territorio_saber = grade_ter.cd_territorio_saber
-						inner join tipo_experiencia_pedagogica exp on exp.cd_experiencia_pedagogica = grade_ter.cd_experiencia_pedagogica
-					where
-						exists (
-							select
-								*
-							from
-								serie_turma_grade grade_tur
-							where
-								cd_turma_escola = @codigoTurma
-								and grade_tur.cd_serie_grade = grade_ter.cd_serie_grade
-						)
-						and grade_ter.cd_componente_curricular in @codigosComponentesCurriculares
-					";
-	        
-	        using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-	        {
-		        return await conexao
-			        .QueryAsync<DisciplinaTerritorioSaberDto>(query, 
-				        new { codigoTurma = codigoTurma.ToDbInt(), codigosComponentesCurriculares });
-	        }
-        }
     }
 }

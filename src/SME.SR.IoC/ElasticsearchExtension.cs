@@ -45,7 +45,6 @@ namespace SME.SR.IoC
 
         private static void RegistraMapeamento(IElasticClient elasticClient)
         {
-            elasticClient.Map<AlunoNaTurmaDTO>(map => map.Index(Indices.Index(IndicesElastic.INDICE_ALUNO_TURMA_DRE)).AutoMap());
             elasticClient.Map<TurmaComponentesDto>(map => map.Index(Indices.Index(IndicesElastic.INDICE_TURMA_COMPONENTES)).AutoMap());
         }
     }
