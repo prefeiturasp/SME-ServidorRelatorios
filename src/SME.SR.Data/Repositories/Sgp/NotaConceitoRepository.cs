@@ -85,7 +85,7 @@ namespace SME.SR.Data
                                     cv.valor,
 	                               cccatn.nota,
 	                               cccatn.id 
-                            order by CodigoAluno, bimestre,CodigoComponenteCurricular ";
+                            order by CodigoAluno, bimestre,CodigoComponenteCurricular, NotaId desc ";
             
 
             var parametros = new
