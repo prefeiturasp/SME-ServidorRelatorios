@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class MontarHistoricoEscolarQueryHandler : IRequestHandler<MontarHistoricoEscolarQuery, IEnumerable<HistoricoEscolarDTO>>
+    public class MontarHistoricoEscolarQueryHandler : IRequestHandler<MontarHistoricoEscolarQuery, IEnumerable<HistoricoEscolarFundamentalDto>>
     {
         public MontarHistoricoEscolarQueryHandler()
         {
 
         }
 
-        public async Task<IEnumerable<HistoricoEscolarDTO>> Handle(MontarHistoricoEscolarQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<HistoricoEscolarFundamentalDto>> Handle(MontarHistoricoEscolarQuery request, CancellationToken cancellationToken)
         {
-            var listaRetorno = new List<HistoricoEscolarDTO>();
+            var listaRetorno = new List<HistoricoEscolarFundamentalDto>();
 
             var alunosTurmas = request.AlunosTurmas.GroupBy(a => a.Aluno.Codigo);
 
@@ -60,7 +60,7 @@ namespace SME.SR.Application
 
                     var estudosRealizados = ObterHistoricoUes(uesHistorico)?.ToList();
 
-                    var historicoDto = new HistoricoEscolarDTO()
+                    var historicoDto = new HistoricoEscolarFundamentalDto()
                     {
                         NomeDre = request.Dre.Nome,
                         Cabecalho = request.Cabecalho,

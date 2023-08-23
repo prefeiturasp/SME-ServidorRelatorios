@@ -85,7 +85,7 @@ namespace SME.SR.Data
                                     cv.valor,
 	                               cccatn.nota,
 	                               cccatn.id 
-                            order by CodigoAluno, bimestre,CodigoComponenteCurricular ";
+                            order by CodigoAluno, bimestre,CodigoComponenteCurricular, NotaId desc ";
             
 
             var parametros = new
@@ -155,7 +155,22 @@ namespace SME.SR.Data
         }
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaAtaBimestralAsync(string[] codigosAlunos, int anoLetivo, int modalidade, int semestre, int[] tiposTurma, int bimestre)
         {
-            var query = "select * from f_ata_bimestral_obter_notas_turmas_alunos(@anoLetivo, @modalidade, @semestre, @tiposTurma, @codigosAlunos, @bimestre)";
+            var query = @"select t.id as IdTurma, t.turma_id as CodigoTurma, t.tipo_turma as TipoTurma, cccat.aluno_codigo as CodigoAluno,
+                           cccatn.componente_curricular_id CodigoComponenteCurricular, coalesce(ccp.aprovado, false) as Aprovado,
+                           cccatn.id as NotaId, cccatn.conceito_id as ConceitoId, coalesce(cccatn.bimestre, 0) as Bimestre, 
+                           cv.valor as Conceito, cccatn.nota as Nota
+                           from turma t 
+                           inner join consolidado_conselho_classe_aluno_turma cccat on t.id = cccat.turma_id   
+                           inner join consolidado_conselho_classe_aluno_turma_nota cccatn on cccatn.consolidado_conselho_classe_aluno_turma_id = cccat.id 
+                           left join conselho_classe_parecer ccp on ccp.id = cccat.parecer_conclusivo_id 
+                           left join conceito_valores cv on cv.id = cccatn.conceito_id 
+                           where not cccat.excluido 
+                             and cccat.aluno_codigo = any(@codigosAlunos)
+                             and cccatn.bimestre = @bimestre
+                             and t.ano_letivo = @anoLetivo 
+                             and t.modalidade_codigo = @modalidade
+                             and t.tipo_turma = any(@tiposTurma)
+                             and t.semestre = @semestre";
 
             var parametros = new
             {
@@ -169,22 +184,20 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
-                                                NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
-                    , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito) =>
+                return await conexao.QueryAsync<NotasAlunoBimestre, NotaConceitoBimestreComponente, NotasAlunoBimestre>(query
+                    , (notasFrequenciaAlunoBimestre, notaConceito) =>
                     {
-                        notasFrequenciaAlunoBimestre.PeriodoEscolar = periodoEscolar;
                         notasFrequenciaAlunoBimestre.NotaConceito = notaConceito;
 
                         return notasFrequenciaAlunoBimestre;
                     }
-                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
+                    , parametros, splitOn: "CodigoTurma, NotaId");
             }
         }
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunosParaHistoricoEscolasAsync(string[] codigosAluno, int anoLetivo, int modalidade, int semestre)
         {
-            const string queryNotasRegular = @"
+            const string queryNotasFechamentoNota = @"
                         select t.turma_id CodigoTurma, fa.aluno_codigo CodigoAluno,
                                fn.disciplina_id CodigoComponenteCurricular,
                                coalesce(ccp.aprovado, false) as Aprovado,
@@ -205,9 +218,10 @@ namespace SME.SR.Data
                          left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and ccn.componente_curricular_codigo = fn.disciplina_id 
                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
                          where fa.aluno_codigo = ANY(@codigosAluno)
-                           and t.ano_letivo <= @anoLetivo ";
+                           and t.ano_letivo <= @anoLetivo
+                           and coalesce(ccn.nota, fn.nota) is not null ";
 
-            const string queryNotasComplementar = @"
+            const string queryNotasConselhoNota = @"
                         select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
                                ccn.componente_curricular_codigo CodigoComponenteCurricular,
                                coalesce(ccp.aprovado, false) as Aprovado,
@@ -230,27 +244,59 @@ namespace SME.SR.Data
 		                                                and ccn.componente_curricular_codigo = fn.disciplina_id 
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
                          where cca.aluno_codigo = ANY(@codigosAluno)
-                           and t.ano_letivo <= @anoLetivo ";
+                           and t.ano_letivo <= @anoLetivo
+                           and coalesce(ccn.nota, fn.nota) is not null ";
 
-            var queryRegular = new StringBuilder(queryNotasRegular);
-            var queryComplementar = new StringBuilder(queryNotasComplementar);
+            const string queryNotasFechamentoConselhoComplementar = @"
+                        select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
+                               ccn.componente_curricular_codigo CodigoComponenteCurricular,
+                               coalesce(ccp.aprovado, false) as Aprovado,
+                               coalesce(pe.bimestre,0) as bimestre, pe.periodo_inicio PeriodoInicio,
+                               pe.periodo_fim PeriodoFim, ccn.id NotaId,
+                               coalesce(ccn.conceito_id, fn.conceito_id) as ConceitoId, 
+                               coalesce(cvc.valor, cvf.valor) as Conceito, coalesce(ccn.nota, fn.nota) as Nota
+                          from fechamento_turma ft
+                         inner join turma t on t.id = ft.turma_id 
+                         inner join conselho_classe_aluno_turma_complementar ccatc on ccatc.turma_id = ft.turma_id 
+                         inner join conselho_classe_aluno cca on cca.id = ccatc.conselho_classe_aluno_id and not cca.excluido
+                         inner join conselho_classe cc on cca.conselho_classe_id  = cc.id and not cc.excluido
+                         inner join fechamento_turma ftRegular on ftRegular.id = cc.fechamento_turma_id and coalesce(ftRegular.periodo_escolar_id, 0) = coalesce(ft.periodo_escolar_id, 0)
+                         left join periodo_escolar pe on pe.id = ft.periodo_escolar_id 
+                         left join conselho_classe_nota ccn on ccn.conselho_classe_aluno_id = cca.id and not ccn.excluido                           
+                         left join conselho_classe_parecer ccp on cca.conselho_classe_parecer_id  = ccp.id   
+                         left join conceito_valores cvc on ccn.conceito_id = cvc.id
+                         left join fechamento_turma_disciplina ftd on ftd.fechamento_turma_id = ft.id
+                         left join fechamento_aluno fa on fa.fechamento_turma_disciplina_id = ftd.id and cca.aluno_codigo = fa.aluno_codigo 
+                         left join fechamento_nota fn on fn.fechamento_aluno_id = fa.id and ccn.componente_curricular_codigo = fn.disciplina_id 
+                         left join conceito_valores cvf on fn.conceito_id = cvf.id
+                         where cca.aluno_codigo = ANY(@codigosAluno)
+                           and t.ano_letivo <= @anoLetivo
+                           and coalesce(ccn.nota, fn.nota) is not null ";
+
+            var queryFechamentoNota = new StringBuilder(queryNotasFechamentoNota);
+            var queryConselhoNota = new StringBuilder(queryNotasConselhoNota);
+            var queryFechamentoConselhoComplementar = new StringBuilder(queryNotasFechamentoConselhoComplementar);
 
             if (modalidade > 0)
             {
-                queryRegular.AppendLine(" and t.modalidade_codigo = @modalidade ");
-                queryComplementar.AppendLine(" and t.modalidade_codigo = @modalidade ");
+                queryFechamentoNota.AppendLine(" and t.modalidade_codigo = @modalidade ");
+                queryConselhoNota.AppendLine(" and t.modalidade_codigo = @modalidade ");
+                queryFechamentoConselhoComplementar.AppendLine(" and t.modalidade_codigo = @modalidade ");
             }
 
             if (semestre > 0)
             {
-                queryRegular.AppendLine(" and t.semestre = @semestre ");
-                queryComplementar.AppendLine(" and t.semestre = @semestre ");
+                queryFechamentoNota.AppendLine(" and t.semestre = @semestre ");
+                queryConselhoNota.AppendLine(" and t.semestre = @semestre ");
+                queryFechamentoConselhoComplementar.AppendLine(" and t.semestre = @semestre ");
             }
 
             var query = $@"(
-                            {queryRegular}
+                            {queryFechamentoNota}
                             union 
-                            {queryComplementar}
+                            {queryConselhoNota}
+                            union 
+                            {queryFechamentoConselhoComplementar}
                            )";
 
             var parametros = new

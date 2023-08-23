@@ -372,7 +372,7 @@ namespace SME.SR.Data
 						EstadoNatal CHAR(2),
 						Nacionalidade VARCHAR(20),
 						RG VARCHAR(30),
-						ExpedicaoOrgaoEmissor VARCHAR(10),
+						ExpedicaoOrgaoEmissor VARCHAR(80),
 						ExpedicaoUF VARCHAR(2),
 						ExpedicaoData DATETIME,
 						PossuiDeficiencia BIT
@@ -412,7 +412,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
@@ -461,7 +461,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
@@ -573,7 +573,7 @@ namespace SME.SR.Data
 						EstadoNatal CHAR(2),
 						Nacionalidade VARCHAR(20),
 						RG VARCHAR(30),
-						ExpedicaoOrgaoEmissor VARCHAR(10),
+						ExpedicaoOrgaoEmissor VARCHAR(80),
 						ExpedicaoUF VARCHAR(2),
 						ExpedicaoData DATETIME,
 						PossuiDeficiencia BIT
@@ -615,7 +615,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
@@ -666,7 +666,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
@@ -1024,7 +1024,7 @@ namespace SME.SR.Data
 						EstadoNatal CHAR(2),
 						Nacionalidade VARCHAR(20),
 						RG VARCHAR(30),
-						ExpedicaoOrgaoEmissor VARCHAR(10),
+						ExpedicaoOrgaoEmissor VARCHAR(80),
 						ExpedicaoUF VARCHAR(2),
 						ExpedicaoData DATETIME,
 						PossuiDeficiencia BIT
@@ -1066,7 +1066,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
@@ -1117,7 +1117,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
@@ -1212,7 +1212,7 @@ namespace SME.SR.Data
 						EstadoNatal CHAR(2),
 						Nacionalidade VARCHAR(20),
 						RG VARCHAR(30),
-						ExpedicaoOrgaoEmissor VARCHAR(10),
+						ExpedicaoOrgaoEmissor VARCHAR(80),
 						ExpedicaoUF VARCHAR(2),
 						ExpedicaoData DATETIME,
 						PossuiDeficiencia BIT
@@ -1254,7 +1254,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
@@ -1305,7 +1305,7 @@ namespace SME.SR.Data
 							ELSE 'Estrangeira'
 						END Nacionalidade,
 						aluno.nr_rg_aluno + '-' + aluno.cd_digito_rg_aluno RG,
-						orge.cd_orgao_emissor ExpedicaoOrgaoEmissor,
+						orge.nm_orgao_emissor ExpedicaoOrgaoEmissor,
 						aluno.sg_uf_rg_aluno ExpedicaoUF,
 						aluno.dt_emissao_rg ExpedicaoData,
 						CASE
