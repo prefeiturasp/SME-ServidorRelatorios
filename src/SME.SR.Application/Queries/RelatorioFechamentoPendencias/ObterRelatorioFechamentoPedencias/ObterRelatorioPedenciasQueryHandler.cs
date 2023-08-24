@@ -161,7 +161,7 @@ namespace SME.SR.Application
 
                                 var PendenciaTerritorioSaber = "";
 
-                                if (ehTerritorioSaber)
+                                if (ehTerritorioSaber && !String.IsNullOrEmpty(nomeComponentesTerritorioSaber))
                                     PendenciaTerritorioSaber = pendenciaDoComponenteDaTurma.Descricao.Replace(nomeComponentes, nomeComponentesTerritorioSaber);
 
                                 pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
