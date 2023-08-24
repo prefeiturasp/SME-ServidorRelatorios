@@ -158,6 +158,20 @@ namespace SME.SR.Data
             }
         }
 
+        public async Task<IEnumerable<Funcionario>> ObterNomesServidoresPorRfs(string[] codigosRfs)
+        {
+            var query = @"select 
+							cd_registro_funcional as CodigoRF,
+							nm_pessoa as NomeServidor
+						  from v_servidor_cotic
+						  where cd_registro_funcional IN @codigosRfs ";
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await conexao.QueryAsync<Funcionario>(query, new { codigosRfs });
+            }
+        }
+
         protected string MontaQueryObterFuncionariosPorCargoUe(string query, string where, string order = "")
         {
             var sb = new StringBuilder();

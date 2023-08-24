@@ -37,7 +37,7 @@ namespace SME.SR.Application
                     await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
                     break;
                 case TipoFormatoRelatorio.Pdf:
-                    await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal.html", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
+                    await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
                     break;
                 case TipoFormatoRelatorio.Rtf:
                 case TipoFormatoRelatorio.Html:

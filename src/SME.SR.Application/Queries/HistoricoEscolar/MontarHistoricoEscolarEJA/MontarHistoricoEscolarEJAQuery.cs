@@ -21,7 +21,8 @@ namespace SME.SR.Application
                                            string[] turmasCodigo, CabecalhoDto cabecalho, LegendaDto legenda,
                                            DadosDataDto dadosData, FuncionarioDto dadosDiretor, FuncionarioDto dadosSecretario,
                                            IEnumerable<IGrouping<(long, Modalidade), UeConclusaoPorAlunoAno>> historicoUes,
-                                           bool preencherDataImpressao, bool imprimirDadosResponsaveis)
+                                           bool preencherDataImpressao, bool imprimirDadosResponsaveis,
+                                            IEnumerable<FiltroHistoricoEscolarAlunosDto> filtroHistoricoAlunos)
         {
             Dre = dre;
             Ue = ue;
@@ -43,6 +44,7 @@ namespace SME.SR.Application
             PreencherDataImpressao = preencherDataImpressao;
             ImprimirDadosResponsaveis = imprimirDadosResponsaveis;
             GrupoAreaOrdenacao = ordenacaoGrupoArea;
+            FiltroHistoricoAlunos = filtroHistoricoAlunos;
         }
 
         public Dre Dre { get; set; }
@@ -66,5 +68,6 @@ namespace SME.SR.Application
         public LegendaDto Legenda { get; set; }
         public bool PreencherDataImpressao { get; set; }
         public bool ImprimirDadosResponsaveis { get; set; }
+        public IEnumerable<FiltroHistoricoEscolarAlunosDto> FiltroHistoricoAlunos { get; set; }
     }
 }
