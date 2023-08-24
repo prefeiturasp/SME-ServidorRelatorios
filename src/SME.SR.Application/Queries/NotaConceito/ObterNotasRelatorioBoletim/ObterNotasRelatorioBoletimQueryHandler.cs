@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
@@ -37,6 +38,7 @@ namespace SME.SR.Application
                     cont += alunosPagina.Count();
                     i++;
                 }
+                
             }
 
             if (notasRetorno == null || !notasRetorno.Any())

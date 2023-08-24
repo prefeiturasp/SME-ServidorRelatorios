@@ -58,7 +58,7 @@ namespace SME.SR.Data
             {
                 return await conexao.QueryFirstOrDefaultAsync<SituacaoUsuario>(query, new { usuarioRf });
             }
-        }      
+        }
 
         public async Task<string> ObterNomeUsuarioPorLogin(string usuarioLogin)
         {
@@ -101,7 +101,7 @@ namespace SME.SR.Data
                 query.AppendLine("and a.usuario_perfil = Any(@perfis)");
 
             if (diasSemAcesso > 0)
-                query.AppendLine($"and u.ultimo_login <= NOW() - interval '{diasSemAcesso} day'");            
+                query.AppendLine($"and u.ultimo_login <= NOW() - interval '{diasSemAcesso} day'");
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
@@ -136,6 +136,19 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryAsync<PrioridadePerfil>(query);
+            }
+        }
+
+        public async Task<IEnumerable<Usuario>> ObterNomesUsuariosPorRfs(string[] codigosRfs)
+        {
+            string query = @"select usu_login as codigoRf, pes_nome as Nome 
+                             from SYS_Usuario 
+                             inner join PES_Pessoa on SYS_Usuario.pes_id = PES_Pessoa.pes_id
+                             where usu_login IN @codigosRfs";
+
+            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringCoreSso))
+            {
+                return await conexao.QueryAsync<Usuario>(query, new { codigosRfs });
             }
         }
     }
