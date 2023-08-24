@@ -91,7 +91,7 @@ namespace SME.SR.Application
                     return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
                 
                 var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
-            var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
+                var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
                 var tiposTurma = new List<int>() { (int)turma.TipoTurma };
                 if (turma.TipoTurma == TipoTurma.Regular)

@@ -177,7 +177,7 @@ namespace SME.SR.Application
                 await mediator.Send(
                     new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurricularesPorTurma));
 
-            foreach (var componente in componentesTurma)
+            foreach (var componente in componentesTurma.OrderBy(cc => cc.GrupoMatriz.Id).ThenBy(cc => cc.Disciplina))
             {
                 if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
                 {
