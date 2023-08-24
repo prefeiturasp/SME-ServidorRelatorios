@@ -3,6 +3,7 @@ using MediatR;
 using Sentry;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,18 +27,21 @@ namespace SME.SR.Application
 
         public async Task<bool> Handle(GerarRelatorioAtaBimestralHtmlParaPdfCommand request, CancellationToken cancellationToken)
         {
-            List<string> paginasEmHtml = new List<string>();
+            List<PaginaParaRelatorioPaginacaoSoloDto> paginasEmHtml = new List<PaginaParaRelatorioPaginacaoSoloDto>();
+            var pagina = 1;
 
             foreach (var modelPagina in request.Paginas)
             {
                 string html = string.Empty;
 
-               html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
+                html = GerarHtmlRazor(modelPagina, request.NomeTemplate);
 
                 html = html.Replace("logoMono.png", SmeConstants.LogoSmeMono);
                 html = html.Replace("logo.png", SmeConstants.LogoSme);
 
-                paginasEmHtml.Add(html);
+                paginasEmHtml.Add(new PaginaParaRelatorioPaginacaoSoloDto(html, pagina, request.Paginas.Count()));
+
+                pagina++;
             }           
             
             if (paginasEmHtml.Any())
@@ -45,9 +49,9 @@ namespace SME.SR.Application
 
                 PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
-                var directory = AppDomain.CurrentDomain.BaseDirectory;                
+                var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
 
-                pdfGenerator.ConvertToPdf(paginasEmHtml, directory, request.CodigoCorrelacao.ToString());                
+                pdfGenerator.ConvertToPdfPaginacaoSolo(paginasEmHtml, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Ata Bimestral");
                 await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, string.Empty), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));                
             }
 

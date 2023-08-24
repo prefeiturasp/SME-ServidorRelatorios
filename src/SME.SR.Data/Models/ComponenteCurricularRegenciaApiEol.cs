@@ -5,6 +5,5 @@
         public long IdComponenteCurricular { get; set; }
         public int? Turno { get; set; }
         public int? Ano { get; set; }
-        public int IdGrupoMatriz { get; set; }
     }
 }

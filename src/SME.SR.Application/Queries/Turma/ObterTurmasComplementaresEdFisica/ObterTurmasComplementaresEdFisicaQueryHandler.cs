@@ -24,10 +24,14 @@ namespace SME.SR.Application
 
             turmasAlunos
                 .Where(ta => ta.TipoTurma == TipoTurma.EdFisica && request.CodigosTurmas.Contains(ta.RegularCodigo))
-                .ToList().ForEach(t =>
+                .ToList().ForEach(async t =>
                 {
                     if (!turmasComplementaresEdFisica.Any(tc => tc.Codigo.Equals(t.TurmaCodigo)))
-                        turmasComplementaresEdFisica.Add(mediator.Send(new ObterTurmaPorCodigoQuery(t.TurmaCodigo)).Result);
+                    {
+                        var turma = await mediator.Send(new ObterTurmaPorCodigoQuery(t.TurmaCodigo));
+                        turma.RegularCodigo = t.RegularCodigo;
+                        turmasComplementaresEdFisica.Add(turma);
+                    }
                 });
 
             return turmasComplementaresEdFisica;

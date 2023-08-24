@@ -270,7 +270,7 @@ namespace SME.SR.Data
 
 					INSERT INTO #tmpAlunosSituacao
 					SELECT aluno.cd_aluno CodigoAluno,
-					   ISNULL(aluno.nm_social_aluno, aluno.nm_aluno) NomeAluno,
+					   coalesce(aluno.nm_social_aluno,aluno.nm_aluno) NomeAluno,
 					   mte.cd_situacao_aluno CodigoSituacaoMatricula,
 					   CASE
 							WHEN mte.cd_situacao_aluno = 1 THEN 'Ativo'
@@ -303,8 +303,7 @@ namespace SME.SR.Data
 					WHERE mte.cd_turma_escola = @turmaCodigo
 					group by
 					aluno.cd_aluno,
-					aluno.nm_social_aluno,
-					aluno.nm_aluno,
+					coalesce(aluno.nm_social_aluno,aluno.nm_aluno),
 					mte.cd_situacao_aluno,
 					mte.nr_chamada_aluno,
 					mte.dt_situacao_aluno
@@ -313,7 +312,7 @@ namespace SME.SR.Data
 						UNION 
 
 					SELECT  aluno.cd_aluno CodigoAluno,
-					    ISNULL(aluno.nm_social_aluno, aluno.nm_aluno) NomeAluno,
+					    coalesce(aluno.nm_social_aluno,aluno.nm_aluno) NomeAluno,
 					    COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) CodigoSituacaoMatricula,
 					    CASE
 						    WHEN COALESCE(amn.CodigoSituacaoMatricula, mte.cd_situacao_aluno) = 1 THEN 'Ativo'
