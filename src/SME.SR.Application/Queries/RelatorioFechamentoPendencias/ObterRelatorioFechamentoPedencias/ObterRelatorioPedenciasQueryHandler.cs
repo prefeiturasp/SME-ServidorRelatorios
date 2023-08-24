@@ -167,7 +167,7 @@ namespace SME.SR.Application
                                 pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
                                 pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
                                 pendenciaParaAdicionar.Titulo = pendenciaDoComponenteDaTurma.Titulo;
-                                pendenciaParaAdicionar.DescricaoPendencia = ehTerritorioSaber ? PendenciaTerritorioSaber : pendenciaDoComponenteDaTurma.Descricao;
+                                pendenciaParaAdicionar.DescricaoPendencia = ehTerritorioSaber && !String.IsNullOrEmpty(nomeComponentesTerritorioSaber) ? PendenciaTerritorioSaber : pendenciaDoComponenteDaTurma.Descricao;
                                 pendenciaParaAdicionar.Instrucao = pendenciaDoComponenteDaTurma.Instrucao;
                                 pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
                                 pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;
