@@ -24,7 +24,7 @@ namespace SME.SR.Data
             var query = @"select pa.id,
    								 ue.nome as UeNome,
    								 ue.ue_id as UeCodigo, 
-          						 te.descricao as TipoEscola,
+          						 te.cod_tipo_escola_eol as TipoEscola,
 						         dre.abreviacao as DreNome,
 								 t.modalidade_codigo as ModalidadeTurma,
 						         t.nome as TurmaNome,
