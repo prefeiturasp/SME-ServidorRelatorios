@@ -48,7 +48,7 @@ namespace SME.SR.Application
 
                 if (request.Modalidade == Modalidade.Medio && turmasComplementaresEM.Any())
                 {
-                    turmas = turmasComplementaresEM;
+                    turmas = turmasComplementaresEM.OrderBy(b => b.Ano);
                     alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, true, request.AnoLetivo, dataInicioPeriodoEscolar);
                     alunosPorTurma = alunosPorTurma.OrderBy(a => a.Key);
                 }
@@ -89,8 +89,18 @@ namespace SME.SR.Application
 
                 var turmasRetorno = await mediator.Send(new ObterTurmasPorCodigoQuery(turmasEol.Select(t => t.ToString()).ToArray()));
 
-                if (turmasRetorno.Any())
-                    return turmasRetorno;
+                var turmasRetornoDetalhada = new List<Turma>();
+
+                foreach(var turmaRetorno in turmasRetorno)
+                {
+                    var detalheTurma = await ObterTurmaDetalhes(turmaRetorno.Codigo);
+
+                    turmaRetorno.EtapaEnsino = detalheTurma.EtapaEnsino;
+                    turmasRetornoDetalhada.Add(turmaRetorno);
+                }
+                
+                if (turmasRetornoDetalhada.Any())
+                    return turmasRetornoDetalhada;
             }
 
             return new List<Turma>() { };
@@ -127,6 +137,12 @@ namespace SME.SR.Application
         private async Task<IEnumerable<AlunoFotoArquivoDto>> ObterFotosAlunos(string[] codigosAluno)
         {
             return await mediator.Send(new ObterAlunosFotoPorCodigoQuery(codigosAluno));
+        }
+
+        private async Task<Turma> ObterTurmaDetalhes(string turmaCodigo)
+        {
+            var turmas = await mediator.Send(new ObterTurmasDetalhePorCodigoQuery(new long[] { Convert.ToInt64(turmaCodigo) }));
+            return turmas.FirstOrDefault();
         }
 
         private async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresConclusivos(string dreCodigo, string ueCodigo, IEnumerable<Turma> turmas, int anoLetivo, Modalidade modalidade, int semestre)
