@@ -30,18 +30,18 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarApiEol()
         {
-            var query = @"SELECT IdComponenteCurricular,                             
-                            EhCompartilhada, 
-                            EhRegencia, 
-                            PermiteRegistroFrequencia, 
-                            PermiteLancamentoDeNota,
-                            EhTerritorio,
-                            EhBaseNacional,
-                            IdGrupoMatriz,
+            var query = @"SELECT Id IdComponenteCurricular,                             
+                            Eh_Compartilhada EhCompartilhada, 
+                            Eh_Regencia EhRegencia, 
+                            Permite_Registro_Frequencia PermiteRegistroFrequencia, 
+                            Permite_Lancamento_Nota PermiteLancamentoDeNota,
+                            Eh_Territorio EhTerritorio,
+                            Eh_Base_Nacional EhBaseNacional,
+                            grupo_matriz_id IdGrupoMatriz,
                             Descricao
-                    FROM ComponenteCurricular";
+                    FROM Componente_Curricular";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
         }
 
@@ -51,7 +51,6 @@ namespace SME.SR.Data
                             IdComponenteCurricular
 					        ,Turno
 					        ,Ano
-					        ,Idgrupomatriz
                         FROM RegenciaComponenteCurricular";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);

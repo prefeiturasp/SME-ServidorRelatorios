@@ -5,30 +5,28 @@ using System.Linq;
 
 namespace SME.SR.Infra.RelatorioPaginado
 {
-    public class RelatorioPaginadoHistoricoEscolar
+    public abstract class RelatorioPaginadoHistoricoEscolar<HistoricoEscolarGenerico> where HistoricoEscolarGenerico : HistoricoEscolarDto
     {
-        private const int TOTAL_CARACTER_LINHA = 95;
-        private const int TOTAL_LINHAS = 38;
-        private const int TOTAL_LINHAS_ASSINATURA = 10;
-        private readonly IEnumerable<HistoricoEscolarDTO> historicoEscolarDTOs;
-        private Dictionary<SecaoViewHistoricoEscolar, Func<HistoricoEscolarDTO, int, List<RelatorioPaginadoHistoricoEscolarDto>>> dicionarioSecao;
-        private int totalLinhaPaginaAtual = 0;
-        private RelatorioPaginadoHistoricoEscolarDto PaginaAtual;
+        protected const int TOTAL_CARACTER_LINHA = 95;
+        protected const int TOTAL_LINHAS = 38;
+        protected const int TOTAL_LINHAS_ASSINATURA = 10;
+        protected readonly IEnumerable<HistoricoEscolarGenerico> historicoEscolarDTOs;
+        protected Dictionary<SecaoViewHistoricoEscolar, Func<HistoricoEscolarGenerico, int, List<RelatorioPaginadoHistoricoEscolarDto>>> dicionarioSecao;
+        protected int totalLinhaPaginaAtual = 0;
+        protected RelatorioPaginadoHistoricoEscolarDto PaginaAtual;
+        protected SecaoViewHistoricoEscolar TabelaHistoricoTodosAnos { get; set; }
+        protected SecaoViewHistoricoEscolar TabelaAnoAtual { get; set; }
 
-        public RelatorioPaginadoHistoricoEscolar(IEnumerable<HistoricoEscolarDTO> historicoEscolarDTOs)
+
+        public RelatorioPaginadoHistoricoEscolar(IEnumerable<HistoricoEscolarGenerico> historicoEscolarDTOs)
         {
             this.historicoEscolarDTOs = historicoEscolarDTOs;
         }
 
-        public IEnumerable<RelatorioHistoricoEscolarDto> ObterRelatorioPaginadoFundamental()
+        public IEnumerable<RelatorioHistoricoEscolarDto> ObterRelatorioPaginado()
         {
-            dicionarioSecao = ObterDicionarioPorSecaoFundamental();
+            dicionarioSecao = ObterDicionarioPorSecao();
 
-            return ObterRelatorioPaginado();
-        }
-
-        private IEnumerable<RelatorioHistoricoEscolarDto> ObterRelatorioPaginado()
-        {
             var relatorios = new List<RelatorioHistoricoEscolarDto>();
 
             foreach (var historicoEscolar in historicoEscolarDTOs)
@@ -39,7 +37,7 @@ namespace SME.SR.Infra.RelatorioPaginado
             return relatorios;
         }
 
-        private RelatorioHistoricoEscolarDto ObterRelatorio(HistoricoEscolarDTO historicoEscolar)
+        private RelatorioHistoricoEscolarDto ObterRelatorio(HistoricoEscolarGenerico historicoEscolar)
         {
             var relatorio = new RelatorioHistoricoEscolarDto()
             {
@@ -51,7 +49,7 @@ namespace SME.SR.Infra.RelatorioPaginado
             return relatorio;
         }
 
-        private IEnumerable<RelatorioPaginadoHistoricoEscolarDto> ObterRelatorioPaginado(HistoricoEscolarDTO historicoEscolar)
+        private IEnumerable<RelatorioPaginadoHistoricoEscolarDto> ObterRelatorioPaginado(HistoricoEscolarGenerico historicoEscolar)
         {
             var paginas = new List<RelatorioPaginadoHistoricoEscolarDto>();
 
@@ -64,42 +62,40 @@ namespace SME.SR.Infra.RelatorioPaginado
             return paginas;
         }
 
-        private Dictionary<SecaoViewHistoricoEscolar, Func<HistoricoEscolarDTO, int,List<RelatorioPaginadoHistoricoEscolarDto>>> ObterDicionarioPorSecaoFundamental()
+        protected virtual Dictionary<SecaoViewHistoricoEscolar, Func<HistoricoEscolarGenerico, int, List<RelatorioPaginadoHistoricoEscolarDto>>> ObterDicionarioPorSecao()
         {
-            return new Dictionary<SecaoViewHistoricoEscolar, Func<HistoricoEscolarDTO, int, List<RelatorioPaginadoHistoricoEscolarDto>>>()
+            return new Dictionary<SecaoViewHistoricoEscolar, Func<HistoricoEscolarGenerico, int, List<RelatorioPaginadoHistoricoEscolarDto>>>()
             {
-                { SecaoViewHistoricoEscolar.TabelaHistoricoTodosAnosFundamental, ObterPaginasTabelaHistoricoTodosAnos },
-                { SecaoViewHistoricoEscolar.TabelaAnoAtualFundamental, ObterPaginasTabelaDoAnoAtual }
+                { TabelaHistoricoTodosAnos, ObterPaginasTabelaHistoricoTodosAnos },
+                { TabelaAnoAtual, ObterPaginasTabelaDoAnoAtual }
             };
         }
 
-        private List<RelatorioPaginadoHistoricoEscolarDto> ObterPaginasTabelaHistoricoTodosAnos(HistoricoEscolarDTO historicoEscolar, int pagina)
+        protected virtual List<RelatorioPaginadoHistoricoEscolarDto> ObterPaginasTabelaHistoricoTodosAnos(HistoricoEscolarGenerico historicoEscolar, int pagina)
         {
             var paginas = new List<RelatorioPaginadoHistoricoEscolarDto>();
 
-            if (historicoEscolar.DadosHistorico != null)
+            if (historicoEscolar.ContemDadosHistorico())
             {
                 PaginaAtual = CriaPagina(historicoEscolar, pagina);
-                AdicionarSecaoPagina(ObterQuantidadeLinhaDadosHistorico(historicoEscolar), paginas, historicoEscolar, SecaoViewHistoricoEscolar.TabelaHistoricoTodosAnosFundamental);
+                AdicionarSecaoPagina(ObterQuantidadeLinhaDadosHistorico(historicoEscolar), paginas, historicoEscolar, TabelaHistoricoTodosAnos);
                 AdicionarSecaoPagina(ObterQuantidadeLinhaEstudoRealizado(historicoEscolar), paginas, historicoEscolar, SecaoViewHistoricoEscolar.EstudosRealizados);
-
-                if (historicoEscolar.DadosTransferencia == null)
+                if (!historicoEscolar.ContemDadosTransferencia())
                     CarregarSecoesObservacoes(historicoEscolar, paginas);
-
                 paginas.Add(PaginaAtual);
             }
 
             return paginas;
         }
 
-        private List<RelatorioPaginadoHistoricoEscolarDto> ObterPaginasTabelaDoAnoAtual(HistoricoEscolarDTO historicoEscolar, int pagina)
+        protected virtual List<RelatorioPaginadoHistoricoEscolarDto> ObterPaginasTabelaDoAnoAtual(HistoricoEscolarGenerico historicoEscolar, int pagina)
         {
             var paginas = new List<RelatorioPaginadoHistoricoEscolarDto>();
 
-            if (historicoEscolar.DadosTransferencia != null)
+            if (historicoEscolar.ContemDadosTransferencia())
             {
                 PaginaAtual = CriaPagina(historicoEscolar, pagina);
-                AdicionarSecaoPagina(ObterQuantidadeLinhasTransferencia(historicoEscolar), paginas, historicoEscolar, SecaoViewHistoricoEscolar.TabelaAnoAtualFundamental);
+                AdicionarSecaoPagina(ObterQuantidadeLinhasTransferencia(historicoEscolar), paginas, historicoEscolar, TabelaAnoAtual);
                 CarregarSecoesObservacoes(historicoEscolar, paginas);
 
                 paginas.Add(PaginaAtual);
@@ -108,7 +104,7 @@ namespace SME.SR.Infra.RelatorioPaginado
             return paginas;
         }
 
-        private void CarregarSecoesObservacoes(HistoricoEscolarDTO historicoEscolar, List<RelatorioPaginadoHistoricoEscolarDto> paginas)
+        protected void CarregarSecoesObservacoes(HistoricoEscolarGenerico historicoEscolar, List<RelatorioPaginadoHistoricoEscolarDto> paginas)
         {
             if (!string.IsNullOrEmpty(historicoEscolar.ObservacaoComplementar))
                 AdicionarSecaoPagina(ObterQuantidadeLinhaObsevacaoAssinatura(historicoEscolar), paginas, historicoEscolar, SecaoViewHistoricoEscolar.Observacoes);
@@ -116,34 +112,14 @@ namespace SME.SR.Infra.RelatorioPaginado
             AdicionarSecaoPagina(TOTAL_LINHAS_ASSINATURA, paginas, historicoEscolar, SecaoViewHistoricoEscolar.Assinaturas);
         }
 
-        private int ObterQuantidadeLinhaDadosHistorico(HistoricoEscolarDTO historicoEscolar)
-        {
-            var linhas = 0;
-            var dadosHistoricoDto = historicoEscolar.DadosHistorico;
+        protected abstract int ObterQuantidadeLinhaDadosHistorico(HistoricoEscolarGenerico historicoEscolar);
 
-            if (dadosHistoricoDto.BaseNacionalComum != null)
-                foreach (var area in dadosHistoricoDto.BaseNacionalComum.AreasDeConhecimento)
-                    linhas += area.ComponentesCurriculares.Count();
-
-            linhas += dadosHistoricoDto.EnriquecimentoCurricular != null ? dadosHistoricoDto.EnriquecimentoCurricular.Count() : 0;
-
-            linhas += dadosHistoricoDto.ProjetosAtividadesComplementares != null ? dadosHistoricoDto.ProjetosAtividadesComplementares.Count() : 0;
-
-            linhas += dadosHistoricoDto.GruposComponentesCurriculares != null ? dadosHistoricoDto.GruposComponentesCurriculares.Count() : 0;
-
-            linhas += dadosHistoricoDto.FrequenciaGlobal != null ? 1 : 0;
-            
-            linhas += dadosHistoricoDto.ParecerConclusivo != null ? 1 : 0;
-
-            return linhas;
-        }
-
-        private int ObterQuantidadeLinhaEstudoRealizado(HistoricoEscolarDTO historicoEscolar)
+        protected int ObterQuantidadeLinhaEstudoRealizado(HistoricoEscolarGenerico historicoEscolar)
         {
             return historicoEscolar.EstudosRealizados != null ? historicoEscolar.EstudosRealizados.Count() : 0;
         }
 
-        private int ObterQuantidadeLinhaObsevacaoAssinatura(HistoricoEscolarDTO historicoEscolar)
+        private int ObterQuantidadeLinhaObsevacaoAssinatura(HistoricoEscolarDto historicoEscolar)
         {
             if (historicoEscolar.ObservacaoComplementar.Length > TOTAL_CARACTER_LINHA)
                 return 1 + (int)Math.Round((double)historicoEscolar.ObservacaoComplementar.Length / TOTAL_CARACTER_LINHA);
@@ -151,7 +127,7 @@ namespace SME.SR.Infra.RelatorioPaginado
             return 2;
         }
 
-        private int ObterQuantidadeLinhasTransferencia(HistoricoEscolarDTO historicoEscolar)
+        protected int ObterQuantidadeLinhasTransferencia(HistoricoEscolarDto historicoEscolar)
         {
             var linhas = 0;
             var transferencia = historicoEscolar.DadosTransferencia;
@@ -169,7 +145,7 @@ namespace SME.SR.Infra.RelatorioPaginado
             return linhas;
         }
 
-        private RelatorioPaginadoHistoricoEscolarDto CriaPagina(HistoricoEscolarDTO historicoEscolar, int pagina = 0)
+        protected RelatorioPaginadoHistoricoEscolarDto CriaPagina(HistoricoEscolarDto historicoEscolar, int pagina = 0)
         {
             return new RelatorioPaginadoHistoricoEscolarDto()
             {
@@ -179,7 +155,7 @@ namespace SME.SR.Infra.RelatorioPaginado
             };
         }
 
-        private void AdicionarSecaoPagina(int linhasPagina, List<RelatorioPaginadoHistoricoEscolarDto> paginas, HistoricoEscolarDTO historico, SecaoViewHistoricoEscolar secao)
+        protected void AdicionarSecaoPagina(int linhasPagina, List<RelatorioPaginadoHistoricoEscolarDto> paginas, HistoricoEscolarDto historico, SecaoViewHistoricoEscolar secao)
         {
             if ((totalLinhaPaginaAtual + linhasPagina) > TOTAL_LINHAS)
             {

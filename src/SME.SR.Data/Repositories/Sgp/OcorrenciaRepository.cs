@@ -1,9 +1,9 @@
-﻿using Dapper;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,9 +37,9 @@ namespace SME.SR.Data
             if (alunoCodigo != null && alunoCodigo > 0)
                 query.AppendLine("and oa.codigo_aluno = @alunoCodigo");
 
-            var parametros = new 
-            { 
-                turmaId, 
+            var parametros = new
+            {
+                turmaId,
                 alunoCodigo,
                 dataInicio,
                 dataFim
@@ -78,7 +78,103 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<OcorrenciasPorCodigoTurmaDto>(query, parametros);                
+                return await conexao.QueryAsync<OcorrenciasPorCodigoTurmaDto>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<RelatorioListagemOcorrenciasRegistroDto>> ObterListagemOcorrenciasAsync(int anoLetivo, string codigoDre, string codigoUe, int modalidade, int semestre, string[] codigosTurma, DateTime? dataInicio, DateTime? dataFim, long[] ocorrenciaTipoIds, bool imprimirDescricaoOcorrencia)
+        {
+            var query = @"select
+	                        o.id as ocorrenciaId,
+                            d.dre_id as dreCodigo,
+	                        d.abreviacao as dreabreviacao,
+	                        u.ue_id as uecodigo,
+	                        u.nome as uenome,
+	                        u.tipo_escola as tipoescola,
+	                        t.modalidade_codigo as modalidade,
+	                        t.nome as turmaNome,
+	                        t.tipo_turno as tipoTurno,
+	                        o.data_ocorrencia as dataOcorrencia,
+	                        ot.descricao as ocorrenciaTipo,
+	                        o.titulo";
+
+            if (imprimirDescricaoOcorrencia)
+                query += " ,o.descricao ";
+
+            query += @" from ocorrencia o
+                        join ue u on u.id = o.ue_id
+ 	                    join dre d on d.id = u.dre_id
+                        join ocorrencia_tipo ot on ot.id = o.ocorrencia_tipo_id 
+                        left join turma t on t.id = o.turma_id                        
+                        where not o.excluido and (o.turma_id is null or t.ano_letivo = @anoLetivo) ";
+
+            if (codigoDre != "-99")
+                query += " and d.dre_id = @codigoDre ";
+
+            if (codigoUe != "-99")
+                query += " and u.ue_id = @codigoUe ";
+
+            if (modalidade != -99)
+                query += " and t.modalidade_codigo = @modalidade ";
+
+            if (semestre > 0)
+                query += " and t.semestre = @semestre ";
+
+            if (codigosTurma != null && !codigosTurma.Contains("-99"))
+                query += " and t.turma_id = any(@codigosTurma) ";
+
+            if (dataInicio.HasValue && dataFim.HasValue)
+                query += " and o.data_ocorrencia::date between @dataInicio and @dataFim ";
+
+            if (ocorrenciaTipoIds != null && !ocorrenciaTipoIds.Contains(-99))
+                query += " and o.ocorrencia_tipo_id = any(@ocorrenciaTipoIds) ";
+
+            query += " order by o.data_ocorrencia desc";
+
+            var parametros = new
+            {
+                anoLetivo,
+                codigoDre,
+                codigoUe,
+                modalidade,
+                semestre,
+                codigosTurma,
+                dataInicio = dataInicio.GetValueOrDefault().Date,
+                dataFim = dataFim.GetValueOrDefault().Date,
+                ocorrenciaTipoIds
+            };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<RelatorioListagemOcorrenciasRegistroDto>(query, parametros);
+            }
+        }
+
+        public async Task<IEnumerable<RelatorioListagemOcorrenciasRegistroAlunoDto>> ObterAlunosOcorrenciasPorIdsAsync(int[] ocorrenciaIds)
+        {
+            var query = @"select 
+                            oa.ocorrencia_id as ocorrenciaId,
+                            oa.codigo_aluno as codigoAluno
+                          from ocorrencia_aluno oa 
+                          where oa.ocorrencia_id = any(@ocorrenciaIds)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<RelatorioListagemOcorrenciasRegistroAlunoDto>(query, new { ocorrenciaIds });
+            }
+        }
+
+        public async Task<IEnumerable<RelatorioListagemOcorrenciasRegistroServidorDto>> ObterServidoresOcorrenciasPorIds(int[] ocorrenciaIds)
+        {
+            var query = @"select 
+                                os.ocorrencia_id as ocorrenciaId,
+                                os.rf_codigo as codigoRF
+                          from ocorrencia_servidor os 
+                          where os.ocorrencia_id = any(@ocorrenciaIds)";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<RelatorioListagemOcorrenciasRegistroServidorDto>(query, new { ocorrenciaIds });
             }
         }
     }

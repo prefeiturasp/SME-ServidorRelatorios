@@ -4,6 +4,10 @@ namespace SME.SR.Data
 {
     public class NotaConceitoBimestreComponente
     {
+        public NotaConceitoBimestreComponente()
+        {
+        }
+
         public string AlunoCodigo { get; set; }
         public int? Bimestre { get; set; }
         public long ComponenteCurricularCodigo { get; set; }

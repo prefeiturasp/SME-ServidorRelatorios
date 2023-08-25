@@ -31,7 +31,13 @@ namespace SME.SR.Application
             await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
             if (request.EhEJA)
-                componentesCurriculares = componentesCurriculares.Where(w => w.Codigo != 6).ToList();
+            {
+                var componenteEdFisicaRegencia = componentesCurriculares.Find(w => w.Codigo == 6 && w.ComponentePlanejamentoRegencia);
+
+                if (componenteEdFisicaRegencia != null)
+                    componentesCurriculares.Remove(componenteEdFisicaRegencia);
+            }
+                
 
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
