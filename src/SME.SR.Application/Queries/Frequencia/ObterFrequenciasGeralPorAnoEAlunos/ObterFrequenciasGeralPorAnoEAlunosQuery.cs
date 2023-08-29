@@ -6,7 +6,7 @@ namespace SME.SR.Application
 {
     public class ObterFrequenciasGeralPorAnoEAlunosQuery : IRequest<IEnumerable<FrequenciaAluno>>
     {
-        public ObterFrequenciasGeralPorAnoEAlunosQuery(int anoLetivo, string codigoTurma, long tipoCalendarioId, string[] alunosCodigo)
+        public ObterFrequenciasGeralPorAnoEAlunosQuery(int anoLetivo, string[] codigoTurma, long tipoCalendarioId, string[] alunosCodigo)
         {
             AnoLetivo = anoLetivo;
             AlunosCodigo = alunosCodigo;
@@ -15,7 +15,7 @@ namespace SME.SR.Application
         }
 
         public int AnoLetivo { get; set; }
-        public string CodigoTurma { get; set; }
+        public string[] CodigoTurma { get; set; }
         public long TipoCalendarioId { get; set; }
         public string[] AlunosCodigo { get; set; }
     }
