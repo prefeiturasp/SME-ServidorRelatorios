@@ -69,5 +69,37 @@ namespace SME.SR.Data
                 return await conexao.QueryAsync<RegistroFrequenciaAlunoDto>(query.ToString(), new { codigosAlunos, turmasCodigo, componentesCurricularesId, tipoCalendarioId, bimestres });
             }
         }
+
+        public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunoPorAnoModalidadeSemestre(string alunoCodigo, int anoTurma, long tipoCalendarioId)
+        {
+            var query = new StringBuilder($@"with lista as (select fa.*, row_number() over (partition by fa.codigo_aluno, fa.turma_id, fa.bimestre order by fa.id desc) sequencia
+                            from frequencia_aluno fa
+                            inner join turma t on fa.turma_id = t.turma_id ");
+
+            if (tipoCalendarioId > 0)
+                query.AppendLine("inner join periodo_escolar pe on fa.periodo_escolar_id = pe.id");
+
+            query.AppendLine(@" where fa.tipo = 2 
+                and fa.codigo_aluno = @alunoCodigo 
+                and t.ano_letivo = @anoTurma 
+                and t.tipo_turma in(1,2,7) ");
+
+            if (tipoCalendarioId > 0)
+                query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
+
+            query.AppendLine(@") select bimestre, codigo_aluno as CodigoAluno, total_aulas as TotalAulas, total_ausencias as TotalAusencias,
+                                 total_compensacoes as TotalCompensacoes, total_remotos as TotalRemotos from lista where sequencia = 1;");
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao
+                .QueryAsync<FrequenciaAluno>(query.ToString(), new
+                {
+                    alunoCodigo,
+                    anoTurma,
+                    tipoCalendarioId
+                });
+            }
+        }
     }
 }
