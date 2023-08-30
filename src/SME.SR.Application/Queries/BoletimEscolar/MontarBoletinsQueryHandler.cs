@@ -72,7 +72,7 @@ namespace SME.SR.Application
                             var componentesAluno = componentesCurriculares.First(c => c.Key == aluno.Key);
 
                             foreach (var turmaAluno in componentesAluno.Select(s => s.CodigoTurma).Distinct())
-                                MapearComponentesOrdenadosGrupo(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.ToString()), boletimAluno);
+                                await MapearComponentesOrdenadosGrupo(componentesAluno.Where(cc => cc.CodigoTurma == turmaAluno.ToString()), boletimAluno);
 
                             var notasAluno = notas.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
 
@@ -99,7 +99,8 @@ namespace SME.SR.Application
                                     conselhoClasseBimestres,
                                     registroFrequencia,
                                     periodoAtual,
-                                    aulasPrevistas);
+                                    aulasPrevistas,
+                                    turmas);
                             }
 
                             var frequenciaGlobal = frequenciasGlobal?
@@ -170,16 +171,13 @@ namespace SME.SR.Application
             };
         }
 
-        private void MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
+        private async Task MapearComponentesOrdenadosGrupo(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesPorTurma, RelatorioBoletimSimplesEscolarDto boletim)
         {
-            var componentesTurmaComAreaOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(d => d.Disciplina).ToList();
-            var componentesTurmaComAreaSemOrdem = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento != null && !w.TerritorioSaber && !w.AreaDoConhecimento.Ordem.HasValue).OrderBy(c => c.GrupoMatriz.Id).ThenBy(b => b.AreaDoConhecimento.Nome).ThenBy(b => b.Disciplina).ToList();
+            var componentesTurma =
+                await mediator.Send(
+                    new OrdenarComponentesPorGrupoMatrizAreaConhecimentoQuery(componentesCurricularesPorTurma));
 
-            var componentesTurmaSemArea = componentesCurricularesPorTurma.Where(w => w.AreaDoConhecimento == null && !w.TerritorioSaber).OrderBy(a => a.GrupoMatriz.Id).ThenBy(b => b.Disciplina).ToList();
-            var componentesTerritorioSaber = componentesCurricularesPorTurma.Where(w => w.TerritorioSaber).OrderBy(c=> c.Disciplina).ThenBy(o => o.OrdemTerritorioSaber).ToList();
-            var componentesTurma = componentesTurmaComAreaOrdem.Concat(componentesTurmaSemArea).Concat(componentesTerritorioSaber).Concat(componentesTurmaComAreaSemOrdem);
-
-            foreach (var componente in componentesTurma)
+            foreach (var componente in componentesTurma.OrderBy(cc => cc.GrupoMatriz.Id).ThenBy(cc => cc.Disciplina))
             {
                 if (componente.Regencia && componente.ComponentesCurricularesRegencia != null && componente.ComponentesCurricularesRegencia.Any())
                 {
@@ -226,7 +224,8 @@ namespace SME.SR.Application
         }
 
         private async Task SetarNotasFrequencia(RelatorioBoletimSimplesEscolarDto boletim, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notas, IEnumerable<FrequenciaAluno> frequenciasAluno, IEnumerable<FrequenciaAluno> frequenciasTurma,
-            IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia, int periodoAtual, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas)
+            IEnumerable<MediaFrequencia> mediasFrequencia, IEnumerable<int> conselhoClasseBimestres, IEnumerable<TurmaComponenteQtdAulasDto> registroFrequencia, int periodoAtual, IEnumerable<TurmaComponenteQuantidadeAulasDto> aulasPrevistas,
+            IEnumerable<Turma> turmas)
         {
             var aulasPrevistasTurma = aulasPrevistas.Where(a => a.TurmaCodigo == frequenciasTurma.FirstOrDefault().TurmaId);
 
@@ -278,7 +277,7 @@ namespace SME.SR.Application
 
                     if (componenteCurricular.Nota)
                     {
-                        var notasComponente = notas?.Where(n => n.CodigoComponenteCurricular == componenteCurricular.Codigo) ?? null;
+                        var notasComponente = ObterNotasAluno(componenteCurricular.Codigo, notas, turmas); 
 
                         componenteCurricular.NotaBimestre1 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, BIMESTRE_1, transformarNotaEmConceito);
                         componenteCurricular.NotaBimestre2 = ObterNotaBimestre(conselhoClasseBimestres, notasComponente, BIMESTRE_2, transformarNotaEmConceito);
@@ -309,6 +308,28 @@ namespace SME.SR.Application
                     }
                 }
             }
+        }
+
+        private IEnumerable<NotasAlunoBimestreBoletimSimplesDto> ObterNotasAluno(
+                                                                    string codigoComponente, 
+                                                                    IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notas, 
+                                                                    IEnumerable<Turma> turmas)
+        {
+            if (TurmaEhEjaEdFisica(codigoComponente, turmas)) 
+            {
+                var codigoTurmaRegular = turmas.FirstOrDefault(t => t.EhEja && t.TipoTurma == TipoTurma.EdFisica)?.RegularCodigo;
+
+                return notas?.Where(n => n.CodigoTurma == codigoTurmaRegular && n.CodigoComponenteCurricular == codigoComponente) ?? null;
+            }
+
+            return notas?.Where(n => n.CodigoComponenteCurricular == codigoComponente) ?? null;
+        }
+
+        private bool TurmaEhEjaEdFisica(string codigoComponente, IEnumerable<Turma> turmas)
+        {
+            const string ED_FISICA = "6";
+
+            return codigoComponente == ED_FISICA && turmas.Any(t => t.EhEja && t.TipoTurma == TipoTurma.EdFisica);
         }
 
         private string ObterNotaBimestre(IEnumerable<int> conselhoClasseBimestres, IEnumerable<NotasAlunoBimestreBoletimSimplesDto> notasComponente, int bimestre, bool transformarNotaEmConceito = false)

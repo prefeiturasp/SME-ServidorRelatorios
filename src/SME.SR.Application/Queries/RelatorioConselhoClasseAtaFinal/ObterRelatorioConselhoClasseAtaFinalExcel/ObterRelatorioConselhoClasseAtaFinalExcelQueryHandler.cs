@@ -63,17 +63,12 @@ namespace SME.SR.Application
                 var celulas = linha.SelectMany(c => c.Celulas);
 
                 row["NumeroChamada"] = linha.Key.Id;
-
-                if (linha.Key.Inativo)
-                    row["NomeAluno"] = $"{linha.Key.Nome} ({linha.Key.Situacao})";
-                else
-                    row["NomeAluno"] = linha.Key.Nome;
-
+                row["NomeAluno"] = linha.Key.Nome;
                 foreach (var celula in celulas)
                 {
-                    row[$"Grupo{celula.GrupoMatriz}_Componente{celula.ComponenteCurricular}_Coluna{celula.Coluna}"] = celula.Valor;
+                    row[$"Grupo{celula.GrupoMatriz}{(celula.Regencia ? "Regencia" : "Normal")}_Componente{celula.ComponenteCurricular}_Coluna{celula.Coluna}"] = celula.Valor;
                 }
-
+                row["Inativo"] = linha.Key.Inativo;
                 dt.Rows.Add(row);
             }
         }
@@ -89,21 +84,21 @@ namespace SME.SR.Application
                 {
                     foreach (var coluna in componente.Colunas)
                     {
-                        dt.Columns.Add($"Grupo{grupo.Id}_Componente{componente.Id}_Coluna{coluna.Id}");
+                        dt.Columns.Add($"Grupo{grupo.Id}{(componente.Regencia ? "Regencia" : "Normal")}_Componente{componente.Id}_Coluna{coluna.Id}");
                     }
                 }
             }
 
-            dt.Columns.Add("Grupo99_Componente99_Coluna1");
-            dt.Columns.Add("Grupo99_Componente99_Coluna2");
-            dt.Columns.Add("Grupo99_Componente99_Coluna3");
-            dt.Columns.Add("Grupo99_Componente99_Coluna4");
+            dt.Columns.Add("Grupo99Normal_Componente99_Coluna1");
+            dt.Columns.Add("Grupo99Normal_Componente99_Coluna2");
+            dt.Columns.Add("Grupo99Normal_Componente99_Coluna3");
+            dt.Columns.Add("Grupo99Normal_Componente99_Coluna4");
+            dt.Columns.Add("Inativo");
         }
 
         private void MontarComponentes(IEnumerable<ConselhoClasseAtaFinalGrupoDto> gruposMatriz, IEnumerable<IGrouping<long, ConselhoClasseAtaFinalComponenteDto>> componentes, DataTable dataTable)
         {
             int colunaGrupo = 2;
-            int colunaComponente = 2;
             int colunaDetalhe = 2;
             DataRow linhaGrupos = dataTable.NewRow();
             DataRow linhaComponentes = dataTable.NewRow();
@@ -111,39 +106,45 @@ namespace SME.SR.Application
 
             foreach (var grupo in gruposMatriz)
             {
-                linhaGrupos[colunaGrupo] = grupo.Nome;
-
                 var componentesDoGrupo = componentes.FirstOrDefault(c => c.Key == grupo.Id).DistinctBy(c => c.Id);
-
-                colunaGrupo += componentesDoGrupo.Sum(cg => cg.Colunas.Count);
-
-                foreach (var componente in componentesDoGrupo)
+                if (grupo.Regencia)
                 {
-                    linhaComponentes[colunaComponente] = componente.Nome;
-
-                    colunaComponente += componente.Colunas.Count();
-
-                    foreach (var coluna in componente.Colunas)
-                    {
-                        linhaDetalhes[colunaDetalhe] = coluna.Nome;
-                        colunaDetalhe++;
-                    }
+                    linhaGrupos[colunaGrupo] = "Regência de Classe";
+                    MontarLinhasGruposComponentes(componentesDoGrupo.Where(c => c.Regencia), linhaComponentes, ref colunaGrupo, linhaDetalhes, ref colunaDetalhe);
+                    MontarLinhasGruposComponentes(componentesDoGrupo.Where(c => !c.Regencia), linhaGrupos, ref colunaGrupo, linhaDetalhes, ref colunaDetalhe);
                 }
+                else
+                    MontarLinhasGruposComponentes(componentesDoGrupo, linhaGrupos, ref colunaGrupo, linhaDetalhes, ref colunaDetalhe);
             }
 
-            linhaGrupos["Grupo99_Componente99_Coluna1"] = "Anual";
+            linhaGrupos["Grupo99Normal_Componente99_Coluna1"] = "Anual";
 
             linhaDetalhes["NumeroChamada"] = "Nº";
             linhaDetalhes["NomeAluno"] = "Nome";
-            linhaDetalhes["Grupo99_Componente99_Coluna1"] = "F";
-            linhaDetalhes["Grupo99_Componente99_Coluna2"] = "CA";
-            linhaDetalhes["Grupo99_Componente99_Coluna3"] = "%";
-            linhaDetalhes["Grupo99_Componente99_Coluna4"] = "Parecer Conclusivo";
+            linhaDetalhes["Grupo99Normal_Componente99_Coluna1"] = "F";
+            linhaDetalhes["Grupo99Normal_Componente99_Coluna2"] = "CA";
+            linhaDetalhes["Grupo99Normal_Componente99_Coluna3"] = "%";
+            linhaDetalhes["Grupo99Normal_Componente99_Coluna4"] = "Parecer Conclusivo";
+            linhaDetalhes["Inativo"] = "Inativo";
 
             dataTable.Rows.Add(linhaGrupos);
             dataTable.Rows.Add(linhaComponentes);
             dataTable.Rows.Add(linhaDetalhes);
         }
-    }
 
+        private void MontarLinhasGruposComponentes(IEnumerable<ConselhoClasseAtaFinalComponenteDto> componentes, DataRow linhaComponentes, ref int colunaGrupoComponente, DataRow linhaDetalhes, ref int colunaDetalhe)
+        {
+            foreach (var componente in componentes)
+            {
+                linhaComponentes[colunaGrupoComponente] = componente.Nome;
+                colunaGrupoComponente += componente.Colunas.Count();
+
+                foreach (var coluna in componente.Colunas)
+                {
+                    linhaDetalhes[colunaDetalhe] = coluna.Nome;
+                    colunaDetalhe++;
+                }
+            }
+        }
+    }
 }
