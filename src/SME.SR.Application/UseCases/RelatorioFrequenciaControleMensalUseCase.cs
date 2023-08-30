@@ -107,7 +107,7 @@ namespace SME.SR.Application.UseCases
             var frequenciaAlunoCalculo = new FrequenciaAluno()
             {
                 TotalAulas = alunoFrequencia.Sum(af => af.TotalAula),
-                TotalAusencias = alunoFrequencia.Where(af => af.TipoFrequencia == 2).Sum(af => af.TotalAula),
+                TotalAusencias = alunoFrequencia.Where(af => af.TipoFrequencia == (int)TipoFrequencia.F).Sum(af => af.TotalAula),
                 TotalCompensacoes = alunoFrequencia.Sum(af => af.TotalCompensacao ?? 0)
             };
 
@@ -116,24 +116,27 @@ namespace SME.SR.Application.UseCases
 
         private double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)
         {
-            var totalAulas = componenteAgrupado.Sum(aula => aula.TotalAula);
-            var tipoFrequenciaPrensenca = new List<int> { (int)TipoFrequencia.R, (int)TipoFrequencia.C };
-            var numeroPresenca = componenteAgrupado.Where(x => x.DataCompensacao == null && tipoFrequenciaPrensenca.Contains(x.TipoFrequencia)).Sum(s => s.TotalTipoFrequencia);
-            var numeroCompensacao = componenteAgrupado.Where(x => x.TotalCompensacao.HasValue).Sum(x => x.TotalCompensacao.Value);
-            var totalPresenca = numeroPresenca + numeroCompensacao;
+            var totalAulas = componenteAgrupado.Sum(aula => aula.TotalAula);                        
+            var numeroCompensacao = componenteAgrupado.Where(x => x.TotalCompensacao.HasValue).Sum(x => x.TotalCompensacao.Value);            
+            var totalAusencias = componenteAgrupado.Where(af => af.TipoFrequencia == (int)TipoFrequencia.F).Sum(af => af.TotalAula);
 
             if (totalAulas == 0)
                 return 0;
 
-            var percentual = (((double)totalPresenca / totalAulas) * 100);
-            var percentualArredondado = Math.Round(percentual, 2);
-            return percentualArredondado;
+            var frequenciaAluno = new FrequenciaAluno()
+            {
+                TotalAulas = totalAulas,
+                TotalAusencias = totalAusencias,
+                TotalCompensacoes = numeroCompensacao
+            };
+           
+            return FrequenciaAluno.ArredondarPercentual(frequenciaAluno.PercentualFrequencia);
         }
 
 
         private void MapearTipoPresencas(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado, ControleFrequenciaPorComponenteDto componente, string codAluno, List<ConsultaRelatorioFrequenciaControleMensalDto> aulas)
         {
-            var tipoFrequenciaPrensenca = new List<int> { 1, 3 };
+            var tipoFrequenciaPrensenca = new List<int> { (int)TipoFrequencia.R, (int)TipoFrequencia.C };
             var presencas = componenteAgrupado.Where(p => tipoFrequenciaPrensenca.Contains(p.TipoFrequencia) && p.CodigoAluno == codAluno).ToList();
             var controleFrequenciaPorTipoDto = new ControleFrequenciaPorTipoDto
             {
