@@ -47,7 +47,7 @@ namespace SME.SR.Application
             var componentesTerritorioSaberTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(filtros.TurmasCodigo.FirstOrDefault(), componentesCurricularesIds));
             var turmaSelecionada = await mediator.Send(new ObterTurmaPorCodigoQuery(filtros.TurmasCodigo.FirstOrDefault()));
 
-            var ehTerritorioSaber = (bool)componentesCurricularesDescricoes?.FirstOrDefault().TerritorioSaber;
+            var ehTerritorioSaber = componentesCurricularesDescricoes.First().TerritorioSaber;
 
             var retorno = new RelatorioPendenciasDto();
             var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0 && x.OutrasPendencias == false).FirstOrDefault();
