@@ -137,7 +137,7 @@ namespace SME.SR.Application
                     if (dadosSituacaoAluno.ImprimirRelatorio)
                     {
                         var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
-                            .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol);
+                            .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol && (filtro.CodigosTurmas.First() == "-99" || (filtro.CodigosTurmas.First() != "-99" && filtro.CodigosTurmas.Contains(c.CodigoTurma))));
 
                         retornoMapeado.Add(new FrequenciaGlobalDto()
                         {
@@ -150,7 +150,7 @@ namespace SME.SR.Application
                             Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
                             CodigoEOL = item.CodigoEol,
                             Estudante = dadosSituacaoAluno.NomeFinalAluno,
-                            NumeroChamadda = aluno.NumeroAlunoChamada,
+                            NumeroChamadda = aluno?.NumeroAlunoChamada ?? string.Empty,
                             PercentualFrequencia = item.Percentual
                         });
                     }
