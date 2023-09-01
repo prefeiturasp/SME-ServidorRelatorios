@@ -542,7 +542,7 @@ namespace SME.SR.Application
                 bool existeFrequenciaRegistradaTurmaAno = false;
                 bool possuiConselhoUltimoBimestreAtivo = false;
                 bool possuiComponenteFrequencia = false;
-                var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.CodigoAluno.ToString(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
+                var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.CodigoAluno.ToString(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, turma.Codigo));
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
