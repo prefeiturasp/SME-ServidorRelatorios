@@ -4,12 +4,10 @@ pipeline {
       kubeconfig = getKubeconf(env.branchname)
       registryCredential = 'jenkins_registry'
       deployment1 = "${env.branchname == 'release-r2' ? 'sme-sr-workers-r2' : 'sme-sr-workers' }"
-      namespace = "${env.branchname == 'pre-prod' ? 'sme-relatorios-d1' : 'sme-relatorios' }"
+      namespace = "${env.branchname == 'pre-prod' ? 'sme-relatorios-d1' : env.branchname == 'development' ? 'relatorios-dev' : 'sme-relatorios' }"
     }
   
-    agent {
-      node { label 'SME-AGENT-SGP' }
-    }
+    agent none
 
     options {
       buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '5'))
@@ -19,13 +17,15 @@ pipeline {
   
     stages {
 
-        stage('CheckOut') {            
-            steps { checkout scm }            
-        }
-
         stage('Build') {
+	      agent { kubernetes { 
+                  label 'builder'
+                  defaultContainer 'builder'
+                }
+              }
           when { anyOf { branch 'master'; branch 'main'; branch 'pre-prod'; branch "story/*"; branch 'development'; branch 'release'; branch 'release-r2'; } } 
           steps {
+	    checkout scm
             script {
               imagename1 = "registry.sme.prefeitura.sp.gov.br/${env.branchname}/sme-sr-worker"   
               dockerImage1 = docker.build(imagename1, "-f src/SME.SR.Workers.SGP/Dockerfile .")
@@ -38,6 +38,11 @@ pipeline {
         }
 	    
         stage('Deploy'){
+	      agent { kubernetes { 
+                  label 'builder'
+                  defaultContainer 'builder'
+                }
+              }
             when { anyOf {  branch 'master'; branch 'main' ; branch 'pre-prod'; branch 'development'; branch 'homolog'; branch 'release'; branch 'release-r2'; } }        
             steps {
                 script{
@@ -50,6 +55,7 @@ pipeline {
                     }
 					
                           withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
+			    sh('rm -f '+"$home"+'/.kube/config')
                             sh('cp $config '+"$home"+'/.kube/config')
                             sh "kubectl rollout restart deployment/${deployment1} -n ${namespace}"
                             sh('rm -f '+"$home"+'/.kube/config')
@@ -78,6 +84,6 @@ def getKubeconf(branchName) {
     else if ("homolog".equals(branchName)) { return "config_hom"; }
     else if ("release".equals(branchName)) { return "config_hom"; }
     else if ("release-r2".equals(branchName)) { return "config_hom"; }
-    else if ("development".equals(branchName)) { return "config_dev"; }
-    else if ("develop".equals(branchName)) { return "config_dev"; }
+    else if ("development".equals(branchName)) { return "config_release"; }
+    else if ("develop".equals(branchName)) { return "config_release"; }
 }
