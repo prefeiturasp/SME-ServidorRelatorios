@@ -642,6 +642,10 @@ namespace SME.SR.Data
 
         private string ObterPendenciasDiarioClasse(long modalidadeId, int? semestre, string[] turmasCodigo, long[] componentesCodigo, int bimestre, string usuarioRf, bool exibirHistorico)
         {
+            const string TODAS_TURMAS = "-99";
+            const long TODOS_COMPONENTES = -99;
+            var situacaoPendencia = (int)SituacaoPendencia.Pendente + "," + (int)SituacaoPendencia.Aprovada;
+
             var query = new StringBuilder($@"select distinct 
                             p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
@@ -691,7 +695,7 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
-                        and p.situacao in (1,2)
+                        and p.situacao in ({situacaoPendencia})
                         and not p.excluido ");
 
             if (modalidadeId > 0)
@@ -706,12 +710,12 @@ namespace SME.SR.Data
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
 
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != TODAS_TURMAS && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
             
             query.AppendLine(" union all  ");
 
-            query.AppendLine(@" select distinct 
+            query.AppendLine(@$" select distinct 
                             p.id || usu.rf_codigo as pendenciaId,
                             p.titulo,
 	                        p.descricao as Descricao,
@@ -764,7 +768,7 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id  = @dreCodigo
                         and u.ue_id  = @ueCodigo
-                        and p.situacao in(1,2)
+                        and p.situacao in({situacaoPendencia})
                         and not p.excluido ");
 
             if (modalidadeId > 0)
@@ -779,10 +783,10 @@ namespace SME.SR.Data
             if (exibirHistorico)
                 query.AppendLine(" and t.historica  = true ");
 
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != TODAS_TURMAS && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
 
-            if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
+            if (componentesCodigo != null && componentesCodigo.Any(t => t != TODOS_COMPONENTES))
                 query.AppendLine($" and a.disciplina_id::bigint = any(@componentesCodigo)");
 
             if (bimestre > 0)
@@ -791,7 +795,7 @@ namespace SME.SR.Data
             
             query.AppendLine(" union all  ");
 
-            query.AppendLine(@"select 
+            query.AppendLine(@$"select 
 	                            distinct p.id || usu.rf_codigo as pendenciaId,
 	                            p.titulo,
 	                            p.descricao as Descricao,
@@ -834,7 +838,7 @@ namespace SME.SR.Data
                             where t.ano_letivo = @anoLetivo
                             and d.dre_id  = @dreCodigo
                             and u.ue_id  = @ueCodigo
-                            and p.situacao in(1,2)
+                            and p.situacao in({situacaoPendencia})
                             and not p.excluido  ");
             if (modalidadeId > 0)
                 query.AppendLine(" and t.modalidade_codigo = @modalidadeId");
@@ -846,13 +850,13 @@ namespace SME.SR.Data
                 query.AppendLine(" and t.historica  = true ");
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != TODAS_TURMAS && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
-            if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
+            if (componentesCodigo != null && componentesCodigo.Any(t => t != TODOS_COMPONENTES))
                 query.AppendLine($" and (a.disciplina_id::bigint = any(@componentesCodigo) or pd.componente_curricular_id = any(@componentesCodigo)) ");
 
             query.AppendLine(" union all  ");
-            query.AppendLine(@"select 
+            query.AppendLine(@$"select 
 	                    distinct p.id || usu.rf_codigo as pendenciaId,
 	                    p.titulo,
 	                    p.descricao as Descricao,
@@ -895,7 +899,7 @@ namespace SME.SR.Data
                             where t.ano_letivo = @anoLetivo
                             and d.dre_id  = @dreCodigo
                             and u.ue_id  = @ueCodigo
-                            and p.situacao in(1,2)
+                            and p.situacao in({situacaoPendencia})
                             and not p.excluido  ");
             if (modalidadeId > 0)
                 query.AppendLine(" and t.modalidade_codigo = @modalidadeId");
@@ -907,9 +911,9 @@ namespace SME.SR.Data
                 query.AppendLine(" and t.historica  = true ");
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != TODAS_TURMAS && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
-            if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
+            if (componentesCodigo != null && componentesCodigo.Any(t => t != TODOS_COMPONENTES))
                 query.AppendLine($" and (a.disciplina_id::bigint = any(@componentesCodigo) or pdb.componente_curricular_id = any(@componentesCodigo)) ");
 
             query.AppendLine(" union all  ");
@@ -950,7 +954,7 @@ namespace SME.SR.Data
                         where t.ano_letivo = @anoLetivo
                         and d.dre_id = @dreCodigo
                         and u.ue_id = @ueCodigo
-                        and p.situacao in(1, 2)
+                        and p.situacao in({situacaoPendencia})
                         and p.tipo = {(int)TipoPendencia.ComponenteSemAula}
                         and not p.excluido");
 
@@ -964,9 +968,9 @@ namespace SME.SR.Data
                 query.AppendLine(" and t.historica  = true ");
             if (semestre.HasValue)
                 query.AppendLine($" and t.semestre = @semestre ");
-            if (turmasCodigo != null && turmasCodigo.Any(t => t != "-99" && t != null))
+            if (turmasCodigo != null && turmasCodigo.Any(t => t != TODAS_TURMAS && t != null))
                 query.AppendLine($" and t.turma_id = any(@turmasCodigo) ");
-            if (componentesCodigo != null && componentesCodigo.Any(t => t != -99))
+            if (componentesCodigo != null && componentesCodigo.Any(t => t != TODOS_COMPONENTES))
                 query.AppendLine($" and pp.componente_curricular_id = any(@componentesCodigo) ");
 
             return query.ToString();
