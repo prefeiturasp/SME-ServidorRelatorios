@@ -14,8 +14,10 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioDeFrequenciaGlobalQueryHandler : IRequestHandler<ObterRelatorioDeFrequenciaGlobalQuery, List<FrequenciaGlobalDto>>
     {
+        private const string FILTRO_OPCAO_TODOS = "-99";
+
         private readonly IFrequenciaAlunoRepository frequenciaAlunoRepository;
-        private readonly IMediator mediator;
+        private readonly IMediator mediator;        
 
         public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository,
             IMediator mediator)
@@ -43,26 +45,26 @@ namespace SME.SR.Application
             List<Dre> dres;
             List<Turma> turmas;
 
-            if (string.IsNullOrEmpty(filtro.CodigoDre) || (filtro.CodigoDre == "-99"))
+            if (string.IsNullOrEmpty(filtro.CodigoDre) || (filtro.CodigoDre == FILTRO_OPCAO_TODOS))
                 dres = (await mediator.Send(new ObterTodasDresQuery())).ToList();
             else
                 dres = new List<Dre> { await mediator.Send(new ObterDrePorCodigoQuery(filtro.CodigoDre)) };
 
             var ues = (await mediator.Send(new ObterPorDresIdQuery(dres.Select(c => c.Id).ToArray()))).ToList();
 
-            if (!string.IsNullOrEmpty(filtro.CodigoUe) && (filtro.CodigoUe != "-99"))
+            if (!string.IsNullOrEmpty(filtro.CodigoUe) && (filtro.CodigoUe != FILTRO_OPCAO_TODOS))
                 ues = ues.Where(c => c.Codigo == filtro.CodigoUe).ToList();
 
             var meses = filtro.MesesReferencias;
 
-            if ((meses.Count == 0) || meses.Contains("-99"))
+            if ((meses.Count == 0) || meses.Contains(FILTRO_OPCAO_TODOS))
                 meses = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
 
             foreach (var dre in dres)
             {
                 foreach (var ue in ues)
                 {
-                    if ((filtro.CodigosTurmas.Count() == 0) || filtro.CodigosTurmas.Contains("-99"))
+                    if ((filtro.CodigosTurmas.Count() == 0) || filtro.CodigosTurmas.Contains(FILTRO_OPCAO_TODOS))
                         turmas = (await mediator.Send(new ObterTurmasPorUeEAnoLetivoQuery(ue.Codigo, filtro.AnoLetivo))).ToList();
                     else
                         turmas = (await mediator.Send(new ObterTurmasPorCodigoQuery(filtro.CodigosTurmas.Select(c => c).ToArray()))).ToList();
@@ -137,7 +139,7 @@ namespace SME.SR.Application
                     if (dadosSituacaoAluno.ImprimirRelatorio)
                     {
                         var aluno = alunosEscola.Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
-                            .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol && (filtro.CodigosTurmas.First() == "-99" || (filtro.CodigosTurmas.First() != "-99" && filtro.CodigosTurmas.Contains(c.CodigoTurma))));
+                            .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol && (filtro.CodigosTurmas.First() == FILTRO_OPCAO_TODOS || (filtro.CodigosTurmas.First() != FILTRO_OPCAO_TODOS && filtro.CodigosTurmas.Contains(c.CodigoTurma))));
 
                         retornoMapeado.Add(new FrequenciaGlobalDto()
                         {
