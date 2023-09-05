@@ -18,7 +18,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<int>> Handle(AlunoConselhoClasseCadastradoBimestresQuery request, CancellationToken cancellationToken)
         {
-            return await repository.ObterBimestresPorAlunoCodigo(request.CodigoAluno, request.AnoLetivo, request.Modalidade, request.Semestre);
+            return await repository.ObterBimestresPorAlunoCodigo(request.CodigoAluno, request.AnoLetivo, request.Modalidade, request.Semestre, request.CodigoTurma);
         }
     }
 }

@@ -11,16 +11,18 @@ namespace SME.SR.Application
 
         }
 
-        public AlunoConselhoClasseCadastradoBimestresQuery(string codigoAluno, int anoLetivo, Modalidade modalidade, int semestre)
+        public AlunoConselhoClasseCadastradoBimestresQuery(string codigoAluno, int anoLetivo, Modalidade modalidade, int semestre, string codigoTurma)
         {
             AnoLetivo = anoLetivo;
             Modalidade = modalidade;
             Semestre = semestre;
             CodigoAluno = codigoAluno;
+            CodigoTurma = codigoTurma;
         }
         public string CodigoAluno { get; set; }
         public int AnoLetivo { get; set; }
         public Modalidade Modalidade { get; set; }
         public int Semestre { get; set; }
+        public string CodigoTurma { get; set; }
     }
 }
