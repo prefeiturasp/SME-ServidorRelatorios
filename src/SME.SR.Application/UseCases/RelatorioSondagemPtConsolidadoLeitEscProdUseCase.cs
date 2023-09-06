@@ -261,19 +261,18 @@ namespace SME.SR.Application
                 Convert.ToInt64(filtros.DreCodigo),
                 filtros.Modalidades));
 
+
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
-            var respAgrupado = linhasSondagem
+            var respAgrupado = linhasSondagem.DistinctBy(l=> l.AlunoEolCode).ToList()
                 .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
 
             int totalRespostas = 0;
             int totalAlunosParticipantesSondagem = alunosPorAno;
 
             if (respAgrupado.Any())
-            {
                 totalRespostas = respAgrupado.Where(r => !string.IsNullOrWhiteSpace(r.Label)).Sum(r => r.Value);
-                totalAlunosParticipantesSondagem = respAgrupado.Sum(r => r.Value);
-            }
+            
 
             foreach (var item in respAgrupado)
             {
@@ -291,9 +290,7 @@ namespace SME.SR.Application
 
             if (alunosPorAno > totalRespostas && !respostas.Any(x => x.Percentual == 100))
             {
-                var totalSemPreenchimento = respAgrupado.Any(r=> string.IsNullOrEmpty(r.Label)) 
-                    ? respAgrupado.FirstOrDefault(r=> string.IsNullOrEmpty(r.Label)).Value 
-                    : alunosPorAno - totalRespostas;
+                var totalSemPreenchimento = alunosPorAno - totalRespostas;
 
                 RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 

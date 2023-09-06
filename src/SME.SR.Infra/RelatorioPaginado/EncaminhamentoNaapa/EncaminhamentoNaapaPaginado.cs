@@ -65,6 +65,15 @@ namespace SME.SR.Infra
                     agrupamentoAtual.Detalhes.Add(detalhe);
                 }
 
+                if (agrupamentoAtual.Detalhes.Any() && linhas < TOTAL_LINHAS)
+                {
+                    var mostrarAgrupamento = RemoveuAgrupamentoSemDetalhe(paginaAtual);
+                    AdicionarPagina(paginaAtual);
+                    paginaAtual = ObterPagina();
+                    agrupamentoAtual = ObterAgrupamento(dto, mostrarAgrupamento);
+                    paginaAtual.EncaminhamentosDreUe.Add(agrupamentoAtual);
+                }
+
                 linhas += MostraAgrupamento() ? 2 : 0;
             }
 
