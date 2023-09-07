@@ -41,14 +41,18 @@ namespace SME.SR.Application
             var alunosAPesquisarTurmas = request.AlunosCodigo.Any() ? request.AlunosCodigo : alunosPorTurma.Select(a => a.Key);
             var turmasComplementaresEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(codigosTurma, alunosAPesquisarTurmas.ToArray(), request.AnoLetivo));
 
-            codigosTurma = codigosTurma.Concat(turmasComplementaresEdFisica.Select(tcf => tcf.Codigo).ToArray()).ToArray();
+            if(turmasComplementaresEdFisica.Any())
+                codigosTurma = codigosTurma.Concat(turmasComplementaresEdFisica.Select(tcf => tcf.Codigo).ToArray()).ToArray();
 
             if (!string.IsNullOrEmpty(request.TurmaCodigo))
             {
                 var turmasComplementaresEM = await RetornaPossibilidadeMatricula2TurmasRegularesNovoEM(Convert.ToInt32(request.TurmaCodigo), alunosAPesquisarTurmas.ToArray());
 
-                if (request.Modalidade == Modalidade.Medio)
-                    turmas = turmasComplementaresEM.Any() ? turmasComplementaresEM : turmas;
+                if (request.Modalidade == Modalidade.Medio && turmasComplementaresEM.Any())
+                {
+                    turmas = turmasComplementaresEM.OrderBy(b => b.Ano);
+                    codigosTurma = codigosTurma.Concat(turmas.Select(t=> t.Codigo).ToArray()).Distinct().ToArray();    
+                }
             }
 
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => int.Parse(t.Codigo)).ToArray(), alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario, request.ConsideraHistorico);
@@ -61,7 +65,7 @@ namespace SME.SR.Application
             var frequencias = await ObterFrequenciasAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, request.Semestre, codigosTurma, request.Usuario.EhProfessor() && possuiTerritorioEmComponentes ? request.Usuario.Login : null);
             var codigosDisciplinas = componentesCurriculares.SelectMany(cc => cc.Select(cc => cc.CodDisciplina.ToString())).Distinct().ToArray();
             var aulasPrevistas = await mediator.Send(new ObterAulasDadasTurmaBimestreComponenteCurricularQuery(codigosTurma, tipoCalendarioId, codigosDisciplinas));
-            var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, turmas.Select(t=> t.Codigo).ToArray());
+            var frequenciaGlobal = await ObterFrequenciaGlobalAlunos(codigosAlunos, request.AnoLetivo, request.Modalidade, codigosTurma);
 
             return await MontarBoletins(dre, ue, turmas.Union(turmasComplementaresEdFisica).Distinct(), componentesCurriculares, alunosPorTurma, notas, pareceresConclusivos, frequencias, tiposNota, mediasFrequencia, frequenciaGlobal, aulasPrevistas);
         }
