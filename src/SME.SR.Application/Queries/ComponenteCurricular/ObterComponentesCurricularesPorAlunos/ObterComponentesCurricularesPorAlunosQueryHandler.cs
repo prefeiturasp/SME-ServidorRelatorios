@@ -51,9 +51,6 @@ namespace SME.SR.Application
 
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
             
-            if(request.Modalidade == Modalidade.EJA)
-                componentesMapeados.AddRange(await AdicionarComponentesEJA(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
-
             var componentesRegencia = ObterCodigosComponentesRegenciaClasse(todosComponentes, componentesDasTurmas);
 
             if (componentesRegencia != null && componentesRegencia.Any())
