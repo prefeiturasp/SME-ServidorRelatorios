@@ -73,7 +73,7 @@ namespace SME.SR.Application
                         turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
 
 
-                    var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
+                    var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, turma.Codigo));
 
                     if (conselhoClasseBimestres != null && conselhoClasseBimestres.Any())
                     {

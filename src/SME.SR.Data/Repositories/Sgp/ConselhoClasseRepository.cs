@@ -18,7 +18,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<int>> ObterBimestresPorAlunoCodigo(string codigoAluno, int anoLetivo, Modalidade modalidade, int semestre)
+        public async Task<IEnumerable<int>> ObterBimestresPorAlunoCodigo(string codigoAluno, int anoLetivo, Modalidade modalidade, int semestre, string codigoTurma)
         {
             var query = @"select coalesce(pe.bimestre , 0) as Bimestre
                           from conselho_classe_aluno cca 
@@ -29,11 +29,12 @@ namespace SME.SR.Data
                          where cca.aluno_codigo  = @codigoAluno
                            and t.ano_letivo  = @anoLetivo
                            and t.modalidade_codigo  = @modalidade
-                           and t.semestre = @semestre";
+                           and t.semestre = @semestre
+                           and t.turma_id = @codigoTurma";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryAsync<int>(query, new { codigoAluno, anoLetivo, modalidade, semestre });
+            return await conexao.QueryAsync<int>(query, new { codigoAluno, anoLetivo, modalidade, semestre, codigoTurma });
         }
 
         public async Task<long> ObterConselhoPorFechamentoTurmaId(long fechamentoTurmaId)
