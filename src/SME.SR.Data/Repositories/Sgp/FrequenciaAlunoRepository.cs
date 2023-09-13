@@ -181,7 +181,7 @@ namespace SME.SR.Data
                               and t.ano_letivo = @anoLetivo
                               and t.modalidade_codigo = @modalidade 
                               and fa.tipo = 2
-                              and t.tipo_turma in(1,2,7) 
+                              and t.tipo_turma not in(3) 
                               and fa.turma_id = any(@codigoTurmas)
                             group by fa.codigo_aluno, fa.bimestre, fa.id)
                             select codigoAluno as CodigoAluno, 
@@ -247,7 +247,7 @@ namespace SME.SR.Data
 
             query.AppendLine(@" where fa.tipo = 2 
                 and t.ano_letivo = @anoTurma 
-                and t.tipo_turma in(1,2,7) ");
+                and t.tipo_turma not in(3) ");
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
@@ -283,7 +283,7 @@ namespace SME.SR.Data
             query.AppendLine(@" where fa.tipo = 2 
                                       and t.ano_letivo = @anoTurma 
                                       and fa.codigo_aluno = any(@alunosCodigo)
-                                      and t.tipo_turma in(1,2,7) 
+                                      and t.tipo_turma not in(3) 
                                       and fa.turma_id = any(@turmaCodigo)");
 
             if (tipoCalendarioId > 0)

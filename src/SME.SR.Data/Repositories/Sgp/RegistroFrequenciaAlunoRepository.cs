@@ -82,7 +82,7 @@ namespace SME.SR.Data
             query.AppendLine(@" where fa.tipo = 2 
                 and fa.codigo_aluno = @alunoCodigo 
                 and t.ano_letivo = @anoTurma 
-                and t.tipo_turma in(1,2,7) ");
+                and t.tipo_turma not in(3) ");
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
