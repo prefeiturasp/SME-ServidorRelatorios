@@ -855,13 +855,6 @@ namespace SME.SR.Application
             return null;
         }
 
-        private string ObterSiglaSituacaoMatricula(AlunoSituacaoAtaFinalDto aluno)
-        {
-            var sigla = aluno.CodigoSituacaoMatricula.GetAttribute<DisplayAttribute>().ShortName;
-
-            return string.IsNullOrEmpty(sigla) ? aluno.SituacaoMatricula : sigla;
-        }
-
         private string ObterPercentualFrequenciaFinal(IEnumerable<FrequenciaAluno> frequenciasAluno, bool existeFrequenciaRegistradaTurma)
         {
             var totalAulas = frequenciasAluno == null || frequenciasAluno?.Sum(f => f.TotalAulas) == 0 ? 0 : frequenciasAluno.Sum(f => f.TotalAulas);
