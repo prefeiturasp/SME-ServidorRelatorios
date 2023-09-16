@@ -18,7 +18,7 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
         private readonly IAlunoRepository alunoRepository;
 
-        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator, IAlunoRepository alunoRepository)
+        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,IAlunoRepository alunoRepository, IMediator mediator)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -50,7 +50,7 @@ namespace SME.SR.Application
             var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental, turmasAlunos);
 
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
-
+            
             var componentesRegencia = ObterCodigosComponentesRegenciaClasse(todosComponentes, componentesDasTurmas);
 
             if (componentesRegencia != null && componentesRegencia.Any())
@@ -119,7 +119,30 @@ namespace SME.SR.Application
                 TipoEscola = c.TipoEscola,
             });
         }
-
+        private async Task<IEnumerable<ComponenteCurricularPorTurma>> AdicionarComponentesEJA(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<DisciplinaDto> disciplinasDaTurma, IEnumerable<AreaDoConhecimento> areasConhecimento)
+        {
+            var codigosTurma = componentesDasTurmas.Select(x => x.CodigoTurma.ToString()).Distinct().ToArray();
+            var Turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(codigosTurma));
+            var turmasFiltradas = Turmas.Where(x => x.TipoTurma == TipoTurma.EdFisica);
+            return componentesDasTurmas?.Where(x=> turmasFiltradas.Any(y => y.Codigo == x.CodigoTurma)).Select(c => new ComponenteCurricularPorTurma
+            {
+                CodigoAluno = c.CodigoAluno,
+                CodigoTurma = c.CodigoTurma,
+                CodDisciplina = c.Codigo,
+                CodDisciplinaPai = c.CodigoComponentePai(componentes),
+                BaseNacional = c.EhBaseNacional(componentes),
+                Compartilhada = c.EhCompartilhada(componentes),
+                Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.Id == c.Codigo || d.Id == c.Codigo).Nome,
+                GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
+                AreaDoConhecimento = c.ObterAreaDoConhecimento(areasConhecimento),
+                LancaNota = c.PodeLancarNota(componentes),
+                Frequencia = c.ControlaFrequencia(componentes),
+                Regencia = c.EhRegencia(componentes),
+                TerritorioSaber = c.TerritorioSaber,
+                TipoEscola = c.TipoEscola,
+            });
+        }
+        
         private async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> ObterComponentesCurriculares(ObterComponentesCurricularesPorAlunosQuery request, IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas)
         {
             return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery()
