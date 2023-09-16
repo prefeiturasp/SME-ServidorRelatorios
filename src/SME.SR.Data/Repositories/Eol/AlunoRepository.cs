@@ -1705,7 +1705,7 @@ namespace SME.SR.Data
 		        anoLetivo,
 		        dataInicio,
 		        dataFim,
-		        ueId,
+		        codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
 		        codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
 	        };
 	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId);
