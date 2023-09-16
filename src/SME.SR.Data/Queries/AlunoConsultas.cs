@@ -418,13 +418,13 @@
 						ON aln.CodigoAluno = m.cd_aluno
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
-					 (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+					 ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim)
 					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-					  and mte.dt_situacao_aluno >= @dataFim))
+					  and mte.dt_situacao_aluno > @dataFim))
 					  and aln.AnoLetivo = anoLetivo
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
-					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)}
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}
 				UNION
 
 				SELECT
@@ -458,13 +458,13 @@
 				      AND mte.nr_chamada_aluno <> '0'
 					  AND mte.nr_chamada_aluno is not null
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
-					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @ueId" : string.Empty)})
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)})
 			SELECT cd_unidade_educacao as UeCodigo,sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
 				FROM lista group by cd_unidade_educacao,sg_resumida_serie ";
 
 
 
-	    internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT   
+        internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT   
 					aluno.cd_aluno CodigoAluno,
 					aluno.nm_aluno NomeAluno,
 					aluno.dt_nascimento_aluno DataNascimento,
