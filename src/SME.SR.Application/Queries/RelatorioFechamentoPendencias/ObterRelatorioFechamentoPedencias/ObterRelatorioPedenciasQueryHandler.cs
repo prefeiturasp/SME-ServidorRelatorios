@@ -45,8 +45,6 @@ namespace SME.SR.Application
             var componentesCurricularesIds = resultadoQuery.Select(a => a.DisciplinaId).Distinct().ToArray();
             var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesIds));
             var componentesTerritorioSaberTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(filtros.TurmasCodigo.FirstOrDefault(), componentesCurricularesIds));
-            var turmaSelecionada = await mediator.Send(new ObterTurmaPorCodigoQuery(filtros.TurmasCodigo.FirstOrDefault()));
-
             var ehTerritorioSaber = componentesCurricularesDescricoes?.FirstOrDefault().TerritorioSaber == true;
 
             var retorno = new RelatorioPendenciasDto();
@@ -73,7 +71,7 @@ namespace SME.SR.Application
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");            
             retorno.Ano = filtros.AnoLetivo.ToString();
 
-            if (!turmaSelecionada.EhEja)
+            if (!filtros.Modalidade.Equals(Modalidade.EJA))
                 retorno.Semestre = "";
             else if (filtros.Semestre.ToString() != "")
                 retorno.Semestre = filtros.Semestre.ToString();
@@ -139,78 +137,84 @@ namespace SME.SR.Application
                         }
                         var componentesDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma).Select(a => a.DisciplinaId).Distinct();
 
-                        foreach (var componenteDaTurma in componentesDaTurma)
+                        if(componentesDaTurma.Any())
                         {
-                            var nomeComponentes = componentesCurricularesDescricoes?.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma)?.Disciplina;
-                            var nomeComponentesTerritorioSaber = componentesTerritorioSaberTurma?.FirstOrDefault(a => a.CodigoComponenteCurricular == componenteDaTurma)?.DescricaoTerritorioSaber;
+                            var componentesIds = componentesDaTurma.ToArray();
 
-                            var componenteParaAdicionar = new RelatorioPendenciasComponenteDto();
-                            componenteParaAdicionar.CodigoComponente = componenteDaTurma.ToString();
-                            if (ehTerritorioSaber)
-                                componenteParaAdicionar.NomeComponente = nomeComponentesTerritorioSaber.ToUpper();
-                            else
-                                componenteParaAdicionar.NomeComponente = nomeComponentes.ToUpper();
+                            var componentesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesIds));
+                            var componentesTerritorio = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(turmaCodigo, componentesIds));
 
-                            var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
-                            var pendenciasDoComponenteDaTurmaOrdenado = pendenciasDoComponenteDaTurma.OrderBy(p => p.Criador).OrderBy(p => p.TipoPendencia);
-
-
-                            foreach (var pendenciaDoComponenteDaTurma in pendenciasDoComponenteDaTurmaOrdenado)
+                            foreach (var componenteDaTurma in componentesDaTurma)
                             {
-                                var pendenciaParaAdicionar = new RelatorioPendenciasPendenciaDto();
+                                var nomeComponentes = componentesDescricoes?.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma)?.Disciplina;
+                                var nomeComponentesTerritorioSaber = componentesTerritorio?.FirstOrDefault(a => a.CodigoComponenteCurricular == componenteDaTurma)?.DescricaoTerritorioSaber;
 
-                                var PendenciaTerritorioSaber = "";
+                                var componenteParaAdicionar = new RelatorioPendenciasComponenteDto();
 
-                                if (ehTerritorioSaber && !String.IsNullOrEmpty(nomeComponentesTerritorioSaber))
-                                    PendenciaTerritorioSaber = pendenciaDoComponenteDaTurma.Descricao.Replace(nomeComponentes, nomeComponentesTerritorioSaber);
+                                componenteParaAdicionar.CodigoComponente = componenteDaTurma.ToString();
+                                componenteParaAdicionar.NomeComponente = nomeComponentesTerritorioSaber?.ToUpper() ?? nomeComponentes?.ToUpper();
 
-                                pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
-                                pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
-                                pendenciaParaAdicionar.Titulo = pendenciaDoComponenteDaTurma.Titulo;
-                                pendenciaParaAdicionar.DescricaoPendencia = ehTerritorioSaber && !String.IsNullOrEmpty(nomeComponentesTerritorioSaber) ? PendenciaTerritorioSaber : pendenciaDoComponenteDaTurma.Descricao;
-                                pendenciaParaAdicionar.Instrucao = pendenciaDoComponenteDaTurma.Instrucao;
-                                pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
-                                pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;
-                                pendenciaParaAdicionar.QuantidadeDeDias = pendenciaDoComponenteDaTurma.QuantidadeDeDias;
-                                pendenciaParaAdicionar.QuantidadeDeAulas = pendenciaDoComponenteDaTurma.QuantidadeDeAulas;
-                                pendenciaParaAdicionar.ExibirDetalhamento = pendenciaDoComponenteDaTurma.ExibirDetalhes;
+                                var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
+                                var pendenciasDoComponenteDaTurmaOrdenado = pendenciasDoComponenteDaTurma.OrderBy(p => p.Criador).OrderBy(p => p.TipoPendencia);
 
-                                if (filtros.ExibirDetalhamento)
+                                foreach (var pendenciaDoComponenteDaTurma in pendenciasDoComponenteDaTurmaOrdenado)
                                 {
-                                    if (pendenciaDoComponenteDaTurma.Tipo == (int)TipoPendencia.AusenciaDeRegistroIndividual)
-                                        pendenciaParaAdicionar.Detalhes = await ObterAlunosRegistroIndividual(pendenciaDoComponenteDaTurma.Detalhes);
+                                    var pendenciaParaAdicionar = new RelatorioPendenciasPendenciaDto();
+
+                                    var PendenciaTerritorioSaber = "";
+
+                                    if (!String.IsNullOrEmpty(nomeComponentesTerritorioSaber))
+                                        PendenciaTerritorioSaber = pendenciaDoComponenteDaTurma.Descricao.Replace(nomeComponentes, nomeComponentesTerritorioSaber);
+
+                                    pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
+                                    pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
+                                    pendenciaParaAdicionar.Titulo = pendenciaDoComponenteDaTurma.Titulo;
+                                    pendenciaParaAdicionar.DescricaoPendencia = !String.IsNullOrEmpty(PendenciaTerritorioSaber) ? PendenciaTerritorioSaber : pendenciaDoComponenteDaTurma.Descricao;
+                                    pendenciaParaAdicionar.Instrucao = pendenciaDoComponenteDaTurma.Instrucao;
+                                    pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
+                                    pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;
+                                    pendenciaParaAdicionar.QuantidadeDeDias = pendenciaDoComponenteDaTurma.QuantidadeDeDias;
+                                    pendenciaParaAdicionar.QuantidadeDeAulas = pendenciaDoComponenteDaTurma.QuantidadeDeAulas;
+                                    pendenciaParaAdicionar.ExibirDetalhamento = pendenciaDoComponenteDaTurma.ExibirDetalhes;
+
+                                    if (filtros.ExibirDetalhamento)
+                                    {
+                                        if (pendenciaDoComponenteDaTurma.Tipo == (int)TipoPendencia.AusenciaDeRegistroIndividual)
+                                            pendenciaParaAdicionar.Detalhes = await ObterAlunosRegistroIndividual(pendenciaDoComponenteDaTurma.Detalhes);
+                                        else
+                                            pendenciaParaAdicionar.Detalhes = pendenciaDoComponenteDaTurma.Detalhes;
+
+                                        pendenciaParaAdicionar.DescricaoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
+                                        pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano.", "");
+                                        pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+
+                                        pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
+                                        pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
+                                        pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+                                    }
+
+                                    if (pendenciaDoComponenteDaTurma.TipoPendencia == TipoPendenciaGrupo.Fechamento.Name() && (SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao == SituacaoPendencia.Aprovada && !String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.Aprovador))
+                                        pendenciaParaAdicionar.ExibirAprovacao = true;
+
+                                    if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.CriadorRf) && pendenciaDoComponenteDaTurma.CriadorRf != "0")
+                                        pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador + $" ({pendenciaDoComponenteDaTurma.CriadorRf})";
                                     else
-                                        pendenciaParaAdicionar.Detalhes = pendenciaDoComponenteDaTurma.Detalhes;
+                                        pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
 
-                                    pendenciaParaAdicionar.DescricaoPendencia = UtilRegex.RemoverTagsHtml(pendenciaDoComponenteDaTurma.Descricao);
-                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano.", "");
-                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e atribuir", "Para resolver esta pendência você precisa atribuir");
+                                    if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.AprovadorRf) && pendenciaDoComponenteDaTurma.AprovadorRf != "0")
+                                        pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador + $" ({pendenciaDoComponenteDaTurma.AprovadorRf})";
+                                    else
+                                        pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
 
-                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o encaminhamento.", "");
-                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e registrar a devolutiva.", "");
-                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaParaAdicionar.DescricaoPendencia.Replace("Clique aqui para acessar o plano e atribuir um PAAI para analisar e realizar a devolutiva.", "");
+                                    pendenciaParaAdicionar.Situacao = ((SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao).ToString();
+
+                                    componenteParaAdicionar.Pendencias.Add(pendenciaParaAdicionar);
                                 }
 
-                                if (pendenciaDoComponenteDaTurma.TipoPendencia == TipoPendenciaGrupo.Fechamento.Name() && (SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao == SituacaoPendencia.Aprovada && !String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.Aprovador))
-                                    pendenciaParaAdicionar.ExibirAprovacao = true;
 
-                                if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.CriadorRf) && pendenciaDoComponenteDaTurma.CriadorRf != "0")
-                                    pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador + $" ({pendenciaDoComponenteDaTurma.CriadorRf})";
-                                else
-                                    pendenciaParaAdicionar.NomeUsuario = pendenciaDoComponenteDaTurma.Criador;
-
-                                if (!String.IsNullOrEmpty(pendenciaDoComponenteDaTurma.AprovadorRf) && pendenciaDoComponenteDaTurma.AprovadorRf != "0")
-                                    pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador + $" ({pendenciaDoComponenteDaTurma.AprovadorRf})";
-                                else
-                                    pendenciaParaAdicionar.NomeUsuarioAprovacao = pendenciaDoComponenteDaTurma.Aprovador;
-
-                                pendenciaParaAdicionar.Situacao = ((SituacaoPendencia)pendenciaDoComponenteDaTurma.Situacao).ToString();
-
-                                componenteParaAdicionar.Pendencias.Add(pendenciaParaAdicionar);
+                                bimestreParaAdicionar.Componentes.Add(componenteParaAdicionar);
                             }
 
-
-                            bimestreParaAdicionar.Componentes.Add(componenteParaAdicionar);
                         }
 
 
