@@ -12,5 +12,7 @@
         public string ParecerConclusivo { get; set; }
         public TipoTurma TipoTurma { get; set; }
         public string DescricaoAno => Modalidade == Modalidade.EJA ? $"{Ciclo} - {(EtapaEJA == 1 ? "I" : "II")}" : $"{Ano}º ano";
+        public int SemestreTurma { get; set; }
+        public int SemestreTurmaRegular { get; set; }
     }
 }
