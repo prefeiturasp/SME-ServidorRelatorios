@@ -34,7 +34,8 @@ namespace SME.SR.Application
             var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos.Select(ca => (long)ca).ToArray(), request.AnoLetivo));
 
             var turmasCodigosFiltrado = turmasAlunos
-                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.RegularCodigo != null)
+                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) ||
+                            (!string.IsNullOrEmpty(x.RegularCodigo) && request.CodigosTurmas.Contains(int.Parse(x.RegularCodigo))))
                 .Select(y => int.Parse(y.TurmaCodigo))
                 .Distinct()
                 .ToArray();
