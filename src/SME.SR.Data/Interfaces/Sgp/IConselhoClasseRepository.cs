@@ -8,7 +8,7 @@ namespace SME.SR.Data.Interfaces
     {
         Task<long> ObterConselhoPorFechamentoTurmaId(long fechamentoTurmaId);
         Task<IEnumerable<long>> ObterPareceresConclusivosPorTipoAprovacao(bool aprovado);
-        Task<IEnumerable<int>> ObterBimestresPorAlunoCodigo(string codigoAluno, int anoLetivo, Modalidade modalidade, int semestre);
+        Task<IEnumerable<int>> ObterBimestresPorAlunoCodigo(string codigoAluno, int anoLetivo, Modalidade modalidade, int semestre, string codigoTurma);
         Task<IEnumerable<TotalAulasTurmaDisciplinaDto>> ObterTotalAulasSemFrequenciaPorTurmaBismetre(string[] discplinaId, string[] codigoTurma, int[] bimestre);
     }
 }
