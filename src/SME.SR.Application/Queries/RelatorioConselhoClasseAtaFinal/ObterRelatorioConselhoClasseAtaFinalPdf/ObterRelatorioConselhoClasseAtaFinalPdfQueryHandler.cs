@@ -617,9 +617,6 @@ namespace SME.SR.Application
                                                                  && c.Bimestre == bimestre)
                                                 : RetornaValorPadraoNotaAtaFinal(notasFinais, aluno, componente, bimestre);
                                     }
-                                    
-                                    if (turmaComplementar != null && turmaComplementar.EhEja && turmaComplementar.RegularCodigo != null && componente.CodDisciplina == 6)
-                                        ConverterNotaAlunoNumerica(notaConceito);
 
                                     linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                             componente.CodDisciplina,
