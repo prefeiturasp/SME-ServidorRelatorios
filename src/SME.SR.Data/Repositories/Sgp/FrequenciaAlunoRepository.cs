@@ -285,7 +285,7 @@ namespace SME.SR.Data
             query.AppendLine(@" where fa.tipo = 2 
                                       and t.ano_letivo = @anoTurma 
                                       and fa.codigo_aluno = any(@alunosCodigo)
-                                      and t.tipo_turma not in(3) 
+                                      and t.tipo_turma not in(@tipoTurma) 
                                       and fa.turma_id = any(@turmaCodigo)");
 
             if (tipoCalendarioId > 0)
@@ -302,7 +302,8 @@ namespace SME.SR.Data
                         anoTurma,
                         tipoCalendarioId,
                         alunosCodigo,
-                        turmaCodigo
+                        turmaCodigo,
+                        tipoTurma = (int)TipoTurma.Programa
                     });
             }
         }
