@@ -35,7 +35,7 @@ namespace SME.SR.Infra
             {
                 AnoLetivo = sondagemCabecalho.AnoLetivo,
                 Dre = sondagemCabecalho.NomeDre,
-                NomeRelatorio = "RELATÓRIO DE FREQUÊNCIA GLOBAL MENSAL",
+                NomeRelatorio = "RELATÓRIO DE FREQUÊNCIA MENSAL",
                 Rf = sondagemCabecalho.RfUsuarioSolicitante,
                 Turma = sondagemCabecalho.NomeTurma,
                 Ue = sondagemCabecalho.NomeUe,
