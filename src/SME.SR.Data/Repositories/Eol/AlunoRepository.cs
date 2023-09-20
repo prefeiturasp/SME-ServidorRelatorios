@@ -321,10 +321,9 @@ namespace SME.SR.Data
 										ON aln.CodigoAluno = m.cd_aluno
 								WHERE te.an_letivo = @anoLetivo AND
 									  te.cd_tipo_turma = 1 AND
-									  mte.cd_situacao_aluno in (1,5,6,10,13) 
-									  AND (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+									  (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
 									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-									  and mte.dt_situacao_aluno > @dataFim))
+									  and mte.dt_situacao_aluno >= @dataFim))
 									  and aln.AnoLetivo = anoLetivo
 									  AND se.sg_resumida_serie = @anoTurma 
 									  AND ee.cd_etapa_ensino in (@modalidades)
@@ -1706,7 +1705,7 @@ namespace SME.SR.Data
 		        anoLetivo,
 		        dataInicio,
 		        dataFim,
-		        ueId,
+		        codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
 		        codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
 	        };
 	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId);
