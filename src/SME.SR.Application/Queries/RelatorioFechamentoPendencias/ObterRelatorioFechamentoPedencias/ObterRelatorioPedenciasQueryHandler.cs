@@ -45,7 +45,8 @@ namespace SME.SR.Application
             var componentesCurricularesIds = resultadoQuery.Select(a => a.DisciplinaId).Distinct().ToArray();
             var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesIds));
             var componentesTerritorioSaberTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(filtros.TurmasCodigo.FirstOrDefault(), componentesCurricularesIds));
-            var ehTerritorioSaber = componentesCurricularesDescricoes?.FirstOrDefault().TerritorioSaber == true;
+
+            var ehTerritorioSaber = (componentesCurricularesDescricoes?.Any() ?? false) ? componentesCurricularesDescricoes!.First().TerritorioSaber : false;
 
             var retorno = new RelatorioPendenciasDto();
             var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0 && x.OutrasPendencias == false).FirstOrDefault();
