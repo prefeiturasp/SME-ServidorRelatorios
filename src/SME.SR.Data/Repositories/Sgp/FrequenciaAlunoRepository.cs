@@ -174,7 +174,7 @@ namespace SME.SR.Data
                                 , sum(fa.total_aulas) as TotalAulas
                                 , sum(fa.total_ausencias) as TotalAusencias
                                 , sum(fa.total_compensacoes) as TotalCompensacoes
-                                , row_number() over (partition by fa.codigo_aluno, fa.bimestre order by fa.id) as sequencia
+                                , row_number() over (partition by fa.codigo_aluno, fa.bimestre, fa.turma_id order by fa.id) as sequencia
                               from frequencia_aluno fa 
                             inner join turma t on t.turma_id = fa.turma_id
                             where fa.codigo_aluno = any(@codigosAluno) 
@@ -183,7 +183,7 @@ namespace SME.SR.Data
                               and fa.tipo = 2
                               and t.tipo_turma in(1,2,7) 
                               and fa.turma_id = any(@codigoTurmas)
-                            group by fa.codigo_aluno, fa.bimestre, fa.id)
+                            group by fa.codigo_aluno, fa.bimestre, fa.id, fa.turma_id)
                             select codigoAluno as CodigoAluno, 
                             sum(totalaulas) as TotalAulas,
                             sum(totalausencias) as TotalAusencias,
