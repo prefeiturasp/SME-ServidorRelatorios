@@ -74,7 +74,7 @@
     void MontarTexto(string texto)
     {
         <tr>
-            <td class="fundo-cinza" colspan="7">@texto @contadorQuebrarPagina</td>
+            <td class="fundo-cinza" colspan="7">@texto</td>
         </tr>
     }
 
@@ -85,7 +85,7 @@
             <td width='53%' class='fundo-cinza'>TÍTULO DA NOTIFICAÇÃO</td>
             <td width='12%' class='fundo-cinza'>CATEGORIA</td>
             <td width='10%' class='fundo-cinza'>TIPO</td>
-            <td width='10%' class='fundo-cinza'>SITUAÇÃO @contadorQuebrarPagina</td>
+            <td width='10%' class='fundo-cinza'>SITUAÇÃO</td>
             <td width='10%' class='fundo-cinza'>RECEBIMENTO</td>
             <td width='10%' class='fundo-cinza'>LEITURA/AÇÃO</td>
         </tr>
@@ -98,7 +98,7 @@
             <td width='53%' class=" alinhar-esquerda" style="padding: 3px 10px;">@notificacoes.Titulo</td>
             <td width='12%'>@notificacoes.Categoria</td>
             <td width='10%'>@notificacoes.Tipo</td>
-            <td width='10%'>@notificacoes.Situacao  @Math.Round(contadorQuebrarPagina, 2)</td>
+            <td width='10%'>@notificacoes.Situacao</td>
             <td width='10%'>@notificacoes.DataRecebimento</td>
             <td width='10%'>@notificacoes.DataLeitura</td>
         </tr>
