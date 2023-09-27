@@ -1324,7 +1324,9 @@ namespace SME.SR.Data
                                 t.etapa_eja as EtapaEJA,
                                 tc.descricao as Ciclo,
                                 t.tipo_turma as TipoTurma,
-                                cca.id as ConselhoClasseAlunoId
+                                cca.id as ConselhoClasseAlunoId,
+                                t.semestre as SemestreTurma,
+                                0 as SemestreTurmaRegular
                             from
                                 fechamento_turma ft
                             inner join conselho_classe cc on
@@ -1355,7 +1357,9 @@ namespace SME.SR.Data
                                 t.ano,
                                 t.etapa_eja as EtapaEJA,
                                 tc.descricao as Ciclo,
-                                t.tipo_turma as TipoTurma
+                                t.tipo_turma as TipoTurma,
+                                t.semestre as SemestreTurma,
+                                tr.semestre as SemestreTurmaRegular
                             from 
                                 tempConselhoAlunos t1
                             inner join
@@ -1382,14 +1386,14 @@ namespace SME.SR.Data
                             left join 
                                 tipo_ciclo tc 
                                 on tca.tipo_ciclo_id = tc.id)
-
                             -- Resultado
                             select 
                                 *
                             from 
-                                (select TurmaCodigo,RegularCodigo,Modalidade,AlunoCodigo,ano,EtapaEJA,Ciclo,TipoTurma from tempTurmaRegularConselhoAluno) as Regulares
+                                (select tmp.TurmaCodigo,tmp.RegularCodigo,tmp.Modalidade,tmp.AlunoCodigo,tmp.ano,tmp.EtapaEJA,tmp.Ciclo,tmp.TipoTurma,tmp.SemestreTurma,tmp.SemestreTurmaRegular from tempTurmaRegularConselhoAluno tmp) as Regulares
                             union
-                                (select * from tempTurmaComplementarConselhoAluno)";
+                                (select tmp.TurmaCodigo,tmp.RegularCodigo,tmp.Modalidade,tmp.AlunoCodigo,tmp.ano,tmp.EtapaEJA,tmp.Ciclo,tmp.TipoTurma,tmp.SemestreTurma,tmp.SemestreTurmaRegular from tempTurmaComplementarConselhoAluno tmp
+                                where tmp.SemestreTurma = tmp.SemestreTurmaRegular)";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             return await conexao.QueryAsync<AlunosTurmasCodigosDto>(query, new { codigoAlunos = codigoAlunos.Select(a => a.ToString()).ToArray(), anoLetivo });
