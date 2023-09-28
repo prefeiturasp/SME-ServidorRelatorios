@@ -214,7 +214,7 @@ namespace SME.SR.Application
                             new ComponenteCurricularDto()
                             {
                                 Codigo = componente.CodDisciplina.ToString(),
-                                CodigoTerritorioSaber = componente.CodigoTerritorioSaber.ToString(),
+                                CodigoComponenteCurricularTerritorioSaber = componente.CodigoComponenteCurricularTerritorioSaber.ToString(),
                                 Nome = componente.Disciplina,
                                 Nota = componente.LancaNota,
                                 Frequencia = componente.Frequencia,
@@ -273,7 +273,7 @@ namespace SME.SR.Application
                 foreach (var componenteCurricular in boletim.ComponentesCurriculares)
                 {
                     var frequenciasAlunoComponente =
-                         frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber
+                         frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoComponenteCurricularTerritorioSaber
                          && (!componenteCurricular.TerritorioSaber
                               || (componenteCurricular.TerritorioSaber && !string.IsNullOrEmpty(componenteCurricular.Professor) ? f.Professor == componenteCurricular.Professor : true)));
 

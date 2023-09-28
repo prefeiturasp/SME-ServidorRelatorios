@@ -10,7 +10,7 @@ namespace SME.SR.Infra
     {
         [JsonIgnore]
         public string Codigo { get; set; }
-        public string CodigoTerritorioSaber { get; set; }
+        public string CodigoComponenteCurricularTerritorioSaber { get; set; }
 
         public bool Nota { get; set; }
 

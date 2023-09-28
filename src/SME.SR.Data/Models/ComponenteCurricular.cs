@@ -15,7 +15,7 @@ namespace SME.SR.Data
         public string CodigoTurma { get; set; }
         public string AnoTurma { get; set; }
         public long Codigo { get; set; }
-        public long CodigoTerritorioSaber { get; set; }
+        public long CodigoComponenteCurricularTerritorioSaber { get; set; }
         public string Descricao { get; set; }
         public string DescricaoFormatada => string.IsNullOrWhiteSpace(Descricao) ? string.Empty : Descricao.Trim();
         public bool TerritorioSaber { get; set; }
