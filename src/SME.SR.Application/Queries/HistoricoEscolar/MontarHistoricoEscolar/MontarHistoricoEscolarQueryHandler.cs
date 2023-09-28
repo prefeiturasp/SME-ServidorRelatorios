@@ -414,7 +414,7 @@ namespace SME.SR.Application
                     frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
                 }
 
-                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? FrequenciaAluno.FormatarPercentual(100) : FrequenciaAluno.FormatarPercentual(100);
+                return frequenciaAluno?.PercentualFrequenciaFormatado;
             }
             else
                 return null;
@@ -431,7 +431,7 @@ namespace SME.SR.Application
                 frequenciaAluno.TotalCompensacoes += frequencia.TotalCompensacoes;
             }
 
-            return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? FrequenciaAluno.FormatarPercentual(100) : FrequenciaAluno.FormatarPercentual(100);
+            return frequenciaAluno?.PercentualFrequenciaFormatado;
         }
 
         private string ObterNotaComponentePorTurma(Turma turma, string codigoComponente, bool regencia, bool lancaNota, IEnumerable<FrequenciaAluno> frequenciaAlunos, IEnumerable<NotasAlunoBimestre> notasAluno, IEnumerable<MediaFrequencia> mediasFrequencias)
