@@ -18,7 +18,7 @@ namespace SME.SR.Application.Queries
         }
         public async Task<IEnumerable<Aluno>> Handle(ObterAlunosPorTurmaDataSituacaoMatriculaQuery request, CancellationToken cancellationToken)
         {
-            return await alunoRepository.ObterAlunosPorTurmaDataSituacaoMariculaParaSondagem(request.TurmaCodigo, request.Referencia);
+            return await alunoRepository.ObterAlunosPorTurmaDataSituacaoMatriculaParaSondagem(request.TurmaCodigo, request.DataReferenciaFim, request.DataReferenciaInicio);
         }
     }
 }
