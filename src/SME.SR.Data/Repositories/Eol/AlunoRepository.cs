@@ -64,7 +64,7 @@ namespace SME.SR.Data
 					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					{(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
                     ? "and mte.dt_situacao_aluno > @dataReferenciaFim))"
-                    : "and (mte.dt_situacao_aluno > @dataReferenciaFim or (mte.dt_situacao_aluno > @dataReferenciaInicio and mte.dt_situacao_aluno < @dataReferenciaFim))))"
+                    : "and (mte.dt_situacao_aluno > @dataReferenciaFim or (mte.dt_situacao_aluno > @dataReferenciaInicio and mte.dt_situacao_aluno <= @dataReferenciaFim))))"
                     )}
 				UNION
 				SELECT
@@ -120,7 +120,7 @@ namespace SME.SR.Data
 						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
                     {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
                     ? " and matr2.dt_status_matricula > @dataReferenciaFim)))"
-                    : " and (matr2.dt_status_matricula > @dataReferenciaFim or (matr2.dt_status_matricula > @dataReferenciaInicio and matr2.dt_status_matricula < @dataReferenciaFim)))))"
+                    : " and (matr2.dt_status_matricula > @dataReferenciaFim or (matr2.dt_status_matricula > @dataReferenciaInicio and matr2.dt_status_matricula <= @dataReferenciaFim)))))"
                     )}
 					AND NOT EXISTS(
 					SELECT
