@@ -152,7 +152,7 @@ namespace SME.SR.Application
             
             var respostasFrequencias = JsonConvert.DeserializeObject<IEnumerable<RespostaFrequenciaAlunoPlanoAeeDto>>(respostaQuestao.Texto);
 
-            return respostasFrequencias?.Select(respostaFrequencia =>
+            return respostasFrequencias?.Where(r => r != null)?.Select(respostaFrequencia =>
                 new FrequenciaAlunoPlanoAeeDto
                 {
                     DiaDaSemana = respostaFrequencia.DiaSemana,
