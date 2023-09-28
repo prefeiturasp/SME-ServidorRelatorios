@@ -210,10 +210,10 @@ namespace SME.SR.Data
 	                        aula a
                         inner join turma t on
 	                        a.turma_id = t.turma_id
-                        inner join componente_curricular cc on
-	                        a.disciplina_id = cc.id::varchar
                         inner join periodo_escolar pe on
 	                        a.data_aula between pe.periodo_inicio and pe.periodo_fim
+                        left join componente_curricular cc on
+	                        a.disciplina_id = cc.id::varchar
                         where
 	                        disciplina_id = @componenteCurricularId
 	                        and t.id = @turmaId
@@ -224,8 +224,8 @@ namespace SME.SR.Data
 	                        a.data_aula,
 	                        a.criado_por,
                             a.criado_rf,
-	                        cc.eh_regencia
-                        having (case when cc.eh_regencia then sum(a.quantidade) >= 2 else sum(a.quantidade) >= 3 end)
+	                        coalesce(cc.eh_regencia, false)
+                        having (case when coalesce(cc.eh_regencia, false) then sum(a.quantidade) >= 2 else sum(a.quantidade) >= 3 end)
                         order by
 	                        data_aula";
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
@@ -373,7 +373,7 @@ namespace SME.SR.Data
 	                        a.criado_rf as ProfessorRf,
                             a.turma_id as TurmaCodigo,
                             a.disciplina_id as ComponenteCurricularId,
-                            cc.permite_registro_frequencia ControlaFrequencia,
+                            coalesce(cc.permite_registro_frequencia, true) ControlaFrequencia,
                            CASE
 						        WHEN rf.id is not null THEN 1
 						        ELSE 0
@@ -390,7 +390,7 @@ namespace SME.SR.Data
 	                        aula a
                         inner join turma t on
 	                        a.turma_id = t.turma_id
-                        inner join componente_curricular cc on a.disciplina_id = cc.id::varchar
+                        left join componente_curricular cc on a.disciplina_id = cc.id::varchar
                         left join registro_frequencia rf on rf.aula_id = a.id
                         left join atividade_avaliativa aa on
                         	aa.turma_id = a.turma_id
@@ -411,7 +411,7 @@ namespace SME.SR.Data
 	                        a.criado_rf,
                             a.turma_id,
                             a.disciplina_id,
-                            cc.permite_registro_frequencia,
+                            coalesce(cc.permite_registro_frequencia, true),
 	                    	FrequenciaRegistrada,
 	                    	PossuiAtividadeAvaliativa,
 	                    	PossuiNotaLancada

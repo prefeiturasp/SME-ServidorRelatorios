@@ -125,7 +125,7 @@ namespace SME.SR.Data
                               from aula a
                              inner join turma t on t.turma_id = a.turma_id
                              inner join ue on ue.id = t.ue_id 
-                             inner join componente_curricular cc on cc.Id = a.disciplina_id::bigint
+                             left join componente_curricular cc on cc.Id = a.disciplina_id::bigint
                               left join plano_aula pa on pa.aula_id = a.id
                               left join objetivo_aprendizagem_aula oaa on oaa.plano_aula_id = pa.id 
 	                          left join objetivo_aprendizagem oa on oa.id = oaa.objetivo_aprendizagem_id 
