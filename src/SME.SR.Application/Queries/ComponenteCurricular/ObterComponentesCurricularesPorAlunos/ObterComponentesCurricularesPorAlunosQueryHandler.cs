@@ -138,8 +138,8 @@ namespace SME.SR.Application
         private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesCurricularesCompletos, IEnumerable<DisciplinaDto> disciplinasDaTurma, bool ehFundamental, IEnumerable<AlunosTurmasCodigosDto> turmasAlunos)
         {
             return (from cpTurma in componentesDasTurmas
-                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.TerritorioSaber ? cpCompleto.CodigoTerritorioSaber : cpCompleto.CodDisciplina)
-                    join disciplina in disciplinasDaTurma on (cpCompleto.TerritorioSaber ? cpCompleto.CodigoTerritorioSaber : cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
+                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.TerritorioSaber ? cpCompleto.CodigoComponenteCurricularTerritorioSaber : cpCompleto.CodDisciplina)
+                    join disciplina in disciplinasDaTurma on (cpCompleto.TerritorioSaber ? cpCompleto.CodigoComponenteCurricularTerritorioSaber : cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
                     join tAluno in turmasAlunos on (cpTurma.CodigoTurma, cpTurma.CodigoAluno) equals (tAluno.TurmaCodigo, tAluno.AlunoCodigo.ToString())
                     select new ComponenteCurricularPorTurma()
                     {
@@ -147,7 +147,7 @@ namespace SME.SR.Application
                         CodigoTurma = cpTurma.CodigoTurma,
                         CodDisciplina = cpCompleto.CodDisciplina,
                         CodDisciplinaPai = cpTurma.CodigoComponentePai(componentes),
-                        CodigoTerritorioSaber = cpCompleto.CodigoTerritorioSaber,
+                        CodigoComponenteCurricularTerritorioSaber = cpCompleto.CodigoComponenteCurricularTerritorioSaber,
                         BaseNacional = cpCompleto.BaseNacional,
                         Compartilhada = cpCompleto.Compartilhada,
                         Disciplina = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.ObterDisciplina() : disciplina.ObterDisciplina(),

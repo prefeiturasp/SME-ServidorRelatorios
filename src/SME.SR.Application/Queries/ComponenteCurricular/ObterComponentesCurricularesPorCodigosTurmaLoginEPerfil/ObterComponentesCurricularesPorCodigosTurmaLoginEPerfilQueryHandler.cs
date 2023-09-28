@@ -48,13 +48,13 @@ namespace SME.SR.Application
 
         private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo || x.Codigo == componenteCurricular.CodigoTerritorioSaber);
+            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo || x.Codigo == componenteCurricular.CodigoComponenteCurricularTerritorioSaber);
 
             return new ComponenteCurricularPorTurmaRegencia
             {
                 CodigoTurma = componenteCurricular.CodigoTurma,
                 CodDisciplina = componenteCurricular.Codigo,
-                CodigoTerritorioSaber = componenteCurricular.CodigoTerritorioSaber,
+                CodigoComponenteCurricularTerritorioSaber = componenteCurricular.CodigoComponenteCurricularTerritorioSaber,
                 CodDisciplinaPai = componenteCurricular.CodigoComponentePai(componentesApiEol),
                 Compartilhada = componenteCurricular.EhCompartilhada(componentesApiEol),
                 Disciplina = componenteCurricular.Descricao.Trim(),
@@ -166,7 +166,7 @@ namespace SME.SR.Application
                                     {
                                         CodigoTurma = territorio.Key,
                                         Codigo = componenteTerritorioPorTurma.FirstOrDefault()?.ObterCodigoComponenteCurricular(componenteTerritorioPorTurma.First().CodigoTurma) ?? 0,
-                                        CodigoTerritorioSaber = componenteTerritorioPorTurma.FirstOrDefault()?.CodigoComponenteCurricular ?? 0,
+                                        CodigoComponenteCurricularTerritorioSaber = componenteTerritorioPorTurma.FirstOrDefault()?.CodigoComponenteCurricular ?? 0,
                                         Descricao = componenteTerritorioPorTurma.FirstOrDefault()?.ObterDescricaoComponenteCurricular(),
                                         TipoEscola = tipoEscola,
                                         TerritorioSaber = true,
