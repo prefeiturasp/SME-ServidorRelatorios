@@ -4,7 +4,7 @@ pipeline {
       kubeconfig = getKubeconf(env.branchname)
       registryCredential = 'jenkins_registry'
       deployment1 = "${env.branchname == 'release-r2' ? 'sme-sr-workers-r2' : 'sme-sr-workers' }"
-      namespace = "${env.branchname == 'pre-prod' ? 'sme-relatorios-d1' : env.branchname == 'development' ? 'relatorios-dev' : 'sme-relatorios' }"
+      namespace = "${env.branchname == 'pre-prod' ? 'sme-relatorios-d1' : env.branchname == 'development' ? 'relatorios-dev' : env.branchname == 'release' ? 'relatorios-hom' : env.branchname == 'release-r2' ? 'relatorios-hom2' : 'sme-relatorios' }"
     }
   
     agent none
@@ -81,9 +81,9 @@ def getKubeconf(branchName) {
     if("main".equals(branchName)) { return "config_prd"; }
     else if ("master".equals(branchName)) { return "config_prd"; }
     else if ("pre-prod".equals(branchName)) { return "config_prd"; }
-    else if ("homolog".equals(branchName)) { return "config_hom"; }
-    else if ("release".equals(branchName)) { return "config_hom"; }
-    else if ("release-r2".equals(branchName)) { return "config_hom"; }
+    else if ("homolog".equals(branchName)) { return "config_release"; }
+    else if ("release".equals(branchName)) { return "config_release"; }
+    else if ("release-r2".equals(branchName)) { return "config_release"; }
     else if ("development".equals(branchName)) { return "config_release"; }
     else if ("develop".equals(branchName)) { return "config_release"; }
 }
