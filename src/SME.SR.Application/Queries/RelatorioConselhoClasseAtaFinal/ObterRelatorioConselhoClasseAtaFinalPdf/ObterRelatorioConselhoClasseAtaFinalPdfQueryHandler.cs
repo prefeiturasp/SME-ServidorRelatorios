@@ -184,7 +184,7 @@ namespace SME.SR.Application
             if (listaTurmasList.Count() > 1)
                 listaTurmas = listaTurmasList.ToArray();
 
-            return listaTurmas;
+            return await Task.FromResult(listaTurmas);
         }
 
         private async Task<List<Turma>> ObterTurmasPorCodigo(string[] codigos)
