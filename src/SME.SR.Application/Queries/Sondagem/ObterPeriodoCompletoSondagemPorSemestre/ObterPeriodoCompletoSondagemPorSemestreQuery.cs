@@ -10,5 +10,11 @@ namespace SME.SR.Application
     {
         public int Semestre { get; set; }
         public string AnoLetivo { get; set; }
+
+        public ObterPeriodoCompletoSondagemPorSemestreQuery(int semestre, string anoLetivo)
+        {
+            Semestre = semestre;
+            AnoLetivo = anoLetivo;
+        }
     }
 }
