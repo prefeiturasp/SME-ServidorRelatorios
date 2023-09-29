@@ -297,7 +297,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
 
         }
-        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades, bool consideraHistorico = false)
+        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferenciaFim, int[] modalidades, bool consideraHistorico = false, DateTime? dataReferenciaInicio = null)
         {
             StringBuilder query = new StringBuilder();
             if (anoLetivo < DateTime.Now.Date.Year)
@@ -327,9 +327,12 @@ namespace SME.SR.Data
 										ON aln.CodigoAluno = m.cd_aluno
 								WHERE te.an_letivo = @anoLetivo AND
 									  te.cd_tipo_turma = 1 AND
-									  (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+									  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim)
 									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-									  and mte.dt_situacao_aluno >= @dataFim))
+									  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
+										? "and mte.dt_situacao_aluno > @dataFim))"
+										: "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
+									  )}
 									  and aln.AnoLetivo = anoLetivo
 									  AND se.sg_resumida_serie = @anoTurma 
 									  AND ee.cd_etapa_ensino in (@modalidades)
@@ -340,7 +343,13 @@ namespace SME.SR.Data
 									FROM lista ");
 
 
-			var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), ueCodigo, anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), anoLetivo, dataFim = dataReferencia };
+			var parametros = 
+				new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), 
+					ueCodigo, 
+					anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), 
+					anoLetivo, 
+					dataFim = dataReferenciaFim,
+				    dataInicio = dataReferenciaInicio};
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
