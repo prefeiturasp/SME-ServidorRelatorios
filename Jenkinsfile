@@ -3,7 +3,7 @@ pipeline {
       branchname =  env.BRANCH_NAME.toLowerCase()
       kubeconfig = getKubeconf(env.branchname)
       registryCredential = 'jenkins_registry'
-      deployment1 = "${env.branchname == 'release-r2' ? 'sme-sr-workers-r2' : 'sme-sr-workers' }"
+      deployment1 = "${env.branchname == 'release-r2' ? 'sme-sr-workers' : 'sme-sr-workers' }"
       namespace = "${env.branchname == 'pre-prod' ? 'sme-relatorios-d1' : env.branchname == 'development' ? 'relatorios-dev' : env.branchname == 'release' ? 'relatorios-hom' : env.branchname == 'release-r2' ? 'relatorios-hom2' : 'sme-relatorios' }"
     }
   
