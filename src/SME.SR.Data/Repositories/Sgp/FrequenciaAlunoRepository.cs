@@ -651,8 +651,7 @@ namespace SME.SR.Data
                                                                     string[] codigosAlunos, 
                                                                     string bimestre, 
                                                                     string turmaCodigo, 
-                                                                    string[] componentesCurricularesIds,
-                                                                    string professorTitularRf = null)
+                                                                    string[] componentesCurricularesIds)
         {
             var condicaoBimestre = string.Empty;
 
@@ -682,7 +681,6 @@ namespace SME.SR.Data
 	                        AND rfa.codigo_aluno = any(@codigosAlunos)
 	                        AND t.turma_id = @turmaCodigo 
                             AND a.disciplina_id = any(@componentesCurricularesIds)
-                           {(!string.IsNullOrEmpty(professorTitularRf) ? " and a.professor_rf = @professorTitularRf" : string.Empty)}
  						GROUP BY a.data_aula, a.id, an.id, ma.descricao, rfa.codigo_aluno, pe.bimestre
                         ORDER BY pe.bimestre, rfa.codigo_aluno, a.data_aula desc";
 
@@ -691,8 +689,7 @@ namespace SME.SR.Data
                 codigosAlunos,
                 bimestre = int.Parse(bimestre),
                 turmaCodigo,
-                componentesCurricularesIds,
-                professorTitularRf
+                componentesCurricularesIds
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
