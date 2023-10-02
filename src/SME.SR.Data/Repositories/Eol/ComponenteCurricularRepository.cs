@@ -13,6 +13,26 @@ namespace SME.SR.Data
     public class ComponenteCurricularRepository : IComponenteCurricularRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
+        public readonly static int CODIGORF_LENGTH = 7;
+        public readonly static int CODIGOCPF_LENGTH = 11;
+        private const long MOTIVO_DISPONIBILIZACAO_ERRO_CADASTRO = 26;
+
+        const string SQL_CAMPOS_TABELA_AGRUPÀMENTO_TERRITORIO = @"codagrupamento as CodigoAgrupamento,
+	                                       codterritoriosaber as CodigoTerritorioSaber,
+	                                       codexperienciapedagogica as CodigoExperienciaPedagogica,
+	                                       dtinicioatribuicao as DtInicioAtribuicao,
+                                           anoatribuicao as AnoAtribuicao,
+	                                       dtfimatribuicao as DtFimAtribuicao,
+                                           dtfimturma as DtFimTurma,
+	                                       rfprofessor as RfProfessor,
+	                                       codturma as CodigoTurma,
+	                                       codcomponentescurriculares as CodigosComponentesCurriculares,
+	                                       anoletivo as AnoLetivo,
+	                                       codmotivodisponibilizacao as CodigoMotivoDisponibilizacao,
+	                                       descterritoriosaber as DescricaoTerritorioSaber,
+	                                       descexperienciapedagogica as DescricaoExperienciaPedagogica,
+	                                       criado_em as CriadoEm,
+                                           alterado_em as AlteradoEm";
 
         public ComponenteCurricularRepository(VariaveisAmbiente variaveisAmbiente)
         {
@@ -361,6 +381,17 @@ namespace SME.SR.Data
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
                 return await conexao.QueryFirstOrDefaultAsync<bool>(sql, new { componenteCurricularId });
+            }
+        }
+
+        public async Task<IEnumerable<AgrupamentoAtribuicaoTerritorioSaber>> ObterAgrupamentosTerritorioSaber(long[] ids)
+        {
+            var sql = $@"select {SQL_CAMPOS_TABELA_AGRUPÀMENTO_TERRITORIO} from agrupamentoatribuicaoterritoriosaber 
+                         where codagrupamento = ANY(@ids) ";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
+            {
+                return await conexao.QueryAsync<AgrupamentoAtribuicaoTerritorioSaber>(sql, new { ids });
             }
         }
     }

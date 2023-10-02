@@ -16,8 +16,10 @@ namespace SME.SR.IoC
             var urls = configuration["ElasticSearch:Urls"];
             var usuario = configuration["ElasticSearch:Usuario"];
             var senha = configuration["ElasticSearch:Senha"];
-
             var nodes = new List<Uri>();
+
+            if (string.IsNullOrEmpty(urls))
+                return;
 
             if (urls.Contains(','))
             {
@@ -26,9 +28,8 @@ namespace SME.SR.IoC
                     nodes.Add(new Uri(url));
             }
             else
-            {
                 nodes.Add(new Uri(urls));
-            }
+            
             var connectionPool = new StaticConnectionPool(nodes);
             var settings = new ConnectionSettings(connectionPool)
                 .ServerCertificateValidationCallback((sender, cert, chain, errors) => true);

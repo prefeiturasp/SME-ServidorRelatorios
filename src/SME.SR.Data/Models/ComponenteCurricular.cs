@@ -99,7 +99,7 @@ namespace SME.SR.Data
 
         public AreaDoConhecimento ObterAreaDoConhecimento(IEnumerable<AreaDoConhecimento> areasDoConhecimentos)
         {
-            return areasDoConhecimentos.FirstOrDefault(x => x.CodigoComponenteCurricular == Codigo);
+            return areasDoConhecimentos.FirstOrDefault(x => x.CodigoComponenteCurricular == Codigo || x.CodigoComponenteCurricular == CodigoComponenteCurricularTerritorioSaber);
         }
 
         public ComponenteCurricularGrupoMatriz ObterGrupoMatrizSgp(IEnumerable<DisciplinaDto> disciplina, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
