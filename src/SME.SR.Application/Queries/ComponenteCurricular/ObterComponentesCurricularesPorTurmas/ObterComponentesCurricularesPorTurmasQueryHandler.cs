@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using System;
@@ -12,7 +13,7 @@ namespace SME.SR.Application
     public class ObterComponentesCurricularesPorTurmasQueryHandler : IRequestHandler<ObterComponentesCurricularesPorTurmasQuery, IEnumerable<ComponenteCurricularPorTurma>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
-
+        
         public ObterComponentesCurricularesPorTurmasQueryHandler(IComponenteCurricularRepository componenteCurricularRepository)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
@@ -25,6 +26,7 @@ namespace SME.SR.Application
             {
                 var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+                PreencherGruposMatriz(componentesDaTurma, componentesApiEol);
 
                 return componentesDaTurma?.Select(c => new ComponenteCurricularPorTurma
                 {
@@ -38,11 +40,21 @@ namespace SME.SR.Application
                     LancaNota = c.PodeLancarNota(componentesApiEol),
                     Regencia = c.EhRegencia(componentesApiEol),
                     TerritorioSaber = c.TerritorioSaber,
-                    TipoEscola = c.TipoEscola
+                    TipoEscola = c.TipoEscola,
+                    Frequencia = c.ControlaFrequencia(componentesApiEol)
                 });
             }
 
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
+        }
+
+        public void PreencherGruposMatriz(IEnumerable<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> informacoesComponentesCurriculares)
+        {
+            foreach (var componente in componentesCurriculares)
+            {
+                var informacaoComponenteCurricular = informacoesComponentesCurriculares.Where(cce => cce.IdComponenteCurricular == componente.Codigo || cce.IdComponenteCurricular == componente.CodigoComponenteCurricularTerritorioSaber).FirstOrDefault();
+                componente.GrupoMatrizId = informacaoComponenteCurricular?.IdGrupoMatriz ?? 0;
+            }
         }
     }
 }

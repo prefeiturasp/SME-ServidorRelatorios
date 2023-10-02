@@ -27,6 +27,14 @@ namespace SME.SR.Application
 
             await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
+            if (request.EhEJA)
+            {
+                var componenteEdFisicaRegencia = componentesCurriculares.Find(w => w.Codigo == 6 && w.ComponentePlanejamentoRegencia);
+
+                if (componenteEdFisicaRegencia != null)
+                    componentesCurriculares.Remove(componenteEdFisicaRegencia);
+            }
+
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
         private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
@@ -36,12 +44,13 @@ namespace SME.SR.Application
 
         private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo);
+            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo || x.Codigo == componenteCurricular.CodigoComponenteCurricularTerritorioSaber);
 
             return new ComponenteCurricularPorTurmaRegencia
             {
                 CodigoTurma = componenteCurricular.CodigoTurma,
                 CodDisciplina = componenteCurricular.Codigo,
+                CodigoComponenteCurricularTerritorioSaber = componenteCurricular.CodigoComponenteCurricularTerritorioSaber,
                 CodDisciplinaPai = componenteCurricular.CodigoComponentePai(componentesApiEol),
                 Compartilhada = componenteCurricular.EhCompartilhada(componentesApiEol),
                 Disciplina = componenteCurricular.Descricao.Trim(),
@@ -50,7 +59,9 @@ namespace SME.SR.Application
                 Regencia = componenteCurricular.EhRegencia(componentesApiEol) || componenteCurricular.ComponentePlanejamentoRegencia,
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
                 BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
-                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == VerificaGrupoMatrizTerritorio(componenteCurricular, componenteCurricularEol?.GrupoMatrizId))
+                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == VerificaGrupoMatrizTerritorio(componenteCurricular, componenteCurricularEol?.GrupoMatrizId)),
+                OrdemComponenteTerritorioSaber = componenteCurricular.OrdemTerritorioSaber,
+                Professor = componenteCurricular.Professor
             };
         }
 
@@ -158,7 +169,44 @@ namespace SME.SR.Application
             var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmas(codigosTurma);
             componentesCurriculares.AddRange(componentesDaTurma);
 
+            AdicionarComponentesProfessorEmebs(componentesCurriculares);
+
             return componentesCurriculares;
+        }
+
+        private void AdicionarComponentesProfessorEmebs(List<ComponenteCurricular> componentesCurriculares)
+        {
+            IList<ComponenteCurricular> componentesParaAdd = new List<ComponenteCurricular>();
+
+            foreach (var ccPorTurma in componentesCurriculares.GroupBy(cc => cc.CodigoTurma))
+            {
+                bool profLibras = ccPorTurma.Any(d => d.Codigo == 218 && d.TipoEscola == "4") && !ccPorTurma.Any(d => d.Codigo == 138 && d.TipoEscola == "4");
+                bool profPortugues = ccPorTurma.Any(d => d.Codigo == 138 && d.TipoEscola == "4") && !ccPorTurma.Any(d => d.Codigo == 218 && d.TipoEscola == "4");
+
+                if (profLibras)
+                {
+                    componentesParaAdd.Add(new ComponenteCurricular()
+                    {
+                        CodigoTurma = ccPorTurma.Key,
+                        Codigo = 138,
+                        Descricao = "LINGUA PORTUGUESA",
+                        TipoEscola = "4"
+                    });
+                }
+                else if (profPortugues)
+                {
+                    componentesParaAdd.Add(new ComponenteCurricular()
+                    {
+                        CodigoTurma = ccPorTurma.Key,
+                        Codigo = 218,
+                        Descricao = "LIBRAS",
+                        TipoEscola = "4"
+                    });
+                }
+            }
+
+            if (componentesParaAdd.Any())
+                componentesCurriculares.AddRange(componentesParaAdd);
         }
     }
 }

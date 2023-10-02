@@ -29,15 +29,12 @@ namespace SME.SR.Application
             else
             {
                 var componentesCurriculares = await mediator.Send(new
-                    ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery()
+                    ObterComponentesCurricularesPorCodigosTurmaQuery()
                 {
                     CodigosTurma = request.CodigosTurma,
                     ComponentesCurriculares = request.ComponentesCurriculares,
                     GruposMatriz = request.GruposMatriz,
-                    Usuario = request.Usuario,
-                    ValidarAbrangenciaProfessor = request.ValidarAbrangenciaProfessor,
-                    EhEJA = request.Modalidade == Modalidade.EJA,
-                    NecessitaRetornoRfProfessor = false
+                    EhEJA = request.Modalidade == Modalidade.EJA
                 });
 
                 return componentesCurriculares.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);

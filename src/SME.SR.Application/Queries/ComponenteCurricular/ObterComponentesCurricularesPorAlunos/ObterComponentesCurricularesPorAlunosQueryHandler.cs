@@ -123,15 +123,12 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> ObterComponentesCurriculares(ObterComponentesCurricularesPorAlunosQuery request, IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas)
         {
-            return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaLoginEPerfilQuery()
+            return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery()
             {
                 CodigosTurma = componentesDasTurmas.Select(r => r.CodigoTurma).Distinct().ToArray(),
                 ComponentesCurriculares = componentes,
                 GruposMatriz = gruposMatriz,
-                Usuario = request.Usuario,
-                ValidarAbrangenciaProfessor = false,
-                EhEJA = request.Modalidade == Modalidade.EJA,
-                NecessitaRetornoRfProfessor = true
+                EhEJA = request.Modalidade == Modalidade.EJA
             });
         }
 
