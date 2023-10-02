@@ -50,5 +50,32 @@ namespace SME.SR.Data
 
             return await conexao.QueryFirstOrDefaultAsync<PeriodoSondagem>(query.ToString(), new { periodo = $"{periodo}%", tipoPeriodo = (int)tipoPeriodo });
         }
+
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorBimestreEAnoLetivo(int bimestre, string anoLetivo)
+        {
+            var query = new StringBuilder("select \"DataInicio\" as PeriodoInicio, \"DataFim\" as PeriodoFim ");
+            query.AppendLine("from \"PeriodoDeAberturas\" ");
+            query.AppendLine("where \"Bimestre\" = @bimestre");
+            query.AppendLine($"and \"TipoPeriodicidade\" = {(int)TipoPeriodoSondagem.Bimestre}");
+            query.AppendLine("and \"Ano\" = @anoLetivo");
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new { bimestre, anoLetivo });
+        }
+
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorSemestreEAnoLetivo(int semestre, string anoLetivo)
+        {
+            var query = new StringBuilder("select \"DataInicio\" as PeriodoInicio, \"DataFim\" as PeriodoFim ");
+            query.AppendLine("from \"PeriodoDeAberturas\" ");
+            query.AppendLine("where \"Bimestre\" = @semestre");
+            query.AppendLine($"and \"TipoPeriodicidade\" = {(int)TipoPeriodoSondagem.Semestre}");
+            query.AppendLine("and \"Ano\" = @anoLetivo");
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new { semestre, anoLetivo });
+        }
     }
 }
+
