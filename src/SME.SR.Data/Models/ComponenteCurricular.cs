@@ -32,26 +32,12 @@ namespace SME.SR.Data
         public int? OrdemTerritorioSaber { get; set; }
         public string Professor { get; set; }
 
-        public long? CodigoComponentePai(IEnumerable<ComponenteCurricularApiEol> componentesApiEol) => componentesApiEol?
-                                            .FirstOrDefault(w => w.IdComponenteCurricular == Codigo)?.IdComponenteCurricularPai;
-
         public long? CodigoComponentePai(IEnumerable<ComponenteCurricular> componentesApiEol) => componentesApiEol?
                                           .FirstOrDefault(w => w.Codigo == Codigo)?.CodComponentePai;
-
-        public bool EhCompartilhada(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
-        {
-            return componentesApiEol != null && componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.EhCompartilhada);
-        }
 
         public bool EhCompartilhada(IEnumerable<ComponenteCurricular> componentesApiEol)
         {
             return componentesApiEol != null && componentesApiEol.Any(w => w.Codigo == Codigo && w.Compartilhada);
-        }
-
-        public bool PodeLancarNota(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
-        {
-            return componentesApiEol != null && (!componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo) ||
-                       componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteLancamentoDeNota));
         }
 
         public bool PodeLancarNota(IEnumerable<ComponenteCurricular> componentesApiEol)
@@ -60,31 +46,15 @@ namespace SME.SR.Data
                        componentesApiEol.Any(w => w.Codigo == Codigo && w.LancaNota));
         }
 
-        public bool ControlaFrequencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
-        {
-            return componentesApiEol != null && (!componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo) ||
-                       componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.PermiteRegistroFrequencia));
-        }
-
         public bool ControlaFrequencia(IEnumerable<ComponenteCurricular> componentesApiEol)
         {
             return componentesApiEol != null && (!componentesApiEol.Any(w => w.Codigo == Codigo) ||
                        componentesApiEol.Any(w => w.Codigo == Codigo && w.Frequencia));
         }
 
-        public bool EhRegencia(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
-        {
-            return componentesApiEol != null && componentesApiEol.Any(w => w.IdComponenteCurricular == Codigo && w.EhRegencia);
-        }
-
         public bool EhRegencia(IEnumerable<ComponenteCurricular> componentesApiEol)
         {
             return componentesApiEol != null && componentesApiEol.Any(w => w.Codigo == Codigo && w.ComponentePlanejamentoRegencia);
-        }
-
-        public bool EhBaseNacional(IEnumerable<ComponenteCurricularApiEol> componentesApiEol)
-        {
-            return componentesApiEol != null && componentesApiEol.Any(x => x.IdComponenteCurricular == Codigo && x.EhBaseNacional);
         }
 
         public bool EhBaseNacional(IEnumerable<ComponenteCurricular> componentesApiEol)
