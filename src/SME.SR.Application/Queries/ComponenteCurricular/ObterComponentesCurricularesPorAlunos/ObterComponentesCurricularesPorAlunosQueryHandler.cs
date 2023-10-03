@@ -156,7 +156,6 @@ namespace SME.SR.Application
                         Regencia = cpTurma.EhRegencia(componentes),
                         TerritorioSaber = cpCompleto.TerritorioSaber,
                         TipoEscola = cpTurma.TipoEscola,
-                        OrdemTerritorioSaber = cpCompleto.OrdemComponenteTerritorioSaber,
                         Professor = cpCompleto.Professor
                     }).ToList();
         }

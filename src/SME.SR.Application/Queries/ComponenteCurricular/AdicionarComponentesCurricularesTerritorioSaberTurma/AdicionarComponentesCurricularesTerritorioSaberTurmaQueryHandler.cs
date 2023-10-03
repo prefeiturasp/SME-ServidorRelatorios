@@ -40,8 +40,6 @@ namespace SME.SR.Application
                     var anoTurma = dadosTurmaComponente.AnoTurma;
                     var codigoAluno = dadosTurmaComponente.CodigoAluno;
                     var grupoMatrizId = dadosTurmaComponente.GrupoMatrizId;
-                    var ordemTerritorioSaber = dadosTurmaComponente.OrdemTerritorioSaber;
-
 
                     request.ComponentesCurricularesTurma.RemoveAll(cc => cc.Codigo == informacoesComponenteTerritorioSaber.CodigoComponenteCurricular &&
                                                             cc.CodigoTurma == turma);
@@ -67,9 +65,7 @@ namespace SME.SR.Application
                                 TurnoTurma = turnoTurma,
                                 AnoTurma = anoTurma,
                                 CodigoAluno = codigoAluno,
-                                GrupoMatrizId = grupoMatrizId,
-                                OrdemTerritorioSaber = ordemTerritorioSaber
-                                
+                                GrupoMatrizId = grupoMatrizId                                
                             });
                         }
                     }
@@ -100,8 +96,7 @@ namespace SME.SR.Application
                                 TurnoTurma = turnoTurma,
                                 AnoTurma = anoTurma,
                                 CodigoAluno = codigoAluno,
-                                GrupoMatrizId = grupoMatrizId,
-                                OrdemTerritorioSaber = ordemTerritorioSaber
+                                GrupoMatrizId = grupoMatrizId
                             });
                     }
                 }

@@ -63,7 +63,6 @@ namespace SME.SR.Application
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
                 BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
                 GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId),
-                OrdemComponenteTerritorioSaber = componenteCurricular.OrdemTerritorioSaber,
                 Professor = componenteCurricular.Professor
             };
         }
