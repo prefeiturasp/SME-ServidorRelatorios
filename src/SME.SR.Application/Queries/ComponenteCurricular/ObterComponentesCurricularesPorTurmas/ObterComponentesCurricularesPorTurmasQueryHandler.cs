@@ -24,36 +24,36 @@ namespace SME.SR.Application
             var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
             if (componentesDaTurma != null && componentesDaTurma.Any())
             {
-                var componentesApiEol = await componenteCurricularRepository.ListarApiEol();
+                var informacoesComponentesCurriculares = await componenteCurricularRepository.ListarComponentes();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
-                PreencherGruposMatriz(componentesDaTurma, componentesApiEol);
+                PreencherGruposMatriz(componentesDaTurma, informacoesComponentesCurriculares);
 
                 return componentesDaTurma?.Select(c => new ComponenteCurricularPorTurma
                 {
                     CodigoTurma = c.CodigoTurma,
                     CodDisciplina = c.Codigo,
-                    CodDisciplinaPai = c.CodigoComponentePai(componentesApiEol),
-                    BaseNacional = c.EhBaseNacional(componentesApiEol),
-                    Compartilhada = c.EhCompartilhada(componentesApiEol),
+                    CodDisciplinaPai = c.CodigoComponentePai(informacoesComponentesCurriculares),
+                    BaseNacional = c.EhBaseNacional(informacoesComponentesCurriculares),
+                    Compartilhada = c.EhCompartilhada(informacoesComponentesCurriculares),
                     Disciplina = c.DescricaoFormatada,
                     GrupoMatriz = c.ObterGrupoMatriz(gruposMatriz),
-                    LancaNota = c.PodeLancarNota(componentesApiEol),
-                    Regencia = c.EhRegencia(componentesApiEol),
+                    LancaNota = c.PodeLancarNota(informacoesComponentesCurriculares),
+                    Regencia = c.EhRegencia(informacoesComponentesCurriculares),
                     TerritorioSaber = c.TerritorioSaber,
                     TipoEscola = c.TipoEscola,
-                    Frequencia = c.ControlaFrequencia(componentesApiEol)
+                    Frequencia = c.ControlaFrequencia(informacoesComponentesCurriculares)
                 });
             }
 
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
         }
 
-        public void PreencherGruposMatriz(IEnumerable<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricularApiEol> informacoesComponentesCurriculares)
+        public void PreencherGruposMatriz(IEnumerable<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares)
         {
             foreach (var componente in componentesCurriculares)
             {
-                var informacaoComponenteCurricular = informacoesComponentesCurriculares.Where(cce => cce.IdComponenteCurricular == componente.Codigo || cce.IdComponenteCurricular == componente.CodigoComponenteCurricularTerritorioSaber).FirstOrDefault();
-                componente.GrupoMatrizId = informacaoComponenteCurricular?.IdGrupoMatriz ?? 0;
+                var informacaoComponenteCurricular = informacoesComponentesCurriculares.Where(cce => cce.Codigo == componente.Codigo || cce.Codigo == componente.CodigoComponenteCurricularTerritorioSaber).FirstOrDefault();
+                componente.GrupoMatrizId = informacaoComponenteCurricular?.GrupoMatrizId ?? 0;
             }
         }
     }

@@ -29,11 +29,19 @@ namespace SME.SR.Application
                                                                                               cc.TerritorioSaber).Select(cc => cc.Codigo);
                 if (!codigosComponentesCurricularesTerritorio.Any())
                     continue;
-                
+
                 var componentesTerritorioTurma = await componenteCurricularRepository.ObterComponentesTerritorioDosSaberes(turma, codigosComponentesCurricularesTerritorio);
                 foreach (var informacoesComponenteTerritorioSaber in componentesTerritorioTurma)
                 {
-                    var tipoEscola = request.ComponentesCurricularesTurma.Where(cc => cc.CodigoTurma == turma).FirstOrDefault().TipoEscola;
+                    var dadosTurmaComponente = request.ComponentesCurricularesTurma.Where(cc => cc.Codigo == informacoesComponenteTerritorioSaber.CodigoComponenteCurricular &&
+                                                                                            cc.CodigoTurma == turma).FirstOrDefault();
+                    var tipoEscola = dadosTurmaComponente.TipoEscola;
+                    var turnoTurma = dadosTurmaComponente.TurnoTurma;
+                    var anoTurma = dadosTurmaComponente.AnoTurma;
+                    var codigoAluno = dadosTurmaComponente.CodigoAluno;
+                    var grupoMatrizId = dadosTurmaComponente.GrupoMatrizId;
+                    var ordemTerritorioSaber = dadosTurmaComponente.OrdemTerritorioSaber;
+
 
                     request.ComponentesCurricularesTurma.RemoveAll(cc => cc.Codigo == informacoesComponenteTerritorioSaber.CodigoComponenteCurricular &&
                                                             cc.CodigoTurma == turma);
@@ -55,7 +63,13 @@ namespace SME.SR.Application
                                 TipoEscola = tipoEscola,
                                 TerritorioSaber = true,
                                 Professor = agrupamentoTerritorioSaber.RfProfessor,
-                                CodigoTurma = turma
+                                CodigoTurma = turma,
+                                TurnoTurma = turnoTurma,
+                                AnoTurma = anoTurma,
+                                CodigoAluno = codigoAluno,
+                                GrupoMatrizId = grupoMatrizId,
+                                OrdemTerritorioSaber = ordemTerritorioSaber
+                                
                             });
                         }
                     }
@@ -82,7 +96,12 @@ namespace SME.SR.Application
                                 TipoEscola = tipoEscola,
                                 TerritorioSaber = true,
                                 Professor = atribuicaoNaoAgrupada?.RfProfessor,
-                                CodigoTurma = turma
+                                CodigoTurma = turma,
+                                TurnoTurma = turnoTurma,
+                                AnoTurma = anoTurma,
+                                CodigoAluno = codigoAluno,
+                                GrupoMatrizId = grupoMatrizId,
+                                OrdemTerritorioSaber = ordemTerritorioSaber
                             });
                     }
                 }

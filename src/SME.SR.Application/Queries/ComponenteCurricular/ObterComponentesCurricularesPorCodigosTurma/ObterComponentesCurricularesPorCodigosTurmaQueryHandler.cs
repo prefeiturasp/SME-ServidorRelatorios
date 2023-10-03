@@ -40,36 +40,33 @@ namespace SME.SR.Application
 
             return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
         }
-        private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
+        private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            return componentesCurriculares?.Select(c => MapearParaDto(c, componentesApiEol, grupoMatrizes));
+            return componentesCurriculares?.Select(c => MapearParaDto(c, informacoesComponentesCurriculares, grupoMatrizes));
         }
 
-        private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> componentesApiEol, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
+        private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            var componenteCurricularEol = componentesApiEol.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo || x.Codigo == componenteCurricular.CodigoComponenteCurricularTerritorioSaber);
+            var componenteCurricularEol = informacoesComponentesCurriculares.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo || x.Codigo == componenteCurricular.CodigoComponenteCurricularTerritorioSaber);
 
             return new ComponenteCurricularPorTurmaRegencia
             {
                 CodigoTurma = componenteCurricular.CodigoTurma,
                 CodDisciplina = componenteCurricular.Codigo,
                 CodigoComponenteCurricularTerritorioSaber = componenteCurricular.CodigoComponenteCurricularTerritorioSaber,
-                CodDisciplinaPai = componenteCurricular.CodigoComponentePai(componentesApiEol),
-                Compartilhada = componenteCurricular.EhCompartilhada(componentesApiEol),
+                CodDisciplinaPai = componenteCurricular.CodigoComponentePai(informacoesComponentesCurriculares),
+                Compartilhada = componenteCurricular.EhCompartilhada(informacoesComponentesCurriculares),
                 Disciplina = componenteCurricular.Descricao.Trim(),
-                LancaNota = componenteCurricular.PodeLancarNota(componentesApiEol),
-                Frequencia = componenteCurricular.ControlaFrequencia(componentesApiEol),
-                Regencia = componenteCurricular.EhRegencia(componentesApiEol) || componenteCurricular.ComponentePlanejamentoRegencia,
+                LancaNota = componenteCurricular.PodeLancarNota(informacoesComponentesCurriculares),
+                Frequencia = componenteCurricular.ControlaFrequencia(informacoesComponentesCurriculares),
+                Regencia = componenteCurricular.EhRegencia(informacoesComponentesCurriculares) || componenteCurricular.ComponentePlanejamentoRegencia,
                 TerritorioSaber = componenteCurricular.TerritorioSaber,
                 BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
-                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == VerificaGrupoMatrizTerritorio(componenteCurricular, componenteCurricularEol?.GrupoMatrizId)),
+                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId),
                 OrdemComponenteTerritorioSaber = componenteCurricular.OrdemTerritorioSaber,
                 Professor = componenteCurricular.Professor
             };
         }
-
-        private long VerificaGrupoMatrizTerritorio(ComponenteCurricular componenteCurricular, long? grupoMatrizEol = 0)
-            => componenteCurricular.TerritorioSaber ? componenteCurricular.GrupoMatrizId : grupoMatrizEol.Value;
 
         private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares)
         {
