@@ -55,8 +55,8 @@ namespace SME.SR.Application
 
             var relatorio = new RelatorioEncaminhamentosNAAPADto()
             {
-                DreNome = filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
-                UeNome = filtroRelatorio.UeCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.UeCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().UeNome,
+                DreNome = !string.IsNullOrEmpty(filtroRelatorio.DreCodigo) && filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
+                UeNome = !string.IsNullOrEmpty(filtroRelatorio.UeCodigo) && filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().UeNome,
                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
             relatorio.EncaminhamentosDreUe = encaminhamentosAgrupados;
