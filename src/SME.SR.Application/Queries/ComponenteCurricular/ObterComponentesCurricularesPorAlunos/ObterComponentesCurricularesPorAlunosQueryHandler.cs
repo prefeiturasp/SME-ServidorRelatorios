@@ -29,8 +29,13 @@ namespace SME.SR.Application
         {
             var todosComponentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
-            var alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurmas.Select(ct => ct.ToString()));
-            var codigoAlunos = alunos.Select(x => int.Parse(x.CodigoAluno.ToString())).ToArray();
+
+            var codigoAlunos = request.AlunosCodigos;
+            if (!codigoAlunos.Any())
+            {
+                var alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurmas.Select(ct => ct.ToString()));
+                codigoAlunos = alunos.Select(x => int.Parse(x.CodigoAluno.ToString())).ToArray();
+            }
             var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos.Select(ca => (long)ca).ToArray(), request.AnoLetivo));
 
             var turmasCodigosFiltrado = turmasAlunos
@@ -46,8 +51,9 @@ namespace SME.SR.Application
             var componentesDasTurmas = await ObterComponentesPorAlunos(turmasCodigosFiltrado, codigoAlunos.Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.ConsideraHistorico);
             var componentesCurricularesCompletos = await ObterComponentesCurriculares(turmasCodigosFiltrado.Select(cod => cod.ToString()).ToArray(), todosComponentes, request.Modalidade == Modalidade.EJA);
 
-            var componentesId = componentesCurricularesCompletos.Select(x => x.Codigo).Distinct();
-            componentesId = componentesId.Concat(componentesCurricularesCompletos.Where(x => x.CodigoComponenteCurricularTerritorioSaber != 0).Select(x => x.CodigoComponenteCurricularTerritorioSaber).Distinct());
+            var componentesId = componentesDasTurmas.Select(ct => ct.Codigo).Distinct().ToList();
+            componentesId.AddRange(componentesCurricularesCompletos.Select(x => x.Codigo).Distinct());
+            componentesId.AddRange(componentesCurricularesCompletos.Where(x => x.CodigoComponenteCurricularTerritorioSaber != 0).Select(x => x.CodigoComponenteCurricularTerritorioSaber).Distinct());
             var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId.Distinct().ToArray()));
 
             var componentesMapeados = MapearComponentes(todosComponentes, gruposMatriz, areasConhecimento, componentesCurricularesCompletos, turmasAlunos);
@@ -98,7 +104,8 @@ namespace SME.SR.Application
                                                                                              IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<AreaDoConhecimento> areasConhecimento,
                                                                                              IEnumerable<ComponenteCurricular> componentesDasTurmas)
         {
-            return componentesDasTurmas?.Where(w => w.EhRegencia(informacoesComponentesCurriculares)).Select(c => new ComponenteCurricularPorTurma
+            return componentesDasTurmas?.Where(w => w.EhRegencia(informacoesComponentesCurriculares)).Select(c => 
+            new ComponenteCurricularPorTurma
             {
                 CodigoAluno = c.CodigoAluno,
                 CodigoTurma = c.CodigoTurma,
@@ -107,7 +114,7 @@ namespace SME.SR.Application
                 BaseNacional = c.EhBaseNacional(informacoesComponentesCurriculares),
                 Compartilhada = c.EhCompartilhada(informacoesComponentesCurriculares),
                 Disciplina = informacoesComponentesCurriculares.FirstOrDefault(d => d.Codigo == c.Codigo).Descricao,
-                GrupoMatriz = c.ObterGrupoMatriz(gruposMatriz),
+                GrupoMatriz = new ComponenteCurricularGrupoMatriz() { Id = informacoesComponentesCurriculares.FirstOrDefault(d => d.Codigo == c.Codigo).GrupoMatrizId, Nome = informacoesComponentesCurriculares.FirstOrDefault(d => d.Codigo == c.Codigo).GrupoMatrizNome },
                 AreaDoConhecimento = c.ObterAreaDoConhecimento(areasConhecimento),
                 LancaNota = c.PodeLancarNota(informacoesComponentesCurriculares),
                 Frequencia = c.ControlaFrequencia(informacoesComponentesCurriculares),
@@ -157,7 +164,7 @@ namespace SME.SR.Application
                         AreaDoConhecimento = cpCompleto.ObterAreaDoConhecimento(areasConhecimento),
                         LancaNota = cpCompleto.LancaNota,
                         Frequencia = cpCompleto.Frequencia,
-                        Regencia = cpCompleto.EhRegencia(todosComponentesCurriculares),
+                        Regencia = cpCompleto.EhRegencia(todosComponentesCurriculares) || cpCompleto.ComponentePlanejamentoRegencia,
                         TerritorioSaber = cpCompleto.TerritorioSaber,
                         TipoEscola = cpCompleto.TipoEscola,
                         Professor = cpCompleto.Professor
