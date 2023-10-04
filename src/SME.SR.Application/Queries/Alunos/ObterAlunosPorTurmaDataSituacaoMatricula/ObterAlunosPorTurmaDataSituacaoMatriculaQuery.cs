@@ -7,13 +7,15 @@ namespace SME.SR.Application
 {
     public class ObterAlunosPorTurmaDataSituacaoMatriculaQuery : IRequest<IEnumerable<Aluno>>
     {
-        public ObterAlunosPorTurmaDataSituacaoMatriculaQuery(long turmaCodigo, DateTime dataReferencia)
+        public ObterAlunosPorTurmaDataSituacaoMatriculaQuery(long turmaCodigo, DateTime dataReferenciaFim, DateTime? dataReferenciaInicio = null)
         {
             TurmaCodigo = turmaCodigo;
-            Referencia = dataReferencia;
+            DataReferenciaFim = dataReferenciaFim;
+            DataReferenciaInicio = dataReferenciaInicio;
         }
 
         public long TurmaCodigo { get; set; }
-        public DateTime Referencia { get; set; }
+        public DateTime DataReferenciaFim { get; set; }
+        public DateTime? DataReferenciaInicio { get; set; }
     }
 }
