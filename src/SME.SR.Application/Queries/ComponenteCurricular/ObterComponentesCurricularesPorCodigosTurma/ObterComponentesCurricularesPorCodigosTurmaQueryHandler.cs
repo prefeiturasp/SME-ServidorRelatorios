@@ -59,7 +59,7 @@ namespace SME.SR.Application
         }
         
 
-        private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares)
+        private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares)
         {
             var componentesRegencia = componentesCurriculares.Where(c => c.EhRegencia(informacoesComponentesCurriculares));
             if (componentesRegencia != null && componentesRegencia.Any())
@@ -110,16 +110,16 @@ namespace SME.SR.Application
             if (ids == null || !ids.Any())
                 return Enumerable.Empty<Data.ComponenteCurricular>();
 
-            var componentes = await componenteCurricularRepository.ListarComponentes();
-            return componentes.Where(c => ids.Contains(c.Codigo));
+            var componentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
+            return componentes.ToComponentesCurriculares().Where(c => ids.Contains(c.Codigo));
         }
 
-        private void PreencherComponenteCurricularEhTerritorio(List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares)
+        private void PreencherComponenteCurricularEhTerritorio(List<ComponenteCurricular> componentesCurriculares, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares)
         {
             componentesCurriculares.ForEach(c =>
             {
                 var informacaoComponenteCurricular = informacoesComponentesCurriculares.FirstOrDefault(cc => cc.Codigo == c.Codigo);
-                c.TerritorioSaber = informacaoComponenteCurricular?.TerritorioSaber ?? false;
+                c.TerritorioSaber = informacaoComponenteCurricular?.EhTerritorioSaber ?? false;
             });
         }
 

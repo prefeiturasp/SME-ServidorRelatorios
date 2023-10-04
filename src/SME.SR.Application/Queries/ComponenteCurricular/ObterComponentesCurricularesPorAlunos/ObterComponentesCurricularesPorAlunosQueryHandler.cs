@@ -27,7 +27,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesPorAlunosQuery request, CancellationToken cancellationToken)
         {
-            var todosComponentes = await componenteCurricularRepository.ListarComponentes();
+            var todosComponentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
             var alunos = await alunoRepository.ObterPorCodigosTurma(request.CodigosTurmas.Select(ct => ct.ToString()));
             var codigoAlunos = alunos.Select(x => int.Parse(x.CodigoAluno.ToString())).ToArray();
@@ -76,7 +76,7 @@ namespace SME.SR.Application
             throw new NegocioException("Não foi possível localizar os componentes curriculares da turma.");
         }
 
-        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>>> ObterComponentesCurricularesRegenciaClasse(string[] codigosTurmas, ObterComponentesCurricularesPorAlunosQuery request, IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<long> componentesRegencia)
+        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>>> ObterComponentesCurricularesRegenciaClasse(string[] codigosTurmas, ObterComponentesCurricularesPorAlunosQuery request, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<long> componentesRegencia)
         {
             return await mediator.Send(new ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery()
             {
@@ -90,15 +90,15 @@ namespace SME.SR.Application
             });
         }
 
-        private IEnumerable<long> ObterCodigosComponentesRegenciaClasse(IEnumerable<ComponenteCurricular> todosComponentesCurriculares, IEnumerable<ComponenteCurricular> componentesCurricularesCompletos)
+        private IEnumerable<long> ObterCodigosComponentesRegenciaClasse(IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> todosComponentesCurriculares, IEnumerable<ComponenteCurricular> componentesCurricularesCompletos)
         {
             return (from cpTurma in componentesCurricularesCompletos
                     join reg in todosComponentesCurriculares on cpTurma.Codigo equals reg.Codigo
-                    where reg.ComponentePlanejamentoRegencia
+                    where reg.EhRegencia
                     select reg.Codigo).Distinct();
         }
 
-        private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurriculares(string[] codigosTurmas, IEnumerable<ComponenteCurricular> componentes, bool ehEJA = false)
+        private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurriculares(string[] codigosTurmas, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> componentes, bool ehEJA = false)
         {
             return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery()
             {
@@ -108,7 +108,7 @@ namespace SME.SR.Application
             });
         }
 
-        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> todosComponentesCurriculares,
+        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> todosComponentesCurriculares,
                                                                      IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<AreaDoConhecimento> areasConhecimento, 
                                                                      IEnumerable<ComponenteCurricular> componentesCurricularesCompletos, 
                                                                      IEnumerable<AlunosTurmasCodigosDto> turmasAlunos)

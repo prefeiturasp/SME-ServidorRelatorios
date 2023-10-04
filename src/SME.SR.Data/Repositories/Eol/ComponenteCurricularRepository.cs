@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
+using Org.BouncyCastle.Crypto.Macs;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
@@ -205,25 +206,30 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<IEnumerable<ComponenteCurricular>> ListarComponentes()
+        public async Task<IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO>> ListarInformacoesPedagogicasComponentesCurriculares()
         {
-            var query = @"select cc.id as codigo,
-                               coalesce(cc.descricao_sgp,descricao)as descricao,
-                               cc.eh_territorio as territorioSaber,
-                               cc.eh_regencia as ComponentePlanejamentoRegencia,
-                               cc.componente_curricular_pai_id as CodComponentePai,
-                               cc.grupo_matriz_id as GrupoMatrizId,
-                               cc.eh_compartilhada as Compartilhada,
-                               cc.permite_lancamento_nota as LancaNota,
-                               cc.permite_registro_frequencia as Frequencia,
-                               cc.eh_base_nacional as BaseNacional,
-                               cc.descricao_infantil as DescricaoInfantil
+            var query = @"select cc.id as Codigo,
+                               cc.componente_curricular_pai_id as CodComponenteCurricularPai,
+                                coalesce(cc.descricao_sgp,cc.descricao) as Descricao,
+                                cc.descricao_infantil as DescricaoInfantil,
+                                cc.eh_base_nacional as BaseNacional,
+                                cc.eh_compartilhada as Compartilhada,
+                                cc.eh_regencia as EhRegencia,
+                                cc.eh_territorio as EhTerritorioSaber,
+                                cc.grupo_matriz_id as GrupoMatrizId,
+                                ccgm.nome as GrupoMatrizNome,
+                                cc.area_conhecimento_id as AreaConhecimentoId,
+                                cac.nome as AreaConhecimentoNome,
+                                cc.permite_lancamento_nota as LancaNota,
+                                cc.permite_registro_frequencia as RegistraFrequencia
                           from componente_curricular cc 
+                          left join componente_curricular_grupo_matriz ccgm on ccgm.id = cc.grupo_matriz_id 
+                          left join componente_curricular_area_conhecimento cac on cac.id = cc.area_conhecimento_id
                          order by cc.id";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<ComponenteCurricular>(query);
+                return await conexao.QueryAsync<InformacaoPedagogicaComponenteCurricularSGPDTO>(query);
             }
         }
 
@@ -417,31 +423,7 @@ namespace SME.SR.Data
             return await conexao.QueryFirstOrDefaultAsync<string>(query, parametros);
         }
 
-        public async Task<IEnumerable<DisciplinaDto>> ObterDisciplinasPorIds(long[] ids)
-        {
-            var query = $@"select
-                                cc.id,
-                                cc.id as CodigoComponenteCurricular,
-                                cc.area_conhecimento_id as AreaConhecimentoId,
-                                cc.componente_curricular_pai_id as CdComponenteCurricularPai,
-                                coalesce(cc.descricao_sgp,cc.descricao) as Nome,
-                                cc.eh_base_nacional as EhBaseNacional,
-                                cc.eh_compartilhada as Compartilhada,
-                                cc.eh_regencia as Regencia,
-                                cc.eh_territorio as TerritorioSaber,
-                                cc.grupo_matriz_id as GrupoMatrizId,
-                                ccgm.nome as GrupoMatrizNome,
-                                cc.permite_lancamento_nota as LancaNota,
-                                cc.permite_registro_frequencia as RegistraFrequencia
-                           from componente_curricular cc 
-                           left join componente_curricular_grupo_matriz ccgm on ccgm.id = cc.grupo_matriz_id 
-                          WHERE cc.id = ANY(@ids)";
-
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
-            {
-                return await conexao.QueryAsync<DisciplinaDto>(query, new { ids });
-            }
-        }
+        
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] codigosTurmas, int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
         {

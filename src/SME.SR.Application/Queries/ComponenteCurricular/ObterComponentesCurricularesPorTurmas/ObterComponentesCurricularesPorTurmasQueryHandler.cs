@@ -24,7 +24,7 @@ namespace SME.SR.Application
             var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
             if (componentesDaTurma != null && componentesDaTurma.Any())
             {
-                var informacoesComponentesCurriculares = await componenteCurricularRepository.ListarComponentes();
+                var informacoesComponentesCurriculares = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
                 PreencherGruposMatriz(componentesDaTurma, informacoesComponentesCurriculares);
 
@@ -48,7 +48,7 @@ namespace SME.SR.Application
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
         }
 
-        public void PreencherGruposMatriz(IEnumerable<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares)
+        public void PreencherGruposMatriz(IEnumerable<ComponenteCurricular> componentesCurriculares, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares)
         {
             foreach (var componente in componentesCurriculares)
             {

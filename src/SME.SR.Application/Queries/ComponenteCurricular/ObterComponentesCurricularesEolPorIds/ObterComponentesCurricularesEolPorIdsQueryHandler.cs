@@ -25,9 +25,10 @@ namespace SME.SR.Application
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesEolPorIdsQuery request, CancellationToken cancellationToken)
         {
             var idsComponentesAgrupamentoTS = request.ComponentesCurricularesIds.Where(cc => cc.EhIdComponenteCurricularTerritorioSaberAgrupado()).Select(cc => cc);
-            var componentesCurriculares = await componenteCurricularRepository.ListarComponentes();
+            var componentesCurriculares = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
             var componentesCurricularesRetorno = componentesCurriculares
                    .Where(w => request.ComponentesCurricularesIds.Contains(w.Codigo))
+                   .ToComponentesCurriculares()
                    .ToList();
 
             var componentesTS = componentesCurricularesRetorno.Where(c => c.TerritorioSaber)
@@ -73,7 +74,7 @@ namespace SME.SR.Application
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
         }
 
-        public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentesCurricularesRetorno, IEnumerable<ComponenteCurricularTerritorioSaber> componentesTerritorio, IEnumerable<ComponenteCurricular> informacoesComponentes)
+        public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentesCurricularesRetorno, IEnumerable<ComponenteCurricularTerritorioSaber> componentesTerritorio, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentes)
         {
     		var componentesConcatenados = componentesCurricularesRetorno.Where(a => !componentesTerritorio.Any(x => x.CodigoComponenteCurricular == a.Codigo)).ToList();
             return componentesConcatenados.Concat(componentesTerritorio.Select(ct => new ComponenteCurricular()
@@ -87,7 +88,7 @@ namespace SME.SR.Application
                                                                             })).ToList();
         }
 
-        public List<ComponenteCurricular> ConcatenarComponenteAgrupamentoTerritorio(IEnumerable<ComponenteCurricular> componentesCurricularesRetorno, IEnumerable<AgrupamentoAtribuicaoTerritorioSaber> componentesAgrupamentoTerritorio, IEnumerable<ComponenteCurricular> informacoesComponentes)
+        public List<ComponenteCurricular> ConcatenarComponenteAgrupamentoTerritorio(IEnumerable<ComponenteCurricular> componentesCurricularesRetorno, IEnumerable<AgrupamentoAtribuicaoTerritorioSaber> componentesAgrupamentoTerritorio, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentes)
         {
             var componentesAgrupamento = componentesAgrupamentoTerritorio.Select(ct => new ComponenteCurricular()
             {

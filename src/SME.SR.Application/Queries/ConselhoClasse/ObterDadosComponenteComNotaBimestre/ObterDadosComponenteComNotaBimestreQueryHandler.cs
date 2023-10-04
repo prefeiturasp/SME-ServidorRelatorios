@@ -141,7 +141,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesRegenciaDaTurma(string codigoTurma)
         {
-            var componentes = await componenteCurricularRepository.ListarComponentes();
+            var componentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
             var componentesDaTurma = await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(new string[] {codigoTurma}, componentes));
             return componentesDaTurma.Any() ? componentesDaTurma.Where(c=> c.ComponentePlanejamentoRegencia).ToList() : null;
         }
@@ -266,7 +266,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurricularesPorTurma(string codigoTurma)
         {
-            var componentes = await componenteCurricularRepository.ListarComponentes();
+            var componentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
             var componentesDaTurma =  await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(new string[] { codigoTurma }, componentes));

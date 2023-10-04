@@ -14,7 +14,7 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmas(string[] codigosTurma);
 
-        Task<IEnumerable<ComponenteCurricular>> ListarComponentes();
+        Task<IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO>> ListarInformacoesPedagogicasComponentesCurriculares();
 
         Task<IEnumerable<ComponenteCurricularRegenciaApiEol>> ListarRegencia();
 
@@ -27,9 +27,6 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<ComponenteCurricularSondagem>> ObterComponenteCurricularDeSondagemPorId(string componenteCurricularId);
         Task<string> ObterNomeComponenteCurricularPorId(long componenteCurricularId);
-
-        Task<IEnumerable<DisciplinaDto>> ObterDisciplinasPorIds(long[] ids);
-
         Task<long> ObterGrupoMatrizIdPorComponenteCurricularId(long componenteCurricularId);
 
         Task<bool> VerificaSeComponenteEhTerritorio(long componenteCurricularId);

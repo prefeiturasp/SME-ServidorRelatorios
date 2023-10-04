@@ -80,7 +80,7 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorTurma(string codigoTurma)
         {
-            var componentes = await componenteCurricularRepository.ListarComponentes();
+            var componentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
 
             return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery()
             {
