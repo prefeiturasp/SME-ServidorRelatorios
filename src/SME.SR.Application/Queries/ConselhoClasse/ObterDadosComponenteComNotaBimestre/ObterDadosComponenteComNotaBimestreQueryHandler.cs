@@ -269,7 +269,7 @@ namespace SME.SR.Application
             var componentes = await componenteCurricularRepository.ListarComponentes();
             var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
-            var componentesDaTurma =  await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(new string[] { codigoTurma }, componentes, gruposMatriz));
+            var componentesDaTurma =  await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(new string[] { codigoTurma }, componentes));
 
             return componentesDaTurma.Select(c => new ComponenteCurricularPorTurma()
             {
