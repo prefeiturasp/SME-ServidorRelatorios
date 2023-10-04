@@ -41,23 +41,21 @@ namespace SME.SR.Application
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), turma.Nome, request.AnoLetivo, periodo.Periodo, request.Usuario.CodigoRf, request.Usuario.Nome);
 
-            var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, request.AnoLetivo));
+            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorBimestreQuery(semestre, request.AnoLetivo));
 
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, dataDoPeriodo));
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 
             var perguntas = await perguntasAutoralRepository.ObterPerguntasPorGrupo(GrupoSondagemEnum.CapacidadeLeitura, ComponenteCurricularSondagemEnum.Portugues);
 
-            var alunosEol = await alunoRepository.ObterAlunosPorTurmaDataSituacaoMariculaParaSondagem(request.TurmaCodigo, dataDoPeriodo);
-
             ObterPerguntas(relatorio, perguntas);
 
             var dados = await relatorioSondagemPortuguesPorTurmaRepository.ObterPorFiltros(GrupoSondagemEnum.CapacidadeLeitura.Name(), ComponenteCurricularSondagemEnum.Portugues.Name(), periodo.Id, request.AnoLetivo, request.TurmaCodigo.ToString());
 
-            ObterLinhas(relatorio, dados, alunosEol);
+            ObterLinhas(relatorio, dados, alunosDaTurma);
 
-            GerarGrafico(relatorio, alunosEol.Count());
+            GerarGrafico(relatorio, alunosDaTurma.Count());
 
             return relatorio;
         }

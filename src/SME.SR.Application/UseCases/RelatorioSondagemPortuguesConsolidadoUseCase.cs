@@ -25,16 +25,17 @@ namespace SME.SR.Application
 
             var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
 
-            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
+            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorSemestreQuery(semestre, filtros.AnoLetivo.ToString()));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                dataReferencia,
+                periodoCompleto.PeriodoFim,
                 Convert.ToInt64(filtros.DreCodigo),
                 filtros.Modalidades,
-                true));
+                true, 
+                periodoCompleto.PeriodoInicio));
 
             RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
