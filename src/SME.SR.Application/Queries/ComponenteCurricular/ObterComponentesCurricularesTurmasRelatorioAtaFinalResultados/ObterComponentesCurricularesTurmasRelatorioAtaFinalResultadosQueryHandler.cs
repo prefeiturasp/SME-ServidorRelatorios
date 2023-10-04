@@ -15,7 +15,6 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
-        private const long CODIGO_EDFISICA = 6;
 
         public ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,
                                                                               IMediator mediator)
@@ -85,14 +84,15 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 {
                     var componentesRegentes = componentesMapeados.Where(cm => cm.Regencia).ToList();
 
-                    var componentesRegenciaPorTurma = await ObterComponenteCurricularRegencia(
-                        componentesRegentes.Select(r => r.CodigoTurma).Distinct().ToArray(),
-                        componentesRegentes.Select(r => r.CodDisciplina).Distinct().ToArray(),
-                        request.CodigoUe,
-                        request.Modalidade,
-                        componentes,
-                        gruposMatriz
-                    );
+                    var componentesRegenciaPorTurma = await mediator.Send(new ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery()
+                    {
+                        CodigosTurma = componentesRegentes.Select(r => r.CodigoTurma).ToArray(),
+                        CdComponentesCurriculares = componentesRegentes.DistinctBy(c => c.CodDisciplina).Select(r => r.CodDisciplina).ToArray(),
+                        CodigoUe = request.CodigoUe,
+                        Modalidade = request.Modalidade,
+                        ComponentesCurriculares = componentes,
+                        GruposMatriz = gruposMatriz
+                    });
 
                     if (componentesRegenciaPorTurma != null && componentesRegenciaPorTurma.Any())
                     {
@@ -114,24 +114,6 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
         }
 
 
-
-        private async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>>> ObterComponenteCurricularRegencia(string[] codigosTurma,
-            long[] cdComponentesCurriculares, string codigoUe, Modalidade modalidade, IEnumerable<Data.ComponenteCurricular> componentesCurriculares,
-            IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz)
-        {
-            var componentes = await mediator.Send(new
-                   ObterComponentesCurricularesPorCodigosTurmaQuery()
-            {
-                CodigosTurma = codigosTurma,
-                ComponentesCurriculares = componentesCurriculares,
-                GruposMatriz = gruposMatriz
-            });
-
-            if(modalidade == Modalidade.EJA)
-                componentes = componentes.Where(w => w.CodDisciplina != CODIGO_EDFISICA).ToList();
-
-            return componentes.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);
-        }
         private async Task<IEnumerable<ComponenteCurricularPorTurma>> ObterComponentesCurriculares(IEnumerable<long> componentesCurriculares, string turmaId)
         {
             string[] turmaCodigo = { turmaId };

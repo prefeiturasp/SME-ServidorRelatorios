@@ -47,10 +47,10 @@ namespace SME.SR.Application
             var componentesId = componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray();
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesId));
             var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId));
-            var componentesCurricularesCompletos = await ObterComponentesCurriculares(request, todosComponentes, gruposMatriz, componentesDasTurmas);
-            var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental, turmasAlunos);
+            var componentesCurricularesCompletos = await ObterComponentesCurriculares(turmasCodigosFiltrado.Select(cod => cod.ToString()).ToArray(), todosComponentes, request.Modalidade == Modalidade.EJA);
+            var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, gruposMatriz, componentesCurricularesCompletos, turmasAlunos);
 
-            componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
+            componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, areasConhecimento));
 
             var componentesRegencia = ObterCodigosComponentesRegenciaClasse(todosComponentes, componentesDasTurmas);
 
@@ -87,8 +87,7 @@ namespace SME.SR.Application
                 Modalidade = request.Modalidade,
                 ComponentesCurriculares = componentes,
                 GruposMatriz = gruposMatriz,
-                Usuario = request.Usuario,
-                ValidarAbrangenciaProfessor = false
+                Usuario = request.Usuario
             });
         }
 
@@ -100,7 +99,7 @@ namespace SME.SR.Application
                     select reg.Codigo).Distinct();
         }
 
-        private IEnumerable<ComponenteCurricularPorTurma> AdicionarComponentesRegenciaClasse(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<DisciplinaDto> disciplinasDaTurma, IEnumerable<AreaDoConhecimento> areasConhecimento)
+        private IEnumerable<ComponenteCurricularPorTurma> AdicionarComponentesRegenciaClasse(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento)
         {
             return componentesDasTurmas?.Where(w => w.EhRegencia(componentes)).Select(c => new ComponenteCurricularPorTurma
             {
@@ -110,8 +109,8 @@ namespace SME.SR.Application
                 CodDisciplinaPai = c.CodigoComponentePai(componentes),
                 BaseNacional = c.EhBaseNacional(componentes),
                 Compartilhada = c.EhCompartilhada(componentes),
-                Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.Id == c.Codigo).Nome,
-                GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
+                Disciplina = c.Descricao,
+                GrupoMatriz = c.ObterGrupoMatriz(gruposMatriz),
                 AreaDoConhecimento = c.ObterAreaDoConhecimento(areasConhecimento),
                 LancaNota = c.PodeLancarNota(componentes),
                 Frequencia = c.ControlaFrequencia(componentes),
@@ -121,35 +120,35 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> ObterComponentesCurriculares(ObterComponentesCurricularesPorAlunosQuery request, IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesDasTurmas)
+        private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurriculares(string[] codigosTurmas, IEnumerable<ComponenteCurricular> componentes, bool ehEJA = false)
         {
             return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery()
             {
-                CodigosTurma = componentesDasTurmas.Select(r => r.CodigoTurma).Distinct().ToArray(),
+                CodigosTurma = codigosTurmas,
                 ComponentesCurriculares = componentes,
-                GruposMatriz = gruposMatriz,
-                EhEJA = request.Modalidade == Modalidade.EJA
+                EhEJA = ehEJA
             });
         }
 
-        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesCurricularesCompletos, IEnumerable<DisciplinaDto> disciplinasDaTurma, bool ehFundamental, IEnumerable<AlunosTurmasCodigosDto> turmasAlunos)
+        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, 
+                                                                     IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularGrupoMatriz> gruposMatriz, IEnumerable<ComponenteCurricular> componentesCurricularesCompletos, 
+                                                                     IEnumerable<AlunosTurmasCodigosDto> turmasAlunos)
         {
             return (from cpTurma in componentesDasTurmas
-                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.TerritorioSaber ? cpCompleto.CodigoComponenteCurricularTerritorioSaber : cpCompleto.CodDisciplina)
-                    join disciplina in disciplinasDaTurma on (cpCompleto.TerritorioSaber ? cpCompleto.CodigoComponenteCurricularTerritorioSaber : cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
+                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.TerritorioSaber ? cpCompleto.CodigoComponenteCurricularTerritorioSaber : cpCompleto.Codigo)
                     join tAluno in turmasAlunos on (cpTurma.CodigoTurma, cpTurma.CodigoAluno) equals (tAluno.TurmaCodigo, tAluno.AlunoCodigo.ToString())
                     select new ComponenteCurricularPorTurma()
                     {
                         CodigoAluno = cpTurma.CodigoAluno,
                         CodigoTurma = cpTurma.CodigoTurma,
-                        CodDisciplina = cpCompleto.CodDisciplina,
+                        CodDisciplina = cpCompleto.Codigo,
                         CodDisciplinaPai = cpTurma.CodigoComponentePai(componentes),
                         CodigoComponenteCurricularTerritorioSaber = cpCompleto.CodigoComponenteCurricularTerritorioSaber,
                         BaseNacional = cpCompleto.BaseNacional,
                         Compartilhada = cpCompleto.Compartilhada,
-                        Disciplina = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.ObterDisciplina() : disciplina.ObterDisciplina(),
-                        DescricaoCompletaTerritorio = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.Disciplina : string.Empty,
-                        GrupoMatriz = cpCompleto.GrupoMatriz,
+                        Disciplina = cpCompleto.Descricao,
+                        DescricaoCompletaTerritorio = cpCompleto.TerritorioSaber ? cpCompleto.Descricao : string.Empty,
+                        GrupoMatriz = cpCompleto.ObterGrupoMatriz(gruposMatriz),
                         AreaDoConhecimento = cpTurma.ObterAreaDoConhecimento(areasConhecimento),
                         LancaNota = cpCompleto.LancaNota,
                         Frequencia = cpCompleto.Frequencia,

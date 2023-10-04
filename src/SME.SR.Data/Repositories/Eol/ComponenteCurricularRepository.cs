@@ -233,6 +233,7 @@ namespace SME.SR.Data
                                         cc.cd_componente_curricular) as Codigo,
                                     iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
                                         cc.dc_componente_curricular) as Descricao,
+                                        esc.tp_escola                    as TipoEscola,
 										serie_ensino.sg_resumida_serie   as AnoTurma,
                                         dtt.qt_hora_duracao              as TurnoTurma,
                                         te.cd_turma_escola               as CodigoTurma

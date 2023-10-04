@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Nest;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -10,10 +11,12 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterComponentesCurricularesPorCodigosTurmaQueryHandler : IRequestHandler<ObterComponentesCurricularesPorCodigosTurmaQuery, IEnumerable<ComponenteCurricularPorTurmaRegencia>>
+    public class ObterComponentesCurricularesPorCodigosTurmaQueryHandler : IRequestHandler<ObterComponentesCurricularesPorCodigosTurmaQuery, IEnumerable<ComponenteCurricular>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
         private readonly IMediator mediator;
+        private const long CODIGO_COMPONENTE_CURRICULAR_EDFISICA = 6;
+
 
         public ObterComponentesCurricularesPorCodigosTurmaQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,
                                                                        IMediator mediator)
@@ -22,7 +25,7 @@ namespace SME.SR.Application
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); ;
         }
 
-        public async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> Handle(ObterComponentesCurricularesPorCodigosTurmaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ComponenteCurricular>> Handle(ObterComponentesCurricularesPorCodigosTurmaQuery request, CancellationToken cancellationToken)
         {
             List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.CodigosTurma);
             PreencherComponenteCurricularEhTerritorio(componentesCurriculares, request.ComponentesCurriculares);
@@ -32,40 +35,29 @@ namespace SME.SR.Application
 
             if (request.EhEJA)
             {
-                var componenteEdFisicaRegencia = componentesCurriculares.Find(w => w.Codigo == 6 && w.ComponentePlanejamentoRegencia);
+                var componenteEdFisicaRegencia = componentesCurriculares.Find(w => w.Codigo == CODIGO_COMPONENTE_CURRICULAR_EDFISICA && w.ComponentePlanejamentoRegencia);
 
                 if (componenteEdFisicaRegencia != null)
                     componentesCurriculares.Remove(componenteEdFisicaRegencia);
             }
 
-            return MapearParaDto(componentesCurriculares, request.ComponentesCurriculares, request.GruposMatriz);
-        }
-        private IEnumerable<ComponenteCurricularPorTurmaRegencia> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
-        {
-            return componentesCurriculares?.Select(c => MapearParaDto(c, informacoesComponentesCurriculares, grupoMatrizes));
-        }
-
-        private ComponenteCurricularPorTurmaRegencia MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
-        {
-            var componenteCurricularEol = informacoesComponentesCurriculares.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo || x.Codigo == componenteCurricular.CodigoComponenteCurricularTerritorioSaber);
-
-            return new ComponenteCurricularPorTurmaRegencia
+            componentesCurriculares.ForEach(cc =>
             {
-                CodigoTurma = componenteCurricular.CodigoTurma,
-                CodDisciplina = componenteCurricular.Codigo,
-                CodigoComponenteCurricularTerritorioSaber = componenteCurricular.CodigoComponenteCurricularTerritorioSaber,
-                CodDisciplinaPai = componenteCurricular.CodigoComponentePai(informacoesComponentesCurriculares),
-                Compartilhada = componenteCurricular.EhCompartilhada(informacoesComponentesCurriculares),
-                Disciplina = componenteCurricular.Descricao.Trim(),
-                LancaNota = componenteCurricular.PodeLancarNota(informacoesComponentesCurriculares),
-                Frequencia = componenteCurricular.ControlaFrequencia(informacoesComponentesCurriculares),
-                Regencia = componenteCurricular.EhRegencia(informacoesComponentesCurriculares) || componenteCurricular.ComponentePlanejamentoRegencia,
-                TerritorioSaber = componenteCurricular.TerritorioSaber,
-                BaseNacional = componenteCurricularEol?.BaseNacional ?? false,
-                GrupoMatriz = grupoMatrizes.FirstOrDefault(x => x.Id == componenteCurricularEol?.GrupoMatrizId),
-                Professor = componenteCurricular.Professor
-            };
+                var informacaoComponenteCurricular = request.ComponentesCurriculares.FirstOrDefault(x => x.Codigo == cc.Codigo || x.Codigo == cc.CodigoComponenteCurricularTerritorioSaber);
+                cc.CodComponentePai = cc.CodigoComponentePai(request.ComponentesCurriculares);
+                cc.Compartilhada = cc.EhCompartilhada(request.ComponentesCurriculares);
+                cc.Descricao = cc.Descricao.Trim();
+                cc.LancaNota = cc.PodeLancarNota(request.ComponentesCurriculares);
+                cc.Frequencia = cc.ControlaFrequencia(request.ComponentesCurriculares);
+                cc.ComponentePlanejamentoRegencia = cc.EhRegencia(request.ComponentesCurriculares) || cc.ComponentePlanejamentoRegencia;
+                cc.TerritorioSaber = cc.TerritorioSaber;
+                cc.BaseNacional = informacaoComponenteCurricular?.BaseNacional ?? false;
+                cc.GrupoMatrizId = informacaoComponenteCurricular?.GrupoMatrizId ?? 0;
+            });
+
+            return componentesCurriculares;
         }
+        
 
         private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<ComponenteCurricular> informacoesComponentesCurriculares)
         {

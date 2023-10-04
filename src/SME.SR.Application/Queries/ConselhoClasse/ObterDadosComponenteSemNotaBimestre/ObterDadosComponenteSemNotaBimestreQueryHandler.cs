@@ -23,10 +23,11 @@ namespace SME.SR.Application
         public async Task<IEnumerable<GrupoMatrizComponenteSemNotaBimestre>> Handle(ObterDadosComponenteSemNotaBimestreQuery request, CancellationToken cancellationToken)
         {
             var disciplinasPorTurma = await ObterComponentesCurricularesPorTurma(request.CodigoTurma);
+            var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
             var turma = await mediator.Send(new ObterTurmaQuery(request.CodigoTurma));
 
-            var lstComponentesSemNota = disciplinasPorTurma.Where(x => !x.LancaNota && x.GrupoMatriz != null)
-                                             .GroupBy(c => new { c.GrupoMatriz?.Id, c.GrupoMatriz?.Nome });
+            var lstComponentesSemNota = disciplinasPorTurma.Where(x => !x.LancaNota && x.GrupoMatrizId != 0)
+                                             .GroupBy(c => c.ObterGrupoMatriz(gruposMatriz));
 
             var frequenciaAluno = await mediator.Send(new ObterFrequenciaPorDisciplinaBimestresQuery()
             {
@@ -44,7 +45,7 @@ namespace SME.SR.Application
                 foreach (var disciplina in grupoDisciplinasMatriz)
                 {
                     var frequenciaDisciplina = frequenciaAluno.Where(x =>
-                        x.DisciplinaId == disciplina.CodDisciplina.ToString());
+                        x.DisciplinaId == disciplina.Codigo.ToString());
 
                     if (request.Bimestre.HasValue)
                         frequenciaDisciplina.ToList().ForEach(f => f.AdicionarFrequenciaBimestre(request.Bimestre.Value, f.PercentualFrequencia));
@@ -57,7 +58,7 @@ namespace SME.SR.Application
 
                     var componenteSemNota = new ComponenteSemNota()
                     {
-                        Componente = disciplina.Disciplina,
+                        Componente = disciplina.Descricao,
                         Faltas = frequenciaDisciplina?.Sum(x => x.TotalAusencias),
                         Frequencia = FrequenciaAluno.FormatarPercentual(frequencia)
                     };
@@ -77,16 +78,14 @@ namespace SME.SR.Application
             return lstGruposMatrizCompSemNota;
         }
 
-        private async Task<IEnumerable<ComponenteCurricularPorTurmaRegencia>> ObterComponentesCurricularesPorTurma(string codigoTurma)
+        private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorTurma(string codigoTurma)
         {
             var componentes = await componenteCurricularRepository.ListarComponentes();
-            var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
             return await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery()
             {
                 CodigosTurma = new string[] { codigoTurma },
-                ComponentesCurriculares = componentes,
-                GruposMatriz = gruposMatriz
+                ComponentesCurriculares = componentes
             });
         }
     }

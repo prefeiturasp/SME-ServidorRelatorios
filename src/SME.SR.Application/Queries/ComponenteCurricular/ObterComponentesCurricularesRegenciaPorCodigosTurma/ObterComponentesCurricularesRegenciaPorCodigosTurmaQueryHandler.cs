@@ -24,7 +24,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurmaRegencia>>> Handle(ObterComponentesCurricularesRegenciaPorCodigosTurmaQuery request, CancellationToken cancellationToken)
         {
-            if (request.Usuario.EhProfessorCj())
+            if (request.Usuario?.EhProfessorCj() ?? false)
                 return await ObterComponentesCJ(request.Modalidade, request.CodigosTurma, request.CodigoUe, request.CdComponentesCurriculares, request.Usuario.CodigoRf);
             else
             {
@@ -33,11 +33,25 @@ namespace SME.SR.Application
                 {
                     CodigosTurma = request.CodigosTurma,
                     ComponentesCurriculares = request.ComponentesCurriculares,
-                    GruposMatriz = request.GruposMatriz,
                     EhEJA = request.Modalidade == Modalidade.EJA
                 });
 
-                return componentesCurriculares.Where(c => c.Regencia).GroupBy(c => c.CodigoTurma);
+                return componentesCurriculares.Where(c => c.ComponentePlanejamentoRegencia).Select(c => new ComponenteCurricularPorTurmaRegencia
+                {
+                    CodigoTurma = c.CodigoTurma,
+                    CodDisciplina = c.Codigo,
+                    CodigoComponenteCurricularTerritorioSaber = c.CodigoComponenteCurricularTerritorioSaber,
+                    CodDisciplinaPai = c.CodComponentePai,
+                    Compartilhada = c.Compartilhada,
+                    Disciplina = c.Descricao,
+                    LancaNota = c.LancaNota,
+                    Frequencia = c.Frequencia,
+                    Regencia = c.ComponentePlanejamentoRegencia,
+                    TerritorioSaber = c.TerritorioSaber,
+                    BaseNacional = c.BaseNacional,
+                    GrupoMatriz = c.ObterGrupoMatriz(request.GruposMatriz),
+                    Professor = c.Professor
+                }).GroupBy(c => c.CodigoTurma);
             }
         }
 
