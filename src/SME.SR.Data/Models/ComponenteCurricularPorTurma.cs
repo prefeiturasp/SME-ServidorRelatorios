@@ -23,7 +23,6 @@ namespace SME.SR.Data
         public IEnumerable<ComponenteCurricularPorTurmaRegencia> ComponentesCurricularesRegencia { get; set; }
         public string DescricaoInfatil { get; set; }
         public string DescricaoCompletaTerritorio { get; set; }
-        public int? OrdemTerritorioSaber { get; set; }
         public string Professor { get; set; }
     }
 }

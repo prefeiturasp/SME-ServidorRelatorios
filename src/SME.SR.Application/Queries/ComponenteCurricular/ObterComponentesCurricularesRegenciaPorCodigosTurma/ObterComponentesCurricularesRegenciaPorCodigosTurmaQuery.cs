@@ -12,9 +12,8 @@ namespace SME.SR.Application
         public long[] CdComponentesCurriculares { get; set; }
         public string CodigoUe { get; set; }
         public Modalidade Modalidade { get; set; }
-        public IEnumerable<ComponenteCurricular> ComponentesCurriculares { get; set; }
+        public IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> ComponentesCurriculares { get; set; }
         public IEnumerable<ComponenteCurricularGrupoMatriz> GruposMatriz { get; set; }
         public Usuario Usuario { get; set; }
-        public bool ValidarAbrangenciaProfessor { get; set; }
     }
 }
