@@ -46,7 +46,7 @@ namespace SME.SR.Application
                 var informacaoComponenteCurricular = request.ComponentesCurriculares.FirstOrDefault(x => x.Codigo == cc.Codigo || x.Codigo == cc.CodigoComponenteCurricularTerritorioSaber);
                 cc.CodComponentePai = cc.CodigoComponentePai(request.ComponentesCurriculares);
                 cc.Compartilhada = cc.EhCompartilhada(request.ComponentesCurriculares);
-                cc.Descricao = informacaoComponenteCurricular.Descricao.Trim();
+                cc.Descricao = cc.TerritorioSaber ? cc.Descricao : informacaoComponenteCurricular.Descricao.Trim();
                 cc.LancaNota = cc.PodeLancarNota(request.ComponentesCurriculares);
                 cc.Frequencia = cc.ControlaFrequencia(request.ComponentesCurriculares);
                 cc.ComponentePlanejamentoRegencia = cc.EhRegencia(request.ComponentesCurriculares) || cc.ComponentePlanejamentoRegencia;
