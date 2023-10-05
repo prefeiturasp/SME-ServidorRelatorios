@@ -9,13 +9,16 @@ namespace SME.SR.Application
         public string[] CodigosTurma { get; set; }
         public IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> ComponentesCurriculares { get; set; }
         public bool EhEJA { get; set; }
+        public bool IgnorarAdicaoComponentesPlanejamentoRegencia { get; set; }
 
 
-        public ObterComponentesCurricularesPorCodigosTurmaQuery(string[] codigosTurma, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> componentesCurriculares, bool ehEJA = false)
+        public ObterComponentesCurricularesPorCodigosTurmaQuery(string[] codigosTurma, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> componentesCurriculares = null, 
+                                                                bool ehEJA = false, bool ignorarAdicaoComponentesPlanejamentoRegencia = false)
         {
             CodigosTurma = codigosTurma;
             ComponentesCurriculares = componentesCurriculares;
             EhEJA = ehEJA;
+            IgnorarAdicaoComponentesPlanejamentoRegencia = ignorarAdicaoComponentesPlanejamentoRegencia;
         }
 
         public ObterComponentesCurricularesPorCodigosTurmaQuery()

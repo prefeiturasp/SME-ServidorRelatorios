@@ -27,18 +27,26 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<ComponenteCurricular>> Handle(ObterComponentesCurricularesPorCodigosTurmaQuery request, CancellationToken cancellationToken)
         {
+            if (request.ComponentesCurriculares is null) 
+                request.ComponentesCurriculares = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
+
             List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.CodigosTurma);
             PreencherComponenteCurricularEhTerritorio(componentesCurriculares, request.ComponentesCurriculares);
 
             await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares);
-            await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
-            if (request.EhEJA)
+            if (!request.IgnorarAdicaoComponentesPlanejamentoRegencia)
             {
-                var componenteEdFisicaRegencia = componentesCurriculares.Find(w => w.Codigo == CODIGO_COMPONENTE_CURRICULAR_EDFISICA && w.ComponentePlanejamentoRegencia);
+                await AdicionarComponentesPlanejamento(componentesCurriculares, request.ComponentesCurriculares);
 
-                if (componenteEdFisicaRegencia != null)
-                    componentesCurriculares.Remove(componenteEdFisicaRegencia);
+                if (request.EhEJA)
+                {
+                    var componenteEdFisicaRegencia = componentesCurriculares.Find(w => w.Codigo == CODIGO_COMPONENTE_CURRICULAR_EDFISICA && w.ComponentePlanejamentoRegencia);
+
+                    if (componenteEdFisicaRegencia != null)
+                        componentesCurriculares.Remove(componenteEdFisicaRegencia);
+                }
+
             }
 
             componentesCurriculares.ForEach(cc =>
