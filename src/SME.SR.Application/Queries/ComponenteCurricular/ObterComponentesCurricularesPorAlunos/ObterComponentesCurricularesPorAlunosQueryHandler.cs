@@ -158,7 +158,7 @@ namespace SME.SR.Application
                         CodigoComponenteCurricularTerritorioSaber = cpCompleto.CodigoComponenteCurricularTerritorioSaber,
                         BaseNacional = cpCompleto.BaseNacional,
                         Compartilhada = cpCompleto.Compartilhada,
-                        Disciplina = cpCompleto.Descricao,
+                        Disciplina = ObterDescricaoReduzidaComponente(cpCompleto.Descricao),
                         DescricaoCompletaTerritorio = cpCompleto.TerritorioSaber ? cpCompleto.Descricao : string.Empty,
                         GrupoMatriz = cpCompleto.ObterGrupoMatriz(gruposMatriz),
                         AreaDoConhecimento = cpCompleto.ObterAreaDoConhecimento(areasConhecimento),
@@ -169,6 +169,12 @@ namespace SME.SR.Application
                         TipoEscola = cpCompleto.TipoEscola,
                         Professor = cpCompleto.Professor
                     }).ToList();
+        }
+
+        public string ObterDescricaoReduzidaComponente(string descricaoComponente)
+        {
+            var tamnhoDisciplina = descricaoComponente.Length;
+            return tamnhoDisciplina > 34 ? $"{descricaoComponente.Substring(0, 34)}..." : descricaoComponente;
         }
 
         private async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] codigosTurmas, int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
