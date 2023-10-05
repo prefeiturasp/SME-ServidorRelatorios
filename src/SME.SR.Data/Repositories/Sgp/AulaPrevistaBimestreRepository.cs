@@ -20,7 +20,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AulaPrevistaBimestreQuantidade>> ObterBimestresAulasPrevistasPorFiltro(long turmaId, long componenteCurricularId, long tipoCalendarioId)
         {
             var query = @"
-                select t.nome as TurmaNome, cc.id as ComponenteCurricularId, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome, cc.eh_regencia as Regencia
+                select t.nome as TurmaNome, @componenteCurricularId as ComponenteCurricularId, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome, cc.eh_regencia as Regencia
 	                , p.bimestre, p.periodo_inicio as DataInicio, p.periodo_fim as DataFim
                     , pv.aulas_previstas as Previstas
                     , SUM(ac.quantidade) filter (where ac.tipo_aula = 1 and ac.aula_cj = false) as CriadasTitular
@@ -47,10 +47,10 @@ namespace SME.SR.Data
 	                 where not a.excluido
                    ) ac on ac.tipo_calendario_id = p.tipo_calendario_id
                      and ac.turma_id = t.turma_id
-                     and ac.disciplina_id::bigint = cc.id
+                     and ac.disciplina_id = @componenteCurricularId::text
                      and ac.data_aula between p.periodo_inicio and p.periodo_fim
                  where p.tipo_calendario_id = @tipoCalendarioId
-                group by t.nome, cc.id, cc.descricao_sgp, cc.descricao, cc.eh_regencia, p.bimestre, p.periodo_inicio, p.periodo_fim, pv.aulas_previstas ";
+                group by t.nome, @componenteCurricularId, cc.descricao_sgp, cc.descricao, cc.eh_regencia, p.bimestre, p.periodo_inicio, p.periodo_fim, pv.aulas_previstas ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {

@@ -27,11 +27,11 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
         {
             var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
 
-            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));
+            var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesDasTurmas.Select(x => x.Codigo).Distinct().ToArray()));
 
             if (componentesDasTurmas != null && componentesDasTurmas.Any())
             {
-                var componentes = await componenteCurricularRepository.ListarComponentes();
+                var componentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
 
                 var componentesMapeados = componentesDasTurmas?.Select(c => new ComponenteCurricularPorTurma
@@ -41,8 +41,8 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     CodDisciplinaPai = c.CodigoComponentePai(componentes),
                     BaseNacional = c.EhBaseNacional(componentes),
                     Compartilhada = c.EhCompartilhada(componentes),
-                    Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.Id == c.Codigo).Nome,
-                    GrupoMatriz = c.ObterGrupoMatrizSgp(disciplinasDaTurma, gruposMatriz),
+                    Disciplina = disciplinasDaTurma.FirstOrDefault(d => d.CodDisciplina == c.Codigo).Disciplina,
+                    GrupoMatriz = disciplinasDaTurma.FirstOrDefault(d => d.CodDisciplina == c.Codigo).GrupoMatriz,
                     LancaNota = c.PodeLancarNota(componentes),
                     Frequencia = c.ControlaFrequencia(componentes),
                     Regencia = c.EhRegencia(componentes),
