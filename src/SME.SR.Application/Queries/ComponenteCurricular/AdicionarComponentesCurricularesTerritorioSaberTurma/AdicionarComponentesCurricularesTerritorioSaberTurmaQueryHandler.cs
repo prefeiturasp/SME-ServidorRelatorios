@@ -70,7 +70,7 @@ namespace SME.SR.Application
                         }
                     }
 
-                    if (!request.ComponentesCurricularesTurma.Any(cc => cc.Codigo == informacoesComponenteTerritorioSaber.CodigoComponenteCurricular))
+                    if (!request.ComponentesCurricularesTurma.Any(cc => cc.Codigo == informacoesComponenteTerritorioSaber.CodigoComponenteCurricular && cc.CodigoTurma == turma))
                     {
                         var agrupamentoTerritorioSaberMaisRecente = agrupamentosTerritorioSaber.FirstOrDefault();
                         var atribuicaoNaoAgrupada = await ObterComponenteCurricularTerritorioAtribuicaoNaoAgrupadaQuery(
