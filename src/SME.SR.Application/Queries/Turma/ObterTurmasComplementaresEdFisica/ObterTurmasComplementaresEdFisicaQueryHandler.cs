@@ -22,17 +22,17 @@ namespace SME.SR.Application
             var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(request.CodigosAlunos.Select(ca => long.Parse(ca)).ToArray(), request.AnoLetivo));
             var turmasComplementaresEdFisica = new List<Turma>();
 
-            turmasAlunos
-                .Where(ta => ta.TipoTurma == TipoTurma.EdFisica && request.CodigosTurmas.Contains(ta.RegularCodigo))
-                .ToList().ForEach(async t =>
+            var turmasAlunosFiltradas = turmasAlunos.Where(ta => ta.TipoTurma == TipoTurma.EdFisica && request.CodigosTurmas.Contains(ta.RegularCodigo)).ToList();
+            
+            foreach(var turmaAluno in turmasAlunosFiltradas)
+            {
+                if (!turmasComplementaresEdFisica.Any(tc => tc.Codigo.Equals(turmaAluno.TurmaCodigo)))
                 {
-                    if (!turmasComplementaresEdFisica.Any(tc => tc.Codigo.Equals(t.TurmaCodigo)))
-                    {
-                        var turma = await mediator.Send(new ObterTurmaPorCodigoQuery(t.TurmaCodigo));
-                        turma.RegularCodigo = t.RegularCodigo;
-                        turmasComplementaresEdFisica.Add(turma);
-                    }
-                });
+                    var turma = await mediator.Send(new ObterTurmaPorCodigoQuery(turmaAluno.TurmaCodigo));
+                    turma.RegularCodigo = turmaAluno.RegularCodigo;
+                    turmasComplementaresEdFisica.Add(turma);
+                }
+            }
 
             return turmasComplementaresEdFisica;
         }
