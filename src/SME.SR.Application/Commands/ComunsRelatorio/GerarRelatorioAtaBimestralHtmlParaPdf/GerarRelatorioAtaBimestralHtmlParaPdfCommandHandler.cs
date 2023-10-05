@@ -46,12 +46,11 @@ namespace SME.SR.Application
             
             if (paginasEmHtml.Any())
             {
-
                 PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
                 var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
 
-                pdfGenerator.ConvertToPdfPaginacaoSolo(paginasEmHtml, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Ata Bimestral");
+                pdfGenerator.ConvertToPdfPaginacaoSolo(paginasEmHtml, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Ata Bimestral", DinkToPdf.Orientation.Landscape);
                 await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, string.Empty), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));                
             }
 
