@@ -25,7 +25,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
 
         public async Task<IEnumerable<IGrouping<string, ComponenteCurricularPorTurma>>> Handle(ObterComponentesCurricularesTurmasRelatorioAtaFinalResultadosQuery request, CancellationToken cancellationToken)
         {
-            var componentesDasTurmas = await componenteCurricularRepository.ObterComponentesPorTurmas(request.CodigosTurma);
+            var componentesDasTurmas = await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(request.CodigosTurma, ignorarAdicaoComponentesPlanejamentoRegencia: true)); 
             var componentesRegencia = await mediator.Send(new ObterComponentesCurricularesPorTurmasQuery(request.CodigosTurma));
             
             if (componentesRegencia.Any(x=> x.Regencia == true))
@@ -66,6 +66,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                 {
                     CodigoTurma = c.CodigoTurma,
                     CodDisciplina = c.Codigo,
+                    CodigoComponenteCurricularTerritorioSaber = c.CodigoComponenteCurricularTerritorioSaber,
                     CodDisciplinaPai = c.CodigoComponentePai(componentes),
                     BaseNacional = c.EhBaseNacional(componentes),
                     Compartilhada = c.EhCompartilhada(componentes),
