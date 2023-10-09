@@ -41,8 +41,7 @@ namespace SME.SR.Data
 
         public bool PodeLancarNota(IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> componentesApiEol)
         {
-            return componentesApiEol != null && (!componentesApiEol.Any(w => w.Codigo == Codigo) ||
-                       componentesApiEol.Any(w => w.Codigo == Codigo && w.LancaNota));
+            return componentesApiEol != null && componentesApiEol.Any(w => w.Codigo == Codigo && w.LancaNota);
         }
 
         public bool ControlaFrequencia(IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> componentesApiEol)
