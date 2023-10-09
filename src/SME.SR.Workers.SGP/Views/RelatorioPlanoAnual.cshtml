@@ -2,13 +2,29 @@
 @model SME.SR.Infra.RelatorioPlanoAnualDto
 @{
     int contadorQuebrarPagina = 0;
-    int qtdeCaracteresPorLinha = 120;
-    int contadorMaximoLinhasPorPagina = 47;
+    int qtdeCaracteresPorLinha = 105;
+    int contadorMaximoLinhasPorPagina = 45;
     int contadorPagina = 0;
 
     void IncrementarPagina(int qtdeCaracteres)
     {
         contadorQuebrarPagina += qtdeCaracteres > qtdeCaracteresPorLinha ? qtdeCaracteres / qtdeCaracteresPorLinha + 1 : 1;
+    }
+
+    string GerarDescricaoPlanejamento(string descricao)
+    {
+        IncrementarPagina(descricao.Length);
+        
+        return $@"<table>
+                    <tbody>
+                    <tr>
+                        <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO DO PLANEJAMENTO</td>
+                    </tr>
+                    <tr>
+                        <td class='espacamento5'>{descricao}</td>
+                    </tr>
+                    </tbody>
+                </table>";
     }
     
     bool TerminouPagina()
@@ -35,15 +51,22 @@
 
     string MontaCabecalhoBimestresObjetivos(int bimestre)
     {
-        contadorQuebrarPagina += 2;
-        return $@"<table>
+        contadorQuebrarPagina++;
+        
+        var str = $@"<table>
                 <tr>
                     <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>{bimestre}º BIMESTRE</td>
-                </tr>
-                <tr>
-                    <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>OBJETIVOS DE APRENDIZAGEM</td>
-                </tr>
-                </table> ";
+                </tr> ";
+
+        if (Model.ExibeObjetivos)
+        {
+            contadorQuebrarPagina++;
+            str += $@"<tr>
+                        <td width='100 %' class='espacamento5 negrito centralizado fundo-cinza'>OBJETIVOS DE APRENDIZAGEM</td>
+                    </tr>";
+        }
+        
+        return str + " </table> ";
     }
 
     string MontarCabecalho()
@@ -54,7 +77,7 @@
 	            <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
             </div>
             <div class='titulo-sgp'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</div>
-            <div class='titulo-relatorio'>RELATÓRIO DE PLANO AEE</div>
+            <div class='titulo-relatorio'>RELATÓRIO DE PLANO ANUAL</div>
             <div class='fonte-14 header-pagina'>
 	            <table class='tblTopo'>
 		            <tbody>
@@ -108,7 +131,7 @@
     <style>
         .body-rel-plano-anual {
             margin: 0.5cm auto;
-            font-family: 'Roboto Mono';
+            font-family: Roboto, sans-serif;
             width: 21cm;
             min-height: 29.7cm;
             background: white;
@@ -227,39 +250,46 @@
                         Html.Raw(VerificaQuebra());
                             
                     @Html.Raw(MontaCabecalhoBimestresObjetivos(bimestreDescricaoPlanejamento.Bimestre))
-                    contadorQuebrarPagina++;
-                    @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
-                    
-                    @foreach (var objetivo in bimestreDescricaoPlanejamento.Objetivos)
+
+                    if (Model.ExibeObjetivos)
                     {
-                        if (TerminouPagina())
+                        @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
+                    
+                        @foreach (var objetivo in bimestreDescricaoPlanejamento.Objetivos)
                         {
-                            @Html.Raw("</tbody></table>");
-                            @Html.Raw(QuebrarPagina());
-                            @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
-                        }
-                        IncrementarPagina(objetivo.Codigo.Length + objetivo.Descricao.Length);     
+                            if (TerminouPagina())
+                            {
+                                @Html.Raw("</tbody></table>");
+                                @Html.Raw(QuebrarPagina());
+                                @Html.Raw(CabecalhoCodigoDescricaoObjetivoAprendizagem());
+                            }
+                            IncrementarPagina(objetivo.Codigo.Length + objetivo.Descricao.Length);     
                         
-                        <tr>
-                            <td class='espacamento5'>@objetivo.Codigo</td>
-                            <td class='espacamento5'>@objetivo.Descricao</td>
-                        </tr>
+                            <tr>
+                                <td class='espacamento5'>@objetivo.Codigo</td>
+                                <td class='espacamento5'>@objetivo.Descricao</td>
+                            </tr>
+                        }
                     }
+                        
                     @Html.Raw("</tbody></table>");
                     @Html.Raw(VerificaQuebra())
-                    IncrementarPagina(bimestreDescricaoPlanejamento.DescricaoPlanejamento.Length);
-                    <table>
-                        <tbody>
-                        <tr>
-                            <td class='espacamento5 negrito centralizado fundo-cinza'>DESCRIÇÃO DO PLANEJAMENTO</td>
-                        </tr>
-                        <tr>
-                            <td class="espacamento5">@UtilRegex.RemoverTagsHtml(bimestreDescricaoPlanejamento.DescricaoPlanejamento)</td>
-                        </tr>
-                        </tbody>
-                    </table>
+
+                    var qtdeCaracteresRemanescentes = ((contadorMaximoLinhasPorPagina - contadorQuebrarPagina) * qtdeCaracteresPorLinha)*2;
+                    if (bimestreDescricaoPlanejamento.DescricaoPlanejamento.Length > qtdeCaracteresRemanescentes)
+                    {
+                        var descricao = bimestreDescricaoPlanejamento.DescricaoPlanejamento;
+                        var descricaoParcial = descricao.Substring(0, qtdeCaracteresRemanescentes);
+                        @Html.Raw(GerarDescricaoPlanejamento(descricaoParcial))
+                        @Html.Raw(VerificaQuebra())
+                        var descricaoRestante = descricao.Substring(qtdeCaracteresRemanescentes + 1);
+                        @Html.Raw(GerarDescricaoPlanejamento(descricaoRestante))
+                    }
+                    else
+                    {
+                        @Html.Raw(GerarDescricaoPlanejamento(bimestreDescricaoPlanejamento.DescricaoPlanejamento));    
+                    }
                     <br>
-                    @Html.Raw(VerificaQuebra())
                 }
             }
         </div>

@@ -18,7 +18,7 @@ namespace SME.SR.Application
     {
         private const double FREQUENCIA_100 = 100;
         private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
-        private const string SEM_PARECER_CONCLUSIVO = "Sem parecer";        
+        private const string SEM_PARECER_CONCLUSIVO = "Sem parecer";
         private const int COLUNA_AUSENCIA = 1;
         private const int COLUNA_COMPENSACAO = 2;
         private const int COLUNA_PORCENTAGEM_FREQUENCIA = 3;
@@ -83,83 +83,107 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<ConselhoClasseAtaFinalPaginaDto>> ObterRelatorioTurma(Turma turma, FiltroConselhoClasseAtaFinalDto filtro, AtaFinalTipoVisualizacao? visualizacao, bool imprimirComponentesQueNaoLancamNota)
         {
-                var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
-                var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
-                var alunos = await ObterAlunos(turma.Codigo, periodosEscolares);
-                
-                if (alunos == null || !alunos.Any())
-                    return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
-                
-                var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
+            var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
+            var alunos = await ObterAlunos(turma.Codigo, periodosEscolares);
 
-                var tiposTurma = new List<int>() { (int)turma.TipoTurma };
-                if (turma.TipoTurma == TipoTurma.Regular)
-                    tiposTurma.Add((int)TipoTurma.EdFisica);
-                else
-                    tiposTurma.Add((int)TipoTurma.Regular);
-
-                var codigosDeTurmas = await ObterCodigoDeTurmas(turma, alunos);
-                var notas = await ObterNotasAlunos(alunosCodigos, codigosDeTurmas.ToArray(), turma.AnoLetivo, turma.ModalidadeCodigo, filtro.Semestre, tiposTurma.ToArray());
-            
-                if (notas == null || !notas.Any())
+            if (alunos == null || !alunos.Any())
                 return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
 
-                var cabecalho = await ObterCabecalho(turma.Codigo);
-                var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
+            var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+            var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
-                var informacoesAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray(), turma.AnoLetivo));
-                informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x => x.Codigo == i.CodigoTurma.ToString()) && (i.CodigoSituacaoMatricula != SituacaoMatriculaAluno.RemanejadoSaida));
-                notas = notas.Where(x => informacoesAlunos.Select(j => j.CodigoTurma.ToString()).ToList().Contains(x.Key));
-                var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
-                var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
-                var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
+            var turmasCodigos = new string[] { turma.Codigo };
+            var codigosTurmasEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(turmasCodigos, alunosCodigos, turma.AnoLetivo));
 
-                var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.Select(long.Parse).ToArray(), filtro.AnoLetivo));
-                listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
+            var tiposTurma = new List<int>() { (int)turma.TipoTurma };
+            if (turma.TipoTurma == TipoTurma.Regular)
+                tiposTurma.Add((int)TipoTurma.EdFisica);
+            else
+                tiposTurma.Add((int)TipoTurma.Regular);
 
-                var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
-                listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
+            var codigosDeTurmas = await ObterCodigoDeTurmas(turma, alunos);
+            var notas = await ObterNotasAlunos(alunosCodigos, codigosDeTurmas.ToArray(), turma.AnoLetivo, turma.ModalidadeCodigo, filtro.Semestre, tiposTurma.ToArray());
 
-                var pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
+            if (notas == null || !notas.Any())
+                return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
 
-                if (turma.TipoTurma == TipoTurma.Itinerarios2AAno)
+            var cabecalho = await ObterCabecalho(turma.Codigo);
+            var turmas = await ObterTurmasPorCodigo(notas.Select(n => n.Key).ToArray());
+
+            var codigosTurmasRelacionadasRegular = (await mediator.Send(new ObterTurmasPorAlunosQuery(alunosCodigosLong, turma.AnoLetivo)))?.Where(b => b.TipoTurma != TipoTurma.EdFisica).Select(b => b.TurmaCodigo).Distinct();
+
+            var informacoesAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunos.Select(x => x.CodigoAluno).ToArray(), turma.AnoLetivo));
+            informacoesAlunos = informacoesAlunos.Where(i => turmas.Any(x => x.Codigo == i.CodigoTurma.ToString()) && (i.CodigoSituacaoMatricula != SituacaoMatriculaAluno.RemanejadoSaida));
+            notas = notas.Where(x => informacoesAlunos.Select(j => j.CodigoTurma.ToString()).ToList().Contains(x.Key));
+            var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
+
+            var listaTurmasList = listaTurmas.ToList();
+
+            foreach (var codigoTurmaEdFisica in codigosTurmasEdFisica)
+            {
+                listaTurmasList.Add(codigoTurmaEdFisica.Codigo);
+            }
+
+            if (listaTurmasList.Count() > 1)
+                listaTurmas = listaTurmasList.ToArray();
+
+            var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo);
+            var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, listaTurmas, tipoCalendarioId, alunosCodigos);
+
+            var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigosLong, filtro.AnoLetivo));
+            listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
+
+            var listaTurmasAlunos = listaAlunos.GroupBy(x => x.CodigoTurma);
+            listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
+
+            var pareceresConclusivos = new List<ConselhoClasseParecerConclusivo>();
+
+            if (turma.TipoTurma == TipoTurma.Itinerarios2AAno)
+            {
+                foreach (var checarTurma in turmas.Where(t => t.Codigo != turma.Codigo))
                 {
-                    foreach (var checarTurma in turmas.Where(t => t.Codigo != turma.Codigo))
-                    {
-                        if (checarTurma.TipoTurma == TipoTurma.Regular)
-                            pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
-                    }
+                    if (checarTurma.TipoTurma == TipoTurma.Regular)
+                        pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
                 }
-                else
-                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(turma.Codigo));
-
-                var componentesDaTurma = componentesCurriculares.SelectMany(cc => cc).ToList();
-                var componentesCurricularesPorTurma = ObterComponentesCurricularesTurma(componentesDaTurma);
-                var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
-                var frequenciaAlunos = await ObterFrequenciaComponente(listaTurmas.ToArray(), componentesCurricularesPorTurma, bimestres, tipoCalendarioId, alunos.Select(a => (a.CodigoAluno.ToString(), a.DataMatricula, a.Inativo ? a.DataSituacaoAluno : (DateTime?)null)));
-                var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
-                var ordenacaoGrupoArea = await ObterOrdenacaoAreasConhecimento(componentesCurriculares, areasDoConhecimento);
-
-                var notasFinais = new List<NotaConceitoBimestreComponente>();
-                foreach (var nota in notas)
+            }
+            else if (turma.TipoTurma == TipoTurma.EdFisica)
+            {
+                foreach (var codigoTurmaRelacionada in codigosTurmasRelacionadasRegular)
                 {
-                    notasFinais.AddRange(nota.Select(nf => new NotaConceitoBimestreComponente()
-                    {
-                        AlunoCodigo = nf.CodigoAluno,
-                        Nota = nf.NotaConceito.Nota,
-                        Bimestre = nf.NotaConceito.Bimestre,
-                        ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
-                        ConceitoId = nf.NotaConceito.ConceitoId,
-                        Conceito = nf.NotaConceito.Conceito,
-                        NotaId = nf.NotaConceito.NotaId,
-                        Sintese = nf.NotaConceito.Sintese,
-                        ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
-                        Aprovado = nf.Aprovado
-                    }));
+                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(codigoTurmaRelacionada));
                 }
-                var alunosNotasConceito = await mediator.Send(new ObterNotaConceitoEducacaoFisicaNaEjaQuery(alunosCodigos, turma));
-                var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea, alunosNotasConceito, imprimirComponentesQueNaoLancamNota);
-                return MontarEstruturaPaginada(dadosRelatorio);
+            }
+            else
+                pareceresConclusivos.AddRange(await ObterPareceresConclusivos(turma.Codigo));
+
+            var componentesDaTurma = componentesCurriculares.SelectMany(cc => cc).ToList();
+            var componentesCurricularesPorTurma = ObterComponentesCurricularesTurma(componentesDaTurma);
+            var bimestres = periodosEscolares.Select(p => p.Bimestre).ToArray();
+            var frequenciaAlunos = await ObterFrequenciaComponente(listaTurmas.ToArray(), componentesCurricularesPorTurma, bimestres, tipoCalendarioId, alunos.Select(a => (a.CodigoAluno.ToString(), a.DataMatricula, a.Inativo ? a.DataSituacaoAluno : (DateTime?)null)));
+            var areasDoConhecimento = await ObterAreasConhecimento(componentesCurriculares);
+            var ordenacaoGrupoArea = await ObterOrdenacaoAreasConhecimento(componentesCurriculares, areasDoConhecimento);
+
+            var notasFinais = new List<NotaConceitoBimestreComponente>();
+            foreach (var nota in notas)
+            {
+                notasFinais.AddRange(nota.Select(nf => new NotaConceitoBimestreComponente()
+                {
+                    AlunoCodigo = nf.CodigoAluno,
+                    Nota = nf.NotaConceito.Nota,
+                    Bimestre = nf.NotaConceito.Bimestre,
+                    ComponenteCurricularCodigo = Convert.ToInt64(nf.CodigoComponenteCurricular),
+                    ConceitoId = nf.NotaConceito.ConceitoId,
+                    Conceito = nf.NotaConceito.Conceito,
+                    NotaId = nf.NotaConceito.NotaId,
+                    Sintese = nf.NotaConceito.Sintese,
+                    ConselhoClasseAlunoId = nf.ConselhoClasseAlunoId,
+                    Aprovado = nf.Aprovado
+                }));
+            }
+            var alunosNotasConceito = await mediator.Send(new ObterNotaConceitoEducacaoFisicaNaEjaQuery(alunosCodigos, turma));
+            var dadosRelatorio = await MontarEstruturaRelatorio(turma, cabecalho, alunos, componentesDaTurma, notasFinais, frequenciaAlunos, frequenciaAlunosGeral, pareceresConclusivos, periodosEscolares, listaTurmasAlunos, areasDoConhecimento, ordenacaoGrupoArea, alunosNotasConceito, imprimirComponentesQueNaoLancamNota);
+            return MontarEstruturaPaginada(dadosRelatorio);
         }
 
         private async Task<List<Turma>> ObterTurmasPorCodigo(string[] codigos)
@@ -195,7 +219,7 @@ namespace SME.SR.Application
             var alunos = await ObterAlunos(turma.Codigo, periodosEscolares);
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
             var codigosDeTurmas = await ObterCodigoDeTurmas(turma, alunos);
-            var notas = await ObterNotasAlunos(alunosCodigos, codigosDeTurmas.ToArray(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });            
+            var notas = await ObterNotasAlunos(alunosCodigos, codigosDeTurmas.ToArray(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, new int[] { });
             if (notas == null || !notas.Any()) return default;
 
             var cabecalho = await ObterCabecalho(turma.Codigo);
@@ -215,7 +239,7 @@ namespace SME.SR.Application
                 var turmaAluno = await ObterTurma(lta.Key.ToString());
                 if (turmaAluno.TipoTurma != tipoTurma)
                     listaTurmas.Add(turmaAluno.Codigo);
-            }            
+            }
 
             listaTurmasAlunos = listaTurmasAlunos.Where(t => listaTurmas.Any(lt => lt == t.Key.ToString()));
 
@@ -292,13 +316,13 @@ namespace SME.SR.Application
             var colunas = 0;
             var totalComponentes = 0;
 
-            foreach(var grupo in dadosRelatorio.GruposMatriz)
+            foreach (var grupo in dadosRelatorio.GruposMatriz)
             {
-                foreach(var componentes in grupo.ComponentesCurriculares)
+                foreach (var componentes in grupo.ComponentesCurriculares)
                 {
                     colunas += componentes.Colunas.Count;
 
-                    if (colunas <= totalColunasPorPagina) 
+                    if (colunas <= totalColunasPorPagina)
                         totalComponentes++;
                     else
                         break;
@@ -315,7 +339,7 @@ namespace SME.SR.Application
             var maximoColunasPorPagina = 52;
             var maximoComponentesPorPagina = ObterTotalComponentesPorPagina(dadosRelatorio, maximoColunasPorPagina);
 
-            List <ConselhoClasseAtaFinalPaginaDto> modelsPaginas = new List<ConselhoClasseAtaFinalPaginaDto>();
+            List<ConselhoClasseAtaFinalPaginaDto> modelsPaginas = new List<ConselhoClasseAtaFinalPaginaDto>();
 
             List<ConselhoClasseAtaFinalComponenteDto> todasAsDisciplinas = dadosRelatorio.GruposMatriz.SelectMany(x => x.ComponentesCurriculares).ToList();
 
@@ -387,7 +411,7 @@ namespace SME.SR.Application
 
                     foreach (var grupoMatriz in modelPagina.GruposMatriz)
                         grupoMatriz.QuantidadeColunas = modelPagina.Linhas.First().Celulas.Where(x => x.GrupoMatriz == grupoMatriz.Id).Count();
-                     
+
 
                     modelPagina.GruposMatriz = modelPagina.GruposMatriz.OrderBy(grupo => !grupo.Regencia).ThenBy(grupo => grupo.Id).ToList();
 
@@ -410,7 +434,7 @@ namespace SME.SR.Application
 
             componentesCurriculares = componentesCurriculares.OrderBy(a => a.Disciplina).ToList();
             var componentesMatriz = componentesCurriculares.Distinct().Where(c => c.GrupoMatriz != null);
-            
+
             if (!imprimirComponentesQueNaoLancamNota)
                 componentesMatriz = componentesMatriz.Where(componente => componente.LancaNota);
 
@@ -427,7 +451,7 @@ namespace SME.SR.Application
                             ref IEnumerable<AreaDoConhecimento> areasDoConhecimento)
         {
 
-            foreach(var grupo in gruposMatrizes)
+            foreach (var grupo in gruposMatrizes)
             {
                 var componenteRegencia = grupo.FirstOrDefault(componente => componente.Regencia);
 
@@ -480,19 +504,19 @@ namespace SME.SR.Application
             relatorio.Linhas.AddRange(alunosComNumeroChamada);
         }
 
-        private async Task<List<ConselhoClasseAtaFinalLinhaDto>> MontarLinhaAluno(IEnumerable<AlunoSituacaoAtaFinalDto> alunos, 
-                                                                                  IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, 
-                                                                                  ComponenteCurricularPorTurma>> gruposMatrizes, 
-                                                                                  IEnumerable<NotaConceitoBimestreComponente> notasFinais, 
-                                                                                  IEnumerable<FrequenciaAluno> frequenciaAlunos, 
-                                                                                  IEnumerable<FrequenciaAluno> frequenciaAlunosGeral, 
-                                                                                  IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos, 
-                                                                                  IEnumerable<PeriodoEscolar> periodosEscolares, 
-                                                                                  Turma turma, 
+        private async Task<List<ConselhoClasseAtaFinalLinhaDto>> MontarLinhaAluno(IEnumerable<AlunoSituacaoAtaFinalDto> alunos,
+                                                                                  IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz,
+                                                                                  ComponenteCurricularPorTurma>> gruposMatrizes,
+                                                                                  IEnumerable<NotaConceitoBimestreComponente> notasFinais,
+                                                                                  IEnumerable<FrequenciaAluno> frequenciaAlunos,
+                                                                                  IEnumerable<FrequenciaAluno> frequenciaAlunosGeral,
+                                                                                  IEnumerable<ConselhoClasseParecerConclusivo> pareceresConclusivos,
+                                                                                  IEnumerable<PeriodoEscolar> periodosEscolares,
+                                                                                  Turma turma,
                                                                                   IEnumerable<IGrouping<int, AlunoHistoricoEscolar>> listaTurmasAlunos,
                                                                                   IEnumerable<AlunoNotaTipoNotaDtoEducacaoFisicaDto> alunosNotasConceito,
-                                                                                  int qtdeDisciplinasLancamFrequencia = 0, 
-                                                                                  double compensacaoAusenciaPercentualRegenciaClasse = 0, 
+                                                                                  int qtdeDisciplinasLancamFrequencia = 0,
+                                                                                  double compensacaoAusenciaPercentualRegenciaClasse = 0,
                                                                                   double compensacaoAusenciaPercentualFund2 = 0)
         {
             List<ConselhoClasseAtaFinalLinhaDto> linhas = new List<ConselhoClasseAtaFinalLinhaDto>();
@@ -513,7 +537,7 @@ namespace SME.SR.Application
                 bool existeFrequenciaRegistradaTurmaAno = false;
                 bool possuiConselhoUltimoBimestreAtivo = false;
                 bool possuiComponenteFrequencia = false;
-                var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.CodigoAluno.ToString(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
+                var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.CodigoAluno.ToString(), turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, turma.Codigo));
 
                 foreach (var grupoMatriz in gruposMatrizes)
                 {
@@ -560,7 +584,7 @@ namespace SME.SR.Application
 
                                 if (matriculadoDepois != null && bimestre < matriculadoDepois)
                                 {
-                                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, string.Empty, ++coluna, aluno.CodigoAluno.ToString(), bimestre, componente.Regencia) ;
+                                    linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, string.Empty, ++coluna, aluno.CodigoAluno.ToString(), bimestre, componente.Regencia);
                                     continue;
                                 }
 
@@ -594,9 +618,9 @@ namespace SME.SR.Application
                                                             possuiComponente ? (componente.LancaNota ?
                                                                 notaConceito?.NotaConceito ?? "" :
                                                                 notaConceito?.Sintese) : string.Empty,
-                                                            ++coluna, 
-                                                            aluno.CodigoAluno.ToString(), 
-                                                            bimestre, 
+                                                            ++coluna,
+                                                            aluno.CodigoAluno.ToString(),
+                                                            bimestre,
                                                             componente.Regencia);
 
                                     if (ultimoBimestreAtivo > 0)
@@ -650,13 +674,14 @@ namespace SME.SR.Application
                                                                     aluno,
                                                                     possuiConselhoUltimoBimestreAtivo,
                                                                     turmaPossuiFrequenciaRegistrada, componente.Regencia));
-                            } else linhaDto.Celulas.AddRange(ObterCelulasFrequencias(
+                            }
+                            else linhaDto.Celulas.AddRange(ObterCelulasFrequencias(
                                                                     grupoMatriz.Key.Id,
                                                                     componente.Regencia ? CODIGO_FREQUENCIA : componente.CodDisciplina,
                                                                     componente.Regencia ? 0 : coluna,
                                                                     componente.Regencia));
 
-                        } 
+                        }
 
                         continue;
                     }
@@ -753,10 +778,10 @@ namespace SME.SR.Application
         }
 
         private string ObterFrequencia(
-                            FrequenciaAluno frequencia, 
-                            Turma turma, 
+                            FrequenciaAluno frequencia,
+                            Turma turma,
                             AlunoSituacaoAtaFinalDto aluno,
-                            bool possuiConselhoUltimoBimestreAtivo, 
+                            bool possuiConselhoUltimoBimestreAtivo,
                             bool turmaPossuiFrequenciaRegistrada)
         {
             if (turma.AnoLetivo.Equals(2020))
@@ -782,7 +807,7 @@ namespace SME.SR.Application
             return string.Empty;
         }
 
-        private NotaConceitoBimestreComponente RetornaValorPadraoNotaAtaFinal(IEnumerable<NotaConceitoBimestreComponente> notasFinais, AlunoSituacaoAtaFinalDto aluno, 
+        private NotaConceitoBimestreComponente RetornaValorPadraoNotaAtaFinal(IEnumerable<NotaConceitoBimestreComponente> notasFinais, AlunoSituacaoAtaFinalDto aluno,
                                                                                 ComponenteCurricularPorTurma componente, int bimestre)
             => notasFinais.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                             && c.ComponenteCurricularCodigo == componente.CodDisciplina
@@ -811,7 +836,7 @@ namespace SME.SR.Application
 
             linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalAusencias).ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture), COLUNA_AUSENCIA, aluno.CodigoAluno.ToString());
             linhaDto.AdicionaCelula(99, 99, frequenciasAluno?.Sum(f => f.TotalCompensacoes).ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture), COLUNA_COMPENSACAO, aluno.CodigoAluno.ToString());
-            linhaDto.AdicionaCelula(99, 99, percentualFrequenciaAcumulado ?? frequencia100Formatada, COLUNA_PORCENTAGEM_FREQUENCIA,aluno.CodigoAluno.ToString());
+            linhaDto.AdicionaCelula(99, 99, percentualFrequenciaAcumulado ?? frequencia100Formatada, COLUNA_PORCENTAGEM_FREQUENCIA, aluno.CodigoAluno.ToString());
 
             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString() && c.Bimestre == null);
             var textoParecer = ObterSiglaParecerConclusivo(parecerConclusivo);
@@ -827,7 +852,7 @@ namespace SME.SR.Application
         {
             linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_AUSENCIA, aluno.CodigoAluno.ToString());
             linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_COMPENSACAO, aluno.CodigoAluno.ToString());
-            linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_PORCENTAGEM_FREQUENCIA,aluno.CodigoAluno.ToString());
+            linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_PORCENTAGEM_FREQUENCIA, aluno.CodigoAluno.ToString());
             linhaDto.AdicionaCelula(99, 99, string.Empty, COLUNA_PARECER_CONCLUSIVO, aluno.CodigoAluno.ToString());
         }
 
@@ -864,13 +889,13 @@ namespace SME.SR.Application
 
         private bool AlunoAtivo(SituacaoMatriculaAluno situacaoMatricula)
         {
-            SituacaoMatriculaAluno[] SituacoesAtiva = new[] 
-            { 
+            SituacaoMatriculaAluno[] SituacoesAtiva = new[]
+            {
                 SituacaoMatriculaAluno.Ativo,
                 SituacaoMatriculaAluno.Rematriculado,
                 SituacaoMatriculaAluno.PendenteRematricula,
                 SituacaoMatriculaAluno.SemContinuidade,
-                SituacaoMatriculaAluno.Concluido 
+                SituacaoMatriculaAluno.Concluido
             };
             return SituacoesAtiva.Contains(situacaoMatricula);
         }
@@ -893,7 +918,7 @@ namespace SME.SR.Application
                                 GrupoMatriz = componente.GrupoMatriz,
                                 CodigoTurma = componente.CodigoTurma,
                                 Regencia = componenteCurricularRegencia.Regencia,
-                                Frequencia= componenteCurricularRegencia.Frequencia
+                                Frequencia = componenteCurricularRegencia.Frequencia
                             });
                     }
                 else
@@ -916,8 +941,8 @@ namespace SME.SR.Application
             var codComponenteCurricular = componenteCurricular.Regencia ? componenteFrequencia.CodDisciplinaPai : componenteFrequencia.CodDisciplina;
 
             return frequenciaAlunos.FirstOrDefault(c => c.CodigoAluno == alunoCodigo
-                                                && c.DisciplinaId == codComponenteCurricular.ToString());            
-            
+                                                && c.DisciplinaId == codComponenteCurricular.ToString());
+
         }
 
         private void MontarEstruturaGruposMatriz(ConselhoClasseAtaFinalDto relatorio, IEnumerable<IGrouping<ComponenteCurricularGrupoMatriz, ComponenteCurricularPorTurma>> gruposMatrizes, IEnumerable<PeriodoEscolar> periodosEscolares, IEnumerable<AreaDoConhecimento> areasDoConhecimento, IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> ordenacaoGrupoArea)
@@ -957,7 +982,7 @@ namespace SME.SR.Application
                     grupoMatriz.ComponentesCurriculares = componentesDoGrupo.OrderBy(componente => !componente.Regencia)
                                                                                                             .ThenBy(componente => !componente.LancaNota)
                                                                                                             .ThenBy(componente => componente.Id == CODIGO_FREQUENCIA)
-                                                                                                            .ThenBy(componente => componente.Nome).ToList(); 
+                                                                                                            .ThenBy(componente => componente.Nome).ToList();
 
                 }
             }
@@ -1019,7 +1044,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeral(int anoTurma, long tipoCalendarioId)
             => await mediator.Send(new ObterFrequenciasGeralAlunosNaTurmaQuery(anoTurma, tipoCalendarioId));
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAlunos(int anoletivo, string codigoTurma, long tipoCalendarioId, string[] alunosCodigos)
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAlunos(int anoletivo, string[] codigoTurma, long tipoCalendarioId, string[] alunosCodigos)
             => await mediator.Send(new ObterFrequenciasGeralPorAnoEAlunosQuery(anoletivo, codigoTurma, tipoCalendarioId, alunosCodigos));
 
         private async Task<IEnumerable<AlunoSituacaoAtaFinalDto>> ObterAlunos(string turmaCodigo, IEnumerable<PeriodoEscolar> periodos)

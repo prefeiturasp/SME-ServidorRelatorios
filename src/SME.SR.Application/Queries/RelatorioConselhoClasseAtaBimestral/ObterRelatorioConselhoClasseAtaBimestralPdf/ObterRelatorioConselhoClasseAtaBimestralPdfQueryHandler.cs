@@ -91,7 +91,7 @@ namespace SME.SR.Application
             var listaTurmas = ObterCodigosTurmaParaListagem(turma.TipoTurma, turma.Codigo, turmas);
             var bimestreFiltro = new int[] { filtro.Bimestre };
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(listaTurmas.ToArray(), turma.Ue.Codigo, turma.ModalidadeCodigo, bimestreFiltro);
-            var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, turma.Codigo, tipoCalendarioId, alunosCodigos);
+            var frequenciaAlunosGeral = await ObterFrequenciaGeralPorAlunos(turma.AnoLetivo, listaTurmas, tipoCalendarioId, alunosCodigos);
 
             var listaAlunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.Select(long.Parse).ToArray(), filtro.AnoLetivo));
             listaAlunos = listaAlunos.Where(x => x.AnoLetivo == filtro.AnoLetivo);
@@ -490,9 +490,9 @@ namespace SME.SR.Application
                         }
                         else
                         {
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture) : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture) : "", ++coluna);
-                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, possuiFrequencia && componente.Frequencia ? frequencia100Formatada : "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "", ++coluna);
+                            linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, "", ++coluna);
                         }
 
                         var notaConceito = notasFinais.OrderByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
@@ -666,7 +666,7 @@ namespace SME.SR.Application
         private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string[] turmasCodigo, IEnumerable<(string CodigoTurma, long ComponenteCurricularId)> componentesCurricularesPorTurma, int[] bimestres, long tipoCalendarioId, IEnumerable<(string codigoAluno, DateTime dataMatricula, DateTime? dataSituacao)> alunosDatasMatriculas)
             => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmasCodigo, componentesCurricularesPorTurma, bimestres, tipoCalendarioId, alunosDatasMatriculas));
 
-        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAlunos(int anoletivo, string codigoTurma, long tipoCalendarioId, string[] alunosCodigo)
+        private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAlunos(int anoletivo, string[] codigoTurma, long tipoCalendarioId, string[] alunosCodigo)
             => await mediator.Send(new ObterFrequenciasGeralPorAnoEAlunosQuery(anoletivo, codigoTurma, tipoCalendarioId, alunosCodigo));
 
         private async Task<IEnumerable<AlunoSituacaoAtaFinalDto>> ObterAlunos(string turmaCodigo)

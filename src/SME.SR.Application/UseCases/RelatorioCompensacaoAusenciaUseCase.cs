@@ -39,7 +39,7 @@ namespace SME.SR.Application
 
             var alunosCodigos = compensacoes.Select(a => a.AlunoCodigo).Distinct().ToArray();
 
-            var alunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos, filtros.AnoLetivo));
+            var alunos = (await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos, filtros.AnoLetivo))).Where(b => b.CodigoTurma.ToString() == turmaCodigo);
 
             var turmasCodigo = compensacoes.Select(a => a.TurmaCodigo).Distinct().ToArray();
 

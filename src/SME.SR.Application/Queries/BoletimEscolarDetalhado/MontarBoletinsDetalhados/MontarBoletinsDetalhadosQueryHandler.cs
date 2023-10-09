@@ -67,9 +67,13 @@ namespace SME.SR.Application
    
                 foreach (var aluno in alunos)
                 {
-                    var turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
-                   
-                    var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre));
+                    var turma = turmas.FirstOrDefault(t => aluno.Any(a => t.TipoTurma == TipoTurma.Regular && VerificaTurmaEnsinoMedioRegular(t.EtapaEnsino) && a.CodigoTurma.ToString() == t.Codigo));
+
+                    if(turma == null)
+                        turma = turmas.First(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo));
+
+
+                    var conselhoClasseBimestres = await mediator.Send(new AlunoConselhoClasseCadastradoBimestresQuery(aluno.Key, turma.AnoLetivo, turma.ModalidadeCodigo, turma.Semestre, turma.Codigo));
 
                     if (conselhoClasseBimestres != null && conselhoClasseBimestres.Any())
                     {
@@ -111,14 +115,13 @@ namespace SME.SR.Application
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                            aluno.FirstOrDefault().NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
+                            aluno.FirstOrDefault(b => b.CodigoTurma.ToString() == turma.Codigo).NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
                         boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
                         boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
                         boletimEscolarAlunoDto.ExibirRecomendacoes = request.ExibirRecomendacao;
                         boletinsAlunos.Add(boletimEscolarAlunoDto);
                     }
-                    
                 }
 
                 if (!boletinsAlunos.Any())
@@ -154,6 +157,18 @@ namespace SME.SR.Application
                 AnoLetivo = anoLetivo,
                 NomeAluno = nomeAluno
             };
+        }
+
+        private bool VerificaTurmaEnsinoMedioRegular(int etapa)
+        {
+            var etapaEnsinoMedioRegularEnsinoMedio = EtapaEnsino.EnsinoMedio;
+            var etapaEnsinoMedioRegularMagisterio = EtapaEnsino.Magisterio;
+            var etapaEnsinoMedioRegularEnsinoMedioEspecial = EtapaEnsino.EnsinoMedioEspecial;
+
+            if (etapa.Equals((int)etapaEnsinoMedioRegularEnsinoMedio) || etapa.Equals((int)etapaEnsinoMedioRegularMagisterio) || etapa.Equals((int)etapaEnsinoMedioRegularEnsinoMedioEspecial))
+                return true;
+
+            return false;
         }
 
         private async Task MapearGruposEComponentes(
@@ -229,14 +244,13 @@ namespace SME.SR.Application
                         }
                         else if (!componente.Regencia)
                         {
-                            if (!grupo.ComponentesCurriculares.Any(g => !g.TerritorioSaber && g.Codigo == componente.CodDisciplina.ToString()) ||
-                                !grupo.ComponentesCurriculares.Any(g => g.TerritorioSaber && g.Codigo == componente.CodDisciplina.ToString() && g.Professor == componente.Professor))
+                            if (!grupo.ComponentesCurriculares.Any(g => g.Codigo == componente.CodDisciplina.ToString()))
                             {
                                 grupo.ComponentesCurriculares.Add(
                                     new ComponenteCurricularDto()
                                     {
                                         Codigo = componente.CodDisciplina.ToString(),
-                                        CodigoTerritorioSaber = componente.CodigoTerritorioSaber.ToString(),
+                                        CodigoComponenteCurricularTerritorioSaber = componente.CodigoComponenteCurricularTerritorioSaber.ToString(),
                                         Nome = componente.Disciplina,
                                         Nota = componente.LancaNota,
                                         Frequencia = componente.Frequencia,
@@ -318,9 +332,7 @@ namespace SME.SR.Application
                     foreach (var componenteCurricular in grupoMatriz.ComponentesCurriculares)
                     {
                         var frequenciasAlunoComponente =
-                            frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber
-                             && (!componenteCurricular.TerritorioSaber 
-                                  || (componenteCurricular.TerritorioSaber && !string.IsNullOrEmpty(componenteCurricular.Professor) ? f.Professor == componenteCurricular.Professor : true)));
+                            frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoComponenteCurricularTerritorioSaber);
                       
                         var frequenciasTurmaComponente =
                             frequenciasTurma?.Where(f => f.DisciplinaId == componenteCurricular.Codigo);
@@ -347,7 +359,7 @@ namespace SME.SR.Application
                         if (componenteCurricular.Frequencia)
                         {
                             var aulasCadastradas = registroFrequencia?.Where(f =>
-                                f.ComponenteCurricularCodigo == componenteCurricular.Codigo && (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
+                                f.ComponenteCurricularCodigo == componenteCurricular.Codigo);
 
                             componenteCurricular.FrequenciaBimestre1 = ObterFrequenciaBimestre(frequenciasAlunoComponente, BIMESTRE_1, aulasCadastradas, periodoAtual, conselhoClasseBimestres);
                             componenteCurricular.FrequenciaBimestre2 = ObterFrequenciaBimestre(frequenciasAlunoComponente, BIMESTRE_2, aulasCadastradas, periodoAtual, conselhoClasseBimestres);

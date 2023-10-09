@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
+using Polly;
+using Polly.Registry;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -11,10 +13,12 @@ namespace SME.SR.Data
     public class NotaConceitoRepository : INotaConceitoRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
+        private readonly IAsyncPolicy policy;
 
-        public NotaConceitoRepository(VariaveisAmbiente variaveisAmbiente)
+        public NotaConceitoRepository(VariaveisAmbiente variaveisAmbiente, IReadOnlyPolicyRegistry<string> registry)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
+            this.policy = registry.Get<IAsyncPolicy>(PoliticaPolly.PublicaFila);
         }
 
         public async Task<IEnumerable<NotasAlunoBimestre>> ObterNotasTurmasAlunos(string[] codigosAluno, string[] codigosTurmas, int anoLetivo, int modalidade, int semestre)
@@ -85,7 +89,7 @@ namespace SME.SR.Data
                                     cv.valor,
 	                               cccatn.nota,
 	                               cccatn.id 
-                            order by CodigoAluno, bimestre,CodigoComponenteCurricular ";
+                            order by CodigoAluno, bimestre,CodigoComponenteCurricular, NotaId desc ";
             
 
             var parametros = new
@@ -99,7 +103,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
+                return await policy.ExecuteAsync(() => conexao.QueryAsync<NotasAlunoBimestre, PeriodoEscolar,
                                                 NotaConceitoBimestreComponente, NotasAlunoBimestre>(query.ToString()
                     , (notasFrequenciaAlunoBimestre, periodoEscolar, notaConceito) =>
                     {
@@ -108,7 +112,7 @@ namespace SME.SR.Data
 
                         return notasFrequenciaAlunoBimestre;
                     }
-                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId");
+                    , parametros, splitOn: "CodigoTurma,Bimestre,NotaId"));
             }
         }
 

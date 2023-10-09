@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace SME.SR.Application
 {
@@ -32,7 +34,8 @@ namespace SME.SR.Application
             var turmasAlunos = await mediator.Send(new ObterTurmasPorAlunosQuery(codigoAlunos.Select(ca => (long)ca).ToArray(), request.AnoLetivo));
 
             var turmasCodigosFiltrado = turmasAlunos
-                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) || x.RegularCodigo != null)
+                .Where(x => request.CodigosTurmas.Contains(int.Parse(x.TurmaCodigo)) ||
+                            (!string.IsNullOrEmpty(x.RegularCodigo) && request.CodigosTurmas.Contains(int.Parse(x.RegularCodigo))))
                 .Select(y => int.Parse(y.TurmaCodigo))
                 .Distinct()
                 .ToArray();
@@ -45,7 +48,7 @@ namespace SME.SR.Application
             var disciplinasDaTurma = await mediator.Send(new ObterComponentesCurricularesPorIdsQuery(componentesId));
             var areasConhecimento = await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(componentesId));
             var componentesCurricularesCompletos = await ObterComponentesCurriculares(request, todosComponentes, gruposMatriz, componentesDasTurmas);
-            var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental);
+            var componentesMapeados = MapearComponentes(todosComponentes, componentesDasTurmas, areasConhecimento, componentesCurricularesCompletos, disciplinasDaTurma, request.Modalidade == Modalidade.Fundamental, turmasAlunos);
 
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, componentesDasTurmas, disciplinasDaTurma, areasConhecimento));
 
@@ -132,18 +135,19 @@ namespace SME.SR.Application
             });
         }
 
-        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesCurricularesCompletos, IEnumerable<DisciplinaDto> disciplinasDaTurma, bool ehFundamental)
+        private List<ComponenteCurricularPorTurma> MapearComponentes(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesDasTurmas, IEnumerable<AreaDoConhecimento> areasConhecimento, IEnumerable<ComponenteCurricularPorTurmaRegencia> componentesCurricularesCompletos, IEnumerable<DisciplinaDto> disciplinasDaTurma, bool ehFundamental, IEnumerable<AlunosTurmasCodigosDto> turmasAlunos)
         {
             return (from cpTurma in componentesDasTurmas
-                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.TerritorioSaber ? cpCompleto.CodigoTerritorioSaber : cpCompleto.CodDisciplina)
-                    join disciplina in disciplinasDaTurma on (cpCompleto.TerritorioSaber ? cpCompleto.CodigoTerritorioSaber : cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
+                    join cpCompleto in componentesCurricularesCompletos on (cpTurma.CodigoTurma, cpTurma.Codigo) equals (cpCompleto.CodigoTurma, cpCompleto.TerritorioSaber ? cpCompleto.CodigoComponenteCurricularTerritorioSaber : cpCompleto.CodDisciplina)
+                    join disciplina in disciplinasDaTurma on (cpCompleto.TerritorioSaber ? cpCompleto.CodigoComponenteCurricularTerritorioSaber : cpCompleto.CodDisciplina) equals (disciplina.CodigoComponenteCurricular)
+                    join tAluno in turmasAlunos on (cpTurma.CodigoTurma, cpTurma.CodigoAluno) equals (tAluno.TurmaCodigo, tAluno.AlunoCodigo.ToString())
                     select new ComponenteCurricularPorTurma()
                     {
                         CodigoAluno = cpTurma.CodigoAluno,
                         CodigoTurma = cpTurma.CodigoTurma,
                         CodDisciplina = cpCompleto.CodDisciplina,
                         CodDisciplinaPai = cpTurma.CodigoComponentePai(componentes),
-                        CodigoTerritorioSaber = cpCompleto.CodigoTerritorioSaber,
+                        CodigoComponenteCurricularTerritorioSaber = cpCompleto.CodigoComponenteCurricularTerritorioSaber,
                         BaseNacional = cpCompleto.BaseNacional,
                         Compartilhada = cpCompleto.Compartilhada,
                         Disciplina = cpCompleto.TerritorioSaber && ehFundamental ? cpCompleto.ObterDisciplina() : disciplina.ObterDisciplina(),

@@ -15,8 +15,6 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<ComponenteCurricular>> ListarComponentes();
 
-        Task<IEnumerable<ComponenteCurricular>> ListarComponentesTerritorioSaber(string[] ids, string[] turmasId);
-
         Task<IEnumerable<ComponenteCurricularApiEol>> ListarApiEol();
 
         Task<IEnumerable<ComponenteCurricularRegenciaApiEol>> ListarRegencia();

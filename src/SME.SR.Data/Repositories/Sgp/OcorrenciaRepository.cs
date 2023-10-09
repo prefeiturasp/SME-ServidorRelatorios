@@ -102,11 +102,11 @@ namespace SME.SR.Data
                 query += " ,o.descricao ";
 
             query += @" from ocorrencia o
-                        left join ocorrencia_tipo ot on ot.id = o.ocorrencia_tipo_id 
-                        left join turma t on t.id = o.turma_id
-                        left join ue u on u.id = t.ue_id
-                        left join dre d on d.id = u.dre_id
-                        where not o.excluido and t.ano_letivo = @anoLetivo";
+                        join ue u on u.id = o.ue_id
+ 	                    join dre d on d.id = u.dre_id
+                        join ocorrencia_tipo ot on ot.id = o.ocorrencia_tipo_id 
+                        left join turma t on t.id = o.turma_id                        
+                        where not o.excluido and (o.turma_id is null or t.ano_letivo = @anoLetivo) ";
 
             if (codigoDre != "-99")
                 query += " and d.dre_id = @codigoDre ";

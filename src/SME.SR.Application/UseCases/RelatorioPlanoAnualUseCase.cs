@@ -2,6 +2,7 @@
 using SME.SR.Application;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SME.SR.Data;
@@ -32,6 +33,7 @@ namespace SME.SR.Workers.SGP
                 UeNome = $"{planoAnual.UeCodigo} - {planoAnual.TipoEscola.ShortName()} {planoAnual.UeNome}",
                 Turma = $"{planoAnual.ModalidadeTurma.ShortName()} - {planoAnual.TurmaNome}{planoAnual.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}",
                 ComponenteCurricular = planoAnual.ComponenteCurricular,
+                ExibeObjetivos = !(planoAnual.ModalidadeTurma == Modalidade.Medio || planoAnual.ModalidadeTurma == Modalidade.EJA),
                 Usuario = filtros.Usuario,
                 DataImpressao = DateTimeExtension.HorarioBrasilia().Date.ToString("dd/MM/yyyy"),
                 Bimestres = planoAnualBimestreObjetivosDtos
@@ -39,12 +41,12 @@ namespace SME.SR.Workers.SGP
                     .Select(a=> new BimestreDescricaoPlanejamentoDto 
                     { 
                         Bimestre = a.Key.Bimestre, 
-                        DescricaoPlanejamento = a.Key.DescricaoPlanejamento, 
-                        Objetivos = a.Select(o=> new ObjetivoAprendizagemPlanoAnualDto
+                        DescricaoPlanejamento = UtilRegex.RemoverTagsHtml(UtilRegex.RemoverTagsHtmlMultiMidia(a.Key.DescricaoPlanejamento)),
+                        Objetivos = a.Any(b=> !string.IsNullOrEmpty(b.ObjetivoCodigo)) ? a.Select(o=> new ObjetivoAprendizagemPlanoAnualDto
                         {
                             Codigo = o.ObjetivoCodigo, 
                             Descricao = o.ObjetivoDescricao
-                        }).ToList() 
+                        }).ToList() : Enumerable.Empty<ObjetivoAprendizagemPlanoAnualDto>() 
                     }).OrderBy(o=> o.Bimestre)
             };
             

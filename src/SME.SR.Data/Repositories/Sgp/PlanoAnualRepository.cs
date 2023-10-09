@@ -24,7 +24,7 @@ namespace SME.SR.Data
             var query = @"select pa.id,
    								 ue.nome as UeNome,
    								 ue.ue_id as UeCodigo, 
-          						 te.descricao as TipoEscola,
+          						 te.cod_tipo_escola_eol as TipoEscola,
 						         dre.abreviacao as DreNome,
 								 t.modalidade_codigo as ModalidadeTurma,
 						         t.nome as TurmaNome,
@@ -43,9 +43,9 @@ namespace SME.SR.Data
 					    join dre on ue.dre_id = dre.id
 						join planejamento_anual_periodo_escolar pape on pape.planejamento_anual_id = pa.id 
 					    join planejamento_anual_componente pac on pac.planejamento_anual_periodo_escolar_id = pape.id 
-					    join planejamento_anual_objetivos_aprendizagem paoa on paoa.planejamento_anual_componente_id = pac.id 
+					    left join planejamento_anual_objetivos_aprendizagem paoa on paoa.planejamento_anual_componente_id = pac.id 
 					    join periodo_escolar pe on pe.id = pape.periodo_escolar_id 
-					    join objetivo_aprendizagem oa on oa.id = paoa.objetivo_aprendizagem_id					
+					    left join objetivo_aprendizagem oa on oa.id = paoa.objetivo_aprendizagem_id					
 						where pa.id = @Id
 						  and pape.excluido = false
 					      and pa.excluido = false

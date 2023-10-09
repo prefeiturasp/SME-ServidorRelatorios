@@ -29,7 +29,7 @@ namespace SME.SR.Infra
         {
             get
             {
-                return $"{Modalidade.ShortName()}-{TurmaNome}-{TipoTurno.Name()}";
+                return !string.IsNullOrEmpty(TurmaNome) ? $"{Modalidade.ShortName()}-{TurmaNome}-{TipoTurno.Name()}" : string.Empty;
             }
         }
 

@@ -21,7 +21,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGlobalAlunos(string[] codigosAluno, int anoLetivo, int modalidade, string[] codigoTurmas);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaDisciplinaGlobalPorTurma(string[] turmasCodigo, string[] componentesCurricularesId, long tipoCalendarioId);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunoPorAnoModalidadeSemestre(int anoTurma, long tipoCalendarioId);
-        Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(int anoTurma, long tipoCalendarioId, string[] alunosCodigo, string turmaCodigo);
+        Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralPorAnoModalidadeSemestreEAlunos(int anoTurma, long tipoCalendarioId, string[] alunosCodigo, string[] turmaCodigo);
         Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGeralAlunosPorTurmaEBimestre(long turmaId, string alunoCodigo, int[] bimestres);
         Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricular(string codigoTurma, string componenteCurricularId, long periodoEscolarId, int[] bimestres);
         Task<bool> ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAno(string codigoTurma, string componenteCurricularId, int anoLetivo);
@@ -32,7 +32,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre, string codigoUe, Modalidade modalidade,
             int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe);
         Task<IEnumerable<FrequenciaAlunoConsolidadoRelatorioDto>> ObterFrequenciaAlunosRelatorio(string[] turmasCodigo, string bimestre, string componenteCurricularId);
-        Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(string[] codigosAlunos, string bimestre, string turmaCodigo, string[] componentesCurricularesIds, string professorTitularRf = null);
+        Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(string[] codigosAlunos, string bimestre, string turmaCodigo, string[] componentesCurricularesIds);
         Task<IEnumerable<ConsultaRelatorioFrequenciaControleMensalDto>> ObterFrequenciaControleMensal(int anoLetivo, string[] mes, string ueCodigo, string dreCodigo, int modalidade, int semestre, string turmaCodigo, string[] alunosCodigo);
     }
 }

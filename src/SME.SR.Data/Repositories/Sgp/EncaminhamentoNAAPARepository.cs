@@ -33,7 +33,9 @@ namespace SME.SR.Data
         private string ObterCondicaoUe(FiltroRelatorioEncaminhamentoNAAPADto filtro) =>
                     !filtro.UeCodigo.EstaFiltrandoTodas() ? " and u.ue_id = @ueCodigo " : string.Empty;
 
-
+        private string ObterCondicaoIds(long[] ids) =>
+            ids.Any() ? " and en.id = ANY(@ids) " : string.Empty;
+        
         private string ObterCondicaoSituacao(FiltroRelatorioEncaminhamentoNAAPADto filtro)
         {
             var condicao = string.Empty;
@@ -80,9 +82,7 @@ namespace SME.SR.Data
             };
 
             foreach (var funcao in funcoes)
-            {
                 query.Append(funcao(filtro));
-            }
 
             return query.ToString();
         }
@@ -169,7 +169,10 @@ namespace SME.SR.Data
                             where not en.excluido    
                             ");
 
-            query.AppendLine(ObterCondicao(filtro));
+            if (filtro.Ids.Any())
+                query.AppendLine(ObterCondicaoIds(filtro.Ids));
+            else
+                query.AppendLine(ObterCondicao(filtro));
 
             query.AppendLine(" order by d.abreviacao, u.nome, DataAberturaQueixa ;   ");
 
@@ -197,7 +200,8 @@ namespace SME.SR.Data
                     ueCodigo = filtro.UeCodigo,
                     situacaoIds = filtro.SituacaoIds,
                     portaEntradaIds = filtro.PortaEntradaIds,
-                    fluxoAlertaIds = filtro.FluxoAlertaIds
+                    fluxoAlertaIds = filtro.FluxoAlertaIds,
+                    ids = filtro.Ids,
                 }, splitOn: "id,id,id");
             return lookup.Values;
         }

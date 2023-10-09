@@ -30,18 +30,18 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<ComponenteCurricularApiEol>> ListarApiEol()
         {
-            var query = @"SELECT IdComponenteCurricular,                             
-                            EhCompartilhada, 
-                            EhRegencia, 
-                            PermiteRegistroFrequencia, 
-                            PermiteLancamentoDeNota,
-                            EhTerritorio,
-                            EhBaseNacional,
-                            IdGrupoMatriz,
+            var query = @"SELECT Id IdComponenteCurricular,                             
+                            Eh_Compartilhada EhCompartilhada, 
+                            Eh_Regencia EhRegencia, 
+                            Permite_Registro_Frequencia PermiteRegistroFrequencia, 
+                            Permite_Lancamento_Nota PermiteLancamentoDeNota,
+                            Eh_Territorio EhTerritorio,
+                            Eh_Base_Nacional EhBaseNacional,
+                            grupo_matriz_id IdGrupoMatriz,
                             Descricao
-                    FROM ComponenteCurricular";
+                    FROM Componente_Curricular";
 
-            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
             return await conexao.QueryAsync<ComponenteCurricularApiEol>(query);
         }
 
@@ -51,28 +51,10 @@ namespace SME.SR.Data
                             IdComponenteCurricular
 					        ,Turno
 					        ,Ano
-					        ,Idgrupomatriz
                         FROM RegenciaComponenteCurricular";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol);
             return await conexao.QueryAsync<ComponenteCurricularRegenciaApiEol>(query);
-        }
-
-        public async Task<IEnumerable<Data.ComponenteCurricular>> ListarComponentesTerritorioSaber(string[] ids, string[] turmasId)
-        {
-            var query = $@"select distinct(convert(bigint,concat(stg.cd_turma_escola, grade_ter.cd_territorio_saber, grade_ter.cd_experiencia_pedagogica, 
-                           FORMAT(grade_ter.dt_inicio, 'MM'), FORMAT(grade_ter.dt_inicio, 'dd')))) as CdComponenteCurricular,
-                            concat( ter.dc_territorio_saber, ' - ',exp.dc_experiencia_pedagogica)  as Descricao, 
-                            grade_ter.cd_componente_curricular as Codigo,
-                            0 as EhRegencia,
-                            1 as Territorio
-                            from  turma_grade_territorio_experiencia grade_ter inner join território_saber ter on ter.cd_territorio_saber = grade_ter.cd_territorio_saber 
-                            inner join tipo_experiencia_pedagogica exp on exp.cd_experiencia_pedagogica = grade_ter.cd_experiencia_pedagogica
-                            inner join serie_turma_grade stg on stg.cd_serie_grade = grade_ter.cd_serie_grade
-                            where grade_ter.cd_componente_curricular IN ({string.Join(',', ids)}) AND stg.cd_turma_escola IN ({string.Join(',', turmasId)})";
-
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<ComponenteCurricular>(query, commandTimeout: 30000);
         }
 
         public async Task<IEnumerable<ComponenteCurricularGrupoMatriz>> ListarGruposMatriz()
@@ -83,15 +65,9 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ComponenteCurricularGrupoMatriz>(query);
         }
 
-        public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string turmaCodigo, IEnumerable<long> componentesCurricularesId)
+        public Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string turmaCodigo, IEnumerable<long> componentesCurricularesId)
         {
-            var query = ComponenteCurricularConsultas.BuscarTerritorioDoSaber;
-            var parametros = new { CodigosComponentesCurriculares = componentesCurricularesId.ToArray(), CodigoTurma = turmaCodigo };
-
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<ComponenteCurricularTerritorioSaber>(query, parametros);
-            }
+            return ObterComponentesTerritorioDosSaberes(new string[] { turmaCodigo }, componentesCurricularesId);
         }
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmaEProfessor(string login, string codigoTurma)
@@ -144,7 +120,7 @@ namespace SME.SR.Data
 
                         --Serie Ensino
                              left join serie_turma_escola ON serie_turma_escola.cd_turma_escola = te.cd_turma_escola
-                             left join serie_turma_grade ON serie_turma_grade.cd_turma_escola = serie_turma_escola.cd_turma_escola
+                             left join serie_turma_grade ON serie_turma_grade.cd_turma_escola = serie_turma_escola.cd_turma_escola and serie_turma_grade.dt_fim is null
                              left join escola_grade ON serie_turma_grade.cd_escola_grade = escola_grade.cd_escola_grade
                              left join grade ON escola_grade.cd_grade = grade.cd_grade
                              left join grade_componente_curricular gcc on gcc.cd_grade = grade.cd_grade
