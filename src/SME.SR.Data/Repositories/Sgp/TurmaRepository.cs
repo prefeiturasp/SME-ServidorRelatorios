@@ -1190,21 +1190,20 @@ namespace SME.SR.Data
 
         }
 
-        public async Task<IEnumerable<QuantidadeTurmaPorAnoDto>> ObterTotalDeTurmasPorAno(string loginUsuario,string codigoUe,Guid perfilUsuario,bool consideraHistorico, int modalidade,int anoLetivo,int semestre = 0)
+        public async Task<IEnumerable<QuantidadeTurmaPorAnoDto>> ObterTotalDeTurmasPorAno(bool consideraHistorico, int modalidade, int anoLetivo)
         {
 		        var query = new StringBuilder();
-		        query.AppendLine(@" select  ano as AnoTurma, codigo  ");
-		        query.AppendLine(@" from f_abrangencia_turmas_tipos(@login, @perfil, @consideraHistorico, @modalidade, @semestre, @codigoUe, @anoLetivo)   ");
-		        query.AppendLine(@"where 1=1  ");
-	       
-		        var parametros = new
+		        query.AppendLine(" select count(distinct turma_id) TotalDeTurma, ue_id CodigoUe, ano AnoTurma");
+		        query.AppendLine(" from turma");
+		        query.AppendLine(" where ano_letivo = @anoLetivo ");
+                query.AppendLine(" and historica = @consideraHistorico ");
+                query.AppendLine(" and modalidade_codigo = @modalidade ");
+                query.AppendLine(" group by ue_id, ano");
+            
+                var parametros = new
 		        {
-			        login = loginUsuario,
-			        perfil = perfilUsuario,
 			        consideraHistorico,
 			        modalidade,
-			        semestre,
-			        codigoUe,
 			        anoLetivo
 		        };
 		        using( var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))

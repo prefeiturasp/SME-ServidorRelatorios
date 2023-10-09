@@ -2,7 +2,8 @@
 {
     public class QuantidadeTurmaPorAnoDto
     {
+        public string CodigoUe { get; set; }
         public string AnoTurma { get; set; }
-        public string Codigo { get; set; }
+        public int TotalDeTurma { get; set; }
     }
 }

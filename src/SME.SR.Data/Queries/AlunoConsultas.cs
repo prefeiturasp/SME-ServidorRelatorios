@@ -394,11 +394,12 @@
 																	   max(dt_situacao_aluno) data_situacao
 																	from lista";
 
-		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId) =>
-			$@"WITH lista AS (
-				SELECT DISTINCT mte.cd_turma_escola,
-								m.cd_aluno,
-								se.sg_resumida_serie
+		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId) =>
+			$@"SELECT CodigoUe, AnoTurma, sum(totalAluno) QuantidadeAluno 
+				FROM( 
+				SELECT 	COUNT(distinct m.cd_aluno) totalAluno,
+						se.sg_resumida_serie as AnoTurma,
+						ue.cd_unidade_educacao as CodigoUe
 				FROM v_matricula_cotic m
 					INNER JOIN matricula_turma_escola mte
 						ON m.cd_matricula = mte.cd_matricula	
@@ -424,13 +425,12 @@
 					  and aln.AnoLetivo = anoLetivo
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
-					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}
-				UNION
+				GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao
+				UNION ALL
 
-				SELECT
-					mte.cd_turma_escola,
-					matr.cd_aluno,
-					se.sg_resumida_serie
+				SELECT 	COUNT(distinct matr.cd_aluno) totalAluno,
+						se.sg_resumida_serie as AnoTurma,
+						ue.cd_unidade_educacao as CodigoUe
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -458,10 +458,10 @@
 				      AND mte.nr_chamada_aluno <> '0'
 					  AND mte.nr_chamada_aluno is not null
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
-					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)})
-			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
-				FROM lista group by sg_resumida_serie ";
-
+				GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao
+			) tab
+			GROUP BY CodigoUe, AnoTurma
+			ORDER BY CodigoUe, AnoTurma";
 
 
 	    internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT   
