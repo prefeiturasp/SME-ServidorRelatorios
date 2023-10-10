@@ -263,9 +263,11 @@ namespace SME.SR.Application
         private IEnumerable<ComponenteCurricularPorTurma> ObterComponentesDasAreasDeConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
                                                                                                 IEnumerable<AreaDoConhecimento> areaDoConhecimento)
         {
-            return componentesCurricularesDaTurma.Where(c => (!c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina)) ||
-                                                            (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(cr =>
-                                                            c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr)))).OrderBy(cc => cc.Disciplina); ;
+            return componentesCurricularesDaTurma.Where(c => (!c.Regencia && (areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodDisciplina) ||
+                                                                              areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.CodigoComponenteCurricularTerritorioSaber))) ||
+                                                            (c.Regencia && areaDoConhecimento.Select(a => a.CodigoComponenteCurricular)
+                                                                                             .Any(cr => c.ComponentesCurricularesRegencia.Select(cr => cr.CodDisciplina).Contains(cr))))
+                                                    .OrderBy(cc => cc.Disciplina);
         }
 
         private IEnumerable<IGrouping<(string Nome, int? Ordem, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ComponenteCurricularPorTurma> componentesCurricularesDaTurma,
@@ -273,8 +275,8 @@ namespace SME.SR.Application
                                                                                                              IEnumerable<ComponenteCurricularGrupoAreaOrdenacaoDto> grupoAreaOrdenacao,
                                                                                                              long grupoMatrizId)
         {
-
-            return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Where(cc => !cc.Regencia).Select(cc => cc.CodDisciplina).Contains(a.CodigoComponenteCurricular)) ||
+            return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Where(cc => !cc.Regencia).Select(cc => new { cc.CodDisciplina, cc.CodigoComponenteCurricularTerritorioSaber })
+                                                                                    .Any(cc => cc.CodDisciplina == a.CodigoComponenteCurricular || cc.CodigoComponenteCurricularTerritorioSaber == a.CodigoComponenteCurricular)) ||
                                                                     (componentesCurricularesDaTurma.Any(cc => cc.Regencia) &&
                                                                      componentesCurricularesDaTurma.Where(cc => cc.Regencia).SelectMany(cc => cc.ComponentesCurricularesRegencia).
                                                                      Select(r => r.CodDisciplina).Contains(a.CodigoComponenteCurricular)))).
