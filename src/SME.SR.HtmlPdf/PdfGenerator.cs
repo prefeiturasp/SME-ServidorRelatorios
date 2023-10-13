@@ -96,9 +96,9 @@ namespace SME.SR.HtmlPdf
 
             converter.Convert(doc);
         }
-        public void ConvertToPdfPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string caminhoBase, string nomeArquivo, string tituloRelatorioRodape = "")
+        public void ConvertToPdfPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string caminhoBase, string nomeArquivo, string tituloRelatorioRodape = "", Orientation orientacaoRelatorio = Orientation.Portrait)
         {
-            HtmlToPdfDocument doc = StartBasicDocPaginacaoSolo(paginas, tituloRelatorioRodape);
+            HtmlToPdfDocument doc = StartBasicDocPaginacaoSolo(paginas, tituloRelatorioRodape, orientacaoRelatorio);
 
             if (!string.IsNullOrWhiteSpace(nomeArquivo))
             {
@@ -119,13 +119,13 @@ namespace SME.SR.HtmlPdf
             doc = null;
             GC.Collect();
         }
-        private HtmlToPdfDocument StartBasicDocPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string tituloRelatorioRodape = "")
+        private HtmlToPdfDocument StartBasicDocPaginacaoSolo(List<PaginaParaRelatorioPaginacaoSoloDto> paginas, string tituloRelatorioRodape = "", Orientation orientacaoRelatorio = Orientation.Portrait)
         {
             var doc = new HtmlToPdfDocument()
             {
                 GlobalSettings = {
                     ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Portrait,
+                    Orientation = orientacaoRelatorio,
                     PaperSize = PaperKind.A4,
                     Margins = new MarginSettings() { Top = 5, Bottom = 5, Left = 5, Right = 5 }
                 }
