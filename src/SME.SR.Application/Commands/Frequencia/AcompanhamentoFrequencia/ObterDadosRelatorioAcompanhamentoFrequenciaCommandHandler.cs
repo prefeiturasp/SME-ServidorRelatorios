@@ -173,15 +173,23 @@ namespace SME.SR.Application
                             NomeBimestre = item.BimestreFormatado,
                         };
 
-                        bimestre.DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto
-                        {
-                            TotalAulasDadas = item.TotalAula,
+                        var frequenciaAluno = new FrequenciaAluno() { 
+                            TotalAulas = item.TotalAula,
                             TotalPresencas = item.TotalPresencas,
-                            TotalRemoto = item.TotalRemotos,
+                            TotalRemotos = item.TotalRemotos,
                             TotalAusencias = item.TotalAusencias,
                             TotalCompensacoes = item.TotalCompensacoes,
-                            TotalPercentualFrequencia = Math.Round(item.TotalPercentualFrequencia, 0).ToString(),
-                            TotalPercentualFrequenciaFormatado = item.TotalPercentualFrequenciaFormatado
+                        };
+
+                        bimestre.DadosFrequencia = new RelatorioFrequenciaIndividualDadosFrequenciasDto
+                        {
+                            TotalAulasDadas = frequenciaAluno.TotalAulas,
+                            TotalPresencas = frequenciaAluno.TotalPresencas,
+                            TotalRemoto = frequenciaAluno.TotalRemotos,
+                            TotalAusencias = frequenciaAluno.TotalAusencias,
+                            TotalCompensacoes = frequenciaAluno.TotalCompensacoes,
+                            TotalPercentualFrequencia = Math.Round(frequenciaAluno.PercentualFrequencia, 0).ToString(),
+                            TotalPercentualFrequenciaFormatado = frequenciaAluno.PercentualFrequenciaFormatado
                         };
 
                         bimestre.FrequenciaDiaria.AddRange(ObterJustificativaFrequenciaDiaria(item.Bimestre, item.CodigoAluno));
