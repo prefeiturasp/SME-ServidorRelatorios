@@ -104,7 +104,7 @@ namespace SME.SR.Application
 
                         var frequeciaGlobal =
                             frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                        var percentualFrequenciaGlobalFormatado = frequeciaGlobal.First().PercentualFrequenciaFormatado;
+                        var percentualFrequenciaGlobalFormatado = frequeciaGlobal?.First()?.PercentualFrequenciaFormatado;
                         var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c =>
                             c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
                         var recomendacao = recomendacoes?.FirstOrDefault(r =>
