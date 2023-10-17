@@ -87,7 +87,10 @@ namespace SME.SR.Infra
             if (texto.Length < inicioCaracteres)
                 return string.Empty;
 
-            return texto.Substring(inicioCaracteres, finalCaracteres);
+            if(inicioCaracteres < finalCaracteres)
+                return texto.Substring(inicioCaracteres, finalCaracteres);
+
+            return string.Empty;
         }
     }
 }
