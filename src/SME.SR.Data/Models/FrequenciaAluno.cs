@@ -64,7 +64,7 @@ namespace SME.SR.Data
                 return ArredondarPercentual(porcentagem > 100 ? 100 : porcentagem);
             }
         }
-        public string PercentualFrequenciaFormatado => FormatarPercentual(PercentualFrequencia);
+        public string PercentualFrequenciaFormatado => TotalAulas > 0 ? FormatarPercentual(PercentualFrequencia) : string.Empty;
         public long? PeriodoEscolarId { get; set; }
         public DateTime PeriodoFim { get; set; }
         public DateTime PeriodoInicio { get; set; }
