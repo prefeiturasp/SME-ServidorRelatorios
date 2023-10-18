@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Npgsql;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,14 @@ namespace SME.SR.Data
     public class ProfessorRepository : IProfessorRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
+        private const string SQL_ATRIBUICAO_VIGENTE_PROF_COMPONENTE_CURRICULAR_AGRUPAMENTO_TERRITORIO_SABER = @"select codagrupamento as ComponenteCurricularId,
+					   '' as ComponenteCurricular,
+					   rfprofessor as ProfessorRF,
+					   ''  as NomeProfessor,
+                       codturma TurmaCodigo
+                from agrupamentoatribuicaoterritoriosaber 
+                    WHERE dtfimatribuicao is null and codmotivodisponibilizacao is null
+                    and anoatribuicao = Extract('Year' From current_date)";
 
         public ProfessorRepository(VariaveisAmbiente variaveisAmbiente)
         {
@@ -195,6 +204,43 @@ namespace SME.SR.Data
             using (var conn = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
                 var result = await conn.QueryAsync<ProfessorTitularComponenteCurricularDto>(
+                                              query.ToString(),
+                                              parametros);
+                return result.ToList();
+            }
+        }
+
+        public async Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularAgrupamentoTerritorioSaberPorTurma(long[] codigosTurma)
+        {
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine($@"{SQL_ATRIBUICAO_VIGENTE_PROF_COMPONENTE_CURRICULAR_AGRUPAMENTO_TERRITORIO_SABER}
+                                and codturma = any(@codigosTurma) ");
+
+            var parametros = new { codigosTurma };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
+            {
+                var result = await conexao.QueryAsync<ProfessorTitularComponenteCurricularDto>(
+                                              query.ToString(),
+                                              parametros);
+                return result.ToList();
+            }
+        }
+
+        public async Task<IEnumerable<ProfessorTitularComponenteCurricularDto>> BuscarProfessorTitularComponenteCurricularAgrupamentoTerritorioSaberPorCodigosRf(string[] codigosRf)
+        {
+            
+            StringBuilder query = new StringBuilder();
+
+            query.AppendLine($@"{SQL_ATRIBUICAO_VIGENTE_PROF_COMPONENTE_CURRICULAR_AGRUPAMENTO_TERRITORIO_SABER}
+                                and rfprofessor = any(@codigosRf) ");
+
+            var parametros = new { codigosRf };
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringApiEol))
+            {
+                var result = await conexao.QueryAsync<ProfessorTitularComponenteCurricularDto>(
                                               query.ToString(),
                                               parametros);
                 return result.ToList();

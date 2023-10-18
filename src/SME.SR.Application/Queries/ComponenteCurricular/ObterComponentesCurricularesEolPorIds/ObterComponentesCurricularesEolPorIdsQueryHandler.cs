@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
+using SME.SR.Data.Extensions;
 using SME.SR.Data.Interfaces;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,35 +24,37 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesEolPorIdsQuery request, CancellationToken cancellationToken)
         {
-            var lstComponentes = await componenteCurricularRepository.ListarComponentes();
-        
-            lstComponentes = lstComponentes
+            var idsComponentesAgrupamentoTS = request.ComponentesCurricularesIds.Where(cc => cc.EhIdComponenteCurricularTerritorioSaberAgrupado()).Select(cc => cc);
+            var componentesCurriculares = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
+            var componentesCurricularesRetorno = componentesCurriculares
                    .Where(w => request.ComponentesCurricularesIds.Contains(w.Codigo))
+                   .ToComponentesCurriculares()
                    .ToList();
 
-            var componenteIds = request.ComponentesCurricularesIds.Select(x => x.ToString()).ToArray();
-            var componentesTS = lstComponentes.Where(c => c.TerritorioSaber)
-                                .Select(c => c.Codigo.ToString()).ToArray();
+            var componentesTS = componentesCurricularesRetorno.Where(c => c.TerritorioSaber)
+                                .Select(c => c.Codigo);
 
-            IEnumerable<ComponenteCurricular> componentesTerritorioSaber = null;
+            var componenteIds = request.ComponentesCurricularesIds.Select(cc => cc).ToList();
 
-            if (ExisteComponentesTerritorioSaberTurma(componentesTS, request.TurmasId))
+            if (componentesTS.Any() && request.TurmasId.Any())
             {
-                componentesTerritorioSaber = request.TurmasId.Any() ? await componenteCurricularRepository.ListarComponentesTerritorioSaber(componentesTS, request.TurmasId) : null;
-
-                foreach (var componenteTerritorio in componentesTerritorioSaber)
-                    componenteTerritorio.GrupoMatrizId = lstComponentes.Where(w=> w.Codigo == componenteTerritorio.Codigo).FirstOrDefault().GrupoMatrizId;
+                List<ComponenteCurricularTerritorioSaber> componentesTerritorioSaber = (await componenteCurricularRepository.ObterComponentesTerritorioDosSaberes(request.TurmasId, componentesTS)).ToList();
+                componentesCurricularesRetorno = ConcatenarComponenteTerritorio(componentesCurricularesRetorno, componentesTerritorioSaber, componentesCurriculares);
             }
 
-            if (componentesTerritorioSaber != null)
-                lstComponentes = ConcatenarComponenteTerritorio(lstComponentes, componentesTerritorioSaber);
+            if (idsComponentesAgrupamentoTS.Any())
+            {
+                List<AgrupamentoAtribuicaoTerritorioSaber> componentesAgrupamentoTerritorioSaber = (await componenteCurricularRepository.ObterAgrupamentosTerritorioSaber(idsComponentesAgrupamentoTS.ToArray())).ToList();
+                componentesCurricularesRetorno = ConcatenarComponenteAgrupamentoTerritorio(componentesCurricularesRetorno, componentesAgrupamentoTerritorioSaber, componentesCurriculares);
+                componenteIds.AddRange(componentesAgrupamentoTerritorioSaber.SelectMany(cca => cca.ComponentesCurricularesAgrupados).Distinct());
+            }
 
-            if (lstComponentes != null && lstComponentes.Any())
+            if (componentesCurricularesRetorno != null && componentesCurricularesRetorno.Any())
             {
                 var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
-                var areasDoConhecimento = await areaDoConhecimentoRepository.ObterAreasDoConhecimentoPorComponentesCurriculares(componenteIds.Select(long.Parse).ToArray());
+                var areasDoConhecimento = await areaDoConhecimentoRepository.ObterAreasDoConhecimentoPorComponentesCurriculares(componenteIds.ToArray());
 
-                return lstComponentes.Select(x => new ComponenteCurricularPorTurma
+                return componentesCurricularesRetorno.Select(x => new ComponenteCurricularPorTurma
                 {
                     CodDisciplina = x.Codigo,
                     CodDisciplinaPai = x.CodComponentePai,
@@ -70,15 +74,33 @@ namespace SME.SR.Application
             return Enumerable.Empty<ComponenteCurricularPorTurma>();
         }
 
-        private bool ExisteComponentesTerritorioSaberTurma(string[] componentesTS, string[] turmasId)
+        public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentesCurricularesRetorno, IEnumerable<ComponenteCurricularTerritorioSaber> componentesTerritorio, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentes)
         {
-            return componentesTS != null && componentesTS.Length > 0 && turmasId != null && turmasId.Length > 0;
+    		var componentesConcatenados = componentesCurricularesRetorno.Where(a => !componentesTerritorio.Any(x => x.CodigoComponenteCurricular == a.Codigo)).ToList();
+            return componentesConcatenados.Concat(componentesTerritorio.Select(ct => new ComponenteCurricular()
+                                                                            {
+                                                                                  Codigo = ct.CodigoComponenteCurricular,
+                                                                                  CodigoComponenteCurricularTerritorioSaber = ct.CodigoComponenteCurricular,
+                                                                                  Descricao = ct.ObterDescricaoComponenteCurricular(),
+                                                                                  TerritorioSaber = true,
+                                                                                  GrupoMatrizId = informacoesComponentes.Where(w => w.Codigo == ct.CodigoComponenteCurricular).FirstOrDefault().GrupoMatrizId,
+                                                                                  Frequencia = true
+                                                                            })).ToList();
         }
 
-        public List<ComponenteCurricular> ConcatenarComponenteTerritorio(IEnumerable<ComponenteCurricular> componentes, IEnumerable<ComponenteCurricular> componentesTerritorio)
+        public List<ComponenteCurricular> ConcatenarComponenteAgrupamentoTerritorio(IEnumerable<ComponenteCurricular> componentesCurricularesRetorno, IEnumerable<AgrupamentoAtribuicaoTerritorioSaber> componentesAgrupamentoTerritorio, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentes)
         {
-		var componentesConcatenados = componentes.Where(a => !componentesTerritorio.Any(x => x.Codigo == a.Codigo)).ToList();
-		return componentesConcatenados.Concat(componentesTerritorio).ToList();
+            var componentesAgrupamento = componentesAgrupamentoTerritorio.Select(ct => new ComponenteCurricular()
+            {
+                Codigo = ct.CodigoAgrupamento,
+                Descricao = ct.DescricaoAgrupamentoTerritorioSaber(),
+                CodigoComponenteCurricularTerritorioSaber = ct.ComponentesCurricularesAgrupados.FirstOrDefault(),
+                TerritorioSaber = true,
+                GrupoMatrizId = informacoesComponentes.Where(w => w.Codigo == ct.ComponentesCurricularesAgrupados.FirstOrDefault()).FirstOrDefault().GrupoMatrizId,
+                Frequencia = true
+            }).DistinctBy(cc => cc.Codigo);
+            return componentesCurricularesRetorno.Concat(componentesAgrupamento).ToList();
         }
+        
     }
 }

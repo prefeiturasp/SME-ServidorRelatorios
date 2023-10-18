@@ -45,10 +45,10 @@ namespace SME.SR.Data
                                             inner join turma t on t.id = crp.turma_id
                                             inner join periodo_escolar pe on pe.id = crp.periodo_escolar_id
                                             inner join tipo_calendario tc on tc.id = pe.tipo_calendario_id
-                                            inner join componente_curricular cc on cc.id = crp.componente_curricular_id
                                             inner join ue ue on ue.id = t.ue_id
                                             inner join dre dre on dre.id = ue.dre_id
-                                             left join usuario u on u.rf_codigo = crp.rf_professor 
+                                            left join componente_curricular cc on cc.id = crp.componente_curricular_id
+                                            left join usuario u on u.rf_codigo = crp.rf_professor 
                                             where crp.ano_letivo = @anoLetivo");
 
             if (dreCodigo != null)

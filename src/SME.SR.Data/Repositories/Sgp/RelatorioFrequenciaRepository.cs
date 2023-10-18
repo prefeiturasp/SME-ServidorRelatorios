@@ -69,7 +69,7 @@ namespace SME.SR.Data
 	                t.ue_id = u.id
                 inner join dre d on
 	                u.dre_id = d.id
-                inner join componente_curricular cc on 
+                left join componente_curricular cc on 
                     cc.id = cast(fa.disciplina_id as bigint)
                 where
 	                not fa.excluido and t.ano_letivo = @anoLetivo

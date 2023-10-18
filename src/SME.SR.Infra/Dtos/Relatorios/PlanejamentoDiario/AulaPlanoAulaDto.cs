@@ -9,6 +9,7 @@ namespace SME.SR.Infra
         public string Turma { get; set; }
         public int? Bimestre { get; set; }
         public string ComponenteCurricular { get; set; }
+        public long ComponenteCurricularId { get; set; }
         public DateTime DataAula { get; set; }
         public int QuantidadeAula { get; set; }
         public DateTime? DataPlanejamento { get; set; }

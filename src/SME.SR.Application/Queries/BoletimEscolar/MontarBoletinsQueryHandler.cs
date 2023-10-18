@@ -207,14 +207,13 @@ namespace SME.SR.Application
                 {
                     boletim.ComponentesCurriculares ??= new List<ComponenteCurricularDto>();
 
-                    if (!boletim.ComponentesCurriculares.Any(g => !componente.TerritorioSaber && g.Codigo == componente.CodDisciplina.ToString()) ||
-                        !boletim.ComponentesCurriculares.Any(g => componente.TerritorioSaber && g.Codigo == componente.CodDisciplina.ToString() && g.Professor == componente.Professor))
+                    if (!boletim.ComponentesCurriculares.Any(g => g.Codigo == componente.CodDisciplina.ToString())) 
                     {
                         boletim.ComponentesCurriculares.Add(
                             new ComponenteCurricularDto()
                             {
                                 Codigo = componente.CodDisciplina.ToString(),
-                                CodigoTerritorioSaber = componente.CodigoTerritorioSaber.ToString(),
+                                CodigoComponenteCurricularTerritorioSaber = componente.CodigoComponenteCurricularTerritorioSaber.ToString(),
                                 Nome = componente.Disciplina,
                                 Nota = componente.LancaNota,
                                 Frequencia = componente.Frequencia,
@@ -273,9 +272,7 @@ namespace SME.SR.Application
                 foreach (var componenteCurricular in boletim.ComponentesCurriculares)
                 {
                     var frequenciasAlunoComponente =
-                         frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoTerritorioSaber
-                         && (!componenteCurricular.TerritorioSaber
-                              || (componenteCurricular.TerritorioSaber && !string.IsNullOrEmpty(componenteCurricular.Professor) ? f.Professor == componenteCurricular.Professor : true)));
+                         frequenciasAluno?.Where(f => f.DisciplinaId == componenteCurricular.Codigo || f.DisciplinaId == componenteCurricular.CodigoComponenteCurricularTerritorioSaber);
 
                     var frequenciaFinal = await ObterFrequenciaFinalAluno(frequenciasAlunoComponente, BIMESTRE_FINAL, conselhoClasseBimestres);
 
@@ -301,8 +298,7 @@ namespace SME.SR.Application
                     if (componenteCurricular.Frequencia)
                     {
                         var aulasCadastradas = registroFrequencia?
-                            .Where(f => f.ComponenteCurricularCodigo == componenteCurricular.Codigo &&
-                                (!componenteCurricular.TerritorioSaber || (componenteCurricular.TerritorioSaber && f.Professor == componenteCurricular.Professor)));
+                            .Where(f => f.ComponenteCurricularCodigo == componenteCurricular.Codigo);
 
                         componenteCurricular.FrequenciaBimestre1 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, BIMESTRE_1);
                         componenteCurricular.FrequenciaBimestre2 = ObterFrequenciaBimestre(conselhoClasseBimestres, frequenciasAlunoComponente, BIMESTRE_2);

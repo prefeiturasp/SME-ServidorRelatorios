@@ -20,7 +20,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AulaPrevistaBimestreQuantidade>> ObterBimestresAulasPrevistasPorFiltro(long turmaId, long componenteCurricularId, long tipoCalendarioId)
         {
             var query = @"
-                select t.nome as TurmaNome, cc.id as ComponenteCurricularId, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome, cc.eh_regencia as Regencia
+                select t.nome as TurmaNome, @componenteCurricularId as ComponenteCurricularId, coalesce(cc.descricao_sgp, cc.descricao) as ComponenteCurricularNome, cc.eh_regencia as Regencia
 	                , p.bimestre, p.periodo_inicio as DataInicio, p.periodo_fim as DataFim
                     , pv.aulas_previstas as Previstas
                     , SUM(ac.quantidade) filter (where ac.tipo_aula = 1 and ac.aula_cj = false) as CriadasTitular
@@ -30,7 +30,7 @@ namespace SME.SR.Data
                     , SUM(ac.quantidade) filter (where ac.tipo_aula = 2 and ac.registro_frequencia_id is not null ) as Reposicoes 
                   from periodo_escolar p
                  inner join turma t on t.id = @turmaId
-                 inner join componente_curricular cc on cc.id = @componenteCurricularId
+                 left join componente_curricular cc on cc.id = @componenteCurricularId
                   left join (
   	                select distinct ap.tipo_calendario_id, ap.disciplina_id, ap.turma_id, apb.bimestre, apb.aulas_previstas
   	                  from aula_prevista ap
@@ -38,7 +38,7 @@ namespace SME.SR.Data
                      where not ap.excluido and not apb.excluido
                   ) pv on pv.tipo_calendario_id = p.tipo_calendario_id
                      and pv.bimestre = p.bimestre
-                     and pv.disciplina_id = cc.id::text
+                     and pv.disciplina_id = @componenteCurricularId::text
                      and pv.turma_id = t.turma_id
                    left join (
 	                select a.tipo_calendario_id, a.turma_id, a.disciplina_id, a.data_aula, a.quantidade, a.tipo_aula, a.aula_cj, rf.id as registro_frequencia_id
@@ -47,10 +47,10 @@ namespace SME.SR.Data
 	                 where not a.excluido
                    ) ac on ac.tipo_calendario_id = p.tipo_calendario_id
                      and ac.turma_id = t.turma_id
-                     and ac.disciplina_id::bigint = cc.id
+                     and ac.disciplina_id = @componenteCurricularId::text
                      and ac.data_aula between p.periodo_inicio and p.periodo_fim
                  where p.tipo_calendario_id = @tipoCalendarioId
-                group by t.nome, cc.id, cc.descricao_sgp, cc.descricao, cc.eh_regencia, p.bimestre, p.periodo_inicio, p.periodo_fim, pv.aulas_previstas ";
+                group by t.nome, @componenteCurricularId, cc.descricao_sgp, cc.descricao, cc.eh_regencia, p.bimestre, p.periodo_inicio, p.periodo_fim, pv.aulas_previstas ";
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
