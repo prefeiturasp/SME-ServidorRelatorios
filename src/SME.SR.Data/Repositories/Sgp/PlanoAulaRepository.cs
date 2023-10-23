@@ -110,6 +110,7 @@ namespace SME.SR.Data
                                    a.id as AulaId,
                                    a.aula_cj as AulaCJ,
                                    t.nome as Turma,
+                                   a.disciplina_id::bigint as ComponenteCurricularId,
                                    cc.descricao_sgp as ComponenteCurricular,
                                    pe.bimestre,
 	                               a.data_aula as DataAula, 
@@ -125,7 +126,7 @@ namespace SME.SR.Data
                               from aula a
                              inner join turma t on t.turma_id = a.turma_id
                              inner join ue on ue.id = t.ue_id 
-                             inner join componente_curricular cc on cc.Id = a.disciplina_id::bigint
+                             left join componente_curricular cc on cc.Id = a.disciplina_id::bigint
                               left join plano_aula pa on pa.aula_id = a.id
                               left join objetivo_aprendizagem_aula oaa on oaa.plano_aula_id = pa.id 
 	                          left join objetivo_aprendizagem oa on oa.id = oaa.objetivo_aprendizagem_id 
@@ -140,7 +141,7 @@ namespace SME.SR.Data
                 query += " and pe.bimestre = @bimestre ";
 
             if (componenteCurricular != -99)
-                query += " and cc.id = @componenteCurricular ";
+                query += " and a.disciplina_id::bigint = @componenteCurricular ";
 
             if (!listarDataFutura)
                 query += " and a.data_aula <= NOW()::DATE ";

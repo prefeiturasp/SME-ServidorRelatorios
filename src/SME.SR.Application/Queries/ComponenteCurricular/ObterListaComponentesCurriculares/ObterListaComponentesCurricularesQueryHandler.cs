@@ -18,6 +18,6 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<ComponenteCurricular>> Handle(ObterListaComponentesCurricularesQuery request, CancellationToken cancellationToken)
-            => await componenteCurricularRepository.ListarComponentes();
+            => (await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares()).ToComponentesCurriculares();
     }
 }

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -14,10 +15,12 @@ namespace SME.SR.Application
     public class ObterDadosPedagogicosComponenteCurricularesQueryHandler : IRequestHandler<ObterDadosPedagogicosComponenteCurricularesQuery, List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>>
     {
         private readonly IRegistrosPedagogicosRepository registrosPedagogicosRepository;
+        private readonly IMediator mediator;
 
-        public ObterDadosPedagogicosComponenteCurricularesQueryHandler(IRegistrosPedagogicosRepository registrosPedagogicosSgpRepository)
+        public ObterDadosPedagogicosComponenteCurricularesQueryHandler(IRegistrosPedagogicosRepository registrosPedagogicosSgpRepository, IMediator mediator)
         {
             this.registrosPedagogicosRepository = registrosPedagogicosSgpRepository ?? throw new ArgumentNullException(nameof(registrosPedagogicosSgpRepository));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<List<RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto>> Handle(ObterDadosPedagogicosComponenteCurricularesQuery request, CancellationToken cancellationToken)
@@ -27,6 +30,7 @@ namespace SME.SR.Application
 
             if (consolidacoesFiltradas.Any())
             {
+                consolidacoesFiltradas = await TratarInformacoesComponentesCurriculares(consolidacoesFiltradas.ToList());
                 foreach (var consolidacoes in consolidacoesFiltradas.OrderBy(cf=> cf.Bimestre).GroupBy(cf => cf.Bimestre).Distinct())
                 {
                     var bimestre = new RelatorioAcompanhamentoRegistrosPedagogicosBimestreDto();
@@ -108,6 +112,23 @@ namespace SME.SR.Application
             }
 
             return bimestres;
+        }
+
+        private async Task<IEnumerable<ConsolidacaoRegistrosPedagogicosDto>> TratarInformacoesComponentesCurriculares(List<ConsolidacaoRegistrosPedagogicosDto> consolidacoesRegistrosPedagogicos)
+        {
+
+            var idsComponentesSemNome = consolidacoesRegistrosPedagogicos.Where(ff => string.IsNullOrEmpty(ff.ComponenteCurricularNome)).Select(ff => ff.ComponenteCurricularId).Distinct();
+            if (!idsComponentesSemNome.Any())
+                return consolidacoesRegistrosPedagogicos;
+
+            var informacoesComponentesCurriculares = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(idsComponentesSemNome.ToArray()));
+            foreach (var consolidacaoRegistroPedagogico in consolidacoesRegistrosPedagogicos.Where(ff => string.IsNullOrEmpty(ff.ComponenteCurricularNome)))
+            {
+                var componenteCurricular = informacoesComponentesCurriculares.Where(cc => cc.CodDisciplina == consolidacaoRegistroPedagogico.ComponenteCurricularId).FirstOrDefault();
+                if (!(componenteCurricular is null))
+                    consolidacaoRegistroPedagogico.ComponenteCurricularNome = componenteCurricular.Disciplina;
+            }
+            return consolidacoesRegistrosPedagogicos;
         }
 
     }

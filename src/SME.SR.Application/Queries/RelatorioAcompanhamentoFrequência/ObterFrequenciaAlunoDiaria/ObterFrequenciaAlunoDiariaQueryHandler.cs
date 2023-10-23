@@ -21,7 +21,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> Handle(ObterFrequenciaAlunoDiariaQuery request, CancellationToken cancellationToken)
         {
-            return await frequenciaAlunoRepository.ObterFrequenciaAlunosDiario(request.CodigosAlunos, request.Bimestre, request.TurmaCodigo, request.ComponentesCurricularesIds, request.ProfessorTitularRf);
+            return await frequenciaAlunoRepository.ObterFrequenciaAlunosDiario(request.CodigosAlunos, request.Bimestre, request.TurmaCodigo, request.ComponentesCurricularesIds);
         }
     }
 }
