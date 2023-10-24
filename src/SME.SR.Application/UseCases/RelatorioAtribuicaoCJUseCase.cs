@@ -237,7 +237,7 @@ namespace SME.SR.Application
                                  {
                                      CodigoDre = t.DreId,
                                      CodigoUe = t.UeId,
-                                     ComponenteCurricular = t.ComponenteCurricularNome,
+                                     ComponenteCurricular = titular != null ? titular.ComponenteCurricular :t.ComponenteCurricularNome,
                                      DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
                                      NomeProfessorTitular = titular != null ? titular.ProfessorNomeRf : string.Empty,
                                      NomeTurma = t.Turma.Nome,
@@ -271,7 +271,7 @@ namespace SME.SR.Application
                                 {
                                     CodigoDre = t.DreId,
                                     CodigoUe = t.UeId,
-                                    ComponenteCurricular = t.ComponenteCurricularNome,
+                                    ComponenteCurricular = titular != null ? titular.ComponenteCurricular : t.ComponenteCurricularNome,
                                     DataAtribuicao = t.CriadoEm.ToString("dd/MM/yyyy"),
                                     NomeProfessorTitular = titular != null ? titular.ProfessorNomeRf : string.Empty,
                                     NomeProfessorCj = !string.IsNullOrEmpty(t.ProfessorNome) ? t.ProfessorNomeRf : professorNome,

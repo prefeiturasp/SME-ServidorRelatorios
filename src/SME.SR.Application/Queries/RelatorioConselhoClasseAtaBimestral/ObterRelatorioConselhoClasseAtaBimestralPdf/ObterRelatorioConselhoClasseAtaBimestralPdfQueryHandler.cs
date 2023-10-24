@@ -215,6 +215,7 @@ namespace SME.SR.Application
             var listaCodigosComponentes = new List<long>();
 
             listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.Regencia).SelectMany(a => a.ComponentesCurricularesRegencia).Select(cc => cc.CodDisciplina).ToList());
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.TerritorioSaber).Select(a => a.CodigoComponenteCurricularTerritorioSaber).ToList());
             listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => !cc.Regencia).Select(a => a.CodDisciplina).ToList());
 
             return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.Distinct().ToArray()));
@@ -604,7 +605,7 @@ namespace SME.SR.Application
                     foreach (var componenteCurricular in componentes.OrderBy(c => c.Disciplina))
                     {
                         if (!grupoMatrizDto.ComponentesCurriculares.Any(a => a.Id == componenteCurricular.CodDisciplina))
-                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres);
+                            grupoMatrizDto.AdicionarComponente(componenteCurricular.CodDisciplina, componenteCurricular.CodigoComponenteCurricularTerritorioSaber, componenteCurricular.Disciplina, grupoMatrizDto.Id, bimestres);
                     }
                     relatorio.GruposMatriz.Add(grupoMatrizDto);
                 }
@@ -623,7 +624,7 @@ namespace SME.SR.Application
         }
 
         private IEnumerable<ConselhoClasseAtaBimestralComponenteDto> ObterComponentesDasAreasDeConhecimento(IEnumerable<ConselhoClasseAtaBimestralComponenteDto> componentesCurricularesDaTurma, IEnumerable<AreaDoConhecimento> areaDoConhecimento)
-            => componentesCurricularesDaTurma.Where(c => areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Contains(c.Id)).OrderBy(cc => cc.Nome);
+            => componentesCurricularesDaTurma.Where(c => areaDoConhecimento.Select(a => a.CodigoComponenteCurricular).Any(a => a == c.Id || a == c.IdComponenteCurricularTerritorio)).OrderBy(cc => cc.Nome);
 
         private IEnumerable<IGrouping<(string Nome, int? Ordem, long Id), AreaDoConhecimento>> MapearAreasDoConhecimento(IEnumerable<ConselhoClasseAtaBimestralComponenteDto> componentesCurricularesDaTurma,
                                                                                                            IEnumerable<AreaDoConhecimento> areasDoConhecimentos,
@@ -631,9 +632,10 @@ namespace SME.SR.Application
                                                                                                            long grupoMatrizId)
         {
 
-            return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Select(cc => cc.Id).Contains(a.CodigoComponenteCurricular)))).
-                                                                     Select(a => { a.DefinirOrdem(grupoAreaOrdenacao, grupoMatrizId); return a; }).GroupBy(g => (g.Nome, g.Ordem, g.Id)).
-                                                                     OrderByDescending(c => c.Key.Id > 0 && !string.IsNullOrEmpty(c.Key.Nome))
+            return areasDoConhecimentos.Where(a => ((componentesCurricularesDaTurma.Select(cc => new { cc.Id, cc.IdComponenteCurricularTerritorio })
+                                                                    .Any(cc => cc.Id == a.CodigoComponenteCurricular || cc.IdComponenteCurricularTerritorio == a.CodigoComponenteCurricular))))
+                                                                     .Select(a => { a.DefinirOrdem(grupoAreaOrdenacao, grupoMatrizId); return a; }).GroupBy(g => (g.Nome, g.Ordem, g.Id))
+                                                                     .OrderByDescending(c => c.Key.Id > 0 && !string.IsNullOrEmpty(c.Key.Nome))
                                                                      .ThenByDescending(c => c.Key.Ordem.HasValue).ThenBy(c => c.Key.Ordem)
                                                                      .ThenBy(c => c.Key.Nome, StringComparer.OrdinalIgnoreCase);
         }

@@ -1,4 +1,5 @@
 ﻿using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,11 +14,7 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmas(string[] codigosTurma);
 
-        Task<IEnumerable<ComponenteCurricular>> ListarComponentes();
-
-        Task<IEnumerable<ComponenteCurricular>> ListarComponentesTerritorioSaber(string[] ids, string[] turmasId);
-
-        Task<IEnumerable<ComponenteCurricularApiEol>> ListarApiEol();
+        Task<IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO>> ListarInformacoesPedagogicasComponentesCurriculares();
 
         Task<IEnumerable<ComponenteCurricularRegenciaApiEol>> ListarRegencia();
 
@@ -30,11 +27,19 @@ namespace SME.SR.Data.Interfaces
 
         Task<IEnumerable<ComponenteCurricularSondagem>> ObterComponenteCurricularDeSondagemPorId(string componenteCurricularId);
         Task<string> ObterNomeComponenteCurricularPorId(long componenteCurricularId);
-
-        Task<IEnumerable<DisciplinaDto>> ObterDisciplinasPorIds(long[] ids);
-
         Task<long> ObterGrupoMatrizIdPorComponenteCurricularId(long componenteCurricularId);
 
         Task<bool> VerificaSeComponenteEhTerritorio(long componenteCurricularId);
+        Task<IEnumerable<AgrupamentoAtribuicaoTerritorioSaber>> ObterAgrupamentosTerritorioSaber(long[] ids);
+        Task<IEnumerable<AgrupamentoAtribuicaoTerritorioSaber>> ObterAgrupamentosTerritorioSaber(long codigoTurma,
+                                                                                                 long? codigoTerritorioSaber,
+                                                                                                 long? codigoExperienciaPegagogica,
+                                                                                                 long? codigoComponenteCurricular = null,
+                                                                                                 DateTime? dataBase = null,
+                                                                                                 DateTime? dataInicio = null,
+                                                                                                 string rfProfessor = null,
+                                                                                                 string codigosComponentesCurriculares = null,
+                                                                                                 bool? encerramentoAtribuicaoViaAtualizacaoComponentesAgrupados = null);
+        Task<IEnumerable<ComponenteCurricularTerritorioAtribuidoTurmaDTO>> ObterComponentesCurricularesTerritorioAtribuidos(long codigoTurma, string rfProf = null);
     }
 }
