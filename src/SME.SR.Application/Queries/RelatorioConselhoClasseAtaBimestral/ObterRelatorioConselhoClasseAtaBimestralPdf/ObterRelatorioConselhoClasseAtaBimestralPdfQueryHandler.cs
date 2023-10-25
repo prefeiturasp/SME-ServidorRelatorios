@@ -12,14 +12,10 @@ using System.Threading.Tasks;
 namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaBimestralPdfQuery, List<ConselhoClasseAtaBimestralPaginaDto>>
-    {        
-        private const double FREQUENCIA_100 = 100;
-        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
+    {             
         private readonly VariaveisAmbiente variaveisAmbiente;
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
-
-        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
 
         public ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
@@ -406,8 +402,7 @@ namespace SME.SR.Application
             IEnumerable<IGrouping<int, AlunoHistoricoEscolar>> listaTurmasAlunos, int bimestre, IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto> anotacoes, int qtdeDisciplinasLancamFrequencia = 0, double compensacaoAusenciaPercentualRegenciaClasse = 0,
             double compensacaoAusenciaPercentualFund2 = 0, IEnumerable<string> alunosComRegistroFrequencia = null)
         {
-            List<ConselhoClasseAtaBimestralLinhaDto> linhas = new List<ConselhoClasseAtaBimestralLinhaDto>();
-            
+            var linhas = new List<ConselhoClasseAtaBimestralLinhaDto>();
             for (var i = 0; i < alunos.Count(); i++)
             {
                 var aluno = alunos.ElementAt(i);
@@ -448,7 +443,8 @@ namespace SME.SR.Application
                         if (ultimoBimestreAtivo == null)
                             possuiComponente = false;
 
-                        var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, componente.CodDisciplina.ToString(), turma.AnoLetivo));
+                        var turmaPossuiFrequenciaRegistrada = await mediator
+                            .Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, componente.CodDisciplina.ToString(), turma.AnoLetivo));
 
                         var matriculadoDepois = aluno.Ativo ? periodosEscolares.FirstOrDefault(p => aluno.DataMatricula > p.PeriodoFim)?.Bimestre : null;
                         var possuiConselho = notasFinais.Any(n => n.Bimestre == bimestre
@@ -476,14 +472,14 @@ namespace SME.SR.Application
                             alunoComponenteConselhoClasse.Add((aluno.CodigoAluno, componente.CodDisciplina, possuiConselho));
 
                         var possuiConselhoParaExibirFrequencias = notasFinais.Any(n => n.AlunoCodigo == aluno.CodigoAluno.ToString() &&
-                                                                                n.ConselhoClasseAlunoId != 0 &&
-                                                                                n.ComponenteCurricularCodigo == componente.CodDisciplina);
+                                                                                  n.ConselhoClasseAlunoId != 0 &&
+                                                                                  n.ComponenteCurricularCodigo == componente.CodDisciplina);
 
                         var frequenciaAluno = ObterFrequenciaAluno(frequenciaAlunos, aluno.CodigoAluno.ToString(), componente, componentesTurmas);
 
                         var possuiFrequencia = alunosComRegistroFrequencia.Any(a => a == aluno.CodigoAluno.ToString());
 
-                        if (frequenciaAluno != null)
+                        if ((possuiConselhoParaExibirFrequencias || !componente.LancaNota) && frequenciaAluno != null)
                         {
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.TotalAusencias.ToString(), ++coluna);
                             linhaDto.AdicionaCelula(grupoMatriz.Key.Id, componente.CodDisciplina, frequenciaAluno.TotalCompensacoes.ToString(), ++coluna);
