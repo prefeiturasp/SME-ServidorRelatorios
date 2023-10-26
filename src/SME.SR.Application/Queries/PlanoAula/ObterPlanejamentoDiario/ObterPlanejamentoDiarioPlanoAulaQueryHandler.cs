@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using MediatR;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.FrequenciaMensal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +14,13 @@ namespace SME.SR.Application
     public class ObterPlanejamentoDiarioPlanoAulaQueryHandler : IRequestHandler<ObterPlanejamentoDiarioPlanoAulaQuery, IEnumerable<TurmaPlanejamentoDiarioDto>>
     {
         private readonly IPlanoAulaRepository planoAulaRepository;
+        private readonly IMediator mediator;
 
-        public ObterPlanejamentoDiarioPlanoAulaQueryHandler(IPlanoAulaRepository planoAulaRepository)
+
+        public ObterPlanejamentoDiarioPlanoAulaQueryHandler(IPlanoAulaRepository planoAulaRepository, IMediator mediator)
         {
             this.planoAulaRepository = planoAulaRepository ?? throw new ArgumentNullException(nameof(planoAulaRepository));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<IEnumerable<TurmaPlanejamentoDiarioDto>> Handle(ObterPlanejamentoDiarioPlanoAulaQuery request, CancellationToken cancellationToken)
@@ -37,7 +42,28 @@ namespace SME.SR.Application
             if (aulas == null || !aulas.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
+            aulas = await TratarInformacoesComponentesCurriculares(aulas.ToList());
+
             return AgrupaAulasTurma(aulas, request.Parametros.ExibirDetalhamento);            
+        }
+
+        private async Task<IEnumerable<AulaPlanoAulaDto>> TratarInformacoesComponentesCurriculares(List<AulaPlanoAulaDto> planejamentosDiarios)
+        {
+
+            var idsComponentesSemNome = planejamentosDiarios.Where(ff => string.IsNullOrEmpty(ff.ComponenteCurricular)).Select(ff => ff.ComponenteCurricularId).Distinct();
+            if (!idsComponentesSemNome.Any())
+                return planejamentosDiarios;
+
+            var informacoesComponentesCurriculares = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(idsComponentesSemNome.ToArray()));
+            foreach (var planejamentoDiario in planejamentosDiarios.Where(ff => string.IsNullOrEmpty(ff.ComponenteCurricular)))
+            {
+                var componenteCurricular = informacoesComponentesCurriculares.Where(cc => cc.CodDisciplina == planejamentoDiario.ComponenteCurricularId).FirstOrDefault();
+                if (!(componenteCurricular is null))
+                {
+                    planejamentoDiario.ComponenteCurricular = componenteCurricular.Disciplina;
+                }
+            }
+            return planejamentosDiarios;
         }
 
         private IEnumerable<TurmaPlanejamentoDiarioDto> AgrupaAulasTurma(IEnumerable<AulaPlanoAulaDto> aulas, bool exibirDetalhamento)

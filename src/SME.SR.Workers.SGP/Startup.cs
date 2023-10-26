@@ -58,6 +58,7 @@ namespace SME.SR.Workers.SGP
             ConfiguraRabbitParaLogs(services);
             ConfiguraTelemetria(services);
 
+            services.RegistraElasticSearch(Configuration);
             services.AddDirectoryBrowser();
             services.AddPolicies();
 
