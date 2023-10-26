@@ -32,14 +32,13 @@ namespace SME.SR.Application
             foreach (long turmaId in request.Filtros.Turmas)
             {
                 var aulasPrevistasTurma = new List<AulaPrevistaBimestreQuantidade>();
+                var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
                 if (request.Filtros.ComponentesCurriculares.Any())
                 {
+                    var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares, turma.Codigo);
                     foreach (long componenteCurricularId in request.Filtros.ComponentesCurriculares)
-                    {
-                        var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
-                        var componentesCurriculares = await ObterComponentesCurriculares(request.Filtros.ComponentesCurriculares, turma.Codigo);
+                    {                      
                         var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
-
                         if (aulasPrevistasBimestresComponente.Any())
                         {
                             foreach (var aula in aulasPrevistasBimestresComponente)
@@ -53,10 +52,9 @@ namespace SME.SR.Application
                 }
                 else
                 {
-                    var turma = await mediator.Send(new ObterTurmaResumoComDreUePorIdQuery(turmaId));
-                    var componentesDaTurma = await mediator.Send(new ObterComponentesCurricularesPorTurmaQuery(turma.Codigo));
+                    var componentesDaTurma = await mediator.Send(new ObterComponentesCurricularesPorCodigosTurmaQuery(new string[] { turma.Codigo.ToString() }, ignorarAdicaoComponentesPlanejamentoRegencia: true));
 
-                    foreach (long componenteCurricularId in componentesDaTurma.Select(c => c.CodDisciplina))
+                    foreach (long componenteCurricularId in componentesDaTurma.Select(c => c.Codigo))
                     {
                         var aulasPrevistasBimestresComponente = await mediator.Send(new ObterAulasPrevistasDadasQuery(turmaId, componenteCurricularId, tipoCalendarioId));
 
@@ -64,8 +62,8 @@ namespace SME.SR.Application
                         {
                             foreach (var aula in aulasPrevistasBimestresComponente)
                             {
-                                var componenteAula = componentesDaTurma.Where(c => c.CodDisciplina == aula.ComponenteCurricularId).FirstOrDefault();
-                                aula.ComponenteCurricularNome = componenteAula.Disciplina;
+                                var componenteAula = componentesDaTurma.Where(c => c.Codigo == aula.ComponenteCurricularId).FirstOrDefault();
+                                aula.ComponenteCurricularNome = componenteAula.Descricao;
                                 aulasPrevistasTurma.Add(aula);
                             }
                         }

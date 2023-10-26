@@ -22,7 +22,6 @@ namespace SME.SR.Application
             => await aulaRepository.ObterAulasDadas(request.TurmaCodigo,
                                                     request.ComponentesCurricularesCodigo,
                                                     request.TipoCalendarioId,
-                                                    request.Bimestre,
-                                                    request.ProfessorTitularRf);
+                                                    request.Bimestre);
     }
 }

@@ -44,9 +44,6 @@ namespace SME.SR.Application
             //Obter as disciplinas do EOL por código\\
             var componentesCurricularesIds = resultadoQuery.Select(a => a.DisciplinaId).Distinct().ToArray();
             var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesIds));
-            var componentesTerritorioSaberTurma = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(filtros.TurmasCodigo.FirstOrDefault(), componentesCurricularesIds));
-
-            var ehTerritorioSaber = (componentesCurricularesDescricoes?.Any() ?? false) ? componentesCurricularesDescricoes!.First().TerritorioSaber : false;
 
             var retorno = new RelatorioPendenciasDto();
             var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0 && x.OutrasPendencias == false).FirstOrDefault();
@@ -83,10 +80,7 @@ namespace SME.SR.Application
             else retorno.TurmaNome = "Todas";
 
             if (filtros.ComponentesCurriculares?.Count() == 1 && filtros.ComponentesCurriculares.Any(c => c != -99))
-                if (ehTerritorioSaber)
-                    retorno.ComponenteCurricular = componentesTerritorioSaberTurma.FirstOrDefault(a => a.CodigoComponenteCurricular == filtros.ComponentesCurriculares.FirstOrDefault())?.DescricaoTerritorioSaber;
-                else
-                    retorno.ComponenteCurricular = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares.FirstOrDefault())?.Disciplina;
+                retorno.ComponenteCurricular = componentesCurricularesDescricoes.FirstOrDefault(a => a.CodDisciplina == filtros.ComponentesCurriculares.FirstOrDefault())?.Disciplina;
             else retorno.ComponenteCurricular = "Todos";
 
             if (filtros.Bimestre > 0)
@@ -140,20 +134,17 @@ namespace SME.SR.Application
 
                         if(componentesDaTurma.Any())
                         {
-                            var componentesIds = componentesDaTurma.ToArray();
-
-                            var componentesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesIds));
-                            var componentesTerritorio = await mediator.Send(new ObterComponentesTerritorioSaberPorTurmaEComponentesIdsQuery(turmaCodigo, componentesIds));
+                            var componentesICurricularsTurmads = componentesDaTurma.ToArray();
+                            var componentesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesICurricularsTurmads));
 
                             foreach (var componenteDaTurma in componentesDaTurma)
                             {
-                                var nomeComponentes = componentesDescricoes?.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma)?.Disciplina;
-                                var nomeComponentesTerritorioSaber = componentesTerritorio?.FirstOrDefault(a => a.CodigoComponenteCurricular == componenteDaTurma)?.DescricaoTerritorioSaber;
+                                var nomeComponenteCurricular = componentesDescricoes?.FirstOrDefault(a => a.CodDisciplina == componenteDaTurma)?.Disciplina;
 
                                 var componenteParaAdicionar = new RelatorioPendenciasComponenteDto();
 
                                 componenteParaAdicionar.CodigoComponente = componenteDaTurma.ToString();
-                                componenteParaAdicionar.NomeComponente = nomeComponentesTerritorioSaber?.ToUpper() ?? nomeComponentes?.ToUpper();
+                                componenteParaAdicionar.NomeComponente = nomeComponenteCurricular?.ToUpper();
 
                                 var pendenciasDoComponenteDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma && a.DisciplinaId == componenteDaTurma);
                                 var pendenciasDoComponenteDaTurmaOrdenado = pendenciasDoComponenteDaTurma.OrderBy(p => p.Criador).OrderBy(p => p.TipoPendencia);
@@ -162,15 +153,10 @@ namespace SME.SR.Application
                                 {
                                     var pendenciaParaAdicionar = new RelatorioPendenciasPendenciaDto();
 
-                                    var PendenciaTerritorioSaber = "";
-
-                                    if (!String.IsNullOrEmpty(nomeComponentesTerritorioSaber))
-                                        PendenciaTerritorioSaber = pendenciaDoComponenteDaTurma.Descricao.Replace(nomeComponentes, nomeComponentesTerritorioSaber);
-
                                     pendenciaParaAdicionar.CodigoUsuarioAprovacaoRf = pendenciaDoComponenteDaTurma.AprovadorRf;
                                     pendenciaParaAdicionar.CodigoUsuarioRf = pendenciaDoComponenteDaTurma.CriadorRf;
                                     pendenciaParaAdicionar.Titulo = pendenciaDoComponenteDaTurma.Titulo;
-                                    pendenciaParaAdicionar.DescricaoPendencia = !String.IsNullOrEmpty(PendenciaTerritorioSaber) ? PendenciaTerritorioSaber : pendenciaDoComponenteDaTurma.Descricao;
+                                    pendenciaParaAdicionar.DescricaoPendencia = pendenciaDoComponenteDaTurma.Descricao;
                                     pendenciaParaAdicionar.Instrucao = pendenciaDoComponenteDaTurma.Instrucao;
                                     pendenciaParaAdicionar.TipoPendencia = pendenciaDoComponenteDaTurma.TipoPendencia;
                                     pendenciaParaAdicionar.OutrasPendencias = pendenciaDoComponenteDaTurma.OutrasPendencias;

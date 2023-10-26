@@ -15,11 +15,12 @@ namespace SME.SR.Infra
         public List<ConselhoClasseAtaFinalComponenteDto> ComponentesCurriculares { get; set; }
         public bool Regencia { get { return ComponentesCurriculares.Exists(componente => componente.Regencia); } }
 
-        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres, bool regencia, bool lancaNota = true, bool lancaFrequencia = true)
+        public void AdicionarComponente(long codDisciplina, long codComponenteCurricularTerritorioSaber, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres, bool regencia, bool lancaNota = true, bool lancaFrequencia = true)
         {
             var componenteCurricularDto = new ConselhoClasseAtaFinalComponenteDto()
             {
                 Id = codDisciplina,
+                IdComponenteCurricularTerritorio = codComponenteCurricularTerritorioSaber,
                 Nome = ComponenteCurricular,
                 IdGrupoMatriz = idGrupoMatriz,
                 Regencia = regencia,
