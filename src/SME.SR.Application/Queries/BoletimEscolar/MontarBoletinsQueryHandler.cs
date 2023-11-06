@@ -115,7 +115,7 @@ namespace SME.SR.Application
                                 aluno.First().CodigoAluno.ToString(),
                                 aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio,
                                 aluno.First().ObterNomeFinal(),
-                                String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? string.Empty : $"{percentualFrequenciaGlobalFormatado}%");
+                                String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? percentualFrequenciaGlobalFormatado : $"{percentualFrequenciaGlobalFormatado}%");
 
                             boletimAluno.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
 

@@ -117,7 +117,7 @@ namespace SME.SR.Application
                             aluno.FirstOrDefault(b => 
                             b.CodigoTurma.ToString() == turma.Codigo).NomeRelatorio,
                             aluno.FirstOrDefault().ObterNomeFinal(),
-                            String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? string.Empty : $"{percentualFrequenciaGlobalFormatado}%",
+                            String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? percentualFrequenciaGlobalFormatado : $"{percentualFrequenciaGlobalFormatado}%",
                             request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
                         boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;

@@ -153,8 +153,7 @@ namespace SME.SR.Application
                 dadosFrequencia.TotalAulasDadasFinal = frequenciaAluno.TotalAulas;
                 dadosFrequencia.PercentualFrequenciaFinal = frequenciaAluno.PercentualFrequencia;
                 dadosFrequencia.Bimestres = agrupamentoAluno.SelectMany(s => s.Bimestres).ToList();
-                if(dadosFrequencia != null)
-                   relatorioFinal.Alunos.Add(dadosFrequencia);
+                relatorioFinal.Alunos.Add(dadosFrequencia);
             }
 
             return relatorioFinal;
