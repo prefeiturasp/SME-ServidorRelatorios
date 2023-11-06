@@ -112,12 +112,11 @@ namespace SME.SR.Application
                         var ciclo = ciclos.FirstOrDefault(c =>
                             c.Modalidade == turma.ModalidadeCodigo && c.Ano == turma.Ano);
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
-                        var nomeRelatorio = aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio;
-                        var nomeFinal = aluno.First().ObterNomeFinal();
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                            nomeRelatorio,
-                            nomeFinal,
+                            aluno.FirstOrDefault(b => 
+                            b.CodigoTurma.ToString() == turma.Codigo).NomeRelatorio,
+                            aluno.FirstOrDefault().ObterNomeFinal(),
                             String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? string.Empty : $"{percentualFrequenciaGlobalFormatado}%",
                             request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;

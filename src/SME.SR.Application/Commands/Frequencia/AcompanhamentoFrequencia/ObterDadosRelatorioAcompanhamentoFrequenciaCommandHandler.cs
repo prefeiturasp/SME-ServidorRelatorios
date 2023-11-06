@@ -146,17 +146,15 @@ namespace SME.SR.Application
                     TotalRemotos = agrupamentoAluno.Sum(s => s.TotalRemotoFinal),
                 };
                 var dadosFrequencia = agrupamentoAluno.FirstOrDefault();
-                if (dadosFrequencia != null)
-                {
-                    dadosFrequencia.TotalAusenciasFinal = frequenciaAluno.TotalAusencias;
-                    dadosFrequencia.TotalCompensacoesFinal = frequenciaAluno.TotalCompensacoes;
-                    dadosFrequencia.TotalPresencasFinal = frequenciaAluno.TotalPresencas;
-                    dadosFrequencia.TotalRemotoFinal = frequenciaAluno.TotalRemotos;
-                    dadosFrequencia.TotalAulasDadasFinal = frequenciaAluno.TotalAulas;
-                    dadosFrequencia.PercentualFrequenciaFinal = frequenciaAluno.PercentualFrequencia;
-                    dadosFrequencia.Bimestres = agrupamentoAluno.SelectMany(s => s.Bimestres).ToList();
-                }
-                relatorioFinal.Alunos.Add(dadosFrequencia);
+                dadosFrequencia.TotalAusenciasFinal = frequenciaAluno.TotalAusencias;
+                dadosFrequencia.TotalCompensacoesFinal = frequenciaAluno.TotalCompensacoes;
+                dadosFrequencia.TotalPresencasFinal = frequenciaAluno.TotalPresencas;
+                dadosFrequencia.TotalRemotoFinal = frequenciaAluno.TotalRemotos;
+                dadosFrequencia.TotalAulasDadasFinal = frequenciaAluno.TotalAulas;
+                dadosFrequencia.PercentualFrequenciaFinal = frequenciaAluno.PercentualFrequencia;
+                dadosFrequencia.Bimestres = agrupamentoAluno.SelectMany(s => s.Bimestres).ToList();
+                if(dadosFrequencia != null)
+                   relatorioFinal.Alunos.Add(dadosFrequencia);
             }
 
             return relatorioFinal;
