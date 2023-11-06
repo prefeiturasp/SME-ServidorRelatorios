@@ -12,10 +12,14 @@ using System.Threading.Tasks;
 namespace SME.SR.Application
 {
     public class ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler : IRequestHandler<ObterRelatorioConselhoClasseAtaBimestralPdfQuery, List<ConselhoClasseAtaBimestralPaginaDto>>
-    {             
+    {        
+        private const double FREQUENCIA_100 = 100;
+        private const int PERCENTUAL_FREQUENCIA_PRECISAO = 2;
         private readonly VariaveisAmbiente variaveisAmbiente;
         private readonly IMediator mediator;
         private ComponenteCurricularPorTurma componenteRegencia;
+
+        private string frequencia100Formatada = FREQUENCIA_100.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
 
         public ObterRelatorioConselhoClasseAtaBimestralPdfQueryHandler(IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {

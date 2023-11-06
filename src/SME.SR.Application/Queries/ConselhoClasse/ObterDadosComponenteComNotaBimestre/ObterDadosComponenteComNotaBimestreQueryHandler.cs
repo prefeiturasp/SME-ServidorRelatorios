@@ -102,7 +102,11 @@ namespace SME.SR.Application
                 ?
                 FrequenciaAluno.FormatarPercentual(100)
                 :
-                frequenciaAluno?.PercentualFrequenciaFormatado;
+                frequenciaAluno.TotalAulas > 0
+                ?
+                frequenciaAluno?.PercentualFrequenciaFormatado
+                :
+                null;
             }
 
             if (frequenciaAluno != null && periodoEscolar != null && turma.AnoLetivo.Equals(2020))
@@ -165,14 +169,18 @@ namespace SME.SR.Application
                 ?
                 FrequenciaAluno.FormatarPercentual(100)
                 :
-                frequenciaAluno?.PercentualFrequenciaFormatado;
+                frequenciaAluno.TotalAulas > 0
+                ?
+                frequenciaAluno?.PercentualFrequenciaFormatado
+                :
+                null;
             }
 
             if (frequenciaAluno != null && periodoEscolar != null && turma.AnoLetivo.Equals(2020))
             {
                 var percentualFrequencia2020 = frequenciaAluno?.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequencia ?? 100 : 100;
                 frequenciaAluno.AdicionarFrequenciaBimestre(periodoEscolar.Bimestre, percentualFrequencia2020);
-                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : string.Empty;
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
             }
 
             var conselhoClasseComponente = new ComponenteComNotaBimestre()

@@ -94,7 +94,11 @@ namespace SME.SR.Application
                 ?
                 FrequenciaAluno.FormatarPercentual(100)
                 :
-                frequenciaAluno?.PercentualFrequenciaFormatado;
+                frequenciaAluno.TotalAulas > 0
+                ?
+                frequenciaAluno?.PercentualFrequenciaFormatado
+                :
+                null;
             }
 
             //Frequência especifica para 2020.
@@ -161,7 +165,11 @@ namespace SME.SR.Application
                 ?
                 FrequenciaAluno.FormatarPercentual(100)
                 :
-                frequenciaAluno?.PercentualFrequenciaFormatado;
+                frequenciaAluno.TotalAulas > 0
+                ?
+                frequenciaAluno?.PercentualFrequenciaFormatado
+                :
+                null;
             }
 
             if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))

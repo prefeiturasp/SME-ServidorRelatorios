@@ -137,21 +137,13 @@ namespace SME.SR.Application
             var agrupamentoAlunos = relatorio.Alunos.OrderBy(p => p.NomeAluno).GroupBy(o => o.CodigoAluno);
             foreach (var agrupamentoAluno in agrupamentoAlunos)
             {
-                var frequenciaAluno = new FrequenciaAluno()
-                { 
-                    TotalAulas = agrupamentoAluno.Sum(s => s.TotalAulasDadasFinal),
-                    TotalAusencias = agrupamentoAluno.Sum(s => s.TotalAusenciasFinal),
-                    TotalCompensacoes = agrupamentoAluno.Sum(s => s.TotalCompensacoesFinal),
-                    TotalPresencas = agrupamentoAluno.Sum(s => s.TotalPresencasFinal),
-                    TotalRemotos = agrupamentoAluno.Sum(s => s.TotalRemotoFinal),
-                };
                 var dadosFrequencia = agrupamentoAluno.FirstOrDefault();
-                dadosFrequencia.TotalAusenciasFinal = frequenciaAluno.TotalAusencias;
-                dadosFrequencia.TotalCompensacoesFinal = frequenciaAluno.TotalCompensacoes;
-                dadosFrequencia.TotalPresencasFinal = frequenciaAluno.TotalPresencas;
-                dadosFrequencia.TotalRemotoFinal = frequenciaAluno.TotalRemotos;
-                dadosFrequencia.TotalAulasDadasFinal = frequenciaAluno.TotalAulas;
-                dadosFrequencia.PercentualFrequenciaFinal = frequenciaAluno.PercentualFrequencia;
+                dadosFrequencia.TotalAusenciasFinal = agrupamentoAluno.Sum(s => s.TotalAusenciasFinal);
+                dadosFrequencia.TotalCompensacoesFinal = agrupamentoAluno.Sum(s => s.TotalCompensacoesFinal);
+                dadosFrequencia.TotalPresencasFinal = agrupamentoAluno.Sum(s => s.TotalPresencasFinal);
+                dadosFrequencia.TotalRemotoFinal = agrupamentoAluno.Sum(s => s.TotalRemotoFinal);
+                dadosFrequencia.TotalAulasDadasFinal = agrupamentoAluno.Sum(s => s.TotalAulasDadasFinal);
+                dadosFrequencia.PercentualFrequenciaFinal = 100 - (((double)(dadosFrequencia.TotalAusenciasFinal - dadosFrequencia.TotalCompensacoesFinal) / (double)dadosFrequencia.TotalAulasDadasFinal) * 100);
                 dadosFrequencia.Bimestres = agrupamentoAluno.SelectMany(s => s.Bimestres).ToList();
                 relatorioFinal.Alunos.Add(dadosFrequencia);
             }

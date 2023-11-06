@@ -111,7 +111,7 @@ namespace SME.SR.Application.UseCases
                 TotalCompensacoes = alunoFrequencia.Sum(af => af.TotalCompensacao ?? 0)
             };
 
-            return frequenciaAlunoCalculo.PercentualFrequenciaFormatado;
+            return FrequenciaAluno.FormatarPercentual(FrequenciaAluno.ArredondarPercentual(frequenciaAlunoCalculo.PercentualFrequencia));
         }
 
         private double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)

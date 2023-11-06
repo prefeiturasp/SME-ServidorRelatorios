@@ -104,7 +104,8 @@ namespace SME.SR.Application
 
                         var frequeciaGlobal =
                             frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                        var percentualFrequenciaGlobalFormatado = frequeciaGlobal.First().PercentualFrequenciaFormatado;
+                        var percentualFrequenciaGlobal =
+                            frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
                         var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c =>
                             c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
                         var recomendacao = recomendacoes?.FirstOrDefault(r =>
@@ -114,11 +115,7 @@ namespace SME.SR.Application
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                            aluno.FirstOrDefault(b => 
-                            b.CodigoTurma.ToString() == turma.Codigo).NomeRelatorio,
-                            aluno.FirstOrDefault().ObterNomeFinal(),
-                            String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? percentualFrequenciaGlobalFormatado : $"{percentualFrequenciaGlobalFormatado}%",
-                            request.AnoLetivo);
+                            aluno.FirstOrDefault(b => b.CodigoTurma.ToString() == turma.Codigo).NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
                         boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
                         boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;

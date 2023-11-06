@@ -796,7 +796,9 @@ namespace SME.SR.Application
 
             if (frequencia != null && frequencia.TotalAulas != 0 && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo))
             {
-                return frequencia.PercentualFrequenciaFormatado;
+                return frequencia.PercentualFrequencia > 0
+                ? frequencia.PercentualFrequenciaFormatado
+                : 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
             }
             else if (frequencia == null && turmaPossuiFrequenciaRegistrada)
             {
@@ -873,13 +875,9 @@ namespace SME.SR.Application
             else if (totalAulas == 0 && existeFrequenciaRegistradaTurma)
                 return frequencia100Formatada;
 
-            var frequenciaFinal = new FrequenciaAluno() 
-            {
-                TotalAulas = totalAulas,
-                TotalAusencias = totalFaltasNaoCompensadas
-            };
+            var porcentagemFrequenciaFinal = 100 - ((double)totalFaltasNaoCompensadas / totalAulas) * 100;
 
-            var percentualFrequenciaFinal = frequenciaFinal.PercentualFrequenciaFormatado;
+            var percentualFrequenciaFinal = totalAulas == 0 ? "" : Math.Round(porcentagemFrequenciaFinal > 100 ? 100 : porcentagemFrequenciaFinal, 2).ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture);
             return percentualFrequenciaFinal;
         }
 
