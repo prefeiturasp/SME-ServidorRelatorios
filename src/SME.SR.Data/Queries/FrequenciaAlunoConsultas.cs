@@ -9,22 +9,14 @@
                             turma_id TurmaId, periodo_escolar_id PeriodoEscolarId";
 
         internal static string FrequenciaGlobal = @"select 
-        case sum(total_aulas) > 0 then
-	        coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) 
-        else
-            null 
-        end FrequenciaGlobal
+	    coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
         from frequencia_aluno fa
        where tipo = 2
         and codigo_aluno = @codigoAluno
         and fa.turma_id = @codigoTurma";
 
         internal static string FrequenciGlobalPorBimestre = @"select pe.bimestre,
-                case sum(total_aulas) > 0 then
-  	                coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
-                else
-                    null 
-                end FrequenciaGlobal
+  	            coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
           	from tipo_calendario tc 
           		inner join periodo_escolar pe
           			on tc.id = pe.tipo_calendario_id 

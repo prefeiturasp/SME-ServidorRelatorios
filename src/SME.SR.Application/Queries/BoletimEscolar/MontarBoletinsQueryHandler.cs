@@ -105,8 +105,8 @@ namespace SME.SR.Application
 
                             var frequenciaGlobal = frequenciasGlobal?
                                 .FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                            
-                            var percentualFrequenciaGlobalFormatado = frequenciaGlobal?.First()?.PercentualFrequenciaFormatado;
+
+                            var percentualFrequenciaGlobal = frequenciaGlobal != null ? frequenciaGlobal.First().PercentualFrequencia : 100;
                             var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c => c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
 
                             boletimAluno.Cabecalho = ObterCabecalhoInicial(dre,
@@ -115,7 +115,7 @@ namespace SME.SR.Application
                                 aluno.First().CodigoAluno.ToString(),
                                 aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio,
                                 aluno.First().ObterNomeFinal(),
-                                String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? string.Empty : $"{percentualFrequenciaGlobalFormatado}%");
+                                $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%");
 
                             boletimAluno.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
 
@@ -397,6 +397,16 @@ namespace SME.SR.Application
                 return "";
             var frequenciaMedia = ObterFrequenciaMedia(mediaFrequencias, regencia, lancaNota);
             return frequenciaFinal.HasValue ? frequenciaFinal >= frequenciaMedia ? "F" : "NF" : "";
+        }
+
+        private bool TemFrequencia(IEnumerable<FrequenciaAluno> frequencias)
+        {
+            return (frequencias != null && frequencias.Any());
+        }
+
+        private double? ObterPercentualDeFrequencia(IEnumerable<FrequenciaAluno> frequenciaDisciplina)
+        {
+            return TemFrequencia(frequenciaDisciplina) ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : (double?)null;
         }
 
         private double ObterFrequenciaMedia(IEnumerable<MediaFrequencia> mediaFrequencias, bool regencia, bool lancaNota)
