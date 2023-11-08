@@ -829,7 +829,7 @@ namespace SME.SR.Application
                                                 + (decimal)frequenciasAluno.Sum(f => f.PercentualFrequenciaFinal)) / qtdeDisciplinasLancamFrequencia, 2);
 
             string percentualFrequenciaFinal = frequenciaGlobalAluno != null ? frequenciaGlobalAluno.PercentualFrequenciaFormatado
-                : ObterPercentualFrequenciaFinal(frequenciasAluno);
+                : ObterPercentualFrequenciaFinal(frequenciasAluno, turmaExisteFrequenciaRegistrada);
 
             var percentualFrequenciaAcumulado = (turma.AnoLetivo.Equals(2020) ? percentualFrequencia2020.ToString() : percentualFrequenciaFinal);
 
