@@ -20,7 +20,8 @@
 			INNER JOIN conselho_classe_parecer ccp on cca.conselho_classe_parecer_id = ccp.id 
 			WHERE
 				cca.aluno_codigo = @codigoAluno and
-				cca.conselho_classe_id = @conselhoClasseId	";
+				cca.conselho_classe_id = @conselhoClasseId
+			ORDER BY cca.id";
 
 		internal static string Recomendacoes = @"select cc.id as conselhoClasseId, cca.id as conselhoClasseAlunoId, cca.recomendacoes_aluno RecomendacoesAluno, 
 			cca.recomendacoes_familia RecomendacoesFamilia, 
