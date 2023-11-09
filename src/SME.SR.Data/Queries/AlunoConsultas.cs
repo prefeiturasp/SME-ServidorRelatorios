@@ -418,7 +418,7 @@
 						ON aln.CodigoAluno = m.cd_aluno
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
-					 ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim)
+					  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
 					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					  and mte.dt_situacao_aluno > @dataFim))
 					  and aln.AnoLetivo = anoLetivo
