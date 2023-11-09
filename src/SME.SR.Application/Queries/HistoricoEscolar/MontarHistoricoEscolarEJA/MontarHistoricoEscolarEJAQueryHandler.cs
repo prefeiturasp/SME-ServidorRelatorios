@@ -368,7 +368,7 @@ namespace SME.SR.Application
                     frequenciaAluno.TotalCompensacoes = frequenciasAlunoParaTratar.Sum(a => a.TotalCompensacoes);
                 }
 
-                return frequenciaAluno.TotalAulas > 0 ? frequenciaAluno?.PercentualFrequenciaFormatado ?? FrequenciaAluno.FormatarPercentual(100) : FrequenciaAluno.FormatarPercentual(100);
+                return frequenciaAluno?.PercentualFrequenciaFormatado;
             }
             else
                 return null;
