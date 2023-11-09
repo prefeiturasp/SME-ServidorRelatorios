@@ -60,7 +60,7 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo 
-					and ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataReferenciaFim)
+					and ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataReferenciaFim))
 					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					{(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
                     ? "and mte.dt_situacao_aluno > @dataReferenciaFim))"
