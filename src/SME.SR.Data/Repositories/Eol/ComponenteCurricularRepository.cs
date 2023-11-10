@@ -381,7 +381,6 @@ namespace SME.SR.Data
                                        ON grade.cd_serie_ensino = serie_ensino.cd_serie_ensino
 
                         -- Programa
-                             left join tipo_programa tp on te.cd_tipo_programa = tp.cd_tipo_programa
                              left join turma_escola_grade_programa tegp on tegp.cd_turma_escola = te.cd_turma_escola
                              left join escola_grade teg on teg.cd_escola_grade = tegp.cd_escola_grade
                              left join grade pg on pg.cd_grade = teg.cd_grade
