@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Data
+﻿using System;
+
+namespace SME.SR.Data
 {
     public static class AlunoConsultas
     {
@@ -394,7 +396,7 @@
 																	   max(dt_situacao_aluno) data_situacao
 																	from lista";
 
-		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId) =>
+		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId, DateTime? dataReferenciaInicio = null) =>
 			$@"WITH lista AS (
 				SELECT DISTINCT mte.cd_turma_escola,
 								m.cd_aluno,
@@ -418,9 +420,12 @@
 						ON aln.CodigoAluno = m.cd_aluno
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
-					  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
+					  (((mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim) or mte.cd_situacao_aluno = 10)
 					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-					  and mte.dt_situacao_aluno > @dataFim))
+					  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
+                        ? " and mte.dt_situacao_aluno > @dataFim))"
+                        : " and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
+                       )}
 					  and aln.AnoLetivo = anoLetivo
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
@@ -464,7 +469,7 @@
 
 
 
-	    internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT   
+	    internal static string AlunosAtivosPorTurmaEPeriodo(DateTime? dataReferenciaInicio = null) => $@"SELECT   
 					aluno.cd_aluno CodigoAluno,
 					aluno.nm_aluno NomeAluno,
 					aluno.dt_nascimento_aluno DataNascimento,
@@ -501,9 +506,12 @@
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @codigoTurma
-					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
-					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-					and mte.dt_situacao_aluno > @dataReferencia))
+					and (((mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim) or mte.cd_situacao_aluno = 10)
+					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+					  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
+                        ? " and mte.dt_situacao_aluno > @dataFim))"
+                        : " and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
+                       )}
 				UNION
 				SELECT 
 					aluno.cd_aluno CodigoAluno,
@@ -556,7 +564,7 @@
 						and matr2.cd_aluno = matr.cd_aluno
 						and (matr2.st_matricula in (1, 6, 10, 13, 5)
 						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
-						and matr2.dt_status_matricula > @dataReferencia)) )
+						and matr2.dt_status_matricula > @dataFim)) )
 					AND NOT EXISTS(
 					SELECT
 						1

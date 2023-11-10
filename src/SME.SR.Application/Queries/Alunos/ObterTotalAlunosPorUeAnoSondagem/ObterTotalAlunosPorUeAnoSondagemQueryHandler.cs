@@ -18,7 +18,7 @@ namespace SME.SR.Application
         public async Task<int> Handle(ObterTotalAlunosPorUeAnoSondagemQuery request, CancellationToken cancellationToken)
         {
             return await alunoRepository
-                .ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(request.Ano, request.UeCodigo, request.AnoLetivo, request.DreCodigo, request.DataReferenciaFim, request.Modalidades, request.ConsideraHistorico);
+                .ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(request.Ano, request.UeCodigo, request.AnoLetivo, request.DreCodigo, request.DataReferenciaFim, request.Modalidades, request.ConsideraHistorico, request.DataReferenciaInicio);
         }
     }
 }
