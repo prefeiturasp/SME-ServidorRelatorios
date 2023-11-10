@@ -60,7 +60,7 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo 
-					and ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataReferenciaFim))
+					and (((mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataReferenciaFim) or mte.cd_situacao_aluno = 10)
 					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 					{(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
                     ? "and mte.dt_situacao_aluno > @dataReferenciaFim))"
@@ -327,7 +327,7 @@ namespace SME.SR.Data
 										ON aln.CodigoAluno = m.cd_aluno
 								WHERE te.an_letivo = @anoLetivo AND
 									  te.cd_tipo_turma = 1 AND
-									  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
+									  (((mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim) or mte.cd_situacao_aluno = 10)
 									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 									  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
 										? "and mte.dt_situacao_aluno > @dataFim))"
@@ -1723,18 +1723,18 @@ namespace SME.SR.Data
 		        codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
 		        codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
 	        };
-	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId);
+	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId, dataInicio);
 	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
 	        {
 		        return await con.QueryAsync<TotalAlunosAnoTurmaDto>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
 	        }
-        }
+         }
 
-        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferencia)
+        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferenciaFim, DateTime? dataReferenciaInicio = null)
         {
 	        var totalAlunos = 0;
-	        var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
-	        var parametros = new {dataReferencia,codigoTurma};
+	        var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo(dataReferenciaInicio);
+	        var parametros = new { dataFim = dataReferenciaFim, codigoTurma, dataInicio = dataReferenciaInicio };
 	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
 	        {
 		        var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000)).ToList();
