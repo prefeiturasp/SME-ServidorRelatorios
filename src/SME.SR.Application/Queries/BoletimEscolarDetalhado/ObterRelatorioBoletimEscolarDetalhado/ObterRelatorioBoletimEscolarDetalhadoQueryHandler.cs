@@ -32,8 +32,8 @@ namespace SME.SR.Application
             var ciclos = await ObterCiclosPorAnoModalidade(request.Modalidade);
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
             var mediasFrequencia = await ObterMediasFrequencia();
-            
-            var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
+
+            var modalidadeCalendario = request.Modalidade.ObterModalidadeTipoCalendario();
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
             var periodoEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
             var dataInicioPeriodoEscolar = periodoEscolares?.OrderBy(p => p.Bimestre).FirstOrDefault().PeriodoInicio ?? null;
@@ -103,24 +103,6 @@ namespace SME.SR.Application
             }
 
             return new List<Turma>() { };
-        }
-
-        private ModalidadeTipoCalendario DefinirTipoModalidadeCalendario(ObterRelatorioBoletimEscolarDetalhadoQuery request)
-        {
-            var modalidadeCalendario = ModalidadeTipoCalendario.FundamentalMedio;
-
-            switch (request.Modalidade)
-            {
-                case Modalidade.Infantil:
-                    modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
-                    break;
-
-                case Modalidade.EJA:
-                    modalidadeCalendario = ModalidadeTipoCalendario.EJA;
-                    break;
-            }
-
-            return modalidadeCalendario;
         }
 
         private async Task<int> ObterUltimoBimestrePeriodoFechamento(int anoLetivo)

@@ -31,4 +31,27 @@ namespace SME.SR.Infra
         [Display(Name = "CELP", ShortName = "CELP")]
         CELP = 10
     }
+
+    public static class ModalidadeExtensao
+    {
+        public static ModalidadeTipoCalendario ObterModalidadeTipoCalendario(this Modalidade modalidade)
+        {
+            switch (modalidade)
+            {
+                case Modalidade.Infantil:
+                    return ModalidadeTipoCalendario.Infantil;
+                case Modalidade.EJA:
+                    return ModalidadeTipoCalendario.EJA;
+                case Modalidade.CELP:
+                    return ModalidadeTipoCalendario.CELP;
+                default:
+                    return ModalidadeTipoCalendario.FundamentalMedio;
+            }
+        }
+
+        public static bool EhSemestral(this Modalidade modalidade)
+        {
+            return modalidade == Modalidade.EJA || modalidade == Modalidade.CELP;
+        }
+    }
 }

@@ -49,7 +49,7 @@ namespace SME.SR.Application
 
             var ehPorBimestre = bimestre > 0;
 
-            var bimestres = ehPorBimestre ? new[] { bimestre } : turma.ModalidadeCodigo == Modalidade.EJA ? new[] { 1, 2 } : new[] { 1, 2, 3, 4 };
+            var bimestres = ehPorBimestre ? new[] { bimestre } : turma.ModalidadeCodigo.EhSemestral() ? new[] { 1, 2 } : new[] { 1, 2, 3, 4 };
 
             relatorio.ehTodosBimestre = !ehPorBimestre;
             relatorio.ImprimirFrequenciaDiaria = request.FiltroRelatorio.ImprimirFrequenciaDiaria;

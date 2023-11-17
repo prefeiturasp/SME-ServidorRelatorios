@@ -69,7 +69,7 @@ namespace SME.SR.Application
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");            
             retorno.Ano = filtros.AnoLetivo.ToString();
 
-            if (!filtros.Modalidade.Equals(Modalidade.EJA))
+            if (!filtros.Modalidade.EhSemestral())
                 retorno.Semestre = "";
             else if (filtros.Semestre.ToString() != "")
                 retorno.Semestre = filtros.Semestre.ToString();
