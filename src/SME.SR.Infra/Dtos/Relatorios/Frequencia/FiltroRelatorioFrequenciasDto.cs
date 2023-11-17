@@ -22,11 +22,7 @@ namespace SME.SR.Infra
         public string CodigoRf { get; set; }
         public ModalidadeTipoCalendario ModalidadeTipoCalendario
         {
-            get => this.Modalidade == Modalidade.EJA ?
-            ModalidadeTipoCalendario.EJA :
-            this.Modalidade == Modalidade.Infantil ?
-                ModalidadeTipoCalendario.Infantil :
-                ModalidadeTipoCalendario.FundamentalMedio;
+            get => this.Modalidade.ObterModalidadeTipoCalendario();
         }
     }
 }
