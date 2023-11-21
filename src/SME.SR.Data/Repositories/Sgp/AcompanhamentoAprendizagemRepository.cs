@@ -28,7 +28,10 @@ namespace SME.SR.Data
                                           from acompanhamento_turma at2
                                          inner join acompanhamento_aluno aa on aa.turma_id = at2.turma_id 
                                          inner join acompanhamento_aluno_semestre aas on aas.acompanhamento_aluno_id = aa.id and aas.semestre = at2.semestre 
-                                        where at2.turma_id = @turmaId");
+                                        where at2.turma_id = @turmaId and
+                                              not at2.excluido and
+                                              not aa.excluido and
+                                              not aas.excluido");
 
             if (!string.IsNullOrEmpty(alunoCodigo))
                 query.AppendLine(" and aa.aluno_codigo = @alunoCodigo ");
