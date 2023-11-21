@@ -143,6 +143,9 @@ namespace SME.SR.Application
 
         private async Task<IEnumerable<TipoCiclo>> ObterCiclosPorAnoModalidade(Modalidade modalidade)
         {
+            if (modalidade == Modalidade.CELP)
+                return Enumerable.Empty<TipoCiclo>();
+
             return await mediator.Send(new ObterCiclosPorModalidadeQuery(modalidade));
         }
 

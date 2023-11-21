@@ -18,7 +18,7 @@ namespace SME.SR.Application
         private readonly ICicloRepository cicloRepository;
         private readonly IPeriodoEscolarRepository periodoEscolarRepository;
         private readonly INotaTipoRepository notaTipoRepository;
-
+        private const string CONCEITO = "Conceito";
         public ObterTiposNotaRelatorioBoletimQueryHandler(IPeriodoFechamentoRepository periodoFechamentoRepository,
                                         ICicloRepository cicloRepository,
                                         IPeriodoEscolarRepository periodoEscolarRepository,
@@ -62,6 +62,24 @@ namespace SME.SR.Application
         }
 
         private async Task<IDictionary<string, string>> ObterNotasTipo(IEnumerable<Turma> turmas, Modalidade modalidade, DateTime dataReferencia)
+        {
+            if (modalidade.EhCelp())
+                return ObterNotasTipoCelp(turmas);
+
+            return await ObterNotasTipoOutros(turmas, modalidade, dataReferencia);
+        }
+
+        private IDictionary<string, string> ObterNotasTipoCelp(IEnumerable<Turma> turmas)
+        {
+            var lstTurmasTipoNota = new Dictionary<string, string>();
+
+            foreach (var turma in turmas)
+                lstTurmasTipoNota.Add(turma.Codigo, CONCEITO);
+
+            return lstTurmasTipoNota;
+        }
+
+        private async Task<IDictionary<string, string>> ObterNotasTipoOutros(IEnumerable<Turma> turmas, Modalidade modalidade, DateTime dataReferencia)
         {
             var anos = turmas.Select(t => t.Ano.ToString()).Distinct();
 
