@@ -50,21 +50,24 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
         }
 
 
-        str += $@"</tr>
-</table>
-<table class='cabecalho-relatorio margin-top'>
-<tr>
-<td width='50%'>Estudante: { Model.Aluno }</td>
-<td width='50%'>Ciclo: { Model.Ciclo }</td>
-</tr>
-</table>
-<table class='cabecalho-relatorio'>
-<tr class='cabecalho-relatorio-sem-top'>
-<td class='cabecalho-relatorio-sem-top'>Código EOL: { Model.CodigoEol }</td>
-<td class='cabecalho-relatorio-sem-top'>Turma: { Model.NomeTurma}</td>
-<td class='cabecalho-relatorio-sem-top'>Frequência Global: { Model.FrequenciaGlobal }</td>
-</tr>
-</table>";
+    str += $@"</tr>
+            </table>
+            <table class='cabecalho-relatorio margin-top'>
+            <tr>
+            <td width='50%'>Estudante: { Model.Aluno }</td>";
+
+    if (!string.IsNullOrEmpty(Model.Ciclo))
+        str += $"<td width='50%'>Ciclo: {Model.Ciclo}</td>";
+
+    str += $@"</tr>
+            </table>
+            <table class='cabecalho-relatorio'>
+            <tr class='cabecalho-relatorio-sem-top'>
+            <td class='cabecalho-relatorio-sem-top'>Código EOL: { Model.CodigoEol }</td>
+            <td class='cabecalho-relatorio-sem-top'>Turma: { Model.NomeTurma}</td>
+            <td class='cabecalho-relatorio-sem-top'>Frequência Global: { Model.FrequenciaGlobal }</td>
+            </tr>
+            </table>";
 
         return str;
     }

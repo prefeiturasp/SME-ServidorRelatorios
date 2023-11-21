@@ -53,5 +53,10 @@ namespace SME.SR.Infra
         {
             return modalidade == Modalidade.EJA || modalidade == Modalidade.CELP;
         }
+
+        public static bool EhCelp(this Modalidade modalidade)
+        {
+            return modalidade == Modalidade.CELP;
+        }
     }
 }
