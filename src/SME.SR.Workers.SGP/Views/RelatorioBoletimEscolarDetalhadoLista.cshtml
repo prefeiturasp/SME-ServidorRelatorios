@@ -36,21 +36,24 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
         }
 
 
-        str += $@"</tr>
-</table>
-<table class='cabecalho-relatorio margin-top'>
-<tr>
-<td width='50%'>Estudante: { cabelho.Aluno }</td>
-<td width='50%'>Ciclo: { cabelho.Ciclo }</td>
-</tr>
-</table>
-<table class='cabecalho-relatorio'>
-<tr class='cabecalho-relatorio-sem-top'>
-<td class='cabecalho-relatorio-sem-top'>Código EOL: { cabelho.CodigoEol }</td>
-<td class='cabecalho-relatorio-sem-top'>Turma: { cabelho.NomeTurma}</td>
-<td class='cabecalho-relatorio-sem-top'>Frequência Global: { cabelho.FrequenciaGlobal }</td>
-</tr>
-</table>";
+    str += $@"</tr>
+        </table>
+        <table class='cabecalho-relatorio margin-top'>
+        <tr>
+        <td width='50%'>Estudante: {cabelho.Aluno}</td>";
+
+    if (!string.IsNullOrEmpty(cabelho.Ciclo))
+        str += $"<td width='50%'>Ciclo: {cabelho.Ciclo}</td>";
+
+    str += $@"</tr>
+            </table>
+            <table class='cabecalho-relatorio'>
+            <tr class='cabecalho-relatorio-sem-top'>
+            <td class='cabecalho-relatorio-sem-top'>Código EOL: { cabelho.CodigoEol }</td>
+            <td class='cabecalho-relatorio-sem-top'>Turma: { cabelho.NomeTurma}</td>
+            <td class='cabecalho-relatorio-sem-top'>Frequência Global: { cabelho.FrequenciaGlobal }</td>
+            </tr>
+            </table>";
 
         return str;
     }
@@ -269,7 +272,7 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
 
     <div>
     @{  
-       var nomeTemplateCorpo = Model.Modalidade == Modalidade.EJA ? "RelatorioBoletimEscolarDetalhadoEJACorpo.cshtml" : "RelatorioBoletimEscolarDetalhadoCorpo.cshtml";
+       var nomeTemplateCorpo = Model.Modalidade.EhSemestral() ? "RelatorioBoletimEscolarDetalhadoEJACorpo.cshtml" : "RelatorioBoletimEscolarDetalhadoCorpo.cshtml";
             
         foreach(var boletim in Model.Boletins)
         {

@@ -20,9 +20,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<TurmaPlanejamentoDiarioInfantilDto>> Handle(ObterDadosPlanejamentoDiarioBordoComComponenteQuery request, CancellationToken cancellationToken)
         {
-            var modalidadeCalendario = request.Parametros.ModalidadeTurma == Modalidade.EJA ?
-                                                ModalidadeTipoCalendario.EJA : request.Parametros.ModalidadeTurma == Modalidade.Infantil ?
-                                                    ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
+            var modalidadeCalendario = request.Parametros.ModalidadeTurma.ObterModalidadeTipoCalendario();
 
             var aulas = await diarioBordoRepository.ObterAulasDiarioBordoComComponenteCurricular(
                 request.Parametros.AnoLetivo,

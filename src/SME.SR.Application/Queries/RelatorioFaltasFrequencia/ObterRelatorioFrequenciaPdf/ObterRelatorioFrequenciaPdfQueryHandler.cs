@@ -369,7 +369,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             if (request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
             {
-                model.Cabecalho.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
+                model.Cabecalho.Ano = selecionouTodosAnos && !(filtro.Modalidade.EhSemestral()) ?
                 "Todos"
                 :
                     filtro.AnosEscolares.Count() > 1 ?
@@ -410,7 +410,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
         private static void DefinirNomeBimestre(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
         {
             var selecionouTodosBimestres = false;
-            if (filtro.Modalidade != Modalidade.EJA)
+            if (!filtro.Modalidade.EhSemestral())
                 selecionouTodosBimestres = filtro.Bimestres.Count() == 5;
             else
                 selecionouTodosBimestres = filtro.Bimestres.Count() == 3;
@@ -461,11 +461,9 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         private async Task AjustarBimestresSemFaltas(int anoLetivo, int semestre, List<RelatorioFrequenciaComponenteDto> componentes, Modalidade modalidade, List<RelatorioFrequenciaBimestreDto> bimestres)
         {
-            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo,
-                                                                                                        modalidade == Modalidade.EJA ? ModalidadeTipoCalendario.EJA : ModalidadeTipoCalendario.FundamentalMedio,
-                                                                                                        semestre));
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo, modalidade.ObterModalidadeTipoCalendario(), semestre));
 
-            for (int numeroBimestre = 1; numeroBimestre <= (modalidade == Modalidade.EJA ? 2 : 4); numeroBimestre++)
+            for (int numeroBimestre = 1; numeroBimestre <= (modalidade.EhSemestral() ? 2 : 4); numeroBimestre++)
             {
                 var bimestreAtual = bimestres.FirstOrDefault(c => c.Numero == numeroBimestre.ToString());
                 if (bimestreAtual == null)

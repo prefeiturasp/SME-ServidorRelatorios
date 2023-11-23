@@ -9,7 +9,7 @@
     var tdTbodyInterno = "borda-padrao alinhar-centro";
 
     var ehEnsinoMedio = Model.Count > 0 && Model[0].ModalidadeTurma == SME.SR.Infra.Modalidade.Medio;
-    var ehEJA = Model.Count > 0 && Model[0].ModalidadeTurma == SME.SR.Infra.Modalidade.EJA;
+    var ehSemestral = Model.Count > 0 && Model[0].ModalidadeTurma.EhSemestral();
 
     var heightBoletim = @ehEnsinoMedio ? "670px" : "450px";
     var topFooter = @ehEnsinoMedio ? "1295px" : "405px";
@@ -47,7 +47,7 @@
 
     void MontarBimestres(SME.SR.Infra.RelatorioBoletimSimplesEscolarDto aluno)
     {
-        var widthColComponente = ehEJA ? "270px" : "150px";
+        var widthColComponente = ehSemestral ? "270px" : "150px";
         var temParecer = !string.IsNullOrEmpty(aluno.ParecerConclusivo) ? "" : "invisivel";
 
         <table class='estilo-tabela'>
@@ -57,7 +57,7 @@
                     <td colspan="2" class='@tdTheadInterno'>1º BIMESTRE</td>
                     <td colspan="2" class='@tdTheadInterno'>2º BIMESTRE</td>
                     @{
-                        if (!ehEJA)
+                        if (!ehSemestral)
                         {
                             <td colspan="2" class='@tdTheadInterno'>3º BIMESTRE</td>
                             <td colspan="2" class='@tdTheadInterno'>4º BIMESTRE</td>
@@ -72,7 +72,7 @@
                     <td class='@tdTheadInterno'>Nota</td>
                     <td class='@tdTheadInterno'>% Freq.</td>
                     @{
-                        if (!ehEJA)
+                        if (!ehSemestral)
                         {
                             <td class='@tdTheadInterno'>Nota</td>
                             <td class='@tdTheadInterno'>% Freq.</td>
@@ -86,7 +86,7 @@
             </thead>
             <tbody>
                 @{
-                    if (!ehEJA)
+                    if (!ehSemestral)
                     {
                         foreach (var grupo in aluno.ComponentesCurriculares.GroupBy(g => g.Grupo))
                         {
@@ -132,7 +132,7 @@
                 <td class='@tdTbodyInterno'>@componenteCurricular.FrequenciaBimestre2</td>
 
                 @{
-                    if (!ehEJA)
+                    if (!ehSemestral)
                     {
                         <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre3</td>
                         <td class='@tdTbodyInterno'>@componenteCurricular.FrequenciaBimestre3</td>
@@ -168,7 +168,7 @@
                     <td class='@tdTbodyInterno'>@componenteCurricular.NotaBimestre2</td>
                 }
                 @{
-                    if (!ehEJA)
+                    if (!ehSemestral)
                     {
                         @if (!inseriuPrimeiraLinha)
                         {
