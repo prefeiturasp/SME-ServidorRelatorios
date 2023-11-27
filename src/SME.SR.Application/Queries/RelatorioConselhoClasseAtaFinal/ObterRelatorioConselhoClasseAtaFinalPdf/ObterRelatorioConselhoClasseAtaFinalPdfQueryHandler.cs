@@ -559,9 +559,8 @@ namespace SME.SR.Application
                             possuiComponente = componentesDoAluno.Any();
                         }
 
-                        // Monta Colunas notComponenteCurricularRepositoryas dos bimestres
                         var ultimoBimestreAtivo = aluno.Inativo ?
-                            periodosEscolares.OrderByDescending(o => o.Bimestre).FirstOrDefault(p => aluno.DataSituacaoAluno.Date > p.PeriodoFim.Date)?.Bimestre : 4;
+                            periodosEscolares.OrderBy(o => o.Bimestre).FirstOrDefault(p => aluno.DataSituacaoAluno.Date <= p.PeriodoFim.Date)?.Bimestre : 4;
 
                         if (ultimoBimestreAtivo == null)
                             possuiComponente = false;
