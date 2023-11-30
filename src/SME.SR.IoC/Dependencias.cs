@@ -24,6 +24,10 @@ using System.IO;
 using System.Net;
 using SME.SR.Application.UseCases;
 using SME.SR.Data.Interfaces.Sondagem;
+using SME.SR.Data.Interfaces.ElasticSearch;
+using SME.SR.Data.Repositories.ElasticSearch;
+using SME.SR.Data.Interfaces.ElasticSearch.Base;
+using SME.SR.Data.Repositories.ElasticSearch.Base;
 
 namespace SME.SR.IoC
 {
@@ -203,6 +207,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IHistoricoEscolarObservacaoRepository), typeof(HistoricoEscolarObservacaoRepository));
             
             services.TryAddScoped(typeof(IPlanoAnualRepository), typeof(PlanoAnualRepository));
+
+            services.TryAddScoped(typeof(IRepositorioElasticTurma), typeof(RepositorioElasticTurma));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
