@@ -107,5 +107,25 @@ namespace SME.SR.Data.Repositories.ElasticSearch
 
             return listagemTurmas;
         }
+
+        public async Task<IEnumerable<AlunoNaTurmaDTO>> ObterMatriculasAlunoNaTurma(int[] codigosTurmas)
+        {
+            QueryContainer query = new QueryContainerDescriptor<AlunoNaTurmaDTO>();
+
+            query = query && new QueryContainerDescriptor<AlunoNaTurmaDTO>().Terms(t => t.Field(f => f.CodigoTurma).Terms(codigosTurmas));
+
+            var alunosTurma = await ObterListaAsync<AlunoNaTurmaDTO>(
+                                IndicesElastic.INDICE_ALUNO_TURMA_DRE, _ => query,
+                                "Busca matriculas aluno na turma",
+                                new { codigosTurmas});
+
+            var result = alunosTurma?.GroupBy(aluno => aluno.CodigoMatricula)
+                                                .Select(agrupado =>
+                                                    agrupado.OrderByDescending(aluno => aluno.DataSituacao)
+                                                    .ThenByDescending(aluno => aluno.NumeroAlunoChamada)
+                                                    .First());
+
+            return result?.ToList();
+        }
     }
 }
