@@ -23,5 +23,6 @@ namespace SME.SR.Infra
         public string UsuarioLogadoNome { get; set; }
         public string UsuarioLogadoRf { get; set; }
         public RelatorioPendenciasDreDto Dre { get; set; }
+        public bool EhSemestral {  get; set; }
     }
 }
