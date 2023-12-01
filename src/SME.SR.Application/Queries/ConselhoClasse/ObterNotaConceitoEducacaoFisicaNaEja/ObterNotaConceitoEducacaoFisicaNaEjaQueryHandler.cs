@@ -55,6 +55,9 @@ namespace SME.SR.Application
 
         private async Task<string> ObterTipoNota(Turma turma, PeriodoFechamentoVigenteDto periodoFechamentoBimestre)
         {
+            if (turma.ModalidadeCodigo.EhCelp())
+                return "Conceito";
+
             var dataReferencia = periodoFechamentoBimestre != null ?
                 periodoFechamentoBimestre.PeriodoFechamentoFim :
                 (await ObterPeriodoUltimoBimestre(turma)).PeriodoFim;

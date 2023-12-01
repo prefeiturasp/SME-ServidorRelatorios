@@ -190,7 +190,10 @@
             <table>
                 <tbody>
                     <tr>
-                        <td class="campo-ciclo">CICLO: @Model.Cabecalho.Ciclo</td>
+                        @if (!Model.Modalidade.EhCelp())
+                        {
+                            <td class="campo-ciclo">CICLO: @Model.Cabecalho.Ciclo</td>
+                        }
                         <td class="campo-data-ano">ANO LETIVO: @Model.Cabecalho.AnoLetivo</td>
                         <td class="campo-data-ano">DATA: @Model.Cabecalho.Data</td>
                     </tr>
