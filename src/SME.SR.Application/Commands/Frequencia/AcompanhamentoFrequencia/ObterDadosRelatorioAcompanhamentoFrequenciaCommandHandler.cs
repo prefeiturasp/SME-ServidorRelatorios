@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.ElasticSearch;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
 using SME.SR.Infra.Utilitarios;
@@ -16,12 +17,14 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IAlunoRepository alunoRepository;
+        private readonly IRepositorioElasticTurma repositorioElasticTurma;
         private IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto> frequenciasDiarias = null;
         private IEnumerable<AusenciaBimestreDto> dadosAusencia = null;
-        public ObterDadosRelatorioAcompanhamentoFrequenciaCommandHandler(IMediator mediator, IAlunoRepository alunoRepository)
+        public ObterDadosRelatorioAcompanhamentoFrequenciaCommandHandler(IMediator mediator, IAlunoRepository alunoRepository, IRepositorioElasticTurma repositorioElasticTurma)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.alunoRepository = alunoRepository ?? throw new ArgumentNullException(nameof(alunoRepository));
+            this.repositorioElasticTurma = repositorioElasticTurma ?? throw new ArgumentNullException(nameof(repositorioElasticTurma));
         }
 
         public async Task<RelatorioFrequenciaIndividualDto> Handle(
@@ -85,16 +88,16 @@ namespace SME.SR.Application
                         .ToList();
 
                 var alunosForaBimestre = new List<string>();
-                alunosSelecionados.ForEach(a =>
+
+                foreach(var aluno in alunosSelecionados)
                 {
-                    var matricula = alunoRepository
-                        .ObterDatasMatriculaAlunoNaTurma(int.Parse(a.Codigo), int.Parse(request.FiltroRelatorio.TurmaCodigo)).Result;
+                    var matricula = await repositorioElasticTurma.ObterMatriculasAlunoNaTurma(int.Parse(aluno.Codigo), int.Parse(request.FiltroRelatorio.TurmaCodigo));
 
                     var periodoCorrespondente = periodosEscolares.Single(p => p.Bimestre == bimestreItem);
 
-                    if (matricula.Equals(default) || matricula.dataMatricula.Date > periodoCorrespondente.PeriodoFim.Date)
-                        alunosForaBimestre.Add(a.Codigo);
-                });
+                    if (matricula.Equals(default) || matricula.dataMatricula.HasValue ? matricula.dataMatricula.Value.Date > periodoCorrespondente.PeriodoFim.Date : false)
+                        alunosForaBimestre.Add(aluno.Codigo);
+                }
 
                 if (alunosSelecionados != null && alunosSelecionados.Any())
                 {

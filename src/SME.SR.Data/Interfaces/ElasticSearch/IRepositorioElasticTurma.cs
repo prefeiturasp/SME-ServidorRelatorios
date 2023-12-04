@@ -11,5 +11,8 @@ namespace SME.SR.Data.Interfaces.ElasticSearch
         Task<IEnumerable<TurmaComponentesDto>> ObterListaTurmasAsync(string codigoUe, int[] tiposEscolaModalidade, long codigoTurma, int anoLetivo,
             bool ehProfessor, string codigoRf, bool consideraHistorico,DateTime periodoEscolarInicio, int modalidade);
         Task<IEnumerable<TurmaComponentesDto>> ObterTurmasAsync(int[] codigosTurmas);
+
+        Task<IEnumerable<AlunoNaTurmaDTO>> ObterMatriculasAlunoNaTurma(int[] codigosTurmas);
+        Task<(DateTime? dataMatricula, DateTime? dataSituacao)> ObterMatriculasAlunoNaTurma(int codigoAluno, int codigoTurma);
     }
 }
