@@ -4,7 +4,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,9 +20,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<TurmaPlanejamentoDiarioDto>> Handle(ObterDadosPlanejamentoDiarioBordoQuery request, CancellationToken cancellationToken)
         {
-            var modalidadeCalendario = request.Parametros.ModalidadeTurma == Modalidade.EJA ?
-                                                ModalidadeTipoCalendario.EJA : request.Parametros.ModalidadeTurma == Modalidade.Infantil ?
-                                                    ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
+            var modalidadeCalendario = request.Parametros.ModalidadeTurma.ObterModalidadeTipoCalendario();
             var aulas = await diarioBordoRepository.ObterAulasDiarioBordo(
                 request.Parametros.AnoLetivo,
                 request.Parametros.Bimestre,

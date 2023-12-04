@@ -68,7 +68,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
         private async Task CarreguePaginasComExibicaoDeRecomendacao(BoletimEscolarDetalhadoDto boletimDto, Modalidade modalidade)
         {
             const string nomeTemplateCabecalho = "RelatorioBoletimEscolarDetalhadoCabecalho";
-            var nomeTemplateCorpo = modalidade == Modalidade.EJA ? "RelatorioBoletimEscolarDetalhadoEJACorpo" : "RelatorioBoletimEscolarDetalhadoCorpo";
+            var nomeTemplateCorpo = modalidade.EhSemestral() ? "RelatorioBoletimEscolarDetalhadoEJACorpo" : "RelatorioBoletimEscolarDetalhadoCorpo";
 
             foreach (var boletim in boletimDto.Boletins.OrderBy(a => a.Cabecalho.NomeTurma))
             {

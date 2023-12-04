@@ -16,11 +16,12 @@ namespace SME.SR.Infra
         public int QuantidadeColunas { get; set; }
         public List<ConselhoClasseAtaBimestralComponenteDto> ComponentesCurriculares { get; set; }
 
-        public void AdicionarComponente(long codDisciplina, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres)
+        public void AdicionarComponente(long codDisciplina, long codComponenteCurricularTerritorioSaber, string ComponenteCurricular, long idGrupoMatriz, IEnumerable<int> bimestres)
         {
             var componenteCurricularDto = new ConselhoClasseAtaBimestralComponenteDto()
             {
                 Id = codDisciplina,
+                IdComponenteCurricularTerritorio = codComponenteCurricularTerritorioSaber,
                 Nome = ComponenteCurricular,
                 IdGrupoMatriz = idGrupoMatriz
             };            

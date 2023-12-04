@@ -27,10 +27,8 @@ namespace SME.SR.Data
             var query = ConselhoClasseAlunoConsultas.ParecerConclusivo;
             var parametros = new { ConselhoClasseId = conselhoClasseId, CodigoAluno = codigoAluno };
 
-            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
-            {
-                return await conexao.QuerySingleOrDefaultAsync<string>(query, parametros);
-            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+            return await conexao.QueryFirstOrDefaultAsync<string>(query, parametros);
         }
 
         public async Task<IEnumerable<AnotacoesPedagogicasAlunoIdsQueryDto>> ObterAnotacoesPedagogicasPorConselhoClasseAlunoIdsAsync(long[] conselhoClasseAlunoIds)
@@ -124,7 +122,7 @@ namespace SME.SR.Data
                 query.AppendLine(" and t.modalidade_codigo = @modalidade ");
 
             DateTime dataReferencia = DateTime.MinValue;
-            if (modalidade == Modalidade.EJA)
+            if (modalidade.GetValueOrDefault().EhSemestral())
             {
                 var periodoReferencia = semestre == 1 ? "periodo_inicio < @dataReferencia" : "periodo_fim > @dataReferencia";
                 query.AppendLine($"and exists(select 0 from periodo_escolar p where tipo_calendario_id = tc.id and {periodoReferencia})");

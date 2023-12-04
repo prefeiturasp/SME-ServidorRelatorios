@@ -29,28 +29,29 @@ namespace SME.SR.Application
 
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
-            var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
+            var modalidadeCalendario = request.Modalidade.ObterModalidadeTipoCalendario();
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
             var periodoEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
             var dataInicioPeriodoEscolar = periodoEscolares?.OrderBy(p=> p.Bimestre).FirstOrDefault().PeriodoInicio ?? null;
 
             var turmas = await ObterTurmasRelatorio(request.TurmaCodigo, request.UeCodigo, request.AnoLetivo, request.Modalidade, request.Semestre, request.Usuario, request.ConsideraHistorico);
-            var codigosTurma = turmas.OrderBy(tb => tb.Nome).Select(t => t.Codigo).ToArray();
             var mediasFrequencia = await ObterMediasFrequencia();
-            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(codigosTurma, request.AlunosCodigo, request.ConsideraInativo, request.AnoLetivo, dataInicioPeriodoEscolar);
+            var alunosPorTurma = await ObterAlunosPorTurmasRelatorio(turmas.Select(t => t.Codigo).ToArray(), request.AlunosCodigo, request.ConsideraInativo, request.AnoLetivo, dataInicioPeriodoEscolar);
             var alunosAPesquisarTurmas = request.AlunosCodigo.Any() ? request.AlunosCodigo : alunosPorTurma.Select(a => a.Key);
-            var turmasComplementaresEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(codigosTurma, alunosAPesquisarTurmas.ToArray(), request.AnoLetivo));
-
-            codigosTurma = codigosTurma.Concat(turmasComplementaresEdFisica.Select(tcf => tcf.Codigo).ToArray()).ToArray();
+            var turmasComplementaresEdFisica = await mediator.Send(new ObterTurmasComplementaresEdFisicaQuery(turmas.Select(t => t.Codigo).ToArray(), alunosAPesquisarTurmas.ToArray(), request.AnoLetivo));
 
             if (!string.IsNullOrEmpty(request.TurmaCodigo))
             {
                 var turmasComplementaresEM = await RetornaPossibilidadeMatricula2TurmasRegularesNovoEM(Convert.ToInt32(request.TurmaCodigo), alunosAPesquisarTurmas.ToArray());
 
-                if (request.Modalidade == Modalidade.Medio)
-                    turmas = turmasComplementaresEM.Any() ? turmasComplementaresEM : turmas;
+                if (request.Modalidade == Modalidade.Medio && turmasComplementaresEM.Any())
+                    turmas = turmasComplementaresEM.OrderBy(b => b.Ano);
             }
 
+            if (turmasComplementaresEdFisica != null && turmasComplementaresEdFisica.Any())
+                turmas = turmas.Concat(turmasComplementaresEdFisica).Distinct();
+
+            var codigosTurma = turmasComplementaresEdFisica != null && turmasComplementaresEdFisica.Any() ? turmas.Concat(turmasComplementaresEdFisica).Select(t => t.Codigo).Distinct().ToArray() : turmas.Select(t => t.Codigo).ToArray();
             var componentesCurriculares = await ObterComponentesCurricularesTurmasRelatorio(turmas.Select(t => int.Parse(t.Codigo)).ToArray(), alunosPorTurma.SelectMany(t => t.Select(t => t.CodigoAluno)).Distinct().ToArray(), request.AnoLetivo, request.Semestre, request.UeCodigo, request.Modalidade, request.Usuario, request.ConsideraHistorico);
             var tiposNota = await ObterTiposNotaRelatorio(request.AnoLetivo, dre.Id, ue.Id, request.Semestre, request.Modalidade, turmas);
             string[] codigosAlunos = componentesCurriculares.Select(cc => cc.Key).ToArray();
@@ -100,24 +101,6 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 TurmasCodigo = turmasCodigo
             });
-        }
-
-        private ModalidadeTipoCalendario DefinirTipoModalidadeCalendario(ObterRelatorioBoletimEscolarQuery request)
-        {
-            var modalidadeCalendario = ModalidadeTipoCalendario.FundamentalMedio;
-
-            switch (request.Modalidade)
-            {
-                case Modalidade.Infantil:
-                    modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
-                    break;
-
-                case Modalidade.EJA:
-                    modalidadeCalendario = ModalidadeTipoCalendario.EJA;
-                    break;
-            }
-
-            return modalidadeCalendario;
         }
 
         private async Task ObterFechamentoTurma(string codigoTurma)

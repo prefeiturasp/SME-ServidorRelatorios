@@ -110,6 +110,7 @@ namespace SME.SR.Data
                                    a.id as AulaId,
                                    a.aula_cj as AulaCJ,
                                    t.nome as Turma,
+                                   a.disciplina_id::bigint as ComponenteCurricularId,
                                    cc.descricao_sgp as ComponenteCurricular,
                                    pe.bimestre,
 	                               a.data_aula as DataAula, 
@@ -140,7 +141,7 @@ namespace SME.SR.Data
                 query += " and pe.bimestre = @bimestre ";
 
             if (componenteCurricular != -99)
-                query += " and cc.id = @componenteCurricular ";
+                query += " and a.disciplina_id::bigint = @componenteCurricular ";
 
             if (!listarDataFutura)
                 query += " and a.data_aula <= NOW()::DATE ";

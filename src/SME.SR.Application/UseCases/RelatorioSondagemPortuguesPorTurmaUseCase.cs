@@ -25,11 +25,9 @@ namespace SME.SR.Application
             if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && filtros.GrupoId == GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException("Grupo fora do esperado.");
 
-            var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
+            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorBimestreQuery(filtros.Bimestre, filtros.AnoLetivo));
 
-            var dataDoPeriodo = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
-
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Int32.Parse(filtros.TurmaCodigo), dataDoPeriodo));
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Int32.Parse(filtros.TurmaCodigo), periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 
@@ -37,7 +35,7 @@ namespace SME.SR.Application
 
             RelatorioSondagemPortuguesPorTurmaRelatorioDto relatorio = new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
             {
-                Cabecalho = await ObterCabecalho(filtros, relatorioPerguntas, dataDoPeriodo),
+                Cabecalho = await ObterCabecalho(filtros, relatorioPerguntas),
                 Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
                 {
                     Linhas = await ObterLinhas(filtros, alunosDaTurma)
@@ -176,7 +174,7 @@ namespace SME.SR.Application
             relatorio.GraficosBarras.Add(grafico);
         }
 
-        private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, DateTime periodo)
+        private async Task<RelatorioSondagemPortuguesPorTurmaCabecalhoDto> ObterCabecalho(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas)
         {
             var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });

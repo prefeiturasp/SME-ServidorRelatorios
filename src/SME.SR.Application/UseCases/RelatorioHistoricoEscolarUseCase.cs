@@ -132,7 +132,7 @@ namespace SME.SR.Application
             var turmasTransferencia = alunosTurmasTransferencia.SelectMany(t => t.Turmas).DistinctBy(t => t.Codigo);
 
             var turmasEja = turmasHistorico.Where(t => t.ModalidadeCodigo == Modalidade.EJA);
-            var turmasFundMedio = turmasHistorico.Where(t => t.ModalidadeCodigo != Modalidade.EJA);
+            var turmasFundMedio = turmasHistorico.Where(t => !t.ModalidadeCodigo.EhSemestral());
 
             IEnumerable<HistoricoEscolarFundamentalDto> resultadoFundMedio = null, resultadoFinalFundamental = null, resultadoFinalMedio = null;
             IEnumerable<HistoricoEscolarEJADto> resultadoEJA = null, resultadoFinalEJA = null;
@@ -143,7 +143,7 @@ namespace SME.SR.Application
                   frequencias, tipoNotas, turmasTransferencia.Select(a => a.Codigo).Distinct().ToArray(), legenda, registroFrequenciasAlunos, bimestreAtual));
 
             if ((turmasFundMedio != null && turmasFundMedio.Any() && (filtros.Modalidade == Modalidade.Fundamental || filtros.Modalidade == Modalidade.Medio) ) 
-                || (turmasTransferencia != null && turmasTransferencia.Any(t => t.ModalidadeCodigo != Modalidade.EJA)))
+                || (turmasTransferencia != null && turmasTransferencia.Any(t => !t.ModalidadeCodigo.EhSemestral())))
                 resultadoFundMedio = await mediator.Send(new MontarHistoricoEscolarQuery(dre, ue, areasDoConhecimento, componentesCurriculares, ordenacaoGrupoArea, todosAlunosTurmas, mediasFrequencia, notas,
                     frequencias, tipoNotas, resultadoTransferencia, turmasFundMedio?.Select(a => a.Codigo).Distinct().ToArray(), cabecalho, legenda, dadosData, dadosDiretor, dadosSecretario,
                     historicoUes, filtros.PreencherDataImpressao, filtros.ImprimirDadosResponsaveis, filtros.Alunos));
@@ -288,6 +288,7 @@ namespace SME.SR.Application
             var listaCodigosComponentes = new List<long>();
 
             listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.Regencia).SelectMany(a => a.ComponentesCurricularesRegencia).Select(cc => cc.CodDisciplina));
+            listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => cc.TerritorioSaber).Select(a => a.CodigoComponenteCurricularTerritorioSaber).ToList());
             listaCodigosComponentes.AddRange(componentesCurriculares.SelectMany(a => a).Where(cc => !cc.Regencia).Select(a => a.CodDisciplina));
 
             return await mediator.Send(new ObterAreasConhecimentoComponenteCurricularQuery(listaCodigosComponentes.Distinct().ToArray()));

@@ -170,20 +170,21 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGlobalAlunos(string[] codigosAluno, int anoLetivo, int modalidade, string[] codigoTurmas)
         {
+            var queryTipoTurma = modalidade == (int)Modalidade.CELP ? string.Empty : "and t.tipo_turma not in(@tipoTurma)";
             var query = @$"with frequenciaGeral as (select fa.codigo_aluno as CodigoAluno
                                 , sum(fa.total_aulas) as TotalAulas
                                 , sum(fa.total_ausencias) as TotalAusencias
                                 , sum(fa.total_compensacoes) as TotalCompensacoes
-                                , row_number() over (partition by fa.codigo_aluno, fa.bimestre order by fa.id) as sequencia
+                                , row_number() over (partition by fa.codigo_aluno, fa.bimestre, fa.turma_id order by fa.id) as sequencia
                               from frequencia_aluno fa 
                             inner join turma t on t.turma_id = fa.turma_id
                             where fa.codigo_aluno = any(@codigosAluno) 
                               and t.ano_letivo = @anoLetivo
                               and t.modalidade_codigo = @modalidade 
                               and fa.tipo = 2
-                              and t.tipo_turma in(1,2,7) 
+                              {queryTipoTurma} 
                               and fa.turma_id = any(@codigoTurmas)
-                            group by fa.codigo_aluno, fa.bimestre, fa.id)
+                            group by fa.codigo_aluno, fa.bimestre, fa.id, fa.turma_id)
                             select codigoAluno as CodigoAluno, 
                             sum(totalaulas) as TotalAulas,
                             sum(totalausencias) as TotalAusencias,
@@ -194,7 +195,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade, codigoTurmas });
+                return await conexao.QueryAsync<FrequenciaAluno>(query, new { codigosAluno, anoLetivo, modalidade, codigoTurmas, tipoTurma = (int)TipoTurma.Programa });
             }
         }
 
@@ -247,7 +248,7 @@ namespace SME.SR.Data
 
             query.AppendLine(@" where fa.tipo = 2 
                 and t.ano_letivo = @anoTurma 
-                and t.tipo_turma in(1,2,7) ");
+                and t.tipo_turma not in(@tipoTurma) ");
 
             if (tipoCalendarioId > 0)
                 query.AppendLine(" and pe.tipo_calendario_id = @tipoCalendarioId");
@@ -258,7 +259,8 @@ namespace SME.SR.Data
                     .QueryAsync<FrequenciaAluno>(query.ToString(), new
                     {
                         anoTurma,
-                        tipoCalendarioId
+                        tipoCalendarioId,
+                        tipoTurma = (int)TipoTurma.Programa
                     });
             }
         }
@@ -283,7 +285,7 @@ namespace SME.SR.Data
             query.AppendLine(@" where fa.tipo = 2 
                                       and t.ano_letivo = @anoTurma 
                                       and fa.codigo_aluno = any(@alunosCodigo)
-                                      and t.tipo_turma in(1,2,7) 
+                                      and t.tipo_turma not in(@tipoTurma) 
                                       and fa.turma_id = any(@turmaCodigo)");
 
             if (tipoCalendarioId > 0)
@@ -300,7 +302,8 @@ namespace SME.SR.Data
                         anoTurma,
                         tipoCalendarioId,
                         alunosCodigo,
-                        turmaCodigo
+                        turmaCodigo,
+                        tipoTurma = (int)TipoTurma.Programa
                     });
             }
         }

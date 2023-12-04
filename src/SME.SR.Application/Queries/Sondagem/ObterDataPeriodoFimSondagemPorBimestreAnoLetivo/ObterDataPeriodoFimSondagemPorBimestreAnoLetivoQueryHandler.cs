@@ -17,7 +17,7 @@ namespace SME.SR.Application.Queries
         }
         public async Task<DateTime> Handle(ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery request, CancellationToken cancellationToken)
         {
-            //TODO: Melhorar esta consulta para ser Por Id, mas para isso é necessário alterações no front;
+
             var descricaoBimestre = $"{request.Bimestre}° Bimestre";
 
             var dataFimPeriodoFixo = await periodoSondagemRepository.ObterPeriodoFixoFimPorDescricaoAnoLetivo(descricaoBimestre, request.AnoLetivo);

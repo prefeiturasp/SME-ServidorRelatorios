@@ -52,8 +52,6 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             if (dres == null || !dres.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var componentes = await mediator.Send(new ObterListaComponentesCurricularesQuery());
-
             var codigosTurmas = dres.SelectMany(d => d.Ues)
                 .SelectMany(u => u.TurmasAnos)
                 .SelectMany(u => u.Bimestres)
@@ -98,14 +96,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 .FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
 
                             foreach (var componente in bimestre.Componentes)
-                            {
-                                var componenteAtual = componentes
-                                    .FirstOrDefault(c => c.Codigo.ToString() == componente.CodigoComponente);
-
+                            {                                   
                                 var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
 
-                                if (componenteAtual != null)
-                                    componente.NomeComponente = componenteAtual.Descricao.ToUpper();
+                                componente.NomeComponente = await ObterNomeComponente(componente.CodigoComponente); 
 
                                 var frequencias = await mediator
                                     .Send(new ObterFrequenciasAlunosConsolidadoQuery(turmasccc.ToArray(), componente.CodigoComponente, bimestre.Numero));
@@ -260,7 +254,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 model.UltimoAluno = $"{dre.NomeDre}{model.UltimoAluno}";
             }
 
-            DefinirCabecalho(request, model, filtro, dres, componentes);
+            await DefinirCabecalho(request, model, filtro, dres);
             model.Dres = FiltrarFaltasFrequencia(model.Dres, filtro);
 
             if (model.Dres == null || !model.Dres.Any())
@@ -342,7 +336,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             return dres;
         }
 
-        private static void DefinirCabecalho(ObterRelatorioFrequenciaPdfQuery request, RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<RelatorioFrequenciaDreDto> dres, IEnumerable<Data.ComponenteCurricular> componentes)
+        private async Task DefinirCabecalho(ObterRelatorioFrequenciaPdfQuery request, RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<RelatorioFrequenciaDreDto> dres)
         {
             var selecionouTodasDres = string.IsNullOrWhiteSpace(filtro.CodigoDre) || filtro.CodigoDre == "-99";
             var selecionouTodasUes = string.IsNullOrWhiteSpace(filtro.CodigoUe) || filtro.CodigoUe == "-99";
@@ -375,7 +369,7 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
             if (request.Filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano)
             {
-                model.Cabecalho.Ano = selecionouTodosAnos && !(filtro.Modalidade == Modalidade.EJA) ?
+                model.Cabecalho.Ano = selecionouTodosAnos && !(filtro.Modalidade.EhSemestral()) ?
                 "Todos"
                 :
                     filtro.AnosEscolares.Count() > 1 ?
@@ -387,14 +381,14 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 model.Cabecalho.Ano = string.Empty;
 
             DefinirNomeBimestre(model, filtro);
-            DefinirNomeComponente(model, filtro, componentes);
+            await DefinirNomeComponente(model, filtro);
 
             model.Cabecalho.Usuario = request.Filtro.NomeUsuario;
             model.Cabecalho.RF = request.Filtro.CodigoRf;
             model.Cabecalho.Modalidade = request.Filtro.Modalidade;
         }
 
-        private static void DefinirNomeComponente(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro, IEnumerable<Data.ComponenteCurricular> componentes)
+        private async Task DefinirNomeComponente(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
         {
             var selecionouTodosComponentes = filtro.ComponentesCurriculares.Any(c => c == "-99");
             var primeiroComponente = filtro.ComponentesCurriculares.FirstOrDefault();
@@ -403,15 +397,20 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                 "Todos"
                 :
                 filtro.ComponentesCurriculares.Count() == 1 ?
-                componentes.FirstOrDefault(c => c.Codigo.ToString() == primeiroComponente).Descricao
+                await ObterNomeComponente(primeiroComponente)
                 :
                 string.Empty;
+        }
+
+        private async Task<string> ObterNomeComponente(string codigoComponenteCurricular)
+        {
+            return await mediator.Send(new ObterNomeComponenteCurricularPorIdQuery(long.Parse(codigoComponenteCurricular)));
         }
 
         private static void DefinirNomeBimestre(RelatorioFrequenciaDto model, FiltroRelatorioFrequenciasDto filtro)
         {
             var selecionouTodosBimestres = false;
-            if (filtro.Modalidade != Modalidade.EJA)
+            if (!filtro.Modalidade.EhSemestral())
                 selecionouTodosBimestres = filtro.Bimestres.Count() == 5;
             else
                 selecionouTodosBimestres = filtro.Bimestres.Count() == 3;
@@ -462,11 +461,9 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
 
         private async Task AjustarBimestresSemFaltas(int anoLetivo, int semestre, List<RelatorioFrequenciaComponenteDto> componentes, Modalidade modalidade, List<RelatorioFrequenciaBimestreDto> bimestres)
         {
-            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo,
-                                                                                                        modalidade == Modalidade.EJA ? ModalidadeTipoCalendario.EJA : ModalidadeTipoCalendario.FundamentalMedio,
-                                                                                                        semestre));
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo, modalidade.ObterModalidadeTipoCalendario(), semestre));
 
-            for (int numeroBimestre = 1; numeroBimestre <= (modalidade == Modalidade.EJA ? 2 : 4); numeroBimestre++)
+            for (int numeroBimestre = 1; numeroBimestre <= (modalidade.EhSemestral() ? 2 : 4); numeroBimestre++)
             {
                 var bimestreAtual = bimestres.FirstOrDefault(c => c.Numero == numeroBimestre.ToString());
                 if (bimestreAtual == null)

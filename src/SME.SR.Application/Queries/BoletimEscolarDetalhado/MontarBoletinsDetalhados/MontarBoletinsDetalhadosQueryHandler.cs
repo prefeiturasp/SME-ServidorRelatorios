@@ -104,8 +104,7 @@ namespace SME.SR.Application
 
                         var frequeciaGlobal =
                             frequenciasGlobal?.FirstOrDefault(t => t.Key == aluno.First().CodigoAluno.ToString());
-                        var percentualFrequenciaGlobal =
-                            frequeciaGlobal != null ? frequeciaGlobal.First().PercentualFrequencia : 100;
+                        var percentualFrequenciaGlobalFormatado = frequeciaGlobal?.First()?.PercentualFrequenciaFormatado;
                         var parecerConclusivo = pareceresConclusivos.FirstOrDefault(c =>
                             c.TurmaId.ToString() == turma.Codigo && c.AlunoCodigo.ToString() == aluno.Key);
                         var recomendacao = recomendacoes?.FirstOrDefault(r =>
@@ -113,9 +112,14 @@ namespace SME.SR.Application
                         var ciclo = ciclos.FirstOrDefault(c =>
                             c.Modalidade == turma.ModalidadeCodigo && c.Ano == turma.Ano);
                         var foto = fotos.FirstOrDefault(c => c.CodigoAluno.ToString() == aluno.Key);
+                        var nomeRelatorio = aluno.OrderBy(a => a.DataSituacao).Last().NomeRelatorio;
+                        var nomeFinal = aluno.First().ObterNomeFinal();
 
                         boletimEscolarAlunoDto.Cabecalho = ObterCabecalhoInicial(dre, ue, ciclo, turma, aluno.Key, foto,
-                            aluno.FirstOrDefault(b => b.CodigoTurma.ToString() == turma.Codigo).NomeRelatorio, aluno.FirstOrDefault().ObterNomeFinal(), $"{percentualFrequenciaGlobal.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)}%", request.AnoLetivo);
+                            nomeRelatorio,
+                            nomeFinal,
+                            String.IsNullOrEmpty(percentualFrequenciaGlobalFormatado) ? string.Empty : $"{percentualFrequenciaGlobalFormatado}%",
+                            request.AnoLetivo);
                         boletimEscolarAlunoDto.ParecerConclusivo = parecerConclusivo?.ParecerConclusivo;
                         boletimEscolarAlunoDto.RecomendacoesEstudante = recomendacao?.RecomendacoesAluno;
                         boletimEscolarAlunoDto.RecomendacoesFamilia = recomendacao?.RecomendacoesFamilia;
@@ -152,7 +156,7 @@ namespace SME.SR.Application
                 CodigoEol = alunoCodigo,
                 Aluno = nome,
                 FrequenciaGlobal = frequenciaGlobal,
-                Ciclo = ciclo.Descricao,
+                Ciclo = ciclo?.Descricao ?? string.Empty,
                 Foto = foto?.FotoBase64,
                 AnoLetivo = anoLetivo,
                 NomeAluno = nomeAluno

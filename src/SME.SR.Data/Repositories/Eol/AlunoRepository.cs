@@ -20,9 +20,9 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMariculaParaSondagem(long turmaCodigo, DateTime dataReferencia)
+        public async Task<IEnumerable<Aluno>> ObterAlunosPorTurmaDataSituacaoMatriculaParaSondagem(long turmaCodigo, DateTime dataReferenciaFim, DateTime? dataReferenciaInicio = null)
         {
-            var query = @"
+            var query = $@"
 					SELECT
 					aluno.cd_aluno CodigoAluno,
 					aluno.nm_aluno NomeAluno,
@@ -60,9 +60,12 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @turmaCodigo 
-					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+					and ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataReferenciaFim))
 					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-					and mte.dt_situacao_aluno > @dataReferencia))
+					{(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
+                    ? "and mte.dt_situacao_aluno > @dataReferenciaFim))"
+                    : "and (mte.dt_situacao_aluno > @dataReferenciaFim or (mte.dt_situacao_aluno > @dataReferenciaInicio and mte.dt_situacao_aluno <= @dataReferenciaFim))))"
+                    )}
 				UNION
 				SELECT
 					aluno.cd_aluno CodigoAluno,
@@ -115,7 +118,10 @@ namespace SME.SR.Data
 						and matr2.cd_aluno = matr.cd_aluno
 						and (matr2.st_matricula in (1, 6, 10, 13, 5)
 						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
-						and matr2.dt_status_matricula > @dataReferencia)) )
+                    {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
+                    ? " and matr2.dt_status_matricula > @dataReferenciaFim)))"
+                    : " and (matr2.dt_status_matricula > @dataReferenciaFim or (matr2.dt_status_matricula > @dataReferenciaInicio and matr2.dt_status_matricula <= @dataReferenciaFim)))))"
+                    )}
 					AND NOT EXISTS(
 					SELECT
 						1
@@ -127,7 +133,7 @@ namespace SME.SR.Data
 						mte.cd_matricula = mte3.cd_matricula
 						AND mte.cd_turma_escola = @turmaCodigo)";
 
-            var parametros = new { turmaCodigo, dataReferencia };
+            var parametros = new { turmaCodigo, dataReferenciaFim, dataReferenciaInicio };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
@@ -291,7 +297,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AlunoPorTurmaRespostaDto>(query, parametros);
 
         }
-        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferencia, int[] modalidades, bool consideraHistorico = false)
+        public async Task<int> ObterTotalAlunosPorTurmasDataSituacaoMatriculaAsync(string anoTurma, string ueCodigo, int anoLetivo, long dreCodigo, DateTime dataReferenciaFim, int[] modalidades, bool consideraHistorico = false, DateTime? dataReferenciaInicio = null)
         {
             StringBuilder query = new StringBuilder();
             if (anoLetivo < DateTime.Now.Date.Year)
@@ -321,9 +327,12 @@ namespace SME.SR.Data
 										ON aln.CodigoAluno = m.cd_aluno
 								WHERE te.an_letivo = @anoLetivo AND
 									  te.cd_tipo_turma = 1 AND
-									  (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
+									  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
 									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-									  and mte.dt_situacao_aluno >= @dataFim))
+									  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
+										? "and mte.dt_situacao_aluno > @dataFim))"
+										: "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
+									  )}
 									  and aln.AnoLetivo = anoLetivo
 									  AND se.sg_resumida_serie = @anoTurma 
 									  AND ee.cd_etapa_ensino in (@modalidades)
@@ -334,7 +343,13 @@ namespace SME.SR.Data
 									FROM lista ");
 
 
-			var parametros = new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), ueCodigo, anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), anoLetivo, dataFim = dataReferencia };
+			var parametros = 
+				new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), 
+					ueCodigo, 
+					anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), 
+					anoLetivo, 
+					dataFim = dataReferenciaFim,
+				    dataInicio = dataReferenciaInicio};
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
