@@ -6,35 +6,24 @@
     if (Model.DadosHistorico != null)
     {
         var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
-        var margemBaseNacional = 5 * totalLinhasBaseNacional;
+        var margemBaseNacional = 4 * totalLinhasBaseNacional;
         <div>
             <table class='tabela margin-top'>
                 <tr class="cabecalho-principal">
-                    <td class="cabecalho-titulo" colspan="21">@(Model.Cabecalho.LeiFundamental)</td>
+                    <td class="cabecalho-titulo" colspan="9">@(Model.Cabecalho.LeiMedio)</td>
                 </tr>
                 <tr>
                     <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
-                        <p style="width: 48px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
+                        <p style="width: 52px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
                     </th>
-                    <td class="titulo" style="width: 14.5%;" rowspan="4">Àrea de conhecimento</td>
-                    <td class="titulo" style="width: 14.5%;" rowspan="4">Componentes curriculares</td>
-                    <td class="titulo" colspan="18">Resultado final</td>
-                </tr>
-                <tr>
-                    <td class="titulo" colspan="6">Ciclo de alfabetização</td>
-                    <td class="titulo" colspan="6">Ciclo interdisciplinar</td>
-                    <td class="titulo" colspan="6">Ciclo autoral</td>
+                    <td class="titulo" style="width: 24.5%;" rowspan="3">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 24.5%;" rowspan="3">Componentes curriculares</td>
+                    <td class="titulo" colspan="6">Resultado final</td>
                 </tr>
                 <tr>
                     <td class="texto-centralizado" colspan="2">1º ano</td>
                     <td class="texto-centralizado" colspan="2">2º ano</td>
                     <td class="texto-centralizado" colspan="2">3º ano</td>
-                    <td class="texto-centralizado" colspan="2">4º ano</td>
-                    <td class="texto-centralizado" colspan="2">5º ano</td>
-                    <td class="texto-centralizado" colspan="2">6º ano</td>
-                    <td class="texto-centralizado" colspan="2">7º ano</td>
-                    <td class="texto-centralizado" colspan="2">8º ano</td>
-                    <td class="texto-centralizado" colspan="2">9º ano</td>
                 </tr>
                 @Html.Raw(ObterLinhasTiposNotasConceito())
                 @Html.Raw(ObterLinhasBaseNacional())
@@ -54,24 +43,18 @@
         linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.PrimeiroAno);
         linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SegundoAno);
         linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.TerceiroAno);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.QuartoAno);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.QuintoAno);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SextoAno);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SetimoAno);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.OitavoAno);
-        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.NonoAno);
         linhas += "</tr>";
         return linhas;
     }
 
     string RetornarTipoNotaFrequencia(string tipoNotaConceito)
     {
-        return $"<td class='texto-centralizado coluna-nota'>{tipoNotaConceito}</td> <td class='texto-centralizado coluna-nota'>F</td>";
+        return $"<td class='texto-centralizado coluna-nota-transf'>{tipoNotaConceito}</td> <td class='texto-centralizado coluna-nota-transf'>F</td>";
     }
 
     int ObterTotalLinhasBaseNacional()
     {
-        var totalLinhasCabecalho = 4;
+        var totalLinhasCabecalho = 3;
         var totalLinhasComponentes = 0;
         var areasConhecimento = Model.DadosHistorico?.BaseNacionalComum?.AreasDeConhecimento;
 
@@ -133,18 +116,6 @@
             linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSegundoAno)}</ td >";
             linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoTerceiroAno)}</ td >";
             linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaTerceiroAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoQuartoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaQuartoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoQuintoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaQuintoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoSextoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSextoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoSetimoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSetimoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoOitavoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaOitavoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoNonoAno)}</ td >";
-            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaNonoAno)}</ td >";
             linhas += "</tr>";
 
             adicionarPrimeiraLinha = true;
@@ -217,8 +188,10 @@
         if (componentesCurriculares == null)
             return linhas;
 
+        var linhaSpan = componentesCurriculares.Count() > 0 ? "rowspan='{componentesCurriculares.Count()}'" : string.Empty;
+
         linhas = "<tr>";
-        linhas += $"<td class='subTitulo texto-centralizado' colspan='2' rowspan='{componentesCurriculares.Count()}'>{nomeAtividade}</td>";
+        linhas += $"<td class='subTitulo texto-centralizado' colspan='2' {linhaSpan}>{nomeAtividade}</td>";
         linhas += ObterLinhasComponentesCurriculares(componentesCurriculares);
 
         return linhas;
@@ -236,12 +209,6 @@
         linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiroAno}</td>";
         linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundoAno}</td>";
         linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.TerceiroAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.QuartoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.QuintoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SextoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SetimoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.OitavoAno}</td>";
-        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.NonoAno}</td>";
         linhas += "</tr>";
 
         return linhas;
@@ -254,6 +221,8 @@
         if (legenda == null)
             return "";
 
-        return $"<div class='legenda'>C = Conceito, N = Nota, {legenda.Texto}</div>";
+        var textoLegenda = string.IsNullOrEmpty(legenda.Texto) ? string.Empty : $", {legenda.Texto}";
+
+        return $"<div class='legenda'>C = Conceito, N = Nota {textoLegenda}</div>";
     }
 }
