@@ -21,6 +21,10 @@
                             <p style="width: 52px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
                         </th>
                     }
+                    else
+                    {
+                        <td colspan="1" rowspan="3"> </td>
+                    }
                     <td class="titulo" style="width: 24.5%;" rowspan="3">Àrea de conhecimento</td>
                     <td class="titulo" style="width: 24.5%;" rowspan="3">Componentes curriculares</td>
                     <td class="titulo" colspan="@totalColunasResultadoFinal">Resultado final</td>
@@ -52,6 +56,8 @@
         linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.PrimeiroAno);
         linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SegundoAno);
         linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.TerceiroAno);
+        if (Model.EhMagisterio)
+            linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.QuartoAno);
         linhas += "</tr>";
         return linhas;
     }
