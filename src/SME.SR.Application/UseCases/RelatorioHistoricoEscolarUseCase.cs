@@ -240,8 +240,8 @@ namespace SME.SR.Application
 
         private async Task EnviaRelatorioMedio(IEnumerable<HistoricoEscolarFundamentalDto> resultadoFinalMedio, Guid codigoCorrelacaoMedio)
         {
-            var jsonString = JsonConvert.SerializeObject(new { relatorioHistoricoEscolar = resultadoFinalMedio });
-            await mediator.Send(new GerarRelatorioAssincronoCommand("/sgp/RelatorioHistoricoEscolarMedio/HistoricoEscolar", jsonString, TipoFormatoRelatorio.Pdf, codigoCorrelacaoMedio, RotasRabbitSR.RotaRelatoriosProcessandoHistoricoEscolar));
+            var relatorioPaginados = new RelatorioPaginadoHistoricoEscolarMedio(resultadoFinalMedio);
+            await mediator.Send(new GerarRelatorioHtmlPDFHistoricoEscolarCommand(relatorioPaginados.ObterRelatorioPaginado(), codigoCorrelacaoMedio));
         }
 
         private async Task<Guid> CopiarCorrelacao(Guid codigoCorrelacaoMedio)
