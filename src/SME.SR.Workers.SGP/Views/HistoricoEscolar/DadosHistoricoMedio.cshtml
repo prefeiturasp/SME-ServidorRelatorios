@@ -7,23 +7,32 @@
     {
         var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
         var margemBaseNacional = 4 * totalLinhasBaseNacional;
+        var totalColunasCabecalho = Model.EhMagisterio ? 11 : 9;
+        var totalColunasResultadoFinal = Model.EhMagisterio ? 8 : 6;
         <div>
             <table class='tabela margin-top'>
                 <tr class="cabecalho-principal">
-                    <td class="cabecalho-titulo" colspan="9">@(Model.Cabecalho.LeiMedio)</td>
+                    <td class="cabecalho-titulo" colspan="@totalColunasCabecalho">@(Model.Cabecalho.LeiMedio)</td>
                 </tr>
                 <tr>
-                    <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
-                        <p style="width: 52px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
-                    </th>
+                    @if (totalLinhasBaseNacional > 0)
+                    {
+                        <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
+                            <p style="width: 52px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
+                        </th>
+                    }
                     <td class="titulo" style="width: 24.5%;" rowspan="3">Àrea de conhecimento</td>
                     <td class="titulo" style="width: 24.5%;" rowspan="3">Componentes curriculares</td>
-                    <td class="titulo" colspan="6">Resultado final</td>
+                    <td class="titulo" colspan="@totalColunasResultadoFinal">Resultado final</td>
                 </tr>
                 <tr>
                     <td class="texto-centralizado" colspan="2">1º ano</td>
                     <td class="texto-centralizado" colspan="2">2º ano</td>
                     <td class="texto-centralizado" colspan="2">3º ano</td>
+                    @if (Model.EhMagisterio)
+                    {
+                        <td class="texto-centralizado" colspan="2">4º ano</td>
+                    }
                 </tr>
                 @Html.Raw(ObterLinhasTiposNotasConceito())
                 @Html.Raw(ObterLinhasBaseNacional())
@@ -49,7 +58,9 @@
 
     string RetornarTipoNotaFrequencia(string tipoNotaConceito)
     {
-        return $"<td class='texto-centralizado coluna-nota-transf'>{tipoNotaConceito}</td> <td class='texto-centralizado coluna-nota-transf'>F</td>";
+        var classe = Model.EhMagisterio ? "coluna-nota-magisterio" : "coluna-nota-transf";
+
+        return $"<td class='texto-centralizado {classe}'>{tipoNotaConceito}</td> <td class='texto-centralizado {classe}'>F</td>";
     }
 
     int ObterTotalLinhasBaseNacional()
@@ -116,6 +127,11 @@
             linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSegundoAno)}</ td >";
             linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoTerceiroAno)}</ td >";
             linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaTerceiroAno)}</ td >";
+            if (Model.EhMagisterio)
+            {
+                linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoQuartoAno)}</ td >";
+                linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaQuartoAno)}</ td >";
+            }
             linhas += "</tr>";
 
             adicionarPrimeiraLinha = true;
@@ -209,6 +225,8 @@
         linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiroAno}</td>";
         linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundoAno}</td>";
         linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.TerceiroAno}</td>";
+        if (Model.EhMagisterio)
+            linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.QuartoAno}</td>";
         linhas += "</tr>";
 
         return linhas;
