@@ -3,6 +3,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +11,14 @@ namespace SME.SR.Application
 {
     public class RelatorioAcompanhamentoAprendizagemUseCase : IRelatorioAcompanhamentoAprendizagemUseCase
     {
-        private readonly IMediator mediator;
+        private const string PREFIXO_IMAGEM_CODIFICADA_BASE64 = "<img src=\"data:image/{0};base64,";
+        private string[] extensoesImagens;
+        private readonly IMediator mediator;        
 
         public RelatorioAcompanhamentoAprendizagemUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            extensoesImagens = new string[] { "png", "jpeg", "jpg" };
         }
 
         public async Task Executar(FiltroRelatorioDto filtro)
@@ -24,12 +28,7 @@ namespace SME.SR.Application
                 filtro.RelatorioEscolaAqui = true;
 
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
-           
-            var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
-
-            if (turma == null)
-                throw new NegocioException("Turma não encontrada");
-
+            var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId)) ?? throw new NegocioException("Turma não encontrada");
             var turmaCodigo = new string[1] { turma.Codigo };
             var professores = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmaCodigo))).ToList();
 
@@ -41,12 +40,13 @@ namespace SME.SR.Application
                 professores.AddRange(professoresAtribuicaoExterna);
             }
 
-
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo, turma.AnoLetivo));
             if (alunosEol == null || !alunosEol.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var acompanhmentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
+            var acompanhamentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
+
+            ValidarImagemBase64NoRAA(turma, acompanhamentosAlunos);
 
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
 
@@ -63,7 +63,7 @@ namespace SME.SR.Application
             if (filtro.RelatorioEscolaAqui)
             {
                 var mensagemdados = await MapearDadosParaGerarMensagem(filtro);
-                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: true));
+                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhamentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: true));
                 filtro.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosRaaEscolaAqui;
                 filtro.RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
                 await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, nomeFila: RotasRabbitSGP.RotaRelatoriosProntosApp, modalidade: turma.ModalidadeCodigo, mensagemDados: mensagemdados));
@@ -71,8 +71,30 @@ namespace SME.SR.Application
             else
             {
                 var mensagemTitulo = $"Relatório do Acompanhamento da Aprendizagem - {turma.NomeRelatorio}";
-                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: false));
+                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhamentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: false));
                 await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, mensagemTitulo: mensagemTitulo));
+            }
+        }
+
+        private void ValidarImagemBase64NoRAA(Turma turma, IEnumerable<AcompanhamentoAprendizagemAlunoDto> acompanhamentosAlunos)
+        {
+            var informacoesRAAComImagemBase64 = (from aa in acompanhamentosAlunos
+                                                 from ei in extensoesImagens
+                                                 where aa.PercursoColetivoTurma.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei)) ||
+                                                       aa.PercursoIndividual.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei))
+                                                 orderby aa.AlunoCodigo
+                                                 select new
+                                                 {
+                                                     base64NaTurma = aa.PercursoColetivoTurma.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei)),
+                                                     alunoPercursoIndividualComImagemBase64 = aa.PercursoIndividual.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei)) ? aa.AlunoCodigo : null
+                                                 }).Distinct();
+
+            if (informacoesRAAComImagemBase64.Any())
+            {
+                var percursoTurmaComImagemBase64 = informacoesRAAComImagemBase64.Any(i => i.base64NaTurma);
+                var alunosComImagemBase64 = string.Join(",", informacoesRAAComImagemBase64.Where(i => !string.IsNullOrWhiteSpace(i.alunoPercursoIndividualComImagemBase64)).Select(i => i.alunoPercursoIndividualComImagemBase64));
+                var mensagemValidacaoImagem = $"Não foi possível processar as imagens anexadas no RAA da turma ({turma.Codigo}-{turma.Nome}). {(percursoTurmaComImagemBase64 ? "Percurso coletivo da turma." : string.Empty)}{(!string.IsNullOrWhiteSpace(alunosComImagemBase64) ? $"Percurso individual dos alunos: {alunosComImagemBase64}" : string.Empty)}";
+                throw new NegocioException(mensagemValidacaoImagem);
             }
         }
 
