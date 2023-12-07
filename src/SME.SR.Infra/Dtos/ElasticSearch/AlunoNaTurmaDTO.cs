@@ -1,5 +1,7 @@
 ﻿using Nest;
+using SME.SR.Infra.Utilitarios;
 using System;
+using System.Linq;
 
 namespace SME.SR.Infra.Dtos.ElasticSearch
 {
@@ -28,6 +30,8 @@ namespace SME.SR.Infra.Dtos.ElasticSearch
         public string NumeroAlunoChamada { get; set; }
         [Number(Name="possuideficiencia")]
         public int PossuiDeficiencia { get; set; }
+        [Number(Name = "codigoturma")]
+        public int TurmaCodigo { get; set; }
         public bool Transferencia_Interna { get; set; }
         public bool Remanejado { get; set; }
         public string EscolaTransferencia { get; set; }
@@ -49,5 +53,20 @@ namespace SME.SR.Infra.Dtos.ElasticSearch
         [Number(Name = "tipoturma")]
         public int TipoTurma { get; set; }
 
+        private string[] SituacoesAtivas => new string[]{
+                                                           SituacaoMatriculaAluno.Ativo.Name(),
+                                                           SituacaoMatriculaAluno.Concluido.Name(),
+                                                           SituacaoMatriculaAluno.PendenteRematricula.Name(),
+                                                           SituacaoMatriculaAluno.Rematriculado.Name(),
+                                                           SituacaoMatriculaAluno.SemContinuidade.Name()};
+
+        public bool Ativo => SituacoesAtivas.Contains(SituacaoMatricula);
+
+        public string ObterNomeFinal()
+        {
+            if (string.IsNullOrEmpty(NomeSocialAluno))
+                return NomeAluno;
+            else return NomeSocialAluno;
+        }
     }
 }
