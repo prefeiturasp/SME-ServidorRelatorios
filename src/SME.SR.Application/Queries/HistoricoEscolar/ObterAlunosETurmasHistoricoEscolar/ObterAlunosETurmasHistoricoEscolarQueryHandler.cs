@@ -37,13 +37,18 @@ namespace SME.SR.Application
                 if (!turmasDosAlunos.Any())
                     return retorno;
 
+                var codigosTurmas = turmasDosAlunos.Select(x => long.Parse(x.TurmaCodigo)).ToArray();
+                var turmasDetalhe = await mediator.Send(new ObterTurmasDetalhePorCodigoQuery(codigosTurmas));
+
                 foreach (var item in informacoesDosAlunos)
                 {
                     var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
 
                     var turmasdoAluno = turmasDosAlunos.Where(a => a.AlunoCodigo == item.CodigoAluno);
+
                     foreach (var turmaDoAluno in turmasdoAluno)
                     {
+                        var turmaDetalhe = turmasDetalhe.FirstOrDefault(t => t.Codigo == turmaDoAluno.TurmaCodigo);
                         alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma()
                         {
                             Ano = turmaDoAluno.Ano.ToString(),
@@ -51,8 +56,9 @@ namespace SME.SR.Application
                             ModalidadeCodigo = turmaDoAluno.Modalidade,
                             EtapaEJA = turmaDoAluno.EtapaEJA,
                             TipoTurma = turmaDoAluno.TipoTurma,
-                            RegularCodigo = turmaDoAluno.RegularCodigo
-                        });
+                            RegularCodigo = turmaDoAluno.RegularCodigo,
+                            EtapaEnsino = turmaDetalhe.EtapaEnsino
+                        }) ;
                     }
 
                     retorno.Add(alunoTurmasNotasFrequenciasDto);
@@ -81,13 +87,19 @@ namespace SME.SR.Application
                     if (!turmasDosAlunos.Any())
                         return retorno;
 
+                    var codigosTurmas = turmasDosAlunos.Select(x => long.Parse(x.TurmaCodigo)).ToArray();
+                    var turmasDetalhe = await mediator.Send(new ObterTurmasDetalhePorCodigoQuery(codigosTurmas));
+
                     foreach (var item in informacoesDosAlunos)
                     {
                         var alunoTurmasNotasFrequenciasDto = new AlunoTurmasHistoricoEscolarDto() { Aluno = TransformarDtoAluno(item) };
 
                         var turmasdoAluno = turmasDosAlunos.Where(a => a.AlunoCodigo == item.CodigoAluno);
+                        
                         foreach (var turmaDoAluno in turmasdoAluno)
                         {
+                            var turmaDetalhe = turmasDetalhe.FirstOrDefault(t => t.Codigo == turmaDoAluno.TurmaCodigo);
+
                             alunoTurmasNotasFrequenciasDto.Turmas.Add(new Turma()
                             {
                                 Ano = turmaDoAluno.Ano.ToString(),
@@ -95,7 +107,8 @@ namespace SME.SR.Application
                                 ModalidadeCodigo = turmaDoAluno.Modalidade,
                                 EtapaEJA = turmaDoAluno.EtapaEJA,
                                 TipoTurma = turmaDoAluno.TipoTurma,
-                                RegularCodigo = turmaDoAluno.RegularCodigo
+                                RegularCodigo = turmaDoAluno.RegularCodigo,
+                                EtapaEnsino = turmaDetalhe.EtapaEnsino
                             });
                         }
 
