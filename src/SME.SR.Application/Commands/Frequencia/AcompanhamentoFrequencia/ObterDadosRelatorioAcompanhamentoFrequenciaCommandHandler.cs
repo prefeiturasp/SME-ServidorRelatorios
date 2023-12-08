@@ -88,15 +88,16 @@ namespace SME.SR.Application
                         .ToList();
 
                 var alunosForaBimestre = new List<string>();
-                alunosSelecionados.ForEach(a =>
+
+                foreach(var aluno in alunosSelecionados)
                 {
-                    var matricula = repositorioElasticTurma.ObterMatriculasAlunoNaTurma(int.Parse(a.Codigo), int.Parse(request.FiltroRelatorio.TurmaCodigo)).Result;
+                    var matricula = await repositorioElasticTurma.ObterMatriculasAlunoNaTurma(int.Parse(aluno.Codigo), int.Parse(request.FiltroRelatorio.TurmaCodigo));
 
                     var periodoCorrespondente = periodosEscolares.Single(p => p.Bimestre == bimestreItem);
-                    
+
                     if (matricula.Equals(default) || matricula.dataMatricula.HasValue ? matricula.dataMatricula.Value.Date > periodoCorrespondente.PeriodoFim.Date : false)
-                        alunosForaBimestre.Add(a.Codigo);
-                });
+                        alunosForaBimestre.Add(aluno.Codigo);
+                }
 
                 if (alunosSelecionados != null && alunosSelecionados.Any())
                 {
