@@ -3,7 +3,6 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,8 +11,8 @@ namespace SME.SR.Application
     public class RelatorioAcompanhamentoAprendizagemUseCase : IRelatorioAcompanhamentoAprendizagemUseCase
     {
         private const string PREFIXO_IMAGEM_CODIFICADA_BASE64 = "<img src=\"data:image/{0};base64,";
-        private string[] extensoesImagens;
-        private readonly IMediator mediator;        
+        private readonly string[] extensoesImagens;
+        private readonly IMediator mediator;
 
         public RelatorioAcompanhamentoAprendizagemUseCase(IMediator mediator)
         {
@@ -44,9 +43,9 @@ namespace SME.SR.Application
             if (alunosEol == null || !alunosEol.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var acompanhamentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
+            await ValidarImagemBase64NoRAA(parametros.TurmaId, parametros.Semestre, turma.Codigo, turma.Nome);
 
-            ValidarImagemBase64NoRAA(turma, acompanhamentosAlunos);
+            var acompanhamentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));           
 
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
 
@@ -76,24 +75,18 @@ namespace SME.SR.Application
             }
         }
 
-        private void ValidarImagemBase64NoRAA(Turma turma, IEnumerable<AcompanhamentoAprendizagemAlunoDto> acompanhamentosAlunos)
+        private async Task ValidarImagemBase64NoRAA(long turmaId, int semestre, string codigoTurma, string nomeTurma)
         {
-            var informacoesRAAComImagemBase64 = (from aa in acompanhamentosAlunos
-                                                 from ei in extensoesImagens
-                                                 where aa.PercursoColetivoTurma.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei)) ||
-                                                       aa.PercursoIndividual.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei))
-                                                 orderby aa.AlunoCodigo
-                                                 select new
-                                                 {
-                                                     base64NaTurma = aa.PercursoColetivoTurma.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei)),
-                                                     alunoPercursoIndividualComImagemBase64 = aa.PercursoIndividual.Contains(string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, ei)) ? aa.AlunoCodigo : null
-                                                 }).Distinct();
+            var tagsImagemConsideradas = extensoesImagens.Select(e => string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, e)).ToArray();
 
-            if (informacoesRAAComImagemBase64.Any())
+            var informacoesRAAComImagemBase64 = await mediator
+                .Send(new VerificarPercursoTurmaAlunoComImagemBase64Query(turmaId, semestre, tagsImagemConsideradas));
+
+            if (informacoesRAAComImagemBase64.Any() && !informacoesRAAComImagemBase64.All(i => !i.PossuiBase64PercursoTurma && string.IsNullOrWhiteSpace(i.CodigoAlunoPercursoPossuiImagemBase64)))
             {
-                var percursoTurmaComImagemBase64 = informacoesRAAComImagemBase64.Any(i => i.base64NaTurma);
-                var alunosComImagemBase64 = string.Join(",", informacoesRAAComImagemBase64.Where(i => !string.IsNullOrWhiteSpace(i.alunoPercursoIndividualComImagemBase64)).Select(i => i.alunoPercursoIndividualComImagemBase64));
-                var mensagemValidacaoImagem = $"Não foi possível processar as imagens anexadas no RAA da turma ({turma.Codigo}-{turma.Nome}). {(percursoTurmaComImagemBase64 ? "Percurso coletivo da turma." : string.Empty)}{(!string.IsNullOrWhiteSpace(alunosComImagemBase64) ? $"Percurso individual dos alunos: {alunosComImagemBase64}" : string.Empty)}";
+                var percursoTurmaComImagemBase64 = informacoesRAAComImagemBase64.Any(i => i.PossuiBase64PercursoTurma);
+                var alunosComImagemBase64 = string.Join(", ", informacoesRAAComImagemBase64.Where(i => !string.IsNullOrWhiteSpace(i.CodigoAlunoPercursoPossuiImagemBase64)).Select(i => i.CodigoAlunoPercursoPossuiImagemBase64));
+                var mensagemValidacaoImagem = $"Não foi possível processar as imagens anexadas no RAA da turma ({codigoTurma}-{nomeTurma}).{(percursoTurmaComImagemBase64 ? " Percurso coletivo da turma." : string.Empty)}{(!string.IsNullOrWhiteSpace(alunosComImagemBase64) ? $" Percurso individual dos alunos: {alunosComImagemBase64}" : string.Empty)}";
                 throw new NegocioException(mensagemValidacaoImagem);
             }
         }
