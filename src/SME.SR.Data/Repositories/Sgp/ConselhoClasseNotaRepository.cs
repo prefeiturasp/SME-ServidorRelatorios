@@ -155,9 +155,20 @@ namespace SME.SR.Data
             query.AppendLine("       fn.disciplina_id AS ComponenteCurricularCodigo,");
             query.AppendLine("       coalesce(ccn.conceito_id, fn.conceito_id) AS ConceitoId,");
             query.AppendLine("       coalesce(cvc.valor, cvf.valor) AS Conceito,");
-            query.AppendLine("       coalesce(ccn.nota, fn.nota) AS Nota,");
-            query.AppendLine("       coalesce(wanf.nota::varchar, cvwf.valor) AS notaConceitoEmAprovacao,");
-            query.AppendLine("       coalesce(wanc.nota::varchar, cvwc.valor) AS notaConceitoPosConselhoEmAprovacao,");
+            query.AppendLine("       coalesce(ccn.nota, fn.nota) AS Nota,"); 
+            query.AppendLine($@"     case when wanf.id > 0 then  
+		                             (  
+                                        SELECT COALESCE(wanf.nota::varchar, cvwf.valor)
+		                                FROM wf_aprovacao_nota_fechamento wanf
+		                                LEFT JOIN conceito_valores cvwf ON wanf.conceito_id = cvwf.id
+		                                WHERE fn.id = wanf.fechamento_nota_id AND NOT wanf.excluido
+		                             ) else null end AS notaConceitoEmAprovacao,");
+            query.AppendLine($@"     (
+		                                SELECT COALESCE(wanc.nota::varchar, cvwc.valor)
+		                                FROM wf_aprovacao_nota_conselho wanc
+		                                LEFT JOIN conceito_valores cvwc ON wanc.conceito_id = cvwc.id
+		                                WHERE ccn.id = wanc.conselho_classe_nota_id AND NOT wanc.excluido
+		                             ) AS notaConceitoPosConselhoEmAprovacao,");
             query.AppendLine("       ccn.id AS conselhoClasseNotaId,");
             query.AppendLine("       CASE WHEN ccn.nota IS NOT NULL");
             query.AppendLine("           OR ccn.conceito_id IS NOT NULL THEN");
@@ -215,12 +226,7 @@ namespace SME.SR.Data
             query.AppendLine("			on fn.sintese_id = sv.id");
             query.AppendLine("		left join wf_aprovacao_nota_fechamento wanf");
             query.AppendLine("			on fn.id = wanf.fechamento_nota_id and not wanf.excluido");
-            query.AppendLine("		left join conceito_valores cvwf");
-            query.AppendLine("			on wanf.conceito_id = cvwf.id");
-            query.AppendLine("		left join wf_aprovacao_nota_conselho wanc");
-            query.AppendLine("			on ccn.id = wanc.conselho_classe_nota_id and not wanc.excluido");
-            query.AppendLine("		left join conceito_valores cvwc");
-            query.AppendLine("			on wanc.conceito_id = cvwc.id");
+
             query.AppendLine($"where {(bimestres.Contains(0) ? "(pe.bimestre is null or" : "(")} pe.bimestre = ANY(@bimestres)) and");
             if (modalidade > 0)
                 query.AppendLine("       t.modalidade_codigo = @modalidade and");
@@ -249,8 +255,19 @@ namespace SME.SR.Data
             query.AppendLine("       coalesce(ccn.conceito_id, fn.conceito_id) AS ConceitoId,");
             query.AppendLine("       coalesce(cvc.valor, cvf.valor) AS Conceito,");
             query.AppendLine("       coalesce(ccn.nota, fn.nota) AS Nota,");
-            query.AppendLine("       coalesce(wanf.nota::varchar, cvwf.valor) AS notaConceitoEmAprovacao,");
-            query.AppendLine("       coalesce(wanc.nota::varchar, cvwc.valor) AS notaConceitoPosConselhoEmAprovacao,");
+            query.AppendLine($@"     case when wanf.id > 0 then 
+		                             (  
+                                        SELECT COALESCE(wanf.nota::varchar, cvwf.valor)
+		                                FROM wf_aprovacao_nota_fechamento wanf
+		                                LEFT JOIN conceito_valores cvwf ON wanf.conceito_id = cvwf.id
+		                                WHERE fn.id = wanf.fechamento_nota_id AND NOT wanf.excluido
+		                             ) else null end AS notaConceitoEmAprovacao,");
+            query.AppendLine($@"     (
+		                                SELECT COALESCE(wanc.nota::varchar, cvwc.valor)
+		                                FROM wf_aprovacao_nota_conselho wanc
+		                                LEFT JOIN conceito_valores cvwc ON wanc.conceito_id = cvwc.id
+		                                WHERE ccn.id = wanc.conselho_classe_nota_id AND NOT wanc.excluido
+		                             ) AS notaConceitoPosConselhoEmAprovacao,");
             query.AppendLine("       ccn.id AS conselhoClasseNotaId,");
             query.AppendLine("       case when ccn.nota is not null or ccn.conceito_id IS NOT NULL ");
             query.AppendLine("          then 0");
@@ -291,22 +308,17 @@ namespace SME.SR.Data
             query.AppendLine("  			on ft.periodo_escolar_id = pe.id");
             query.AppendLine("  		left join conceito_valores cvc");
             query.AppendLine("  			on ccn.conceito_id = cvc.id");
-            query.AppendLine("  		left join fechamento_turma_disciplina ftd");
+            query.AppendLine("  		left join fechamento_turma_disciplina ftd ");
             query.AppendLine("  			on ft.id = ftd.fechamento_turma_id and not ftd.excluido");
-            query.AppendLine("  		left join fechamento_aluno fa");
-            query.AppendLine("  			on ftd.id = ftd.fechamento_turma_id and not fa.excluido");
+            query.AppendLine("  		left join fechamento_aluno fa ");
+            query.AppendLine("  			on ftd.id = fa.fechamento_turma_disciplina_id and not fa.excluido");
             query.AppendLine("  		left join fechamento_nota fn ");
-            query.AppendLine("  			on fa.fechamento_turma_disciplina_id = fn.id and not fn.excluido");
+            query.AppendLine("  			on fa.id = fn.fechamento_aluno_id and not fn.excluido");
             query.AppendLine("  		left join conceito_valores cvf");
             query.AppendLine("  			on fn.conceito_id = cvf.id");
             query.AppendLine("  		left join wf_aprovacao_nota_fechamento wanf ");
             query.AppendLine("  			on fn.id = wanf.fechamento_nota_id and not wanf.excluido");
-            query.AppendLine("  		left join conceito_valores cvwf");
-            query.AppendLine("  			on wanf.conceito_id = cvwf.id");
-            query.AppendLine("  		left join wf_aprovacao_nota_conselho wanc ");
-            query.AppendLine("  			on ccn.id = wanc.conselho_classe_nota_id and not wanc.excluido");
-            query.AppendLine("  		left join conceito_valores cvwc");
-            query.AppendLine("  			on wanc.conceito_id = cvwc.id");
+            
             query.AppendLine($"where {(bimestres.Contains(0) ? "(pe.bimestre is null or " : "(")} pe.bimestre = ANY(@bimestres)) and");
             if (anoLetivo > 0)
                 query.AppendLine("     t.ano_letivo = @anoLetivo and");
