@@ -20,7 +20,7 @@ namespace SME.SR.Application
         public async Task<IEnumerable<AcompanhamentoTurmaAlunoImagemBase64Dto>> Handle(VerificarPercursoTurmaAlunoComImagemBase64Query request, CancellationToken cancellationToken)
         {
             return await acompanhamentoAprendizagemRepository
-                .ObterInformacoesAcompanhamentoComImagemBase64TurmaAlunos(request.TurmaId, request.Semestre, request.TagsImagemConsideradas);
+                .ObterInformacoesAcompanhamentoComImagemBase64TurmaAlunos(request.TurmaId, request.Semestre, request.CodigoAluno, request.TagsImagemConsideradas);
         }
     }
 }

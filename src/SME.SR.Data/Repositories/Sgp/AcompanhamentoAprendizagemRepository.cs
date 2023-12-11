@@ -43,7 +43,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<AcompanhamentoAprendizagemAlunoDto>(query.ToString(), new { turmaId, alunoCodigo, semestre });
         }
 
-        public async Task<IEnumerable<AcompanhamentoTurmaAlunoImagemBase64Dto>> ObterInformacoesAcompanhamentoComImagemBase64TurmaAlunos(long turmaId, int semestre, params string[] tagsImagensConsideradas)
+        public async Task<IEnumerable<AcompanhamentoTurmaAlunoImagemBase64Dto>> ObterInformacoesAcompanhamentoComImagemBase64TurmaAlunos(long turmaId, int semestre, string codigoAluno, params string[] tagsImagensConsideradas)
         {
             var sqlQuery = new StringBuilder();
 
@@ -57,12 +57,15 @@ namespace SME.SR.Data
             sqlQuery.AppendLine("	   			 acomp_aluno.aluno_codigo CodigoAlunoPercursoPossuiImagemBase64");
             sqlQuery.AppendLine("	from acompanhamento_turma at2");
             sqlQuery.AppendLine("		left join (select aa.turma_id,");
-            sqlQuery.AppendLine("		                  aa.aluno_codigo");
+            sqlQuery.AppendLine("		                  aa.aluno_codigo,");
+            sqlQuery.AppendLine("		                  aas.semestre");
             sqlQuery.AppendLine("			          from acompanhamento_aluno aa");
             sqlQuery.AppendLine("			       	     inner join acompanhamento_aluno_semestre aas");
             sqlQuery.AppendLine("			       	        on aa.id = aas.acompanhamento_aluno_id");
             sqlQuery.AppendLine("			       where not aa.excluido and");
             sqlQuery.AppendLine("			             not aas.excluido and");
+            if (!string.IsNullOrWhiteSpace(codigoAluno))
+                sqlQuery.AppendLine("			             aa.aluno_codigo = @codigoAluno and");
             sqlQuery.AppendLine($"			             (aas.percurso_individual like '%{tagsImagensConsideradas[0]}%'");
             if (tagsImagensConsideradas.Length > 1)
             {
@@ -70,13 +73,20 @@ namespace SME.SR.Data
                     sqlQuery.AppendLine($"			             or aas.percurso_individual like '%{tagsImagensConsideradas[i]}%'");
             }
             sqlQuery.AppendLine(")) acomp_aluno");
-            sqlQuery.AppendLine("			on at2.turma_id = acomp_aluno.turma_id");
+            sqlQuery.AppendLine("			on at2.turma_id = acomp_aluno.turma_id and at2.semestre = acomp_aluno.semestre");
             sqlQuery.AppendLine("where not at2.excluido and");
             sqlQuery.AppendLine("	   at2.turma_id = @turmaId and");
-            sqlQuery.AppendLine("	   at2.semestre = @semestre;");
+            sqlQuery.AppendLine("	   at2.semestre = @semestre and");
+            sqlQuery.AppendLine($"     (at2.apanhado_geral like '%{tagsImagensConsideradas[0]}%'");
+            if (tagsImagensConsideradas.Length > 1)
+            {
+                for (int i = 1; i < tagsImagensConsideradas.Length; i++)
+                    sqlQuery.AppendLine($"                or at2.apanhado_geral like '%{tagsImagensConsideradas[i]}%'");
+            }
+            sqlQuery.AppendLine(");");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            return await conexao.QueryAsync<AcompanhamentoTurmaAlunoImagemBase64Dto>(sqlQuery.ToString(), new { turmaId, semestre });
+            return await conexao.QueryAsync<AcompanhamentoTurmaAlunoImagemBase64Dto>(sqlQuery.ToString(), new { turmaId, semestre, codigoAluno });
         }
 
         public async Task<UltimoSemestreAcompanhamentoGeradoDto> ObterUltimoSemestreAcompanhamentoGerado(string alunoCodigo)
