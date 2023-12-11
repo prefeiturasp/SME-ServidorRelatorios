@@ -159,13 +159,6 @@ namespace SME.SR.Application
                         pareceresConclusivos.AddRange(await ObterPareceresConclusivos(checarTurma.Codigo));
                 }
             }
-            else if(turma.TipoTurma == TipoTurma.EdFisica)
-            {
-                foreach (var codigoDaTurmaRelacionada in codigosTurmasRelacionadasRegular)
-                {
-                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(codigoDaTurmaRelacionada));
-                }
-            }
             else
                 pareceresConclusivos.AddRange(await ObterPareceresConclusivos(turma.Codigo));
 
