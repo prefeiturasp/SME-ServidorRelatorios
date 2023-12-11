@@ -43,9 +43,9 @@ namespace SME.SR.Application
             if (alunosEol == null || !alunosEol.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            await ValidarImagemBase64NoRAA(parametros.TurmaId, parametros.Semestre, turma.Codigo, turma.Nome);
+            await ValidarImagemBase64NoRAA(parametros.TurmaId, parametros.Semestre, turma.Codigo, turma.Nome, parametros.AlunoCodigo.ToString());
 
-            var acompanhamentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));           
+            var acompanhamentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
 
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
 
@@ -75,12 +75,12 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task ValidarImagemBase64NoRAA(long turmaId, int semestre, string codigoTurma, string nomeTurma)
+        private async Task ValidarImagemBase64NoRAA(long turmaId, int semestre, string codigoTurma, string nomeTurma, string alunoCodigo)
         {
             var tagsImagemConsideradas = extensoesImagens.Select(e => string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, e)).ToArray();
 
             var informacoesRAAComImagemBase64 = await mediator
-                .Send(new VerificarPercursoTurmaAlunoComImagemBase64Query(turmaId, semestre, tagsImagemConsideradas));
+                .Send(new VerificarPercursoTurmaAlunoComImagemBase64Query(turmaId, semestre, alunoCodigo, tagsImagemConsideradas));
 
             if (informacoesRAAComImagemBase64.Any() && !informacoesRAAComImagemBase64.All(i => !i.PossuiBase64PercursoTurma && string.IsNullOrWhiteSpace(i.CodigoAlunoPercursoPossuiImagemBase64)))
             {
