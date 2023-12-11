@@ -119,7 +119,7 @@ namespace SME.SR.Application
                        tiposTurma, turma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year, DateTimeExtension.HorarioBrasilia()));
 
             if (turma.TipoTurma == TipoTurma.EdFisica)
-                codigosTurmas = codigoTurmaRelacionada.Select(x => x.ToString()).ToArray();
+                codigosTurmas = codigoTurmaRelacionada.Select(codigoTurma => codigoTurma.ToString()).ToArray();
 
             var notas = await ObterNotasAlunos(alunosCodigos, codigosTurmas, turma.AnoLetivo, turma.ModalidadeCodigo, filtro.Semestre, tiposTurma.ToArray());
             
