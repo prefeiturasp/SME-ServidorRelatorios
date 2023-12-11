@@ -161,9 +161,9 @@ namespace SME.SR.Application
             }
             else if(turma.TipoTurma == TipoTurma.EdFisica)
             {
-                foreach (var codigoTurmaRelacionada in codigosTurmasRelacionadasRegular)
+                foreach (var codigoDaTurmaRelacionada in codigosTurmasRelacionadasRegular)
                 {
-                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(codigoTurmaRelacionada));
+                    pareceresConclusivos.AddRange(await ObterPareceresConclusivos(codigoDaTurmaRelacionada));
                 }
             }
             else
