@@ -42,11 +42,16 @@ namespace SME.SR.Application
                 foreach (var disciplina in grupoDisciplinasMatriz)
                 {
                     var frequenciaDisciplina = frequenciaAluno.Where(x =>
-                        x.DisciplinaId == disciplina.CodDisciplina.ToString());                   
+                        x.DisciplinaId == disciplina.CodDisciplina.ToString());
 
-                    var percentualFrequencia = frequenciaDisciplina.Any() ? frequenciaDisciplina.Sum(x => x.PercentualFrequencia) / frequenciaDisciplina.Count() : 100;                                        
+                    var frequenciaAlunoDaDisciplina = new FrequenciaAluno()
+                    {
+                        TotalAulas = frequenciaDisciplina?.Sum(f => f.TotalAulas) ?? 0,
+                        TotalAusencias = frequenciaDisciplina?.Sum(f => f.TotalAusencias) ?? 0,
+                        TotalCompensacoes = frequenciaDisciplina?.Sum(f => f.TotalCompensacoes) ?? 0
+                    };                                   
                     
-                    var sintese = percentualFrequencia >=
+                    var sintese = frequenciaAlunoDaDisciplina.PercentualFrequencia >=
                                     await ObterFrequenciaMediaPorComponenteCurricular(disciplina.Regencia,
                                                                                       disciplina.LancaNota) ?
                                  "Frequente" : "Não Frequente";
@@ -55,7 +60,7 @@ namespace SME.SR.Application
                     {
                         Componente = disciplina.Disciplina,
                         Faltas = frequenciaDisciplina?.Sum(x => x.TotalAusencias),
-                        Frequencia = FrequenciaAluno.FormatarPercentual(percentualFrequencia),
+                        Frequencia = frequenciaAlunoDaDisciplina.PercentualFrequenciaFormatado,
                         Parecer = sintese
                     };
 
