@@ -223,7 +223,7 @@ namespace SME.SR.Data
                          left join conceito_valores cvc on ccn.conceito_id = cvc.id
                          where fa.aluno_codigo = ANY(@codigosAluno)
                            and t.ano_letivo <= @anoLetivo
-                           and coalesce(ccn.nota, fn.nota) is not null ";
+                           and (coalesce(ccn.nota, fn.nota) is not null or coalesce(ccn.conceito_id, fn.conceito_id) is not null) ";
 
             const string queryNotasConselhoNota = @"
                         select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
@@ -249,7 +249,7 @@ namespace SME.SR.Data
                           left join conceito_valores cvf on fn.conceito_id = cvf.id
                          where cca.aluno_codigo = ANY(@codigosAluno)
                            and t.ano_letivo <= @anoLetivo
-                           and coalesce(ccn.nota, fn.nota) is not null ";
+                           and (coalesce(ccn.nota, fn.nota) is not null or coalesce(ccn.conceito_id, fn.conceito_id) is not null) ";
 
             const string queryNotasFechamentoConselhoComplementar = @"
                         select t.turma_id CodigoTurma, cca.aluno_codigo CodigoAluno,
@@ -275,7 +275,7 @@ namespace SME.SR.Data
                          left join conceito_valores cvf on fn.conceito_id = cvf.id
                          where cca.aluno_codigo = ANY(@codigosAluno)
                            and t.ano_letivo <= @anoLetivo
-                           and coalesce(ccn.nota, fn.nota) is not null ";
+                           and (coalesce(ccn.nota, fn.nota) is not null or coalesce(ccn.conceito_id, fn.conceito_id) is not null) ";
 
             var queryFechamentoNota = new StringBuilder(queryNotasFechamentoNota);
             var queryConselhoNota = new StringBuilder(queryNotasConselhoNota);
