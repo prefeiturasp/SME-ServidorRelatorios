@@ -693,8 +693,7 @@ namespace SME.SR.Application
                 else
                     TrataFrequenciaAnual(aluno, linhaDto);
 
-                if (conselhoClasseBimestres.Any())
-                    linhas.Add(linhaDto);
+                linhas.Add(linhaDto);
             }
 
             return linhas;
