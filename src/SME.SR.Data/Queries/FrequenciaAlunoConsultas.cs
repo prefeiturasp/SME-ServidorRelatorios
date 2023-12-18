@@ -9,7 +9,7 @@
                             turma_id TurmaId, periodo_escolar_id PeriodoEscolarId";
 
         internal static string FrequenciaGlobal = @"select 
-        case sum(total_aulas) > 0 then
+        case when sum(total_aulas) > 0 then
 	        coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) 
         else
             null 
@@ -20,7 +20,7 @@
         and fa.turma_id = @codigoTurma";
 
         internal static string FrequenciGlobalPorBimestre = @"select pe.bimestre,
-                case sum(total_aulas) > 0 then
+                case when sum(total_aulas) > 0 then
   	                coalesce((ROUND((100 - (cast((sum(total_ausencias) -  sum(total_compensacoes)) as decimal) / sum(total_aulas)) * 100), 2)),100) FrequenciaGlobal
                 else
                     null 
