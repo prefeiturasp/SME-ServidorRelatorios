@@ -8,5 +8,6 @@ namespace SME.SR.Data.Interfaces
     {
         Task<IEnumerable<AcompanhamentoAprendizagemAlunoDto>> ObterAcompanhamentoAprendizagemPorTurmaESemestre(long turmaId, string alunoCodigo, int semestre);
         Task<UltimoSemestreAcompanhamentoGeradoDto> ObterUltimoSemestreAcompanhamentoGerado(string alunoCodigo);
+        Task<IEnumerable<AcompanhamentoTurmaAlunoImagemBase64Dto>> ObterInformacoesAcompanhamentoComImagemBase64TurmaAlunos(long turmaId,  int semestre, string alunoCodigo, params string[] tagsImagensConsideradas);
     }
 }
