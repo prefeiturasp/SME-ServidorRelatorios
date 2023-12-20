@@ -7,12 +7,13 @@ namespace SME.SR.Application
 {
     public class GerarRelatorioAtaFinalHtmlParaPdfCommand : IRequest<bool>
     {
-        public GerarRelatorioAtaFinalHtmlParaPdfCommand(string nomeTemplate, List<ConselhoClasseAtaFinalPaginaDto> paginas, Guid codigoCorrelacao, string mensagemUsuario)
+        public GerarRelatorioAtaFinalHtmlParaPdfCommand(string nomeTemplate, List<ConselhoClasseAtaFinalPaginaDto> paginas, Guid codigoCorrelacao, string mensagemUsuario, Guid sessionId)
         {
             NomeTemplate = nomeTemplate;
             Paginas = paginas;
             CodigoCorrelacao = codigoCorrelacao;
             MensagemUsuario = mensagemUsuario;
+            SessionId = sessionId;
         }
 
         public Guid CodigoCorrelacao { get; set; }
@@ -22,6 +23,6 @@ namespace SME.SR.Application
         public List<ConselhoClasseAtaFinalPaginaDto> Paginas { get; set; }
 
         public string MensagemUsuario { get; set; }
-        
+        public Guid SessionId { get; }
     }
 }
