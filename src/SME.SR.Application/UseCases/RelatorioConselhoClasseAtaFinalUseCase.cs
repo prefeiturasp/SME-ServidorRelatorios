@@ -11,13 +11,13 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private int contador;
-        private Guid id;
+        private Guid sessionId;
 
         public RelatorioConselhoClasseAtaFinalUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             contador = 0;
-            id = Guid.NewGuid();
+            sessionId = Guid.NewGuid();
         }
 
         public async Task Executar(FiltroRelatorioDto request)
@@ -48,8 +48,8 @@ namespace SME.SR.Application
                     break;
                 case TipoFormatoRelatorio.Pdf:
                     await Logar("Gerando Relatório PDF");
-                    await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
-                    await Logar("Relatório Excel PDF");
+                    await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString(), sessionId));
+                    await Logar("Relatório PDF Gerado");
                     break;
                 case TipoFormatoRelatorio.Rtf:
                 case TipoFormatoRelatorio.Html:
@@ -66,6 +66,6 @@ namespace SME.SR.Application
         }
 
         private Task Logar(string mensagem)
-            => mediator.Send(new SalvarLogViaRabbitCommand($"{id}:{++contador}: {mensagem}", LogNivel.Informacao));
+            => mediator.Send(new SalvarLogViaRabbitCommand($"{sessionId}:{++contador}: {mensagem}", LogNivel.Informacao));
     }
 }
