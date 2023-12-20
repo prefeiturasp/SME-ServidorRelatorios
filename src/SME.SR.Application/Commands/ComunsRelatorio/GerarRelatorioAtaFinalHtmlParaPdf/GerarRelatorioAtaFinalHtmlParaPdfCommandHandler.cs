@@ -44,7 +44,7 @@ namespace SME.SR.Application
                 html = html.Replace("logo.png", SmeConstants.LogoSme);
 
                 paginasEmHtml.Add(html);
-                await Logar($"Pagina {request.Paginas.IndexOf(modelPagina)+1} gerada");
+                await Logar($"Pagina {request.Paginas.IndexOf(modelPagina)+1}/{request.Paginas.Count} gerada");
             }
 
             //TODO: FILA PARA RELATORIO SEM DADOS?
