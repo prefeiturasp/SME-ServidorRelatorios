@@ -22,6 +22,5 @@ namespace SME.SR.Application
         public List<ConselhoClasseAtaFinalPaginaDto> Paginas { get; set; }
 
         public string MensagemUsuario { get; set; }
-        
     }
 }
