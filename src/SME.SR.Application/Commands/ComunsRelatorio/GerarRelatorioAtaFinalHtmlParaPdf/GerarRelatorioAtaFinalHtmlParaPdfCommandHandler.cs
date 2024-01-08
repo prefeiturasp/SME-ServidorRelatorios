@@ -1,12 +1,9 @@
 ﻿using DinkToPdf.Contracts;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Sentry;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +15,7 @@ namespace SME.SR.Application
         private readonly IConverter converter;
         private readonly IServicoFila servicoFila;
         private readonly IHtmlHelper htmlHelper;
+        private readonly IMediator mediator;
 
         public GerarRelatorioAtaFinalHtmlParaPdfCommandHandler(
                                                                IConverter converter,
