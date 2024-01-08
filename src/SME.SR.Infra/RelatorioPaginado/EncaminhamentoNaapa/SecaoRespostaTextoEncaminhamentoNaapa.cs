@@ -87,7 +87,13 @@ namespace SME.SR.Infra
             if (texto.Length < inicioCaracteres)
                 return string.Empty;
 
-            if(inicioCaracteres < finalCaracteres)
+            finalCaracteres = Math.Min(finalCaracteres, texto.Length - inicioCaracteres);
+            if (inicioCaracteres + finalCaracteres > texto.Length)
+            {
+                return string.Empty;
+            }
+
+            if (inicioCaracteres < finalCaracteres)
                 return texto.Substring(inicioCaracteres, finalCaracteres);
 
             return string.Empty;
