@@ -14,12 +14,10 @@ namespace SME.SR.HtmlPdf
         public UnificadorPdf(string nomePdfUnificado, string[] nomeArquivos)
         {
             NomePdfUnificado = nomePdfUnificado;
-            NomeArquivos = new string[] { 
-                "46b0a450-0836-4130-8cb2-0d55ad0d2142.pdf", 
-                "649a5efd-cd4e-44eb-938a-64a397335c8f.pdf",
-                "2448ac8f-c242-4376-b12e-301f9b3be0cc.pdf",
-                "Boleto TRT Danyllo.pdf",
-                "Padroes_de_Projetos_-_Solucoes_Reutiliza.pdf"};
+            NomeArquivos = new string[] {
+                "Padroes_de_Projetos_-_Solucoes_Reutiliza.pdf",
+                "Princípios, padrões e práticas ágeis Robert Martin.pdf",
+                "Introdução à Arquitetura e Design de Software - Casa do Codigo.pdf"};
 
             CaminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
         }
