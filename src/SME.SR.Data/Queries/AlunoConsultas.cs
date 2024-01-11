@@ -471,7 +471,8 @@ namespace SME.SR.Data
 					    INNER JOIN matricula_turma_escola mte3 ON
 						    matr3.cd_matricula = mte3.cd_matricula
 					    WHERE
-						    mte.cd_matricula = mte3.cd_matricula and mte.cd_turma_escola = mte3.cd_turma_escola)
+						    mte.cd_matricula = mte3.cd_matricula and mte.cd_turma_escola = mte3.cd_turma_escola 
+                            and matr3.cd_matricula = matr.cd_matricula and matr3.an_letivo = matr.an_letivo)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
 					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)})
 			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
