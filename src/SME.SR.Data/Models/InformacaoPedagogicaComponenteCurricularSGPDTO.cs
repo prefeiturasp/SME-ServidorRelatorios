@@ -8,7 +8,7 @@ namespace SME.SR.Data
     public class InformacaoPedagogicaComponenteCurricularSGPDTO : ICloneable
     {
         public InformacaoPedagogicaComponenteCurricularSGPDTO()
-        {}
+        { }
         public long Codigo { get; set; }
         public long? CodComponenteCurricularPai { get; set; }
         public string Descricao { get; set; }
@@ -32,7 +32,7 @@ namespace SME.SR.Data
 
     public static class InformacaoPedagogicaComponenteCurricularSGPDTOExtension
     {
-        public static ComponenteCurricular ToComponenteCurricular(this InformacaoPedagogicaComponenteCurricularSGPDTO value)
+        public static ComponenteCurricular ToComponenteCurricular(this InformacaoPedagogicaComponenteCurricularSGPDTO value, long? codigoComponentePai = null)
         {
             return new ComponenteCurricular()
             {
@@ -45,14 +45,18 @@ namespace SME.SR.Data
                 GrupoMatrizId = value.GrupoMatrizId,
                 TerritorioSaber = value.EhTerritorioSaber,
                 ComponentePlanejamentoRegencia = value.EhRegencia,
-                CodComponentePai = value.CodComponenteCurricularPai,
+                CodComponentePai = value.CodComponenteCurricularPai ?? codigoComponentePai,
                 LancaNota = value.LancaNota
             };
         }
 
-        public static IEnumerable<ComponenteCurricular> ToComponentesCurriculares(this IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> values)
+        public static IEnumerable<ComponenteCurricular> ToComponentesCurriculares(this IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> values, (long codigo, long codigoComponentePai)[] codigosComponentesPai = null)
         {
-            return values.Select(inf => inf.ToComponenteCurricular());
+            foreach (var componente in values)
+            {
+                var componentePaiCorrelacionado = codigosComponentesPai?.FirstOrDefault(cp => cp.codigo == componente.Codigo);
+                yield return componente.ToComponenteCurricular(componentePaiCorrelacionado?.codigoComponentePai);
+            }
         }
     }
- }
+}
