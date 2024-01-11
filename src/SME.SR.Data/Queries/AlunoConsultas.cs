@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Data
+﻿using System;
+
+namespace SME.SR.Data
 {
     public static class AlunoConsultas
     {
@@ -394,7 +396,7 @@
 																	   max(dt_situacao_aluno) data_situacao
 																	from lista";
 
-		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId) =>
+		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId, DateTime dataInicio) =>
 			$@"WITH lista AS (
 				SELECT DISTINCT mte.cd_turma_escola,
 								m.cd_aluno,
@@ -415,12 +417,14 @@
 					INNER JOIN v_cadastro_unidade_educacao ue
 						ON te.cd_escola = ue.cd_unidade_educacao
 					INNER JOIN alunos_matriculas_norm aln 
-						ON aln.CodigoAluno = m.cd_aluno
+						ON aln.CodigoMatricula = m.cd_matricula
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
-					  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
-					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-					  and mte.dt_situacao_aluno > @dataFim))
+					  ((mte.cd_situacao_aluno = 10 or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim))
+					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim
+					  {(dataInicio == null || dataInicio == DateTime.MinValue
+                       ? "and mte.dt_situacao_aluno >= @dataFim))"
+                       : "and(mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))")}
 					  and aln.AnoLetivo = anoLetivo
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
@@ -437,8 +441,6 @@
 					aluno.cd_aluno = matr.cd_aluno
 				INNER JOIN historico_matricula_turma_escola mte ON
 					matr.cd_matricula = mte.cd_matricula
-				LEFT JOIN necessidade_especial_aluno nea ON
-					nea.cd_aluno = matr.cd_aluno
 				INNER JOIN turma_escola te
 					ON mte.cd_turma_escola = te.cd_turma_escola
 				INNER JOIN serie_turma_escola ste
@@ -453,10 +455,23 @@
 					ON te.cd_escola = ue.cd_unidade_educacao
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
-					  mte.cd_situacao_aluno in (5, 10) AND
 					  ee.cd_etapa_ensino in (@modalidades)
 				      AND mte.nr_chamada_aluno <> '0'
 					  AND mte.nr_chamada_aluno is not null
+                      AND (matr.st_matricula in (1, 6, 10, 13, 5)
+						    or (matr.st_matricula not in (1, 6, 10, 13, 5)
+                       {(dataInicio == null || dataInicio == DateTime.MinValue
+                       ? "and matr.dt_status_matricula >= @dataFim))"
+                       : "and(matr.dt_status_matricula > @dataFim or (matr.dt_status_matricula> @dataInicio and matr.dt_status_matricula <= @dataFim))))")}
+                        AND NOT EXISTS(
+					    SELECT
+						    1
+					    FROM
+						    v_matricula_cotic matr3
+					    INNER JOIN matricula_turma_escola mte3 ON
+						    matr3.cd_matricula = mte3.cd_matricula
+					    WHERE
+						    mte.cd_matricula = mte3.cd_matricula and mte.cd_turma_escola = mte3.cd_turma_escola)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
 					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)})
 			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
