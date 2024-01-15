@@ -18,7 +18,7 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
         private readonly IAlunoRepository alunoRepository;
 
-        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository, IMediator mediator, IAlunoRepository alunoRepository)
+        public ObterComponentesCurricularesPorAlunosQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,IAlunoRepository alunoRepository, IMediator mediator)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -61,6 +61,7 @@ namespace SME.SR.Application
             componentesMapeados.AddRange(AdicionarComponentesRegenciaClasse(todosComponentes, gruposMatriz, areasConhecimento, componentesDasTurmas));
 
             var componentesRegencia = ObterCodigosComponentesRegenciaClasse(todosComponentes, componentesDasTurmas);
+           
             if (componentesRegencia != null && componentesRegencia.Any())
             {
                 var componentesRegenciaPorTurma = await ObterComponentesCurricularesRegenciaClasse(turmasCodigosFiltrado.Select(cod => cod.ToString()).ToArray(), request, todosComponentes, gruposMatriz, 

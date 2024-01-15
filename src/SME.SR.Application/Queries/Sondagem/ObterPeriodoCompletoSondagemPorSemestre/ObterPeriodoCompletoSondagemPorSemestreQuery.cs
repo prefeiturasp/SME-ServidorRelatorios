@@ -9,9 +9,9 @@ namespace SME.SR.Application
     public class ObterPeriodoCompletoSondagemPorSemestreQuery : IRequest<PeriodoCompletoSondagemDto>
     {
         public int Semestre { get; set; }
-        public string AnoLetivo { get; set; }
+        public int AnoLetivo { get; set; }
 
-        public ObterPeriodoCompletoSondagemPorSemestreQuery(int semestre, string anoLetivo)
+        public ObterPeriodoCompletoSondagemPorSemestreQuery(int semestre, int anoLetivo)
         {
             Semestre = semestre;
             AnoLetivo = anoLetivo;

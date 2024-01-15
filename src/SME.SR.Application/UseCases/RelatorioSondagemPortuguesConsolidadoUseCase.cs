@@ -25,7 +25,7 @@ namespace SME.SR.Application
 
             var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
 
-            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorSemestreQuery(semestre, filtros.AnoLetivo.ToString()));
+            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorSemestreQuery(semestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),

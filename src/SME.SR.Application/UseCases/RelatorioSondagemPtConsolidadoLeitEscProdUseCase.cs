@@ -127,15 +127,16 @@ namespace SME.SR.Application
 
             var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
 
-            var dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, filtros.AnoLetivo));
+            var dataPeriodoSondagem = await mediator.Send(new ObterPeriodoCompletoSondagemPorSemestreQuery(semestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                dataReferencia,
+                dataPeriodoSondagem.PeriodoFim,
                 Convert.ToInt64(filtros.DreCodigo),
-                filtros.Modalidades
+                filtros.Modalidades,
+                dataReferenciaInicio: dataPeriodoSondagem.PeriodoInicio
                 ));
 
             var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(filtros.Bimestre, TipoPeriodoSondagem.Bimestre));
@@ -250,17 +251,17 @@ namespace SME.SR.Application
                 Proficiencia = filtros.ProficienciaId
             });
 
-            var dataReferencia = await mediator
-                .Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
+            var dataPeriodoSondagem = await mediator.Send(new ObterPeriodoCompletoSondagemPorBimestreQuery(filtros.Bimestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                dataReferencia,
+                dataPeriodoSondagem.PeriodoFim,
                 Convert.ToInt64(filtros.DreCodigo),
-                filtros.Modalidades));
-
+                filtros.Modalidades,
+                dataReferenciaInicio: dataPeriodoSondagem.PeriodoInicio
+                ));
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 

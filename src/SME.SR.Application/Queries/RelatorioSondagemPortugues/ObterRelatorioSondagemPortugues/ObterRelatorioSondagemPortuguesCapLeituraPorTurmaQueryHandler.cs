@@ -41,7 +41,7 @@ namespace SME.SR.Application
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), turma.Nome, request.AnoLetivo, periodo.Periodo, request.Usuario.CodigoRf, request.Usuario.Nome);
 
-            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorBimestreQuery(semestre, request.AnoLetivo));
+            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorSemestreQuery(semestre, request.AnoLetivo));
 
             var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
