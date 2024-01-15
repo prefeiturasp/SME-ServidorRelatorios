@@ -330,9 +330,9 @@ namespace SME.SR.Data
 									  (((mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim) or mte.cd_situacao_aluno = 10)
 									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 									  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
-										? "and mte.dt_situacao_aluno > @dataFim))"
-										: "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
-									  )}
+                                        ? "and mte.dt_situacao_aluno > @dataFim))"
+                                        : "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
+                                      )}
 									  and aln.AnoLetivo = anoLetivo
 									  AND se.sg_resumida_serie = @anoTurma 
 									  AND ee.cd_etapa_ensino in (@modalidades)
@@ -343,13 +343,16 @@ namespace SME.SR.Data
 									FROM lista ");
 
 
-			var parametros = 
-				new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), 
-					ueCodigo, 
-					anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), 
-					anoLetivo, 
-					dataFim = dataReferenciaFim,
-				    dataInicio = dataReferenciaInicio};
+            var parametros =
+                new
+                {
+                    dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH),
+                    ueCodigo,
+                    anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH),
+                    anoLetivo,
+                    dataFim = dataReferenciaFim,
+                    dataInicio = dataReferenciaInicio
+                };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
@@ -1619,14 +1622,14 @@ namespace SME.SR.Data
 						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
 						inner join v_cadastro_unidade_educacao ue ON te.cd_escola = ue.cd_unidade_educacao
 						where 1=1 ";
-            
-			if (!string.IsNullOrEmpty(ueCodigo) && ueCodigo != "-99")
+
+            if (!string.IsNullOrEmpty(ueCodigo) && ueCodigo != "-99")
                 sql += @" AND ue.cd_unidade_educacao = @ueCodigo ";
-            
-			if (!string.IsNullOrEmpty(dreCodigo) && dreCodigo != "-99")
+
+            if (!string.IsNullOrEmpty(dreCodigo) && dreCodigo != "-99")
                 sql += @" AND ue.cd_unidade_administrativa_referencia = @dreCodigo ";
-            
-			if (codigosAlunos != null && codigosAlunos.Any())
+
+            if (codigosAlunos != null && codigosAlunos.Any())
                 sql += $" and CodigoAluno in (#codigosAlunos) ";
 
             sql += @" and te.an_letivo = @anoLetivo )
@@ -1635,8 +1638,8 @@ namespace SME.SR.Data
 								where sequencia in (1,2)
 								and CodigoSituacaoMatricula <> 4";
 
-			if (codigosAlunos != null && codigosAlunos.Any())
-				sql = sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'");
+            if (codigosAlunos != null && codigosAlunos.Any())
+                sql = sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'");
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
@@ -1715,20 +1718,21 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalAlunosAtivosPorPeriodoEAnoTurma(int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId)
         {
-	        var parametros = new
-	        {
-		        anoLetivo,
-		        dataInicio,
-		        dataFim,
-		        codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
-		        codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
-	        };
-	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId, dataInicio);
-	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
-	        {
-		        return await con.QueryAsync<TotalAlunosAnoTurmaDto>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
-	        }
-         }
+            var parametros = new
+            {
+                anoLetivo,
+                dataInicio,
+                dataFim,
+                codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
+                codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
+            };
+            var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId, ueId, dataInicio);
+
+            using (var con = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await con.QueryAsync<TotalAlunosAnoTurmaDto>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
+            }
+        }
 
         public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferenciaFim, DateTime? dataReferenciaInicio = null)
         {

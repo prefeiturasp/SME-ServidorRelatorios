@@ -910,9 +910,46 @@ namespace SME.SR.Application
             if (textoParecer == null)
             {
                 bool ativoOuConcluido = AlunoAtivo(aluno.CodigoSituacaoMatricula);
-                textoParecer = !ativoOuConcluido ? string.Concat("Inativo em ", aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : SEM_PARECER_CONCLUSIVO;
+                textoParecer = !ativoOuConcluido ? string.Concat(VerificaSituacaoAlunoInativo(aluno.CodigoSituacaoMatricula), aluno.DataSituacaoAluno.ToString("dd/MM/yyyy")) : SEM_PARECER_CONCLUSIVO;
             }
             linhaDto.AdicionaCelula(99, 99, textoParecer, COLUNA_PARECER_CONCLUSIVO, aluno.CodigoAluno.ToString());
+        }
+
+        private string VerificaSituacaoAlunoInativo(SituacaoMatriculaAluno situacaoMatricula)
+        {
+            string statusAlunoInativoParecer = string.Empty;
+            switch (situacaoMatricula)
+            {
+                case SituacaoMatriculaAluno.Desistente:
+                    statusAlunoInativoParecer = "DES";
+                    break;
+                case SituacaoMatriculaAluno.Transferido:
+                    statusAlunoInativoParecer = "TR";
+                    break;
+                case SituacaoMatriculaAluno.VinculoIndevido:
+                    statusAlunoInativoParecer = "VI";
+                    break;
+                case SituacaoMatriculaAluno.Falecido:
+                    statusAlunoInativoParecer = "FL";
+                    break;
+                case SituacaoMatriculaAluno.Deslocamento:
+                    statusAlunoInativoParecer = "DESL";
+                    break; 
+                case SituacaoMatriculaAluno.Cessado:
+                    statusAlunoInativoParecer = "CES";
+                    break;
+                case SituacaoMatriculaAluno.RemanejadoSaida:
+                    statusAlunoInativoParecer = "REM";
+                    break;
+                case SituacaoMatriculaAluno.ReclassificadoSaida:
+                    statusAlunoInativoParecer = "RC";
+                    break;
+                default:    
+                    statusAlunoInativoParecer = "Inativo";
+                    break;
+            }
+
+            return $@"{statusAlunoInativoParecer} em ";
         }
 
         private void TrataFrequenciaAnual(AlunoSituacaoAtaFinalDto aluno, ConselhoClasseAtaFinalLinhaDto linhaDto)

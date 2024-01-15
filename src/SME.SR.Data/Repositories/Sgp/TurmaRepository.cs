@@ -640,11 +640,45 @@ namespace SME.SR.Data
 
         }
 
+        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadesAnoLetivoESemestre(string[] uesCodigos, string[] anos, int[] modalidades, int anoLetivo, int? semestre)
+        {
+            try
+            {
+                var query = new StringBuilder(@"select t.turma_id as codigo, t.id, u.id as ueId, t.nome, t.ano from  tipo_ciclo tc 
+                        inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
+                        inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
+                        inner join ue u on t.ue_id  = u.id
+                        where 1=1 ");
+
+                if (anos != null && anos.Length > 0)
+                    query.AppendLine("and tca.ano = ANY(@anos) ");
+
+                if (uesCodigos != null && uesCodigos.Length > 0)
+                    query.AppendLine("and u.ue_id = ANY(@uesCodigos) ");
+
+                if (modalidades != null && modalidades.Length > 0)
+                    query.AppendLine("and t.modalidade_codigo = ANY(@modalidades) ");
+
+                if (semestre.HasValue)
+                    query.AppendLine("and t.semestre = @semestre ");
+
+                query.AppendLine(" and t.ano_letivo = @anoLetivo");
+
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidades, semestre = semestre ?? 0, anoLetivo });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadeESemestre(string[] uesCodigos, string[] anos, int modalidade, int? semestre)
         {
             try
             {
-                var query = new StringBuilder(@"select t.turma_id as codigo, t.id, u.id as ueId, t.nome from  tipo_ciclo tc 
+                var query = new StringBuilder(@"select t.turma_id as codigo, t.id, u.id as ueId, t.nome, t.ano from  tipo_ciclo tc 
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                         inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
                         inner join ue u on t.ue_id  = u.id
@@ -662,11 +696,9 @@ namespace SME.SR.Data
                 if (semestre.HasValue)
                     query.AppendLine("and t.semestre = @semestre ");
 
-                //query.AppendLine("order by tca.ano ");
-
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidade, semestre = semestre ?? 0 });
+                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidade, semestre = semestre ?? 0});
             }
             catch (Exception ex)
             {
