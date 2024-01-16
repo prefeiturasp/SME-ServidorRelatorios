@@ -12,5 +12,6 @@
         public string[] Anos { get; set; }
         public string UsuarioNome { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
+        public bool Historico {  get; set; }
     }
 }
