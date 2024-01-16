@@ -431,7 +431,7 @@ namespace SME.SR.Data
 
         }
 
-        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterPorUeCicloAno(int anoLetivo, string ano, long tipoCicloId, long ueId)
+        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterPorUeCicloAno(int anoLetivo, string ano, long tipoCicloId, long ueId, int? semestre = null)
         {
             var query = @"select t.turma_id as codigo, t.id, t.nome from  tipo_ciclo tc 
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
@@ -439,10 +439,12 @@ namespace SME.SR.Data
                         inner join ue u on t.ue_id  = u.id
                         where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano and t.tipo_turma = @tipoTurmaRegular";
 
+            if (semestre.HasValue)
+                query += " and t.semestre = @semestre";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano, tipoTurmaRegular = TipoTurma.Regular });
+            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano, tipoTurmaRegular = TipoTurma.Regular, semestre });
         }
         public async Task<IEnumerable<AlunoTurmaRegularRetornoDto>> ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long turmaCodigo)
         {
