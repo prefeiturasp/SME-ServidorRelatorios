@@ -19,7 +19,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> Handle(ObterTurmasPorUeCicloAnoQuery request, CancellationToken cancellationToken)
         {
-            return await turmaRepository.ObterPorUeCicloAno(request.AnoLetivo, request.Ano, request.TipoCicloId, request.UeId);
+            return await turmaRepository.ObterPorUeCicloAno(request.AnoLetivo, request.Ano, request.TipoCicloId, request.UeId,request.Semestre);
         }
 
     }
