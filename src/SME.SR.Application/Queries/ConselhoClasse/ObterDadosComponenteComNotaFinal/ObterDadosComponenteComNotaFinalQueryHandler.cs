@@ -15,7 +15,7 @@ namespace SME.SR.Application
 
         public ObterDadosComponenteComNotaFinalQueryHandler(IMediator mediator)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<IEnumerable<GrupoMatrizComponenteComNotaFinal>> Handle(ObterDadosComponenteComNotaFinalQuery request, CancellationToken cancellationToken)
@@ -83,7 +83,7 @@ namespace SME.SR.Application
         }
 
         private async Task<ComponenteFrequenciaRegenciaFinal> ObterNotasFrequenciaRegencia(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasse, IEnumerable<NotaConceitoBimestreComponente> notasFechamento, Usuario usuario)
-        {            
+        {
             var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), turma.AnoLetivo));
 
             string percentualFrequencia = null;
@@ -99,7 +99,7 @@ namespace SME.SR.Application
 
             //Frequência especifica para 2020.
             if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
-                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal ?? 0) : null;
 
             var conselhoClasseComponente = new ComponenteFrequenciaRegenciaFinal()
             {
@@ -152,8 +152,8 @@ namespace SME.SR.Application
         private async Task<ComponenteComNotaFinal> ObterNotasFrequenciaComponenteComNotaFinal(ComponenteCurricularPorTurma disciplina, FrequenciaAluno frequenciaAluno, PeriodoEscolar periodoEscolar, Turma turma, IEnumerable<NotaConceitoBimestreComponente> notasConselhoClasseAluno, IEnumerable<NotaConceitoBimestreComponente> notasFechamentoAluno)
         {
             var turmaPossuiFrequenciaRegistrada = await mediator.Send(new ExisteFrequenciaRegistradaPorTurmaComponenteCurricularEAnoQuery(turma.Codigo, disciplina.CodDisciplina.ToString(), turma.AnoLetivo));
-            
-            string percentualFrequencia = null;
+
+            string percentualFrequencia = string.Empty;
 
             if (disciplina.Frequencia)
             {
@@ -165,7 +165,7 @@ namespace SME.SR.Application
             }
 
             if (frequenciaAluno != null && turma.AnoLetivo.Equals(2020))
-                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal??0) : null;
+                percentualFrequencia = frequenciaAluno.PercentualFrequenciaFinal != null ? FrequenciaAluno.FormatarPercentual(frequenciaAluno.PercentualFrequenciaFinal ?? 0) : null;
 
             var notasComponente = ObterNotasComponente(disciplina, periodoEscolar, notasFechamentoAluno);
 
