@@ -18,7 +18,7 @@ namespace SME.SR.Application
         private readonly ICicloRepository cicloRepository;
         private readonly IPeriodoEscolarRepository periodoEscolarRepository;
         private readonly INotaTipoRepository notaTipoRepository;
-
+        private const string CONCEITO = "Conceito";
         public ObterTiposNotaRelatorioBoletimQueryHandler(IPeriodoFechamentoRepository periodoFechamentoRepository,
                                         ICicloRepository cicloRepository,
                                         IPeriodoEscolarRepository periodoEscolarRepository,
@@ -32,7 +32,7 @@ namespace SME.SR.Application
 
         public async Task<IDictionary<string, string>> Handle(ObterTiposNotaRelatorioBoletimQuery request, CancellationToken cancellationToken)
         {
-            var bimestreFechamento = (await ObterPeriodoUltimoBimestre(request.AnoLetivo, ObterModalidadeTipoCalendario(request.Modalidade), request.Semestre)).Bimestre;
+            var bimestreFechamento = (await ObterPeriodoUltimoBimestre(request.AnoLetivo, request.Modalidade.ObterModalidadeTipoCalendario(), request.Semestre)).Bimestre;
             PeriodoFechamentoBimestre periodoFechamentoBimestre = await periodoFechamentoRepository.ObterPeriodoFechamentoTurmaAsync(request.UeId, request.DreId, request.AnoLetivo, bimestreFechamento, null);
 
             return await ObterTiposNota(request.Turmas, periodoFechamentoBimestre, request.AnoLetivo, request.Modalidade, request.Semestre);
@@ -52,7 +52,7 @@ namespace SME.SR.Application
         {
             var dataReferencia = periodoFechamentoBimestre != null ?
                 periodoFechamentoBimestre.FinalDoFechamento :
-                (await ObterPeriodoUltimoBimestre(anoLetivo, ObterModalidadeTipoCalendario(modalidade), semestre)).PeriodoFim;
+                (await ObterPeriodoUltimoBimestre(anoLetivo, modalidade.ObterModalidadeTipoCalendario(), semestre)).PeriodoFim;
 
             var tiposNota = await ObterNotasTipo(turmas, modalidade, dataReferencia);
             if (tiposNota == null)
@@ -62,6 +62,24 @@ namespace SME.SR.Application
         }
 
         private async Task<IDictionary<string, string>> ObterNotasTipo(IEnumerable<Turma> turmas, Modalidade modalidade, DateTime dataReferencia)
+        {
+            if (modalidade.EhCelp())
+                return ObterNotasTipoCelp(turmas);
+
+            return await ObterNotasTipoOutros(turmas, modalidade, dataReferencia);
+        }
+
+        private IDictionary<string, string> ObterNotasTipoCelp(IEnumerable<Turma> turmas)
+        {
+            var lstTurmasTipoNota = new Dictionary<string, string>();
+
+            foreach (var turma in turmas)
+                lstTurmasTipoNota.Add(turma.Codigo, CONCEITO);
+
+            return lstTurmasTipoNota;
+        }
+
+        private async Task<IDictionary<string, string>> ObterNotasTipoOutros(IEnumerable<Turma> turmas, Modalidade modalidade, DateTime dataReferencia)
         {
             var anos = turmas.Select(t => t.Ano.ToString()).Distinct();
 
@@ -82,13 +100,6 @@ namespace SME.SR.Application
                 lstTurmasTipoNota.Add(turma.Codigo, notasTipo?.FirstOrDefault(nt => nt.Ciclo == tipoCiclos?.FirstOrDefault(tp => tp.Ano == turma.Ano)?.Id)?.TipoNota);
 
             return lstTurmasTipoNota;
-        }
-
-        private ModalidadeTipoCalendario ObterModalidadeTipoCalendario(Modalidade modalidadeCodigo)
-        {
-            return modalidadeCodigo == Modalidade.EJA ?
-                           ModalidadeTipoCalendario.EJA :
-                           ModalidadeTipoCalendario.FundamentalMedio;
         }
     }
 }

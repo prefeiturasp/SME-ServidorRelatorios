@@ -170,7 +170,7 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaGlobalAlunos(string[] codigosAluno, int anoLetivo, int modalidade, string[] codigoTurmas)
         {
-            
+            var queryTipoTurma = modalidade == (int)Modalidade.CELP ? string.Empty : "and t.tipo_turma not in(@tipoTurma)";
             var query = @$"with frequenciaGeral as (select fa.codigo_aluno as CodigoAluno
                                 , sum(fa.total_aulas) as TotalAulas
                                 , sum(fa.total_ausencias) as TotalAusencias
@@ -182,7 +182,7 @@ namespace SME.SR.Data
                               and t.ano_letivo = @anoLetivo
                               and t.modalidade_codigo = @modalidade 
                               and fa.tipo = 2
-                              and t.tipo_turma not in(@tipoTurma) 
+                              {queryTipoTurma} 
                               and fa.turma_id = any(@codigoTurmas)
                             group by fa.codigo_aluno, fa.bimestre, fa.id, fa.turma_id)
                             select codigoAluno as CodigoAluno, 

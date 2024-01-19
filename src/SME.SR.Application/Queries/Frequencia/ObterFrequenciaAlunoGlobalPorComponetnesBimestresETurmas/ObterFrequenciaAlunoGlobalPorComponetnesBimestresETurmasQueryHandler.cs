@@ -49,7 +49,7 @@ namespace SME.SR.Application
                         DisciplinaId = alunoComponente.Key.DisciplinaId
                     };
 
-                    for (int bimestre = 1; bimestre <= (modalidade == Modalidade.EJA ? 2 : 4); bimestre++)
+                    for (int bimestre = 1; bimestre <= (modalidade.EhSemestral() ? 2 : 4); bimestre++)
                     {
                         var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
 

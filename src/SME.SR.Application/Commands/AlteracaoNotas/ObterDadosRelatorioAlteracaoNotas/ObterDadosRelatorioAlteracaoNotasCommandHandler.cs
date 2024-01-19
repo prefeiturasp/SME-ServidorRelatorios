@@ -24,9 +24,7 @@ namespace SME.SR.Application
         {
             var listaTurmaAlteracaoNotasDto = new List<TurmaAlteracaoNotasDto>();
 
-            var modalidadeCalendario = request.FiltroRelatorio.ModalidadeTurma == Modalidade.EJA ?
-                                                ModalidadeTipoCalendario.EJA : request.FiltroRelatorio.ModalidadeTurma == Modalidade.Infantil ?
-                                                    ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
+            var modalidadeCalendario = request.FiltroRelatorio.ModalidadeTurma.ObterModalidadeTipoCalendario();
 
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.FiltroRelatorio.AnoLetivo, modalidadeCalendario, request.FiltroRelatorio.Semestre));
 

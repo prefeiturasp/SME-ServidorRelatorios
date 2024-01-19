@@ -8,7 +8,7 @@ namespace SME.SR.Infra
         
         [JsonProperty("historicoEscolar")]
         public HistoricoEscolarNotasFrequenciaDto DadosHistorico { get; set; }
-
+        public bool EhMagisterio { get; set; }
         public override bool ContemDadosHistorico()
         {
             return DadosHistorico != null;
