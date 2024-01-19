@@ -36,7 +36,6 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorio/conselhoclassealuno", typeof(IRelatorioConselhoClasseAlunoUseCase))]
         public async Task<bool> RelatorioConselhoClasseAluno([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioConselhoClasseAlunoUseCase relatorioConselhoClasseAlunoUseCase)
         {
-            SentrySdk.CaptureMessage("4 - relatorio/conselhoclassealuno");
             await relatorioConselhoClasseAlunoUseCase.Executar(request);
             return true;
         }
