@@ -36,7 +36,7 @@ namespace SME.SR.Application
 
             var componenteIds = request.ComponentesCurricularesIds.Select(cc => cc).ToList();
 
-            if (componentesTS.Any() && request.TurmasId.Any())
+            if (componentesTS.Any() && request.TurmasId != null && request.TurmasId.Any())
             {
                 List<ComponenteCurricularTerritorioSaber> componentesTerritorioSaber = (await componenteCurricularRepository.ObterComponentesTerritorioDosSaberes(request.TurmasId, componentesTS)).ToList();
                 componentesCurricularesRetorno = ConcatenarComponenteTerritorio(componentesCurricularesRetorno, componentesTerritorioSaber, componentesCurriculares);
