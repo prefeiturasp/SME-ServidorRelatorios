@@ -2,6 +2,7 @@ namespace SME.SR.Infra
 {
     public class FiltroRelatorioPlanosAeeDto
     {
+        public int AnoLetivo { get; set; }
         public string DreCodigo { get; set; }
         public string UeCodigo { get; set; }
         public int Modalidade { get; set; }
