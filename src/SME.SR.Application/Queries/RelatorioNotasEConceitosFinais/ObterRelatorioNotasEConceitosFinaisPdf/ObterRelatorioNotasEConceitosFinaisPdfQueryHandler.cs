@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,67 +58,67 @@ namespace SME.SR.Application
             MontarCabecalho(filtros, relatorioNotasEConceitosFinaisDto, componentesCurriculares);
 
             // Alunos
-            var alunos = await ObterAlunos(notasPorTurmas);
-
-            // Dres
-            var dresParaAdicionar = notasPorTurmas.Select(a => new { a.DreCodigo, a.DreNome, a.DreAbreviacao }).Distinct();
+            var alunos = await ObterAlunos(notasPorTurmas, filtros.AnoLetivo);
 
             bool possuiNotaFechamento = false;
 
-            foreach (var dreParaAdicionar in dresParaAdicionar.OrderBy(b => b.DreAbreviacao))
+            var dresRelatorio = notasPorTurmas
+                .DistinctBy(nt => nt.DreCodigo)
+                .OrderBy(nt => nt.DreAbreviacao)
+                .Select(nt => new RelatorioNotasEConceitosFinaisDreDto()
+                {
+                    Codigo = nt.DreCodigo,
+                    Nome = nt.DreNome
+                });
+
+            foreach (var dreNova in dresRelatorio)
             {
-                var dreNova = new RelatorioNotasEConceitosFinaisDreDto
-                {
-                    Codigo = dreParaAdicionar.DreCodigo,
-                    Nome = dreParaAdicionar.DreNome
-                };
-
-                var uesParaAdicionar = notasPorTurmas.Where(a => a.DreCodigo == dreParaAdicionar.DreCodigo).Select(a => new { a.UeCodigo, a.UeNomeComTipoEscola }).Distinct();
-
-                foreach (var ueParaAdicionar in uesParaAdicionar)
-                {
-                    var ueNova = new RelatorioNotasEConceitosFinaisUeDto
+                var uesRelatorio = notasPorTurmas
+                    .Where(nt => nt.DreCodigo == dreNova.Codigo)
+                    .DistinctBy(nt => nt.UeCodigo)
+                    .OrderBy(nt => nt.UeCodigo)
+                    .Select(nt => new RelatorioNotasEConceitosFinaisUeDto()
                     {
-                        Codigo = ueParaAdicionar.UeCodigo,
-                        Nome = ueParaAdicionar.UeNomeComTipoEscola
-                    };
+                        Codigo = nt.UeCodigo,
+                        Nome = nt.UeNomeComTipoEscola
+                    });
 
-                    var anosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo).Select(a => a.Ano).Distinct();
+                foreach (var ueNova in uesRelatorio)
+                {
+                    var anosRelatorio = notasPorTurmas
+                        .Where(nt => nt.UeCodigo == ueNova.Codigo)
+                        .DistinctBy(nt => nt.Ano)
+                        .OrderBy(nt => nt.Ano)
+                        .Select(nt => new RelatorioNotasEConceitosFinaisAnoDto(nt.Ano, $"{nt.Ano} ANO"));
 
-                    foreach (var anoParaAdicionar in anosParaAdicionar)
+                    foreach (var anoNovo in anosRelatorio)
                     {
-                        var anoNovo = new RelatorioNotasEConceitosFinaisAnoDto($"{anoParaAdicionar} ANO");
+                        var bimestresRelatorio = notasPorTurmas
+                            .Where(nt => nt.UeCodigo == ueNova.Codigo && nt.Ano == anoNovo.Ano)
+                            .DistinctBy(nt => nt.Bimestre)
+                            .OrderBy(nt => nt.Bimestre)
+                            .Select(nt => new RelatorioNotasEConceitosFinaisBimestreDto(nt.Bimestre, nt.Bimestre.HasValue ? $"{nt.Bimestre.Value}º BIMESTRE" : $"FINAL"));
 
-                        var bimestresParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar).Select(a => a.Bimestre).Distinct();
-
-                        foreach (var bimestreParaAdicionar in bimestresParaAdicionar)
+                        foreach (var bimestreNovo in bimestresRelatorio)
                         {
-                            var bimestreNovo = new RelatorioNotasEConceitosFinaisBimestreDto(bimestreParaAdicionar != null ? $"{bimestreParaAdicionar}º BIMESTRE" : $"FINAL");
+                            var componentesRelatorio = (from nt in notasPorTurmas
+                                                        join cc in componentesCurriculares
+                                                        on nt.ComponenteCurricularCodigo equals cc.CodDisciplina
+                                                        where nt.UeCodigo == ueNova.Codigo && nt.Ano == anoNovo.Ano && nt.Bimestre == bimestreNovo.Bimestre
+                                                        orderby cc.Regencia, cc.GrupoMatriz.Id, cc.AreaDoConhecimento?.Nome, cc.AreaDoConhecimento.Nome, cc.Disciplina
+                                                        select new RelatorioNotasEConceitosFinaisComponenteCurricularDto()
+                                                        {
+                                                            Codigo = cc.CodDisciplina,
+                                                            Nome = cc.Disciplina,
+                                                            LancaNota = cc.LancaNota
+                                                        }).DistinctBy(cc => cc.Codigo);
 
-                            var componentesParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar && a.Bimestre == bimestreParaAdicionar)
-                                                                         .Select(a => a.ComponenteCurricularCodigo)
-                                                                         .Distinct();
-
-                            var componentesDetalhes = componentesCurriculares.Where(a => componentesParaAdicionar.Contains(a.CodDisciplina))
-                                                                             .OrderBy(c => c.Regencia)
-                                                                             .ThenBy(c => c.GrupoMatriz.Id)
-                                                                             .ThenByDescending(c => c.AreaDoConhecimento != null && !string.IsNullOrEmpty(c.AreaDoConhecimento.Nome))
-                                                                             .ThenBy(c => c.AreaDoConhecimento.Nome, StringComparer.OrdinalIgnoreCase)
-                                                                             .ThenBy(c => c.Disciplina, StringComparer.OrdinalIgnoreCase);
-
-
-                            foreach (var componenteParaAdicionar in componentesDetalhes)
+                            foreach (var componenteNovo in componentesRelatorio)
                             {
-                                var componenteNovo = new RelatorioNotasEConceitosFinaisComponenteCurricularDto
-                                {
-                                    Nome = componenteParaAdicionar?.Disciplina
-                                };
-
-                                var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueParaAdicionar.UeCodigo && a.Ano == anoParaAdicionar
-                                                                                       && a.Bimestre == bimestreParaAdicionar && a.ComponenteCurricularCodigo == componenteParaAdicionar?.CodDisciplina)
+                                var notasDosAlunosParaAdicionar = notasPorTurmas.Where(a => a.UeCodigo == ueNova.Codigo && a.Ano == anoNovo.Ano
+                                                                                       && a.Bimestre == bimestreNovo.Bimestre && a.ComponenteCurricularCodigo == componenteNovo?.Codigo)
                                                                                 .Select(a => new { a.AlunoCodigo, a.NotaConceitoFinal, a.Sintese, a.TurmaNome, a.EhNotaConceitoFechamento, a.ConselhoClasseAlunoId, a.NotaConceitoEmAprovacao, a.NotaConceitoPosConselhoEmAprovacao, a.ConselhoClasseNotaId })
                                                                                 .Distinct();
-
 
                                 foreach (var notaDosAlunosParaAdicionar in notasDosAlunosParaAdicionar)
                                 {
@@ -125,7 +126,7 @@ namespace SME.SR.Application
                                         possuiNotaFechamento = true;
 
                                     var alunoNovo = alunos.FirstOrDefault(a => a.CodigoAluno == int.Parse(notaDosAlunosParaAdicionar.AlunoCodigo));
-                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componenteParaAdicionar.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese, notaDosAlunosParaAdicionar.ConselhoClasseAlunoId);
+                                    var notaConceitoNovo = new RelatorioNotasEConceitosFinaisDoAlunoDto(notaDosAlunosParaAdicionar.TurmaNome, alunoNovo.CodigoAluno, alunoNovo?.NumeroAlunoChamada, alunoNovo?.ObterNomeFinal(), componenteNovo.LancaNota ? notaDosAlunosParaAdicionar.NotaConceitoFinal : notaDosAlunosParaAdicionar.Sintese, notaDosAlunosParaAdicionar.ConselhoClasseAlunoId);
 
                                     if (notaDosAlunosParaAdicionar.NotaConceitoPosConselhoEmAprovacao != null)
                                     {
@@ -208,10 +209,10 @@ namespace SME.SR.Application
             return notasPorTurmas.Where(n => !n.ExcluirNota);
         }
 
-        private async Task<IEnumerable<AlunoHistoricoEscolar>> ObterAlunos(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas)
+        private async Task<IEnumerable<AlunoHistoricoEscolar>> ObterAlunos(IEnumerable<RetornoNotaConceitoBimestreComponenteDto> notasPorTurmas, int? anoLetivo = null)
         {
             var alunosCodigos = notasPorTurmas.Select(a => long.Parse(a.AlunoCodigo)).Distinct();
-            var alunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.ToArray()));
+            var alunos = await mediator.Send(new ObterDadosAlunosPorCodigosQuery(alunosCodigos.ToArray(), anoLetivo));
             if (alunos == null || !alunos.Any())
                 throw new NegocioException("Não foi possível obter os alunos");
             return alunos;
@@ -346,7 +347,7 @@ namespace SME.SR.Application
                 var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(codigosTurmas));
                 var turmasEja = turmas?.Where(turma => turma.EhEja && turma.TipoTurma == TipoTurma.EdFisica);
 
-                foreach(var turmaEja in turmasEja)
+                foreach (var turmaEja in turmasEja)
                 {
                     await ConverteValorNotaPorTurmaEja(turmaEja, notasConceitosEdFisica);
                 }
