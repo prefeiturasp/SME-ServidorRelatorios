@@ -21,14 +21,8 @@ namespace SME.SR.Data
         public async Task<long> ObterPorAnoLetivoEModalidade(int anoLetivo, ModalidadeTipoCalendario modalidade, int semestre = 0)
         {
 
-            var query = TipoCalendarioConsultas.ObterPorAnoLetivoEModalidade(modalidade, semestre);
-
-            DateTime dataReferencia = DateTime.MinValue;
-            if (modalidade == ModalidadeTipoCalendario.EJA)
-                dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 7, 1);
-
-            var parametros = new { AnoLetivo = anoLetivo, Modalidade = (int)modalidade, DataReferencia = dataReferencia };
-
+            var query = TipoCalendarioConsultas.ObterPorAnoLetivoEModalidade(modalidade, semestre);            
+            var parametros = new { AnoLetivo = anoLetivo, Modalidade = (int)modalidade, semestre };
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
                 return await conexao.QueryFirstOrDefaultAsync<long>(query, parametros);
@@ -54,20 +48,10 @@ namespace SME.SR.Data
             query.AppendLine("and t.ano_letivo = @anoLetivo");
             query.AppendLine("and t.modalidade = @modalidade");
             query.AppendLine("and t.situacao ");
-
-            DateTime dataReferencia = DateTime.MinValue;
-            if (modalidade == ModalidadeTipoCalendario.EJA)
-            {
-                var periodoReferencia = semestre == 1 ? "periodo_inicio < @dataReferencia" : "periodo_fim > @dataReferencia";
-                query.AppendLine($"and exists(select 0 from periodo_escolar p where tipo_calendario_id = t.id and {periodoReferencia})");
-
-                // 1/6/ano ou 1/7/ano dependendo do semestre
-                dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 8, 1);
-            }
-
+            query.AppendLine(TipoCalendarioConsultas.ObterFiltroSemestre(modalidade, semestre));
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryFirstOrDefaultAsync<long>(query.ToString(), new { anoLetivo, modalidade = (int)modalidade, dataReferencia });
+                return await conexao.QueryFirstOrDefaultAsync<long>(query.ToString(), new { anoLetivo, modalidade = (int)modalidade, semestre });
             }
         }
 
@@ -80,18 +64,10 @@ namespace SME.SR.Data
             query.AppendLine("where t.excluido = false");
             query.AppendLine("and t.ano_letivo = @anoLetivo");
             query.AppendLine("and t.modalidade = @modalidade");
-
-            DateTime dataReferencia = DateTime.MinValue;
-            if (turma.ModalidadeTipoCalendario == ModalidadeTipoCalendario.EJA)
-            {
-                var periodoReferencia = turma.Semestre == 1 ? "periodo_inicio < @dataReferencia" : "periodo_fim > @dataReferencia";
-                query.AppendLine($"and exists(select 0 from periodo_escolar p where tipo_calendario_id = t.id and {periodoReferencia})");
-
-                dataReferencia = new DateTime(turma.AnoLetivo, turma.Semestre == 1 ? 6 : 8, 1);
-            }
+            query.AppendLine(TipoCalendarioConsultas.ObterFiltroSemestre(turma.ModalidadeTipoCalendario, turma.Semestre));
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
-                return await conexao.QueryFirstOrDefaultAsync<TipoCalendario>(query.ToString(), new { turma.AnoLetivo, modalidade = (int)turma.ModalidadeTipoCalendario, dataReferencia });
+                return await conexao.QueryFirstOrDefaultAsync<TipoCalendario>(query.ToString(), new { turma.AnoLetivo, modalidade = (int)turma.ModalidadeTipoCalendario, turma.Semestre });
             }
         }
     }
