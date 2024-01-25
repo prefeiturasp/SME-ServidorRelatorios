@@ -15,6 +15,8 @@ namespace SME.SR.Data
             query.AppendLine("and t.ano_letivo = @anoLetivo");
             query.AppendLine("and t.modalidade = @modalidade");
             query.AppendLine(ObterFiltroSemestre(modalidade, semestre));
+            if (semestre == 2)
+                query.AppendLine("order by id desc");
             return query.ToString();
         }
 
