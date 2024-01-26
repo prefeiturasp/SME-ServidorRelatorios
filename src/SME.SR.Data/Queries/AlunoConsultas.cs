@@ -458,11 +458,7 @@ namespace SME.SR.Data
 					  ee.cd_etapa_ensino in (@modalidades)
 				      AND mte.nr_chamada_aluno <> '0'
 					  AND mte.nr_chamada_aluno is not null
-                      AND (matr.st_matricula in (1, 6, 10, 13, 5)
-						    or (matr.st_matricula not in (1, 6, 10, 13, 5)
-                       {(dataInicio == null || dataInicio == DateTime.MinValue
-                       ? "and matr.dt_status_matricula >= @dataFim))"
-                       : "and(matr.dt_status_matricula > @dataFim or (matr.dt_status_matricula> @dataInicio and matr.dt_status_matricula <= @dataFim))))")}
+                      AND mte.cd_situacao_aluno in (5,10)
                         AND NOT EXISTS(
 					    SELECT
 						    1
