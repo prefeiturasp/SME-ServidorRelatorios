@@ -72,7 +72,8 @@ namespace SME.SR.Application
                         ResponsaveisUe = responsaveisUe,
                         EstudosRealizados = estudosRealizados.Count > 0 ? estudosRealizados : null,
                         DadosTransferencia = ObterDadosTransferencia(request.Transferencias, aluno.Key),
-                        ObservacaoComplementar = request.FiltroHistoricoAlunos?.FirstOrDefault(filtro => filtro.AlunoCodigo == aluno.Key)?.ObservacaoComplementar ?? string.Empty
+                        ObservacaoComplementar = request.FiltroHistoricoAlunos?.FirstOrDefault(filtro => filtro.AlunoCodigo == aluno.Key)?.ObservacaoComplementar ?? string.Empty,
+                        EhMagisterio = aluno.ToList().Exists(x => x.Turmas.Exists(x=> x.EhTurmaMagisterio))
                     };
 
                     listaRetorno.Add(historicoDto);

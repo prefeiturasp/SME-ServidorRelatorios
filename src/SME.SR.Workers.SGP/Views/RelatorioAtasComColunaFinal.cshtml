@@ -1,7 +1,9 @@
 ﻿@using SME.SR.Infra;
 
 @model SME.SR.Infra.ConselhoClasseAtaFinalPaginaDto
-
+@{
+    const int COLUNA_PARECER_CONCLUSIVO = 4;
+ }
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -190,7 +192,10 @@
             <table>
                 <tbody>
                     <tr>
-                        <td class="campo-ciclo">CICLO: @Model.Cabecalho.Ciclo</td>
+                        @if (!Model.Modalidade.EhCelp())
+                        {
+                            <td class="campo-ciclo">CICLO: @Model.Cabecalho.Ciclo</td>
+                        }
                         <td class="campo-data-ano">ANO LETIVO: @Model.Cabecalho.AnoLetivo</td>
                         <td class="campo-data-ano">DATA: @Model.Cabecalho.Data</td>
                     </tr>
@@ -261,7 +266,10 @@
                         <th class="fonte-9 tamanho-1-3">F</th>
                         <th class="fonte-9 tamanho-1-3">CA</th>
                         <th class="fonte-9 tamanho-1-3">%</th>
-                        <th class="fonte-9 tamanho-8">Parecer conclusivo</th>
+                        @if (!Model.EhCELP)
+                        {
+                            <th class="fonte-9 tamanho-8">Parecer conclusivo</th>
+                        }
                     }
                 </tr>
             </thead>
@@ -289,7 +297,11 @@
 
                         @foreach (var celula in ((IEnumerable<ConselhoClasseAtaFinalCelulaDto>)celulas).Where(a => a.GrupoMatriz == 99))
                         {
-                            <td>@celula.Valor</td>
+                            var ehColunaParecerConclusivoCELP = Model.EhCELP && celula.Coluna.Equals(COLUNA_PARECER_CONCLUSIVO);
+                            @if (!ehColunaParecerConclusivoCELP)
+                            {
+                                <td>@celula.Valor</td>    
+                            }
                         }
                     </tr>
                 }

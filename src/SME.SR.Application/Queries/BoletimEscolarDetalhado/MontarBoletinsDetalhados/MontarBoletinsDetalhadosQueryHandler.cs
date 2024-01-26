@@ -156,7 +156,7 @@ namespace SME.SR.Application
                 CodigoEol = alunoCodigo,
                 Aluno = nome,
                 FrequenciaGlobal = frequenciaGlobal,
-                Ciclo = ciclo.Descricao,
+                Ciclo = ciclo?.Descricao ?? string.Empty,
                 Foto = foto?.FotoBase64,
                 AnoLetivo = anoLetivo,
                 NomeAluno = nomeAluno

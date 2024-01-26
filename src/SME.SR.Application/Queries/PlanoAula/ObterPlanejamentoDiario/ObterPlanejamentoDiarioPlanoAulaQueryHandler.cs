@@ -1,8 +1,6 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using MediatR;
+﻿using MediatR;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos.FrequenciaMensal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +23,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<TurmaPlanejamentoDiarioDto>> Handle(ObterPlanejamentoDiarioPlanoAulaQuery request, CancellationToken cancellationToken)
         {
-            var modalidadeCalendario = request.Parametros.ModalidadeTurma == Modalidade.EJA ?
-                                                ModalidadeTipoCalendario.EJA : request.Parametros.ModalidadeTurma == Modalidade.Infantil ?
-                                                    ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
+            var modalidadeCalendario = request.Parametros.ModalidadeTurma.ObterModalidadeTipoCalendario();
             var aulas = await planoAulaRepository.ObterPlanejamentoDiarioPlanoAula(
                 request.Parametros.AnoLetivo,
                 request.Parametros.Bimestre,

@@ -2,8 +2,6 @@
 using SME.SR.Data;
 using SME.SR.Infra;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +18,8 @@ namespace SME.SR.Application
 
         public async Task<NotaTipoValor> Handle(ObterTipoNotaPorTurmaQuery request, CancellationToken cancellationToken)
         {
+            if (request.Turma.ModalidadeCodigo.EhCelp())
+                return new NotaTipoValor() { TipoNota = TipoNota.Conceito };
 
             var ciclo = await mediator.Send(new ObterCicloPorModalidadeQuery(request.Turma.Ano, request.Turma.ModalidadeCodigo));
 

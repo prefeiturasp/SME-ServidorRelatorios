@@ -33,7 +33,7 @@ namespace SME.SR.Workers.SGP
                 UeNome = $"{planoAnual.UeCodigo} - {planoAnual.TipoEscola.ShortName()} {planoAnual.UeNome}",
                 Turma = $"{planoAnual.ModalidadeTurma.ShortName()} - {planoAnual.TurmaNome}{planoAnual.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}",
                 ComponenteCurricular = planoAnual.ComponenteCurricular,
-                ExibeObjetivos = !(planoAnual.ModalidadeTurma == Modalidade.Medio || planoAnual.ModalidadeTurma == Modalidade.EJA),
+                ExibeObjetivos = !(planoAnual.ModalidadeTurma == Modalidade.Medio || planoAnual.ModalidadeTurma.EhSemestral()),
                 Usuario = filtros.Usuario,
                 DataImpressao = DateTimeExtension.HorarioBrasilia().Date.ToString("dd/MM/yyyy"),
                 Bimestres = planoAnualBimestreObjetivosDtos

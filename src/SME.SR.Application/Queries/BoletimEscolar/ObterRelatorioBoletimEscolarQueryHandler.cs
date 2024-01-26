@@ -29,7 +29,7 @@ namespace SME.SR.Application
 
             var dre = await ObterDrePorCodigo(request.DreCodigo);
             var ue = await ObterUePorCodigo(request.UeCodigo);
-            var modalidadeCalendario = DefinirTipoModalidadeCalendario(request);
+            var modalidadeCalendario = request.Modalidade.ObterModalidadeTipoCalendario();
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.AnoLetivo, modalidadeCalendario, request.Semestre));
             var periodoEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
             var dataInicioPeriodoEscolar = periodoEscolares?.OrderBy(p=> p.Bimestre).FirstOrDefault().PeriodoInicio ?? null;
@@ -101,24 +101,6 @@ namespace SME.SR.Application
                 Semestre = semestre,
                 TurmasCodigo = turmasCodigo
             });
-        }
-
-        private ModalidadeTipoCalendario DefinirTipoModalidadeCalendario(ObterRelatorioBoletimEscolarQuery request)
-        {
-            var modalidadeCalendario = ModalidadeTipoCalendario.FundamentalMedio;
-
-            switch (request.Modalidade)
-            {
-                case Modalidade.Infantil:
-                    modalidadeCalendario = ModalidadeTipoCalendario.Infantil;
-                    break;
-
-                case Modalidade.EJA:
-                    modalidadeCalendario = ModalidadeTipoCalendario.EJA;
-                    break;
-            }
-
-            return modalidadeCalendario;
         }
 
         private async Task ObterFechamentoTurma(string codigoTurma)
