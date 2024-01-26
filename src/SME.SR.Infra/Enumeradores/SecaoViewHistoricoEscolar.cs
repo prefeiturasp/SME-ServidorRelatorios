@@ -9,6 +9,7 @@
         public static readonly SecaoViewHistoricoEscolar Assinaturas = new SecaoViewHistoricoEscolar("Assinaturas.cshtml");
         public static readonly SecaoViewHistoricoEscolar TabelaHistoricoTodosAnosEJA = new SecaoViewHistoricoEscolar("DadosHistoricoEJA.cshtml");
         public static readonly SecaoViewHistoricoEscolar TabelaAnoAtualEJA = new SecaoViewHistoricoEscolar("DadosTransferenciaEJA.cshtml");
+        public static readonly SecaoViewHistoricoEscolar TabelaHistoricoTodosAnosMedio = new SecaoViewHistoricoEscolar("DadosHistoricoMedio.cshtml");
 
         public readonly string NomeView; 
 

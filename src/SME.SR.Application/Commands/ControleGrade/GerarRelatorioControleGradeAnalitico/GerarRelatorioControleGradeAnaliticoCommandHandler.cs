@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Infra;
-using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -24,9 +23,7 @@ namespace SME.SR.Application
         {
             var dto = new ControleGradeDto();
 
-            var modalidadeCalendario = request.Filtros.ModalidadeTurma == Modalidade.EJA ?
-                                                ModalidadeTipoCalendario.EJA : request.Filtros.ModalidadeTurma == Modalidade.Infantil ?
-                                                    ModalidadeTipoCalendario.Infantil : ModalidadeTipoCalendario.FundamentalMedio;
+            var modalidadeCalendario = request.Filtros.ModalidadeTurma.ObterModalidadeTipoCalendario();
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(request.Filtros.AnoLetivo, modalidadeCalendario, request.Filtros.Semestre));
 
             foreach (long turmaId in request.Filtros.Turmas)
@@ -347,7 +344,7 @@ namespace SME.SR.Application
 
         private async Task<bool> VerificaAulasMesmoDiaEProfessor(long turmaId, long componenteCurricularId, long tipoCalendarioId, int bimestre, bool regencia, Modalidade modalidadeTurma)
         {
-            if (!regencia && !(modalidadeTurma == Modalidade.EJA) &&
+            if (!regencia && !(modalidadeTurma.EhSemestral()) &&
                 await mediator.Send(new VerificaExisteAulasMemoDiaEProfessorQuery(turmaId, componenteCurricularId, tipoCalendarioId, bimestre)))
                 return true;
 
@@ -371,7 +368,7 @@ namespace SME.SR.Application
     }
 
         private int QuantidadePeriodosPorModalidade(Modalidade modalidade)
-            => modalidade == Modalidade.EJA ? 2 : 4;
+            => modalidade.EhSemestral() ? 2 : 4;
 
         private string ObterNomeComponente(RelatorioControleGradeFiltroDto filtros, ControleGradeDto dto)
         {

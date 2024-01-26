@@ -26,11 +26,7 @@ namespace SME.SR.Data
 
         public ModalidadeTipoCalendario ModalidadeTipoCalendario
         {
-            get => ModalidadeCodigo == Modalidade.EJA ?
-                ModalidadeTipoCalendario.EJA :
-                ModalidadeCodigo == Modalidade.Infantil ? 
-                ModalidadeTipoCalendario.Infantil :
-                ModalidadeTipoCalendario.FundamentalMedio;
+            get => ObterTipoCalendario();
         }
 
         public bool EhTurmaMagisterio
@@ -97,6 +93,21 @@ namespace SME.SR.Data
             return TiposRegulares
                 .Where(a => a != TipoTurma).Select(s => (int)s)
                 .ToList();
+        }
+
+        private ModalidadeTipoCalendario ObterTipoCalendario()
+        {
+            switch (ModalidadeCodigo)
+            {
+                case Modalidade.EJA:
+                    return ModalidadeTipoCalendario.EJA;
+                case Modalidade.Infantil:
+                    return ModalidadeTipoCalendario.Infantil;
+                case Modalidade.CELP:
+                    return ModalidadeTipoCalendario.CELP;
+                default:
+                    return ModalidadeTipoCalendario.FundamentalMedio;
+            }
         }
     }
 }

@@ -94,8 +94,9 @@ namespace SME.SR.Application
             
             if (alunos == null || !alunos.Any())
                 return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
-
+                
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+
             var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
             var turmasCodigos = new string[] { turma.Codigo };
@@ -730,8 +731,7 @@ namespace SME.SR.Application
                 else
                     TrataFrequenciaAnual(aluno, linhaDto);
 
-                if (conselhoClasseBimestres.Any())
-                    linhas.Add(linhaDto);
+                linhas.Add(linhaDto);
             }
 
             return linhas;

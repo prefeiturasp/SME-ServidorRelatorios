@@ -20,15 +20,18 @@ namespace SME.SR.Data
                             and t.ano_letivo = @anoLetivo
                             and t.modalidade = @modalidade ");
 
-            if (modalidade == ModalidadeTipoCalendario.EJA)
-            {
-                var periodoReferencia = semestre == 1 ? "periodo_inicio < @dataReferencia" : "periodo_fim > @dataReferencia";
-                query.AppendLine($"and exists(select 0 from periodo_escolar p where tipo_calendario_id = t.id and {periodoReferencia})");
-            }
+            query.AppendLine(ObterFiltroSemestre(modalidade, semestre));
             query.AppendLine("order by bimestre desc ");
             query.AppendLine("limit 1");
 
             return query.ToString();
+        }
+
+        private static string ObterFiltroSemestre(ModalidadeTipoCalendario modalidade, int semestre)
+        {
+            return modalidade.EhEjaOuCelp() && semestre > 0
+                ? "and t.semestre = @semestre"
+                : string.Empty;
         }
 
         internal const string ObterPorId = @"select id, bimestre, periodo_fim PeriodoFim, 

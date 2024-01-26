@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SME.SR.Infra.Utilitarios;
+using System.ComponentModel.DataAnnotations;
 
 namespace SME.SR.Infra
 {
@@ -11,10 +12,13 @@ namespace SME.SR.Infra
         EJA = 2,
 
         [Display(Name = "Infantil")]
-        Infantil = 3
+        Infantil = 3,
 
+        [Display(Name = "CELP")]
+        CELP = 4
     }
-        public static class ModalidadeTipoCalendarioExtension
+
+    public static class ModalidadeTipoCalendarioExtension
     {
         public static Modalidade[] ObterModalidades(this ModalidadeTipoCalendario modalidade)
         {
@@ -25,10 +29,22 @@ namespace SME.SR.Infra
                 case ModalidadeTipoCalendario.EJA:
                     return new[] { Modalidade.EJA };                    
                 case ModalidadeTipoCalendario.Infantil:
-                    return new[] { Modalidade.Infantil };                    
+                    return new[] { Modalidade.Infantil };
+                case ModalidadeTipoCalendario.CELP:
+                    return new[] { Modalidade.CELP };
                 default:
                     throw new NegocioException("Modalidade de tipo de calendário não identificado para conversão de modalidade de turma");                    
             }
+        }
+
+        public static bool EhEjaOuCelp(this ModalidadeTipoCalendario modalidade)
+        {
+            return modalidade.EhUmDosValores(ModalidadeTipoCalendario.EJA, ModalidadeTipoCalendario.CELP);
+        }
+
+        public static bool NaoEhEjaOuCelp(this ModalidadeTipoCalendario modalidade)
+        {
+            return !EhEjaOuCelp(modalidade);
         }
     }
 }

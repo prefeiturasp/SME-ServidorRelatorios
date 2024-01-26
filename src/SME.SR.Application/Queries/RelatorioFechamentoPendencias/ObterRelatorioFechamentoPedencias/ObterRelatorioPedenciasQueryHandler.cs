@@ -53,7 +53,7 @@ namespace SME.SR.Application
             retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
             retorno.UsuarioLogadoRf = filtros.UsuarioLogadoRf;
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
-
+            
             retorno.UeNome = string.IsNullOrEmpty(retornoLinearParaCabecalho.UeNome) ? "Todas" : retornoLinearParaCabecalho.UeNome;
             retorno.DreNome = retornoLinearParaCabecalho.DreNome;
             var qtdModalidades = resultadoQuery?.Where(c => c.ModalidadeCodigo > 0).GroupBy(c => c.ModalidadeCodigo).Count();
@@ -68,8 +68,9 @@ namespace SME.SR.Application
             retorno.ExibeDetalhamento = filtros.ExibirDetalhamento;
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");            
             retorno.Ano = filtros.AnoLetivo.ToString();
+            retorno.EhSemestral = ((Modalidade)retornoLinearParaCabecalho.ModalidadeCodigo).EhSemestral();
 
-            if (!filtros.Modalidade.Equals(Modalidade.EJA))
+            if (!filtros.Modalidade.EhSemestral())
                 retorno.Semestre = "";
             else if (filtros.Semestre.ToString() != "")
                 retorno.Semestre = filtros.Semestre.ToString();
@@ -126,7 +127,7 @@ namespace SME.SR.Application
                             bimestreParaAdicionar.NomeBimestre = bimestreDaTurma.ToString() + "º BIMESTRE";
                             if (qtdModalidades > 1)
                                 bimestreParaAdicionar.NomeModalidade = bimestresNomeModalidade.name.ToUpper();
-                            if (bimestreParaAdicionar.NomeModalidade == "EJA" && semestreDaTurma != "0")
+                            if (retorno.EhSemestral && semestreDaTurma != "0")
                                 bimestreParaAdicionar.SemestreTurma = semestreDaTurma + "º SEMESTRE";
 
                         }

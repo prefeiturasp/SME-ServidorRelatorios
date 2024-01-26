@@ -5,7 +5,6 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,7 +48,7 @@ namespace SME.SR.Application
                         DisciplinaId = alunoComponente.Key.DisciplinaId
                     };
 
-                    for (int bimestre = 1; bimestre <= (modalidade == Infra.Modalidade.EJA ? 2 : 4); bimestre++)
+                    for (int bimestre = 1; bimestre <= (modalidade.EhSemestral() ? 2 : 4); bimestre++)
                     {
                         var frequenciaBimestre = alunoComponente.FirstOrDefault(c => c.Bimestre == bimestre);
 
