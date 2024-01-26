@@ -14,6 +14,7 @@ namespace SME.SR.Infra
 
         public Modalidade Modalidade;
         public bool EhEJA => Modalidade == Modalidade.EJA;
+        public bool EhCELP => Modalidade == Modalidade.CELP;
         public ConselhoClasseAtaFinalCabecalhoDto Cabecalho { get; set; }
         public List<ConselhoClasseAtaFinalGrupoDto> GruposMatriz { get; set; }
         public List<ConselhoClasseAtaFinalLinhaDto> Linhas { get; set; }

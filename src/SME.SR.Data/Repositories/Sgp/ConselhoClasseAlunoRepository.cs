@@ -121,15 +121,8 @@ namespace SME.SR.Data
             if (modalidade.HasValue)
                 query.AppendLine(" and t.modalidade_codigo = @modalidade ");
 
-            DateTime dataReferencia = DateTime.MinValue;
-            if (modalidade == Modalidade.EJA)
-            {
-                var periodoReferencia = semestre == 1 ? "periodo_inicio < @dataReferencia" : "periodo_fim > @dataReferencia";
-                query.AppendLine($"and exists(select 0 from periodo_escolar p where tipo_calendario_id = tc.id and {periodoReferencia})");
-
-                // 1/6/ano ou 1/7/ano dependendo do semestre
-                dataReferencia = new DateTime(anoLetivo, semestre == 1 ? 6 : 7, 1);
-            }
+            if (modalidade.GetValueOrDefault().EhSemestral() && semestre > 0)
+                query.AppendLine($"and t.semestre = @semestre");
 
             query.Append(@" group by (cc.id, t.turma_id, cca.aluno_codigo,
                                  cca.recomendacoes_aluno,
@@ -145,7 +138,7 @@ namespace SME.SR.Data
                 anoLetivo,
                 modalidade = (int)modalidade,
                 modalidadeTipoCalendario = modalidade.HasValue ? (int)modalidade.Value.ObterModalidadeTipoCalendario() : (int)default,
-                dataReferencia
+                semestre
             };
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))

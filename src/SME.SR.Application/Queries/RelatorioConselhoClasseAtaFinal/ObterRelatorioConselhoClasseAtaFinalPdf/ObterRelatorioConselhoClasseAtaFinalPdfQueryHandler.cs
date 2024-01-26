@@ -89,11 +89,12 @@ namespace SME.SR.Application
             var tipoCalendarioId = await ObterIdTipoCalendario(turma.ModalidadeTipoCalendario, turma.AnoLetivo, turma.Semestre);
             var periodosEscolares = await ObterPeriodosEscolares(tipoCalendarioId);
             var alunos = await ObterAlunos(turma.Codigo, periodosEscolares);
-
+                
             if (alunos == null || !alunos.Any())
                 return Enumerable.Empty<ConselhoClasseAtaFinalPaginaDto>();
-
+                
             var alunosCodigos = alunos.Select(x => x.CodigoAluno.ToString()).ToArray();
+
             var alunosCodigosLong = alunos.Select(x => x.CodigoAluno).ToArray();
 
             var turmasCodigos = new string[] { turma.Codigo };
@@ -724,8 +725,7 @@ namespace SME.SR.Application
                 else
                     TrataFrequenciaAnual(aluno, linhaDto);
 
-                if (conselhoClasseBimestres.Any())
-                    linhas.Add(linhaDto);
+                linhas.Add(linhaDto);
             }
 
             return linhas;

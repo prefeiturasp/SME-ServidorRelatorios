@@ -26,6 +26,37 @@ namespace SME.SR.Infra
         MOVA = 8,
 
         [Display(Name = "ETEC", ShortName = "ETEC")]
-        ETEC = 9
+        ETEC = 9,
+
+        [Display(Name = "CELP", ShortName = "CELP")]
+        CELP = 10
+    }
+
+    public static class ModalidadeExtensao
+    {
+        public static ModalidadeTipoCalendario ObterModalidadeTipoCalendario(this Modalidade modalidade)
+        {
+            switch (modalidade)
+            {
+                case Modalidade.Infantil:
+                    return ModalidadeTipoCalendario.Infantil;
+                case Modalidade.EJA:
+                    return ModalidadeTipoCalendario.EJA;
+                case Modalidade.CELP:
+                    return ModalidadeTipoCalendario.CELP;
+                default:
+                    return ModalidadeTipoCalendario.FundamentalMedio;
+            }
+        }
+
+        public static bool EhSemestral(this Modalidade modalidade)
+        {
+            return modalidade == Modalidade.EJA || modalidade == Modalidade.CELP;
+        }
+
+        public static bool EhCelp(this Modalidade modalidade)
+        {
+            return modalidade == Modalidade.CELP;
+        }
     }
 }

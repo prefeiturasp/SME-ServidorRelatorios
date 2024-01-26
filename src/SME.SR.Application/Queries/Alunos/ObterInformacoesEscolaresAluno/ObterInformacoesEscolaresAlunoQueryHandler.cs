@@ -45,7 +45,7 @@ namespace SME.SR.Application
             if (turma == null)
                 throw new NegocioException($"Não foi possível encontrar a turma de código {codigoTurma}");
 
-            var tipoCalendarioId = turma.ModalidadeCodigo == Modalidade.EJA ? await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma)) : 0;
+            var tipoCalendarioId = turma.ModalidadeCodigo.EhSemestral() ? await mediator.Send(new ObterTipoCalendarioIdPorTurmaQuery(turma)) : 0;
 
             var frequenciasAluno = await mediator.Send(new ObterFrequenciasGeralAlunoPorCodigoAnoSemestreQuery(codigoAluno, turma.AnoLetivo, tipoCalendarioId));
 
