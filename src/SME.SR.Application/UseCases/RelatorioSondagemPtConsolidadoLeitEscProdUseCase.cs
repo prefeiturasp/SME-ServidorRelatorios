@@ -13,6 +13,9 @@ namespace SME.SR.Application
     public class RelatorioSondagemPtConsolidadoLeitEscProdUseCase : IRelatorioSondagemPtConsolidadoLeitEscProdUseCase
     {
         private readonly IMediator mediator;
+        private const int SEGUNDO_BIMESTRE = 2;
+        private const int PRIMEIRO_SEMESTRE = 1;
+        private const int SEGUNDO_SEMESTRE = 2;
 
         private const int ANO_ESCOLAR_PROFICIENCIA_NIVEL = 3;
 
@@ -177,9 +180,9 @@ namespace SME.SR.Application
         {
             if (filtros.Bimestre != 0)
             {
-                if (filtros.Bimestre <= 2)
-                    return 1;
-                return 2;
+                if (filtros.Bimestre <= SEGUNDO_BIMESTRE)
+                    return PRIMEIRO_SEMESTRE;
+                return SEGUNDO_SEMESTRE;
             }
             return filtros.Semestre;
         }
