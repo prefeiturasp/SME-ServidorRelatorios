@@ -24,7 +24,8 @@ namespace SME.SR.Application
             if (filtros.GrupoId != GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException($"{ filtros.GrupoId } fora do esperado.");
 
-            var periodoCompleto = await ObterDatasPeriodoFixoAnual(filtros.Bimestre, filtros.Semestre, filtros.AnoLetivo);
+            var semestre = ObterSemestrePeriodo(filtros);
+            var periodoCompleto = await ObterDatasPeriodoFixoAnual(0, semestre, filtros.AnoLetivo);
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
@@ -49,6 +50,17 @@ namespace SME.SR.Application
 
             return await mediator
                 .Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+        }
+
+        private int ObterSemestrePeriodo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        {
+            if (filtros.Bimestre != 0)
+            {
+                if (filtros.Bimestre <= 2)
+                    return 1;
+                return 2;
+            }
+            return filtros.Semestre;
         }
 
         private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
