@@ -9,7 +9,8 @@ namespace SME.SR.Data
         Task<DateTime> ObterPeriodoFixoFimPorDescricaoAnoLetivo(string descricao, int anoLetivo);
         Task<DateTime> ObterPeriodoAberturaFimPorBimestreAnoLetivo(int bimestre, int anoLetivo);
         Task<PeriodoSondagem> ObterPeriodoPorTipo(int periodo, TipoPeriodoSondagem tipoPeriodo);
-        Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorBimestreEAnoLetivo(int bimestre, int anoLetivo);
-        Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorSemestreEAnoLetivo(int bimestre, int anoLetivo);
+        Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorBimestreEAnoLetivo(int bimestre, string anoLetivo);
+        Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorSemestreEAnoLetivo(int bimestre, string anoLetivo);
+        Task<PeriodoCompletoSondagemDto> ObterPeriodoFixoCompletoPorDescricaoEAnoLetivo(string likeDescricao, int anoLetivo);
     }
 }
