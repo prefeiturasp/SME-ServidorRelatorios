@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using MediatR;
 using SME.SR.Application.Queries;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
@@ -20,6 +21,9 @@ namespace SME.SR.Application
         private readonly IAlunoRepository alunoRepository;
         private readonly IMediator mediator;
         private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+        private const int SEGUNDO_BIMESTRE = 2;
+        private const int PRIMEIRO_SEMESTRE = 1;
+        private const int SEGUNDO_SEMESTRE = 2;
 
         public ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQueryHandler(
             IRelatorioSondagemPortuguesPorTurmaRepository relatorioSondagemPortuguesPorTurmaRepository,
@@ -40,7 +44,8 @@ namespace SME.SR.Application
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), turma.Nome, request.AnoLetivo, periodo.Descricao, request.Usuario.CodigoRf, request.Usuario.Nome);
 
-            var periodoCompleto = await ObterDatasPeriodoFixoAnual(request.Bimestre, request.Semestre, request.AnoLetivo);
+            var semestre = ObterSemestrePeriodo(request);
+            var periodoCompleto = await ObterDatasPeriodoFixoAnual(0, semestre, request.AnoLetivo);
 
             var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
@@ -57,6 +62,17 @@ namespace SME.SR.Application
             GerarGrafico(relatorio, alunosDaTurma.Count());
 
             return relatorio;
+        }
+
+        private int ObterSemestrePeriodo(ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQuery filtros)
+        {
+            if (filtros.Bimestre != 0)
+            {
+                if (filtros.Bimestre <= SEGUNDO_BIMESTRE)
+                    return PRIMEIRO_SEMESTRE;
+                return SEGUNDO_SEMESTRE;
+            }
+            return filtros.Semestre;
         }
 
         private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)

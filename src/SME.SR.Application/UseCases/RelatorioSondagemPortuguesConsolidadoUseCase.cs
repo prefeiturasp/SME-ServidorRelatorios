@@ -13,6 +13,9 @@ namespace SME.SR.Application
     public class RelatorioSondagemPortuguesConsolidadoUseCase : IRelatorioSondagemPortuguesConsolidadoUseCase
     {
         private readonly IMediator mediator;
+        private const int SEGUNDO_BIMESTRE = 2;
+        private const int PRIMEIRO_SEMESTRE = 1;
+        private const int SEGUNDO_SEMESTRE = 2;
         public RelatorioSondagemPortuguesConsolidadoUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -24,7 +27,8 @@ namespace SME.SR.Application
             if (filtros.GrupoId != GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException($"{ filtros.GrupoId } fora do esperado.");
 
-            var periodoCompleto = await ObterDatasPeriodoFixoAnual(filtros.Bimestre, filtros.Semestre, filtros.AnoLetivo);
+            var semestre = ObterSemestrePeriodo(filtros);
+            var periodoCompleto = await ObterDatasPeriodoFixoAnual(0, semestre, filtros.AnoLetivo);
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
@@ -49,6 +53,17 @@ namespace SME.SR.Application
 
             return await mediator
                 .Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+        }
+
+        private int ObterSemestrePeriodo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        {
+            if (filtros.Bimestre != 0)
+            {
+                if (filtros.Bimestre <= SEGUNDO_BIMESTRE)
+                    return PRIMEIRO_SEMESTRE;
+                return SEGUNDO_SEMESTRE;
+            }
+            return filtros.Semestre;
         }
 
         private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
