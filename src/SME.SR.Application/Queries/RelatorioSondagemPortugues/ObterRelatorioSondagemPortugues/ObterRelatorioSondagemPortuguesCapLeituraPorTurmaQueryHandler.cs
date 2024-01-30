@@ -40,9 +40,9 @@ namespace SME.SR.Application
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), turma.Nome, request.AnoLetivo, periodo.Descricao, request.Usuario.CodigoRf, request.Usuario.Nome);
 
-            var dataFimPeriodoFixoAnual = await ObterDataFimPeriodoFixoAnual(request.Bimestre, request.Semestre, request.AnoLetivo);
+            var periodoCompleto = await ObterDatasPeriodoFixoAnual(request.Bimestre, request.Semestre, request.AnoLetivo);
 
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, dataFimPeriodoFixoAnual));
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 
@@ -59,11 +59,11 @@ namespace SME.SR.Application
             return relatorio;
         }
 
-        private async Task<DateTime> ObterDataFimPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
+        private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
         {
             if (bimestre != 0)
-                return await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
-            return await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
+                return await mediator.Send(new ObterDatasPeriodoSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
+            return await mediator.Send(new ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
         }
 
         private async Task<PeriodoSondagem> ObterPeriodoSondagem(int bimestre, int semestre)

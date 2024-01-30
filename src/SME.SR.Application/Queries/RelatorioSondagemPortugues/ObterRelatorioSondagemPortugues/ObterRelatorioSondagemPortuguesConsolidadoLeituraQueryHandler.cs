@@ -22,7 +22,7 @@ namespace SME.SR.Application
         }
         public async Task<IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto>> Handle(ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery request, CancellationToken cancellationToken)
         {
-            return await relatorioSondagemPortuguesConsolidadoLeituraRepository.ObterPlanilha(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Grupo, request.PeriodoId);
+            return await relatorioSondagemPortuguesConsolidadoLeituraRepository.ObterPlanilha(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Grupo, request.PeriodoId);
         }
     }
 }

@@ -26,9 +26,9 @@ namespace SME.SR.Application
             if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && filtros.GrupoId == GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException("Grupo fora do esperado.");
 
-            var dataFimPeriodoFixoAnual = await ObterDataFimPeriodoFixoAnual(filtros.Bimestre, filtros.Semestre, filtros.AnoLetivo);
+            var periodoCompleto = await ObterDatasPeriodoFixoAnual(filtros.Bimestre, filtros.Semestre, filtros.AnoLetivo);
 
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Int32.Parse(filtros.TurmaCodigo), dataFimPeriodoFixoAnual));
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Int32.Parse(filtros.TurmaCodigo), periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 
@@ -63,11 +63,11 @@ namespace SME.SR.Application
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
 
-        private async Task<DateTime> ObterDataFimPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
+        private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
         {
             if (bimestre != 0)
-                return await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
-            return await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
+                return await mediator.Send(new ObterDatasPeriodoSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
+            return await mediator.Send(new ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
         }
 
         private void GerarGraficoLeituraEscrita(RelatorioSondagemPortuguesPorTurmaRelatorioDto relatorio, string tipoRelatorio)
