@@ -10,6 +10,9 @@ namespace SME.SR.Application
     public class ObterDatasPeriodoSondagemPorSemestreAnoLetivoQueryHandler : IRequestHandler<ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery, PeriodoCompletoSondagemDto>
     {
         private readonly IPeriodoSondagemRepository periodoSondagemRepository;
+        private const int PRIMEIRO_SEMESTRE = 1;
+        private const int SEGUNDO_BIMESTRE = 2;
+        private const int QUARTO_BIMESTRE = 4;
 
         public ObterDatasPeriodoSondagemPorSemestreAnoLetivoQueryHandler(IPeriodoSondagemRepository periodoSondagemRepository)
         {
@@ -24,13 +27,7 @@ namespace SME.SR.Application
 
             if (periodoFixo is null || periodoFixo.PeriodoFim.Ticks == 0)
             {
-                int bimestre;
-
-                if (request.Semestre == 1)
-                    bimestre = 2;
-
-                else bimestre = 4;
-
+                int bimestre = ObterBimestre(request.Semestre);
                 var periodoAbertura = await periodoSondagemRepository.ObterPeriodoCompletoPorBimestreEAnoLetivo(bimestre, request.AnoLetivo.ToString());
 
                 if (periodoAbertura is null || periodoAbertura.PeriodoFim.Ticks == 0)
@@ -40,6 +37,13 @@ namespace SME.SR.Application
             }
             else
                 return periodoFixo;
+        }
+
+        private int ObterBimestre(int semestre)
+        {
+            if (semestre == PRIMEIRO_SEMESTRE)
+                return SEGUNDO_BIMESTRE;
+            return QUARTO_BIMESTRE;
         }
     }
 }
