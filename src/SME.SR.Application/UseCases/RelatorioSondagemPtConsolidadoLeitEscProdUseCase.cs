@@ -138,7 +138,7 @@ namespace SME.SR.Application
                 periodoCompleto.PeriodoFim,
                 Convert.ToInt64(filtros.DreCodigo),
                 filtros.Modalidades,
-                dataReferenciaInicio: periodoCompleto.PeriodoInicio
+                dataReferenciaInicio:  periodoCompleto.PeriodoInicio
                 ));
 
             var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(Math.Max(filtros.Bimestre, filtros.Semestre), filtros.Bimestre != 0 ? TipoPeriodoSondagem.Bimestre : TipoPeriodoSondagem.Semestre));
@@ -271,17 +271,17 @@ namespace SME.SR.Application
                 Proficiencia = filtros.ProficienciaId
             });
 
-            var dataPeriodoSondagem = await mediator.Send(new ObterPeriodoCompletoSondagemPorBimestreQuery(filtros.Bimestre, filtros.AnoLetivo));
+            var datasReferencia = await mediator
+                .Send(new ObterDatasPeriodoSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                dataPeriodoSondagem.PeriodoFim,
+                datasReferencia.PeriodoFim,
                 Convert.ToInt64(filtros.DreCodigo),
-                filtros.Modalidades,
-                dataReferenciaInicio: dataPeriodoSondagem.PeriodoInicio
-                ));
+                filtros.Modalidades, dataReferenciaInicio: datasReferencia.PeriodoInicio));
+
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
