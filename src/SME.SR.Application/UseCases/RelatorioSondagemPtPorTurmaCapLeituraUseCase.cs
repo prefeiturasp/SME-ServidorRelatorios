@@ -53,7 +53,8 @@ namespace SME.SR.Application
                 TurmaAno = int.Parse(filtros.Ano),
                 Usuario = usuario,
                 TurmaCodigo = filtros.TurmaCodigo,
-                Bimestre = filtros.Bimestre
+                Bimestre = filtros.Bimestre,
+                Semestre = filtros.Semestre,
             });
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesCapacidadeLeituraPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));

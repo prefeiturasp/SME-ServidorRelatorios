@@ -51,30 +51,47 @@ namespace SME.SR.Data
             return await conexao.QueryFirstOrDefaultAsync<PeriodoSondagem>(query.ToString(), new { periodo = $"{periodo}%", tipoPeriodo = (int)tipoPeriodo });
         }
 
-        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorBimestreEAnoLetivo(int bimestre, string anoLetivo)
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorBimestreEAnoLetivo(int bimestre, int anoLetivo)
         {
             var query = new StringBuilder("select \"DataInicio\" as PeriodoInicio, \"DataFim\" as PeriodoFim ");
-            query.AppendLine("from \"PeriodoDeAberturas\" ");
-            query.AppendLine("where \"Bimestre\" = @bimestre");
-            query.AppendLine($"and \"TipoPeriodicidade\" = {(int)TipoPeriodoSondagem.Bimestre}");
-            query.AppendLine("and \"Ano\" = @anoLetivo");
+            query.AppendLine("from \"PeriodoFixoAnual\" pfa ");
+            query.AppendLine("inner join \"Periodo\" p on p.\"Id\" = pfa.\"PeriodoId\"");
+            query.AppendLine("where SUBSTRING(pfa.\"Descricao\",0,2)::int4 = @bimestre");
+            query.AppendLine($"and p.\"TipoPeriodo\" = {(int)TipoPeriodoSondagem.Bimestre}");
+            query.AppendLine("and pfa.\"Ano\" = @anoLetivo");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
             return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new { bimestre, anoLetivo });
         }
 
-        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorSemestreEAnoLetivo(int semestre, string anoLetivo)
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoCompletoPorSemestreEAnoLetivo(int semestre, int anoLetivo)
         {
             var query = new StringBuilder("select \"DataInicio\" as PeriodoInicio, \"DataFim\" as PeriodoFim ");
-            query.AppendLine("from \"PeriodoDeAberturas\" ");
-            query.AppendLine("where \"Bimestre\" = @semestre");
-            query.AppendLine($"and \"TipoPeriodicidade\" = {(int)TipoPeriodoSondagem.Semestre}");
-            query.AppendLine("and \"Ano\" = @anoLetivo");
+            query.AppendLine("from \"PeriodoFixoAnual\" pfa ");
+            query.AppendLine("inner join \"Periodo\" p on p.\"Id\" = pfa.\"PeriodoId\"");
+            query.AppendLine("where SUBSTRING(pfa.\"Descricao\",0,2) = @semestre");
+            query.AppendLine($"and p.\"TipoPeriodo\" = {(int)TipoPeriodoSondagem.Semestre}");
+            query.AppendLine("and pfa.\"Ano\" = @anoLetivo");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
             return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new { semestre, anoLetivo });
+        }
+
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoFixoCompletoPorDescricaoEAnoLetivo(string likeDescricao, int anoLetivo)
+        {
+            var query = new StringBuilder("select pfa.\"DataInicio\" as PeriodoInicio, pfa.\"DataFim\" as PeriodoFim ");
+            query.AppendLine("from \"PeriodoFixoAnual\" pfa ");
+            query.AppendLine("where pfa.\"Ano\" = @anoLetivo");
+            query.AppendLine("and pfa.\"Descricao\" like @likeDescricao");
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new
+            {
+                likeDescricao,
+                anoLetivo
+            });
         }
     }
 }

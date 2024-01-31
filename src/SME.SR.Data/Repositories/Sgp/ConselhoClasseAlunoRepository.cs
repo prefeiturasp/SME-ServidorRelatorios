@@ -158,6 +158,22 @@ namespace SME.SR.Data
             }
         }
 
+
+        public async Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoEFechamentoTurma(long fechamentoTurmaId, string codigoAluno)
+        {
+            string sql = @"select distinct ccr.recomendacao, ccr.tipo from conselho_classe_aluno_recomendacao ccar
+                                 inner join conselho_classe_recomendacao ccr on ccr.id = ccar.conselho_classe_recomendacao_id
+                                 inner join conselho_classe_aluno cca on cca.id = ccar.conselho_classe_aluno_id
+                                 inner join conselho_classe cc on cc.id = cca.conselho_classe_id
+                                    where cca.aluno_codigo = @codigoAluno
+                                    and cc.fechamento_turma_id = @fechamentoTurmaId";
+
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                return await conexao.QueryAsync<RecomendacoesAlunoFamiliaDto>(sql, new { codigoAluno, fechamentoTurmaId });
+            }
+        }
+
         public async Task<IEnumerable<RecomendacoesAlunoFamiliaDto>> ObterRecomendacoesAlunoFamiliaPorAlunoETurma(string codigoAluno, string codigoTurma, int id)
         {
             string sql = @"select distinct ccr.recomendacao, ccr.tipo from conselho_classe_aluno_recomendacao ccar

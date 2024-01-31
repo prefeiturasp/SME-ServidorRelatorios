@@ -15,5 +15,6 @@
         public string Ano { get; set; }
 
         public string UsuarioRf { get; set; }
+        public int Semestre { get; set; }
     }
 }

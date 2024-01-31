@@ -16,5 +16,6 @@ namespace SME.SR.Application
         public ProficienciaSondagemEnum Proficiencia { get; set; }
         public GrupoSondagemEnum Grupo { get; set; }
         public int[] Modalidades { get; set; }
+        public int Semestre { get; set; }
     }
 }

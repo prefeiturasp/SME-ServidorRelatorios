@@ -53,7 +53,6 @@ namespace SME.SR.Application
                 var periodoAtual = await mediator.Send(new ObterBimestrePeriodoFechamentoAtualQuery(request.Turmas.Select(a => a.AnoLetivo).FirstOrDefault()));
 
                 var relatorioBoletimSimplesEscolar = new List<RelatorioBoletimSimplesEscolarDto>();
-
                 foreach (var aluno in alunos)
                 {
                     if (turmas.Any(t => aluno.Any(a => a.CodigoTurma.ToString() == t.Codigo || a.CodigoTurma.ToString() == t.RegularCodigo)))

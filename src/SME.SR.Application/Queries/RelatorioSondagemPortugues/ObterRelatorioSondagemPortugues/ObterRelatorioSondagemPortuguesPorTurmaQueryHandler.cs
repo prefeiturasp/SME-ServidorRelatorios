@@ -37,7 +37,7 @@ namespace SME.SR.Application
             if (nomeColunaBimestre == String.Empty && request.Proficiencia != ProficienciaSondagemEnum.Autoral)
                 throw new NegocioException($"Nome da coluna do bimestre não pode ser vazio.");
 
-            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia, nomeColunaBimestre, request.Grupo);
+            return await relatorioSondagemPortuguesPorTurmaRepository.ObterPlanilhaLinhas(request.DreCodigo, request.UeCodigo, request.TurmaCodigo, request.AnoLetivo, request.AnoTurma, request.Bimestre, request.Proficiencia, nomeColunaBimestre, request.Grupo, request.Semestre);
         }
 
         private String ObterNomeColunaBimestre(int bimestre, ProficienciaSondagemEnum proficiencia)

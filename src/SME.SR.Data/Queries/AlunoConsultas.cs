@@ -476,7 +476,7 @@ namespace SME.SR.Data
 
 
 
-	    internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT   
+	    internal static string AlunosAtivosPorTurmaEPeriodo(DateTime? dataReferenciaInicio = null) => $@"SELECT   
 					aluno.cd_aluno CodigoAluno,
 					aluno.nm_aluno NomeAluno,
 					aluno.dt_nascimento_aluno DataNascimento,
@@ -513,9 +513,12 @@ namespace SME.SR.Data
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @codigoTurma
-					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
-					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-					and mte.dt_situacao_aluno > @dataReferencia))
+					and (((mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim) or mte.cd_situacao_aluno = 10)
+					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+					  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
+                        ? " and mte.dt_situacao_aluno > @dataFim))"
+                        : " and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
+                       )}
 				UNION
 				SELECT 
 					aluno.cd_aluno CodigoAluno,
@@ -568,7 +571,7 @@ namespace SME.SR.Data
 						and matr2.cd_aluno = matr.cd_aluno
 						and (matr2.st_matricula in (1, 6, 10, 13, 5)
 						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
-						and matr2.dt_status_matricula > @dataReferencia)) )
+						and matr2.dt_status_matricula > @dataFim)) )
 					AND NOT EXISTS(
 					SELECT
 						1
