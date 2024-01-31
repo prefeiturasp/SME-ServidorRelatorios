@@ -657,10 +657,15 @@ namespace SME.SR.Data
             var ehAnoLetivoAnterior2022 = anoLetivo < 2022;
             var ehAnoLetivo2022 = anoLetivo == 2022;
             var ehAnoLetivoApos2022 = anoLetivo > 2022;
+            var ehAnoLetivoAposIgual2024 = anoLetivo >= 2024;
             var ehTipoSondagemMatematica = tipoSondagem == TipoSondagem.MAT_IAD ||
                                            tipoSondagem == TipoSondagem.MAT_CampoMultiplicativo ||
                                            tipoSondagem == TipoSondagem.MAT_CampoAditivo ||
                                            tipoSondagem == TipoSondagem.MAT_Numeros;
+
+            var ehTipoSondagemPortuguesIAD = tipoSondagem == TipoSondagem.LP_CapacidadeLeitura ||
+                                          tipoSondagem == TipoSondagem.LP_LeituraVozAlta ||
+                                          tipoSondagem == TipoSondagem.LP_ProducaoTexto;
 
             if (ehTipoSondagemMatematica)
             {
@@ -673,6 +678,8 @@ namespace SME.SR.Data
                 else
                     return "Bimestre";
             }
+            else if (ehTipoSondagemPortuguesIAD && ehAnoLetivoAposIgual2024)
+                return "Semestre";
             else return "Bimestre";
 
         }

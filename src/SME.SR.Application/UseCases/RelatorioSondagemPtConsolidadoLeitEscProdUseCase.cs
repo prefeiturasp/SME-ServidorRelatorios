@@ -13,6 +13,9 @@ namespace SME.SR.Application
     public class RelatorioSondagemPtConsolidadoLeitEscProdUseCase : IRelatorioSondagemPtConsolidadoLeitEscProdUseCase
     {
         private readonly IMediator mediator;
+        private const int SEGUNDO_BIMESTRE = 2;
+        private const int PRIMEIRO_SEMESTRE = 1;
+        private const int SEGUNDO_SEMESTRE = 2;
 
         private const int ANO_ESCOLAR_PROFICIENCIA_NIVEL = 3;
 
@@ -107,7 +110,7 @@ namespace SME.SR.Application
             {
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Dre = dreAbreviacao,
-                Periodo = $"{ filtros.Bimestre }° Bimestre",
+                Periodo = $"{Math.Max(filtros.Bimestre, filtros.Semestre)}° {(filtros.Bimestre != 0 ? "Bimestre" : "Semestre")}",
                 Rf = filtros.UsuarioRF,
                 Ue = ueNomeComTipoEscola,
                 Usuario = usuario.Nome,
@@ -125,21 +128,20 @@ namespace SME.SR.Application
             GrupoSondagemEnum grupoSondagemEnum = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ?
                 GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.ProducaoTexto;
 
-            var semestre = (filtros.Bimestre <= 2) ? 1 : 2;
-
-            var dataPeriodoSondagem = await mediator.Send(new ObterPeriodoCompletoSondagemPorSemestreQuery(semestre, filtros.AnoLetivo));
-
+            var semestre = ObterSemestrePeriodo(filtros);
+            var periodoCompleto = await ObterDatasPeriodoFixoAnual(0, semestre, filtros.AnoLetivo);
+            
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                dataPeriodoSondagem.PeriodoFim,
+                periodoCompleto.PeriodoFim,
                 Convert.ToInt64(filtros.DreCodigo),
                 filtros.Modalidades,
-                dataReferenciaInicio: dataPeriodoSondagem.PeriodoInicio
+                dataReferenciaInicio:  periodoCompleto.PeriodoInicio
                 ));
 
-            var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(filtros.Bimestre, TipoPeriodoSondagem.Bimestre));
+            var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(Math.Max(filtros.Bimestre, filtros.Semestre), filtros.Bimestre != 0 ? TipoPeriodoSondagem.Bimestre : TipoPeriodoSondagem.Semestre));
             var perguntas = await mediator.Send(new ObterPerguntasPorGrupoQuery(grupoSondagemEnum, ComponenteCurricularSondagemEnum.Portugues));
             var dados = await mediator.Send(new ObterRespostasPorFiltrosQuery()
             {
@@ -166,6 +168,24 @@ namespace SME.SR.Application
             PopularListaRetorno(dados, alunosPorAno, perguntas, respostas);
 
             return respostas;
+        }
+
+        private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
+        {
+            if (bimestre != 0)
+                return await mediator.Send(new ObterDatasPeriodoSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
+            return await mediator.Send(new ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
+        }
+
+        private int ObterSemestrePeriodo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        {
+            if (filtros.Bimestre != 0)
+            {
+                if (filtros.Bimestre <= SEGUNDO_BIMESTRE)
+                    return PRIMEIRO_SEMESTRE;
+                return SEGUNDO_SEMESTRE;
+            }
+            return filtros.Semestre;
         }
 
         private void PopularListaRetorno(IEnumerable<SondagemAutoralDto> dados, int alunosPorAno, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas, List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas)
@@ -251,17 +271,17 @@ namespace SME.SR.Application
                 Proficiencia = filtros.ProficienciaId
             });
 
-            var dataPeriodoSondagem = await mediator.Send(new ObterPeriodoCompletoSondagemPorBimestreQuery(filtros.Bimestre, filtros.AnoLetivo));
+            var datasReferencia = await mediator
+                .Send(new ObterDatasPeriodoSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
 
             int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
-                dataPeriodoSondagem.PeriodoFim,
+                datasReferencia.PeriodoFim,
                 Convert.ToInt64(filtros.DreCodigo),
-                filtros.Modalidades,
-                dataReferenciaInicio: dataPeriodoSondagem.PeriodoInicio
-                ));
+                filtros.Modalidades, dataReferenciaInicio: datasReferencia.PeriodoInicio));
+
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
