@@ -23,9 +23,10 @@ namespace SME.SR.Application
         {
             var dadosAlunos = new List<AlunoHistoricoEscolar>();
             var alunosCodigos = request.CodigosAluno;
-            int alunosPorPagina = 10;
+            int alunosPorPagina = 1000;
             int cont = 0;
             int i = 0;
+
             while (cont < alunosCodigos.Length)
             {
                 var alunosPagina = alunosCodigos.Skip(alunosPorPagina * i).Take(alunosPorPagina).ToList();
