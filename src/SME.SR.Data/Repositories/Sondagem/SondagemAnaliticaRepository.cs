@@ -66,12 +66,13 @@ namespace SME.SR.Data
                     var listaUes = await ueRepository.ObterPorCodigos(agrupadoPorUe.Select(x => x.Key).ToArray());
                     foreach (var itemUe in agrupadoPorUe)
                     {
-                        var turmas = await ObterQuantidadeTurmaPorAno(filtro, itemUe.Key);
                         var relatorioAgrupadoPorAno = itemUe.Where(x => x.AnoTurma != null).GroupBy(p => p.AnoTurma).ToList();
                         var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio.Date, periodoFixo.DataFim.Date, itemUe.Key, itemDre.Key)).ToList();
 
                         foreach (var anoTurmaItem in relatorioAgrupadoPorAno)
                         {
+                            var turmasComSondagem = anoTurmaItem.Select(x => x.CodigoTurma).Distinct().ToList();
+
                             var listaDtoOrdemNarrar = new List<RespostaCapacidadeDeLeituraDto>();
                             var listaDtoOrdemRelatar = new List<RespostaCapacidadeDeLeituraDto>();
                             var listaDtoOrdemArgumentar = new List<RespostaCapacidadeDeLeituraDto>();
@@ -164,7 +165,7 @@ namespace SME.SR.Data
                                 var Ue = listaUes.FirstOrDefault(x => x.Codigo == itemUe.Key);
                                 resp.Ue = Ue.TituloTipoEscolaNome;
                                 resp.Ano = int.Parse(anoTurmaItem.Key);
-                                resp.TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurmaItem.Key);
+                                resp.TotalDeTurma = turmasComSondagem?.Count() ?? 0;
                                 resp.TotalDeAlunos = totalDeAlunos;
                                 respostaSondagemAnaliticoCapacidadeDeLeituraDtoLista.Add(resp);
                             }
@@ -222,7 +223,7 @@ namespace SME.SR.Data
                         {
 
                             var quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
-                            var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).ToList();
+                            var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).Distinct().ToList();
 
                             var totalSemPreenchimento = EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(filtro, anoTurma)
                                     ? TotalSemPreenchimentoTerceiroAnoEscritaSoNivel(anoTurma, quantidadeTotalAlunosEol)
@@ -360,11 +361,11 @@ namespace SME.SR.Data
                     {
                         var agrupamentoPorAnoTurma = itemUe.GroupBy(x => x.AnoTurma).ToList();
                         var quantidadeTotalAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio.Date, periodoFixo.DataFim.Date, itemUe.Key, itemDre.Key)).ToList();
-                        var turmas = await ObterQuantidadeTurmaPorAno(filtro, itemUe.Key);
+
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
                             var quantidadeTotalAlunosEol = 0;
-                            var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).ToList();
+                            var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).Distinct().ToList();
 
                             if (turmasComSondagem.Any() && filtro.AnoLetivo > ANO_ESCOLAR_2022)
                                 quantidadeTotalAlunosEol = await ObterTotalAlunosAtivosPorTurmaEPeriodo(turmasComSondagem, periodoFixo.DataFim);
@@ -390,7 +391,7 @@ namespace SME.SR.Data
                                 SemPreenchimento = semPreenchimento,
                                 TotalDeAlunos = totalDeAlunosNaSondagem,
                                 Ano = int.Parse(anoTurma.Key),
-                                TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurma.Key),
+                                TotalDeTurma = turmasComSondagem?.Count() ?? 0,
                                 Ue = Ue.TituloTipoEscolaNome
                             };
                             relatorioSondagemAnaliticoLeituraDto.Respostas.Add(respostaSondagemAnaliticoLeituraDto);
@@ -451,10 +452,11 @@ namespace SME.SR.Data
                     {
                         var totalDeAlunosPorAnoTurma = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio.Date, periodoFixo.DataFim.Date, itemUe.Key, itemDre.Key)).ToList();
                         var relatorioAgrupadoPorAnoTurma = itemUe.GroupBy(x => x.AnoTurma).ToList();
-                        var turmas = await ObterQuantidadeTurmaPorAno(filtro, itemUe.Key);
+
                         foreach (var anoTurmaItem in relatorioAgrupadoPorAnoTurma)
                         {
                             var alunoNaSondagem = anoTurmaItem.GroupBy(x => x.CodigoAluno);
+                            var turmasComSondagem = anoTurmaItem.Select(x => x.CodigoTurma).Distinct().ToList();
 
                             var quantidadeAlunoNaSondagem = alunoNaSondagem.Select(x => x.Key).Count();
 
@@ -468,7 +470,7 @@ namespace SME.SR.Data
                                 LeuComFluencia = anoTurmaItem.Count(p => p.Pergunta == PerguntaDescricaoSondagem.LeuComFluencia),
                                 SemPreenchimento = totalDeAlunos - quantidadeAlunoNaSondagem,
                                 Ano = int.Parse(anoTurmaItem.Key),
-                                TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurmaItem.Key),
+                                TotalDeTurma = turmasComSondagem?.Count() ?? 0,
                                 TotalDeAlunos = totalDeAlunos,
                                 Ue = Ue.TituloTipoEscolaNome
                             };
@@ -516,14 +518,16 @@ namespace SME.SR.Data
                     var perguntas = new RelatorioSondagemAnaliticoProducaoDeTextoDto();
                     var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct().ToList();
                     var listaUes = await ueRepository.ObterPorCodigos(agrupadoPorUe.Select(x => x.Key).ToArray());
+
                     foreach (var itemUe in agrupadoPorUe)
                     {
                         var totalDeAlunosPorAnoTurma = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio, periodoFixo.DataFim, itemUe.Key, itemDre.Key)).ToList();
                         var relatorioAgrupadoPorAnoTurma = itemUe.GroupBy(x => x.AnoTurma).ToList();
-                        var turmas = await ObterQuantidadeTurmaPorAno(filtro, itemUe.Key);
+
                         foreach (var anoTurmaItem in relatorioAgrupadoPorAnoTurma)
                         {
                             var alunoNaSondagem = anoTurmaItem.GroupBy(x => x.CodigoAluno);
+                            var turmasComSondagem = anoTurmaItem.Select(x => x.CodigoTurma).Distinct().ToList();
 
                             var quantidadeAlunoNaSondagem = alunoNaSondagem.Select(x => x.Key).Count();
 
@@ -540,7 +544,7 @@ namespace SME.SR.Data
                                 DificuldadesComAspectosOrtograficosNotacionais = anoTurmaItem.Count(p => p.Pergunta == PerguntaDescricaoSondagem.DificuldadesComAspectosOrtograficosNotacionais),
                                 SemPreenchimento = totalDeAlunos - quantidadeAlunoNaSondagem,
                                 Ano = int.Parse(anoTurmaItem.Key),
-                                TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurmaItem.Key),
+                                TotalDeTurma = turmasComSondagem?.Count() ?? 0,
                                 TotalDeAlunos = totalDeAlunos,
                                 Ue = Ue.TituloTipoEscolaNome
                             };
@@ -945,12 +949,12 @@ namespace SME.SR.Data
                 var listaUes = await ueRepository.ObterPorCodigos(dtoConsultaDados.Where(x => x.CodigoDre == dre.Codigo && x.CodigoUe != null).Select(x => x.CodigoUe).Distinct().ToArray());
                 foreach (var ue in listaUes.OrderBy(ue => ue.TituloTipoEscolaNome))
                 {
-                    var turmas = await ObterQuantidadeTurmaPorAno(filtro, ue.Codigo);
                     var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(),
                                                                                                                 periodoFixo.DataInicio, periodoFixo.DataFim,
                                                                                                                 ue.Codigo, dre.Codigo)).ToList();
                     foreach (var anoTurmaItem in perguntasPorAno)
                     {
+                        var turmasComSondagem = anoTurmaItem.Select(x => x.CodigoTurma).Distinct().ToList();
                         var descricaoPergunta = ObterDescricaoPergunta(proficiencia, anoTurmaItem.Key.PerguntaDescricao, anoTurmaItem.Key.OrdemPergunta, int.Parse(anoTurmaItem.Key.AnoTurma));
                         if (string.IsNullOrEmpty(descricaoPergunta)) continue;
 
@@ -970,7 +974,7 @@ namespace SME.SR.Data
                             {
                                 TotalDeAlunos = totalDeAlunos,
                                 Ano = int.Parse(anoTurmaItem.Key.AnoTurma),
-                                TotalDeTurma = turmas.Count(x => x.AnoTurma == anoTurmaItem.Key.AnoTurma),
+                                TotalDeTurma = turmasComSondagem?.Count() ?? 0,
                                 Ue = ue.TituloTipoEscolaNome
                             };
                             relatorioSondagemAnaliticoCampoAditivoMultiplicativoDto.Respostas.Add(respostaSondagemAnaliticoCampoAditivoMultiplicativoDto);
