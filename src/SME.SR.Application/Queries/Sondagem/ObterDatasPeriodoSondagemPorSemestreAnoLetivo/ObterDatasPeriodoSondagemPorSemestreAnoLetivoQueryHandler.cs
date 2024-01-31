@@ -28,7 +28,7 @@ namespace SME.SR.Application
             if (periodoFixo is null || periodoFixo.PeriodoFim.Ticks == 0)
             {
                 int bimestre = ObterBimestre(request.Semestre);
-                var periodoAbertura = await periodoSondagemRepository.ObterPeriodoCompletoPorBimestreEAnoLetivo(bimestre, request.AnoLetivo.ToString());
+                var periodoAbertura = await periodoSondagemRepository.ObterPeriodoCompletoPorBimestreEAnoLetivo(bimestre, request.AnoLetivo);
 
                 if (periodoAbertura is null || periodoAbertura.PeriodoFim.Ticks == 0)
                     throw new NegocioException("Não foi possível localizar a data fim do período da sondagem.");
