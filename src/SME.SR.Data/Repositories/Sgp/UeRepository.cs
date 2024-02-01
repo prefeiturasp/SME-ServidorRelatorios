@@ -53,6 +53,8 @@ namespace SME.SR.Data
             if (anos != null && anos.Length > 0)
                 query.AppendLine("and t.ano = ANY(@anos)");
 
+            query.AppendLine(" and u.tipo_escola in(1,3,4,16)");
+
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
             return await conexao.QueryAsync<Ue>(query.ToString(), new
