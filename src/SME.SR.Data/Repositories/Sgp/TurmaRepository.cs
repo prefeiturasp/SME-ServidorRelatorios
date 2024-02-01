@@ -1248,6 +1248,28 @@ namespace SME.SR.Data
 		        }
 	    }
 
+        public async Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterTotalDeTurmasPorUeAnoLetivoEModalidade(string codigoUe, int modalidade, int anoLetivo)
+        {
+            var query = $@"select count(distinct t.nome) Quantidade, t.ano as Ano
+                            from turma t
+                            inner join ue u on u.id = t.ue_id 
+                            where u.ue_id = @codigoUe and t.ano_letivo = @anoLetivo and t.modalidade_codigo = @modalidade
+                            and t.ano > '0'
+                            group by t.ano";
+
+            var parametros = new
+            {
+                modalidade,
+                codigoUe,
+                anoLetivo
+            };
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                var consulta = await conexao.QueryAsync<TotalDeTurmasPorAnoDto>(query.ToString(), parametros);
+                return consulta;
+            }
+        }
+
         public async Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
         {
             StringBuilder query = new StringBuilder();
