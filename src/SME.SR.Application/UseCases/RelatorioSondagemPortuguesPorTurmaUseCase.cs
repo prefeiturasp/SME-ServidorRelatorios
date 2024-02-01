@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Queries;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
@@ -25,7 +26,7 @@ namespace SME.SR.Application
             if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && filtros.GrupoId == GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException("Grupo fora do esperado.");
 
-            var periodoCompleto = await mediator.Send(new ObterPeriodoCompletoSondagemPorBimestreQuery(filtros.Bimestre, filtros.AnoLetivo));
+            var periodoCompleto = await ObterDatasPeriodoFixoAnual(filtros.Bimestre, filtros.Semestre, filtros.AnoLetivo);
 
             var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(Int32.Parse(filtros.TurmaCodigo), periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
             if (alunosDaTurma == null || !alunosDaTurma.Any())
@@ -60,6 +61,13 @@ namespace SME.SR.Application
             }
 
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
+        }
+
+        private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
+        {
+            if (bimestre != 0)
+                return await mediator.Send(new ObterDatasPeriodoSondagemPorBimestreAnoLetivoQuery(bimestre, anoLetivo));
+            return await mediator.Send(new ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
         }
 
         private void GerarGraficoLeituraEscrita(RelatorioSondagemPortuguesPorTurmaRelatorioDto relatorio, string tipoRelatorio)
@@ -199,7 +207,7 @@ namespace SME.SR.Application
             {
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Dre = dre.Abreviacao,
-                Periodo = $"{ filtros.Bimestre }° Bimestre",
+                Periodo = $"{ Math.Max(filtros.Bimestre, filtros.Semestre) }° {(filtros.Bimestre != 0 ? "Bimestre" : "Semestre")}",
                 Rf = filtros.UsuarioRF,
                 Turma = turma.Nome,
                 Ue = ue.NomeComTipoEscola,
@@ -310,7 +318,8 @@ namespace SME.SR.Application
                 AnoTurma = filtros.Ano,
                 Bimestre = filtros.Bimestre,
                 Proficiencia = filtros.ProficienciaId,
-                Grupo = grupo
+                Grupo = grupo,
+                Semestre = filtros.Semestre,
             });
 
             List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto> linhasPlanilha = new List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>();
