@@ -46,6 +46,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<TurmaItinerarioEnsinoMedioDto>> ObterTurmasItinerarioEnsinoMedio();
         Task<IEnumerable<QuantidadeTurmaPorAnoDto>> ObterTotalDeTurmasPorAno(string loginUsuario,string codigoUe,Guid perfilUsuario,bool consideraHistorico, int modalidade,int anoLetivo,int semestre = 0);
         Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunos(long[] codigoAlunos, int? anoLetivo);
+        Task<IEnumerable<Turma>> ObterTurmasComplementaresPorAlunos(string[] alunosCodigos);
         Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterTotalDeTurmasPorUeAnoLetivoEModalidade(string codigoUe, int modalidade, int anoLetivo);
     }
 }

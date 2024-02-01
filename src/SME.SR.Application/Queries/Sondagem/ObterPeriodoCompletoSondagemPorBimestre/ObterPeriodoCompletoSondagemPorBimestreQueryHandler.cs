@@ -21,6 +21,6 @@ namespace SME.SR.Application
             this.periodoSondagemRepository = periodoSondagemRepository ?? throw new ArgumentNullException(nameof(periodoSondagemRepository));
         }
         public async Task<PeriodoCompletoSondagemDto> Handle(ObterPeriodoCompletoSondagemPorBimestreQuery request, CancellationToken cancellationToken)
-            => await periodoSondagemRepository.ObterPeriodoCompletoPorBimestreEAnoLetivo(request.Bimestre, request.AnoLetivo.ToString());
+            => await periodoSondagemRepository.ObterPeriodoCompletoPorBimestreEAnoLetivo(request.Bimestre, request.AnoLetivo);
     }
 }

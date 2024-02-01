@@ -11,5 +11,6 @@
         public ProficienciaSondagemEnum ProficienciaId { get; set; }
         public string UsuarioRF { get; set; }
         public string GrupoId { get; set; }
+        public int Semestre { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace SME.SR.Data
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre, GrupoSondagemEnum grupo)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre, GrupoSondagemEnum grupo, int semestre)
         {
             string sql = String.Empty;
 
@@ -80,7 +80,7 @@ namespace SME.SR.Data
                     break;
             }
 
-            var periodo = $"{ bimestre }° Bimestre";
+            var periodo = $"{ Math.Max(bimestre, semestre) }° {(bimestre != 0 ? "Bimestre": "Semestre")}";
 
             var componenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name();
 
