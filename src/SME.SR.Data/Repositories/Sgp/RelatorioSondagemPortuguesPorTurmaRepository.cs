@@ -131,13 +131,7 @@ namespace SME.SR.Data
             		c.""Id"" = s.""ComponenteCurricularId""
                 inner join ""Ordem"" o on
                     o.""Id"" = s.""OrdemId""
-                where
-            		s.""Id"" in (
-            		select
-            			s.""Id""
-            		from
-            			""Sondagem"" s
-            		where 1 = 1");
+                where 1 = 1");
 
             if (!string.IsNullOrEmpty(grupoId))
                 query.AppendLine(" and s.\"GrupoId\" = @GrupoId");
@@ -153,8 +147,6 @@ namespace SME.SR.Data
 
             if (!string.IsNullOrEmpty(codigoTurma))
                 query.AppendLine(" and s.\"CodigoTurma\" = @CodigoTurma");
-
-            query.AppendLine(")");
 
             var parametros = new { grupoId, componenteCurricularId, periodoId, anoLetivo, codigoTurma };
 
