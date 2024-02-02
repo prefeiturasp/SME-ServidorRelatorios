@@ -21,5 +21,6 @@ namespace SME.SR.Infra
         }
         public string GrupoId { get; set; }
         public int[] Modalidades { get; set; }
+        public int Semestre { get; set; }
     }
 }
