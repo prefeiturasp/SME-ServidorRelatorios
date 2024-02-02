@@ -102,7 +102,7 @@ namespace SME.SR.Data
 					inner join dre d on d.id = u.dre_id
 					left join usuario u2 on u2.id = pa.responsavel_paai_id
 					left join usuario u3 on u3.id = pa.responsavel_id
-				where 1 = 1	");
+				where t.ano_letivo = @anoLetivo	");
 
 	        if (!filtro.DreCodigo.EstaFiltrandoTodas())
 		        query.AppendLine(" and d.dre_id = @dreCodigo ");
@@ -136,6 +136,7 @@ namespace SME.SR.Data
 
 	        var retorno = await conexao.QueryAsync<PlanosAeeDto>(query.ToString(), new
 	        {
+				anoLetivo = filtro.AnoLetivo,
 		        dreCodigo = filtro.DreCodigo, modalidade = filtro.Modalidade, ueCodigo = filtro.UeCodigo,
 		        situacaoIds = filtro.SituacaoIds, codigosResponsavel = filtro.CodigosResponsavel,
 		        codigosPAAIResponsavel = filtro.CodigosPAAIResponsavel,
