@@ -673,8 +673,7 @@ namespace SME.SR.Application
 
                             var notaConceitofinal = notasFinais.OrderByDescending(n => n.Aprovado).ThenByDescending(n => n.NotaId).FirstOrDefault(c => c.AlunoCodigo == aluno.CodigoAluno.ToString()
                                                     && c.ComponenteCurricularCodigo == componente.CodDisciplina
-                                                    && (!c.Bimestre.HasValue || c.Bimestre.Value == 0) &&
-                                                    aluno.Ativo);
+                                                    && (!c.Bimestre.HasValue || c.Bimestre.Value == 0));
 
                             var possuiConselhoFinal = (notaConceitofinal != null) && conselhoClasseBimestres.Any(a => a == 0);
                             if (possuiConselhoFinal)
@@ -683,7 +682,7 @@ namespace SME.SR.Application
 
                                 linhaDto.AdicionaCelula(grupoMatriz.Key.Id,
                                                     componente.CodDisciplina,
-                                                    possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (componente.LancaNota ?
+                                                    possuiComponente ? (componente.LancaNota ?
                                                         notaConceitofinal?.NotaConceito ?? "" :
                                                         notaConceitofinal?.Sintese ?? sintese) : string.Empty,
                                                     ++coluna, aluno.CodigoAluno.ToString(), null, componente.Regencia);
@@ -710,8 +709,6 @@ namespace SME.SR.Application
                                                                     possuiComponente,
                                                                     frequenciaAluno,
                                                                     turma,
-                                                                    aluno,
-                                                                    possuiConselhoUltimoBimestreAtivo,
                                                                     turmaPossuiFrequenciaRegistrada, componente.Regencia));
                             }
                             else linhaDto.Celulas.AddRange(ObterCelulasFrequencias(
@@ -754,8 +751,6 @@ namespace SME.SR.Application
                             bool possuiComponente,
                             FrequenciaAluno frequenciaAluno,
                             Turma turma,
-                            AlunoSituacaoAtaFinalDto aluno,
-                            bool possuiConselhoUltimoBimestreAtivo,
                             bool turmaPossuiFrequenciaRegistrada,
                             bool regencia)
         {
@@ -766,7 +761,7 @@ namespace SME.SR.Application
                 GrupoMatriz = idGrupo,
                 ComponenteCurricular = codDisciplina,
                 Coluna = ++coluna,
-                Valor = possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalAusencias.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty,
+                Valor = possuiComponente ? (frequenciaAluno?.TotalAusencias.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty,
                 Regencia = regencia
             });
 
@@ -775,7 +770,7 @@ namespace SME.SR.Application
                 GrupoMatriz = idGrupo,
                 ComponenteCurricular = codDisciplina,
                 Coluna = ++coluna,
-                Valor = possuiComponente && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo) ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty,
+                Valor = possuiComponente ? (frequenciaAluno?.TotalCompensacoes.ToString() ?? 0.ToString($"N{PERCENTUAL_FREQUENCIA_PRECISAO}", CultureInfo.CurrentCulture)) : string.Empty,
                 Regencia = regencia
             });
 
@@ -784,7 +779,7 @@ namespace SME.SR.Application
                 GrupoMatriz = idGrupo,
                 ComponenteCurricular = codDisciplina,
                 Coluna = ++coluna,
-                Valor = possuiComponente ? ObterFrequencia(frequenciaAluno, turma, aluno, possuiConselhoUltimoBimestreAtivo, turmaPossuiFrequenciaRegistrada) : string.Empty,
+                Valor = possuiComponente ? ObterFrequencia(frequenciaAluno, turma, turmaPossuiFrequenciaRegistrada) : string.Empty,
                 Regencia = regencia
             });
 
@@ -812,14 +807,11 @@ namespace SME.SR.Application
             ++coluna;
             celulasFrequencias.Add(celulaFrequencia);
             return celulasFrequencias;
-            return null;
         }
 
         private string ObterFrequencia(
                             FrequenciaAluno frequencia,
                             Turma turma,
-                            AlunoSituacaoAtaFinalDto aluno,
-                            bool possuiConselhoUltimoBimestreAtivo,
                             bool turmaPossuiFrequenciaRegistrada)
         {
             if (turma.AnoLetivo.Equals(2020))
@@ -831,7 +823,7 @@ namespace SME.SR.Application
                     frequencia.PercentualFrequenciaFinal.ToString();
             }
 
-            if (frequencia != null && frequencia.TotalAulas != 0 && (aluno.Ativo || possuiConselhoUltimoBimestreAtivo))
+            if (frequencia != null && frequencia.TotalAulas != 0)
             {
                 return frequencia.PercentualFrequenciaFormatado;
             }
