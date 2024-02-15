@@ -55,7 +55,7 @@ namespace SME.SR.Application
             var frequenciasMeses = new List<FrequenciaPorMesExcelDto>();
             (int mes, int quantidadeDias) = ObterMaiorQuantidadeDias(dto.Ano, dto.FrequenciaMes.Select(fm => fm.Mes).ToArray());
 
-            foreach (var frequenciaMes in dto.FrequenciaMes)
+            foreach (var frequenciaMes in dto.FrequenciaMes.OrderBy(fm => fm.Mes))
             {
                 var data = new DataTable();
                 var diasSemanas = ObterDiaSemanaAulas(frequenciaMes.FrequenciaComponente, dto.Ano, frequenciaMes.Mes, quantidadeDias);
