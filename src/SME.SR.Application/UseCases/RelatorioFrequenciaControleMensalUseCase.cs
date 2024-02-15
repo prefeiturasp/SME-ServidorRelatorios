@@ -47,7 +47,7 @@ namespace SME.SR.Application.UseCases
                 filtro.AlunosCodigo));
 
             var agrupadoPorAlunos = frequencias.GroupBy(x => x.CodigoAluno).Distinct().ToList();
-            var diasMesEvento = await ObterDiaMesEventos(dadosTurma, filtro.AnoLetivo);
+            var diasMesEvento = await ObterDiasLetivosEventos(dadosTurma, filtro.AnoLetivo);
 
             foreach (var alunoFrequencia in agrupadoPorAlunos)
             {
@@ -73,7 +73,7 @@ namespace SME.SR.Application.UseCases
                     {
                         Mes = mesAgrupado.Key,
                         MesDescricao = ObterNomeMes(mesAgrupado.Key),
-                        DiasNaoLetivosMes = diasMesEvento
+                        DiasLetivosEventosMes = diasMesEvento
                     };
 
                     var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x => x.NomeGrupo).ThenBy(t => t.NomeComponente).GroupBy(x => x.NomeComponente);
@@ -104,13 +104,12 @@ namespace SME.SR.Application.UseCases
             return retorno.OrderBy(controle => controle.NomeCriancaEstudante).ToList();
         }
 
-        private async Task<List<DiaLetivoDto>> ObterDiaMesEventos(Turma turma, int anoLetivo)
+        private async Task<List<DiaLetivoDto>> ObterDiasLetivosEventos(Turma turma, int anoLetivo)
         {
             var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre));
             var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
             var dias = await mediator.Send(new ObterDiasLetivosPorPeriodoEscolaresQuery(periodosEscolares, tipoCalendarioId));
-
-            return dias.FindAll(dia => dia.PossuiEvento || !dia.EhLetivo);
+            return dias;
         }
 
         private string CalcularObterFrequenciaGlobal(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> alunoFrequencia)

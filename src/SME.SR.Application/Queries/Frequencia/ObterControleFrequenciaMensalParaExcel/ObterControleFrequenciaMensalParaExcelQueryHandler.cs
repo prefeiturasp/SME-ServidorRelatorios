@@ -23,7 +23,7 @@ namespace SME.SR.Application
 
                 foreach (var frenquenciaAluno in request.ControlesFrequenciasMensais)
                 {
-                    relatorios.Add( ObterFrequenciaDto(frenquenciaAluno));
+                    relatorios.Add(ObterFrequenciaDto(frenquenciaAluno));
                 }
 
                 return await Task.FromResult(relatorios);
@@ -74,23 +74,35 @@ namespace SME.SR.Application
                                                                                                                   .Select(ds => ds.Key).ToArray(),
                                                                                                        frequenciaMes.Mes,
                                                                                                        dto.Ano,
-                                                                                                       frequenciaMes.DiasNaoLetivosMes)
+                                                                                                       frequenciaMes.DiasLetivosEventosMes)
                     });
             }
             
             return frequenciasMeses;
         }
 
-        private List<string> ObterColunasDiasNaoLetivosFinaisSemana(int[] dias, int mes, int ano, List<DiaLetivoDto> diasNaoLetivosMes)
+        private List<string> ObterColunasDiasNaoLetivosFinaisSemana(int[] dias, int mes, int ano, List<DiaLetivoDto> diasLetivosEventosMes)
         {
             var retorno = new List<string>();
             foreach (var dia in dias)
             {
                 DateTime dataBase = new DateTime(ano, mes, dia);
-                if (diasNaoLetivosMes.Any(d => d.Data.Equals(dataBase)))
+                if (EhDiaNaoLetivo(dataBase, diasLetivosEventosMes))
                     retorno.Add($"{mes}_{dia}");
             }
             return retorno;
+        }
+
+        private static bool EhDiaNaoLetivo(DateTime dia, List<DiaLetivoDto> diasLetivosEventosMes)
+        {
+            if (!diasLetivosEventosMes.Any(d => d.Data.Equals(dia) && d.EhLetivo)
+                && dia.FimDeSemana())
+                return true;
+
+            if (diasLetivosEventosMes.Any(d => d.Data.Equals(dia) && d.EhNaoLetivo))
+                return true;
+
+            return false;
         }
 
         private static string ObterDiaDaSemanaSigla(DateTime data)
