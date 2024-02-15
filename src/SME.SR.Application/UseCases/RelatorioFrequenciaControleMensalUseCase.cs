@@ -47,6 +47,7 @@ namespace SME.SR.Application.UseCases
                 filtro.AlunosCodigo));
 
             var agrupadoPorAlunos = frequencias.GroupBy(x => x.CodigoAluno).Distinct().ToList();
+            var diasMesEvento = await ObterDiaMesEventos(dadosTurma, filtro.AnoLetivo);
 
             foreach (var alunoFrequencia in agrupadoPorAlunos)
             {
@@ -63,7 +64,7 @@ namespace SME.SR.Application.UseCases
                     DataImpressao = DateTime.Now.ToString("dd/MM/yyyy"),
                 };
                 var agrupadoPorMes = alunoFrequencia.GroupBy(x => x.Mes);
-
+                
                 foreach (var mesAgrupado in agrupadoPorMes)
                 {
                     double totalFrequenciaDoPeriodo = 0;
@@ -71,7 +72,8 @@ namespace SME.SR.Application.UseCases
                     var mes = new ControleFrequenciaPorMesDto
                     {
                         Mes = mesAgrupado.Key,
-                        MesDescricao = ObterNomeMes(mesAgrupado.Key)
+                        MesDescricao = ObterNomeMes(mesAgrupado.Key),
+                        DiasDaSemana = ObterDiasDaSemana(filtro.AnoLetivo, mesAgrupado.Key, diasMesEvento)
                     };
 
                     var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x => x.NomeGrupo).ThenBy(t => t.NomeComponente).GroupBy(x => x.NomeComponente);
@@ -100,6 +102,43 @@ namespace SME.SR.Application.UseCases
             }
 
             return retorno.OrderBy(controle => controle.NomeCriancaEstudante).ToList();
+        }
+
+        private async Task<List<DiaLetivoDto>> ObterDiaMesEventos(Turma turma, int anoLetivo)
+        {
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre));
+            var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
+            var dias = await mediator.Send(new ObterDiasLetivosPorPeriodoEscolaresQuery(periodosEscolares, tipoCalendarioId));
+
+            return dias.FindAll(dia => dia.PossuiEvento || !dia.EhLetivo);
+        }
+
+        private List<DiaMesDto> ObterDiasDaSemana(int anoLetivo, int mes, List<DiaLetivoDto> diasLetivos)
+        {
+            var retorno = new List<DiaMesDto>();
+            var datafim = new DateTime(anoLetivo, mes, 01);
+            var maisDiaMes = datafim.AddMonths(1).AddDays(-1).Day;
+
+            for (var dia = 1; dia <= maisDiaMes; dia++)
+            {
+                var data = new DateTime(anoLetivo, mes, dia);
+                retorno.Add(new DiaMesDto()
+                {
+                    Dia = dia,
+                    Mes = mes,
+                    DiaEvento = diasLetivos.Exists(d => d.Data.Date == data.Date),
+                    SiglaDiaSemana = ObterSiglaDiaDaSemana(data)
+                });
+            }
+           
+            return retorno;
+        }
+
+        private string ObterSiglaDiaDaSemana(DateTime data)
+        {
+            var dias = new string[] { "DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB" };
+
+            return dias[(int)data.DayOfWeek];
         }
 
         private string CalcularObterFrequenciaGlobal(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> alunoFrequencia)
