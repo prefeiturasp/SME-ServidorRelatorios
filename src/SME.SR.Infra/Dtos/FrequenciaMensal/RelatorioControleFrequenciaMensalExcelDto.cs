@@ -21,5 +21,6 @@ namespace SME.SR.Infra.Dtos.FrequenciaMensal
         public string Mes { get; set; }
         public string FrequenciaGlobal { get; set; }
         public DataTable TabelaDeDado { get; set; }
+        public IEnumerable<string> ColunasDiasNaoLetivosFinaisSemana { get; set; }
     }
 }
