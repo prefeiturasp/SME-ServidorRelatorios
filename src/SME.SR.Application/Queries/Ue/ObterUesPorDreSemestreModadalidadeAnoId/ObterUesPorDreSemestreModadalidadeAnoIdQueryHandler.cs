@@ -17,7 +17,7 @@ namespace SME.SR.Application
         }
         public async Task<IEnumerable<Ue>> Handle(ObterUesPorDreSemestreModadalidadeAnoIdQuery request, CancellationToken cancellationToken)
         {
-            return await ueRepository.ObterPorDreSemestreModadalidadeAnoId(request.DreId, request.Semestre, request.ModalidadeId, request.Ano);
+            return await ueRepository.ObterPorDreSemestreModadalidadeAnoId(request.DreId, request.Semestre, request.ModalidadeId, request.Ano, request.TipoEscolas);
         }
     }
 }

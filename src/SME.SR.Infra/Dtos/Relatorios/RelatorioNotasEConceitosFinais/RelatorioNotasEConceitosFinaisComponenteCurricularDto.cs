@@ -8,7 +8,9 @@ namespace SME.SR.Infra
         {
             NotaConceitoAlunos = new List<RelatorioNotasEConceitosFinaisDoAlunoDto>();
         }
+        public long Codigo { get; set; }
         public string Nome { get; set; }
+        public bool LancaNota { get; set; }
 
         public List<RelatorioNotasEConceitosFinaisDoAlunoDto> NotaConceitoAlunos { get; set; }
     }
