@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using MediatR;
-using Sentry;
+﻿using MediatR;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.FrequenciaMensal;
 using System;
@@ -65,7 +63,7 @@ namespace SME.SR.Application
                 AdicionarTituloColunas(diasSemanas, data, frequenciaMes.Mes);
 
                 AdicionarLinhas(frequenciaMes.FrequenciaComponente, data, frequenciaMes.Mes);
-
+                
                 frequenciasMeses.Add(new FrequenciaPorMesExcelDto() 
                     { Mes = frequenciaMes.MesDescricao, 
                       FrequenciaGlobal = frequenciaMes.FrequenciaGlobal, 
@@ -74,21 +72,22 @@ namespace SME.SR.Application
                                                                                                                   .Select(ds => ds.Key).ToArray(),
                                                                                                        frequenciaMes.Mes,
                                                                                                        dto.Ano,
-                                                                                                       frequenciaMes.DiasLetivosEventosMes)
+                                                                                                       frequenciaMes.DiasLetivosEventosMes,
+                                                                                                       data)
                     });
             }
             
             return frequenciasMeses;
         }
 
-        private List<string> ObterColunasDiasNaoLetivosFinaisSemana(int[] dias, int mes, int ano, List<DiaLetivoDto> diasLetivosEventosMes)
+        private List<int> ObterColunasDiasNaoLetivosFinaisSemana(int[] dias, int mes, int ano, List<DiaLetivoDto> diasLetivosEventosMes, DataTable data)
         {
-            var retorno = new List<string>();
+            var retorno = new List<int>();
             foreach (var dia in dias)
             {
                 DateTime dataBase = new DateTime(ano, mes, dia);
                 if (EhDiaNaoLetivo(dataBase, diasLetivosEventosMes))
-                    retorno.Add($"{mes}_{dia}");
+                    retorno.Add(data.Columns[$"{mes}_{dia}"].Ordinal + 1);
             }
             return retorno;
         }
