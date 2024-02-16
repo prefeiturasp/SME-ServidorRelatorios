@@ -39,5 +39,15 @@ namespace SME.SR.Data
                 datas.Add(dia);
             return datas;
         }
+
+        public bool EhEventoSME() =>
+            string.IsNullOrWhiteSpace(DreId) && string.IsNullOrWhiteSpace(UeId);
+
+        public bool EhEventoDRE() =>
+            !string.IsNullOrWhiteSpace(DreId) && string.IsNullOrWhiteSpace(UeId);
+
+        public bool EhEventoUE() =>
+            !string.IsNullOrWhiteSpace(DreId) && !string.IsNullOrWhiteSpace(UeId);
+
     }
 }
