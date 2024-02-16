@@ -37,8 +37,8 @@ namespace SME.SR.Application
             if (!controlesFrequencias.Any())
                 throw new NegocioException("Não possui informações.");
 
-            var workbook = new XLWorkbook();
-            
+            using (var workbook = new XLWorkbook())
+            {
                 foreach (var dtoExcel in controlesFrequencias)
                 {
                     var worksheet = workbook.Worksheets.Add(dtoExcel.CodigoCriancaEstudante);
@@ -62,8 +62,7 @@ namespace SME.SR.Application
                 var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{request.CodigoCorrelacao}");
 
                 workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
-
-            workbook.Dispose();
+            }
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
