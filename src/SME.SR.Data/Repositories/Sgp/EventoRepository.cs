@@ -130,11 +130,11 @@ namespace SME.SR.Data
             bool possuiUeCodigo = !string.IsNullOrEmpty(ueCodigo);
 
             var query = new StringBuilder(@"select
-                                                data_inicio,
-                                                data_fim,
+                                                data_inicio DataInicio,
+                                                data_fim DataFim,
                                                 letivo,
-                                                e.ue_id,
-                                                e.dre_id,
+                                                e.ue_id UeId,
+                                                e.dre_id DreId,
                                                 e.nome,
                                                 e.feriado_id,
                                                 e.tipo_evento_id TipoEventoId
