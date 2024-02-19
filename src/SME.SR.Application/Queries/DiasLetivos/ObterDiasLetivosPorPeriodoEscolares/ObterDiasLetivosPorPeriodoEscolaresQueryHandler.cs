@@ -47,10 +47,6 @@ namespace SME.SR.Application
                         PossuiEvento = false
                     };
 
-                    if (diaAtual.Date.Equals(new DateTime(2023, 6, 13)))
-                    {
-                        _ = "debug";
-                    }
                     var eventosComData = eventos.Where(e => diaAtual.Date >= e.DataInicio.Date
                                                             && diaAtual.Date <= e.DataFim.Date)
                                                 .ToList();
