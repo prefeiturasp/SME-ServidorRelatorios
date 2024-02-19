@@ -35,7 +35,6 @@ namespace SME.SR.Application
                             Data = data,
                             Motivo = evento.EventoTipo.Descricao,
                             EhLetivo = evento.EhEventoLetivo(),
-                            EhNaoLetivo = evento.EhEventoNaoLetivo(),
                             UesIds = string.IsNullOrWhiteSpace(evento.UeId) ? new List<string>() : new List<string> { evento.UeId },
                             PossuiEvento = true
                         });
