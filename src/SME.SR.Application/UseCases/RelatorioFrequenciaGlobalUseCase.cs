@@ -22,8 +22,7 @@ namespace SME.SR.Application
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroFrequenciaGlobalDto>();
             var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
-            if (listaDeFrenquenciaGlobal?.Any() != true)
-                
+            if (listaDeFrenquenciaGlobal?.Any() != true)                
                 throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
             else
             {

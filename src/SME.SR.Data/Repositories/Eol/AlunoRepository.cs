@@ -1618,7 +1618,7 @@ namespace SME.SR.Data
 						end as NumeroAlunoChamada,
 						DataSituacao, DataMatricula, PossuiDeficiencia, NomeResponsavel, TipoResponsavel, CelularResponsavel,
 						DataAtualizacaoContato, CodigoTurma, CodigoMatricula, AnoLetivo, row_number() over (partition by CodigoMatricula order by DataSituacao desc) as Sequencia
-						from alunos_matriculas_norm nm(NOLOCK)
+						from alunos_matriculas_norm nm
 						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
 						inner join v_cadastro_unidade_educacao ue ON te.cd_escola = ue.cd_unidade_educacao
 						where 1=1 ";
@@ -1630,21 +1630,25 @@ namespace SME.SR.Data
                 sql += @" AND ue.cd_unidade_administrativa_referencia = @dreCodigo ";
 
             if (codigosAlunos != null && codigosAlunos.Any())
-                sql += $" and CodigoAluno in (#codigosAlunos) ";
+                sql += $" and CodigoAluno in @codigosAlunos ";
 
             sql += @" and te.an_letivo = @anoLetivo )
 								select*
 								from matriculas
 								where sequencia in (1,2)
-								and CodigoSituacaoMatricula <> 4";
+								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido";
 
-            if (codigosAlunos != null && codigosAlunos.Any())
-                sql = sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'");
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql, new { ueCodigo, dreCodigo, anoLetivo });
-            }
+            return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql,
+                new
+                {
+                    ueCodigo,
+                    dreCodigo,
+                    anoLetivo,
+                    codigosAlunos,
+                    codigoSituacaoVinculoIndevido = (int)SituacaoMatriculaAluno.VinculoIndevido
+                });
         }
 
         private string ObtenhaQueryAlunosPorTurmasHistorico(long dreCodigo, string ueCodigo)
