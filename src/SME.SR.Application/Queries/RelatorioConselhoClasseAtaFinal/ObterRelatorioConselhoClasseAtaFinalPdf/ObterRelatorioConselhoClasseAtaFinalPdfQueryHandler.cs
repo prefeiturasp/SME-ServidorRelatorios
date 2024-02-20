@@ -908,7 +908,7 @@ namespace SME.SR.Application
                     statusAlunoInativoParecer = "RC";
                     break;
                 case SituacaoMatriculaAluno.NaoCompareceu :
-                    statusAlunoInativoParecer = "Não Compareceu";
+                    statusAlunoInativoParecer = "NC";
                     break;
                 default:    
                     statusAlunoInativoParecer = "Inativo";
