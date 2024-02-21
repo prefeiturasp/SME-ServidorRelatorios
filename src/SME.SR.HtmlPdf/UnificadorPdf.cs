@@ -1,23 +1,21 @@
 ﻿using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
-using System.IO;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SME.SR.HtmlPdf
 {
     public class UnificadorPdf
     {
         private string NomePdfUnificado { get; set; }
-        private string[] NomeArquivos {  get; set; }
+        private List<string> DiretorioCaminhoArquivosCompleto {  get; set; }
         private string CaminhoBase { get; set; }
 
-        public UnificadorPdf(string nomePdfUnificado, string[] nomeArquivos)
+        public UnificadorPdf(string nomePdfUnificado, List<string> diretorioCaminhoArquivosCompleto)
         {
             NomePdfUnificado = nomePdfUnificado;
-            NomeArquivos = new string[] {
-                "Padroes_de_Projetos_-_Solucoes_Reutiliza.pdf",
-                "Princípios, padrões e práticas ágeis Robert Martin.pdf",
-                "Introdução à Arquitetura e Design de Software - Casa do Codigo.pdf"};
+            DiretorioCaminhoArquivosCompleto = diretorioCaminhoArquivosCompleto;
 
             CaminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
         }
@@ -26,9 +24,9 @@ namespace SME.SR.HtmlPdf
         {
             var destino = new PdfDocument();
 
-            foreach(var arquivo in NomeArquivos)
+            foreach (var diretorioArquivo in DiretorioCaminhoArquivosCompleto)
             {
-                using (var origem = PdfReader.Open(Path.Combine(CaminhoBase, arquivo), PdfDocumentOpenMode.Import))
+                using (var origem = PdfReader.Open(diretorioArquivo, PdfDocumentOpenMode.Import))
                 {
                     var totalPagina = origem.PageCount - 1;
                     for (var pagina = 0; pagina <= totalPagina; pagina++)
