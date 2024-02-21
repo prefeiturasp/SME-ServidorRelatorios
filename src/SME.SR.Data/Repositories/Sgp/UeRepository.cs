@@ -37,8 +37,8 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<UePorDresIdResultDto>(query, parametros);
         }
 
-        public async Task<IEnumerable<Ue>> ObterPorDreSemestreModadalidadeAnoId(long dreId, int? semestre, int modalidadeId, string[] anos)
-        {
+        public async Task<IEnumerable<Ue>> ObterPorDreSemestreModadalidadeAnoId(long dreId, int? semestre, int modalidadeId, string[] anos, IEnumerable<int> tipoEscolas)
+        { 
             var query = new StringBuilder(@"select distinct u.Id, u.ue_id Codigo, u.Nome, u.tipo_escola TipoEscola 
                             from ue u 
                             inner join turma t on t.ue_id  = u.id
@@ -53,6 +53,8 @@ namespace SME.SR.Data
             if (anos != null && anos.Length > 0)
                 query.AppendLine("and t.ano = ANY(@anos)");
 
+            query.AppendLine(" and u.tipo_escola = ANY(@tipoEscolas)");
+
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp);
 
             return await conexao.QueryAsync<Ue>(query.ToString(), new
@@ -60,7 +62,8 @@ namespace SME.SR.Data
                 dreId,
                 semestre = semestre ?? 0,
                 modalidadeId,
-                anos = anos.ToList()
+                anos = anos.ToList(),
+                tipoEscolas
             });
 
         }
