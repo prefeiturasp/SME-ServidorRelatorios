@@ -30,7 +30,7 @@ namespace SME.SR.HtmlPdf
 
         public bool Execute()
         {
-            if (!pdfsPorEncaminhamento.Any())
+            if (!pdfsPorEncaminhamento.Any() || string.IsNullOrEmpty(this.nomePdfUnificado))
                 return false;
 
             var unificador = new UnificadorPdf(nomePdfUnificado, ObterDiretoriosPdfParaUnificacao());
