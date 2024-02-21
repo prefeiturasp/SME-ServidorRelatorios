@@ -478,9 +478,9 @@ namespace SME.SR.MVC.Controllers
 
             var ueDto = new RelatorioNotasEConceitosFinaisUeDto() { Codigo = "321", Nome = "Ue de Teste" };
 
-            var ano = new RelatorioNotasEConceitosFinaisAnoDto("1");
+            var ano = new RelatorioNotasEConceitosFinaisAnoDto("1", "1");
 
-            var bimestre = new RelatorioNotasEConceitosFinaisBimestreDto("Bimestre 1");
+            var bimestre = new RelatorioNotasEConceitosFinaisBimestreDto(1, "Bimestre 1");
 
             var componenteCurricular = new RelatorioNotasEConceitosFinaisComponenteCurricularDto() { Nome = "Matemática" };
 

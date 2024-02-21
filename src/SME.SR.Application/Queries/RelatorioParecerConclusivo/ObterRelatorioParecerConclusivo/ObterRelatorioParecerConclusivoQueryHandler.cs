@@ -87,7 +87,10 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
             List<Ue> uesDaDre = new List<Ue>();
 
             if (string.IsNullOrEmpty(ueCodigoEnviado))
-                uesDaDre = (await mediator.Send(new ObterUesPorDreSemestreModadalidadeAnoIdQuery(dreId, semestre, modalidadeId, anos))).ToList();
+            {
+                var tipoEscolas = new List<int> { (int)TipoEscola.EMEF, (int)TipoEscola.EMEFM, (int)TipoEscola.EMEBS, (int)TipoEscola.CEUEMEF };
+                uesDaDre = (await mediator.Send(new ObterUesPorDreSemestreModadalidadeAnoIdQuery(dreId, semestre, modalidadeId, anos, tipoEscolas))).ToList();
+            }
             else
             {
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigoEnviado));
