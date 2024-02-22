@@ -56,6 +56,7 @@ namespace SME.SR.Workers.SGP
             services.RegistrarDependencias(Configuration);
 
             ConfiguraRabbitParaLogs(services);
+            ConfiguraFilasRabbitConsumo(services);
             ConfiguraTelemetria(services);
 
             services.RegistraElasticSearch(Configuration);
@@ -81,6 +82,13 @@ namespace SME.SR.Workers.SGP
             Configuration.GetSection("ConfiguracaoRabbitLog").Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
 
             services.AddSingleton(configuracaoRabbitLogOptions);
+        }
+
+        private void ConfiguraFilasRabbitConsumo(IServiceCollection services)
+        {
+            var configuracaoFilasRabbitOptions = new ConfiguracaoFilasRabbitOptions();
+            Configuration.GetSection(ConfiguracaoFilasRabbitOptions.Secao).Bind(configuracaoFilasRabbitOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(configuracaoFilasRabbitOptions);
         }
 
         private void ConfiguraTelemetria(IServiceCollection services)
