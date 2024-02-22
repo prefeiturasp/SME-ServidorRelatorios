@@ -45,7 +45,7 @@ namespace SME.SR.Workers.SGP.Services
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.configuracaoFilasRabbit = configuracaoFilasRabbit ?? throw new ArgumentNullException(nameof(configuracaoFilasRabbit));
 
-            if (configuration == null)
+             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
             var factory = new ConnectionFactory
@@ -78,10 +78,10 @@ namespace SME.SR.Workers.SGP.Services
 
         private void DeclararFilasPorRota(Type tipoRotas, string exchange)
         {
-            if (configuracaoFilasRabbit.Filas.Any())
+            if (configuracaoFilasRabbit.GetFilas.Any())
                 return;
             foreach (var fila in tipoRotas.ObterConstantesPublicas<string>()
-                                          .Where(r => !configuracaoFilasRabbit.FilasIgnoradas.Contains(r)))
+                                          .Where(r => !configuracaoFilasRabbit.GetFilasIgnoradas.Contains(r)))
             {
                 canalRabbit.QueueDeclare(fila, true, false, false);
                 canalRabbit.QueueBind(fila, exchange, fila, null);
@@ -90,7 +90,7 @@ namespace SME.SR.Workers.SGP.Services
 
         private void DeclararFilasConfiguradas(string exchange)
         {
-            foreach (var fila in configuracaoFilasRabbit.Filas)
+            foreach (var fila in configuracaoFilasRabbit.GetFilas)
             {
                 canalRabbit.QueueDeclare(fila, true, false, false);
                 canalRabbit.QueueBind(fila, exchange, fila, null);
@@ -250,11 +250,11 @@ namespace SME.SR.Workers.SGP.Services
 
         private void RegistrarConsumer(EventingBasicConsumer consumer)
         {
-            foreach (var fila in configuracaoFilasRabbit.Filas)
+            foreach (var fila in configuracaoFilasRabbit.GetFilas)
                 canalRabbit.BasicConsume(fila, false, consumer); 
-            if (!configuracaoFilasRabbit.Filas.Any())
+            if (!configuracaoFilasRabbit.GetFilas.Any())
                 foreach (var fila in typeof(RotasRabbitSR).ObterConstantesPublicas<string>()
-                                                          .Where(r => !configuracaoFilasRabbit.FilasIgnoradas.Contains(r)))
+                                                          .Where(r => !configuracaoFilasRabbit.GetFilasIgnoradas.Contains(r)))
                     canalRabbit.BasicConsume(fila, false, consumer);
         }
     }
