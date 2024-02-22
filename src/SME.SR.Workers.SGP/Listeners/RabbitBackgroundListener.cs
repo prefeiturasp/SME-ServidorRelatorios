@@ -1,5 +1,6 @@
 ﻿using Elastic.Apm;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,17 +31,19 @@ namespace SME.SR.Workers.SGP.Services
         private readonly IConnection conexaoRabbit;
         private readonly IMediator mediator;
         private readonly IModel canalRabbit;
-
+        private readonly ConfiguracaoFilasRabbitOptions configuracaoFilasRabbit;
         public RabbitBackgroundListener(IServiceScopeFactory serviceScopeFactory,
                                         IServicoTelemetria servicoTelemetria,
                                         TelemetriaOptions telemetriaOptions,
                                         IConfiguration configuration,
-                                        IMediator mediator)
+                                        IMediator mediator,
+                                        ConfiguracaoFilasRabbitOptions configuracaoFilasRabbit)
         {
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
             this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));            
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.configuracaoFilasRabbit = configuracaoFilasRabbit ?? throw new ArgumentNullException(nameof(configuracaoFilasRabbit));
 
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -69,12 +72,25 @@ namespace SME.SR.Workers.SGP.Services
 
         private void DeclararFilas()
         {
+            DeclararFilasConfiguradas(ExchangeRabbit.WorkerRelatorios);
             DeclararFilasPorRota(typeof(RotasRabbitSR), ExchangeRabbit.WorkerRelatorios);
         }
 
         private void DeclararFilasPorRota(Type tipoRotas, string exchange)
         {
-            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
+            if (configuracaoFilasRabbit.Filas.Any())
+                return;
+            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>()
+                                          .Where(r => !configuracaoFilasRabbit.FilasIgnoradas.Contains(r)))
+            {
+                canalRabbit.QueueDeclare(fila, true, false, false);
+                canalRabbit.QueueBind(fila, exchange, fila, null);
+            }
+        }
+
+        private void DeclararFilasConfiguradas(string exchange)
+        {
+            foreach (var fila in configuracaoFilasRabbit.Filas)
             {
                 canalRabbit.QueueDeclare(fila, true, false, false);
                 canalRabbit.QueueBind(fila, exchange, fila, null);
@@ -234,8 +250,12 @@ namespace SME.SR.Workers.SGP.Services
 
         private void RegistrarConsumer(EventingBasicConsumer consumer)
         {
-            foreach (var fila in typeof(RotasRabbitSR).ObterConstantesPublicas<string>())
-                canalRabbit.BasicConsume(fila, false, consumer);
+            foreach (var fila in configuracaoFilasRabbit.Filas)
+                canalRabbit.BasicConsume(fila, false, consumer); 
+            if (!configuracaoFilasRabbit.Filas.Any())
+                foreach (var fila in typeof(RotasRabbitSR).ObterConstantesPublicas<string>()
+                                                          .Where(r => !configuracaoFilasRabbit.FilasIgnoradas.Contains(r)))
+                    canalRabbit.BasicConsume(fila, false, consumer);
         }
     }
 }
