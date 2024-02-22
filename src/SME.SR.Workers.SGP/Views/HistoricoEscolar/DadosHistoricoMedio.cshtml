@@ -1,0 +1,252 @@
+﻿@using SME.SR.Infra;
+
+@model HistoricoEscolarFundamentalDto
+
+@{
+    if (Model.DadosHistorico != null)
+    {
+        var totalLinhasBaseNacional = ObterTotalLinhasBaseNacional();
+        var margemBaseNacional = 4 * totalLinhasBaseNacional;
+        var totalColunasCabecalho = Model.EhMagisterio ? 11 : 9;
+        var totalColunasResultadoFinal = Model.EhMagisterio ? 8 : 6;
+        <div>
+            <table class='tabela margin-top'>
+                <tr class="cabecalho-principal">
+                    <td class="cabecalho-titulo" colspan="@totalColunasCabecalho">@(Model.Cabecalho.LeiMedio)</td>
+                </tr>
+                <tr>
+                    @if (totalLinhasBaseNacional > 0)
+                    {
+                        <th class="texto-vertical" rowspan="@totalLinhasBaseNacional">
+                            <p style="width: 52px;margin-left: -@margemBaseNacional%;">BASE NACIONAL COMUM</p>
+                        </th>
+                    }
+                    else
+                    {
+                        <td colspan="1" rowspan="3"> </td>
+                    }
+                    <td class="titulo" style="width: 24.5%;" rowspan="3">Àrea de conhecimento</td>
+                    <td class="titulo" style="width: 24.5%;" rowspan="3">Componentes curriculares</td>
+                    <td class="titulo" colspan="@totalColunasResultadoFinal">Resultado final</td>
+                </tr>
+                <tr>
+                    <td class="texto-centralizado" colspan="2">1º ano</td>
+                    <td class="texto-centralizado" colspan="2">2º ano</td>
+                    <td class="texto-centralizado" colspan="2">3º ano</td>
+                    @if (Model.EhMagisterio)
+                    {
+                        <td class="texto-centralizado" colspan="2">4º ano</td>
+                    }
+                </tr>
+                @Html.Raw(ObterLinhasTiposNotasConceito())
+                @Html.Raw(ObterLinhasBaseNacional())
+                @Html.Raw(ObterLinhasDiversificadas())
+                @Html.Raw(ObterLinhasEnriquecimentoCurricular())
+                @Html.Raw(ObterLinhasProjetosAtividadesComplementares())
+                @Html.Raw(ObterLinhasParecerConclusivoFrequenciaGlobal("FREQUÊNCIA GLOBAL", Model.DadosHistorico?.FrequenciaGlobal))
+                @Html.Raw(ObterLinhasParecerConclusivoFrequenciaGlobal("PARECER CONCLUSIVO", Model.DadosHistorico?.ParecerConclusivo))
+            </table>
+            @Html.Raw(ObterLegenda())
+        </div>
+    }
+
+    string ObterLinhasTiposNotasConceito()
+    {
+        var linhas = "<tr>";
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.PrimeiroAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.SegundoAno);
+        linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.TerceiroAno);
+        if (Model.EhMagisterio)
+            linhas += RetornarTipoNotaFrequencia(Model.DadosHistorico?.TipoNota.QuartoAno);
+        linhas += "</tr>";
+        return linhas;
+    }
+
+    string RetornarTipoNotaFrequencia(string tipoNotaConceito)
+    {
+        var classe = Model.EhMagisterio ? "coluna-nota-magisterio" : "coluna-nota-transf";
+
+        return $"<td class='texto-centralizado {classe}'>{tipoNotaConceito}</td> <td class='texto-centralizado {classe}'>F</td>";
+    }
+
+    int ObterTotalLinhasBaseNacional()
+    {
+        var totalLinhasCabecalho = 3;
+        var totalLinhasComponentes = 0;
+        var areasConhecimento = Model.DadosHistorico?.BaseNacionalComum?.AreasDeConhecimento;
+
+        if (areasConhecimento == null)
+            return totalLinhasComponentes;
+
+        foreach (var areaDeConhecimento in areasConhecimento)
+        {
+            totalLinhasComponentes += areaDeConhecimento.ComponentesCurriculares.Count();
+        }
+
+        return totalLinhasCabecalho + totalLinhasComponentes;
+    }
+
+    string ObterLinhasBaseNacional()
+    {
+        var areasConhecimento = Model.DadosHistorico?.BaseNacionalComum?.AreasDeConhecimento;
+
+        return ObterLinhasAreaDeConhecimento(areasConhecimento);
+    }
+
+    string ObterLinhasAreaDeConhecimento(List<AreaDeConhecimentoDto> areasConhecimento, bool adicionarPrimeiraLinha = true)
+    {
+        var linhas = "";
+
+        if (areasConhecimento == null)
+            return linhas;
+
+        foreach (var areaDeConhecimento in areasConhecimento)
+        {
+            var totalComponentes = areaDeConhecimento.ComponentesCurriculares.Count();
+            if (adicionarPrimeiraLinha)
+                linhas += "<tr>";
+            linhas += $"<td class='subTitulo' rowspan='{totalComponentes}'>{areaDeConhecimento.Nome}</td>";
+            linhas += ObterLinhasComponentesCurriculares(areaDeConhecimento.ComponentesCurriculares);
+
+            adicionarPrimeiraLinha = true;
+        }
+
+        return linhas;
+    }
+
+    string ObterLinhasComponentesCurriculares(List<ComponenteCurricularHistoricoEscolarDto> componentesCurriculares)
+    {
+        var linhas = "";
+        var adicionarPrimeiraLinha = false;
+
+        if (componentesCurriculares == null)
+            return linhas;
+
+        foreach (var componente in componentesCurriculares)
+        {
+            if (adicionarPrimeiraLinha)
+                linhas += "<tr>";
+            linhas += $"<td class='subTitulo'>{componente.Nome}</td>";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoPrimeiroAno)}</td>";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaPrimeiroAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoSegundoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaSegundoAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoTerceiroAno)}</ td >";
+            linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaTerceiroAno)}</ td >";
+            if (Model.EhMagisterio)
+            {
+                linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.NotaConceitoQuartoAno)}</ td >";
+                linhas += $"<td class='texto-centralizado'>{ObterNotaConceito(componente.FrequenciaQuartoAno)}</ td >";
+            }
+            linhas += "</tr>";
+
+            adicionarPrimeiraLinha = true;
+        }
+
+        return linhas;
+    }
+
+    string ObterNotaConceito(string notaConceito)
+    {
+        return string.IsNullOrEmpty(notaConceito) ? "-" : notaConceito;
+    }
+
+    int ObterTotalLinhasDiversificadas()
+    {
+        var grupos = Model.DadosHistorico?.GruposComponentesCurriculares;
+        var totalLinhasComponentes = 0;
+
+        if (grupos == null)
+            return totalLinhasComponentes;
+
+        foreach (var grupo in grupos)
+        {
+            foreach (var areaConhecimento in grupo.AreasDeConhecimento)
+            {
+                totalLinhasComponentes += areaConhecimento.ComponentesCurriculares.Count();
+            }
+        }
+
+        return totalLinhasComponentes;
+    }
+
+    string ObterLinhasDiversificadas()
+    {
+        var grupos = Model.DadosHistorico?.GruposComponentesCurriculares;
+        var linhas = "";
+
+        if (grupos != null && grupos.Any())
+        {
+            linhas = "<tr>";
+            linhas += $"<td class='coluna-diversificada' rowspan='{ObterTotalLinhasDiversificadas()}'><p style='width: 48px;'>DIVERSIFICADA</p></td>";
+
+            foreach (var grupo in grupos)
+            {
+                linhas += ObterLinhasAreaDeConhecimento(grupo.AreasDeConhecimento, false);
+            }
+        }
+
+        return linhas;
+    }
+
+    string ObterLinhasEnriquecimentoCurricular()
+    {
+        var enriquecimentos = Model.DadosHistorico?.EnriquecimentoCurricular;
+
+        return ObterLinhasAtividadesExtra(enriquecimentos, "Enriquecimento curricular");
+    }
+
+    string ObterLinhasProjetosAtividadesComplementares()
+    {
+        var complementares = Model.DadosHistorico?.ProjetosAtividadesComplementares;
+
+        return ObterLinhasAtividadesExtra(complementares, "Projetos/atividades complementares");
+    }
+
+    string ObterLinhasAtividadesExtra(List<ComponenteCurricularHistoricoEscolarDto> componentesCurriculares, string nomeAtividade)
+    {
+        var linhas = "";
+
+        if (componentesCurriculares == null)
+            return linhas;
+
+        var linhaSpan = componentesCurriculares.Count() > 0 ? "rowspan='{componentesCurriculares.Count()}'" : string.Empty;
+
+        linhas = "<tr>";
+        linhas += $"<td class='subTitulo texto-centralizado' colspan='2' {linhaSpan}>{nomeAtividade}</td>";
+        linhas += ObterLinhasComponentesCurriculares(componentesCurriculares);
+
+        return linhas;
+    }
+
+    string ObterLinhasParecerConclusivoFrequenciaGlobal(string titulo, ParecerConclusivoFrequenciaGlobalDto parecerFrequencia)
+    {
+        var linhas = "";
+
+        if (parecerFrequencia == null)
+            return linhas;
+
+        linhas = "<tr>";
+        linhas += $"<td class='subTitulo texto-centralizado' colspan='3'>{titulo}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.PrimeiroAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.SegundoAno}</td>";
+        linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.TerceiroAno}</td>";
+        if (Model.EhMagisterio)
+            linhas += $"<td class='texto-centralizado' colspan='2'>{@parecerFrequencia.QuartoAno}</td>";
+        linhas += "</tr>";
+
+        return linhas;
+    }
+
+    string ObterLegenda()
+    {
+        var legenda = Model.Legenda;
+
+        if (legenda == null)
+            return "";
+
+        var textoLegenda = string.IsNullOrEmpty(legenda.Texto) ? string.Empty : $", {legenda.Texto}";
+
+        return $"<div class='legenda'>C = Conceito, N = Nota {textoLegenda}</div>";
+    }
+}

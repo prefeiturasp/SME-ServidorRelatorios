@@ -10,11 +10,14 @@ namespace SME.SR.Application
 {
     public class RelatorioAcompanhamentoAprendizagemUseCase : IRelatorioAcompanhamentoAprendizagemUseCase
     {
+        private const string PREFIXO_IMAGEM_CODIFICADA_BASE64 = "<img src=\"data:image/{0};base64,";
+        private readonly string[] extensoesImagens;
         private readonly IMediator mediator;
 
         public RelatorioAcompanhamentoAprendizagemUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            extensoesImagens = new string[] { "png", "jpeg", "jpg" };
         }
 
         public async Task Executar(FiltroRelatorioDto filtro)
@@ -24,12 +27,7 @@ namespace SME.SR.Application
                 filtro.RelatorioEscolaAqui = true;
 
             var parametros = filtro.ObterObjetoFiltro<FiltroRelatorioAcompanhamentoAprendizagemDto>();
-           
-            var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId));
-
-            if (turma == null)
-                throw new NegocioException("Turma não encontrada");
-
+            var turma = await mediator.Send(new ObterComDreUePorTurmaIdQuery(parametros.TurmaId)) ?? throw new NegocioException("Turma não encontrada");
             var turmaCodigo = new string[1] { turma.Codigo };
             var professores = (await mediator.Send(new ObterProfessorTitularComponenteCurricularPorTurmaQuery(turmaCodigo))).ToList();
 
@@ -41,12 +39,13 @@ namespace SME.SR.Application
                 professores.AddRange(professoresAtribuicaoExterna);
             }
 
-
             var alunosEol = await mediator.Send(new ObterAlunosPorTurmaAcompanhamentoApredizagemQuery(turma.Codigo, parametros.AlunoCodigo, turma.AnoLetivo));
             if (alunosEol == null || !alunosEol.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var acompanhmentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
+            await ValidarImagemBase64NoRAA(parametros.TurmaId, parametros.Semestre, turma.Codigo, turma.Nome, parametros.AlunoCodigo.ToString());
+
+            var acompanhamentosAlunos = await mediator.Send(new ObterAcompanhamentoAprendizagemPorTurmaESemestreQuery(parametros.TurmaId, parametros.AlunoCodigo.ToString(), parametros.Semestre));
 
             var bimestres = ObterBimestresPorSemestre(parametros.Semestre);
 
@@ -63,7 +62,7 @@ namespace SME.SR.Application
             if (filtro.RelatorioEscolaAqui)
             {
                 var mensagemdados = await MapearDadosParaGerarMensagem(filtro);
-                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: true));
+                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhamentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: true));
                 filtro.RotaProcessando = RotasRabbitSR.RotaRelatoriosSolicitadosRaaEscolaAqui;
                 filtro.RotaErro = RotasRabbitSGP.RotaRelatorioComErro;
                 await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, nomeFila: RotasRabbitSGP.RotaRelatoriosProntosApp, modalidade: turma.ModalidadeCodigo, mensagemDados: mensagemdados));
@@ -71,8 +70,24 @@ namespace SME.SR.Application
             else
             {
                 var mensagemTitulo = $"Relatório do Acompanhamento da Aprendizagem - {turma.NomeRelatorio}";
-                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhmentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: false));
+                var relatorioDto = await mediator.Send(new ObterRelatorioAcompanhamentoAprendizagemQuery(turma, alunosEol, professores, acompanhamentosAlunos, frequenciaAlunos, ocorrencias, parametros, quantidadeAulasDadas, periodoInicioFim.Id, relatorioEscolaAqui: false));
                 await mediator.Send(new GerarRelatorioHtmlCommand("RelatorioAcompanhamentoAprendizagem", relatorioDto, filtro.CodigoCorrelacao, mensagemTitulo: mensagemTitulo));
+            }
+        }
+
+        private async Task ValidarImagemBase64NoRAA(long turmaId, int semestre, string codigoTurma, string nomeTurma, string alunoCodigo)
+        {
+            var tagsImagemConsideradas = extensoesImagens.Select(e => string.Format(PREFIXO_IMAGEM_CODIFICADA_BASE64, e)).ToArray();
+
+            var informacoesRAAComImagemBase64 = await mediator
+                .Send(new VerificarPercursoTurmaAlunoComImagemBase64Query(turmaId, semestre, alunoCodigo, tagsImagemConsideradas));
+
+            if (informacoesRAAComImagemBase64.Any() && !informacoesRAAComImagemBase64.All(i => !i.PossuiBase64PercursoTurma && string.IsNullOrWhiteSpace(i.CodigoAlunoPercursoPossuiImagemBase64)))
+            {
+                var percursoTurmaComImagemBase64 = informacoesRAAComImagemBase64.Any(i => i.PossuiBase64PercursoTurma);
+                var alunosComImagemBase64 = string.Join(", ", informacoesRAAComImagemBase64.Where(i => !string.IsNullOrWhiteSpace(i.CodigoAlunoPercursoPossuiImagemBase64)).Select(i => i.CodigoAlunoPercursoPossuiImagemBase64));
+                var mensagemValidacaoImagem = $"Não foi possível processar as imagens anexadas no RAA da turma ({codigoTurma}-{nomeTurma}).{(percursoTurmaComImagemBase64 ? " Percurso coletivo da turma." : string.Empty)}{(!string.IsNullOrWhiteSpace(alunosComImagemBase64) ? $" Percurso individual dos alunos: {alunosComImagemBase64}" : string.Empty)}";
+                throw new NegocioException(mensagemValidacaoImagem);
             }
         }
 

@@ -25,26 +25,17 @@ namespace SME.SR.Application
         {
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroConselhoDeClasse;
             var relatorioQuery = request.ObterObjetoFiltro<ObterRelatorioConselhoClasseAlunoQuery>();
-            SentrySdk.CaptureMessage("4.09 Obtendo relatorio.. - RelatorioConselhoClasseAlunoUseCase");
 
             var relatorio = await mediator.Send(relatorioQuery);
 
-            SentrySdk.CaptureMessage("5.1 Obtive relatorio.. - RelatorioConselhoClasseAlunoUseCase");
-
-            var urlRelatorio = "";
-
+            string urlRelatorio;
             if (relatorio.Relatorio.FirstOrDefault().EhBimestreFinal)
                 urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasseAbaFinal";
             else urlRelatorio = "/sgp/RelatorioConselhoClasse/ConselhoClasse";
 
             var relatorioSerializado = JsonConvert.SerializeObject(relatorio);
 
-            SentrySdk.CaptureMessage("5.2 Serializei relatório.. - RelatorioConselhoClasseAlunoUseCase");
-
-            SentrySdk.AddBreadcrumb("5 - Obtive o relatorio serializado : " + relatorioSerializado, "5 - RelatorioConselhoClasseAlunoUseCase");
             await mediator.Send(new GerarRelatorioAssincronoCommand(urlRelatorio, relatorioSerializado, TipoFormatoRelatorio.Pdf, request.CodigoCorrelacao, RotasRabbitSR.RotaRelatoriosProcessandoConselhoDeClasse));
-
-            SentrySdk.CaptureMessage("5 FINAL - RelatorioConselhoClasseAlunoUseCase");
         }
     }
 }

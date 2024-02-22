@@ -330,9 +330,9 @@ namespace SME.SR.Data
 									  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
 									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
 									  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
-										? "and mte.dt_situacao_aluno > @dataFim))"
-										: "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
-									  )}
+                                        ? "and mte.dt_situacao_aluno > @dataFim))"
+                                        : "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
+                                      )}
 									  and aln.AnoLetivo = anoLetivo
 									  AND se.sg_resumida_serie = @anoTurma 
 									  AND ee.cd_etapa_ensino in (@modalidades)
@@ -343,13 +343,16 @@ namespace SME.SR.Data
 									FROM lista ");
 
 
-			var parametros = 
-				new { dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH), 
-					ueCodigo, 
-					anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH), 
-					anoLetivo, 
-					dataFim = dataReferenciaFim,
-				    dataInicio = dataReferenciaInicio};
+            var parametros =
+                new
+                {
+                    dreCodigo = dreCodigo.ToString().ToDbChar(DapperConstants.CODIGODRE_LENGTH),
+                    ueCodigo,
+                    anoTurma = anoTurma.ToDbChar(DapperConstants.ANOTURMA_LENGTH),
+                    anoLetivo,
+                    dataFim = dataReferenciaFim,
+                    dataInicio = dataReferenciaInicio
+                };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
@@ -547,9 +550,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<AlunoHistoricoEscolar>> ObterDadosAlunosPorCodigos(long[] codigosAlunos, int? anoLetivo)
         {
             var query = @$"
-
-					IF OBJECT_ID('tempdb..#tmpAlunos') IS NOT NULL
-											DROP TABLE #tmpAlunos
+					with lista_alunos as (
 					select
 					cd_aluno,
 					nm_aluno,
@@ -563,36 +564,10 @@ namespace SME.SR.Data
 					dt_emissao_rg,
 					cd_municipio_nascimento,
 					cd_orgao_emissor
-					into #tmpAlunos
 					from aluno
 					where
-					cd_aluno in (#codigosAlunos)
-
-					IF OBJECT_ID('tempdb..#tmpAlunosPorCodigo') IS NOT NULL
-						DROP TABLE #tmpAlunosPorCodigo
-					CREATE TABLE #tmpAlunosPorCodigo
-					(
-						CodigoAluno int,
-						NomeAluno VARCHAR(70),
-						DataNascimento DATETIME,
-						NomeSocialAluno VARCHAR(70),
-						CodigoSituacaoMatricula INT,
-						SituacaoMatricula VARCHAR(40),
-						DataSituacao DATETIME,
-						AnoLetivo SMALLINT,
-						CodigoTurma INT,
-						CodigoEscola CHAR(6),
-						NumeroAlunoChamada VARCHAR(5),
-						CidadeNatal VARCHAR(40),
-						EstadoNatal CHAR(2),
-						Nacionalidade VARCHAR(20),
-						RG VARCHAR(30),
-						ExpedicaoOrgaoEmissor VARCHAR(80),
-						ExpedicaoUF VARCHAR(2),
-						ExpedicaoData DATETIME,
-						PossuiDeficiencia BIT
-					)
-					INSERT INTO #tmpAlunosPorCodigo
+					cd_aluno in @codigosAlunos),
+					lista_alunos_por_codigo as (
 					SELECT aluno.cd_aluno CodigoAluno,
 					   aluno.nm_aluno NomeAluno,
 					   aluno.dt_nascimento_aluno DataNascimento,
@@ -636,13 +611,13 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM #tmpAlunos aluno
+						FROM lista_alunos aluno
 						INNER JOIN v_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
 						INNER JOIN matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in (#codigosAlunos)
+						WHERE 1 = 1 {(anoLetivo.HasValue ? " and matr.an_letivo = @anoLetivo " : string.Empty)}
 						UNION
 						SELECT  aluno.cd_aluno CodigoAluno,
 						aluno.nm_aluno NomeAluno,
@@ -687,25 +662,23 @@ namespace SME.SR.Data
 							WHEN ISNULL(nea.tp_necessidade_especial, 0) = 0 THEN 0
 							ELSE 1
 						END PossuiDeficiencia
-						FROM #tmpAlunos aluno
-						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno
-						{(anoLetivo.HasValue ? $"and matr.an_letivo = @anoLetivo" : string.Empty)}
+						FROM lista_alunos aluno
+						INNER JOIN v_historico_matricula_cotic matr ON aluno.cd_aluno = matr.cd_aluno						
 						INNER JOIN historico_matricula_turma_escola mte ON matr.cd_matricula = mte.cd_matricula
 						LEFT JOIN municipio mun ON aluno.cd_municipio_nascimento = mun.cd_municipio
 						LEFT JOIN orgao_emissor orge ON aluno.cd_orgao_emissor = orge.cd_orgao_emissor
 						LEFT JOIN necessidade_especial_aluno nea ON nea.cd_aluno = matr.cd_aluno
-						WHERE aluno.cd_aluno in (#codigosAlunos)
-						and mte.dt_situacao_aluno in
+						where {(anoLetivo.HasValue ? "matr.an_letivo = @anoLetivo and " : string.Empty)}
+						mte.dt_situacao_aluno in
 							(SELECT mte2.dt_situacao_aluno from v_historico_matricula_cotic  matr2
 								INNER JOIN historico_matricula_turma_escola mte2 ON matr2.cd_matricula = mte2.cd_matricula
 							 WHERE matr2.cd_aluno = matr.cd_aluno
-							{(anoLetivo.HasValue ? $"and matr2.an_letivo = @anoLetivo" : string.Empty)}
+							{(anoLetivo.HasValue ? "and matr2.an_letivo = @anoLetivo" : string.Empty)}
 						)
 						OR EXISTS(
 							SELECT 1 FROM v_matricula_cotic matr3
 								INNER JOIN matricula_turma_escola mte3 ON matr3.cd_matricula = mte3.cd_matricula
-							WHERE mte.cd_matricula = mte3.cd_matricula
-							AND matr3.cd_aluno in (#codigosAlunos) and matr.cd_aluno in (#codigosAlunos))
+							WHERE mte.cd_matricula = mte3.cd_matricula and matr3.cd_aluno = aluno.cd_aluno {(anoLetivo.HasValue ? " and matr3.an_letivo = @anoLetivo " : string.Empty)}))
 					SELECT
 					CodigoAluno,
 					NomeAluno,
@@ -726,7 +699,7 @@ namespace SME.SR.Data
 					ExpedicaoData,
 					PossuiDeficiencia,
                     NumeroAlunoChamada
-					FROM #tmpAlunosPorCodigo
+					FROM lista_alunos_por_codigo
 					GROUP BY
 					CodigoAluno,
 					NomeAluno,
@@ -748,7 +721,7 @@ namespace SME.SR.Data
                     NumeroAlunoChamada";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query.Replace("#codigosAlunos", string.Join(" ,", codigosAlunos)), new { anoLetivo }, commandTimeout: 120);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, new { anoLetivo, codigosAlunos }, commandTimeout: 120);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)
@@ -1619,14 +1592,14 @@ namespace SME.SR.Data
 						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
 						inner join v_cadastro_unidade_educacao ue ON te.cd_escola = ue.cd_unidade_educacao
 						where 1=1 ";
-            
-			if (!string.IsNullOrEmpty(ueCodigo) && ueCodigo != "-99")
+
+            if (!string.IsNullOrEmpty(ueCodigo) && ueCodigo != "-99")
                 sql += @" AND ue.cd_unidade_educacao = @ueCodigo ";
-            
-			if (!string.IsNullOrEmpty(dreCodigo) && dreCodigo != "-99")
+
+            if (!string.IsNullOrEmpty(dreCodigo) && dreCodigo != "-99")
                 sql += @" AND ue.cd_unidade_administrativa_referencia = @dreCodigo ";
-            
-			if (codigosAlunos != null && codigosAlunos.Any())
+
+            if (codigosAlunos != null && codigosAlunos.Any())
                 sql += $" and CodigoAluno in (#codigosAlunos) ";
 
             sql += @" and te.an_letivo = @anoLetivo )
@@ -1635,8 +1608,8 @@ namespace SME.SR.Data
 								where sequencia in (1,2)
 								and CodigoSituacaoMatricula <> 4";
 
-			if (codigosAlunos != null && codigosAlunos.Any())
-				sql = sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'");
+            if (codigosAlunos != null && codigosAlunos.Any())
+                sql = sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'");
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
@@ -1715,33 +1688,34 @@ namespace SME.SR.Data
 
         public async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalAlunosAtivosPorPeriodoEAnoTurma(int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId)
         {
-	        var parametros = new
-	        {
-		        anoLetivo,
-		        dataInicio,
-		        dataFim,
-		        codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
-		        codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
-	        };
-	        var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId,ueId);
-	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
-	        {
-		        return await con.QueryAsync<TotalAlunosAnoTurmaDto>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
-	        }
+            var parametros = new
+            {
+                anoLetivo,
+                dataInicio,
+                dataFim,
+                codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
+                codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
+            };
+            var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId, ueId, dataInicio);
+
+            using (var con = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                return await con.QueryAsync<TotalAlunosAnoTurmaDto>(query.ToString().Replace("@modalidades", string.Join(", ", modalidades)), parametros, commandTimeout: 6000);
+            }
         }
 
         public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferencia)
         {
-	        var totalAlunos = 0;
-	        var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
-	        var parametros = new {dataReferencia,codigoTurma};
-	        using (var con = new  SqlConnection(variaveisAmbiente.ConnectionStringEol))
-	        {
-		        var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000)).ToList();
-		        if (registros.Count() >= 0)
-			        totalAlunos = registros.Count();
-	        }
-	        return totalAlunos;
+            var totalAlunos = 0;
+            var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
+            var parametros = new { dataReferencia, codigoTurma };
+            using (var con = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
+            {
+                var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000)).ToList();
+                if (registros.Count() >= 0)
+                    totalAlunos = registros.Count();
+            }
+            return totalAlunos;
         }
     }
 }

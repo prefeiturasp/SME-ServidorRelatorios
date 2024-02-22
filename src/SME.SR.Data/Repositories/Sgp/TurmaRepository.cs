@@ -431,7 +431,7 @@ namespace SME.SR.Data
 
         }
 
-        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterPorUeCicloAno(int anoLetivo, string ano, long tipoCicloId, long ueId)
+        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterPorUeCicloAno(int anoLetivo, string ano, long tipoCicloId, long ueId, int? semestre = null)
         {
             var query = @"select t.turma_id as codigo, t.id, t.nome from  tipo_ciclo tc 
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
@@ -439,10 +439,12 @@ namespace SME.SR.Data
                         inner join ue u on t.ue_id  = u.id
                         where u.id = @ueId and tc.id = @tipoCicloId and t.ano_letivo = @anoLetivo and tca.ano = @ano and t.tipo_turma = @tipoTurmaRegular";
 
+            if (semestre.HasValue)
+                query += " and t.semestre = @semestre";
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano, tipoTurmaRegular = TipoTurma.Regular });
+            return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query, new { ueId, tipoCicloId, anoLetivo, ano, tipoTurmaRegular = TipoTurma.Regular, semestre });
         }
         public async Task<IEnumerable<AlunoTurmaRegularRetornoDto>> ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long turmaCodigo)
         {
@@ -640,11 +642,45 @@ namespace SME.SR.Data
 
         }
 
+        public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadesAnoLetivoESemestre(string[] uesCodigos, string[] anos, int[] modalidades, int anoLetivo, int? semestre)
+        {
+            try
+            {
+                var query = new StringBuilder(@"select t.turma_id as codigo, t.id, u.id as ueId, t.nome, t.ano from  tipo_ciclo tc 
+                        inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
+                        inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
+                        inner join ue u on t.ue_id  = u.id
+                        where 1=1 ");
+
+                if (anos != null && anos.Length > 0)
+                    query.AppendLine("and tca.ano = ANY(@anos) ");
+
+                if (uesCodigos != null && uesCodigos.Length > 0)
+                    query.AppendLine("and u.ue_id = ANY(@uesCodigos) ");
+
+                if (modalidades != null && modalidades.Length > 0)
+                    query.AppendLine("and t.modalidade_codigo = ANY(@modalidades) ");
+
+                if (semestre.HasValue)
+                    query.AppendLine("and t.semestre = @semestre ");
+
+                query.AppendLine(" and t.ano_letivo = @anoLetivo");
+
+                using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidades, semestre = semestre ?? 0, anoLetivo });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadeESemestre(string[] uesCodigos, string[] anos, int modalidade, int? semestre)
         {
             try
             {
-                var query = new StringBuilder(@"select t.turma_id as codigo, t.id, u.id as ueId, t.nome from  tipo_ciclo tc 
+                var query = new StringBuilder(@"select t.turma_id as codigo, t.id, u.id as ueId, t.nome, t.ano from  tipo_ciclo tc 
                         inner join tipo_ciclo_ano tca on tc.id = tca.tipo_ciclo_id
                         inner join turma t on tca.ano = t.ano and tca.modalidade = t.modalidade_codigo
                         inner join ue u on t.ue_id  = u.id
@@ -662,11 +698,9 @@ namespace SME.SR.Data
                 if (semestre.HasValue)
                     query.AppendLine("and t.semestre = @semestre ");
 
-                //query.AppendLine("order by tca.ano ");
-
                 using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidade, semestre = semestre ?? 0 });
+                return await conexao.QueryAsync<TurmaFiltradaUeCicloAnoDto>(query.ToString(), new { uesCodigos, anos, modalidade, semestre = semestre ?? 0});
             }
             catch (Exception ex)
             {
@@ -1213,6 +1247,28 @@ namespace SME.SR.Data
 			        return consulta;
 		        }
 	    }
+
+        public async Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterTotalDeTurmasPorUeAnoLetivoEModalidade(string codigoUe, int modalidade, int anoLetivo)
+        {
+            var query = $@"select count(distinct t.nome) Quantidade, t.ano as Ano
+                            from turma t
+                            inner join ue u on u.id = t.ue_id 
+                            where u.ue_id = @codigoUe and t.ano_letivo = @anoLetivo and t.modalidade_codigo = @modalidade
+                            and t.ano > '0'
+                            group by t.ano";
+
+            var parametros = new
+            {
+                modalidade,
+                codigoUe,
+                anoLetivo
+            };
+            using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
+            {
+                var consulta = await conexao.QueryAsync<TotalDeTurmasPorAnoDto>(query.ToString(), parametros);
+                return consulta;
+            }
+        }
 
         public async Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null)
         {

@@ -16,7 +16,7 @@ namespace SME.SR.Data
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
-        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre, GrupoSondagemEnum grupo)
+        public async Task<IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto>> ObterPlanilhaLinhas(string dreCodigo, string ueCodigo, string turmaCodigo, int anoLetivo, int anoTurma, int bimestre, ProficienciaSondagemEnum proficiencia, string nomeColunaBimestre, GrupoSondagemEnum grupo, int semestre)
         {
             string sql = String.Empty;
 
@@ -80,7 +80,7 @@ namespace SME.SR.Data
                     break;
             }
 
-            var periodo = $"{ bimestre }° Bimestre";
+            var periodo = $"{ Math.Max(bimestre, semestre) }° {(bimestre != 0 ? "Bimestre": "Semestre")}";
 
             var componenteCurricular = ComponenteCurricularSondagemEnum.Portugues.Name();
 
@@ -131,13 +131,7 @@ namespace SME.SR.Data
             		c.""Id"" = s.""ComponenteCurricularId""
                 inner join ""Ordem"" o on
                     o.""Id"" = s.""OrdemId""
-                where
-            		s.""Id"" in (
-            		select
-            			s.""Id""
-            		from
-            			""Sondagem"" s
-            		where 1 = 1");
+                where 1 = 1");
 
             if (!string.IsNullOrEmpty(grupoId))
                 query.AppendLine(" and s.\"GrupoId\" = @GrupoId");
@@ -153,8 +147,6 @@ namespace SME.SR.Data
 
             if (!string.IsNullOrEmpty(codigoTurma))
                 query.AppendLine(" and s.\"CodigoTurma\" = @CodigoTurma");
-
-            query.AppendLine(")");
 
             var parametros = new { grupoId, componenteCurricularId, periodoId, anoLetivo, codigoTurma };
 

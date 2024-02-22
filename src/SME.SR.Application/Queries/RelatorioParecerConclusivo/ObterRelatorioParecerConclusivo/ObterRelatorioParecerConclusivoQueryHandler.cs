@@ -40,13 +40,13 @@ namespace SME.SR.Application
             await MontaSecoes(retorno, parecesParaTratar, request.filtroRelatorioParecerConclusivoDto.AnoLetivo, request.filtroRelatorioParecerConclusivoDto.DreCodigo,
                 request.filtroRelatorioParecerConclusivoDto.UeCodigo, request.filtroRelatorioParecerConclusivoDto.Ciclo, modalidadeId,
                 request.filtroRelatorioParecerConclusivoDto.Semestre, request.filtroRelatorioParecerConclusivoDto.Anos,
-                request.filtroRelatorioParecerConclusivoDto.ParecerConclusivoId);
+                request.filtroRelatorioParecerConclusivoDto.ParecerConclusivoId, request.filtroRelatorioParecerConclusivoDto.Historico);
 
             return await Task.FromResult(retorno);
         }
 
         private async Task MontaSecoes(RelatorioParecerConclusivoDto retorno, IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, int anoLetivo, string dreCodigoEnviado,
-            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos, long parecerConclusivoId)
+            string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos, long parecerConclusivoId, bool consideraHistorico)
         {
             IEnumerable<string> dresCodigos;
 
@@ -61,7 +61,7 @@ namespace SME.SR.Application
                     dreParaAdicionar.Codigo = dre.Codigo;
                     dreParaAdicionar.Nome = dre.Abreviacao;
 
-                    await TrataUes(parecesParaTratar, dreParaAdicionar, anoLetivo, dre.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId);
+                    await TrataUes(parecesParaTratar, dreParaAdicionar, anoLetivo, dre.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId, consideraHistorico);
                     retorno.Dres.Add(dreParaAdicionar);
                 }
             }
@@ -73,21 +73,24 @@ namespace SME.SR.Application
                 dreParaAdicionar.Nome = dreUnicaParaAdicionar.Abreviacao;
 
                 if (retorno.UeNome == "Todas")
-                    await TrataUes(parecesParaTratar, dreParaAdicionar, anoLetivo, dreUnicaParaAdicionar.Id, "", cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId);
-                else await TrataUes(parecesParaTratar, dreParaAdicionar, anoLetivo, dreUnicaParaAdicionar.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId);
+                    await TrataUes(parecesParaTratar, dreParaAdicionar, anoLetivo, dreUnicaParaAdicionar.Id, "", cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId, consideraHistorico);
+                else await TrataUes(parecesParaTratar, dreParaAdicionar, anoLetivo, dreUnicaParaAdicionar.Id, ueCodigoEnviado, cicloIdEnviado, modalidadeId, semestre, anos, parecerConclusivoId, consideraHistorico);
 
                 retorno.Dres.Add(dreParaAdicionar);
             }
         }
 
         private async Task TrataUes(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, RelatorioParecerConclusivoDreDto dreParaAdicionar, int anoLetivo,
-long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos, long parecerConclusivoId)
+long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? semestre, string[] anos, long parecerConclusivoId, bool consideraHistorico)
         {
 
             List<Ue> uesDaDre = new List<Ue>();
 
             if (string.IsNullOrEmpty(ueCodigoEnviado))
-                uesDaDre = (await mediator.Send(new ObterUesPorDreSemestreModadalidadeAnoIdQuery(dreId, semestre, modalidadeId, anos))).ToList();
+            {
+                var tipoEscolas = new List<int> { (int)TipoEscola.EMEF, (int)TipoEscola.EMEFM, (int)TipoEscola.EMEBS, (int)TipoEscola.CEUEMEF };
+                uesDaDre = (await mediator.Send(new ObterUesPorDreSemestreModadalidadeAnoIdQuery(dreId, semestre, modalidadeId, anos, tipoEscolas))).ToList();
+            }
             else
             {
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(ueCodigoEnviado));
@@ -100,15 +103,15 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
                 ueParaAdicionar.Nome = ueDaDre.NomeComTipoEscola;
                 ueParaAdicionar.Codigo = ueDaDre.Codigo;
 
-                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, anoLetivo, modalidadeId, cicloIdEnviado, anos, parecerConclusivoId);
-
+                await TrataCiclosDaUe(parecesParaTratar, ueDaDre.Id, ueParaAdicionar, anoLetivo, modalidadeId, cicloIdEnviado, anos, parecerConclusivoId, semestre, consideraHistorico);
+                
                 dreParaAdicionar.Ues.Add(ueParaAdicionar);
             }
-
+            
         }
 
         private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, int anoLetivo, int modalidadeId, long cicloIdEnviado,
-            string[] anosEnviado, long parecerConclusivoId)
+            string[] anosEnviado, long parecerConclusivoId, int? semestre, bool consideraHistorico)
         {
             var ciclosDaUe = await mediator.Send(new ObterCiclosPorUeIdQuery(ueId));
 
@@ -133,21 +136,21 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
 
                     anoParaIncluir.Nome = cicloAgrupado.Ano + "º Ano";
 
-                    var turmasFiltradas = await mediator.Send(new ObterTurmasPorUeCicloAnoQuery(cicloAgrupado.Id, cicloAgrupado.Ano, ueId, anoLetivo));
+                    var turmasFiltradas = await mediator.Send(new ObterTurmasPorUeCicloAnoQuery(cicloAgrupado.Id, cicloAgrupado.Ano, ueId, anoLetivo, semestre));
 
                     IEnumerable<AlunoDaTurmaDto> alunosDasTurmas = new List<AlunoDaTurmaDto>();
 
-                    if (anoLetivo < DateTime.Now.Year)
-                        alunosDasTurmas = await mediator.Send(new ObterAlunosPorTurmasAnosAnterioresQuery(turmasFiltradas.Select(a => long.Parse(a.Codigo))));                                         
+                    if (consideraHistorico)
+                        alunosDasTurmas = await mediator.Send(new ObterAlunosPorTurmasAnosAnterioresQuery(turmasFiltradas.Select(a => long.Parse(a.Codigo))));
                     else
-                        alunosDasTurmas = await mediator.Send(new ObterAlunosPorTurmasQuery(turmasFiltradas.Select(a => long.Parse(a.Codigo))));                                       
+                        alunosDasTurmas = await mediator.Send(new ObterAlunosPorTurmasQuery(turmasFiltradas.Select(a => long.Parse(a.Codigo))));
 
                     foreach (var turma in turmasFiltradas)
                     {
                         foreach (var alunoDaTurma in alunosDasTurmas.Where(a => a.CodigoTurma == int.Parse(turma.Codigo)).OrderBy(a => a.ObterNomeFinal()))
                         {
                             var parecerParaIncluir = new RelatorioParecerConclusivoAlunoDto();
-                            var numeroAlunoChamadaConvertido =  String.IsNullOrEmpty(alunoDaTurma.NumeroAlunoChamada) ? "" : Int32.Parse(alunoDaTurma.NumeroAlunoChamada).ToString();
+                            var numeroAlunoChamadaConvertido = String.IsNullOrEmpty(alunoDaTurma.NumeroAlunoChamada) ? "" : Int32.Parse(alunoDaTurma.NumeroAlunoChamada).ToString();
                             parecerParaIncluir.AlunoCodigo = alunoDaTurma.CodigoAluno.ToString();
                             parecerParaIncluir.AlunoNomeCompleto = alunoDaTurma.ObterNomeFinal();
                             parecerParaIncluir.AlunoNumeroChamada = numeroAlunoChamadaConvertido;
@@ -180,7 +183,7 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
         private async Task VerificarParecerEmAprovacao(RelatorioParecerConclusivoAlunoDto relatorioParecerAluno, int ano)
         {
             string parecerConclusivoDescricao = await mediator.Send(new ObterDescricaoParecerEmAprovacaoQuery(relatorioParecerAluno.AlunoCodigo, ano));
-            if(parecerConclusivoDescricao != null)
+            if (parecerConclusivoDescricao != null)
             {
                 relatorioParecerAluno.ParecerConclusivoDescricao = $"{parecerConclusivoDescricao}*";
                 relatorioParecerAluno.EmAprovacao = true;

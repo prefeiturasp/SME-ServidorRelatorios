@@ -169,7 +169,7 @@ namespace SME.SR.Data
                             where not en.excluido    
                             ");
 
-            if (filtro.Ids.Any())
+            if (filtro.Ids != null && filtro.Ids.Length > 0)
                 query.AppendLine(ObterCondicaoIds(filtro.Ids));
             else
                 query.AppendLine(ObterCondicao(filtro));

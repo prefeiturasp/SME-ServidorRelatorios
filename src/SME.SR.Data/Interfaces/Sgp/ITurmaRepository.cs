@@ -25,7 +25,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<Turma>> ObterPorAbrangenciaFiltros(string codigoUe, Modalidade modalidade, int anoLetivo, string login, Guid perfil, bool consideraHistorico, int semestre, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null);
         Task<IEnumerable<Turma>> ObterPorAbrangenciaTiposFiltros(string codigoUe, string login, Guid perfil, Modalidade modalidade, int[] tipos, SituacaoFechamento? situacaoFechamento, SituacaoConselhoClasse? situacaoConselhoClasse, int[] bimestres, int semestre = 0, bool consideraHistorico = false, int anoLetivo = 0, bool? possuiFechamento = null, bool? somenteEscolarizada = null, string codigoDre = null);
         Task<IEnumerable<long>> ObterTurmasCodigoPorUeAnoSondagemAsync(string ano, string ueCodigo, int anoLetivo, long dreCodigo);
-        Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterPorUeCicloAno(int anoLetivo, string ano, long tipoCicloId, long ueId);
+        Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterPorUeCicloAno(int anoLetivo, string ano, long tipoCicloId, long ueId, int? semestre = null);
         Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosEParecerConclusivo(long[] codigoAlunos, long[] codigoPareceresConclusivos);
         Task<IEnumerable<AlunosTurmasCodigosDto>> ObterAlunosCodigosPorTurmaParecerConclusivo(long turmaCodigo, long[] codigoPareceresConclusivos);
         Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunosSemParecerConclusivo(long[] codigoAlunos);
@@ -34,6 +34,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<AlunoDaTurmaDto>> ObterAlunosPorTurmas(IEnumerable<long> turmasCodigo);
         Task<IEnumerable<AlunoDaTurmaDto>> ObterAlunosPorTurmasAnosAnteriores(IEnumerable<long> turmasCodigo);
         Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadeESemestre(string[] uesCodigos, string[] anos, int modalidade, int? semestre);
+        Task<IEnumerable<TurmaFiltradaUeCicloAnoDto>> ObterTurmasPorUeAnosModalidadesAnoLetivoESemestre(string[] uesCodigos, string[] anos, int[] modalidades, int anoLetivo, int? semestre);
         Task<IEnumerable<Aluno>> ObterDadosAlunosPorTurmaNotasConceitos(string codigoTurma);
         Task<IEnumerable<AlunoTurmaRegularRetornoDto>> ObterAlunosTurmasRegularesPorTurmaRecuperacaoCodigoQuery(long turmaCodigo);
         Task<IEnumerable<Turma>> ObterTurmasPorUeEAnoLetivo(string ueCodigo, long anoLetivo);
@@ -45,5 +46,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<TurmaItinerarioEnsinoMedioDto>> ObterTurmasItinerarioEnsinoMedio();
         Task<IEnumerable<QuantidadeTurmaPorAnoDto>> ObterTotalDeTurmasPorAno(string loginUsuario,string codigoUe,Guid perfilUsuario,bool consideraHistorico, int modalidade,int anoLetivo,int semestre = 0);
         Task<IEnumerable<AlunosTurmasCodigosDto>> ObterPorAlunos(long[] codigoAlunos, int? anoLetivo);
+        Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterTotalDeTurmasPorUeAnoLetivoEModalidade(string codigoUe, int modalidade, int anoLetivo);
     }
 }

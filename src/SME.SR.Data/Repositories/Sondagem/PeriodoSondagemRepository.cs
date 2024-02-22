@@ -76,6 +76,21 @@ namespace SME.SR.Data
 
             return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new { semestre, anoLetivo });
         }
+
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoFixoCompletoPorDescricaoEAnoLetivo(string likeDescricao, int anoLetivo)
+        {
+            var query = new StringBuilder("select pfa.\"DataInicio\" as PeriodoInicio, pfa.\"DataFim\" as PeriodoFim ");
+            query.AppendLine("from \"PeriodoFixoAnual\" pfa ");
+            query.AppendLine("where pfa.\"Ano\" = @anoLetivo");
+            query.AppendLine("and pfa.\"Descricao\" like @likeDescricao");
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
+
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new
+            {
+                likeDescricao,
+                anoLetivo
+            });
+        }
     }
 }
 

@@ -61,11 +61,19 @@
           <td class='@tdTbodyInterno' width="22%">@aluno.Telefone</td>
         </tr>
       </tbody>
-    </table>
-  }
+        </table>
+    }
 
-  void MontarPercursoColetivoTurma(string percursoTurma)
-  {
+    void MontarPercursoColetivoTurma(string percursoTurma)
+    {
+         if (percursoTurma.Contains("<table"))
+            percursoTurma = @"<style>
+                                table, th, td {
+                                  border: 1px solid black;
+                                  border-collapse: collapse;
+                                    }
+                             </style>"  + percursoTurma;
+
     <table class='estilo-tabela'>
       <thead>
         <tr>
@@ -295,6 +303,7 @@
 
     .quebra-conteudo-editor img {
       padding-top: 5px !important;
+      max-width: 1000px !important;
     }
 
     .padding-conteudo-editor {

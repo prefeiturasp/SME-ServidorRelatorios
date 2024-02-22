@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using MediatR;
+﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -28,10 +27,14 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<ComponenteCurricularPorTurma>> Handle(ObterComponentesCurricularesPorCodigoTurmaLoginEPerfilQuery request, CancellationToken cancellationToken)
         {
-            List<Data.ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigoTurma);
+            List<ComponenteCurricular> componentesCurriculares = await ObterComponentesCurriculares(request.Usuario.Login, request.Usuario.PerfilAtual, request.CodigoTurma);
 
-            var informacoesComponentesCurriculares = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
-            var gruposMatriz = await componenteCurricularRepository.ListarGruposMatriz();
+            var informacoesComponentesCurriculares = await componenteCurricularRepository
+                .ListarInformacoesPedagogicasComponentesCurriculares();
+
+            var gruposMatriz = await componenteCurricularRepository
+                .ListarGruposMatriz();
+
             PreencherComponenteCurricularEhTerritorio(componentesCurriculares, informacoesComponentesCurriculares);
 
             await AdicionarComponentesTerritorio(request.CodigoTurma, componentesCurriculares);
@@ -39,19 +42,21 @@ namespace SME.SR.Application
 
             return MapearParaDto(componentesCurriculares.DistinctBy(c => c.Codigo), informacoesComponentesCurriculares, gruposMatriz);
         }
-        private IEnumerable<ComponenteCurricularPorTurma> MapearParaDto(IEnumerable<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
+        private IEnumerable<ComponenteCurricularPorTurma> MapearParaDto(IEnumerable<ComponenteCurricular> componentesCurriculares, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares, IEnumerable<Data.ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            return componentesCurriculares?.Select(c => MapearParaDto(c, informacoesComponentesCurriculares, grupoMatrizes));
+            return componentesCurriculares?
+                .Select(c => MapearParaDto(c, informacoesComponentesCurriculares, grupoMatrizes));
         }
 
-        private ComponenteCurricularPorTurma MapearParaDto(Data.ComponenteCurricular componenteCurricular, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
+        private ComponenteCurricularPorTurma MapearParaDto(ComponenteCurricular componenteCurricular, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares, IEnumerable<ComponenteCurricularGrupoMatriz> grupoMatrizes)
         {
-            var informacaoComponenteCurricular = informacoesComponentesCurriculares.FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo);
+            var informacaoComponenteCurricular = informacoesComponentesCurriculares
+                .FirstOrDefault(x => x.Codigo == componenteCurricular.Codigo);
 
             return new ComponenteCurricularPorTurma
             {
                 CodDisciplina = componenteCurricular.Codigo,
-                CodDisciplinaPai = componenteCurricular.CodigoComponentePai(informacoesComponentesCurriculares),
+                CodDisciplinaPai = componenteCurricular.CodigoComponentePai(informacoesComponentesCurriculares) ?? componenteCurricular.CodComponentePai,
                 Compartilhada = componenteCurricular.EhCompartilhada(informacoesComponentesCurriculares),
                 Disciplina = componenteCurricular.Descricao.Trim(),
                 LancaNota = componenteCurricular.PodeLancarNota(informacoesComponentesCurriculares),
@@ -71,13 +76,14 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task AdicionarComponentesPlanejamento(List<Data.ComponenteCurricular> componentesCurriculares, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares)
+        private async Task AdicionarComponentesPlanejamento(List<ComponenteCurricular> componentesCurriculares, IEnumerable<InformacaoPedagogicaComponenteCurricularSGPDTO> informacoesComponentesCurriculares)
         {
             var componentesRegencia = componentesCurriculares.Where(c => c.EhRegencia(informacoesComponentesCurriculares));
             if (componentesRegencia != null && componentesRegencia.Any())
             {
-                var idsComponentesPlanejamento = new List<long>();
+                var idsComponentesPlanejamento = new List<(long codigo, long codigoComponentePai)>();
                 var componentesRegenciaApiEol = await componenteCurricularRepository.ListarRegencia();
+
                 foreach (var componenteRegencia in componentesRegencia)
                 {
                     var componentesPlanejamento = componentesRegenciaApiEol.Where(r => r.Ano.HasValue &&
@@ -85,42 +91,49 @@ namespace SME.SR.Application
                                                                                        r.Turno == componenteRegencia.TurnoTurma);
 
                     if (componentesPlanejamento == null || !componentesPlanejamento.Any())
-                    {
                         componentesPlanejamento = componentesRegenciaApiEol.Where(r => !r.Ano.HasValue && !r.Turno.HasValue);
-                    }
-                    idsComponentesPlanejamento.AddRange(componentesPlanejamento.Select(c => c.IdComponenteCurricular));
+
+                    idsComponentesPlanejamento.AddRange(componentesPlanejamento.Select(c => (c.IdComponenteCurricular, componenteRegencia.Codigo)));
                 }
+
                 if (idsComponentesPlanejamento.Any())
                 {
                     componentesCurriculares.RemoveAll(c => c.EhRegencia(informacoesComponentesCurriculares));
-                    var componentes = await ObterPorId(idsComponentesPlanejamento?.ToArray());
+                    var componentes = (await ObterPorId(idsComponentesPlanejamento?.ToArray())).ToList();
+
                     if (componentes != null && componentes.Any())
-                        foreach (var componente in componentes)
-                        {
-                            componente.ComponentePlanejamentoRegencia = true;
-                        }
+                    {
+                        for (int i = 0; i < componentes.Count; i++)
+                            componentes[i].ComponentePlanejamentoRegencia = true;
+                    }
+                        
                     componentesCurriculares.AddRange(componentes);
                 }
             }
         }
 
-        private async Task<IEnumerable<Data.ComponenteCurricular>> ObterPorId(long[] ids)
+        private async Task<IEnumerable<ComponenteCurricular>> ObterPorId((long codigo, long codigoComponentePai)[] ids)
         {
             if (ids == null || !ids.Any())
-                return Enumerable.Empty<Data.ComponenteCurricular>();
+                return Enumerable.Empty<ComponenteCurricular>();
 
-            var componentes = await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
-            return componentes.ToComponentesCurriculares().Where(c => ids.Contains(c.Codigo));
+            var componentes = await componenteCurricularRepository
+                .ListarInformacoesPedagogicasComponentesCurriculares();
+
+            return componentes
+                .ToComponentesCurriculares(ids)
+                .Where(c => ids.Select(i => i.codigo)
+                .Contains(c.Codigo));
         }
 
-        private async Task AdicionarComponentesTerritorio(string codigoTurma, List<Data.ComponenteCurricular> componentesCurriculares)
+        private async Task AdicionarComponentesTerritorio(string codigoTurma, List<ComponenteCurricular> componentesCurriculares)
         {
-            componentesCurriculares = await mediator.Send(new AdicionarComponentesCurricularesTerritorioSaberTurmaQuery(new string[] { codigoTurma }, componentesCurriculares));
+            _ = await mediator.Send(new AdicionarComponentesCurricularesTerritorioSaberTurmaQuery(new string[] { codigoTurma }, componentesCurriculares));
         }
 
-        private async Task<List<Data.ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string codigoTurma)
+        private async Task<List<ComponenteCurricular>> ObterComponentesCurriculares(string login, Guid idPerfil, string codigoTurma)
         {
-            var componentesCurriculares = new List<Data.ComponenteCurricular>();
+            var componentesCurriculares = new List<ComponenteCurricular>();
 
             var gruposAbrangenciaApiEol = await permissaoRepository.ObterTodosGrupos();
 
@@ -128,9 +141,7 @@ namespace SME.SR.Application
             if (grupoAbrangencia != null)
             {
                 if (grupoAbrangencia.Abrangencia == TipoAbrangencia.Professor)
-                {
                     componentesCurriculares.AddRange(await componenteCurricularRepository.ObterComponentesPorTurmaEProfessor(login, codigoTurma));
-                }
                 else
                 {
                     var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurma(codigoTurma);
@@ -141,14 +152,14 @@ namespace SME.SR.Application
             return componentesCurriculares;
         }
 
-        private void AdicionarComponentesProfessorEmebs(List<Data.ComponenteCurricular> componentesCurriculares)
+        private void AdicionarComponentesProfessorEmebs(List<ComponenteCurricular> componentesCurriculares)
         {
             bool profLibras = componentesCurriculares.Any(d => d.Codigo == 218 && d.TipoEscola == "4") && !componentesCurriculares.Any(d => d.Codigo == 138 && d.TipoEscola == "4");
             bool profPortugues = componentesCurriculares.Any(d => d.Codigo == 138 && d.TipoEscola == "4") && !componentesCurriculares.Any(d => d.Codigo == 218 && d.TipoEscola == "4");
 
             if (profLibras)
             {
-                componentesCurriculares.Add(new Data.ComponenteCurricular()
+                componentesCurriculares.Add(new ComponenteCurricular()
                 {
                     Codigo = 138,
                     Descricao = "LINGUA PORTUGUESA",
@@ -157,7 +168,7 @@ namespace SME.SR.Application
             }
             else if (profPortugues)
             {
-                componentesCurriculares.Add(new Data.ComponenteCurricular()
+                componentesCurriculares.Add(new ComponenteCurricular()
                 {
                     Codigo = 218,
                     Descricao = "LIBRAS",
