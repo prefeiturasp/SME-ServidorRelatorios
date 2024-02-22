@@ -39,6 +39,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             var relatorios = new List<RelatorioEncaminhamentoNAAPADetalhadoDto>();
+            var imprimirAnexo = filtroRelatorio.ImprimirAnexos != ImprimirAnexosNAAPA.Nao;
 
             foreach (var encaminhamentoNaapa in encaminhamentosNaapa)
             {
@@ -46,11 +47,20 @@ namespace SME.SR.Application
 
                 await ObterCabecalho(encaminhamentoNaapa, relatorio);
                 await ObterQuestoesSecoes(encaminhamentoNaapa, relatorio);
+                await ObterAnexos(encaminhamentoNaapa.Id, relatorio, filtroRelatorio.ImprimirAnexos);
 
                 relatorios.Add(relatorio);
             }
 
-            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand(relatorios, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand(relatorios, imprimirAnexo, request.CodigoCorrelacao));
+        }
+
+        private async Task ObterAnexos(long encaminhamentoId, RelatorioEncaminhamentoNAAPADetalhadoDto relatorio, ImprimirAnexosNAAPA imprimirAnexos)
+        {
+            if (imprimirAnexos == ImprimirAnexosNAAPA.Nao)
+                return;
+
+            relatorio.AnexosPdf = await mediator.Send(new ObterAnexosEncaminhamentoNAAPAQuery(encaminhamentoId, imprimirAnexos));
         }
 
         private async Task ObterCabecalho(EncaminhamentoNAAPADto encaminhamentoNaapa, RelatorioEncaminhamentoNAAPADetalhadoDto relatorio)

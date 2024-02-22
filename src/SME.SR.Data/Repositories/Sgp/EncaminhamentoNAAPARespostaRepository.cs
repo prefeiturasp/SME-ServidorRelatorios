@@ -36,5 +36,34 @@ namespace SME.SR.Data.Repositories.Sgp
 
             return await conexao.QueryAsync<RespostaQuestaoDto>(query, new { encaminhamentoNaapaId, nomeComponenteSecao });
         }
+
+        public async Task<IEnumerable<ArquivoDto>> ObterRepostasArquivosPdfPorEncaminhamentoIdAsync(long encaminhamentoNaapaId, ImprimirAnexosNAAPA imprimirAnexosNAAPA)
+        {
+            var dicionario = new Dictionary<ImprimirAnexosNAAPA, string>()
+            {
+                { ImprimirAnexosNAAPA.ApenasEncaminhamento, "INFORMACOES_ESTUDANTE" },
+                { ImprimirAnexosNAAPA.ApenasAtendimentos, "QUESTOES_ITINERACIA" },
+                { ImprimirAnexosNAAPA.EncaminhamentoAtendimentos, "INFORMACOES_ESTUDANTE, QUESTOES_ITINERACIA" }
+            };
+
+            var query = @"select a.id, 
+                                 a.tipo_conteudo as TipoArquivo, 
+                                 a.codigo, 
+                                 a.nome as NomeOriginal, 
+                                 a.Tipo
+                        from encaminhamento_naapa ea
+                        inner join encaminhamento_naapa_secao eas on ea.id = eas.encaminhamento_naapa_id
+                        inner join secao_encaminhamento_naapa sen on sen.id = eas.secao_encaminhamento_id 
+                        inner join encaminhamento_naapa_questao qea on eas.id = qea.encaminhamento_naapa_secao_id
+                        inner join encaminhamento_naapa_resposta rea on qea.id = rea.questao_encaminhamento_id
+                        inner join arquivo a on rea.arquivo_id = a.id
+                        where ea.id = @encaminhamentoNaapaId 
+                          and a.tipo_conteudo like '%pdf'
+                          and nome_componente in (@componentes)";
+
+            var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryAsync<ArquivoDto>(query, new { encaminhamentoNaapaId, componentes = dicionario[imprimirAnexosNAAPA] });
+        }
     }
 }
