@@ -81,6 +81,14 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
         .boletim:first-child{
             margin-bottom: 60px;
         }
+
+        .boletim-maior{
+            height: calc(40vh - 10px);
+        }
+        .boletim-maior:first-child{
+            margin-bottom: 30px;
+        }   
+        
         .body-relatorio {
             margin: 0.5cm auto;
             font-family: "DejaVu Sans" !important;
@@ -271,18 +279,28 @@ SECRETARIA MUNICIPAL DE EDUCAÇÃO
     </style>
 
     <div>
-    @{  
-       var nomeTemplateCorpo = Model.Modalidade.EhSemestral() ? "RelatorioBoletimEscolarDetalhadoEJACorpo.cshtml" : "RelatorioBoletimEscolarDetalhadoCorpo.cshtml";
-            
-        foreach(var boletim in Model.Boletins)
-        {
-            <div class="boletim">
-                @Html.Raw(MontarCabecalho(boletim.Cabecalho))
-                @Html.Partial(nomeTemplateCorpo, boletim)
-            </div> 
-        }
-    }
+        @{
+            var nomeTemplateCorpo = Model.Modalidade.EhSemestral() ? "RelatorioBoletimEscolarDetalhadoEJACorpo.cshtml" : "RelatorioBoletimEscolarDetalhadoCorpo.cshtml";
+            var ehBoletimMaior = Model.Boletins?.FirstOrDefault()?.Grupos?.Count() > 2 || Model.Boletins?.FirstOrDefault()?.ParecerConclusivo != null;
 
+            foreach(var boletim in Model.Boletins)
+            {
+                if (ehBoletimMaior)
+                {
+                     <div class="boletim-maior">
+                        @Html.Raw(MontarCabecalho(boletim.Cabecalho))
+                        @Html.Partial(nomeTemplateCorpo, boletim)
+                     </div> 
+                }
+                else
+                {
+                     <div class="boletim">
+                        @Html.Raw(MontarCabecalho(boletim.Cabecalho))
+                        @Html.Partial(nomeTemplateCorpo, boletim)
+                     </div> 
+                }
+            }
+        }
     </div>
 </body>
 </html>
