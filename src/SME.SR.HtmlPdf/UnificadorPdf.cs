@@ -14,7 +14,7 @@ namespace SME.SR.HtmlPdf
 
         public UnificadorPdf(string nomePdfUnificado, List<string> diretorioCaminhoArquivosCompleto)
         {
-            NomePdfUnificado = nomePdfUnificado;
+            NomePdfUnificado = $"{nomePdfUnificado}.pdf";
             DiretorioCaminhoArquivosCompleto = diretorioCaminhoArquivosCompleto;
 
             CaminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");

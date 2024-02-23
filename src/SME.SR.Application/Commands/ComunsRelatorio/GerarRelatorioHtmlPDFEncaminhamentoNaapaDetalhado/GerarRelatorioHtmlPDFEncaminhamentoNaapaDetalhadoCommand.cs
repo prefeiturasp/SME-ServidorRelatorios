@@ -9,11 +9,13 @@ namespace SME.SR.Application
     {
         public List<RelatorioEncaminhamentoNAAPADetalhadoDto> RelatorioEncaminhamentoNAAPADetalhadoDtos { get; set; }
         public Guid CodigoCorrelacao { get; set; }
+        public bool ImprimirAnexos{ get; set; }
 
-        public GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand(List<RelatorioEncaminhamentoNAAPADetalhadoDto> relatorioDtos, Guid codigoCorrelacao)
+        public GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand(List<RelatorioEncaminhamentoNAAPADetalhadoDto> relatorioDtos, bool imprimirAnexos, Guid codigoCorrelacao)
         {
             RelatorioEncaminhamentoNAAPADetalhadoDtos = relatorioDtos;
             CodigoCorrelacao = codigoCorrelacao;
+            ImprimirAnexos = imprimirAnexos;
         }
     }
 }

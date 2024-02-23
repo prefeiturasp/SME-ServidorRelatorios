@@ -10,27 +10,31 @@ namespace SME.SR.HtmlPdf
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
         private readonly string nomePdfUnificado;
-        private readonly List<PdfUnificadoEncaminhamentoNAAPADto> pdfsPorEncaminhamento;
-
+        private readonly string diretorioPdfGerado;
+        private readonly List<ArquivoDto> anexos;
 
         public UnificarPdfNAAPA(
-                    VariaveisAmbiente variaveisAmbiente, 
-                    string nomePdfUnificado,
-                    List<PdfUnificadoEncaminhamentoNAAPADto> pdfsPorEncaminhamento)
+                    VariaveisAmbiente variaveisAmbiente,
+                    string pdfGerado,
+                    List<ArquivoDto> anexos,
+                    string nomePdfUnificado)
         {
             this.variaveisAmbiente = variaveisAmbiente;
             this.nomePdfUnificado = nomePdfUnificado;
-            this.pdfsPorEncaminhamento = pdfsPorEncaminhamento;
+            this.anexos = anexos;
+            this.diretorioPdfGerado = ObterDiretorioPdfGerado(pdfGerado);
         }
 
         private string ObterDiretorioPdfGerado(string nomePdf)
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"relatorios/{nomePdf}.pdf");
+            var diretorio = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
+
+            return Path.Combine(diretorio, $"{nomePdf}.pdf");
         }
 
         public bool Execute()
         {
-            if (!pdfsPorEncaminhamento.Any() || string.IsNullOrEmpty(this.nomePdfUnificado))
+            if (NaoPodeUnificarPdf())
                 return false;
 
             var unificador = new UnificadorPdf(nomePdfUnificado, ObterDiretoriosPdfParaUnificacao());
@@ -42,23 +46,26 @@ namespace SME.SR.HtmlPdf
             return true;
         }
 
+        private bool NaoPodeUnificarPdf()
+        {
+            return !(anexos.Any() 
+                && !string.IsNullOrEmpty(nomePdfUnificado) 
+                && !string.IsNullOrEmpty(diretorioPdfGerado) 
+                && File.Exists(diretorioPdfGerado));
+        }
+
         private List<string> ObterDiretoriosPdfParaUnificacao()
         {
-            var diretorioPdfs = new List<string>();
+            var diretorioPdfs = new List<string>() { diretorioPdfGerado };
 
-            foreach (var arquivo in pdfsPorEncaminhamento)
-            {
-                diretorioPdfs.Add(ObterDiretorioPdfGerado(arquivo.pdfGerado));
-                diretorioPdfs.AddRange(ObterCaminhoCompletoPdfs(arquivo.Anexos));
-            }
+            diretorioPdfs.AddRange(ObterCaminhoCompletoPdfs(anexos));
 
             return diretorioPdfs;
         }
 
         private void RemoveArquivosGerados()
         {
-            foreach (var arquivo in pdfsPorEncaminhamento)
-                File.Delete(ObterDiretorioPdfGerado(arquivo.pdfGerado)); 
+            File.Delete(diretorioPdfGerado); 
         }
 
         private List<string> ObterCaminhoCompletoPdfs(List<ArquivoDto> arquivosPdf)
@@ -67,13 +74,10 @@ namespace SME.SR.HtmlPdf
 
             foreach (var arquivo in arquivosPdf)
             {
-                if (arquivo.Extensao == "pdf")
-                {
-                    var caminho = ObterCaminho(arquivo);
+                var caminho = ObterCaminho(arquivo);
 
-                    if (!string.IsNullOrEmpty(caminho))
-                        caminhos.Add(caminho);
-                }
+                if (!string.IsNullOrEmpty(caminho))
+                    caminhos.Add(caminho);
             }
 
             return caminhos;    
@@ -81,7 +85,7 @@ namespace SME.SR.HtmlPdf
         
         private string ObterCaminho(ArquivoDto arquivo)
         {
-            var diretorio = Path.Combine(variaveisAmbiente.PastaArquivosSGP ?? string.Empty, $@"Arquivos/{arquivo.Tipo}");
+            var diretorio = Path.Combine(variaveisAmbiente.PastaArquivosSGP ?? string.Empty, "Arquivos");
 
             if (!Directory.Exists(diretorio))
                 return string.Empty;
