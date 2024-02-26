@@ -39,11 +39,11 @@ namespace SME.SR.Data.Repositories.Sgp
 
         public async Task<IEnumerable<ArquivoDto>> ObterRepostasArquivosPdfPorEncaminhamentoIdAsync(long encaminhamentoNaapaId, ImprimirAnexosNAAPA imprimirAnexosNAAPA)
         {
-            var dicionario = new Dictionary<ImprimirAnexosNAAPA, string>()
+            var dicionario = new Dictionary<ImprimirAnexosNAAPA, string[]>()
             {
-                { ImprimirAnexosNAAPA.ApenasEncaminhamento, "INFORMACOES_ESTUDANTE" },
-                { ImprimirAnexosNAAPA.ApenasAtendimentos, "QUESTOES_ITINERACIA" },
-                { ImprimirAnexosNAAPA.EncaminhamentoAtendimentos, "INFORMACOES_ESTUDANTE, QUESTOES_ITINERACIA" }
+                { ImprimirAnexosNAAPA.ApenasEncaminhamento, new string[] { "INFORMACOES_ESTUDANTE" } },
+                { ImprimirAnexosNAAPA.ApenasAtendimentos, new string[] { "QUESTOES_ITINERACIA" } },
+                { ImprimirAnexosNAAPA.EncaminhamentoAtendimentos, new string[] { "INFORMACOES_ESTUDANTE", "QUESTOES_ITINERACIA" } }
             };
 
             var query = @"select a.id, 
@@ -59,7 +59,7 @@ namespace SME.SR.Data.Repositories.Sgp
                         inner join arquivo a on rea.arquivo_id = a.id
                         where ea.id = @encaminhamentoNaapaId 
                           and a.tipo_conteudo like '%pdf'
-                          and nome_componente in (@componentes)";
+                          and nome_componente = ANY(@componentes)";
 
             var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
