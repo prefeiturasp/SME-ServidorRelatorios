@@ -17,18 +17,18 @@ namespace SME.SR.Application
         private readonly IReportConverter pdfGenerator;
         private readonly IHtmlHelper htmlHelper;
         private readonly IServicoFila servicoFila;
-        private readonly VariaveisAmbiente variaveisAmbiente;
+        private readonly IMediator mediator;
 
         public GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommandHandler(
                                                            IConverter converter,
                                                            IHtmlHelper htmlHelper,
                                                            IServicoFila servicoFila,
-                                                           VariaveisAmbiente variaveisAmbiente)
+                                                           IMediator mediator)
         {
             this.pdfGenerator = new PdfGenerator(converter);
             this.htmlHelper = htmlHelper ?? throw new ArgumentNullException(nameof(htmlHelper));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
-            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         protected override async Task Handle(GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand request, CancellationToken cancellationToken)
@@ -74,9 +74,7 @@ namespace SME.SR.Application
 
             pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, pdfSemAnexo, "Relatório do encaminhamento NAAPA");
 
-            var unificador = new UnificarPdfNAAPA(variaveisAmbiente, pdfSemAnexo, relatorioDto.AnexosPdf.ToList(), request.CodigoCorrelacao.ToString());
-
-            unificador.Execute();
+            await mediator.Send(new UnificarPdfNAAPACommand(pdfSemAnexo, relatorioDto.AnexosPdf.ToList(), request.CodigoCorrelacao.ToString()));
         }
 
         private async Task<PaginaParaRelatorioPaginacaoSoloDto> GerarPagina(EncaminhamentoNaapaDetalhadoPagina relatorio, int pagina, int totalPaginas)
