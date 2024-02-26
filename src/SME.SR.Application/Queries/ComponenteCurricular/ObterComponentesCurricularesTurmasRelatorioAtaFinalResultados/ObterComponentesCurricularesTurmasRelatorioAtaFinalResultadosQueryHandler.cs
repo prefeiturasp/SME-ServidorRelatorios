@@ -77,7 +77,7 @@ namespace SME.SR.Application.Queries.ComponenteCurricular.ObterComponentesCurric
                     Regencia = c.EhRegencia(componentes),
                     TerritorioSaber = c.TerritorioSaber,
                     TipoEscola = c.TipoEscola,
-                }).DistinctBy(c => (c.Disciplina, c.CodigoTurma));
+                }).DistinctBy(c => (c.CodDisciplina, c.CodigoTurma));
 
                 if (componentesMapeados.Any(c => c.Regencia))
                 {
