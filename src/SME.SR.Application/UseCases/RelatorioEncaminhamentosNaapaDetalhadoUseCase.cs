@@ -32,13 +32,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            //var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNAAPADetalhadoDto>(); 
-            var filtroRelatorio = new FiltroRelatorioEncaminhamentoNAAPADetalhadoDto()
-            {
-                EncaminhamentoNaapaIds = new long[] { 111 },
-                ImprimirAnexos = ImprimirAnexosNAAPA.EncaminhamentoAtendimentos
-            };
-            
+            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNAAPADetalhadoDto>(); 
             var encaminhamentosNaapa = await mediator.Send(new ObterEncaminhamentosNAAPAQuery(filtroRelatorio));
 
             if (encaminhamentosNaapa == null || !encaminhamentosNaapa.Any())
