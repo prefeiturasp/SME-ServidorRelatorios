@@ -21,7 +21,7 @@ namespace SME.SR.Application
 
             var nomeArquivoComExtensao = $"{request.Codigo}{extensao}";
 
-            var enderecoArquivo = servicoArmazenamento.Obter(nomeArquivoComExtensao, request.Tipo == TipoArquivo.temp);
+            var enderecoArquivo = servicoArmazenamento.Obter(nomeArquivoComExtensao);
 
             if (!string.IsNullOrEmpty(enderecoArquivo))
             {

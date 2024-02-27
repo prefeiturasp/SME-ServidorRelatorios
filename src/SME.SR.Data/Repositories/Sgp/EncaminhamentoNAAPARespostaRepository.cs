@@ -58,6 +58,7 @@ namespace SME.SR.Data.Repositories.Sgp
                         inner join encaminhamento_naapa_resposta rea on qea.id = rea.questao_encaminhamento_id
                         inner join arquivo a on rea.arquivo_id = a.id
                         where ea.id = @encaminhamentoNaapaId 
+                          and not rea.excluido
                           and a.tipo_conteudo like '%pdf'
                           and nome_componente = ANY(@componentes)";
 

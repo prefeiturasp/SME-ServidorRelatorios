@@ -15,19 +15,10 @@ namespace SME.SR.Infra
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public string Obter(string nomeArquivo, bool ehPastaTemp)
-        {
-            var bucketNome = ehPastaTemp
-                ? configuracaoArmazenamentoOptions.BucketTemp
-                : configuracaoArmazenamentoOptions.BucketArquivos;
-
-            return ObterUrl(nomeArquivo, bucketNome);
-        }
-
-        private string ObterUrl(string nomeArquivo, string bucketName)
+        public string Obter(string nomeArquivo)
         {
             var hostAplicacao = configuration["UrlFrontEnd"];
-            return $"{hostAplicacao}{bucketName}/{nomeArquivo}";
+            return $"{hostAplicacao}{configuracaoArmazenamentoOptions.BucketArquivos}/{nomeArquivo}";
         }
     }
 }
