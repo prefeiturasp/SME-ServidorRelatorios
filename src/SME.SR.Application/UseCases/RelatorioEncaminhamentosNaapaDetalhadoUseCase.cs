@@ -18,7 +18,7 @@ namespace SME.SR.Application
         private const string NOME_COMPONENTE_SECAO_INFORMACOES_ESTUDANTE = "INFORMACOES_ESTUDANTE";
         private const string NOME_COMPONENTE_SECAO_QUESTOES_APRESENTADAS_INFANTIL = "QUESTOES_APRESENTADAS_INFANTIL";
         private const string NOME_COMPONENTE_SECAO_QUESTOES_APRESENTADAS_FUNDAMENTAL = "QUESTOES_APRESENTADAS_FUNDAMENTAL";
-        private const string NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA = "QUESTOES_ITINERACIA";
+        private const string NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA = "QUESTOES_ITINERANCIA";
 
         private const string NOME_SECAO_INFORMACOES_ESTUDANTE = "INFORMAÇÕES";
         private const string NOME_SECAO_QUESTOES_APRESENTADAS_INFANTIL = "QUESTÕES APRESENTADAS";
@@ -32,7 +32,13 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNAAPADetalhadoDto>(); 
+            //var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioEncaminhamentoNAAPADetalhadoDto>(); 
+            var filtroRelatorio = new FiltroRelatorioEncaminhamentoNAAPADetalhadoDto()
+            {
+                EncaminhamentoNaapaIds = new long[] { 111 },
+                ImprimirAnexos = ImprimirAnexosNAAPA.EncaminhamentoAtendimentos
+            };
+            
             var encaminhamentosNaapa = await mediator.Send(new ObterEncaminhamentosNAAPAQuery(filtroRelatorio));
 
             if (encaminhamentosNaapa == null || !encaminhamentosNaapa.Any())
