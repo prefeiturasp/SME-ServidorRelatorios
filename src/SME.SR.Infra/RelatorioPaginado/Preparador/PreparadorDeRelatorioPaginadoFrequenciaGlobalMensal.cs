@@ -53,7 +53,7 @@ namespace SME.SR.Infra
         {
             var parametro = new ParametroRelatorioPaginadoPorColuna<FrequenciaMensalDto>()
             {
-                AlturaDaLinha = 25,
+                AlturaDaLinha = 24,
                 TipoDePapel = TipoPapel.A4,
                 UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL,
                 Valores = this.frequenciaGlobalDtos
