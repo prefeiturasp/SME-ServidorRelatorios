@@ -42,8 +42,8 @@ namespace SME.SR.Data.Repositories.Sgp
             var dicionario = new Dictionary<ImprimirAnexosNAAPA, string[]>()
             {
                 { ImprimirAnexosNAAPA.ApenasEncaminhamento, new string[] { "INFORMACOES_ESTUDANTE" } },
-                { ImprimirAnexosNAAPA.ApenasAtendimentos, new string[] { "QUESTOES_ITINERACIA" } },
-                { ImprimirAnexosNAAPA.EncaminhamentoAtendimentos, new string[] { "INFORMACOES_ESTUDANTE", "QUESTOES_ITINERACIA" } }
+                { ImprimirAnexosNAAPA.ApenasAtendimentos, new string[] { "QUESTOES_ITINERANCIA" } },
+                { ImprimirAnexosNAAPA.EncaminhamentoAtendimentos, new string[] { "INFORMACOES_ESTUDANTE", "QUESTOES_ITINERANCIA" } }
             };
 
             var query = @"select a.id, 
