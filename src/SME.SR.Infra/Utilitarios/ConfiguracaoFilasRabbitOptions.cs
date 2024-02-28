@@ -11,7 +11,7 @@ namespace SME.SR.Infra
         public string[] GetFilasIgnoradas => ToStringArray(FilasIgnoradas);
 
         private static string[] ToStringArray(string valor)
-           => !string.IsNullOrEmpty(valor) && valor.Contains(",")
+           => !string.IsNullOrEmpty(valor) 
               ? valor.Split(",").Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToArray()
               : Enumerable.Empty<string>().ToArray();
     }

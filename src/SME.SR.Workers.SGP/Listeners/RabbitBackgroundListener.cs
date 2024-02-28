@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
@@ -14,6 +15,7 @@ using SME.SR.Infra.Utilitarios;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -25,12 +27,14 @@ namespace SME.SR.Workers.SGP.Services
     // TODO Turn this into a generic listener or common lib
     public class RabbitBackgroundListener : IHostedService
     {
+        private IConnection conexaoRabbit;
+        private IModel canalRabbit;
+        private IConnectionFactory factory;
+
         private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly IServicoTelemetria servicoTelemetria;
         private readonly TelemetriaOptions telemetriaOptions;
-        private readonly IConnection conexaoRabbit;
         private readonly IMediator mediator;
-        private readonly IModel canalRabbit;
         private readonly ConfiguracaoFilasRabbitOptions configuracaoFilasRabbit;
         public RabbitBackgroundListener(IServiceScopeFactory serviceScopeFactory,
                                         IServicoTelemetria servicoTelemetria,
@@ -48,7 +52,7 @@ namespace SME.SR.Workers.SGP.Services
              if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
-            var factory = new ConnectionFactory
+            this.factory = new ConnectionFactory
             {
                 HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
                 UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
@@ -58,15 +62,16 @@ namespace SME.SR.Workers.SGP.Services
                 RequestedHeartbeat = TimeSpan.FromSeconds(60)
             };
 
+            ConectarRabbitMQ();
+        }
+
+        private void ConectarRabbitMQ()
+        {
             conexaoRabbit = factory.CreateConnection();
-
             canalRabbit = conexaoRabbit.CreateModel();
-
             canalRabbit.BasicQos(0, 1, false);
-
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatorios, ExchangeType.Direct, true, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
-
             DeclararFilas();
         }
 
@@ -92,7 +97,9 @@ namespace SME.SR.Workers.SGP.Services
         {
             foreach (var fila in configuracaoFilasRabbit.GetFilas)
             {
-                canalRabbit.QueueDeclare(fila, true, false, false);
+                var args = new Dictionary<string, object>();
+                args.Add("x-consumer-timeout", 90000);
+                canalRabbit.QueueDeclare(fila, true, false, false, args);
                 canalRabbit.QueueBind(fila, exchange, fila, null);
             }
         }
@@ -130,12 +137,13 @@ namespace SME.SR.Workers.SGP.Services
 
                                 if (metodoExecutar != null)
                                 {
-                                    await servicoTelemetria.RegistrarAsync(async () =>
+                                    Thread.Sleep(120000);//timeout consumer
+                                    /*await servicoTelemetria.RegistrarAsync(async () =>
                                         await (Task)metodoExecutar.Invoke(useCase, new object[] { filtroRelatorio }),
                                         "RabbitMQ_SR",
                                         filtroRelatorio.Action,
                                         rota,
-                                        filtroRelatorio.Mensagem.ToString());
+                                        filtroRelatorio.Mensagem.ToString());*/
                                 }
                             }
                             else
@@ -217,13 +225,25 @@ namespace SME.SR.Workers.SGP.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var consumer = new EventingBasicConsumer(canalRabbit);
+            RegistrarConsumer();
+            return Task.CompletedTask;
+        }
 
+        private void RegistrarConsumer()
+        {
+            var consumer = new EventingBasicConsumer(canalRabbit);
             consumer.Received += async (ch, ea) =>
             {
                 try
                 {
                     await TratarMensagem(ea);
+                }
+                catch (AlreadyClosedException ex)
+                {
+                    if (canalRabbit.IsClosed)
+                        ReconectarRabbitMQ();
+                    await RegistrarLogErro(ex.Message);
+                    //await RegistrarErro($"Erro Conexão RabbitMQ Fechada - {ea.RoutingKey}", LogNivel.Critico, $"{ex.Message} - {Encoding.UTF8.GetString(ea.Body.Span)}");
                 }
                 catch (Exception ex)
                 {
@@ -238,7 +258,12 @@ namespace SME.SR.Workers.SGP.Services
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             RegistrarConsumer(consumer);
-            return Task.CompletedTask;
+        }
+
+        private void ReconectarRabbitMQ()
+        {
+            ConectarRabbitMQ();
+            RegistrarConsumer();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
