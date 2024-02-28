@@ -97,9 +97,7 @@ namespace SME.SR.Workers.SGP.Services
         {
             foreach (var fila in configuracaoFilasRabbit.GetFilas)
             {
-                var args = new Dictionary<string, object>();
-                args.Add("x-consumer-timeout", 90000);
-                canalRabbit.QueueDeclare(fila, true, false, false, args);
+                canalRabbit.QueueDeclare(fila, true, false, false);
                 canalRabbit.QueueBind(fila, exchange, fila, null);
             }
         }
@@ -137,13 +135,12 @@ namespace SME.SR.Workers.SGP.Services
 
                                 if (metodoExecutar != null)
                                 {
-                                    Thread.Sleep(120000);//timeout consumer
-                                    /*await servicoTelemetria.RegistrarAsync(async () =>
+                                    await servicoTelemetria.RegistrarAsync(async () =>
                                         await (Task)metodoExecutar.Invoke(useCase, new object[] { filtroRelatorio }),
                                         "RabbitMQ_SR",
                                         filtroRelatorio.Action,
                                         rota,
-                                        filtroRelatorio.Mensagem.ToString());*/
+                                        filtroRelatorio.Mensagem.ToString());
                                 }
                             }
                             else
@@ -189,11 +186,15 @@ namespace SME.SR.Workers.SGP.Services
                 transacao?.End();
             }
         }
-
         private async Task RegistrarLogErro(string rota, FiltroRelatorioDto mensagemRabbit, Exception ex, LogNivel nivel)
         {
             var mensagem = $"{mensagemRabbit.UsuarioLogadoRF} - {mensagemRabbit.CodigoCorrelacao.ToString()[..3]} - ERRO - {rota}";
             await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, nivel, ex.Message));
+        }
+
+        private async Task RegistrarLogErro(string mensagem, LogNivel logNivel, string observacao = "")
+        {
+            await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, logNivel, observacao));
         }
 
         private async Task RegistrarLogErro(string erro)
@@ -242,8 +243,7 @@ namespace SME.SR.Workers.SGP.Services
                 {
                     if (canalRabbit.IsClosed)
                         ReconectarRabbitMQ();
-                    await RegistrarLogErro(ex.Message);
-                    //await RegistrarErro($"Erro Conexão RabbitMQ Fechada - {ea.RoutingKey}", LogNivel.Critico, $"{ex.Message} - {Encoding.UTF8.GetString(ea.Body.Span)}");
+                    await RegistrarLogErro($"Erro Conexão RabbitMQ Fechada - {ea.RoutingKey}", LogNivel.Critico, $"{ex.Message} - {Encoding.UTF8.GetString(ea.Body.Span)}");
                 }
                 catch (Exception ex)
                 {
