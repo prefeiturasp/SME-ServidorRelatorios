@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -71,29 +69,30 @@ namespace SME.SR.Infra
         }
         private List<IColuna> ObtenhaDicionarioColuna()
         {
-            var lista = new List<IColuna>();
-
-            lista.Add(new Coluna<FrequenciaMensalDto>()
+            var lista = new List<IColuna>
             {
-                Largura = 6,
-                Titulo = "Nº",
-                Nome = "NumeroAluno",
-                UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
-            });
-            lista.Add(new Coluna<FrequenciaMensalDto>()
-            {
-                Largura = 86,
-                Titulo = "NOME",
-                Nome = "NomeAluno",
-                UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
-            });
-            lista.Add(new Coluna<FrequenciaMensalDto>()
-            {
-                Largura = 8,
-                Titulo = "% FREQ",
-                Nome = "ProcentagemFrequencia",
-                UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
-            });
+                new Coluna<FrequenciaMensalDto>()
+                {
+                    Largura = 6,
+                    Titulo = "Nº",
+                    Nome = "NumeroAluno",
+                    UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                },
+                new Coluna<FrequenciaMensalDto>()
+                {
+                    Largura = 86,
+                    Titulo = "NOME",
+                    Nome = "NomeAluno",
+                    UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                },
+                new Coluna<FrequenciaMensalDto>()
+                {
+                    Largura = 8,
+                    Titulo = "% FREQ",
+                    Nome = "ProcentagemFrequencia",
+                    UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                }
+            };
 
             return lista;
         }
