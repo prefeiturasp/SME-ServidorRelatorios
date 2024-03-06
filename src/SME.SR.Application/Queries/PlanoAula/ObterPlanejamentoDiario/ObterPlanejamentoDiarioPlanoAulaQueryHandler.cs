@@ -125,12 +125,15 @@ namespace SME.SR.Application
                         string ObjetivosSalecionados = "";
                         if (!string.IsNullOrEmpty(aula.ObjetivosSalecionados))
                         {
-                            var ObjSplit = aula.ObjetivosSalecionados.Split("<br/>");                            
+                            var ObjSplit = aula.ObjetivosSalecionados.Split("<br/>");
 
-                            foreach (var obj in ObjSplit.OrderBy(c => c))
+                            if (ObjSplit.Any())
                             {
-                                ObjetivosSalecionados += $"{obj} <br/>";
-                            }
+                                foreach (var obj in ObjSplit.Distinct().OrderBy(c => c))
+                                {
+                                    ObjetivosSalecionados += $"{obj} <br/>";
+                                }
+                            }     
                         }                       
 
                         aulaPlanejamento.ObjetivosSelecionados = ObjetivosSalecionados;
