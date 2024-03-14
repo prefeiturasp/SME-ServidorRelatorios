@@ -121,11 +121,11 @@ namespace SME.SR.Application
         private async Task<IEnumerable<IGrouping<object, DadosAlunosEscolaDto>>> FiltrarMatriculasConsideradasNoMes(IEnumerable<IGrouping<object, DadosAlunosEscolaDto>> lista, int mesConsiderado, int anoLetivoSelecionado)
         {
             if (lista.Any(l => l.First().DataMatricula.Year == anoLetivoSelecionado || l.First().DataSituacao.Year == anoLetivoSelecionado))
-               return await Task.FromResult(lista
-                    .Where(l => (SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula) && (l.First().DataMatricula.Month < mesConsiderado || (l.First().DataSituacao.Month == mesConsiderado && l.First().DataSituacao.Day < DateTime.DaysInMonth(l.First().AnoLetivo, mesConsiderado))) ||
-                                (!SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula) && l.Last().DataSituacao.Month >= mesConsiderado))));
-
-            return await Task.FromResult(lista);
+                return await Task.FromResult(lista
+                     .Where(l => (SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula) && (l.First().DataMatricula.Month < mesConsiderado || (l.First().DataSituacao.Month == mesConsiderado && l.First().DataSituacao.Day < DateTime.DaysInMonth(l.First().AnoLetivo, mesConsiderado))) ||
+                                 (!SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula) && l.Last().DataSituacao.Month >= mesConsiderado))));
+            else
+                return await Task.FromResult(lista.Where(l => (SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula))));
         }
     }
 }
