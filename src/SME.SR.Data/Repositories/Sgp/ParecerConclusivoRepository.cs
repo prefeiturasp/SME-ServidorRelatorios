@@ -21,7 +21,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<RelatorioParecerConclusivoRetornoDto>> ObterPareceresFinais(int anoLetivo, string dreCodigo, string ueCodigo, Modalidade? modalidade, int? semestre,
                                                                                                   long cicloId, string[] turmasCodigo, string[] anos, long parecerConclusivoId)
         {
-            var query = new StringBuilder(@"with PareceresConclusivos as (select t.turma_id as TurmaId, 
+            var query = new StringBuilder(@$"with PareceresConclusivos as (select t.turma_id as TurmaId, 
 	                                               cca.aluno_codigo AlunoCodigo, 
 	                                               ccp.nome ParecerConclusivo, 
 	                                               d.abreviacao as DreNome, 
@@ -34,9 +34,10 @@ namespace SME.SR.Data
 	                                               tc.descricao as Ciclo,
                                                    tc.Id as CicloId,
                                                    ccp.id ParecerConclusivoId,
-                                                   row_number() over (partition by cca.aluno_codigo order by cca.id desc) sequencia
+                                                   ft.periodo_escolar_id PeriodoEscolarId,
+                                                   row_number() over (partition by cca.aluno_codigo, cca. order by cca.id desc) sequencia,
 	                                            from conselho_classe_aluno cca 
-		                                            inner join conselho_classe_parecer ccp
+		                                            left join conselho_classe_parecer ccp
 			                                            on cca.conselho_classe_parecer_id = ccp.id 
 		                                            inner join conselho_classe cc 
 			                                            on cca.conselho_classe_id = cc.id
@@ -88,7 +89,9 @@ namespace SME.SR.Data
             if (parecerConclusivoId > 0)
                 query.AppendLine(" and ParecerConclusivoId = @parecerConclusivoId;");
             else if (parecerConclusivoId < 0)
-                query.AppendLine(" and ParecerConclusivoId is null;");
+                query.AppendLine(" and ParecerConclusivoId is null ;");
+
+            query.AppendLine(" and PeriodoEscolarId is null");
 
             var parametros = new
             {
