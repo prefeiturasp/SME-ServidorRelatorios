@@ -34,10 +34,9 @@ namespace SME.SR.Data
 	                                               tc.descricao as Ciclo,
                                                    tc.Id as CicloId,
                                                    ccp.id ParecerConclusivoId,
-                                                   ft.periodo_escolar_id PeriodoEscolarId,
                                                    row_number() over (partition by cca.aluno_codigo order by cca.id desc) sequencia
 	                                            from conselho_classe_aluno cca 
-		                                            left join conselho_classe_parecer ccp
+		                                            inner join conselho_classe_parecer ccp
 			                                            on cca.conselho_classe_parecer_id = ccp.id 
 		                                            inner join conselho_classe cc 
 			                                            on cca.conselho_classe_id = cc.id
@@ -90,8 +89,6 @@ namespace SME.SR.Data
                 query.AppendLine(" and ParecerConclusivoId = @parecerConclusivoId");
             else if (parecerConclusivoId < 0)
                 query.AppendLine(" and ParecerConclusivoId is null");
-
-            query.AppendLine(" and PeriodoEscolarId is null");
 
             var parametros = new
             {
