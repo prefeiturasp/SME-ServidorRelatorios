@@ -110,7 +110,6 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
 
                 dreParaAdicionar.Ues.Add(ueParaAdicionar);
             }
-
         }
 
         private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, int anoLetivo, int modalidadeId, long cicloIdEnviado,
