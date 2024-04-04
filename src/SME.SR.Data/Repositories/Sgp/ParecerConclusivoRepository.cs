@@ -87,9 +87,9 @@ namespace SME.SR.Data
             query.AppendLine("select * from PareceresConclusivos where sequencia = 1");
 
             if (parecerConclusivoId > 0)
-                query.AppendLine(" and ParecerConclusivoId = @parecerConclusivoId;");
+                query.AppendLine(" and ParecerConclusivoId = @parecerConclusivoId");
             else if (parecerConclusivoId < 0)
-                query.AppendLine(" and ParecerConclusivoId is null ;");
+                query.AppendLine(" and ParecerConclusivoId is null");
 
             query.AppendLine(" and PeriodoEscolarId is null");
 
