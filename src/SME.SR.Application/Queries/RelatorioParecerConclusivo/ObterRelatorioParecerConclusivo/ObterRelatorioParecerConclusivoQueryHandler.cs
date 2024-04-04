@@ -154,8 +154,8 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
 
                         var codigosAlunos = alunos?.Select(a => a.CodigoAluno).Distinct();
 
-                        codigosAlunos = parecesParaTratar.Any() && parecerConclusivoId < 0 
-                            ? parecesParaTratar.Where(p => codigosAlunos.Any(c => c == p.AlunoCodigo)).Select(p => p.AlunoCodigo).Distinct() 
+                        codigosAlunos = parecesParaTratar.Any() && parecerConclusivoId < 0
+                            ? parecesParaTratar.Where(p => codigosAlunos.Any(c => c == p.AlunoCodigo)).Select(p => p.AlunoCodigo).Distinct()
                             : codigosAlunos;
 
                         if (codigosAlunos != null && codigosAlunos.Any())
