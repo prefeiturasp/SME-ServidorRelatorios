@@ -224,7 +224,7 @@ namespace SME.SR.Application
                 DataSolicitacao = DateTime.Now.ToString("dd/MM/yyyy"),
                 Dre = dre != null ? dre.Abreviacao : "Todas",
                 Periodo = periodo,
-                Proficiencia = "Capacidade de Leitura",
+                Proficiencia = "IAD - Capacidade de Leitura",
                 Rf = codigoRf,
                 Turma = turmaNome,
                 Ue = ue != null ? ue.NomeComTipoEscola : "Todas",

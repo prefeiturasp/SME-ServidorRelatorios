@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Sentry;
+using SME.SR.Infra;
 using SME.SR.Infra.Dtos.FrequenciaMensal;
 using System;
 using System.Collections.Generic;
@@ -51,22 +51,102 @@ namespace SME.SR.Application
         private List<FrequenciaPorMesExcelDto> ObterFrequenciasPorMeses(ControleFrequenciaMensalDto dto)
         {
             var frequenciasMeses = new List<FrequenciaPorMesExcelDto>();
+            (int mes, int quantidadeDias) = ObterMaiorQuantidadeDias(dto.Ano, dto.FrequenciaMes.Select(fm => fm.Mes).ToArray());
 
-            foreach(var frequenciaMes in dto.FrequenciaMes)
+            foreach (var frequenciaMes in dto.FrequenciaMes.OrderBy(fm => fm.Mes))
             {
                 var data = new DataTable();
-                var diasSemanas = ObterDiaSemanaAulas(frequenciaMes.FrequenciaComponente);
+                var diasSemanas = ObterDiaSemanaAulas(frequenciaMes.FrequenciaComponente, dto.Ano, frequenciaMes.Mes, quantidadeDias);
 
                 AdicionarColunas(diasSemanas, data, frequenciaMes.Mes);
 
                 AdicionarTituloColunas(diasSemanas, data, frequenciaMes.Mes);
 
                 AdicionarLinhas(frequenciaMes.FrequenciaComponente, data, frequenciaMes.Mes);
-
-                frequenciasMeses.Add(new FrequenciaPorMesExcelDto() { Mes = frequenciaMes.MesDescricao, FrequenciaGlobal = frequenciaMes.FrequenciaGlobal, TabelaDeDado = data });
+                
+                frequenciasMeses.Add(new FrequenciaPorMesExcelDto() 
+                    { Mes = frequenciaMes.MesDescricao, 
+                      FrequenciaGlobal = frequenciaMes.FrequenciaGlobal, 
+                      TabelaDeDado = data,
+                      ColunasDiasNaoLetivosFinaisSemana = ObterColunasDiasNaoLetivosFinaisSemana(diasSemanas.Where(ds => !string.IsNullOrEmpty(ds.Value))
+                                                                                                                  .Select(ds => ds.Key).ToArray(),
+                                                                                                       frequenciaMes.Mes,
+                                                                                                       dto.Ano,
+                                                                                                       frequenciaMes.DiasLetivosEventosMes,
+                                                                                                       data)
+                    });
             }
             
             return frequenciasMeses;
+        }
+
+        private List<int> ObterColunasDiasNaoLetivosFinaisSemana(int[] dias, int mes, int ano, List<DiaLetivoDto> diasLetivosEventosMes, DataTable data)
+        {
+            var retorno = new List<int>();
+            foreach (var dia in dias)
+            {
+                DateTime dataBase = new DateTime(ano, mes, dia);
+                if (EhDiaNaoLetivo(dataBase, diasLetivosEventosMes))
+                    retorno.Add(data.Columns[$"{mes}_{dia}"].Ordinal + 1);
+            }
+            return retorno;
+        }
+
+        private static bool EhDiaNaoLetivo(DateTime dia, List<DiaLetivoDto> diasLetivosEventosMes)
+        {
+            if (!diasLetivosEventosMes.Any(d => d.Data.Equals(dia) && d.EhLetivo)
+                && dia.FimDeSemana())
+                return true;
+
+            if (diasLetivosEventosMes.Any(d => d.Data.Equals(dia) && d.EhNaoLetivo))
+                return true;
+
+            return false;
+        }
+
+        private static string ObterDiaDaSemanaSigla(DateTime data)
+        {
+            // Obtém o dia da semana como um enum
+            DayOfWeek diaDaSemana = data.DayOfWeek;
+
+            // Converte o enum para a sigla correspondente
+            switch (diaDaSemana)
+            {
+                case DayOfWeek.Sunday:
+                    return "DOM";
+                case DayOfWeek.Monday:
+                    return "SEG";
+                case DayOfWeek.Tuesday:
+                    return "TER";
+                case DayOfWeek.Wednesday:
+                    return "QUA";
+                case DayOfWeek.Thursday:
+                    return "QUI";
+                case DayOfWeek.Friday:
+                    return "SEX";
+                case DayOfWeek.Saturday:
+                    return "SAB";
+                default:
+                    return "";
+            }
+        }
+
+        private static (int, int) ObterMaiorQuantidadeDias(int ano, int[] meses)
+        {
+            int maiorQuantidadeDias = 0;
+            int mesComMaiorQuantidadeDias = 0;
+
+            foreach (int mes in meses)
+            {
+                int quantidadeDias = DateTime.DaysInMonth(ano, mes);
+                if (quantidadeDias > maiorQuantidadeDias)
+                {
+                    maiorQuantidadeDias = quantidadeDias;
+                    mesComMaiorQuantidadeDias = mes;
+                }
+            }
+
+            return (mesComMaiorQuantidadeDias, maiorQuantidadeDias);
         }
 
         private void AdicionarColunas(Dictionary<int, string> diasSemanas, DataTable data, int mes)
@@ -90,6 +170,8 @@ namespace SME.SR.Application
 
             foreach (var dias in diasSemanas.OrderBy(dia => dia.Key))
             {
+                if (string.IsNullOrEmpty(dias.Value))
+                    continue;
                 linhaNumeroDia[$"{mes}_{dias.Key}"] = dias.Key;
                 linhaSiglaDia[$"{mes}_{dias.Key}"] = dias.Value;
             }
@@ -126,22 +208,17 @@ namespace SME.SR.Application
             }
         }
 
-        private Dictionary<int, string> ObterDiaSemanaAulas(IEnumerable<ControleFrequenciaPorComponenteDto> frequenciasPorComponente)
+        private Dictionary<int, string> ObterDiaSemanaAulas(IEnumerable<ControleFrequenciaPorComponenteDto> frequenciasPorComponente, int ano, int mes, int qdadeDiasColunas)
         {
             var diasSemanas = new Dictionary<int, string>();
-
-            foreach (var frequenciaComponente in frequenciasPorComponente)
+            for (int dia = 1; dia <= qdadeDiasColunas; dia++)
             {
-                foreach (var FrequenciaTipo in frequenciaComponente.FrequenciaPorTipo)
-                {
-                    foreach (var FrequenciaAula in FrequenciaTipo.FrequenciaPorAula)
-                    {
-                        if (!diasSemanas.ContainsKey(FrequenciaAula.DiaSemanaNumero))
-                            diasSemanas.Add(FrequenciaAula.DiaSemanaNumero, FrequenciaAula.DiaSemanaSigla);
-                    }
-                }
+                int quantidadeDiasMes = DateTime.DaysInMonth(ano, mes);
+                if (dia <= quantidadeDiasMes)
+                    diasSemanas.Add(dia, ObterDiaDaSemanaSigla(new DateTime(ano, mes, dia)));
+                else
+                    diasSemanas.Add(dia, "");
             }
-
             return diasSemanas; 
         }
     }
