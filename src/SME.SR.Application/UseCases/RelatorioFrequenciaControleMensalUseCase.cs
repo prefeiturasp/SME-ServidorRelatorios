@@ -47,6 +47,7 @@ namespace SME.SR.Application.UseCases
                 filtro.AlunosCodigo));
 
             var agrupadoPorAlunos = frequencias.GroupBy(x => x.CodigoAluno).Distinct().ToList();
+            var diasMesEvento = await ObterDiasLetivosEventos(dadosTurma, filtro.AnoLetivo);
 
             foreach (var alunoFrequencia in agrupadoPorAlunos)
             {
@@ -63,7 +64,7 @@ namespace SME.SR.Application.UseCases
                     DataImpressao = DateTime.Now.ToString("dd/MM/yyyy"),
                 };
                 var agrupadoPorMes = alunoFrequencia.GroupBy(x => x.Mes);
-
+                
                 foreach (var mesAgrupado in agrupadoPorMes)
                 {
                     double totalFrequenciaDoPeriodo = 0;
@@ -71,7 +72,8 @@ namespace SME.SR.Application.UseCases
                     var mes = new ControleFrequenciaPorMesDto
                     {
                         Mes = mesAgrupado.Key,
-                        MesDescricao = ObterNomeMes(mesAgrupado.Key)
+                        MesDescricao = ObterNomeMes(mesAgrupado.Key),
+                        DiasLetivosEventosMes = diasMesEvento
                     };
 
                     var componentesAgrupado = mesAgrupado.Where(w => !string.IsNullOrEmpty(w.NomeComponente)).OrderBy(x => x.NomeGrupo).ThenBy(t => t.NomeComponente).GroupBy(x => x.NomeComponente);
@@ -100,6 +102,14 @@ namespace SME.SR.Application.UseCases
             }
 
             return retorno.OrderBy(controle => controle.NomeCriancaEstudante).ToList();
+        }
+
+        private async Task<List<DiaLetivoDto>> ObterDiasLetivosEventos(Turma turma, int anoLetivo)
+        {
+            var tipoCalendarioId = await mediator.Send(new ObterIdTipoCalendarioPorAnoLetivoEModalidadeQuery(anoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre));
+            var periodosEscolares = await mediator.Send(new ObterPeriodosEscolaresPorTipoCalendarioQuery(tipoCalendarioId));
+            var dias = await mediator.Send(new ObterDiasLetivosPorPeriodoEscolaresQuery(periodosEscolares, tipoCalendarioId));
+            return dias;
         }
 
         private string CalcularObterFrequenciaGlobal(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> alunoFrequencia)
