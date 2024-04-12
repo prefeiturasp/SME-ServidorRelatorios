@@ -18,7 +18,7 @@ namespace SME.SR.Application
         private const string NOME_COMPONENTE_SECAO_INFORMACOES_ESTUDANTE = "INFORMACOES_ESTUDANTE";
         private const string NOME_COMPONENTE_SECAO_QUESTOES_APRESENTADAS_INFANTIL = "QUESTOES_APRESENTADAS_INFANTIL";
         private const string NOME_COMPONENTE_SECAO_QUESTOES_APRESENTADAS_FUNDAMENTAL = "QUESTOES_APRESENTADAS_FUNDAMENTAL";
-        private const string NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA = "QUESTOES_ITINERACIA";
+        private const string NOME_COMPONENTE_SECAO_QUESTOES_ITINERANCIA = "QUESTOES_ITINERANCIA";
 
         private const string NOME_SECAO_INFORMACOES_ESTUDANTE = "INFORMAÇÕES";
         private const string NOME_SECAO_QUESTOES_APRESENTADAS_INFANTIL = "QUESTÕES APRESENTADAS";
@@ -39,6 +39,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
             var relatorios = new List<RelatorioEncaminhamentoNAAPADetalhadoDto>();
+            var imprimirAnexo = filtroRelatorio.ImprimirAnexos != ImprimirAnexosNAAPA.Nao;
 
             foreach (var encaminhamentoNaapa in encaminhamentosNaapa)
             {
@@ -46,11 +47,20 @@ namespace SME.SR.Application
 
                 await ObterCabecalho(encaminhamentoNaapa, relatorio);
                 await ObterQuestoesSecoes(encaminhamentoNaapa, relatorio);
+                await ObterAnexos(encaminhamentoNaapa.Id, relatorio, filtroRelatorio.ImprimirAnexos);
 
                 relatorios.Add(relatorio);
             }
 
-            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand(relatorios, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand(relatorios, imprimirAnexo, request.CodigoCorrelacao));
+        }
+
+        private async Task ObterAnexos(long encaminhamentoId, RelatorioEncaminhamentoNAAPADetalhadoDto relatorio, ImprimirAnexosNAAPA imprimirAnexos)
+        {
+            if (imprimirAnexos == ImprimirAnexosNAAPA.Nao)
+                return;
+
+            relatorio.AnexosPdf = await mediator.Send(new ObterAnexosEncaminhamentoNAAPAQuery(encaminhamentoId, imprimirAnexos));
         }
 
         private async Task ObterCabecalho(EncaminhamentoNAAPADto encaminhamentoNaapa, RelatorioEncaminhamentoNAAPADetalhadoDto relatorio)

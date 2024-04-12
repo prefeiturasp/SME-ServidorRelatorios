@@ -37,7 +37,7 @@ namespace SME.SR.Data
                                                    ft.periodo_escolar_id PeriodoEscolarId,
                                                    row_number() over (partition by cca.aluno_codigo order by cca.id desc) sequencia
 	                                            from conselho_classe_aluno cca 
-		                                            left join conselho_classe_parecer ccp
+		                                            inner join conselho_classe_parecer ccp
 			                                            on cca.conselho_classe_parecer_id = ccp.id 
 		                                            inner join conselho_classe cc 
 			                                            on cca.conselho_classe_id = cc.id

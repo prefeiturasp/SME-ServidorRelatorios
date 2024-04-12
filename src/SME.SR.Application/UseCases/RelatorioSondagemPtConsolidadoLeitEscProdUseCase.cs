@@ -39,7 +39,7 @@ namespace SME.SR.Application
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
             var tipoRelatorio = !string.IsNullOrEmpty(filtros.GrupoId) ?
-                (filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name() ? "Produção de texto" : "Leitura em voz alta") :
+                (filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name() ? "IAD - Produção de texto" : "IAD - Leitura em voz alta") :
                 (filtros.ProficienciaId == ProficienciaSondagemEnum.Leitura ? "Leitura" : "Escrita");
             GerarGrafico(relatorio, tipoRelatorio);
 
