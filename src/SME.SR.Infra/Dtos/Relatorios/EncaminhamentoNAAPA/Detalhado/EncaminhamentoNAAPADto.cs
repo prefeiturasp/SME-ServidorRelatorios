@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -19,5 +20,6 @@ namespace SME.SR.Infra
         public DateTime CriadoEm { get; set; }
         public int AnoLetivo { get; set; }
         public TipoTurnoEOL Turno { get; set; }
+        public List<ArquivoDto> Anexos { get; set; }
     }
 }

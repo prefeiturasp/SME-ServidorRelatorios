@@ -56,7 +56,9 @@ namespace SME.SR.Workers.SGP
             services.RegistrarDependencias(Configuration);
 
             ConfiguraRabbitParaLogs(services);
+            ConfiguraFilasRabbitConsumo(services);
             ConfiguraTelemetria(services);
+            ConfigurarArmazenamento(services, Configuration);
 
             services.RegistraElasticSearch(Configuration);
             services.AddDirectoryBrowser();
@@ -83,6 +85,13 @@ namespace SME.SR.Workers.SGP
             services.AddSingleton(configuracaoRabbitLogOptions);
         }
 
+        private void ConfiguraFilasRabbitConsumo(IServiceCollection services)
+        {
+            var configuracaoFilasRabbitOptions = new ConfiguracaoFilasRabbitOptions();
+            Configuration.GetSection(ConfiguracaoFilasRabbitOptions.Secao).Bind(configuracaoFilasRabbitOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(configuracaoFilasRabbitOptions);
+        }
+
         private void ConfiguraTelemetria(IServiceCollection services)
         {
             var serviceProvider = services.BuildServiceProvider();
@@ -96,6 +105,15 @@ namespace SME.SR.Workers.SGP
 
             services.AddSingleton(telemetriaOptions);
             services.AddSingleton<IServicoTelemetria, ServicoTelemetria>();
+        }
+
+        private void ConfigurarArmazenamento(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddOptions<ConfiguracaoArmazenamentoOptions>()
+                    .Bind(configuration.GetSection(ConfiguracaoArmazenamentoOptions.Secao), c => c.BindNonPublicProperties = true);
+
+            services.AddSingleton<ConfiguracaoArmazenamentoOptions>();
+            services.AddSingleton<IServicoArmazenamento, ServicoArmazenamento>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
