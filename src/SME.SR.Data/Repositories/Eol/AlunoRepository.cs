@@ -324,11 +324,11 @@ namespace SME.SR.Data
 									INNER JOIN v_cadastro_unidade_educacao ue
 										ON te.cd_escola = ue.cd_unidade_educacao
 									INNER JOIN alunos_matriculas_norm aln 
-										ON aln.CodigoAluno = m.cd_aluno
+										ON aln.CodigoMatricula = m.cd_matricula
 								WHERE te.an_letivo = @anoLetivo AND
 									  te.cd_tipo_turma = 1 AND
-									  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
-									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+									  ((mte.cd_situacao_aluno = 10 or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim))
+									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5) and CAST(aln.DataMatricula AS DATE) <= @dataFim
 									  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
                                         ? "and mte.dt_situacao_aluno > @dataFim))"
                                         : "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
