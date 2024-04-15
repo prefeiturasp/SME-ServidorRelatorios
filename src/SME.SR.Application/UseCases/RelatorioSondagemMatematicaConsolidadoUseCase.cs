@@ -45,16 +45,14 @@ namespace SME.SR.Application
                     throw new NegocioException("Não foi possível obter o usuário.");
             }
 
-            DateTime dataReferencia = DateTime.Now;
+            PeriodoCompletoSondagemDto periodo;
 
-            if (filtros.AnoLetivo < 2022 && filtros.Semestre > 0)
-                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
-            else if (filtros.AnoLetivo >= 2022 && filtros.Bimestre > 0)
-                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
-            else if (filtros.AnoLetivo >= 2023 && filtros.Semestre > 0)
-                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            if ((filtros.AnoLetivo < 2022 || filtros.AnoLetivo >= 2023) && filtros.Semestre > 0)
+                periodo = await mediator.Send(new ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+            else 
+                periodo = await mediator.Send(new ObterDatasPeriodoSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
 
-            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo, filtros.Modalidades, true));
+            var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, periodo.PeriodoFim, filtros.DreCodigo, filtros.Modalidades, true, periodo.PeriodoInicio));
 
             var relatorio = await mediator.Send(new ObterSondagemMatNumAutoralConsolidadoQuery()
             {
