@@ -1708,17 +1708,26 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferencia)
+        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferenciaInicio, DateTime dataReferenciaFim)
         {
             var totalAlunos = 0;
             var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
-            var parametros = new { dataReferencia, codigoTurma };
+
+			var parametros = new 
+			{ 
+				dataReferenciaInicio = dataReferenciaInicio.Date,
+				dataReferenciaFim = dataReferenciaFim.Date,
+				codigoTurma, 
+				codigosSituacoesAlunoAtivo = AlunoConsultas.CodigosSituacoesAlunoAtivo 
+			};
+
             using (var con = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000)).ToList();
+                var registros = await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000);
                 if (registros.Count() >= 0)
                     totalAlunos = registros.Count();
             }
+
             return totalAlunos;
         }
     }
