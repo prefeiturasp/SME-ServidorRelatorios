@@ -73,7 +73,7 @@ namespace SME.SR.Data
             filtro.Modalidades != null && filtro.Modalidades.Any() ? " and t.modalidade_codigo = ANY(@modalidades)" : string.Empty;
 
         private string ObterCondicaoAnosEscolaresCodigos(FiltroRelatorioEncaminhamentoNAAPADto filtro) =>
-            filtro.AnosEscolaresCodigos != null && filtro.AnosEscolaresCodigos.Any() ? " and t.ano = ANY(@anosEscolaresCodigos)" : string.Empty;
+             filtro.AnosEscolaresCodigos != null && filtro.AnosEscolaresCodigos.Any() && !filtro.AnosEscolaresCodigos.EstaFiltrandoTodas() ? " and t.ano = ANY(@anosEscolaresCodigos)" : string.Empty;
 
         private string ObterCondicao(FiltroRelatorioEncaminhamentoNAAPADto filtro)
         {
