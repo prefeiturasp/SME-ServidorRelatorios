@@ -217,9 +217,9 @@ namespace SME.SR.Data
             query.AppendLine("		left join conselho_classe cc ");
             query.AppendLine("			on ft.id = cc.fechamento_turma_id and not cc.excluido");
             query.AppendLine("		left join conselho_classe_aluno cca ");
-            query.AppendLine("			on cc.id = cca.conselho_classe_id and not cca.excluido");
+            query.AppendLine("			on cc.id = cca.conselho_classe_id and fa.aluno_codigo = cca.aluno_codigo and not cca.excluido");
             query.AppendLine("		left join conselho_classe_nota ccn ");
-            query.AppendLine("			on cca.id = ccn.conselho_classe_aluno_id and not ccn.excluido");
+            query.AppendLine("			on cca.id = ccn.conselho_classe_aluno_id and ftd.disciplina_id = ccn.componente_curricular_codigo and not ccn.excluido");
             query.AppendLine("		left join conceito_valores cvc");
             query.AppendLine("			on ccn.conceito_id = cvc.id");
             query.AppendLine("		left join sintese_valores sv");
@@ -309,9 +309,9 @@ namespace SME.SR.Data
             query.AppendLine("  		left join conceito_valores cvc");
             query.AppendLine("  			on ccn.conceito_id = cvc.id");
             query.AppendLine("  		left join fechamento_turma_disciplina ftd ");
-            query.AppendLine("  			on ft.id = ftd.fechamento_turma_id and not ftd.excluido");
+            query.AppendLine("  			on ft.id = ftd.fechamento_turma_id and ccn.componente_curricular_codigo = ftd.disciplina_id and not ftd.excluido");
             query.AppendLine("  		left join fechamento_aluno fa ");
-            query.AppendLine("  			on ftd.id = fa.fechamento_turma_disciplina_id and not fa.excluido");
+            query.AppendLine("  			on ftd.id = fa.fechamento_turma_disciplina_id and cca.aluno_codigo = fa.aluno_codigo and not fa.excluido");
             query.AppendLine("  		left join fechamento_nota fn ");
             query.AppendLine("  			on fa.id = fn.fechamento_aluno_id and not fn.excluido");
             query.AppendLine("  		left join conceito_valores cvf");
