@@ -7,5 +7,6 @@ namespace SME.SR.Data.Interfaces
     public interface IEncaminhamentoNAAPARespostaRepository
     {
         Task<IEnumerable<RespostaQuestaoDto>> ObterRespostasPorEncaminhamentoIdAsync(long encaminhamentoNaapaId, string nomeComponenteSecao);
+        Task<IEnumerable<ArquivoDto>> ObterRepostasArquivosPdfPorEncaminhamentoIdAsync(long encaminhamentoNaapaId, ImprimirAnexosNAAPA imprimirAnexosNAAPA);
     }
 }

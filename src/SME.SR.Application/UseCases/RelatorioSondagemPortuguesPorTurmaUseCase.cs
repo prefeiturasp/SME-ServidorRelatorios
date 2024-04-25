@@ -56,7 +56,7 @@ namespace SME.SR.Application
             if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && (filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name()
                 || filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name()))
             {
-                var tipoRelatorio = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ? "Leitura em voz alta" : "Produção de texto";
+                var tipoRelatorio = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ? "IAD - Leitura em voz alta" : "IAD - Produção de texto";
                 GerarGraficoLeituraEmVozAltaProducaoTexto(relatorio, tipoRelatorio);
             }
 

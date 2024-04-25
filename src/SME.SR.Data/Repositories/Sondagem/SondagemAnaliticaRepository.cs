@@ -369,7 +369,7 @@ namespace SME.SR.Data
                             var turmasComSondagem = anoTurma.Select(x => x.TurmaCodigo).Distinct().ToList();
 
                             if (turmasComSondagem.Any() && filtro.AnoLetivo > ANO_ESCOLAR_2022)
-                                quantidadeTotalAlunosEol = await ObterTotalAlunosAtivosPorTurmaEPeriodo(turmasComSondagem, periodoFixo.DataFim);
+                                quantidadeTotalAlunosEol = await ObterTotalAlunosAtivosPorTurmaEPeriodo(turmasComSondagem, periodoFixo.DataInicio, periodoFixo.DataFim);
                             else
                                 quantidadeTotalAlunosEol = quantidadeTotalAlunosPorAno.Where(x => x.AnoTurma == anoTurma.Key).Select(x => x.QuantidadeAluno).Sum();
 
@@ -392,9 +392,9 @@ namespace SME.SR.Data
                                 Nivel3 = anoTurma.Select(x => x.Nivel3).Sum(),
                                 Nivel4 = anoTurma.Select(x => x.Nivel4).Sum(),
                                 SemPreenchimento = semPreenchimento,
-                                TotalDeAlunos = totalTurmas?.FirstOrDefault(t => t.Ano == anoTurma.Key).Quantidade ?? 0,
+                                TotalDeAlunos = totalDeAlunosNaSondagem,
                                 Ano = int.Parse(anoTurma.Key),
-                                TotalDeTurma = turmasComSondagem?.Count() ?? 0,
+                                TotalDeTurma = totalTurmas?.FirstOrDefault(t => t.Ano == anoTurma.Key).Quantidade ?? 0,
                                 Ue = Ue.TituloTipoEscolaNome
                             };
                             relatorioSondagemAnaliticoLeituraDto.Respostas.Add(respostaSondagemAnaliticoLeituraDto);
@@ -586,12 +586,16 @@ namespace SME.SR.Data
 
         private async Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterQuantidadeTurmaPorAno(string codigoUe, int anoLetivo, int modalidade = (int)Modalidade.Fundamental)
            => await turmaRepository.ObterTotalDeTurmasPorUeAnoLetivoEModalidade(codigoUe, modalidade, anoLetivo);
-        private async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(List<string> turmasCodigo, DateTime dataFim)
+
+        private async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(List<string> turmasCodigo, DateTime dataInicio, DateTime dataFim)
         {
             var quantidade = 0;
+
             foreach (var turmaCodigo in turmasCodigo)
             {
-                var consultaQuantidade = await alunoRepository.ObterTotalAlunosAtivosPorTurmaEPeriodo(turmaCodigo, dataFim);
+                var consultaQuantidade = await alunoRepository
+                    .ObterTotalAlunosAtivosPorTurmaEPeriodo(turmaCodigo, dataInicio, dataFim);
+
                 quantidade += consultaQuantidade;
             }
 

@@ -1,11 +1,13 @@
 ﻿using Elastic.Apm;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
@@ -13,6 +15,7 @@ using SME.SR.Infra.Utilitarios;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Controllers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -24,28 +27,32 @@ namespace SME.SR.Workers.SGP.Services
     // TODO Turn this into a generic listener or common lib
     public class RabbitBackgroundListener : IHostedService
     {
+        private IConnection conexaoRabbit;
+        private IModel canalRabbit;
+        private IConnectionFactory factory;
+
         private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly IServicoTelemetria servicoTelemetria;
         private readonly TelemetriaOptions telemetriaOptions;
-        private readonly IConnection conexaoRabbit;
         private readonly IMediator mediator;
-        private readonly IModel canalRabbit;
-
+        private readonly ConfiguracaoFilasRabbitOptions configuracaoFilasRabbit;
         public RabbitBackgroundListener(IServiceScopeFactory serviceScopeFactory,
                                         IServicoTelemetria servicoTelemetria,
                                         TelemetriaOptions telemetriaOptions,
                                         IConfiguration configuration,
-                                        IMediator mediator)
+                                        IMediator mediator,
+                                        ConfiguracaoFilasRabbitOptions configuracaoFilasRabbit)
         {
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
             this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));            
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.configuracaoFilasRabbit = configuracaoFilasRabbit ?? throw new ArgumentNullException(nameof(configuracaoFilasRabbit));
 
-            if (configuration == null)
+             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
-            var factory = new ConnectionFactory
+            this.factory = new ConnectionFactory
             {
                 HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
                 UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
@@ -55,26 +62,40 @@ namespace SME.SR.Workers.SGP.Services
                 RequestedHeartbeat = TimeSpan.FromSeconds(60)
             };
 
+            ConectarRabbitMQ();
+        }
+
+        private void ConectarRabbitMQ()
+        {
             conexaoRabbit = factory.CreateConnection();
-
             canalRabbit = conexaoRabbit.CreateModel();
-
             canalRabbit.BasicQos(0, 1, false);
-
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatorios, ExchangeType.Direct, true, false);
             canalRabbit.ExchangeDeclare(ExchangeRabbit.WorkerRelatoriosDeadletter, ExchangeType.Direct, true, false);
-
             DeclararFilas();
         }
 
         private void DeclararFilas()
         {
+            DeclararFilasConfiguradas(ExchangeRabbit.WorkerRelatorios);
             DeclararFilasPorRota(typeof(RotasRabbitSR), ExchangeRabbit.WorkerRelatorios);
         }
 
         private void DeclararFilasPorRota(Type tipoRotas, string exchange)
         {
-            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>())
+            if (configuracaoFilasRabbit.GetFilas.Any())
+                return;
+            foreach (var fila in tipoRotas.ObterConstantesPublicas<string>()
+                                          .Where(r => !configuracaoFilasRabbit.GetFilasIgnoradas.Contains(r)))
+            {
+                canalRabbit.QueueDeclare(fila, true, false, false);
+                canalRabbit.QueueBind(fila, exchange, fila, null);
+            }
+        }
+
+        private void DeclararFilasConfiguradas(string exchange)
+        {
+            foreach (var fila in configuracaoFilasRabbit.GetFilas)
             {
                 canalRabbit.QueueDeclare(fila, true, false, false);
                 canalRabbit.QueueBind(fila, exchange, fila, null);
@@ -165,11 +186,15 @@ namespace SME.SR.Workers.SGP.Services
                 transacao?.End();
             }
         }
-
         private async Task RegistrarLogErro(string rota, FiltroRelatorioDto mensagemRabbit, Exception ex, LogNivel nivel)
         {
             var mensagem = $"{mensagemRabbit.UsuarioLogadoRF} - {mensagemRabbit.CodigoCorrelacao.ToString()[..3]} - ERRO - {rota}";
             await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, nivel, ex.Message));
+        }
+
+        private async Task RegistrarLogErro(string mensagem, LogNivel logNivel, string observacao = "")
+        {
+            await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, logNivel, observacao));
         }
 
         private async Task RegistrarLogErro(string erro)
@@ -201,13 +226,24 @@ namespace SME.SR.Workers.SGP.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var consumer = new EventingBasicConsumer(canalRabbit);
+            RegistrarConsumer();
+            return Task.CompletedTask;
+        }
 
+        private void RegistrarConsumer()
+        {
+            var consumer = new EventingBasicConsumer(canalRabbit);
             consumer.Received += async (ch, ea) =>
             {
                 try
                 {
                     await TratarMensagem(ea);
+                }
+                catch (AlreadyClosedException ex)
+                {
+                    if (canalRabbit.IsClosed)
+                        ReconectarRabbitMQ();
+                    await RegistrarLogErro($"Erro Conexão RabbitMQ Fechada - {ea.RoutingKey}", LogNivel.Critico, $"{ex.Message} - {Encoding.UTF8.GetString(ea.Body.Span)}");
                 }
                 catch (Exception ex)
                 {
@@ -222,7 +258,12 @@ namespace SME.SR.Workers.SGP.Services
             consumer.ConsumerCancelled += OnConsumerConsumerCancelled;
 
             RegistrarConsumer(consumer);
-            return Task.CompletedTask;
+        }
+
+        private void ReconectarRabbitMQ()
+        {
+            ConectarRabbitMQ();
+            RegistrarConsumer();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -234,8 +275,12 @@ namespace SME.SR.Workers.SGP.Services
 
         private void RegistrarConsumer(EventingBasicConsumer consumer)
         {
-            foreach (var fila in typeof(RotasRabbitSR).ObterConstantesPublicas<string>())
-                canalRabbit.BasicConsume(fila, false, consumer);
+            foreach (var fila in configuracaoFilasRabbit.GetFilas)
+                canalRabbit.BasicConsume(fila, false, consumer); 
+            if (!configuracaoFilasRabbit.GetFilas.Any())
+                foreach (var fila in typeof(RotasRabbitSR).ObterConstantesPublicas<string>()
+                                                          .Where(r => !configuracaoFilasRabbit.GetFilasIgnoradas.Contains(r)))
+                    canalRabbit.BasicConsume(fila, false, consumer);
         }
     }
 }
