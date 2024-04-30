@@ -5,6 +5,7 @@ using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,11 +22,10 @@ namespace SME.SR.Data
         private const string NOME_COMPONENTE_FLUXO_ALERTA = "FLUXO_ALERTA";
         private const string NOME_COMPONENTE_DATA_DO_ATENDIMENTO = "DATA_DO_ATENDIMENTO";
 
-
         public EncaminhamentoNAAPARepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
-        }
+        }       
 
         private string ObterCondicaoDre(FiltroRelatorioEncaminhamentoNAAPADto filtro) =>
                     !filtro.DreCodigo.EstaFiltrandoTodas() ? " and d.dre_id = @dreCodigo " : string.Empty;
@@ -35,13 +35,14 @@ namespace SME.SR.Data
 
         private string ObterCondicaoIds(long[] ids) =>
             ids.Any() ? " and en.id = ANY(@ids) " : string.Empty;
-        
+
         private string ObterCondicaoSituacao(FiltroRelatorioEncaminhamentoNAAPADto filtro)
         {
             var condicao = string.Empty;
 
             if (!filtro.ExibirEncerrados)
                 condicao += $" and en.situacao <> {(int)SituacaoNAAPA.Encerrado}";
+
             if (filtro.SituacaoIds != null && !filtro.SituacaoIds.EstaFiltrandoTodas())
                 condicao += " and en.situacao = ANY(@situacaoIds) ";
 
@@ -68,12 +69,19 @@ namespace SME.SR.Data
             return condicao;
         }
 
+        private string ObterCondicaoModalidades(FiltroRelatorioEncaminhamentoNAAPADto filtro) =>
+            filtro.Modalidades != null && filtro.Modalidades.Any() ? " and t.modalidade_codigo = ANY(@modalidades)" : string.Empty;
+
+        private string ObterCondicaoAnosEscolaresCodigos(FiltroRelatorioEncaminhamentoNAAPADto filtro) =>
+             filtro.AnosEscolaresCodigos != null && filtro.AnosEscolaresCodigos.Any() && !filtro.AnosEscolaresCodigos.EstaFiltrandoTodas() ? " and t.ano = ANY(@anosEscolaresCodigos)" : string.Empty;
 
         private string ObterCondicao(FiltroRelatorioEncaminhamentoNAAPADto filtro)
         {
             var query = new StringBuilder();
             var funcoes = new List<Func<FiltroRelatorioEncaminhamentoNAAPADto, string>>
             {
+                ObterCondicaoModalidades,
+                ObterCondicaoAnosEscolaresCodigos,
                 ObterCondicaoDre,
                 ObterCondicaoUe,
                 ObterCondicaoSituacao,
@@ -99,9 +107,9 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_questao enq on ens.id = enq.encaminhamento_naapa_secao_id  
                         join questao q on enq.questao_id = q.id 
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
-                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
+                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id                        
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                        where q.nome_componente = '{NOME_COMPONENTE_DATA_ENTRADA_QUEIXA}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
+                        where q.nome_componente = @nomeComponenteDataEntradaQueixa and secao.etapa = @secaoEtapa1 and secao.ordem = @secaoInformacoesAlunoOrdem
                         ),
                         vw_resposta_porta_entrada as (
                         select ens.encaminhamento_naapa_id, 
@@ -111,9 +119,9 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_questao enq on ens.id = enq.encaminhamento_naapa_secao_id  
                         join questao q on enq.questao_id = q.id 
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
-                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
+                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id                        
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                         where q.nome_componente = '{NOME_COMPONENTE_PORTA_ENTRADA}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
+                         where q.nome_componente = @nomeComponentePortaEntrada and secao.etapa = @secaoEtapa1 and secao.ordem = @secaoInformacoesAlunoOrdem
                         ),
                         vw_resposta_fluxo_alerta as (
                         select ens.encaminhamento_naapa_id, 
@@ -123,9 +131,9 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_questao enq on ens.id = enq.encaminhamento_naapa_secao_id  
                         join questao q on enq.questao_id = q.id 
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
-                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
+                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id                        
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                         where q.nome_componente = '{NOME_COMPONENTE_FLUXO_ALERTA}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_INFORMACOES_ALUNO_ORDEM}
+                         where q.nome_componente = @nomeComponenteFluxoAlerta and secao.etapa = @secaoEtapa1 and secao.ordem = @secaoInformacoesAlunoOrdem
                         ),
                         vw_resposta_data_ultimo_atendimento as (
                         select ens.encaminhamento_naapa_id, 
@@ -134,9 +142,9 @@ namespace SME.SR.Data
                         join encaminhamento_naapa_questao enq on ens.id = enq.encaminhamento_naapa_secao_id  
                         join questao q on enq.questao_id = q.id 
                         join encaminhamento_naapa_resposta enr on enr.questao_encaminhamento_id = enq.id 
-                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id
+                        join secao_encaminhamento_naapa secao on secao.id = ens.secao_encaminhamento_id                        
                         left join opcao_resposta opr on opr.id = enr.resposta_id
-                        where q.nome_componente = '{NOME_COMPONENTE_DATA_DO_ATENDIMENTO}' and secao.etapa = {SECAO_ETAPA_1} and secao.ordem = {SECAO_ITINERANCIA_ORDEM}
+                        where q.nome_componente = @nomeComponenteDataAtendimento and secao.etapa = @secaoEtapa1 and secao.ordem = @secaoItineranciaOrdem
                         group by ens.encaminhamento_naapa_id
                         )
 		                select en.id, d.dre_id dreId, 
@@ -166,15 +174,13 @@ namespace SME.SR.Data
 			                left join vw_resposta_porta_entrada qportaentrada on qportaentrada.encaminhamento_naapa_id = en.id
 			                left join vw_resposta_fluxo_alerta qfluxoalerta on qfluxoalerta.encaminhamento_naapa_id = en.id
                             left join vw_resposta_data_ultimo_atendimento qatendimetno on qatendimetno.encaminhamento_naapa_id = en.id
-                            where not en.excluido    
+                            where not en.excluido and
+                                  t.historica = @consideraHistorico and
+                                  t.ano_letivo = @anoLetivo
                             ");
 
-            if (filtro.Ids != null && filtro.Ids.Length > 0)
-                query.AppendLine(ObterCondicaoIds(filtro.Ids));
-            else
-                query.AppendLine(ObterCondicao(filtro));
-
-            query.AppendLine(" order by d.abreviacao, u.nome, DataAberturaQueixa ;   ");
+            query.AppendLine(ObterCondicao(filtro));
+            query.AppendLine(" order by d.abreviacao, u.nome, DataAberturaQueixa;");
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var lookup = new Dictionary<long, EncaminhamentoNAAPASimplesDto>();
@@ -196,12 +202,22 @@ namespace SME.SR.Data
                 },
                 new
                 {
+                    consideraHistorico = filtro.ConsideraHistorico,
+                    anoLetivo = filtro.AnoLetivo,
                     dreCodigo = filtro.DreCodigo,
                     ueCodigo = filtro.UeCodigo,
-                    situacaoIds = filtro.SituacaoIds,
+                    modalidades = filtro.Modalidades.Select(m => (int)m).ToArray(),
+                    anosEscolaresCodigos = filtro.AnosEscolaresCodigos,
+                    situacaoIds = filtro.SituacaoIds,                    
                     portaEntradaIds = filtro.PortaEntradaIds,
                     fluxoAlertaIds = filtro.FluxoAlertaIds,
-                    ids = filtro.Ids,
+                    nomeComponenteDataEntradaQueixa = NOME_COMPONENTE_DATA_ENTRADA_QUEIXA,
+                    nomeComponentePortaEntrada = NOME_COMPONENTE_PORTA_ENTRADA,
+                    nomeComponenteFluxoAlerta = NOME_COMPONENTE_FLUXO_ALERTA,
+                    nomeComponenteDataAtendimento = NOME_COMPONENTE_DATA_DO_ATENDIMENTO,
+                    secaoEtapa1 = SECAO_ETAPA_1,
+                    secaoInformacoesAlunoOrdem = SECAO_INFORMACOES_ALUNO_ORDEM,
+                    secaoItineranciaOrdem = SECAO_ITINERANCIA_ORDEM
                 }, splitOn: "id,id,id");
             return lookup.Values;
         }

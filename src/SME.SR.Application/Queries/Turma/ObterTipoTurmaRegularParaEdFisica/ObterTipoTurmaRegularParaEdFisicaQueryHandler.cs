@@ -14,7 +14,7 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IPeriodoEscolarRepository periodoEscolarRepository;
-        private Dictionary<string, PeriodoEscolar> periodoUltimoBimestre;
+        private readonly Dictionary<string, PeriodoEscolar> periodoUltimoBimestre;
 
         public ObterTipoTurmaRegularParaEdFisicaQueryHandler(IMediator mediator, IPeriodoEscolarRepository periodoEscolarRepository)
         {
@@ -33,20 +33,29 @@ namespace SME.SR.Application
 
                 turmasCodigosParaConsulta.AddRange(request.Turma.ObterTiposRegularesDiferentes());
 
-                var codigosTurmasAlunosRelacionadas = await mediator.Send(new ObterTurmaCodigosEAlunosPorAnoLetivoAlunoTipoTurmaQuery(request.Turma.AnoLetivo, request.CodigosAlunos, turmasCodigosParaConsulta, request.Turma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year));
-                var codigoTurmas = codigosTurmasAlunosRelacionadas.GroupBy(g => g.CodigoAluno).Select(x => x.FirstOrDefault()).Select(x => x.CodigoTurma.ToString()).ToArray();
-                var turmas = await mediator.Send(new ObterTurmasPorCodigoQuery(codigoTurmas));
+                var codigosTurmasAlunosRelacionadas = await mediator
+                    .Send(new ObterTurmaCodigosEAlunosPorAnoLetivoAlunoTipoTurmaQuery(request.Turma.AnoLetivo, request.CodigosAlunos, turmasCodigosParaConsulta, request.Turma.AnoLetivo < DateTimeExtension.HorarioBrasilia().Year));
 
-                foreach(var turma in turmas)
+                var codigoTurmas = codigosTurmasAlunosRelacionadas
+                    .GroupBy(g => g.CodigoAluno).Select(x => x.FirstOrDefault()).Select(x => x.CodigoTurma.ToString()).ToArray();
+
+                var turmas = await mediator
+                    .Send(new ObterTurmasPorCodigoQuery(codigoTurmas));
+
+                foreach (var turma in turmas)
                 {
                     var periodoEscolarUltimoBimestre = await ObterPeriodoUltimoBimestre(turma);
                     var tipoNota = await mediator.Send(new ObterTipoNotaQuery() { PeriodoEscolar = periodoEscolarUltimoBimestre, Turma = turma });
                     var tipo = tipoNota == "Conceito" ? TipoNota.Conceito : TipoNota.Nota;
-                    var codigosAlunos = codigosTurmasAlunosRelacionadas.Where(ta => ta.CodigoTurma.ToString() == turma.Codigo).Select(ta => ta.CodigoAluno).Distinct();
 
-                    foreach(var codigoAluno in codigosAlunos)
+                    var codigosAlunos = codigosTurmasAlunosRelacionadas
+                        .Where(ta => ta.CodigoTurma.ToString() == turma.Codigo).Select(ta => ta.CodigoAluno).Distinct();
+
+                    foreach (var codigoAluno in codigosAlunos)
                     {
-                        retorno.Add(codigoAluno.ToString(), tipo);
+                        if (!retorno.ContainsKey(codigoAluno.ToString()))
+                            retorno.Add(codigoAluno.ToString(), tipo);
+                        else retorno[codigoAluno.ToString()] = tipo;
                     }
                 }
             }
@@ -61,8 +70,8 @@ namespace SME.SR.Application
             if (periodoUltimoBimestre.ContainsKey(chave))
                 return periodoUltimoBimestre[chave];
 
-            var periodoEscolarUltimoBimestre = await periodoEscolarRepository.ObterUltimoPeriodoAsync(turma.AnoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre);
-            if (periodoEscolarUltimoBimestre == null)
+            var periodoEscolarUltimoBimestre = await periodoEscolarRepository
+                .ObterUltimoPeriodoAsync(turma.AnoLetivo, turma.ModalidadeTipoCalendario, turma.Semestre) ?? 
                 throw new NegocioException("Não foi possível localizar o período escolar do ultimo bimestre da turma");
 
             periodoUltimoBimestre.Add(chave, periodoEscolarUltimoBimestre);
