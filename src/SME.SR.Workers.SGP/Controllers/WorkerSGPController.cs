@@ -417,6 +417,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/mapeamentosestudantes")]
+        [Action("relatorios/mapeamentosestudantes", typeof(IRelatorioMapeamentosEstudantesUseCase))]
+        public async Task<bool> RelatorioMapeamentosEstudantes([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioMapeamentosEstudantesUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
