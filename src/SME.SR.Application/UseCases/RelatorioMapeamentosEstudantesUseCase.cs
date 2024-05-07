@@ -20,37 +20,12 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioMapeamentoEstudantesDto>();
-            var encaminhamentosNAAPA = await mediator.Send(new ObterResumoEncaminhamentosNAAPAQuery(null));
+            var mapeamentos = await mediator.Send(new ObterMapeamentosEstudantesPorFiltroQuery(filtroRelatorio));
 
-            if (encaminhamentosNAAPA == null || !encaminhamentosNAAPA.Any())
+            if (mapeamentos == null || !mapeamentos.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-            var encaminhamentosAgrupados = encaminhamentosNAAPA.GroupBy(g => new
-            {
-                g.DreId,
-                DreNome = g.DreAbreviacao,
-                g.UeCodigo,
-                UeNome = $"{g.TipoEscola.ShortName()} {g.UeNome}",
-            }, (key, group) =>
-            new AgrupamentoEncaminhamentoNAAPADreUeDto()
-            {
-                DreId = key.DreId,
-                DreNome = key.DreNome,
-                UeNome = $"{key.UeCodigo} - {key.UeNome}",
-                UeOrdenacao = key.UeNome,
-                Detalhes = group.Select(s =>
-                new DetalheEncaminhamentoNAAPADto()
-                {
-                    Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
-                    Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}{s.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}",
-                    PortaEntrada = s.PortaEntrada,
-                    DataEntradaQueixa = s.DataEntradaQueixa,
-                    DataUltimoAtendimento = s.DataUltimoAtendimento,
-                    FluxosAlerta = String.Join("|", s.FluxosAlerta),
-                    Situacao = s.Situacao.Name()
-                }).OrderByDescending(oAluno => oAluno.DataEntradaQueixa).ToList()
-            }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeOrdenacao).ToList();
-
+                    
             var relatorio = new RelatorioEncaminhamentosNAAPADto()
             {
                 DreNome = !string.IsNullOrEmpty(filtroRelatorio.DreCodigo) && filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
