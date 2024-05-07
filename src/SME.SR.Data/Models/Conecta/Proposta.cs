@@ -32,11 +32,9 @@ namespace SME.SR.Data.Models.Conecta
 
         private string ObterTotalCargaHoraria()
         {
-            TimeSpan horaPresencial = ObterHora(CargaHorariaPresencial);
-            TimeSpan horaSincrona = ObterHora(CargaHorariaSincrona);
-            TimeSpan horaDistancia = ObterHora(CargaHorariaDistancia);
-
-            var total = horaPresencial + horaSincrona + horaDistancia;
+            var total = ObterHora(CargaHorariaPresencial) +
+                        ObterHora(CargaHorariaSincrona) +
+                        ObterHora(CargaHorariaDistancia);
 
             return total.ToString("HH:MM");
         } 
