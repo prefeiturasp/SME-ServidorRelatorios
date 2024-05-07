@@ -14,9 +14,11 @@ namespace SME.SR.Application.UseCases
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public Task<string> Executar(long propostaId)
+        public async Task<string> Executar(long propostaId)
         {
-            throw new NotImplementedException();
+            var proposta = await mediator.Send(new ObterPropostaQuery(propostaId));
+
+            return string.Empty;
         }
     }
 }

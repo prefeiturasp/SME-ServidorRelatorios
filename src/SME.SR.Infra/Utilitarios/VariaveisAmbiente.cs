@@ -40,6 +40,10 @@ namespace SME.SR.Infra
             configuration.GetSection("AEConnection").Value : 
             Environment.GetEnvironmentVariable("AEConnection");
 
+        public string ConnectionStringConecta => !string.IsNullOrEmpty(configuration.GetSection("conectaConnection").Value) ?
+            configuration.GetSection("conectaConnection").Value :
+            Environment.GetEnvironmentVariable("conectaConnection");
+
         public string PastaArquivosSGP => !string.IsNullOrEmpty(configuration.GetSection("SGPPastaArquivos").Value) ? 
             configuration.GetSection("SGPPastaArquivos").Value : 
             Environment.GetEnvironmentVariable("SGPPastaArquivos");
