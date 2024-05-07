@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
@@ -421,7 +423,26 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/mapeamentosestudantes", typeof(IRelatorioMapeamentosEstudantesUseCase))]
         public async Task<bool> RelatorioMapeamentosEstudantes([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioMapeamentosEstudantesUseCase useCase)
         {
-            await useCase.Executar(request);
+            var filtroRelatorioDto = new FiltroRelatorioDto()
+            {
+                Action = "relatorios/mapeamentosestudantes",
+                UsuarioLogadoRF = "6769195",
+                CodigoCorrelacao = new Guid("AF3A5649-E805-4CB3-B73E-5191C445DE19"),
+            };
+
+            var relatorio = new FiltroRelatorioMapeamentoEstudantesDto()
+            {
+                AlunoCodigo = "",
+                AnoLetivo = 2024,
+                Modalidade = Modalidade.Fundamental,
+                UeCodigo = "094617", 
+                TurmasCodigo = new string[] { "2659881", "2660389" }
+            };
+
+            var mensagem = JsonConvert.SerializeObject(relatorio, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            filtroRelatorioDto.Mensagem = mensagem;
+
+            await useCase.Executar(filtroRelatorioDto);//request
             return true;
         }
 

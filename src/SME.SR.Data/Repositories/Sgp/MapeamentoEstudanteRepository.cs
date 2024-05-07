@@ -180,7 +180,8 @@ namespace SME.SR.Data
 			                                              qPAP.resposta as participaPAP,
 			                                              qMaisEducacao.resposta as participaProjetosMaisEducacao,
 			                                              qProgramaSP.opcao_resposta_nome as programaSPIntegral,
-			                                              qavaliacoesexternas.resposta as avaliacoesExternasProvaSP
+			                                              qavaliacoesexternas.resposta as avaliacoesExternasProvaSP,
+                                                          qFortalecimentoAprend.resposta as projetosFortalecimentoAprendizagem
 			                                              from (select me.id, d.dre_id dreCodigo, 
 			                                                           d.abreviacao as dreAbreviacao,
 			                                                           u.ue_id as ueCodigo,
@@ -216,6 +217,7 @@ namespace SME.SR.Data
 			                                              left join vw_resposta qNAAPA on qNAAPA.mapeamento_estudante_id = mapeamento.id and qNAAPA.nome_componente = '{ACOMPANHADO_NAAPA}'	
 			                                              left join vw_resposta qPAP on qPAP.mapeamento_estudante_id = mapeamento.id and qPAP.nome_componente = '{PARTICIPA_PAP}'	
 			                                              left join vw_resposta qMaisEducacao on qMaisEducacao.mapeamento_estudante_id = mapeamento.id and qMaisEducacao.nome_componente = '{PARTICIPA_MAIS_EDUCACAO}'		
+                                                          left join vw_resposta qFortalecimentoAprend on qFortalecimentoAprend.mapeamento_estudante_id = mapeamento.id and qFortalecimentoAprend.nome_componente = '{PROJETO_FORTALECIMENTO_APRENDIZAGENS}'	
 			                                              left join vw_resposta qProgramaSP on qProgramaSP.mapeamento_estudante_id = mapeamento.id and qProgramaSP.nome_componente = '{PROGRAMA_SAO_PAULO_INTEGRAL}'	
 			                                              left join vw_resposta qHipoteseEscrita on qHipoteseEscrita.mapeamento_estudante_id = mapeamento.id and qHipoteseEscrita.nome_componente = '{HIPOTESE_ESCRITA}'	
 			                                              left join vw_resposta qAvaliacoesExternas on qAvaliacoesExternas.mapeamento_estudante_id = mapeamento.id and qAvaliacoesExternas.nome_componente = '{AVALIACOES_EXTERNAS_PROVA_SP}'	
@@ -241,10 +243,7 @@ namespace SME.SR.Data
 			                    left join vw_resposta qObsAvaliacaoProcessual on qObsAvaliacaoProcessual.mapeamento_estudante_id = me.id and qObsAvaliacaoProcessual.nome_componente = '{OBS_AVALIACAO_PROCESSUAL}'
 			                    left join vw_resposta qFrequencia on qFrequencia.mapeamento_estudante_id = me.id and qFrequencia.nome_componente = '{FREQUENCIA}'
 			                    left join vw_resposta qQdadeBuscasAtivas on qQdadeBuscasAtivas.mapeamento_estudante_id = me.id and qQdadeBuscasAtivas.nome_componente = '{QDADE_REGISTROS_BUSCA_ATIVA}'
-			                    ;");
-
-            query.AppendLine(ObterCondicoesRespostas(filtro));
-            query.AppendLine(" order by vw_mapeamento.turmaNome, vw_mapeamento.alunoNome, vw_mapeamento.alunoCodigo, me.bimestre ");
+			                    order by vw_mapeamento.turmaNome, vw_mapeamento.alunoNome, vw_mapeamento.alunoCodigo, me.bimestre ");
 
             await using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
             var lookup = new Dictionary<long, MapeamentoEstudanteUltimoBimestreDto>();

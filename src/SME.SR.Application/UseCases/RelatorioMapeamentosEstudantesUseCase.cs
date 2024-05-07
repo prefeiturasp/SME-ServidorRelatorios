@@ -25,16 +25,8 @@ namespace SME.SR.Application
             if (mapeamentos == null || !mapeamentos.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
 
-                    
-            var relatorio = new RelatorioEncaminhamentosNAAPADto()
-            {
-                DreNome = !string.IsNullOrEmpty(filtroRelatorio.DreCodigo) && filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
-                UeNome = !string.IsNullOrEmpty(filtroRelatorio.UeCodigo) && filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().UeNome,
-                UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
-            };
-
-            relatorio.EncaminhamentosDreUe = encaminhamentosAgrupados;
-            await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaCommad(relatorio, request.CodigoCorrelacao));
+            
+            await mediator.Send(new GerarRelatorioMapeamentosEstudantesExcelCommand(mapeamentos, request.CodigoCorrelacao));
         }
     }
 }
