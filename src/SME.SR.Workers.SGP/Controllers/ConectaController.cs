@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Nest;
-using SME.SR.Application;
-using SME.SR.Infra;
+using SME.SR.Application.Interfaces;
 using SME.SR.Workers.SGP.Filters;
 using System.Threading.Tasks;
 
@@ -13,9 +11,9 @@ namespace SME.SR.Workers.SGP.Controllers
     public class ConectaController : ControllerBase
     {
         [HttpGet("prosposta/{propostaId}/lauda-publicacao")]
-        public async Task<string> ObterRelatorioProstaDeLaudaDePublicacao(long propostaId, [FromServices] IRelatorioSondagemComponentesPorTurmaUseCase relatorioSondagemComponentesPorTurmaUseCase)
+        public async Task<string> ObterRelatorioProstaDeLaudaDePublicacao(long propostaId, [FromServices] IRelatorioPropostaLaudaDePublicacaoUseCase useCase)
         {
-            return await relatorioSondagemComponentesPorTurmaUseCase.Executar(request);
+            return await useCase.Executar(propostaId);
         }
     }
 }
