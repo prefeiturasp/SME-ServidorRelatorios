@@ -32,28 +32,28 @@ namespace SME.SR.Application
             ("ParecerConclusivoAnoAnterior", "Parecer conclusivo do ano anterior"),
             ("TurmaAnoAnterior", "Turma do ano anterior"),
             ("AnotacoesPedagogicasBimestreAnterior_Bim", "Anotações pedagógicas do bimestre anterior"),
-            ("AnotacoesPedagogicasBimestreAnterior", ""),
+            ("AnotacoesPedagogicasBimestreAnterior_DescBim", ""),
             ("DistorcaoIdadeAnoSerie", "Distorção idade/ano/série"),
             ("Nacionalidade", "Nacionalidade"),
             ("AcompanhadoSRMCEFAI", "Acompanhado pelo SRM/CEFAI"),
             ("PossuiPlanoAEE", "Possui plano AEE"),
             ("AcompanhadoNAAPA", "Acompanhado pelo NAAPA"),
             ("AcoesRedeApoio_Bim", "Ações da rede de apoio"),
-            ("AcoesRedeApoio", ""),
+            ("AcoesRedeApoio_DescBim", ""),
             ("AcoesRecuperacaoContinua_Bim", "Ações de recuperação contínua"),
-            ("AcoesRecuperacaoContinua", ""),
+            ("AcoesRecuperacaoContinua_DescBim", ""),
             ("ParticipaPAP", "Participa do PAP"),
             ("ParticipaProjetosMaisEducacao", "Participa de projetos do Mais Educação"),
             ("ProjetosFortalecimentosAprendizagens", "Projetos Fortalecimentos das Aprendizagens"),
             ("ProgramaSaoPauloIntegral", "Programa São Paulo Integral"),
             ("QualHipoteseEscritaEstudante_Bim", "Qual a hipótese de escrita do estudante"),
-            ("QualHipoteseEscritaEstudante", ""),
+            ("QualHipoteseEscritaEstudante_DescBim", ""),
             ("ObsAvaliacaoProcessualEstudante_Bim", "Observações sobre a avaliação processual do estudante"),
-            ("ObsAvaliacaoProcessualEstudante", ""),
+            ("ObsAvaliacaoProcessualEstudante_DescBim", ""),
             ("Frequencia_Bim", "Frequência"),
-            ("Frequencia", ""),
+            ("Frequencia_DescBim", ""),
             ("QdadeRegistrosBuscaAtiva_Bim", "Quantidade de registros de busca ativa"),
-            ("QdadeRegistrosBuscaAtiva", ""),
+            ("QdadeRegistrosBuscaAtiva_DescBim", ""),
             ("PSPProficienciaCN", "PSP Proficiência CN"),
             ("PSPNivelCN", "PSP Nível CN"),
             ("PSPProficienciaCH", "PSP Proficiência CH"),
@@ -83,9 +83,11 @@ namespace SME.SR.Application
             {
                 var primeiroRegistro = request.MapeamentosEstudantes.FirstOrDefault();
                 var worksheet = workbook.Worksheets.Add($"{primeiroRegistro.UeCodigo}");
-                MontarCabecalho(worksheet, primeiroRegistro, 31);
-                //AdicionarEstiloCabecalho(worksheet, dtoExcel.FrequenciasMeses.Max(data => data.TabelaDeDado.Columns.Count));
-                
+                MontarCabecalho(worksheet, primeiroRegistro, ColunasCabecalho.Count());
+                AdicionarEstiloCabecalho(worksheet, ColunasCabecalho.Count(), LINHA_NOME_SISTEMA);
+                AdicionarEstiloCabecalho(worksheet, ColunasCabecalho.Count(), LINHA_CABECALHO_DRE_UE);
+                AdicionarEstiloCabecalho(worksheet, ColunasCabecalho.Count(), LINHA_NOME_RELATORIO);
+
                 worksheet.Cell(LINHA_CABECALHO_TITULO, 1).InsertData(ObterDataCabecalhoTitulos());
                 AdicionarEstiloCabecalhoTitulos(worksheet);
                 var linhaFinal = LINHA_CABECALHO_TITULO + 1;
@@ -93,7 +95,9 @@ namespace SME.SR.Application
                 foreach (var dto in request.MapeamentosEstudantes)
                 {
                     worksheet.Cell(linhaFinal, 1).InsertData(ObterDataRegistros(dto));
-                    linhaFinal += dto.RespostrasBimestrais.Count() -1;
+                    var qdadeLinhasInseridas = dto.RespostrasBimestrais.Count();
+                    AdicionarEstiloRegistros(worksheet, linhaFinal, linhaFinal + qdadeLinhasInseridas - 1);
+                    linhaFinal += qdadeLinhasInseridas;
                     /*AdicionarColunaMes(worksheet, dtoExcelMes, linhaFinal, dtoExcelMes.TabelaDeDado.Columns.Count);
                     linhaFinal += 2;
                     worksheet.Cell(linhaFinal, 1).InsertData(dtoExcelMes.TabelaDeDado);
@@ -162,37 +166,37 @@ namespace SME.SR.Application
                 data.Columns.Add(c.nmColuna)
             );
 
-            DataRow valores = data.NewRow();
             foreach (var mapeamentoBimestral in mapeamento.RespostrasBimestrais)
             {
+                DataRow valores = data.NewRow();
                 valores["Turma"] = mapeamento.TurmaCompleta;
                 valores["NomeEstudante"] = mapeamento.AlunoNome;
                 valores["CodigoEstudante"] = mapeamento.AlunoCodigo;
                 valores["ParecerConclusivoAnoAnterior"] = string.Join(" | ", mapeamento.ObterParecerConclusivoAnoAnterior());
                 valores["TurmaAnoAnterior"] = mapeamento.TurmaAnoAnterior;
-                valores["AnotacoesPedagogicasBimestreAnterior_Bim"] = $"{mapeamentoBimestral.Bimestre}º";
-                valores["AnotacoesPedagogicasBimestreAnterior"] = mapeamentoBimestral.AnotacoesPedagogicasBimestreAnterior_Bimestre;
+                valores["AnotacoesPedagogicasBimestreAnterior_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
+                valores["AnotacoesPedagogicasBimestreAnterior_DescBim"] = mapeamentoBimestral.AnotacoesPedagogicasBimestreAnterior_Bimestre;
                 valores["DistorcaoIdadeAnoSerie"] = mapeamento.DistorcaoIdadeAnoSerie;
                 valores["Nacionalidade"] = mapeamento.Nacionalidade;
                 valores["AcompanhadoSRMCEFAI"] = mapeamento.AcompanhadoSRMCEFAI;
                 valores["PossuiPlanoAEE"] = mapeamento.PossuiPlanoAEE;
                 valores["AcompanhadoNAAPA"] = mapeamento.AcompanhadoNAAPA;
-                valores["AcoesRedeApoio_Bim"] = $"{mapeamentoBimestral.Bimestre}º";
-                valores["AcoesRedeApoio"] = mapeamentoBimestral.AcoesRedeApoio_Bimestre;
-                valores["AcoesRecuperacaoContinua_Bim"] = $"{mapeamentoBimestral.Bimestre}º";
-                valores["AcoesRecuperacaoContinua"] = mapeamentoBimestral.AcoesRecuperacaoContinua_Bimestre;
+                valores["AcoesRedeApoio_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
+                valores["AcoesRedeApoio_DescBim"] = mapeamentoBimestral.AcoesRedeApoio_Bimestre;
+                valores["AcoesRecuperacaoContinua_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
+                valores["AcoesRecuperacaoContinua_DescBim"] = mapeamentoBimestral.AcoesRecuperacaoContinua_Bimestre;
                 valores["ParticipaPAP"] = string.Join(" | ", mapeamento.ObterProgramasPAP());
                 valores["ParticipaProjetosMaisEducacao"] = string.Join(" | ", mapeamento.ObterProgramasMaisEducacao());
                 valores["ProjetosFortalecimentosAprendizagens"] = string.Join(" | ", mapeamento.ObterProjetosFortalecimentoAprendizagem());
                 valores["ProgramaSaoPauloIntegral"] = mapeamento.ProgramaSPIntegral;
-                valores["QualHipoteseEscritaEstudante_Bim"] = $"{mapeamentoBimestral.Bimestre}º";
-                valores["QualHipoteseEscritaEstudante"] = mapeamentoBimestral.HipoteseEscrita_Bimestre;
-                valores["ObsAvaliacaoProcessualEstudante_Bim"] = $"{mapeamentoBimestral.Bimestre}º";
-                valores["ObsAvaliacaoProcessualEstudante"] = mapeamentoBimestral.ObsAvaliacaoProcessual_Bimestre;
-                valores["Frequencia_Bim"] = $"{mapeamentoBimestral.Bimestre}º";
-                valores["Frequencia"] = mapeamentoBimestral.Frequencia_Bimestre;
-                valores["QdadeRegistrosBuscaAtiva_Bim"] = $"{mapeamentoBimestral.Bimestre}º";
-                valores["QdadeRegistrosBuscaAtiva"] = mapeamentoBimestral.QdadeRegistrosBuscasAtivas_Bimestre;
+                valores["QualHipoteseEscritaEstudante_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
+                valores["QualHipoteseEscritaEstudante_DescBim"] = mapeamentoBimestral.HipoteseEscrita_Bimestre;
+                valores["ObsAvaliacaoProcessualEstudante_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
+                valores["ObsAvaliacaoProcessualEstudante_DescBim"] = mapeamentoBimestral.ObsAvaliacaoProcessual_Bimestre;
+                valores["Frequencia_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
+                valores["Frequencia_DescBim"] = mapeamentoBimestral.Frequencia_Bimestre;
+                valores["QdadeRegistrosBuscaAtiva_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
+                valores["QdadeRegistrosBuscaAtiva_DescBim"] = mapeamentoBimestral.QdadeRegistrosBuscasAtivas_Bimestre;
                 valores["PSPProficienciaCN"] = "";
                 valores["PSPNivelCN"] = "";
                 valores["PSPProficienciaCH"] = "";
@@ -203,9 +207,8 @@ namespace SME.SR.Application
                 valores["PSPNivelMAT"] = "";
                 valores["PSPProficienciaRED"] = "";
                 valores["PSPNivelRED"] = "";
+                data.Rows.Add(valores);
             }
-            
-            data.Rows.Add(valores);
             return data;
         }
 
@@ -236,16 +239,39 @@ namespace SME.SR.Application
 
         private void AdicionarEstiloCabecalhoTitulos(IXLWorksheet worksheet)
         {
-            foreach(var coluna in ColunasCabecalho.Where(col => col.nmColuna.Contains("_Bim")))
+            foreach(var coluna in ColunasCabecalho.Where(col => col.nmColuna.Contains("_Bim") || col.nmColuna.Contains("_DescBim")))
             {
                 var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) +1;
                 worksheet.Range(LINHA_CABECALHO_TITULO, indice, LINHA_CABECALHO_TITULO, indice+1).Merge();
             }
-
-            worksheet.ShowGridLines = false;
             worksheet.Columns().AdjustToContents();
             worksheet.ColumnsUsed().AdjustToContents();
             worksheet.RowsUsed().AdjustToContents();
+        }
+
+        private void AdicionarEstiloRegistros(IXLWorksheet worksheet, int linhaInicial, int linhaFinal)
+        {
+            foreach (var coluna in ColunasCabecalho.Where(col => !col.nmColuna.Contains("_Bim") && !col.nmColuna.Contains("_DescBim")))
+            {
+                var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) + 1;
+                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Merge();
+
+               /* worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Font.SetFontName("Arial");
+                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+
+                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Border.SetOutsideBorderColor(XLColor.Black);
+                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*/
+            }
+
+            
+        }
+
+        private void AdicionarEstiloCabecalho(IXLWorksheet worksheet, int ultimaColunaUsada, int linha)
+        {
+            var range = worksheet.Range(linha, 1, linha, ultimaColunaUsada);
+            range.Style.Font.SetFontSize(10);
+            range.Style.Font.SetFontName("Arial");
         }
 
 

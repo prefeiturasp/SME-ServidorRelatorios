@@ -432,7 +432,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
             var relatorio = new FiltroRelatorioMapeamentoEstudantesDto()
             {
-                AlunoCodigo = "",
+                AlunoCodigo = "7056007",
                 AnoLetivo = 2024,
                 Modalidade = Modalidade.Fundamental,
                 UeCodigo = "094617", 
