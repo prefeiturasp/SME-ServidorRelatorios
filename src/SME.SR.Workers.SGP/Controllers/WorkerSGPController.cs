@@ -436,7 +436,7 @@ namespace SME.SR.Workers.SGP.Controllers
                 AnoLetivo = 2024,
                 Modalidade = Modalidade.Fundamental,
                 UeCodigo = "094617", 
-                TurmasCodigo = new string[] { "2659881", "2660389" }
+                TurmasCodigo = new string[] { }
             };
 
             var mensagem = JsonConvert.SerializeObject(relatorio, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });

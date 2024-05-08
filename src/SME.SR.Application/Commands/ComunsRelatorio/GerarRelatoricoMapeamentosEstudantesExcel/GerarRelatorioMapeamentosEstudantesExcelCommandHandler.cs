@@ -1,5 +1,7 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using MediatR;
+using SME.SR.Data;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -22,6 +24,8 @@ namespace SME.SR.Application
         private const int LINHA_CABECALHO_DRE_UE = 6;
         private const int LINHA_CABECALHO_TITULO = 8;
         private const string NOME_COLUNA_SEQUENCIA = "Seq";
+        private const string PREFIXO_COLUNA_PROFICIENCIA_PSP = "PSPProficiencia_";
+        private const string PREFIXO_COLUNA_NIVEL_PSP = "PSPNivel_";
 
         private const int LINHA_INICIO_REGISTROS = 10;
 
@@ -55,17 +59,7 @@ namespace SME.SR.Application
             ("Frequencia_Bim", "Frequência"),
             ("Frequencia_DescBim", ""),
             ("QdadeRegistrosBuscaAtiva_Bim", "Quantidade de registros de busca ativa"),
-            ("QdadeRegistrosBuscaAtiva_DescBim", ""),
-            ("PSPProficienciaCN", "PSP Proficiência CN"),
-            ("PSPNivelCN", "PSP Nível CN"),
-            ("PSPProficienciaCH", "PSP Proficiência CH"),
-            ("PSPNivelCH", "PSP Nível CH"),
-            ("PSPProficienciaLP", "PSP Proficiência LP"),
-            ("PSPNivelLP", "PSP Nível LP"),
-            ("PSPProficienciaMAT", "PSP Proficiência MAT"),
-            ("PSPNivelMAT", "PSP Nível MAT"),
-            ("PSPProficienciaRED", "PSP Proficiência RED"),
-            ("PSPNivelRED", "PSP Nível RED"),
+            ("QdadeRegistrosBuscaAtiva_DescBim", "")
         };
 
         public GerarRelatorioMapeamentosEstudantesExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
@@ -79,11 +73,18 @@ namespace SME.SR.Application
             using (var workbook = new XLWorkbook())
             {
                 var primeiroRegistro = request.MapeamentosEstudantes.FirstOrDefault();
+                var areasConhecimentoProvaSP = request.MapeamentosEstudantes
+                                                      .SelectMany(m => m.ObterAvaliacoesExternasProvaSP())
+                                                      .Select(avaliacao => avaliacao.AreaConhecimento)
+                                                      .Distinct()
+                                                      .OrderBy(x => x);
+                AdicionarColunasCabecalhoProvaSP(areasConhecimentoProvaSP.ToArray());
+
                 var worksheet = workbook.Worksheets.Add($"{primeiroRegistro.UeCodigo}");
                 MontarCabecalhoGeral(worksheet, primeiroRegistro);
                 MontarCabecalhoTitulos(worksheet);
+                
                 var linhaFinal = LINHA_INICIO_REGISTROS;
-
                 foreach (var dto in request.MapeamentosEstudantes
                                             .Select((mapeamento, sequencia) => (mapeamento, sequencia))
                                             .ToList())
@@ -93,10 +94,6 @@ namespace SME.SR.Application
                 }
 
                 AdicionarEstiloGeralTodasColunas(worksheet, LINHA_CABECALHO_TITULO, linhaFinal);
-                worksheet.Columns().AdjustToContents();
-                worksheet.ColumnsUsed().AdjustToContents();
-                worksheet.RowsUsed().AdjustToContents();
-
                 var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                 var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{request.CodigoCorrelacao}");
 
@@ -165,16 +162,18 @@ namespace SME.SR.Application
                 valores["Frequencia_DescBim"] = mapeamentoBimestral.Frequencia_Bimestre;
                 valores["QdadeRegistrosBuscaAtiva_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
                 valores["QdadeRegistrosBuscaAtiva_DescBim"] = mapeamentoBimestral.QdadeRegistrosBuscasAtivas_Bimestre;
-                valores["PSPProficienciaCN"] = "";
-                valores["PSPNivelCN"] = "";
-                valores["PSPProficienciaCH"] = "";
-                valores["PSPNivelCH"] = "";
-                valores["PSPProficienciaLP"] = "";
-                valores["PSPNivelLP"] = "";
-                valores["PSPProficienciaMAT"] = "";
-                valores["PSPNivelMAT"] = "";
-                valores["PSPProficienciaRED"] = "";
-                valores["PSPNivelRED"] = "";
+                foreach (var coluna in ColunasCabecalho.Where(col => col.nmColuna.Contains(PREFIXO_COLUNA_PROFICIENCIA_PSP) 
+                                                                    || col.nmColuna.Contains(PREFIXO_COLUNA_NIVEL_PSP)))
+                {
+                    var provasSP = mapeamento.ObterAvaliacoesExternasProvaSP();
+                    var avaliacaoAreaConhecimento = provasSP.FirstOrDefault(psp => psp.AreaConhecimento.Equals(coluna.nmColuna
+                                                                                                                    .Replace(PREFIXO_COLUNA_PROFICIENCIA_PSP, "")
+                                                                                                                    .Replace(PREFIXO_COLUNA_NIVEL_PSP, "")));
+                    if (avaliacaoAreaConhecimento != null)
+                        valores[coluna.nmColuna] = coluna.nmColuna.Contains(PREFIXO_COLUNA_PROFICIENCIA_PSP) 
+                                                   ? avaliacaoAreaConhecimento.Proficiencia.ToString() 
+                                                   : avaliacaoAreaConhecimento.Nivel;
+                }
                 data.Rows.Add(valores);
             }
             return data;
@@ -288,6 +287,18 @@ namespace SME.SR.Application
                     AdicionarFonte(range);
                     AdicionarQuebraAutoamticaTexto(range);
                 }
+            }
+            worksheet.Columns().AdjustToContents();
+            worksheet.ColumnsUsed().AdjustToContents();
+            worksheet.RowsUsed().AdjustToContents();
+        }
+
+        private void AdicionarColunasCabecalhoProvaSP(string[] areasConhecimento)
+        {
+            foreach (var area in areasConhecimento)
+            {
+                ColunasCabecalho.Add(($"{PREFIXO_COLUNA_PROFICIENCIA_PSP}{area}", $"PSP Proficiência {area}"));
+                ColunasCabecalho.Add(($"{PREFIXO_COLUNA_NIVEL_PSP}{area}", $"PSP Nível {area}"));
             }
         }
 
