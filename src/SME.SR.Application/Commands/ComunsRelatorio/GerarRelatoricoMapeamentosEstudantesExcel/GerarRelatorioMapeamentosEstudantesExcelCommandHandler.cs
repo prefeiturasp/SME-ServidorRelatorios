@@ -1,10 +1,8 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
 using MediatR;
-using SME.SR.Data;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
-using SME.SR.Infra.Dtos.FrequenciaMensal;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,9 +21,13 @@ namespace SME.SR.Application
         private const int LINHA_NOME_RELATORIO = 3;
         private const int LINHA_CABECALHO_DRE_UE = 6;
         private const int LINHA_CABECALHO_TITULO = 8;
+        private const string NOME_COLUNA_SEQUENCIA = "Seq";
+
+        private const int LINHA_INICIO_REGISTROS = 10;
 
         private List<(string nmColuna, string titulo)> ColunasCabecalho = new List<(string nmColuna, string titulo)>()
         {
+            (NOME_COLUNA_SEQUENCIA, ""),
             ("Turma", "Turma"),
             ("NomeEstudante", "Nome Estudante"),
             ("CodigoEstudante", "Código EOL"),
@@ -74,74 +76,33 @@ namespace SME.SR.Application
 
         protected override async Task Handle(GerarRelatorioMapeamentosEstudantesExcelCommand request, CancellationToken cancellationToken)
         {
-            /*var controlesFrequencias = await mediator.Send(new ObterControleFrequenciaMensalParaExcelQuery(request.ControlesFrequenciasMensais.ToList()));
-
-            if (!controlesFrequencias.Any())
-                throw new NegocioException("Não possui informações.");
-            */
             using (var workbook = new XLWorkbook())
             {
                 var primeiroRegistro = request.MapeamentosEstudantes.FirstOrDefault();
                 var worksheet = workbook.Worksheets.Add($"{primeiroRegistro.UeCodigo}");
-                MontarCabecalho(worksheet, primeiroRegistro, ColunasCabecalho.Count());
-                AdicionarEstiloCabecalho(worksheet, ColunasCabecalho.Count(), LINHA_NOME_SISTEMA);
-                AdicionarEstiloCabecalho(worksheet, ColunasCabecalho.Count(), LINHA_CABECALHO_DRE_UE);
-                AdicionarEstiloCabecalho(worksheet, ColunasCabecalho.Count(), LINHA_NOME_RELATORIO);
+                MontarCabecalhoGeral(worksheet, primeiroRegistro);
+                MontarCabecalhoTitulos(worksheet);
+                var linhaFinal = LINHA_INICIO_REGISTROS;
 
-                worksheet.Cell(LINHA_CABECALHO_TITULO, 1).InsertData(ObterDataCabecalhoTitulos());
-                AdicionarEstiloCabecalhoTitulos(worksheet);
-                var linhaFinal = LINHA_CABECALHO_TITULO + 1;
-
-                foreach (var dto in request.MapeamentosEstudantes)
+                foreach (var dto in request.MapeamentosEstudantes
+                                            .Select((mapeamento, sequencia) => (mapeamento, sequencia))
+                                            .ToList())
                 {
-                    worksheet.Cell(linhaFinal, 1).InsertData(ObterDataRegistros(dto));
-                    var qdadeLinhasInseridas = dto.RespostrasBimestrais.Count();
-                    AdicionarEstiloRegistros(worksheet, linhaFinal, linhaFinal + qdadeLinhasInseridas - 1);
+                    var qdadeLinhasInseridas = MontarLinhaRegistros(worksheet, linhaFinal, dto.mapeamento, dto.sequencia+1);
                     linhaFinal += qdadeLinhasInseridas;
-                    /*AdicionarColunaMes(worksheet, dtoExcelMes, linhaFinal, dtoExcelMes.TabelaDeDado.Columns.Count);
-                    linhaFinal += 2;
-                    worksheet.Cell(linhaFinal, 1).InsertData(dtoExcelMes.TabelaDeDado);
-                    AdicionarEstilo(worksheet, dtoExcelMes, linhaFinal);
-                    linhaFinal += dtoExcelMes.TabelaDeDado.Rows.Count;*/
-
                 }
 
+                AdicionarEstiloGeralTodasColunas(worksheet, LINHA_CABECALHO_TITULO, linhaFinal);
+                worksheet.Columns().AdjustToContents();
+                worksheet.ColumnsUsed().AdjustToContents();
+                worksheet.RowsUsed().AdjustToContents();
 
                 var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                 var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{request.CodigoCorrelacao}");
 
                 workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
             }
-
-            /*
-            using (var workbook = new XLWorkbook())
-            {
-                foreach (var dtoExcel in controlesFrequencias)
-                {
-                    var worksheet = workbook.Worksheets.Add(dtoExcel.CodigoCriancaEstudante);
-                    var linhaFinal = LINHA_MES;
-
-                    MontarCabecalho(worksheet, dtoExcel, 20);
-                    AdicionarEstiloCabecalho(worksheet, dtoExcel.FrequenciasMeses.Max(data => data.TabelaDeDado.Columns.Count));
-
-                    foreach (var dtoExcelMes in dtoExcel.FrequenciasMeses)
-                    {
-                        linhaFinal += 1;
-                        AdicionarColunaMes(worksheet, dtoExcelMes, linhaFinal, dtoExcelMes.TabelaDeDado.Columns.Count);
-                        linhaFinal += 2;
-                        worksheet.Cell(linhaFinal, 1).InsertData(dtoExcelMes.TabelaDeDado);
-                        AdicionarEstilo(worksheet, dtoExcelMes, linhaFinal);
-                        linhaFinal += dtoExcelMes.TabelaDeDado.Rows.Count;
-                    }
-                }
-
-                var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-                var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{request.CodigoCorrelacao}");
-
-                workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
-            }
-
-            await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));*/
+            await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }
 
         private DataTable ObterDataCabecalhoTitulos()
@@ -156,10 +117,16 @@ namespace SME.SR.Application
                 titulos[c.nmColuna] = c.titulo
             );
             data.Rows.Add(titulos);
+
+            titulos = data.NewRow();
+            ColunasCabecalho.ForEach(c =>
+                titulos[c.nmColuna] = ""
+            );
+            data.Rows.Add(titulos);
             return data;
         }
 
-        private DataTable ObterDataRegistros(MapeamentoEstudanteUltimoBimestreDto mapeamento)
+        private DataTable ObterDataRegistros(MapeamentoEstudanteUltimoBimestreDto mapeamento, int seqRegistro)
         {
             var data = new DataTable();
             ColunasCabecalho.ForEach(c =>
@@ -169,22 +136,23 @@ namespace SME.SR.Application
             foreach (var mapeamentoBimestral in mapeamento.RespostrasBimestrais)
             {
                 DataRow valores = data.NewRow();
+                valores[NOME_COLUNA_SEQUENCIA] = seqRegistro;
                 valores["Turma"] = mapeamento.TurmaCompleta;
                 valores["NomeEstudante"] = mapeamento.AlunoNome;
                 valores["CodigoEstudante"] = mapeamento.AlunoCodigo;
                 valores["ParecerConclusivoAnoAnterior"] = string.Join(" | ", mapeamento.ObterParecerConclusivoAnoAnterior());
                 valores["TurmaAnoAnterior"] = mapeamento.TurmaAnoAnterior;
                 valores["AnotacoesPedagogicasBimestreAnterior_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
-                valores["AnotacoesPedagogicasBimestreAnterior_DescBim"] = mapeamentoBimestral.AnotacoesPedagogicasBimestreAnterior_Bimestre;
+                valores["AnotacoesPedagogicasBimestreAnterior_DescBim"] = UtilRegex.RemoverTagsHtml(mapeamentoBimestral.AnotacoesPedagogicasBimestreAnterior_Bimestre);
                 valores["DistorcaoIdadeAnoSerie"] = mapeamento.DistorcaoIdadeAnoSerie;
                 valores["Nacionalidade"] = mapeamento.Nacionalidade;
                 valores["AcompanhadoSRMCEFAI"] = mapeamento.AcompanhadoSRMCEFAI;
                 valores["PossuiPlanoAEE"] = mapeamento.PossuiPlanoAEE;
                 valores["AcompanhadoNAAPA"] = mapeamento.AcompanhadoNAAPA;
                 valores["AcoesRedeApoio_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
-                valores["AcoesRedeApoio_DescBim"] = mapeamentoBimestral.AcoesRedeApoio_Bimestre;
+                valores["AcoesRedeApoio_DescBim"] = UtilRegex.RemoverTagsHtml(mapeamentoBimestral.AcoesRedeApoio_Bimestre);
                 valores["AcoesRecuperacaoContinua_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
-                valores["AcoesRecuperacaoContinua_DescBim"] = mapeamentoBimestral.AcoesRecuperacaoContinua_Bimestre;
+                valores["AcoesRecuperacaoContinua_DescBim"] = UtilRegex.RemoverTagsHtml(mapeamentoBimestral.AcoesRecuperacaoContinua_Bimestre);
                 valores["ParticipaPAP"] = string.Join(" | ", mapeamento.ObterProgramasPAP());
                 valores["ParticipaProjetosMaisEducacao"] = string.Join(" | ", mapeamento.ObterProgramasMaisEducacao());
                 valores["ProjetosFortalecimentosAprendizagens"] = string.Join(" | ", mapeamento.ObterProjetosFortalecimentoAprendizagem());
@@ -192,7 +160,7 @@ namespace SME.SR.Application
                 valores["QualHipoteseEscritaEstudante_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
                 valores["QualHipoteseEscritaEstudante_DescBim"] = mapeamentoBimestral.HipoteseEscrita_Bimestre;
                 valores["ObsAvaliacaoProcessualEstudante_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
-                valores["ObsAvaliacaoProcessualEstudante_DescBim"] = mapeamentoBimestral.ObsAvaliacaoProcessual_Bimestre;
+                valores["ObsAvaliacaoProcessualEstudante_DescBim"] = UtilRegex.RemoverTagsHtml(mapeamentoBimestral.ObsAvaliacaoProcessual_Bimestre);
                 valores["Frequencia_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
                 valores["Frequencia_DescBim"] = mapeamentoBimestral.Frequencia_Bimestre;
                 valores["QdadeRegistrosBuscaAtiva_Bim"] = $"{mapeamentoBimestral.Bimestre}º Bim.";
@@ -212,41 +180,25 @@ namespace SME.SR.Application
             return data;
         }
 
-        private void AdicionarLinhas(IEnumerable<ControleFrequenciaPorComponenteDto> frequenciasPorComponente, DataTable data, int mes)
-        {
-            var linha = data.NewRow();
 
-            foreach (var frequenciaComponente in frequenciasPorComponente)
+        private void MontarCabecalhoTitulos(IXLWorksheet worksheet)
+        {
+            worksheet.Cell(LINHA_CABECALHO_TITULO, 1).InsertData(ObterDataCabecalhoTitulos());
+
+            foreach (var coluna in ColunasCabecalho)
             {
-                linha[$"{mes}_Componentes"] = frequenciaComponente.NomeComponente;
-                linha[$"{mes}_FrequenciaDoPeriodo"] = frequenciaComponente.FrequenciaDoPeriodo;
-
-                foreach (var FrequenciaTipo in frequenciaComponente.FrequenciaPorTipo)
-                {
-                    linha[$"{mes}_TipoFrequencia"] = FrequenciaTipo.TipoFrequencia;
-                    linha[$"{mes}_TotalDoPeriodo"] = FrequenciaTipo.TotalDoPeriodo;
-
-                    foreach (var FrequenciaAula in FrequenciaTipo.FrequenciaPorAula)
-                    {
-                        linha[$"{mes}_{FrequenciaAula.DiaSemanaNumero}"] = FrequenciaAula.Valor;
-                    }
-
-                    data.Rows.Add(linha);
-                    linha = data.NewRow();
-                }
+                var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) + 1;
+                worksheet.Range(LINHA_CABECALHO_TITULO, indice, LINHA_CABECALHO_TITULO + 1, indice).Merge();
             }
-        }
 
-        private void AdicionarEstiloCabecalhoTitulos(IXLWorksheet worksheet)
-        {
-            foreach(var coluna in ColunasCabecalho.Where(col => col.nmColuna.Contains("_Bim") || col.nmColuna.Contains("_DescBim")))
+            foreach (var coluna in ColunasCabecalho.Where(col => col.nmColuna.Contains("_Bim")))
             {
                 var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) +1;
-                worksheet.Range(LINHA_CABECALHO_TITULO, indice, LINHA_CABECALHO_TITULO, indice+1).Merge();
+                worksheet.Range(LINHA_CABECALHO_TITULO, indice, LINHA_CABECALHO_TITULO +1, indice+1).Merge();
             }
-            worksheet.Columns().AdjustToContents();
-            worksheet.ColumnsUsed().AdjustToContents();
-            worksheet.RowsUsed().AdjustToContents();
+
+            AdicionarFundoCinzaClaro(worksheet.Range(LINHA_CABECALHO_TITULO, 2, LINHA_CABECALHO_TITULO, ColunasCabecalho.Count()));
+            AdicionarAlinhamentoCentro(worksheet.Range(LINHA_CABECALHO_TITULO, 1, LINHA_CABECALHO_TITULO, ColunasCabecalho.Count()));
         }
 
         private void AdicionarEstiloRegistros(IXLWorksheet worksheet, int linhaInicial, int linhaFinal)
@@ -255,75 +207,37 @@ namespace SME.SR.Application
             {
                 var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) + 1;
                 worksheet.Range(linhaInicial, indice, linhaFinal, indice).Merge();
-
-               /* worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Font.SetFontName("Arial");
-                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-
-                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Border.SetOutsideBorderColor(XLColor.Black);
-                worksheet.Range(linhaInicial, indice, linhaFinal, indice).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);*/
+                AdicionarAlinhamentoCentro(worksheet.Range(linhaInicial, indice, linhaFinal, indice));
             }
-
-            
         }
 
-        private void AdicionarEstiloCabecalho(IXLWorksheet worksheet, int ultimaColunaUsada, int linha)
+        private int MontarLinhaRegistros(IXLWorksheet worksheet, int linhaFinal, MapeamentoEstudanteUltimoBimestreDto dto, int seqRegistro)
         {
-            var range = worksheet.Range(linha, 1, linha, ultimaColunaUsada);
-            range.Style.Font.SetFontSize(10);
-            range.Style.Font.SetFontName("Arial");
+            worksheet.Cell(linhaFinal, 1).InsertData(ObterDataRegistros(dto, seqRegistro));
+            var qdadeLinhasInseridas = dto.RespostrasBimestrais.Count();
+            AdicionarEstiloRegistros(worksheet, linhaFinal, linhaFinal + qdadeLinhasInseridas - 1);
+            return qdadeLinhasInseridas;
         }
 
 
-        private void AdicionarTituloColunas(Dictionary<int, string> diasSemanas, DataTable data, int mes)
-        {
-            DataRow linhaNumeroDia = data.NewRow();
-            DataRow linhaSiglaDia = data.NewRow();
-
-            foreach (var dias in diasSemanas.OrderBy(dia => dia.Key))
-            {
-                if (string.IsNullOrEmpty(dias.Value))
-                    continue;
-                linhaNumeroDia[$"{mes}_{dias.Key}"] = dias.Key;
-                linhaSiglaDia[$"{mes}_{dias.Key}"] = dias.Value;
-            }
-
-            linhaSiglaDia[$"{mes}_TotalDoPeriodo"] = "Total";
-            linhaSiglaDia[$"{mes}_FrequenciaDoPeriodo"] = "Frequência do Período";
-
-            data.Rows.Add(linhaSiglaDia);
-            data.Rows.Add(linhaNumeroDia);
-        }
-
-        private void AdicionarColunaMes(IXLWorksheet worksheet, FrequenciaPorMesExcelDto dto, int linha, int totalColuna)
-        {
-            worksheet.Cell(linha, 1).Value = $"Mês: {dto.Mes}";
-            var rangeMes = worksheet.Range(linha, 1, linha, 1 + totalColuna);
-            rangeMes.Merge().Style.Font.Bold = true;
-            AdicinarFonte(rangeMes);
-            var linhaFrequencia = linha + 1;
-            worksheet.Cell(linhaFrequencia, 1).Value = $"Frequência global do mês: {dto.FrequenciaGlobal}";
-            var rangeFreq = worksheet.Range(linhaFrequencia, 1, linhaFrequencia, 1 + totalColuna);
-            rangeFreq.Merge().Style.Font.Bold = true;
-            AdicinarFonte(rangeFreq);
-        }
-
-        private void MontarCabecalho(IXLWorksheet worksheet, MapeamentoEstudanteUltimoBimestreDto dto, int totalColunas)
+        private void MontarCabecalhoGeral(IXLWorksheet worksheet, MapeamentoEstudanteUltimoBimestreDto dto)
         {
             worksheet.AddPicture(ObterLogo())
                 .MoveTo(worksheet.Cell(2, 1))
                 .Scale(0.15);
 
             worksheet.Cell(LINHA_NOME_SISTEMA, 9).Value = "SGP - Sistema de Gestão Pedagógica";
-            var linhaNomeSistema = worksheet.Range(LINHA_NOME_SISTEMA, 9, LINHA_NOME_SISTEMA, totalColunas);
+            var linhaNomeSistema = worksheet.Range(LINHA_NOME_SISTEMA, 9, LINHA_NOME_SISTEMA, ColunasCabecalho.Count());
             linhaNomeSistema.Merge().Style.Font.Bold = true;
-            AdicinarFonte(linhaNomeSistema);
+            AdicionarFonte(linhaNomeSistema);
 
             worksheet.Cell(LINHA_NOME_RELATORIO, 9).Value = "Relatório de Mapeamentos de Estudantes";
-            AdicinarFonte(worksheet.Range(LINHA_NOME_RELATORIO, 9, LINHA_NOME_RELATORIO, totalColunas));
+            AdicionarFonte(worksheet.Range(LINHA_NOME_RELATORIO, 9, LINHA_NOME_RELATORIO, ColunasCabecalho.Count()));
 
-            worksheet.Cell(LINHA_CABECALHO_DRE_UE, 1).Value = $"DRE: {dto.DreAbreviacao}    Unidade Escolar (UE): {dto.UeCompleta}";
-            AdicinarFonte(worksheet.Range(LINHA_CABECALHO_DRE_UE, 1, LINHA_CABECALHO_DRE_UE, totalColunas));
+            worksheet.Range(LINHA_CABECALHO_DRE_UE, 1, LINHA_CABECALHO_DRE_UE, ColunasCabecalho.Count()).Merge();
+            worksheet.Cell(LINHA_CABECALHO_DRE_UE, 1).Value = $"DRE: {dto.DreAbreviacao}                     Unidade Escolar (UE): {dto.UeCodigo} - {dto.UeCompleta}";
+            AdicionarFonte(worksheet.Range(LINHA_CABECALHO_DRE_UE, 1, LINHA_CABECALHO_DRE_UE, ColunasCabecalho.Count()));
+            AdicionarBorda(worksheet.Range(LINHA_CABECALHO_DRE_UE, 1, LINHA_CABECALHO_DRE_UE, ColunasCabecalho.Count()));          
         }
 
         private Stream ObterLogo()
@@ -332,85 +246,50 @@ namespace SME.SR.Application
             return new MemoryStream(Convert.FromBase64String(base64Logo));
         }
 
-        private void AdicinarFonte(IXLRange range)
+        private void AdicionarFonte(IXLRange range)
         {
-            range.Merge().Style.Font.FontSize = 10;
+            range.Style.Font.FontSize = 10;
             range.Style.Font.FontName = "Arial";
         }
 
-        private void AdicionarEstilo(IXLWorksheet worksheet, FrequenciaPorMesExcelDto dtoExcelMes, int linha)
+        private void AdicionarAlinhamentoCentro(IXLRange range)
         {
-            int ultimaColunaUsada = worksheet.LastColumnUsed().ColumnNumber();
-            int ultimaLinhaUsada = worksheet.LastRowUsed().RowNumber();
+           range.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+           range.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+        }
+        private void AdicionarQuebraAutoamticaTexto(IXLRange range)
+        {
+            range.Style.Alignment.WrapText = true;
+        }
 
-            AdicionarEstiloCabecalhoLinha(worksheet, ultimaColunaUsada, linha);
-            AdicionarEstiloCorpo(worksheet, ultimaLinhaUsada, dtoExcelMes.TabelaDeDado.Rows.Count, linha, ultimaColunaUsada);
-            AdicionarEstiloColunaDia(worksheet, dtoExcelMes.ColunasDiasNaoLetivosFinaisSemana, linha, ultimaLinhaUsada);
+        private void AdicionarBorda(IXLRange range)
+        {
+            range.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            range.Style.Border.SetOutsideBorderColor(XLColor.Black);
+        }
 
+        private void AdicionarFundoCinzaClaro(IXLRange range)
+        {
+            range.Style.Fill.SetBackgroundColor(XLColor.LightGray);
+        }
+
+        private void AdicionarEstiloGeralTodasColunas(IXLWorksheet worksheet, int linhaInicial, int linhaFinal)
+        {
             worksheet.ShowGridLines = false;
-            worksheet.Columns().AdjustToContents();
-            worksheet.ColumnsUsed().AdjustToContents();
-            worksheet.RowsUsed().AdjustToContents();
-        }
-
-        private void AdicionarEstiloColunaDia(IXLWorksheet worksheet, IEnumerable<int> colunasDiasSemAula, int linha, int ultimaLinha)
-        {
-            foreach(var indiceColuna in colunasDiasSemAula)
+            foreach (var coluna in ColunasCabecalho)
             {
-                worksheet.Range(linha, indiceColuna, ultimaLinha, indiceColuna).Style.Fill.BackgroundColor = XLColor.LightGray;
+                var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) + 1;
+                for (int linha = linhaInicial; linha <= linhaFinal; linha++)
+                {
+                    var range = worksheet.Range(linha, indice, linha, indice);
+                    if (coluna.nmColuna != NOME_COLUNA_SEQUENCIA 
+                        || linha != linhaInicial)
+                        AdicionarBorda(range);
+                    AdicionarFonte(range);
+                    AdicionarQuebraAutoamticaTexto(range);
+                }
             }
         }
 
-        private void AdicionarEstiloCorpo(IXLWorksheet worksheet, int ultimaLinhaUsada, int totalRegistro, int linha, int ultimaColunaMes)
-        {
-            var linhaTabela = linha;
-            var linhaSubCabecalho = linhaTabela + 1;
-
-            worksheet.Range(linhaTabela, 1, ultimaLinhaUsada, ultimaColunaMes).Style.Font.SetFontName("Arial");
-            worksheet.Range(linhaTabela, 1, ultimaLinhaUsada, ultimaColunaMes).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-
-            worksheet.Range(linhaTabela, 1, ultimaLinhaUsada, ultimaColunaMes).Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
-            worksheet.Range(linhaTabela, 1, ultimaLinhaUsada, ultimaColunaMes).Style.Border.SetOutsideBorderColor(XLColor.Black);
-
-            worksheet.Range(linhaTabela, 1, ultimaLinhaUsada, ultimaColunaMes).Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
-            worksheet.Range(linhaTabela, 1, ultimaLinhaUsada, ultimaColunaMes).Style.Border.SetInsideBorderColor(XLColor.Black);
-
-            worksheet.Range(linhaTabela, 1, linhaTabela, ultimaColunaMes).Style.Font.SetFontSize(10);
-            worksheet.Range(linhaTabela, 1, linhaTabela, ultimaColunaMes).Style.Font.Bold = true;
-            worksheet.Range(linhaTabela, 1, linhaTabela, ultimaColunaMes).Style.Fill.BackgroundColor = XLColor.Gray;
-            worksheet.Range(linhaSubCabecalho, 1, linhaSubCabecalho, ultimaColunaMes).Style.Font.SetFontSize(10);
-            worksheet.Range(linhaSubCabecalho, 1, linhaSubCabecalho, ultimaColunaMes).Style.Font.Bold = true;
-            worksheet.Range(linhaSubCabecalho, 1, linhaSubCabecalho, ultimaColunaMes).Style.Fill.BackgroundColor = XLColor.Gray;
-            worksheet.Range(linhaTabela, 2, ultimaLinhaUsada, ultimaColunaMes).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-
-            worksheet.Range(linhaTabela, 1, linhaTabela + 1, 1).Merge();
-            worksheet.Range(linhaTabela, ultimaColunaMes - 1, linhaTabela + 1, ultimaColunaMes - 1).Merge();
-            worksheet.Range(linhaTabela, ultimaColunaMes, linhaTabela + 1, ultimaColunaMes).Merge();
-
-            Merge(worksheet, linhaTabela, 1, totalRegistro);
-            Merge(worksheet, linhaTabela, ultimaColunaMes, totalRegistro);
-        }
-
-        private void Merge(IXLWorksheet worksheet, int linha, int coluna, int totalRegistro)
-        {
-            var linhaInicio = linha + 2;
-            var linhaFinal = 0;
-
-            totalRegistro = linhaInicio + (totalRegistro - 3);
-
-            while (linhaInicio <= totalRegistro)
-            {
-                linhaFinal = linhaInicio + 2;
-                worksheet.Range(linhaInicio, coluna, linhaFinal, coluna).Merge();
-                linhaInicio = linhaFinal + 1;
-            }
-        }
-
-        private void AdicionarEstiloCabecalhoLinha(IXLWorksheet worksheet, int ultimaColunaUsada, int linha)
-        {
-            var range = worksheet.Range(linha, 1, linha, ultimaColunaUsada);
-            range.Style.Font.SetFontSize(10);
-            range.Style.Font.SetFontName("Arial");
-        }
     }
 }

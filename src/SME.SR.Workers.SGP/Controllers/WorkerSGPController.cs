@@ -14,7 +14,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -432,7 +432,7 @@ namespace SME.SR.Workers.SGP.Controllers
 
             var relatorio = new FiltroRelatorioMapeamentoEstudantesDto()
             {
-                AlunoCodigo = "7056007",
+                AlunoCodigo = "",//7056007
                 AnoLetivo = 2024,
                 Modalidade = Modalidade.Fundamental,
                 UeCodigo = "094617", 

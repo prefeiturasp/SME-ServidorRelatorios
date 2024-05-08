@@ -205,7 +205,7 @@ namespace SME.SR.Data
 			                                                    and u.ue_id = @ueCodigo
 			                                                    and t.modalidade_codigo = @modalidade
 			                                                    {(filtro.Semestre.HasValue ? " and t.semestre = @semestre " : string.Empty)}
-			                                                    and t.turma_id = ANY(@turmasCodigo)
+			                                                    {(filtro.TurmasCodigo.Any() ? "and t.turma_id = ANY(@turmasCodigo)" : string.Empty)}
                                                                 {(!string.IsNullOrEmpty(filtro.AlunoCodigo) ? " and me.aluno_codigo = @alunoCodigo " : string.Empty)}
 			                                                    ) mapeamento 
 			                                              left join vw_resposta qParecer on qParecer.mapeamento_estudante_id = mapeamento.id and qParecer.nome_componente = '{PARECER_CONCLUSIVO_ANO_ANTERIOR}'
