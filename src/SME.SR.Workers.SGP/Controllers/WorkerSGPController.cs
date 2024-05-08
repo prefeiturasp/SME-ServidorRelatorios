@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
@@ -412,6 +414,14 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpGet("relatorios/listagem-ocorrencias")]
         [Action("relatorios/listagem-ocorrencias", typeof(IRelatorioListagemOcorrenciasUseCase))]
         public async Task<bool> ListagemOcorrencias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioListagemOcorrenciasUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/mapeamentosestudantes")]
+        [Action("relatorios/mapeamentosestudantes", typeof(IRelatorioMapeamentosEstudantesUseCase))]
+        public async Task<bool> RelatorioMapeamentosEstudantes([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioMapeamentosEstudantesUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
