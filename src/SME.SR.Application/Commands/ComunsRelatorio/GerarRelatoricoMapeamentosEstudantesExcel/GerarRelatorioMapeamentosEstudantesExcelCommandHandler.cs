@@ -72,13 +72,8 @@ namespace SME.SR.Application
         {
             using (var workbook = new XLWorkbook())
             {
+                AdicionarColunasCabecalhoProvaSP(ObterAreasConhecimentoProvaSP(request.MapeamentosEstudantes));
                 var primeiroRegistro = request.MapeamentosEstudantes.FirstOrDefault();
-                var areasConhecimentoProvaSP = request.MapeamentosEstudantes
-                                                      .SelectMany(m => m.ObterAvaliacoesExternasProvaSP())
-                                                      .Select(avaliacao => avaliacao.AreaConhecimento)
-                                                      .Distinct()
-                                                      .OrderBy(x => x);
-                AdicionarColunasCabecalhoProvaSP(areasConhecimentoProvaSP.ToArray());
 
                 var worksheet = workbook.Worksheets.Add($"{primeiroRegistro.UeCodigo}");
                 MontarCabecalhoGeral(worksheet, primeiroRegistro);
@@ -93,7 +88,7 @@ namespace SME.SR.Application
                     linhaFinal += qdadeLinhasInseridas;
                 }
 
-                AdicionarEstiloGeralTodasColunas(worksheet, LINHA_CABECALHO_TITULO, linhaFinal);
+                AdicionarEstiloGeralTodasColunas(worksheet, LINHA_CABECALHO_TITULO, linhaFinal-1);
                 var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                 var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{request.CodigoCorrelacao}");
 
@@ -179,7 +174,13 @@ namespace SME.SR.Application
             return data;
         }
 
-
+        private string[] ObterAreasConhecimentoProvaSP(IEnumerable<MapeamentoEstudanteUltimoBimestreDto>  mapeamentosEstudantes)
+        {
+            return mapeamentosEstudantes.SelectMany(m => m.ObterAvaliacoesExternasProvaSP())
+                                        .Select(avaliacao => avaliacao.AreaConhecimento)
+                                        .Distinct()
+                                        .OrderBy(x => x).ToArray();
+        }
         private void MontarCabecalhoTitulos(IXLWorksheet worksheet)
         {
             worksheet.Cell(LINHA_CABECALHO_TITULO, 1).InsertData(ObterDataCabecalhoTitulos());

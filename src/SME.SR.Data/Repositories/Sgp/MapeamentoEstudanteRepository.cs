@@ -19,7 +19,7 @@ namespace SME.SR.Data
         public const string TURMA_ANO_ANTERIOR = "TURMA_ANO_ANTERIOR";
         public const string ANOTACOES_PEDAG_BIMESTRE_ANTERIOR = "ANOTACOES_PEDAG_BIMESTRE_ANTERIOR";
         public const string DISTORCAO_IDADE_ANO_SERIE = "DISTORCAO_IDADE_ANO_SERIE";
-        public const string MIGRANTE = "MIGRANTE";
+        public const string NACIONALIDADE = "NACIONALIDADE";
         public const string ACOMPANHADO_SRM_CEFAI = "ACOMPANHADO_SRM_CEFAI";
         public const string POSSUI_PLANO_AEE = "POSSUI_PLANO_AEE";
         public const string ACOMPANHADO_NAAPA = "ACOMPANHADO_NAAPA";
@@ -91,9 +91,9 @@ namespace SME.SR.Data
             var condicao = string.Empty;
             if (filtro.ParticipaPAP.HasValue)
                 if (filtro.ParticipaPAP.Value)
-                  condicao += $" and qPAP.resposta !like '%\"Não\"%";
+                  condicao += $" and qPAP.resposta not like '%\"Não\"%'";
                 else
-                  condicao += $" and qPAP.resposta like '%\"Não\"%";
+                  condicao += $" and qPAP.resposta like '%\"Não\"%'";
             return condicao;
         }
 
@@ -117,7 +117,7 @@ namespace SME.SR.Data
         {
             var condicao = string.Empty;
             if (!String.IsNullOrEmpty(filtro.OpcaoRespostaAvaliacaoExternaProvaSP))
-                condicao += $" and qavaliacoesexternas.resposta like '%\"{filtro.OpcaoRespostaAvaliacaoExternaProvaSP}\"% ";
+                condicao += $" and qavaliacoesexternas.resposta like '%\"{filtro.OpcaoRespostaAvaliacaoExternaProvaSP}\"%' ";
             return condicao;
         }
 
@@ -173,7 +173,7 @@ namespace SME.SR.Data
 			                                              qParecer.resposta as parecerConclusivoAnoAnterior,
 			                                              qTurmaAnterior.resposta as turmaAnoAnterior,
 			                                              qDistorcao.opcao_resposta_nome as distorcaoIdadeAnoSerie,
-			                                              qmigrante.resposta as Nacionalidade,
+			                                              qNacionalidade.resposta as Nacionalidade,
 			                                              qSRMCEFAI.opcao_resposta_nome as acompanhadoSRMCEFAI,
 			                                              qplanoaee.opcao_resposta_nome as possuiPlanoAEE,
 			                                              qNAAPA.opcao_resposta_nome as acompanhadoNAAPA,
@@ -211,7 +211,7 @@ namespace SME.SR.Data
 			                                              left join vw_resposta qParecer on qParecer.mapeamento_estudante_id = mapeamento.id and qParecer.nome_componente = '{PARECER_CONCLUSIVO_ANO_ANTERIOR}'
 			                                              left join vw_resposta qTurmaAnterior on qTurmaAnterior.mapeamento_estudante_id = mapeamento.id and qTurmaAnterior.nome_componente = '{TURMA_ANO_ANTERIOR}'
 			                                              left join vw_resposta qDistorcao on qDistorcao.mapeamento_estudante_id = mapeamento.id and qDistorcao.nome_componente = '{DISTORCAO_IDADE_ANO_SERIE}'
-			                                              left join vw_resposta qMigrante on qMigrante.mapeamento_estudante_id = mapeamento.id and qMigrante.nome_componente = '{MIGRANTE}'	
+			                                              left join vw_resposta qNacionalidade on qNacionalidade.mapeamento_estudante_id = mapeamento.id and qNacionalidade.nome_componente = '{NACIONALIDADE}'	
 			                                              left join vw_resposta qSRMCEFAI on qSRMCEFAI.mapeamento_estudante_id = mapeamento.id and qSRMCEFAI.nome_componente = '{ACOMPANHADO_SRM_CEFAI}'		
 			                                              left join vw_resposta qPlanoAEE on qPlanoAEE.mapeamento_estudante_id = mapeamento.id and qPlanoAEE.nome_componente = '{POSSUI_PLANO_AEE}'
 			                                              left join vw_resposta qNAAPA on qNAAPA.mapeamento_estudante_id = mapeamento.id and qNAAPA.nome_componente = '{ACOMPANHADO_NAAPA}'	

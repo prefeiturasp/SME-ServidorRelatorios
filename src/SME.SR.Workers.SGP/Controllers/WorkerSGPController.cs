@@ -14,7 +14,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ChaveIntegracaoSrApi]
+    [ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -423,26 +423,7 @@ namespace SME.SR.Workers.SGP.Controllers
         [Action("relatorios/mapeamentosestudantes", typeof(IRelatorioMapeamentosEstudantesUseCase))]
         public async Task<bool> RelatorioMapeamentosEstudantes([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioMapeamentosEstudantesUseCase useCase)
         {
-            var filtroRelatorioDto = new FiltroRelatorioDto()
-            {
-                Action = "relatorios/mapeamentosestudantes",
-                UsuarioLogadoRF = "6769195",
-                CodigoCorrelacao = new Guid("AF3A5649-E805-4CB3-B73E-5191C445DE19"),
-            };
-
-            var relatorio = new FiltroRelatorioMapeamentoEstudantesDto()
-            {
-                AlunoCodigo = "",//7056007
-                AnoLetivo = 2024,
-                Modalidade = Modalidade.Fundamental,
-                UeCodigo = "094617", 
-                TurmasCodigo = new string[] { }
-            };
-
-            var mensagem = JsonConvert.SerializeObject(relatorio, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            filtroRelatorioDto.Mensagem = mensagem;
-
-            await useCase.Executar(filtroRelatorioDto);//request
+            await useCase.Executar(request);
             return true;
         }
 
