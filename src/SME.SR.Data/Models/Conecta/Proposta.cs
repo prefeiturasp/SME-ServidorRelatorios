@@ -26,9 +26,35 @@ namespace SME.SR.Data.Models.Conecta
         public IEnumerable<PropostaCriterioDeValidacao> CriteriosValidacao { get; set; }
         public IEnumerable<PropostaCriterioCertificacao> CriteriosCertificacao { get; set; }
         public IEnumerable<PropostaRegente> Regentes { get; set; }
+        public PropostaLocal LocalEncontro { get; set; }
         public double TotalDeVagas { get { return QuantidadeTurmas.GetValueOrDefault() * QuantidadeVagasTurmas.GetValueOrDefault(); } }
         public string TotalCargaHoraria { get { return ObterTotalCargaHoraria(); } }
+        public string CargaHorariaSincronaDistancia { get { return ObterCargaHorariaSincronaDistancia(); } }
         public bool EhAreaPromotoraDireta { get {  return TipoAreaPromotora == AREA_PROMOTORA_DIRETA; } }
+        public string CargaHorariaPresencialFormatada { get { return ObterHora(CargaHorariaPresencial).ToString(@"hh\:mm"); } }
+
+        public string ObterPeriodoRealizacao()
+        {
+            return $"{DataRealizacaoInicio.ToString("dd/MM/yyyy")} ATÉ {DataRealizacaoFim.ToString("dd/MM/yyyy")}";
+        }
+
+        public string ObterLocalUmaTurmaUmEncontro()
+        {
+            if (!(LocalEncontro is null) &&
+                !string.IsNullOrEmpty(LocalEncontro.Local) &&
+                LocalEncontro.TotalTurmas == 1)
+                return $@"{LocalEncontro.DataInicio.ToString("dd/MM/yyyy")} ATÉ {LocalEncontro.DataFim.ToString("dd/MM/yyyy")} - {LocalEncontro.Local.ToUpper()}";
+
+            return string.Empty;
+        }
+
+        public string ObterLocalVariasTurmasUmEncontro()
+        {
+            if (!(LocalEncontro is null) && !string.IsNullOrEmpty(LocalEncontro.Local))
+                return $@"{LocalEncontro.DataInicio.ToString("dd/MM/yyyy")} ATÉ {LocalEncontro.DataFim.ToString("dd/MM/yyyy")} - {LocalEncontro.HoraInicio} ATÉ {LocalEncontro.HoraFim} - {LocalEncontro.Local.ToUpper()}";
+
+            return string.Empty;
+        }
 
         private string ObterTotalCargaHoraria()
         {
@@ -36,8 +62,18 @@ namespace SME.SR.Data.Models.Conecta
                         ObterHora(CargaHorariaSincrona) +
                         ObterHora(CargaHorariaDistancia);
 
-            return total.ToString("HH:MM");
-        } 
+            return total.ToString(@"hh\:mm");
+        }
+
+        private string ObterCargaHorariaSincronaDistancia()
+        {
+            var total = ObterHora(CargaHorariaSincrona) + ObterHora(CargaHorariaDistancia);
+
+            if (total != TimeSpan.Zero)
+                return total.ToString(@"hh\:mm");
+
+            return string.Empty;
+        }
 
         private TimeSpan ObterHora(string hora)
         {
