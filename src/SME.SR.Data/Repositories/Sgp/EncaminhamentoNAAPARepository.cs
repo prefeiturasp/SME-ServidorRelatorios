@@ -206,7 +206,7 @@ namespace SME.SR.Data
                     anoLetivo = filtro.AnoLetivo,
                     dreCodigo = filtro.DreCodigo,
                     ueCodigo = filtro.UeCodigo,
-                    modalidades = filtro.Modalidades.Select(m => (int)m).ToArray(),
+                    modalidades = filtro.Modalidades?.Select(m => (int)m).ToArray(),
                     anosEscolaresCodigos = filtro.AnosEscolaresCodigos,
                     situacaoIds = filtro.SituacaoIds,                    
                     portaEntradaIds = filtro.PortaEntradaIds,
