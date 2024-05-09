@@ -209,6 +209,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IPlanoAnualRepository), typeof(PlanoAnualRepository));
 
             services.TryAddScoped(typeof(IRepositorioElasticTurma), typeof(RepositorioElasticTurma));
+            services.TryAddScoped(typeof(IMapeamentoEstudanteRepository), typeof(MapeamentoEstudanteRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -275,6 +276,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioFrequenciaControleMensalUseCase, RelatorioFrequenciaControleMensalUseCase>();
             services.TryAddScoped<IRelatorioListagemOcorrenciasUseCase, RelatorioListagemOcorrenciasUseCase>();
             services.TryAddScoped<IRelatorioPlanoAnualUseCase, RelatorioPlanoAnualUseCase>();
+            services.TryAddScoped<IRelatorioMapeamentosEstudantesUseCase, RelatorioMapeamentosEstudantesUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
