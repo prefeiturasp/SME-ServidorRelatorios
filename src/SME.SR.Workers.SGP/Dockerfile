@@ -27,8 +27,8 @@ COPY --from=publish /app/publish .
 RUN apt-get update && apt-get install -y wget libfontconfig1 libgdiplus libxrender1 unzip fontconfig
 
 RUN wget https://github.com/googlefonts/RobotoMono/archive/refs/heads/main.zip -O robotomono.zip \
-    && wget https://fonts.google.com/download?family=Roboto -O roboto.zip \
-    && wget https://fonts.google.com/download?family=Open%20Sans -O opensans.zip \
+    && wget https://github.com/googlefonts/roboto/archive/refs/heads/main.zip -O roboto.zip \
+    && wget https://github.com/googlefonts/opensans/archive/refs/heads/main.zip -O opensans.zip \
     && unzip robotomono.zip && mkdir /usr/share/fonts/truetype/robotomono \
     && unzip roboto.zip -d roboto && mkdir /usr/share/fonts/truetype/roboto \
     && unzip opensans.zip -d opensans && mkdir /usr/share/fonts/truetype/opensans

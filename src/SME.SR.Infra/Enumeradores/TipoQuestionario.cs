@@ -6,6 +6,8 @@ namespace SME.SR.Infra
         PlanoAEE = 2,
         RegistroItinerancia = 3,
         RegistroItineranciaAluno = 4,
-        EncaminhamentoNAAPA = 5
+        EncaminhamentoNAAPA = 5,
+        RegistroAcaoBuscaAtiva = 8,
+        MapeamentoEstudante = 9,
     }
 }
