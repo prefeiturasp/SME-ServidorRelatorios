@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
-using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
 using System;
@@ -28,9 +27,9 @@ namespace SME.SR.Application
 
             var encaminhamentosAgrupados = encaminhamentosNAAPA.GroupBy(g => new
             {
-                DreId = g.DreId,
+                g.DreId,
                 DreNome = g.DreAbreviacao,
-                UeCodigo = g.UeCodigo,
+                g.UeCodigo,
                 UeNome = $"{g.TipoEscola.ShortName()} {g.UeNome}",
             }, (key, group) =>
             new AgrupamentoEncaminhamentoNAAPADreUeDto()
@@ -52,13 +51,13 @@ namespace SME.SR.Application
                 }).OrderByDescending(oAluno => oAluno.DataEntradaQueixa).ToList()
             }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeOrdenacao).ToList();
 
-
             var relatorio = new RelatorioEncaminhamentosNAAPADto()
             {
                 DreNome = !string.IsNullOrEmpty(filtroRelatorio.DreCodigo) && filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo) ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().DreNome,
                 UeNome = !string.IsNullOrEmpty(filtroRelatorio.UeCodigo) && filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : encaminhamentosAgrupados.FirstOrDefault().UeNome,
                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
+
             relatorio.EncaminhamentosDreUe = encaminhamentosAgrupados;
             await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaCommad(relatorio, request.CodigoCorrelacao));
         }

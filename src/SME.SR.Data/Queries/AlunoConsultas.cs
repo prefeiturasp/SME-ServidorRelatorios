@@ -1,10 +1,20 @@
-﻿using System;
+﻿using SME.SR.Infra;
+using System;
 
 namespace SME.SR.Data
 {
     public static class AlunoConsultas
     {
-		internal static string AlunosPorTurma = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+        public static int[] CodigosSituacoesAlunoAtivo = new int[]
+        {
+			(int)SituacaoMatriculaAluno.Ativo,
+            (int)SituacaoMatriculaAluno.Concluido,
+            (int)SituacaoMatriculaAluno.PendenteRematricula,
+			(int)SituacaoMatriculaAluno.Rematriculado,
+			(int)SituacaoMatriculaAluno.SemContinuidade
+        };
+
+        internal static string AlunosPorTurma = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -129,7 +139,7 @@ namespace SME.SR.Data
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-		internal static string AlunosPorCodigoETurma = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+        internal static string AlunosPorCodigoETurma = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -255,7 +265,7 @@ namespace SME.SR.Data
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-		internal static string DadosAluno = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
+        internal static string DadosAluno = @"IF OBJECT_ID('tempdb..#tmpAlunosFrequencia') IS NOT NULL
 						DROP TABLE #tmpAlunosFrequencia
 					CREATE TABLE #tmpAlunosFrequencia 
 					(
@@ -376,7 +386,7 @@ namespace SME.SR.Data
 					NumeroAlunoChamada,
 					PossuiDeficiencia";
 
-		internal static string DatasMatriculaAlunoNaTurma = @"with lista as (
+        internal static string DatasMatriculaAlunoNaTurma = @"with lista as (
 																select mte.dt_situacao_aluno
 																	from v_matricula_cotic m
 																		inner join matricula_turma_escola mte
@@ -396,8 +406,8 @@ namespace SME.SR.Data
 																	   max(dt_situacao_aluno) data_situacao
 																	from lista";
 
-		    internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId, DateTime dataInicio) =>
-			$@"WITH lista AS (
+        internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId, DateTime dataInicio) =>
+        $@"WITH lista AS (
 				SELECT DISTINCT mte.cd_turma_escola,
 								m.cd_aluno,
 								se.sg_resumida_serie
@@ -423,8 +433,8 @@ namespace SME.SR.Data
 					  ((mte.cd_situacao_aluno = 10 or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim))
 					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim
 					  {(dataInicio == null || dataInicio == DateTime.MinValue
-                       ? "and mte.dt_situacao_aluno >= @dataFim))"
-                       : "and(mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))")}
+                   ? "and mte.dt_situacao_aluno >= @dataFim))"
+                   : "and(mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))")}
 					  and aln.AnoLetivo = anoLetivo
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
@@ -475,8 +485,7 @@ namespace SME.SR.Data
 				FROM lista group by sg_resumida_serie ";
 
 
-
-	    internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT   
+        internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT DISTINCT
 					aluno.cd_aluno CodigoAluno,
 					aluno.nm_aluno NomeAluno,
 					aluno.dt_nascimento_aluno DataNascimento,
@@ -509,15 +518,17 @@ namespace SME.SR.Data
 					aluno.cd_aluno = matr.cd_aluno
 				INNER JOIN matricula_turma_escola mte ON
 					matr.cd_matricula = mte.cd_matricula
+				INNER JOIN matricula_norm mn ON
+					matr.cd_matricula = mn.matr_cd_matricula
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
 					mte.cd_turma_escola = @codigoTurma
-					and (mte.cd_situacao_aluno in (1, 6, 10, 13, 5)
-					or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
-					and mte.dt_situacao_aluno > @dataReferencia))
+					and ((mte.cd_situacao_aluno in @codigosSituacoesAlunoAtivo and convert(date, mn.dt_status_matricula) < @dataReferenciaFim)
+					or (mte.cd_situacao_aluno not in @codigosSituacoesAlunoAtivo and convert(date, mn.dt_status_matricula) < @dataReferenciaFim
+					and convert(date, mte.dt_situacao_aluno) >= @dataReferenciaInicio))
 				UNION
-				SELECT 
+				SELECT DISTINCT
 					aluno.cd_aluno CodigoAluno,
 					aluno.nm_aluno NomeAluno,
 					aluno.dt_nascimento_aluno DataNascimento,
@@ -550,6 +561,8 @@ namespace SME.SR.Data
 					aluno.cd_aluno = matr.cd_aluno
 				INNER JOIN historico_matricula_turma_escola mte ON
 					matr.cd_matricula = mte.cd_matricula
+				INNER JOIN matricula_norm mn ON
+					matr.cd_matricula = mn.matr_cd_matricula
 				LEFT JOIN necessidade_especial_aluno nea ON
 					nea.cd_aluno = matr.cd_aluno
 				WHERE
@@ -566,9 +579,9 @@ namespace SME.SR.Data
 					where
 						mte2.cd_turma_escola = @codigoTurma
 						and matr2.cd_aluno = matr.cd_aluno
-						and (matr2.st_matricula in (1, 6, 10, 13, 5)
-						or (matr2.st_matricula not in (1, 6, 10, 13, 5)
-						and matr2.dt_status_matricula > @dataReferencia)) )
+						and ((mte.cd_situacao_aluno in @codigosSituacoesAlunoAtivo and convert(date, mn.dt_status_matricula) < @dataReferenciaFim)
+						or (mte.cd_situacao_aluno not in @codigosSituacoesAlunoAtivo and convert(date, mn.dt_status_matricula) < @dataReferenciaFim
+					    and convert(date, mte.dt_situacao_aluno) >= @dataReferenciaInicio)))
 					AND NOT EXISTS(
 					SELECT
 						1
@@ -579,7 +592,7 @@ namespace SME.SR.Data
 					WHERE
 						mte.cd_matricula = mte3.cd_matricula
 						AND mte.cd_turma_escola = @codigoTurma )";
-		
+
         internal static string AlunosMatriculasPorTurmas = @"with lista as (
 																select mte.nr_chamada_aluno,
 																	   a.nm_aluno,
@@ -646,5 +659,5 @@ namespace SME.SR.Data
 																		 cd_turma_escola,
 																		 cd_aluno";
 
-    }	
+    }
 }

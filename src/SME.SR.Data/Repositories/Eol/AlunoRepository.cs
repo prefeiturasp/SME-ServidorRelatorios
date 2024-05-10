@@ -324,11 +324,11 @@ namespace SME.SR.Data
 									INNER JOIN v_cadastro_unidade_educacao ue
 										ON te.cd_escola = ue.cd_unidade_educacao
 									INNER JOIN alunos_matriculas_norm aln 
-										ON aln.CodigoAluno = m.cd_aluno
+										ON aln.CodigoMatricula = m.cd_matricula
 								WHERE te.an_letivo = @anoLetivo AND
 									  te.cd_tipo_turma = 1 AND
-									  ((mte.cd_situacao_aluno in (1, 6, 10, 13, 5) or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(mte.dt_situacao_aluno AS DATE) < @dataFim))
-									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5)
+									  ((mte.cd_situacao_aluno = 10 or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim))
+									  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5) and CAST(aln.DataMatricula AS DATE) <= @dataFim
 									  {(dataReferenciaInicio == null || dataReferenciaInicio == DateTime.MinValue
                                         ? "and mte.dt_situacao_aluno > @dataFim))"
                                         : "and (mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))"
@@ -1588,7 +1588,7 @@ namespace SME.SR.Data
 						end as NumeroAlunoChamada,
 						DataSituacao, DataMatricula, PossuiDeficiencia, NomeResponsavel, TipoResponsavel, CelularResponsavel,
 						DataAtualizacaoContato, CodigoTurma, CodigoMatricula, AnoLetivo, row_number() over (partition by CodigoMatricula order by DataSituacao desc) as Sequencia
-						from alunos_matriculas_norm nm(NOLOCK)
+						from alunos_matriculas_norm nm
 						inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma
 						inner join v_cadastro_unidade_educacao ue ON te.cd_escola = ue.cd_unidade_educacao
 						where 1=1 ";
@@ -1600,21 +1600,25 @@ namespace SME.SR.Data
                 sql += @" AND ue.cd_unidade_administrativa_referencia = @dreCodigo ";
 
             if (codigosAlunos != null && codigosAlunos.Any())
-                sql += $" and CodigoAluno in (#codigosAlunos) ";
+                sql += $" and CodigoAluno in @codigosAlunos ";
 
             sql += @" and te.an_letivo = @anoLetivo )
 								select*
 								from matriculas
 								where sequencia in (1,2)
-								and CodigoSituacaoMatricula <> 4";
+								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido";
 
-            if (codigosAlunos != null && codigosAlunos.Any())
-                sql = sql.ToString().Replace("#codigosAlunos", "'" + string.Join("','", codigosAlunos) + "'");
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
-            using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
-            {
-                return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql, new { ueCodigo, dreCodigo, anoLetivo });
-            }
+            return await conexao.QueryAsync<DadosAlunosEscolaDto>(sql,
+                new
+                {
+                    ueCodigo,
+                    dreCodigo,
+                    anoLetivo,
+                    codigosAlunos,
+                    codigoSituacaoVinculoIndevido = (int)SituacaoMatriculaAluno.VinculoIndevido
+                });
         }
 
         private string ObtenhaQueryAlunosPorTurmasHistorico(long dreCodigo, string ueCodigo)
@@ -1704,17 +1708,26 @@ namespace SME.SR.Data
             }
         }
 
-        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferencia)
+        public async Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferenciaInicio, DateTime dataReferenciaFim)
         {
             var totalAlunos = 0;
             var query = AlunoConsultas.AlunosAtivosPorTurmaEPeriodo;
-            var parametros = new { dataReferencia, codigoTurma };
+
+			var parametros = new 
+			{ 
+				dataReferenciaInicio = dataReferenciaInicio.Date,
+				dataReferenciaFim = dataReferenciaFim.Date,
+				codigoTurma, 
+				codigosSituacoesAlunoAtivo = AlunoConsultas.CodigosSituacoesAlunoAtivo 
+			};
+
             using (var con = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                var registros = (await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000)).ToList();
+                var registros = await con.QueryAsync<AlunosNaTurmaDto>(query, parametros, commandTimeout: 6000);
                 if (registros.Count() >= 0)
                     totalAlunos = registros.Count();
             }
+
             return totalAlunos;
         }
     }

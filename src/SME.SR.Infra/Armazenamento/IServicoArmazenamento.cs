@@ -2,6 +2,6 @@
 {
     public interface IServicoArmazenamento
     {
-        string Obter(string nomeArquivo, bool ehPastaTemp);
+        string Obter(string nomeArquivo);
     }
 }
