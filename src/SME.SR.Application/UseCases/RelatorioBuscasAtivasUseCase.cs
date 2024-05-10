@@ -22,7 +22,7 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroRelatorioBuscasAtivasDto>();
-            var registrosAcaoBuscaAtiva = Enumerable.Empty<BuscaAtivaSimplesDto>().ToList(); //await mediator.Send(new ObterResumoEncaminhamentosNAAPAQuery(filtroRelatorio));
+            var registrosAcaoBuscaAtiva = await mediator.Send(new ObterResumoBuscasAtivasQuery(filtroRelatorio));
 
             if (registrosAcaoBuscaAtiva == null || !registrosAcaoBuscaAtiva.Any())
                 throw new NegocioException("Nenhuma informação para os filtros informados.");
@@ -44,8 +44,14 @@ namespace SME.SR.Application
                 new DetalheBuscaAtivaDto()
                 {
                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
-                    Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}{s.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}"
-                }).OrderByDescending(oAluno => oAluno.DataEntradaQueixa).ToList()
+                    Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}{s.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}",
+                    DataRegistroAcao = s.DataRegistroAcao,
+                    Questoes = ObterQuestoes(s)
+                    
+                }).OrderBy(oAluno => oAluno.Turma)
+                .ThenBy(oAluno => oAluno.Aluno)
+                .ThenByDescending(oAluno => oAluno.DataRegistroAcao)
+                .ToList()
             }).OrderBy(oDre => oDre.DreCodigo).ThenBy(oUe => oUe.UeOrdenacao).ToList();
 
             var relatorio = new RelatorioBuscaAtivaDto()
@@ -60,7 +66,26 @@ namespace SME.SR.Application
             };
 
             relatorio.RegistrosAcaoDreUe = registrosAcaoAgrupados;
-            //await mediator.Send(new GerarRelatorioHtmlPDFEncaminhamentoNaapaCommad(relatorio, request.CodigoCorrelacao));
+            await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBuscaAtiva", relatorio, request.CodigoCorrelacao));
         }
+
+        private List<ItemQuestaoDetalheBuscaAtivaDto> ObterQuestoes(BuscaAtivaSimplesDto buscaAtiva)
+        {
+            var retorno = new List<ItemQuestaoDetalheBuscaAtivaDto>();
+            retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("DATA DE REGISTRO DA AÇÃO:", buscaAtiva.DataRegistroAcao.ToString("dd/MM/yyyy")));
+            retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Procedimento realizado:", buscaAtiva.ProcedimentoRealizado));
+            retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Conseguiu contato com o responsável?", buscaAtiva.ConseguiuContatoResponsavel));
+
+            if (!string.IsNullOrEmpty(buscaAtiva.QuestoesObsDuranteVisita))
+                retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Questões observadas durante a realização das visitas:", buscaAtiva.QuestoesObsDuranteVisita));
+            if (!string.IsNullOrEmpty(buscaAtiva.JustificativaMotivoFalta))
+                retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("A família/responsável justificou a falta da criança por motivo de:", buscaAtiva.JustificativaMotivoFalta));
+            if (!string.IsNullOrEmpty(buscaAtiva.JustificativaMotivoFaltaOpcaoOutros))
+                retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Descreva a justificativa da família:", buscaAtiva.JustificativaMotivoFaltaOpcaoOutros));
+            if (!string.IsNullOrEmpty(buscaAtiva.ObsGeralAoContatarOuNaoResponsavel))
+                retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Observação:", buscaAtiva.ObsGeralAoContatarOuNaoResponsavel));
+            return retorno;
+        }
+        
     }
 }

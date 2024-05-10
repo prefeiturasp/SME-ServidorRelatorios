@@ -210,6 +210,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(IRepositorioElasticTurma), typeof(RepositorioElasticTurma));
             services.TryAddScoped(typeof(IMapeamentoEstudanteRepository), typeof(MapeamentoEstudanteRepository));
+            services.TryAddScoped(typeof(IBuscaAtivaRepository), typeof(BuscaAtivaRepository));
         }
 
         private static void RegistrarServicos(IServiceCollection services)
