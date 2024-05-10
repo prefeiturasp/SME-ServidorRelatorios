@@ -10,5 +10,7 @@ namespace SME.SR.Data.Models.Conecta
         public DateTime DataFim { get; set; }
         public string HoraInicio { get; set; }
         public string HoraFim { get; set; }
+        public string Turma { get; set; }
+        public TipoEncontro TipoEncontro { get; set; }
     }
 }
