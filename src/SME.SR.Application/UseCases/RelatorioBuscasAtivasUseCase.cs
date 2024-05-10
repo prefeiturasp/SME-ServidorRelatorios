@@ -29,14 +29,14 @@ namespace SME.SR.Application
 
             var registrosAcaoAgrupados = registrosAcaoBuscaAtiva.GroupBy(g => new
             {
-                g.DreId,
+                g.DreCodigo,
                 DreNome = g.DreAbreviacao,
                 g.UeCodigo,
                 UeNome = $"{g.TipoEscola.ShortName()} {g.UeNome}",
             }, (key, group) =>
             new AgrupamentoBuscaAtivaDreUeDto()
             {
-                DreId = key.DreId,
+                DreCodigo = key.DreCodigo,
                 DreNome = key.DreNome,
                 UeNome = $"{key.UeCodigo} - {key.UeNome}",
                 UeOrdenacao = key.UeNome,
@@ -46,7 +46,7 @@ namespace SME.SR.Application
                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
                     Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}{s.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}"
                 }).OrderByDescending(oAluno => oAluno.DataEntradaQueixa).ToList()
-            }).OrderBy(oDre => oDre.DreId).ThenBy(oUe => oUe.UeOrdenacao).ToList();
+            }).OrderBy(oDre => oDre.DreCodigo).ThenBy(oUe => oUe.UeOrdenacao).ToList();
 
             var relatorio = new RelatorioBuscaAtivaDto()
             {
@@ -54,6 +54,7 @@ namespace SME.SR.Application
                 UeNome = !string.IsNullOrEmpty(filtroRelatorio.UeCodigo) && filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : registrosAcaoAgrupados.FirstOrDefault().UeNome,
                 AnoLetivo = filtroRelatorio.AnoLetivo,
                 Modalidade = filtroRelatorio.Modalidade,
+                Semestre = filtroRelatorio.Semestre,
                 Turma = filtroRelatorio.TurmasCodigo.Count() != 1 ? "TODAS" : registrosAcaoAgrupados.FirstOrDefault().Detalhes.FirstOrDefault().Turma,
                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
