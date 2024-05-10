@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Queries\Alunos\ObterAlunosFrequenciaControleMensal\" />
+    <Folder Include="Queries\Conecta\OberPropostaCompleta\" />
     <Folder Include="Queries\HistoricoEscolar\MontarHistoricoEscolarTransferenciaEJA\" />
   </ItemGroup>
 
