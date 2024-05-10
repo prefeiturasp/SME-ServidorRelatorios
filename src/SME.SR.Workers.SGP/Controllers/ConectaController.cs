@@ -15,5 +15,11 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             return await useCase.Executar(propostaId);
         }
+
+        [HttpGet("prosposta/{propostaId}/lauda-completa")]
+        public async Task<string> ObterRelatorioProstaDeLaudaCompleta(long propostaId, [FromServices] IRelatorioPropostaLaudaCompletaUseCase useCase)
+        {
+            return await useCase.Executar(propostaId);
+        }
     }
 }
