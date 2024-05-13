@@ -39,6 +39,13 @@ namespace SME.SR.Data
                                         THEN to_date(qDataRegistro.resposta,'yyyy-mm-dd') between @dataInicioRegistroAcao and @dataFimRegistroAcao
                                       ELSE FALSE END " : string.Empty;
 
+        private string ObterCondicaoMotivosAusencia(FiltroRelatorioBuscasAtivasDto filtro) =>
+                    filtro.OpcoesRespostaIdMotivoAusencia.Any()
+                       ? @" and exists (select 1 from vw_resposta qJustificativaMotivoFalta_flt 
+                                          where qJustificativaMotivoFalta_flt.registro_acao_busca_ativa_id = raba.id 
+                                          and qJustificativaMotivoFalta_flt.nome_componente = 'JUSTIFICATIVA_MOTIVO_FALTA'
+                                          and qJustificativaMotivoFalta_flt.resposta_id = any(@opcoesRespostaIdMotivoAusencia)) " : string.Empty;
+
         private string ObterCondicao(FiltroRelatorioBuscasAtivasDto filtro)
         {
             var query = new StringBuilder();
@@ -48,7 +55,8 @@ namespace SME.SR.Data
                 ObterCondicaoSemestre,
                 ObterCondicaoAluno,
                 ObterCondicaoABAE,
-                ObterCondicaoPeriodo
+                ObterCondicaoPeriodo,
+                ObterCondicaoMotivosAusencia
             };
 
             foreach (var funcao in funcoes)
@@ -153,6 +161,7 @@ namespace SME.SR.Data
                     cpfABAE = filtro.CpfABAE,
                     dataInicioRegistroAcao = filtro.DataInicioRegistroAcao,
                     dataFimRegistroAcao = filtro.DataFimRegistroAcao,
+                    OpcoesRespostaIdMotivoAusencia = filtro.OpcoesRespostaIdMotivoAusencia,
                 });
         }
     }
