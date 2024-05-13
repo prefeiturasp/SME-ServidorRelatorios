@@ -21,7 +21,7 @@
     string DreNome = string.Empty;
     string UeNome = string.Empty;
 
-    const int QDADE_LINHAS_CABECALHO_GERAL = 4;
+    const int QDADE_LINHAS_CABECALHO_GERAL = 6;
     const int QDADE_LINHAS_LINHA_UNICA = 1;
     const int QDADE_CHARS_POR_LINHA = 95;
     const int QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO = 4;
@@ -31,9 +31,9 @@
 
     int RetornarQdadeLinhasPrevistas(int qdadeChars) {
         var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
+        if (retorno > 1) retorno = (int)(retorno * 0.5);
         if (qdadeChars % QDADE_CHARS_POR_LINHA > 0)
             retorno++;
-        if (retorno > 1) retorno = (int)(retorno * 0.5);
         return retorno + QDADE_LINHAS_LINHA_UNICA;
     }
 
@@ -121,7 +121,7 @@
                 {
                     AvaliarQuebraPagina(QDADE_LINHAS_LINHA_UNICA + QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO, efetuaFechamentoAberturaTables: false);
                     MontarDreUe(relatorio.DreNome, relatorio.UeNome);
-                    contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA + QDADE_LINHAS_LINHA_UNICA;
+                    contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
                 }
                 @foreach (var detalhe in relatorio.Detalhes)
                 {
@@ -129,7 +129,7 @@
                     <table class='tabela-cabecalho'> <tbody>
                             @{
                                 MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
-                                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA + QDADE_LINHAS_LINHA_UNICA;
+                                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
 
                                 foreach (var questaoIndex in detalhe.Questoes.Select((questao, index) => new { Questao = questao, Index = index+1 }))
                                 {
