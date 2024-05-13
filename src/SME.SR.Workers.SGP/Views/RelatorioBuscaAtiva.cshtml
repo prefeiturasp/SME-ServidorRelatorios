@@ -15,7 +15,7 @@
         
     int paginaAtual = 0;
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 32;
+    int contadorMaximoLinhasPorPagina = 45;
     RelatorioBuscaAtivaDto relatorioAtual = null;
     
     string DreNome = string.Empty;
@@ -23,7 +23,6 @@
 
     const int QDADE_LINHAS_CABECALHO_GERAL = 4;
     const int QDADE_LINHAS_LINHA_UNICA = 1;
-    const double QDADE_LINHAS_LINHA_UNICA_ESPACADA = 1.5;
     const int QDADE_CHARS_POR_LINHA = 95;
     const int QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO = 4;
     
@@ -32,10 +31,10 @@
 
     int RetornarQdadeLinhasPrevistas(int qdadeChars) {
         var retorno = (int)Math.Round((double)(qdadeChars / QDADE_CHARS_POR_LINHA));
-        //if (retorno > 1) retorno = (int) (retorno * 0.5);
         if (qdadeChars % QDADE_CHARS_POR_LINHA > 0)
             retorno++;
-        return retorno;
+        if (retorno > 1) retorno = (int)(retorno * 0.5);
+        return retorno + QDADE_LINHAS_LINHA_UNICA;
     }
 
     Microsoft.AspNetCore.Html.IHtmlContent MontarHTMLQuebraPagina()
@@ -75,7 +74,6 @@
 
     void MontarCabecalho(RelatorioBuscaAtivaDto relatorio)
     {
-        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_CABECALHO_GERAL;
         <div>
             <img class='img-logo-sgp' src='logoMono.png' alt='Logo SGP'/>
         </div>
@@ -86,30 +84,31 @@
             <table class='tblTopo'>
                 <tbody>
                     <tr>
-                        <td class='espaco-esquerda-15 width-20 espacamento7'><strong>Ano Letivo:</strong> @Model.AnoLetivo</td>
-                        <td class='espaco-esquerda-15 width-15 espacamento7'><strong>DRE:</strong> @Model.DreNome</td>
-                        <td class='espaco-esquerda-15 espacamento7'><strong>UE:</strong> @Model.UeNome</td>
+                        <td class='espaco-esquerda-10 width-20 espacamento7'><strong>Ano Letivo:</strong> @Model.AnoLetivo</td>
+                        <td class='espaco-esquerda-10 width-20 espacamento7'><strong>DRE:</strong> @Model.DreNome</td>
+                        <td class='espaco-esquerda-10 espacamento7'><strong>UE:</strong> @Model.UeNome</td>
                     </tr>
                 </tbody>
             </table>
             <table class='tblTopo'>
                 <tbody>
                     <tr>
-                        <td class='espaco-esquerda-15 width-30 espacamento7'><strong>Modalidade:</strong> @Model.Modalidade.Name()</td>
-                        <td class='espaco-esquerda-15 width-15 espacamento7'><strong>Semestre:</strong> @Model.Semestre</td>
-                        <td class='espaco-esquerda-15 espacamento7'><strong>Turma:</strong> @Model.Turma</td>
+                        <td class='espaco-esquerda-10 width-30 espacamento7 sem-border-top'><strong>Modalidade:</strong> @Model.Modalidade.Name()</td>
+                        <td class='espaco-esquerda-10 width-15 espacamento7 sem-border-top'><strong>Semestre:</strong> @Model.Semestre</td>
+                        <td class='espaco-esquerda-10 espacamento7 sem-border-top'><strong>Turma:</strong> @Model.Turma</td>
                     </tr>
                 </tbody>
             </table>
             <table class='tblTopo'>
                 <tbody>
                     <tr>
-                        <td class='espaco-esquerda-15 espacamento7 sem-border-top'><strong>USUÁRIO:</strong> @Model.UsuarioNome</td>
-                        <td class='espaco-esquerda-15 width-30 espacamento7 sem-border-top' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</td>
+                        <td class='espaco-esquerda-10 espacamento7 sem-border-top'><strong>USUÁRIO:</strong> @Model.UsuarioNome</td>
+                        <td class='espaco-esquerda-10 width-30 espacamento7 sem-border-top' colspan="2"><strong>DATA IMPRESSÃO:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        contadorQuebrarPagina = contadorQuebrarPagina + QDADE_LINHAS_CABECALHO_GERAL;
     }
 
     void MontarInformacoesBuscaAtiva(RelatorioBuscaAtivaDto relatorioBuscaAtiva)
@@ -118,29 +117,25 @@
         {
             foreach (var relatorio in relatorioBuscaAtiva.RegistrosAcaoDreUe)
             {
-                DreNome = relatorio.DreNome;
-                UeNome = relatorio.UeNome;
-
-                AvaliarQuebraPagina(QDADE_LINHAS_LINHA_UNICA_ESPACADA, efetuaFechamentoAberturaTables: false);
                 if (relatorio.MostrarAgrupamento)
                 {
+                    AvaliarQuebraPagina(QDADE_LINHAS_LINHA_UNICA + QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO, efetuaFechamentoAberturaTables: false);
                     MontarDreUe(relatorio.DreNome, relatorio.UeNome);
-                    contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA_ESPACADA;
+                    contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA + QDADE_LINHAS_LINHA_UNICA;
                 }
-
                 @foreach (var detalhe in relatorio.Detalhes)
                 {
+                    AvaliarQuebraPagina(QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO, efetuaFechamentoAberturaTables: false);
                     <table class='tabela-cabecalho'> <tbody>
                             @{
-                                AvaliarQuebraPagina(QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO);
                                 MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
-                                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA_ESPACADA;
+                                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA + QDADE_LINHAS_LINHA_UNICA;
 
-                                foreach (var questao in detalhe.Questoes)
+                                foreach (var questaoIndex in detalhe.Questoes.Select((questao, index) => new { Questao = questao, Index = index+1 }))
                                 {
-                                    var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questao.Questao.Length + questao.Resposta.Length);
+                                    var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questaoIndex.Questao.Questao.Length + questaoIndex.Questao.Resposta.Length);
                                     AvaliarQuebraPagina(qdadeLinhasPrevista);
-                                    MontarLinhaSimples(questao.Questao, questao.Resposta);
+                                    MontarLinhaSimples(questaoIndex.Questao.Questao, questaoIndex.Questao.Resposta, RetornarClasseCssFundoCinzaLinhaPar(questaoIndex.Index));
                                     contadorQuebrarPagina += qdadeLinhasPrevista;
                                 }
                             }
@@ -152,6 +147,12 @@
             }
         }
     }
+
+    string RetornarClasseCssFundoCinzaLinhaPar(int linha)
+    => LinhaPar(linha) ? "fundo-cinza" : string.Empty;
+    
+    bool LinhaPar(int linha)
+    => linha % 2 == 0;
 
     void MontaLinhaCriancaTurma(string aluno, string turma)
     {
@@ -171,12 +172,12 @@
                 <tr>
                     @if (mostrarDre)
                     {
-                        <td class='alinhamentoEsquerda espacamento7'><strong>DRE:</strong> @dreNome</td>
+                        <td class='alinhamentoEsquerda espacamento7 fundo-cinza sem-border-bottom'><strong>DRE:</strong> @dreNome</td>
                     }
 
                     @if (mostrarUe)
                     {
-                        <td class='alinhamentoEsquerda espacamento7'><strong>Unidade Escolar (UE):</strong> @ueNome</td>
+                        <td class='alinhamentoEsquerda espacamento7 fundo-cinza sem-border-bottom'><strong>Unidade Escolar (UE):</strong> @ueNome</td>
                     }
                 </tr>
                 </tbody>
@@ -184,10 +185,10 @@
         }
     }
 
-    void MontarLinhaSimples(string titulo, string dado)
+    void MontarLinhaSimples(string titulo, string dado, string classeCss = "")
     {
         <tr>
-            <td colspan="4" class="alinhamentoEsquerda espacamento7 width-100"><strong>@titulo:</strong> @dado</td>
+            <td colspan="4" class="alinhamentoEsquerda espacamento7 width-100 @classeCss"><strong>@titulo:</strong> @dado</td>
         </tr>
     } 
     
@@ -242,6 +243,10 @@
             text-align: left;
         }
 
+        .sem-border-top {
+            border-top: 0;
+        }
+
         table {
             display: table;
             width: 100%;
@@ -278,8 +283,8 @@
             font-size: 14px !important;
         }
 
-        .espaco-esquerda-15 {
-            padding-left: 15px;
+        .espaco-esquerda-10 {
+            padding-left: 10px;
         }
 
         .fundo-cinza {

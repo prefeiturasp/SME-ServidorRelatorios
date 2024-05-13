@@ -470,7 +470,8 @@ namespace SME.SR.Workers.SGP.Controllers
                 AlunoCodigo = "",//7056007
                 AnoLetivo = 2024,
                 Modalidade = Modalidade.Fundamental,
-                UeCodigo = "094765",
+                UeCodigo = "094765",//094765
+                DreCodigo = "108800",
                 TurmasCodigo = new string[] { },
                 UsuarioNome = "Jailson Volnei dos Santos",
                 UsuarioRf = "07916846950"
