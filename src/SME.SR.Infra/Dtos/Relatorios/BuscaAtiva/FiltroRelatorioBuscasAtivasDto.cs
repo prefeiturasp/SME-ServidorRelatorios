@@ -14,6 +14,7 @@ namespace SME.SR.Infra
         public string CpfABAE { get; set; }
         public DateTime? DataInicioRegistroAcao { get; set; }
         public DateTime? DataFimRegistroAcao { get; set; }
+        public long[] OpcoesRespostaIdMotivoAusencia { get; set; }
         public string UsuarioNome { get; set; }
         public string UsuarioRf { get; set; }
     }
