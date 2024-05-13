@@ -40,6 +40,7 @@ namespace SME.SR.Application
                 DreNome = key.DreNome,
                 UeNome = $"{key.UeCodigo} - {key.UeNome}",
                 UeOrdenacao = key.UeNome,
+                MostrarAgrupamento = TodasDreFiltro(filtroRelatorio) || TodasUeFiltro(filtroRelatorio),
                 Detalhes = group.Select(s =>
                 new DetalheBuscaAtivaDto()
                 {
@@ -56,8 +57,8 @@ namespace SME.SR.Application
 
             var relatorio = new RelatorioBuscaAtivaDto()
             {
-                DreNome = !string.IsNullOrEmpty(filtroRelatorio.DreCodigo) && filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo) ? "TODAS" : registrosAcaoAgrupados.FirstOrDefault().DreNome,
-                UeNome = !string.IsNullOrEmpty(filtroRelatorio.UeCodigo) && filtroRelatorio.UeCodigo.Equals("-99") ? "TODAS" : registrosAcaoAgrupados.FirstOrDefault().UeNome,
+                DreNome = TodasDreFiltro(filtroRelatorio) ? "TODAS" : registrosAcaoAgrupados.FirstOrDefault().DreNome,
+                UeNome = TodasUeFiltro(filtroRelatorio) ? "TODAS" : registrosAcaoAgrupados.FirstOrDefault().UeNome,
                 AnoLetivo = filtroRelatorio.AnoLetivo,
                 Modalidade = filtroRelatorio.Modalidade,
                 Semestre = filtroRelatorio.Semestre,
@@ -86,6 +87,12 @@ namespace SME.SR.Application
                 retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Observação:", buscaAtiva.ObsGeralAoContatarOuNaoResponsavel));
             return retorno;
         }
-        
+
+        private bool TodasDreFiltro(FiltroRelatorioBuscasAtivasDto filtroRelatorio)
+        => !string.IsNullOrEmpty(filtroRelatorio.DreCodigo) && filtroRelatorio.DreCodigo.Equals("-99") || string.IsNullOrEmpty(filtroRelatorio.DreCodigo);
+
+        private bool TodasUeFiltro(FiltroRelatorioBuscasAtivasDto filtroRelatorio)
+        => !string.IsNullOrEmpty(filtroRelatorio.UeCodigo) && filtroRelatorio.UeCodigo.Equals("-99");
+
     }
 }
