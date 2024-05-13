@@ -14,7 +14,6 @@ namespace SME.SR.Data
     public class BuscaAtivaRepository : IBuscaAtivaRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
-        private const string NOME_COMPONENTE_DATA_ENTRADA_QUEIXA = "DATA_ENTRADA_QUEIXA";
 
         public BuscaAtivaRepository(VariaveisAmbiente variaveisAmbiente)
         {
