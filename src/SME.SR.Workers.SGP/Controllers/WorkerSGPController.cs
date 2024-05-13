@@ -14,7 +14,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -451,6 +451,36 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioPlanoAnual([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAnualUseCase relatorioPlanoAnualUseCase)
         {
             await relatorioPlanoAnualUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/buscasativas")]
+        [Action("relatorios/buscasativas", typeof(IRelatorioBuscasAtivasUseCase))]
+        public async Task<bool> RelatorioBuscasAtivas([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBuscasAtivasUseCase useCase)
+        {
+            var filtroRelatorioDto = new FiltroRelatorioDto()
+            {
+                Action = "relatorios/buscasativas",
+                UsuarioLogadoRF = "6769195",
+                CodigoCorrelacao = new Guid("AF3A5649-E805-4CB3-B73E-5191C445DE19")
+            };
+
+            var relatorio = new FiltroRelatorioBuscasAtivasDto()
+            {
+                AlunoCodigo = "",//7056007
+                AnoLetivo = 2024,
+                Modalidade = Modalidade.Fundamental,
+                UeCodigo = "094765",//094765
+                DreCodigo = "108800",
+                TurmasCodigo = new string[] { },
+                UsuarioNome = "Jailson Volnei dos Santos",
+                UsuarioRf = "07916846950"
+            };
+
+            var mensagem = JsonConvert.SerializeObject(relatorio, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            filtroRelatorioDto.Mensagem = mensagem;
+
+            await useCase.Executar(filtroRelatorioDto);
             return true;
         }
     }
