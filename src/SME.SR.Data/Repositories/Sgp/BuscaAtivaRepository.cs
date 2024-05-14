@@ -82,7 +82,9 @@ namespace SME.SR.Data
                                               join questionario q2 on q2.id = q.questionario_id 
                                               left join opcao_resposta opr on opr.id = rabar.resposta_id
                                               where q2.tipo = {(int)TipoQuestionario.RegistroAcaoBuscaAtiva}
-                                                    and not rabas.excluido and not rabaq.excluido and not rabar.excluido
+                                                    and not rabas.excluido 
+                                                    and not rabaq.excluido 
+                                                    and not rabar.excluido
                                               ) 
                              SELECT raba.id, 
                                     d.dre_id DreCodigo,
@@ -104,17 +106,21 @@ namespace SME.SR.Data
                                     case when coalesce(qObsGeralAoContatarResponsavel.resposta,'') <> '' then qObsGeralAoContatarResponsavel.resposta 
                                     else  qObsGeralAoNaoContatarResponsavel.resposta end as ObsGeralAoContatarOuNaoResponsavel,
                                     qJustificativaMotivoFalta_OpcaoOutros.resposta as JustificativaMotivoFalta_OpcaoOutros,
-                                    string_agg(qQuestoesObsDuranteVisitas.opcao_resposta_nome, ' | ') as QuestoesObsDuranteVisita,
-                                    string_agg(qJustificativaMotivoFalta.opcao_resposta_nome, ' | ') as JustificativaMotivoFalta
+                                    (SELECT string_agg(opcao_resposta_nome, ' | ') 
+                                     FROM vw_resposta 
+                                     WHERE registro_acao_busca_ativa_id = raba.id 
+                                           AND nome_componente = 'QUESTOES_OBS_DURANTE_VISITA') as QuestoesObsDuranteVisita,
+                                    (SELECT string_agg(opcao_resposta_nome, ' | ') 
+                                     FROM vw_resposta 
+                                     WHERE registro_acao_busca_ativa_id = raba.id 
+                                           AND nome_componente = 'JUSTIFICATIVA_MOTIVO_FALTA') as JustificativaMotivoFalta
                               FROM registro_acao_busca_ativa raba
                               INNER JOIN turma t ON t.id = raba.turma_id
                               INNER JOIN ue u ON u.id = t.ue_id
                               INNER JOIN dre d ON d.id = u.dre_id
                               left join vw_resposta qDataRegistro on qDataRegistro.registro_acao_busca_ativa_id = raba.id and qDataRegistro.nome_componente = 'DATA_REGISTRO_ACAO'
                               left join vw_resposta qProcedimentoRealizado on qProcedimentoRealizado.registro_acao_busca_ativa_id = raba.id and qProcedimentoRealizado.nome_componente = 'PROCEDIMENTO_REALIZADO'
-                              left join vw_resposta qQuestoesObsDuranteVisitas on qQuestoesObsDuranteVisitas.registro_acao_busca_ativa_id = raba.id and qQuestoesObsDuranteVisitas.nome_componente = 'QUESTOES_OBS_DURANTE_VISITA'
                               left join vw_resposta qConseguiuContatoResp on qConseguiuContatoResp.registro_acao_busca_ativa_id = raba.id and qConseguiuContatoResp.nome_componente = 'CONSEGUIU_CONTATO_RESP'
-                              left join vw_resposta qJustificativaMotivoFalta on qJustificativaMotivoFalta.registro_acao_busca_ativa_id = raba.id and qJustificativaMotivoFalta.nome_componente = 'JUSTIFICATIVA_MOTIVO_FALTA'
                               left join vw_resposta qJustificativaMotivoFalta_OpcaoOutros on qJustificativaMotivoFalta_OpcaoOutros.registro_acao_busca_ativa_id = raba.id and qJustificativaMotivoFalta_OpcaoOutros.nome_componente = 'JUSTIFICATIVA_MOTIVO_FALTA_OUTROS' 
                               left join vw_resposta qObsGeralAoContatarResponsavel on qObsGeralAoContatarResponsavel.registro_acao_busca_ativa_id = raba.id and qObsGeralAoContatarResponsavel.nome_componente = 'OBS_GERAL'
                               left join vw_resposta qObsGeralAoNaoContatarResponsavel on qObsGeralAoNaoContatarResponsavel.registro_acao_busca_ativa_id = raba.id and qObsGeralAoNaoContatarResponsavel.nome_componente = 'OBS_GERAL_NAO_CONTATOU_RESP'
