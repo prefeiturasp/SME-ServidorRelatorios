@@ -53,7 +53,7 @@ namespace SME.SR.Data
 
         public async Task<PropostaCompleta> ObterPropostaCompleta(long propostaId)
         {
-            var parametro = new { propostaId, situacaoPublicada = SITUACAO_PUBLICADA };
+            var parametro = new { propostaId, situacaoPublicada = SITUACAO_PUBLICADA, homologada = HOMOLOGADA };
             var query = new StringBuilder();
 
             query.AppendLine(ObterQueryPropostaCompleta());
@@ -105,8 +105,9 @@ namespace SME.SR.Data
             query.AppendLine("FROM proposta p ");
             query.AppendLine("INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id ");
             query.AppendLine("WHERE p.id = @propostaId ");
-            query.AppendLine(" AND NOT p.excluido; ");
-         //   query.AppendLine(" AND p.situacao = @situacaoPublicada;");
+            query.AppendLine(" AND NOT p.excluido ");
+            query.AppendLine(" AND p.situacao = @situacaoPublicada");
+            query.AppendLine(" AND p.formacao_homologada = @homologada;");
 
             return query.ToString();
         }
@@ -180,7 +181,8 @@ namespace SME.SR.Data
         private string ObterQueryRegentes()
         {
             return @"SELECT proposta_id as PropostaId, nome_regente as Nome, 
-                            registro_funcional as Rf, mini_biografia as MiniBio   
+                            registro_funcional as Rf, mini_biografia as MiniBio,
+                            profissional_rede_municipal as ProfissionalDaRede
                      FROM proposta_regente
                      WHERE NOT excluido 
                        AND proposta_id = @propostaId;";
@@ -204,8 +206,9 @@ namespace SME.SR.Data
 
         private string ObterQueryEncontros()
         {
-            return @"SELECT pt.nome, pe.proposta_id, pe.tipo, 
-                        pe.local, ped.data_inicio, ped.data_fim, pe.hora_inicio, pe.hora_fim  
+            return @"SELECT pt.nome as Turma, pe.proposta_id, pe.tipo as TipoEncontro, 
+                        pe.local, ped.data_inicio as DataInicio, ped.data_fim as DataFim, 
+                        pe.hora_inicio as HoraInicio, pe.hora_fim as HoraFim 
                     FROM proposta_encontro pe
                     INNER JOIN proposta_encontro_turma pet ON pet.proposta_encontro_id = pe.id 
                     INNER JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id
