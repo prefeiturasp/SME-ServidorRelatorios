@@ -453,5 +453,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioPlanoAnualUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/buscasativas")]
+        [Action("relatorios/buscasativas", typeof(IRelatorioBuscasAtivasUseCase))]
+        public async Task<bool> RelatorioBuscasAtivas([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBuscasAtivasUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
     }
 }
