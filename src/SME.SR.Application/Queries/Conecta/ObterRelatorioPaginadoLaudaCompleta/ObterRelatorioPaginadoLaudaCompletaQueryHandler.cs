@@ -268,25 +268,22 @@ namespace SME.SR.Application
 
         private RelatorioCampoLaudaCompletaDto ObterCampoPublicoAlvo()
         {
-            var publicoAlvo = propostaCompleta.PublicosAlvo is null ? 
-                                string.Empty : 
-                                String.Join(", ", propostaCompleta.PublicosAlvo.Select(p => p.Nome));
-
-            return ObterCampo("PÚBLICO ALVO", publicoAlvo, true);
+            return ObterCampo("PÚBLICO ALVO", ObterDescricao(propostaCompleta.PublicosAlvo), true);
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoFuncao()
         {
-            var funcoes = propostaCompleta.FuncaoEspecifica is null ?
-                    string.Empty :
-                    String.Join(", ", propostaCompleta.FuncaoEspecifica.Select(p => p.Nome));
-
-            return ObterCampo("FUNÇÃO ESPECÍFICA", funcoes, true);
+            return ObterCampo("FUNÇÃO ESPECÍFICA", ObterDescricao(propostaCompleta.FuncaoEspecifica), true);
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoVagasRemanecentes()
         {
-            return ObterCampo("HAVENDO VAGAS REMANESCENTES, PODERÃO SER CONTEMPLADOS OS SEGUINTES CARGOS COMO PÚBLICO ALVO)", String.Join(", ", propostaCompleta.VagasRemanecentes).ToUpper(), true);
+            return ObterCampo("HAVENDO VAGAS REMANESCENTES, PODERÃO SER CONTEMPLADOS OS SEGUINTES CARGOS COMO PÚBLICO ALVO)", ObterDescricao(propostaCompleta.VagasRemanecentes), true);
+        }
+
+        private string ObterDescricao(IEnumerable<PropostaPublicoAlvo> publico)
+        {
+            return publico is null ? string.Empty : String.Join(", ", publico.Select(p => p.Nome)).ToUpper();
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoCorpoDocente()
