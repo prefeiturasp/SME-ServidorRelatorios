@@ -281,6 +281,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped<IRelatorioBuscasAtivasUseCase, RelatorioBuscasAtivasUseCase>();
             services.TryAddScoped<IRelatorioPropostaLaudaDePublicacaoUseCase, RelatorioPropostaLaudaDePublicacaoUseCase>();
+            services.TryAddScoped<IRelatorioPropostaLaudaCompletaUseCase, RelatorioPropostaLaudaCompletaUseCase>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
