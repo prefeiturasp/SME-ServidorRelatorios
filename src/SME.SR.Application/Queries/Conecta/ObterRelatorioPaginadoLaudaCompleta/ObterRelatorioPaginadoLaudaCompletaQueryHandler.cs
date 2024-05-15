@@ -14,7 +14,7 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioPaginadoLaudaCompletaQueryHandler : IRequestHandler<ObterRelatorioPaginadoLaudaCompletaQuery, RelatorioPaginadoLaudaCompletaDto>
     {
-        private const int TOTAL_CARACTER_LINHA = 94;
+        private const int TOTAL_CARACTER_LINHA = 92;
         private const int TOTAL_LINHAS = 52;
         private const int TOTAL_CARACTER_LINHA_PAG = 5300; 
 
@@ -351,11 +351,20 @@ namespace SME.SR.Application
             return Regex.Replace(texto, "<.*?>", string.Empty);
         }
 
+
+        private int ObterTotalPaginaQuebraTexto(int linhasCampo, int linhaRestante)
+        {
+            if (linhasCampo > TOTAL_LINHAS)
+                return (int)Math.Ceiling((decimal)linhasCampo / (decimal)TOTAL_LINHAS);
+
+            return (int)Math.Ceiling((decimal)linhasCampo / (decimal)linhaRestante);
+        }
+
         private List<RelatorioCampoLaudaCompletaDto> ObterListaCampoQuebraTexto(RelatorioCampoLaudaCompletaDto campo, int linhasCampo)
         {
             var campos = new List<RelatorioCampoLaudaCompletaDto>();
             var totalLinhasRestante = TOTAL_LINHAS - totalLinhaPaginaAtual - 1;
-            var totalPagina = Math.Ceiling((decimal)linhasCampo / (decimal)TOTAL_LINHAS);
+            var totalPagina = ObterTotalPaginaQuebraTexto(linhasCampo, totalLinhasRestante);
             int qtdeCaracteres = totalLinhasRestante > 3 ? (totalLinhasRestante * TOTAL_CARACTER_LINHA) : TOTAL_CARACTER_LINHA_PAG;
             var inicioCaracteres = 0;
 
