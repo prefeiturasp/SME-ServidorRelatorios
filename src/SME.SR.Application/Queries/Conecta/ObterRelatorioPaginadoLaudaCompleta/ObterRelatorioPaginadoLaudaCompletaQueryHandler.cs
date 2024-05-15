@@ -357,7 +357,7 @@ namespace SME.SR.Application
             if (linhasCampo > TOTAL_LINHAS)
                 return (int)Math.Ceiling((decimal)linhasCampo / (decimal)TOTAL_LINHAS);
 
-            return (int)Math.Ceiling((decimal)linhasCampo / (decimal)linhaRestante);
+            return linhasCampo > linhaRestante ? 2 : 1;
         }
 
         private List<RelatorioCampoLaudaCompletaDto> ObterListaCampoQuebraTexto(RelatorioCampoLaudaCompletaDto campo, int linhasCampo)
