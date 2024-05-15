@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
 using Npgsql;
+using SME.SR.Data.Extensions;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
@@ -164,7 +165,7 @@ namespace SME.SR.Data
                     semestre = filtro.Semestre,
                     turmasCodigo = filtro.TurmasCodigo,
                     alunoCodigo = filtro.AlunoCodigo,
-                    cpfABAE = filtro.CpfABAE,
+                    cpfABAE = filtro.CpfABAE.SomenteNumeros(),
                     dataInicioRegistroAcao = filtro.DataInicioRegistroAcao,
                     dataFimRegistroAcao = filtro.DataFimRegistroAcao,
                     OpcoesRespostaIdMotivoAusencia = filtro.OpcoesRespostaIdMotivoAusencia,

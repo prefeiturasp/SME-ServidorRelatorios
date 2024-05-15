@@ -62,7 +62,11 @@ namespace SME.SR.Application
                 AnoLetivo = filtroRelatorio.AnoLetivo,
                 Modalidade = filtroRelatorio.Modalidade,
                 Semestre = filtroRelatorio.Semestre,
-                Turma = filtroRelatorio.TurmasCodigo.Count() != 1 ? "TODAS" : registrosAcaoAgrupados.FirstOrDefault().Detalhes.FirstOrDefault().Turma,
+                Turma = filtroRelatorio.TurmasCodigo.Count() == 1 
+                        ? registrosAcaoAgrupados.FirstOrDefault().Detalhes.FirstOrDefault().Turma
+                        : filtroRelatorio.TurmasCodigo.Count() == 0  
+                          ? "TODAS" 
+                          : "" ,
                 UsuarioNome = $"{filtroRelatorio.UsuarioNome} ({filtroRelatorio.UsuarioRf})",
             };
 
