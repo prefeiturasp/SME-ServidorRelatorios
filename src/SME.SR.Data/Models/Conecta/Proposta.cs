@@ -32,6 +32,8 @@ namespace SME.SR.Data.Models.Conecta
         public string CargaHorariaSincronaDistancia { get { return ObterCargaHorariaSincronaDistancia(); } }
         public bool EhAreaPromotoraDireta { get {  return TipoAreaPromotora == AREA_PROMOTORA_DIRETA; } }
         public string CargaHorariaPresencialFormatada { get { return ObterHora(CargaHorariaPresencial).ToString(@"hh\:mm"); } }
+        public string CargaHorariaSincronaFormatada { get { return ObterHora(CargaHorariaSincrona).ToString(@"hh\:mm"); } }
+        public string CargaHorariaDistanciaFormatada { get { return ObterHora(CargaHorariaDistancia).ToString(@"hh\:mm"); } }
 
         public string ObterPeriodoRealizacao()
         {
@@ -43,7 +45,7 @@ namespace SME.SR.Data.Models.Conecta
             if (!(LocalEncontro is null) &&
                 !string.IsNullOrEmpty(LocalEncontro.Local) &&
                 LocalEncontro.TotalTurmas == 1)
-                return $@"{LocalEncontro.DataInicio.ToString("dd/MM/yyyy")} ATÉ {LocalEncontro.DataFim.ToString("dd/MM/yyyy")} - {LocalEncontro.Local.ToUpper()}";
+                return $@"{LocalEncontro.ObterData()} - {LocalEncontro.Local.ToUpper()}";
 
             return string.Empty;
         }
@@ -51,7 +53,7 @@ namespace SME.SR.Data.Models.Conecta
         public string ObterLocalVariasTurmasUmEncontro()
         {
             if (!(LocalEncontro is null) && !string.IsNullOrEmpty(LocalEncontro.Local))
-                return $@"{LocalEncontro.DataInicio.ToString("dd/MM/yyyy")} ATÉ {LocalEncontro.DataFim.ToString("dd/MM/yyyy")} - {LocalEncontro.HoraInicio} ATÉ {LocalEncontro.HoraFim} - {LocalEncontro.Local.ToUpper()}";
+                return $@"{LocalEncontro.ObterData()} - {LocalEncontro.HoraInicio} ATÉ {LocalEncontro.HoraFim} - {LocalEncontro.Local.ToUpper()}";
 
             return string.Empty;
         }
@@ -77,7 +79,17 @@ namespace SME.SR.Data.Models.Conecta
 
         private TimeSpan ObterHora(string hora)
         {
-            return string.IsNullOrEmpty(hora) ? TimeSpan.Zero : TimeSpan.Parse(hora);
+            return string.IsNullOrEmpty(hora) ? TimeSpan.Zero : ObterTimeSpan(hora);
+        }
+
+        private TimeSpan ObterTimeSpan(string hora)
+        {
+            var horaSeparado = hora.Split(":");
+
+            if (horaSeparado.Length > 0)
+                return new TimeSpan(int.Parse(horaSeparado[0]), int.Parse(horaSeparado[1]), 0);
+
+            return TimeSpan.Zero;
         }
     }
 }
