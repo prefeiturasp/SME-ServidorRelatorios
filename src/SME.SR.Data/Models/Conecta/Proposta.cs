@@ -31,9 +31,9 @@ namespace SME.SR.Data.Models.Conecta
         public string TotalCargaHoraria { get { return ObterTotalCargaHoraria(); } }
         public string CargaHorariaSincronaDistancia { get { return ObterCargaHorariaSincronaDistancia(); } }
         public bool EhAreaPromotoraDireta { get {  return TipoAreaPromotora == AREA_PROMOTORA_DIRETA; } }
-        public string CargaHorariaPresencialFormatada { get { return ObterHora(CargaHorariaPresencial).ToString(@"hh\:mm"); } }
-        public string CargaHorariaSincronaFormatada { get { return ObterHora(CargaHorariaSincrona).ToString(@"hh\:mm"); } }
-        public string CargaHorariaDistanciaFormatada { get { return ObterHora(CargaHorariaDistancia).ToString(@"hh\:mm"); } }
+        public string CargaHorariaPresencialFormatada { get { return ObterHora(CargaHorariaPresencial); } }
+        public string CargaHorariaSincronaFormatada { get { return ObterHora(CargaHorariaSincrona); } }
+        public string CargaHorariaDistanciaFormatada { get { return ObterHora(CargaHorariaDistancia); } }
 
         public string ObterPeriodoRealizacao()
         {
@@ -60,36 +60,65 @@ namespace SME.SR.Data.Models.Conecta
 
         private string ObterTotalCargaHoraria()
         {
-            var total = ObterHora(CargaHorariaPresencial) +
-                        ObterHora(CargaHorariaSincrona) +
-                        ObterHora(CargaHorariaDistancia);
+            var total = ObterMinutos(CargaHorariaPresencial) +
+                        ObterMinutos(CargaHorariaSincrona) +
+                        ObterMinutos(CargaHorariaDistancia);
 
-            return total.ToString(@"hh\:mm");
+            return ObterHoraFormatada(total);
         }
 
         private string ObterCargaHorariaSincronaDistancia()
         {
-            var total = ObterHora(CargaHorariaSincrona) + ObterHora(CargaHorariaDistancia);
+            var total = ObterMinutos(CargaHorariaSincrona) + ObterMinutos(CargaHorariaDistancia);
 
-            if (total != TimeSpan.Zero)
-                return total.ToString(@"hh\:mm");
+
+            return ObterHoraFormatada(total);
+        }
+
+        private string ObterHora(string hora)
+        {
+            var horaMinuto = ObterHoraMinutos(hora);
+
+            if (horaMinuto.horas > 0 || horaMinuto.minutos > 0)
+                return $@"{horaMinuto.horas.ToString("00")}:{horaMinuto.minutos.ToString("00")}";
 
             return string.Empty;
         }
 
-        private TimeSpan ObterHora(string hora)
+        private string ObterHoraFormatada(int totalMinutos)
         {
-            return string.IsNullOrEmpty(hora) ? TimeSpan.Zero : ObterTimeSpan(hora);
+            if (totalMinutos == 0)
+                return string.Empty;
+
+            var horasFinais = totalMinutos / 60;
+            var minutosFinais = totalMinutos % 60;
+
+            return $@"{horasFinais.ToString("00")}:{minutosFinais.ToString("00")}";
         }
 
-        private TimeSpan ObterTimeSpan(string hora)
+        private int ObterMinutos(string hora)
         {
-            var horaSeparado = hora.Split(":");
+            var horaMinuto = ObterHoraMinutos(hora);
 
-            if (horaSeparado.Length > 0)
-                return new TimeSpan(int.Parse(horaSeparado[0]), int.Parse(horaSeparado[1]), 0);
+            if (horaMinuto.horas > 0 || horaMinuto.minutos > 0)
+                return horaMinuto.horas * 60 + horaMinuto.minutos;
 
-            return TimeSpan.Zero;
+            return 0;
+        }
+
+        private (int horas, int minutos) ObterHoraMinutos(string hora)
+        {
+            if (!string.IsNullOrEmpty(hora))
+            {
+                var horaSeparado = hora.Split(":");
+
+                if (horaSeparado.Length > 0)
+                {
+                    return (int.Parse(horaSeparado[0]), int.Parse(horaSeparado[1]));
+                }
+            }
+
+            return (0,0);
         }
     }
 }
