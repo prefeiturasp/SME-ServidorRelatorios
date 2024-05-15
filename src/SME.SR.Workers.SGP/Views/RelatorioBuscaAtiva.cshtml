@@ -15,7 +15,7 @@
         
     int paginaAtual = 0;
     double contadorQuebrarPagina = 0;
-    int contadorMaximoLinhasPorPagina = 45;
+    int contadorMaximoLinhasPorPagina = 44;
     RelatorioBuscaAtivaDto relatorioAtual = null;
     
     string DreNome = string.Empty;
@@ -187,7 +187,7 @@
     void MontarLinhaSimples(string titulo, string dado, string classeCss = "")
     {
         <tr>
-            <td colspan="4" class="alinhamentoEsquerda espacamento7 width-100 @classeCss"><strong>@titulo:</strong> @dado</td>
+            <td colspan="4" class="alinhamentoEsquerda espacamento7 width-100 @classeCss"><strong>@titulo</strong> @dado</td>
         </tr>
     } 
     
