@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using Org.BouncyCastle.Ocsp;
 using SME.SR.Data.Models.Conecta;
-using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.Conecta;
 using SME.SR.Infra.Utilitarios;
 using System;
@@ -16,9 +14,9 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioPaginadoLaudaCompletaQueryHandler : IRequestHandler<ObterRelatorioPaginadoLaudaCompletaQuery, RelatorioPaginadoLaudaCompletaDto>
     {
-        private const int TOTAL_CARACTER_LINHA = 98;
-        private const int TOTAL_LINHAS = 60;
-        private const int TOTAL_CARACTER_LINHA_PAG = 6600; 
+        private const int TOTAL_CARACTER_LINHA = 94;
+        private const int TOTAL_LINHAS = 52;
+        private const int TOTAL_CARACTER_LINHA_PAG = 5200; 
 
         private int totalLinhaPaginaAtual = 0;
         private PropostaCompleta propostaCompleta;
