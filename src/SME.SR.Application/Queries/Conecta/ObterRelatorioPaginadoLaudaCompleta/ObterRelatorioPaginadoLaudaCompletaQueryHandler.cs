@@ -16,7 +16,7 @@ namespace SME.SR.Application
     {
         private const int TOTAL_CARACTER_LINHA = 94;
         private const int TOTAL_LINHAS = 52;
-        private const int TOTAL_CARACTER_LINHA_PAG = 5200; 
+        private const int TOTAL_CARACTER_LINHA_PAG = 5300; 
 
         private int totalLinhaPaginaAtual = 0;
         private PropostaCompleta propostaCompleta;
@@ -82,7 +82,7 @@ namespace SME.SR.Application
             {
                 totalLinhaPaginaAtual = linhasCampo;
                 AdicionarPagina();
-                CriarPagina(paginaAtual.Pagina++);
+                CriarPagina(paginaAtual.Pagina + 1);
             }
             else
             {
@@ -340,12 +340,10 @@ namespace SME.SR.Application
 
         private int ObterQuantidadeLinha(RelatorioCampoLaudaCompletaDto campo)
         {
-            var Qtdelinha = campo.OutraLinha ? 2 : 1;
-
             if (campo.Descricao.Length > TOTAL_CARACTER_LINHA)
-                return Qtdelinha + (int)Math.Round((double)campo.Descricao.Length / TOTAL_CARACTER_LINHA);
+                return (campo.MostrarNome ? 1 : 0) + (int)Math.Ceiling((double)campo.Descricao.Length / TOTAL_CARACTER_LINHA);
 
-            return Qtdelinha;
+            return campo.OutraLinha ? 2 : 1;
         }
 
         private static string RemoveHTMLTags(string texto)
@@ -359,7 +357,7 @@ namespace SME.SR.Application
         private List<RelatorioCampoLaudaCompletaDto> ObterListaCampoQuebraTexto(RelatorioCampoLaudaCompletaDto campo, int linhasCampo)
         {
             var campos = new List<RelatorioCampoLaudaCompletaDto>();
-            var totalLinhasRestante = TOTAL_LINHAS - totalLinhaPaginaAtual - 2;
+            var totalLinhasRestante = TOTAL_LINHAS - totalLinhaPaginaAtual - 1;
             var totalPagina = Math.Ceiling((decimal)linhasCampo / (decimal)TOTAL_LINHAS);
             int qtdeCaracteres = totalLinhasRestante > 3 ? (totalLinhasRestante * TOTAL_CARACTER_LINHA) : TOTAL_CARACTER_LINHA_PAG;
             var inicioCaracteres = 0;
