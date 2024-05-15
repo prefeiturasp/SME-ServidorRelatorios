@@ -21,7 +21,9 @@ namespace SME.SR.Application.UseCases
             if (proposta == null || proposta.Id == 0)
                 return string.Empty;
 
-            throw new NotImplementedException();
+            var relatorioPaginado = await mediator.Send(new ObterRelatorioPaginadoLaudaCompletaQuery(proposta));
+
+            return await mediator.Send(new GerarRelatorioHtmlPDFLaudaCompletaCommand(relatorioPaginado));
         }
     }
 }
