@@ -27,7 +27,7 @@ namespace SME.SR.Application
         private const string PREFIXO_COLUNA_PROFICIENCIA_PSP = "PSPProficiencia_";
         private const string PREFIXO_COLUNA_NIVEL_PSP = "PSPNivel_";
 
-        private const int LINHA_INICIO_REGISTROS = 10;
+        private const int LINHA_INICIO_REGISTROS = 9;
 
         private List<(string nmColuna, string titulo)> ColunasCabecalho = new List<(string nmColuna, string titulo)>()
         {
@@ -78,7 +78,7 @@ namespace SME.SR.Application
                 var worksheet = workbook.Worksheets.Add($"{primeiroRegistro.UeCodigo}");
                 MontarCabecalhoGeral(worksheet, primeiroRegistro);
                 MontarCabecalhoTitulos(worksheet);
-                
+
                 var linhaFinal = LINHA_INICIO_REGISTROS;
                 foreach (var dto in request.MapeamentosEstudantes
                                             .Select((mapeamento, sequencia) => (mapeamento, sequencia))
@@ -110,11 +110,11 @@ namespace SME.SR.Application
             );
             data.Rows.Add(titulos);
 
-            titulos = data.NewRow();
+            /*titulos = data.NewRow();
             ColunasCabecalho.ForEach(c =>
                 titulos[c.nmColuna] = ""
             );
-            data.Rows.Add(titulos);
+            data.Rows.Add(titulos);*/
             return data;
         }
 
@@ -184,17 +184,10 @@ namespace SME.SR.Application
         private void MontarCabecalhoTitulos(IXLWorksheet worksheet)
         {
             worksheet.Cell(LINHA_CABECALHO_TITULO, 1).InsertData(ObterDataCabecalhoTitulos());
-
-            foreach (var coluna in ColunasCabecalho)
-            {
-                var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) + 1;
-                worksheet.Range(LINHA_CABECALHO_TITULO, indice, LINHA_CABECALHO_TITULO + 1, indice).Merge();
-            }
-
             foreach (var coluna in ColunasCabecalho.Where(col => col.nmColuna.Contains("_Bim")))
             {
                 var indice = ColunasCabecalho.IndexOf((coluna.nmColuna, coluna.titulo)) +1;
-                worksheet.Range(LINHA_CABECALHO_TITULO, indice, LINHA_CABECALHO_TITULO +1, indice+1).Merge();
+                worksheet.Range(LINHA_CABECALHO_TITULO, indice, LINHA_CABECALHO_TITULO, indice+1).Merge();
             }
 
             AdicionarFundoCinzaClaro(worksheet.Range(LINHA_CABECALHO_TITULO, 2, LINHA_CABECALHO_TITULO, ColunasCabecalho.Count()));
