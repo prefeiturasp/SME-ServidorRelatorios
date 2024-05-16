@@ -47,7 +47,7 @@ namespace SME.SR.Application
                     Aluno = $"{s.AlunoNome} ({s.AlunoCodigo})",
                     Turma = $"{s.Modalidade.ShortName()} - {s.TurmaNome}{s.TurmaTipoTurno.NomeTipoTurnoEol(" - ")}",
                     DataRegistroAcao = s.DataRegistroAcao,
-                    Questoes = ObterQuestoes(s)
+                    Questoes = ObterQuestoes(s, !string.IsNullOrEmpty(filtroRelatorio.AlunoCodigo))
                     
                 }).OrderBy(oAluno => oAluno.Turma)
                 .ThenBy(oAluno => oAluno.Aluno)
@@ -74,7 +74,7 @@ namespace SME.SR.Application
             await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioBuscaAtiva", relatorio, request.CodigoCorrelacao));
         }
 
-        private List<ItemQuestaoDetalheBuscaAtivaDto> ObterQuestoes(BuscaAtivaSimplesDto buscaAtiva)
+        private List<ItemQuestaoDetalheBuscaAtivaDto> ObterQuestoes(BuscaAtivaSimplesDto buscaAtiva, bool apresentarQuestaoObservacoes = false)
         {
             var retorno = new List<ItemQuestaoDetalheBuscaAtivaDto>();
             retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("DATA DE REGISTRO DA AÇÃO:", buscaAtiva.DataRegistroAcao.ToString("dd/MM/yyyy")));
@@ -87,7 +87,7 @@ namespace SME.SR.Application
                 retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("A família/responsável justificou a falta da criança por motivo de:", buscaAtiva.JustificativaMotivoFalta));
             if (!string.IsNullOrEmpty(buscaAtiva.JustificativaMotivoFaltaOpcaoOutros))
                 retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Descreva a justificativa da família:", buscaAtiva.JustificativaMotivoFaltaOpcaoOutros));
-            if (!string.IsNullOrEmpty(buscaAtiva.ObsGeralAoContatarOuNaoResponsavel))
+            if (apresentarQuestaoObservacoes &&!string.IsNullOrEmpty(buscaAtiva.ObsGeralAoContatarOuNaoResponsavel))
                 retorno.Add(new ItemQuestaoDetalheBuscaAtivaDto("Observação:", buscaAtiva.ObsGeralAoContatarOuNaoResponsavel));
             return retorno;
         }
