@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
-using Sentry;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.Infra.Utilitarios;
@@ -35,9 +34,9 @@ namespace SME.SR.Application
         }
 
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
-        {                       
+        {
             try
-            {                    
+            {
                 ParametrosRelatorioDto parametrosDoDto = ObterParametrosRelatorio(request.Dados);
 
                 var post = new ExecucaoRelatorioRequisicaoDto()
@@ -51,7 +50,6 @@ namespace SME.SR.Application
                     Paginas = null,
                     Parametros = parametrosDoDto
                 };
-
 
                 var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
 
@@ -71,7 +69,7 @@ namespace SME.SR.Application
                     return true;
                 }
 
-                if(retorno != null)
+                if (retorno != null)
                     await RegistraErro($"6.6 - Erro na geração  / {retorno.Status}");
 
                 await RegistraErro("6.6 - Erro na geração");
@@ -80,7 +78,7 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
-                await RegistraErro($"6.6 - Erro na geração: {ex.Message}, [{ex.StackTrace}]");
+                await RegistraErro($"6.6 - Erro na geração: {ex.Message}, [{ex}]");
                 throw ex;
             }
         }

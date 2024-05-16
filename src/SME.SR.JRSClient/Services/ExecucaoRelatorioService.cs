@@ -39,26 +39,15 @@ namespace SME.SR.JRSClient.Services
 
         public async Task<ExecucaoRelatorioRespostaDto> SolicitarRelatorio(ExecucaoRelatorioRequisicaoDto requisicao, string jSessionId)
         {
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(jSessionId))
-                    jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
+            if (!string.IsNullOrWhiteSpace(jSessionId))
+                jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
 
-                var conteudoJson = $"{requisicao.Parametros.ParametrosRelatorio.FirstOrDefault().Nome} / {requisicao.Parametros.ParametrosRelatorio[0].Valor.FirstOrDefault()}";
+            var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
 
-                var usuarioESenha64 = ObterUsuarioSenhaBase64();
-
-                var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
-
-                if (retorno.IsSuccessStatusCode)
-                    return retorno.Content;
-                else
-                    throw retorno.Error;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            if (retorno.IsSuccessStatusCode)
+                return retorno.Content;
+            else
+                throw retorno.Error;
         }
 
         public async Task<string> InterromperRelatoriosTarefas(Guid requisicaoId)
