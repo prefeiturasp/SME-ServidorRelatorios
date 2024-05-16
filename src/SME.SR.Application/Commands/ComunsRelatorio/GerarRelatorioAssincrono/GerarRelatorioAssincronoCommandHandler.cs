@@ -35,52 +35,44 @@ namespace SME.SR.Application
 
         public async Task<bool> Handle(GerarRelatorioAssincronoCommand request, CancellationToken cancellationToken)
         {
-            try
+            ParametrosRelatorioDto parametrosDoDto = ObterParametrosRelatorio(request.Dados);
+
+            var post = new ExecucaoRelatorioRequisicaoDto()
             {
-                ParametrosRelatorioDto parametrosDoDto = ObterParametrosRelatorio(request.Dados);
+                UnidadeRelatorioUri = request.CaminhoRelatorio,
+                Async = false,
+                SalvarSnapshot = false,
+                FormatoSaida = request.Formato.Name(),
+                Interativo = false,
+                IgnorarPaginacao = false,
+                Paginas = null,
+                Parametros = parametrosDoDto
+            };
 
-                var post = new ExecucaoRelatorioRequisicaoDto()
-                {
-                    UnidadeRelatorioUri = request.CaminhoRelatorio,
-                    Async = false,
-                    SalvarSnapshot = false,
-                    FormatoSaida = request.Formato.Name(),
-                    Interativo = false,
-                    IgnorarPaginacao = false,
-                    Paginas = null,
-                    Parametros = parametrosDoDto
-                };
+            var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
 
-                var jsessionId = await loginService.ObterTokenAutenticacao(configuration.GetSection("ConfiguracaoJasper:Username").Value, configuration.GetSection("ConfiguracaoJasper:Password").Value);
+            var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
+            var exportacaoId = retorno?.Exports?.FirstOrDefault()?.Id;
 
-                var retorno = await execucaoRelatorioService.SolicitarRelatorio(post, jsessionId);
-                var exportacaoId = retorno?.Exports?.FirstOrDefault()?.Id;
-
-                if (exportacaoId != null)
-                {
-                    var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
-                    var publicacaoFila = new PublicaFilaDto(dadosRelatorio, request.RotaProcessando, ExchangeRabbit.WorkerRelatorios, request.CodigoCorrelacao);
-
-                    await servicoFila.PublicaFila(publicacaoFila);
-
-                    var jsonPublicaFila = UtilJson.ConverterApenasCamposNaoNulos(publicacaoFila);
-                    Console.WriteLine(jsonPublicaFila);
-
-                    return true;
-                }
-
-                if (retorno != null)
-                    await RegistraErro($"6.6 - Erro na geração  / {retorno.Status}");
-
-                await RegistraErro("6.6 - Erro na geração");
-
-                return false;
-            }
-            catch (Exception ex)
+            if (exportacaoId != null)
             {
-                await RegistraErro($"6.6 - Erro na geração: {ex.Message}, [{ex}]");
-                throw ex;
+                var dadosRelatorio = new DadosRelatorioDto(retorno.RequestId, exportacaoId.Value, request.CodigoCorrelacao, jsessionId);
+                var publicacaoFila = new PublicaFilaDto(dadosRelatorio, request.RotaProcessando, ExchangeRabbit.WorkerRelatorios, request.CodigoCorrelacao);
+
+                await servicoFila.PublicaFila(publicacaoFila);
+
+                var jsonPublicaFila = UtilJson.ConverterApenasCamposNaoNulos(publicacaoFila);
+                Console.WriteLine(jsonPublicaFila);
+
+                return true;
             }
+
+            if (retorno != null)
+                await RegistraErro($"6.6 - Erro na geração  / {retorno.Status}");
+
+            await RegistraErro("6.6 - Erro na geração");
+
+            return false;
         }
 
         private async Task RegistraErro(string erro)
