@@ -47,7 +47,13 @@ namespace SME.SR.JRSClient.Services
             if (retorno.IsSuccessStatusCode)
                 return retorno.Content;
             else
-                throw retorno.Error;
+            {
+                var mensagemErroJasper = "Erro na requisição para o servidor Jasper";
+                if (retorno.Error != null)
+                    throw new Exception($"{mensagemErroJasper}. Mensagem: {retorno.Error.Message}.{(retorno.Error.HasContent ? $"Conteúdo: {retorno.Error.Content}." : string.Empty)}", retorno.Error);
+                else
+                    throw new Exception($"{mensagemErroJasper}. Status Code: {retorno.StatusCode}.");
+            }
         }
 
         public async Task<string> InterromperRelatoriosTarefas(Guid requisicaoId)
