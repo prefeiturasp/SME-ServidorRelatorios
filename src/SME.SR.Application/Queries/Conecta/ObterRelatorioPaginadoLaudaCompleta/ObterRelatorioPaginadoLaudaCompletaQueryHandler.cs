@@ -324,7 +324,7 @@ namespace SME.SR.Application
 
         private RelatorioCampoLaudaCompletaDto ObterCampo(string campo, string descricao, bool outraLinha = false, bool removerHtml = false, bool mostrarCampo = true)
         {
-            descricao = removerHtml ? RemoveHTMLTags(descricao) : descricao;
+            descricao = removerHtml ? UtilRegex.RemoverTagsHtml(descricao) : descricao;
 
             return new RelatorioCampoLaudaCompletaDto()
             {
@@ -342,15 +342,6 @@ namespace SME.SR.Application
 
             return campo.OutraLinha ? 2 : 1;
         }
-
-        private static string RemoveHTMLTags(string texto)
-        {
-            if (string.IsNullOrEmpty(texto))
-                return string.Empty;
-
-            return Regex.Replace(texto, "<.*?>", string.Empty);
-        }
-
 
         private int ObterTotalPaginaQuebraTexto(int linhasCampo, int linhaRestante)
         {
