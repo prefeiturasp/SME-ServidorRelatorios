@@ -17,7 +17,10 @@ namespace SME.SR.Infra.Extensions
 
         public static void InserirLink(this Paragraph paragrafo, string url, string texto, MainDocumentPart mainPart)
         {
-            paragrafo.Append(ObterHyperLink(url, texto, mainPart));
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                paragrafo.Append(ObterHyperLink(url, texto, mainPart));
+            else
+                InserirTexto(paragrafo, url);
         }
 
         public static void InserirTexto(this Paragraph paragrafo, string texto, bool novaLinha = false)

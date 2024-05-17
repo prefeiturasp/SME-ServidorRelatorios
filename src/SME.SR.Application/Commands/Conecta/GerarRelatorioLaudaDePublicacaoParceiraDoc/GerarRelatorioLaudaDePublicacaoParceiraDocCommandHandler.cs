@@ -80,7 +80,7 @@ namespace SME.SR.Application.Commands
         private void CarregarInscricoes(MainDocumentPart mainPart)
         {
             paragrafo.InserirTextoNegrito("INSCRIÇÕES: ");
-            var textoPeriodo = "DE {0} ATÉ {1}, PELO LINK:";
+            var textoPeriodo = "DE {0} ATÉ {1}, PELO LINK: ";
             paragrafo.InserirTexto(String.Format(textoPeriodo, proposta.DataInscricaoInicio.ToString("dd/MM/yyyy"), proposta.DataInscricaoFim.ToString("dd/MM/yyyy")));
             paragrafo.InserirLink(proposta.LinkInscricaoExterna, proposta.LinkInscricaoExterna, mainPart);
             paragrafo.InserirTexto(string.Empty, true);
