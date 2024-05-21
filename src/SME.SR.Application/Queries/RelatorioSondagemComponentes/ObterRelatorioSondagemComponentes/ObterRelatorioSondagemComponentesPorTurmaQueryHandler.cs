@@ -70,7 +70,7 @@ namespace SME.SR.Application
         }
         private static bool ConsideraNovaOpcaoRespostaSemPreenchimento(int anoLetivo, int bimestre)
         {
-            return anoLetivo == ANO_LETIVO_DOIS_MIL_VINTE_QUATRO && bimestre == TERCEIRO_BIMESTRE || anoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_CINCO;
+            return anoLetivo == ANO_LETIVO_DOIS_MIL_VINTE_QUATRO && bimestre >= TERCEIRO_BIMESTRE || anoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_CINCO;
         }
 
         private void GerarGraficosCamposAditivoMultiplicativoProficiencia(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos, bool consideraNovaOpcaoRespostaSemPreenchimento)
