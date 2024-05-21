@@ -20,6 +20,7 @@ namespace SME.SR.Application
         private const int ANO_LETIVO_DOIS_MIL_VINTE_CINCO = 2025;
         private const int ANO_LETIVO_DOIS_MIL_VINTE_DOIS = 2022;
         private const int TERCEIRO_BIMESTRE = 3;
+        private const int TERCEIRO_ANO = 3;
 
         public ObterSondagemMatNumAutoralConsolidadoQueryHandler(IMathPoolNumbersRepository mathPoolNumbersRepository, ISondagemAutoralRepository sondagemAutoralRepository)
         {
@@ -36,7 +37,7 @@ namespace SME.SR.Application
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Bimestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
-            if (request.TurmaAno > 3 || request.AnoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_DOIS)
+            if (request.TurmaAno > TERCEIRO_ANO || request.AnoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_DOIS)
             {
                 var totalDeAlunos = request.QuantidadeTotalAlunos;
                 var listaPeguntaResposta = await sondagemAutoralRepository.ObterSondagemPerguntaRespostaConsolidadoBimestre(request.Dre?.Codigo, request.Ue?.Codigo, (request.Bimestre > 0 ? request.Bimestre : request.Semestre), request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica.Name());
