@@ -15,24 +15,29 @@ namespace SME.SR.Application
     public class ObterSondagemMatNumAutoralConsolidadoQueryHandler : IRequestHandler<ObterSondagemMatNumAutoralConsolidadoQuery, RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto>
     {
         private readonly IMathPoolNumbersRepository mathPoolNumbersRepository;
-        private readonly IPerguntasAutoralRepository perguntasAutoralRepository;
         private readonly ISondagemAutoralRepository sondagemAutoralRepository;
+        private const int ANO_LETIVO_DOIS_MIL_VINTE_QUATRO = 2024;
+        private const int ANO_LETIVO_DOIS_MIL_VINTE_CINCO = 2025;
+        private const int ANO_LETIVO_DOIS_MIL_VINTE_DOIS = 2022;
+        private const int TERCEIRO_BIMESTRE = 3;
+        private const int TERCEIRO_ANO = 3;
 
-        public ObterSondagemMatNumAutoralConsolidadoQueryHandler(IMathPoolNumbersRepository mathPoolNumbersRepository, IPerguntasAutoralRepository perguntasAutoralRepository, ISondagemAutoralRepository sondagemAutoralRepository)
+        public ObterSondagemMatNumAutoralConsolidadoQueryHandler(IMathPoolNumbersRepository mathPoolNumbersRepository, ISondagemAutoralRepository sondagemAutoralRepository)
         {
             this.mathPoolNumbersRepository = mathPoolNumbersRepository ?? throw new ArgumentNullException(nameof(mathPoolNumbersRepository));
-            this.perguntasAutoralRepository = perguntasAutoralRepository ?? throw new ArgumentNullException(nameof(perguntasAutoralRepository));
             this.sondagemAutoralRepository = sondagemAutoralRepository ?? throw new ArgumentNullException(nameof(sondagemAutoralRepository));
         }
 
         public async Task<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto> Handle(ObterSondagemMatNumAutoralConsolidadoQuery request, CancellationToken cancellationToken)
         {
+            var consideraNovaOpcaoRespostaSemPreenchimento =
+                ConsideraNovaOpcaoRespostaSemPreenchimento(request.AnoLetivo, request.Bimestre);
             var relatorio = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
             var perguntas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto>();
 
             MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Bimestre, request.Usuario.CodigoRf, request.Usuario.Nome);
 
-            if (request.TurmaAno > 3 || request.AnoLetivo >= 2022)
+            if (request.TurmaAno > TERCEIRO_ANO || request.AnoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_DOIS)
             {
                 var totalDeAlunos = request.QuantidadeTotalAlunos;
                 var listaPeguntaResposta = await sondagemAutoralRepository.ObterSondagemPerguntaRespostaConsolidadoBimestre(request.Dre?.Codigo, request.Ue?.Codigo, (request.Bimestre > 0 ? request.Bimestre : request.Semestre), request.TurmaAno, request.AnoLetivo, ComponenteCurricularSondagemEnum.Matematica.Name());
@@ -44,10 +49,10 @@ namespace SME.SR.Application
                     var totalRespostas = x.Where(y => y.PerguntaId == x.Key).Sum(q => q.QtdRespostas);
                     totalDeAlunos = totalRespostas > totalDeAlunos ? totalRespostas : totalDeAlunos;
 
-                    CalculaPercentualTotalPergunta(totalDeAlunos, x.Where(y => y.PerguntaId == x.Key).First().PerguntaDescricao, pergunta);
+                    CalcularPercentualTotalPergunta(x.First(y => y.PerguntaId == x.Key).PerguntaDescricao, pergunta);
 
                     var listaPr = x.Where(y => y.PerguntaId == x.Key).ToList();
-                    CalculaPercentualRespostas(totalDeAlunos, pergunta, listaPr, totalRespostas);
+                    CalculaPercentualRespostas(totalDeAlunos, pergunta, listaPr, totalRespostas,consideraNovaOpcaoRespostaSemPreenchimento);
 
                     perguntas.Add(pergunta);
                 });
@@ -70,13 +75,13 @@ namespace SME.SR.Application
 
                 var zeroIntercaladosAgrupados = listaAlunos.GroupBy(fu => fu.ZeroIntercalados);
 
-                AdicionarPergunta(familiaresAgrupados, grupo: "Familiares/Frequentes", perguntas, request.QuantidadeTotalAlunos);
-                AdicionarPergunta(opacosAgrupados, grupo: "Opacos", perguntas, request.QuantidadeTotalAlunos);
-                AdicionarPergunta(transparentesAgrupados, grupo: "Transparentes", perguntas, request.QuantidadeTotalAlunos);
-                AdicionarPergunta(terminamZeroAgrupados, grupo: "Terminam em zero", perguntas, request.QuantidadeTotalAlunos);
-                AdicionarPergunta(algarismosAgrupados, grupo: "Algarismos iguais", perguntas, request.QuantidadeTotalAlunos);
-                AdicionarPergunta(processoAgrupados, grupo: "Processo de generalização", perguntas, request.QuantidadeTotalAlunos);
-                AdicionarPergunta(zeroIntercaladosAgrupados, grupo: "Zero intercalado", perguntas, request.QuantidadeTotalAlunos);
+                AdicionarPergunta(familiaresAgrupados, grupo: "Familiares/Frequentes", perguntas, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
+                AdicionarPergunta(opacosAgrupados, grupo: "Opacos", perguntas, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
+                AdicionarPergunta(transparentesAgrupados, grupo: "Transparentes", perguntas, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
+                AdicionarPergunta(terminamZeroAgrupados, grupo: "Terminam em zero", perguntas, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
+                AdicionarPergunta(algarismosAgrupados, grupo: "Algarismos iguais", perguntas, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
+                AdicionarPergunta(processoAgrupados, grupo: "Processo de generalização", perguntas, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
+                AdicionarPergunta(zeroIntercaladosAgrupados, grupo: "Zero intercalado", perguntas, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
             }
 
 
@@ -87,20 +92,20 @@ namespace SME.SR.Application
 
             relatorio.PerguntasRespostas = perguntas;
 
-            TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos);
+            TrataAlunosQueNaoResponderam(relatorio, request.QuantidadeTotalAlunos,consideraNovaOpcaoRespostaSemPreenchimento);
             GerarGraficos(relatorio);
 
             return relatorio;
         }
 
-        private void GerarGraficos(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio)
+        private static void GerarGraficos(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio)
         {
             relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
 
             foreach (var pergunta in relatorio.PerguntasRespostas)
             {
-                string chave = String.Empty;
-                int chaveIndex = 0;
+                var chave = string.Empty;
+                var chaveIndex = 0;
                 var grafico = new GraficoBarrasVerticalDto(420, $"{pergunta.Pergunta}");
                 var legendas = new List<GraficoBarrasLegendaDto>();
 
@@ -115,7 +120,7 @@ namespace SME.SR.Application
 
                     grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(decimal.Parse(resposta.AlunosQuantidade.ToString()), chave));
                 }
-                var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+                var valorMaximoEixo = grafico.EixosX.Any() ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
                 grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(340, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                 grafico.Legendas = legendas;
@@ -123,7 +128,8 @@ namespace SME.SR.Application
             }
         }
 
-        private void TrataAlunosQueNaoResponderam(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, int quantidadeTotalAlunos)
+        private static void TrataAlunosQueNaoResponderam(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, int quantidadeTotalAlunos,
+            bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var perguntaResposta in relatorio.PerguntasRespostas)
             {
@@ -134,8 +140,8 @@ namespace SME.SR.Application
 
                 var existePerguntasSemPreenchimento = perguntaResposta.Respostas.FirstOrDefault(p => p.Resposta == "Sem preenchimento");
 
+                if (consideraNovaOpcaoRespostaSemPreenchimento) continue;
                 if (existePerguntasSemPreenchimento == null)
-                {
                     perguntaResposta.Respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
                     {
                         Resposta = "Sem preenchimento",
@@ -143,11 +149,10 @@ namespace SME.SR.Application
                         AlunosPercentual = percentualNaoPreencheu
 
                     });
-                }
             }
         }
 
-        private void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, int? bimestre, string rf, string usuario)
+        private static void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, int? bimestre, string rf, string usuario)
         {
             relatorio.Ano = anoTurma;
             relatorio.AnoLetivo = anoLetivo;
@@ -162,9 +167,10 @@ namespace SME.SR.Application
             relatorio.Usuario = usuario;
         }
 
-        private void AdicionarPergunta(IEnumerable<IGrouping<string, MathPoolNumber>> agrupamento, string grupo, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas, int TotalAlunosGeral)
+        private static void AdicionarPergunta(IEnumerable<IGrouping<string, MathPoolNumber>> agrupamento, string grupo, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas, int totalAlunosGeral
+        ,bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
-            var respostas = ObterRespostas(agrupamento, TotalAlunosGeral);
+            var respostas = ObterRespostas(agrupamento, totalAlunosGeral);
 
             if (respostas != null && respostas.Any())
             {
@@ -176,95 +182,44 @@ namespace SME.SR.Application
             }
             else
             {
-                perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
+                if (!consideraNovaOpcaoRespostaSemPreenchimento)
                 {
-                    Pergunta = grupo,
-                    Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>()
+                    perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
                     {
-                        new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                        Pergunta = grupo,
+                        Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>()
                         {
-                            AlunosPercentual = 100,
-                            AlunosQuantidade = TotalAlunosGeral,
-                            Resposta = "Sem preenchimento"
+                            new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
+                            {
+                                AlunosPercentual = 100,
+                                AlunosQuantidade = totalAlunosGeral,
+                                Resposta = "Sem preenchimento"
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 
-        private void AdicionarPergunta(IGrouping<string, PerguntasAutoralDto> pergunta, string grupo, IGrouping<string, SondagemAutoralDto> respostasAlunos, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas, int totalAlunosGeral)
+        private static List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolNumber>> agrupamento, int totalAlunosGeral)
         {
-            var respostas = ObterRespostas(pergunta, respostasAlunos, totalAlunosGeral);
-
-            if (respostas != null && respostas.Any())
-            {
-                perguntas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto()
-                {
-                    Pergunta = pergunta.FirstOrDefault(a => a.PerguntaId == grupo).Pergunta,
-                    Respostas = respostas
-                });
-            }
-        }
-
-        private List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> ObterRespostas(IEnumerable<IGrouping<string, MathPoolNumber>> agrupamento, int TotalAlunosGeral)
-        {
-            var respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>();
-
             var agrupamentosComValor = agrupamento.Where(a => !a.Key.Trim().Equals(""));
 
-            //var totalAlunos = agrupamentosComValor.SelectMany(g => g).Count();
+            var respostas = agrupamentosComValor.Select(item => 
+                new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto() 
+                    { Resposta = item.Key.Equals("S", StringComparison.InvariantCultureIgnoreCase) ? 
+                        "Escreve de forma convencional" : "Não escreve de forma convencional", AlunosQuantidade = item.Count(), AlunosPercentual = ((double)item.Count() / totalAlunosGeral) * 100 }).ToList();
 
-            foreach (var item in agrupamentosComValor)
-            {
-                respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
-                {
-                    Resposta = item.Key.Equals("S", StringComparison.InvariantCultureIgnoreCase) ? "Escreve de forma convencional" : "Não escreve de forma convencional",
-                    AlunosQuantidade = item.Count(),
-                    AlunosPercentual = ((double)item.Count() / TotalAlunosGeral) * 100
-                });
-            }
-
-            if (respostas.Any())
-                return respostas;
-            else
-                return null;
+            return respostas.Any() ? respostas : null;
         }
 
-        private List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto> ObterRespostas(IGrouping<string, PerguntasAutoralDto> pergunta, IGrouping<string, SondagemAutoralDto> agrupamento, int TotalAlunosGeral)
-        {
-            var respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>();
-
-            var agrupamentosComValor = agrupamento?.Where(a => !string.IsNullOrEmpty(a.RespostaId));
-
-            var totalAlunos = agrupamentosComValor?.Count() ?? 0;
-
-            var agrupamentosComValorAgrupado = agrupamentosComValor?.GroupBy(g => g.RespostaId);
-
-            foreach (var item in pergunta)
-            {
-                var totalAlunosResposta = agrupamentosComValorAgrupado?.FirstOrDefault(a => a.Key == item.RespostaId)?.Count() ?? 0;
-
-                respostas.Add(new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto()
-                {
-                    Resposta = item.Resposta,
-                    AlunosQuantidade = totalAlunosResposta,
-                    AlunosPercentual = totalAlunosResposta > 0 ? ((double)totalAlunosResposta / TotalAlunosGeral) * 100 : 0
-                });
-            }
-
-            if (respostas.Any())
-                return respostas;
-            else
-                return null;
-        }
-
-        private void CalculaPercentualTotalPergunta(int totalDeAlunos, string descricaoPergunta, RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto pergunta)
+        private static void CalcularPercentualTotalPergunta(string descricaoPergunta, RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto pergunta)
         {
             pergunta.Pergunta = descricaoPergunta;
             pergunta.Respostas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto>();
         }
 
-        private void CalculaPercentualRespostas(int totalDeAlunos, RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto pergunta, List<PerguntasRespostasDTO> listaPr, int totalRespostas)
+        private static void CalculaPercentualRespostas(int totalDeAlunos, RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto pergunta, List<PerguntasRespostasDTO> listaPr, int totalRespostas,bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var item in listaPr)
             {
@@ -276,18 +231,23 @@ namespace SME.SR.Application
                 });
             }
 
+            if (consideraNovaOpcaoRespostaSemPreenchimento) return;
             var respostaSempreenchimento = CriaRespostaSemPreenchimento(totalDeAlunos, totalRespostas);
             pergunta.Respostas.Add(respostaSempreenchimento);
         }
 
-        private RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto CriaRespostaSemPreenchimento(int totalDeAlunos, int quantidadeTotalRespostasPergunta)
+        private static RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto CriaRespostaSemPreenchimento(int totalDeAlunos, int quantidadeTotalRespostasPergunta)
         {
             var respostaSemPreenchimento = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto();
             var quantidade = totalDeAlunos - quantidadeTotalRespostasPergunta;
             respostaSemPreenchimento.Resposta = "Sem preenchimento";
             respostaSemPreenchimento.AlunosQuantidade = quantidade >= 0 ? quantidade : 0;
-            respostaSemPreenchimento.AlunosPercentual = (respostaSemPreenchimento.AlunosQuantidade > 0 ? (respostaSemPreenchimento.AlunosQuantidade * 100) / (Double)totalDeAlunos : 0);
+            respostaSemPreenchimento.AlunosPercentual = (respostaSemPreenchimento.AlunosQuantidade > 0 ? (respostaSemPreenchimento.AlunosQuantidade * 100) / (double)totalDeAlunos : 0);
             return respostaSemPreenchimento;
+        }
+        private static bool ConsideraNovaOpcaoRespostaSemPreenchimento(int anoLetivo, int bimestre)
+        {
+            return anoLetivo == ANO_LETIVO_DOIS_MIL_VINTE_QUATRO && bimestre >= TERCEIRO_BIMESTRE || anoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_CINCO;
         }
     }
 
