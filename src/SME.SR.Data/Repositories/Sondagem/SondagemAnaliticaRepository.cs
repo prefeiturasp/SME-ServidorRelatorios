@@ -38,157 +38,6 @@ namespace SME.SR.Data
             this.sondagemRelatorioRepository = sondagemRelatorioRepository ?? throw new ArgumentNullException(nameof(sondagemRelatorioRepository));
         }
 
-        public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoCapacidadeDeLeitura(FiltroRelatorioAnaliticoSondagemDto filtro)
-        {
-            var periodo = await ObterPeriodoSondagem(filtro.Periodo, filtro.AnoLetivo, filtro.TipoSondagem);
-            var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
-            var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-
-            var modalidades = new List<int> { 5, 13 };
-
-            var consultaDados = await sondagemRelatorioRepository.ConsolidadoCapacidadeLeitura(new RelatorioPortuguesFiltroDto
-            {
-                AnoLetivo = filtro.AnoLetivo,
-                CodigoDre = filtro.DreCodigo,
-                CodigoUe = filtro.UeCodigo,
-                ComponenteCurricularId = SondagemComponenteCurricular.LINGUA_PORTUGUESA,
-                GrupoId = GrupoSondagem.CAPACIDADE_DE_LEITURA,
-                PeriodoId = periodo.Id
-            });
-            var agrupadoPorDre = consultaDados.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct().ToList();
-            if (agrupadoPorDre.Any())
-            {
-                var listaDres = await dreRepository.ObterPorCodigos(agrupadoPorDre.Select(x => x.Key).ToArray());
-                foreach (var itemDre in agrupadoPorDre)
-                {
-                    var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
-                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct().ToList();
-                    var listaUes = await ueRepository.ObterPorCodigos(agrupadoPorUe.Select(x => x.Key).ToArray());
-                    foreach (var itemUe in agrupadoPorUe)
-                    {
-                        var relatorioAgrupadoPorAno = itemUe.Where(x => x.AnoTurma != null).GroupBy(p => p.AnoTurma).ToList();
-                        var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio.Date, periodoFixo.DataFim.Date, itemUe.Key, itemDre.Key)).ToList();
-
-                        var totalTurmas = await ObterQuantidadeTurmaPorAno(itemUe.Key, filtro.AnoLetivo);
-
-                        foreach (var anoTurmaItem in relatorioAgrupadoPorAno)
-                        {
-                            int quantidadeTurmas = totalTurmas?.FirstOrDefault(t => t.Ano == anoTurmaItem.Key).Quantidade ?? 0;
-
-                            var listaDtoOrdemNarrar = new List<RespostaCapacidadeDeLeituraDto>();
-                            var listaDtoOrdemRelatar = new List<RespostaCapacidadeDeLeituraDto>();
-                            var listaDtoOrdemArgumentar = new List<RespostaCapacidadeDeLeituraDto>();
-                            var respostaSondagemAnaliticoCapacidadeDeLeituraDtoLista = new List<RespostaSondagemAnaliticoCapacidadeDeLeituraDto>();
-
-                            var agrupamentoPorOrderm = anoTurmaItem.GroupBy(x => x.Ordem);
-
-
-                            var ordemNarrarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_NARRAR).ToList();
-                            var ordemRelatarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_RELATAR).ToList();
-                            var ordemArgumentarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_ARGUMENTAR).ToList();
-
-                            var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key).Select(x => x.QuantidadeAluno).Sum();
-
-                            if (ordemNarrarLista.Count() == 0)
-                            {
-                                var ordemNarrar = new RespostaCapacidadeDeLeituraDto();
-                                ordemNarrar.Localizacao.SemPreenchimento = totalDeAlunos;
-                                ordemNarrar.Reflexao.SemPreenchimento = totalDeAlunos;
-                                ordemNarrar.Inferencia.SemPreenchimento = totalDeAlunos;
-                                listaDtoOrdemNarrar.Add(ordemNarrar);
-                            }
-                            foreach (var ordemNarrarItem in ordemNarrarLista)
-                            {
-                                var ordemNarrar = new RespostaCapacidadeDeLeituraDto
-                                {
-                                    Localizacao = MapearOrdemDoNarrarLocalizacao(ordemNarrarItem, totalDeAlunos, ordemNarrarLista),
-                                    Inferencia = MapearOrdemDoNarrarInferencia(ordemNarrarItem, totalDeAlunos, ordemNarrarLista),
-                                    Reflexao = MapearOrdemDoNarrarReflexao(ordemNarrarItem, totalDeAlunos, ordemNarrarLista),
-                                };
-                                listaDtoOrdemNarrar.Add(ordemNarrar);
-                            }
-
-                            if (ordemRelatarLista.Count() == 0)
-                            {
-                                var ordemRelatarItem = new RespostaCapacidadeDeLeituraDto();
-                                ordemRelatarItem.Localizacao.SemPreenchimento = totalDeAlunos;
-                                ordemRelatarItem.Reflexao.SemPreenchimento = totalDeAlunos;
-                                ordemRelatarItem.Inferencia.SemPreenchimento = totalDeAlunos;
-                                listaDtoOrdemRelatar.Add(ordemRelatarItem);
-                            }
-
-                            foreach (var ordemRelatarItem in ordemRelatarLista)
-                            {
-                                var ordemDoRelatar = new RespostaCapacidadeDeLeituraDto
-                                {
-                                    Localizacao = MapearOrdemDoNarrarLocalizacao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
-                                    Inferencia = MapearOrdemDoNarrarInferencia(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
-                                    Reflexao = MapearOrdemDoNarrarReflexao(ordemRelatarItem, totalDeAlunos, ordemRelatarLista),
-                                };
-                                listaDtoOrdemRelatar.Add(ordemDoRelatar);
-                            }
-
-                            if (ordemArgumentarLista.Count() == 0)
-                            {
-                                var ordemArgumentarItem = new RespostaCapacidadeDeLeituraDto();
-                                ordemArgumentarItem.Localizacao.SemPreenchimento = totalDeAlunos;
-                                ordemArgumentarItem.Reflexao.SemPreenchimento = totalDeAlunos;
-                                ordemArgumentarItem.Inferencia.SemPreenchimento = totalDeAlunos;
-                                listaDtoOrdemArgumentar.Add(ordemArgumentarItem);
-                            }
-
-                            foreach (var ordemArgumentarItem in ordemArgumentarLista)
-                            {
-                                var ordemDoArgumentar = new RespostaCapacidadeDeLeituraDto
-                                {
-                                    Localizacao = MapearOrdemDoNarrarLocalizacao(ordemArgumentarItem, totalDeAlunos, ordemArgumentarLista),
-                                    Inferencia = MapearOrdemDoNarrarInferencia(ordemArgumentarItem, totalDeAlunos, ordemArgumentarLista),
-                                    Reflexao = MapearOrdemDoNarrarReflexao(ordemArgumentarItem, totalDeAlunos, ordemArgumentarLista),
-                                };
-                                listaDtoOrdemArgumentar.Add(ordemDoArgumentar);
-                            }
-
-                            foreach (var listaDtoOrdemNarraritem in listaDtoOrdemNarrar)
-                            {
-                                var resp = new RespostaSondagemAnaliticoCapacidadeDeLeituraDto();
-                                resp.OrdemDoNarrar = listaDtoOrdemNarraritem;
-
-                                foreach (var listaDtoOrdemRelatarItem in listaDtoOrdemRelatar)
-                                {
-                                    resp.OrdemDoRelatar = listaDtoOrdemRelatarItem;
-                                    foreach (var listaDtoOrdemArgumentaritem in listaDtoOrdemArgumentar)
-                                    {
-                                        resp.OrdemDoArgumentar = listaDtoOrdemArgumentaritem;
-                                    }
-                                }
-
-                                var Ue = listaUes.FirstOrDefault(x => x.Codigo == itemUe.Key);
-                                resp.Ue = Ue.TituloTipoEscolaNome;
-                                resp.Ano = int.Parse(anoTurmaItem.Key);
-                                resp.TotalDeTurma = quantidadeTurmas;
-                                resp.TotalDeAlunos = totalDeAlunos;
-                                respostaSondagemAnaliticoCapacidadeDeLeituraDtoLista.Add(resp);
-                            }
-
-                            foreach (var respost in respostaSondagemAnaliticoCapacidadeDeLeituraDtoLista)
-                            {
-                                perguntas.Respostas.Add(respost);
-                            }
-                        }
-                    }
-
-                    var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
-                    perguntas.Dre = dre.Nome;
-                    perguntas.DreSigla = dre.Abreviacao;
-                    perguntas.AnoLetivo = filtro.AnoLetivo;
-                    perguntas.Periodo = filtro.Periodo;
-                    retorno.Add(perguntas);
-                }
-            }
-
-            return retorno;
-        }
-
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoEscrita(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
@@ -295,6 +144,23 @@ namespace SME.SR.Data
             }
 
             return retorno;
+        }
+
+        public async Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagem(string termoPeriodo, int anoLetivo)
+        {
+            var sql = new StringBuilder();
+
+            sql.AppendLine("select pfa.* ");
+            sql.AppendLine("from \"Periodo\" p");
+            sql.AppendLine("inner join \"PeriodoFixoAnual\" pfa on pfa.\"PeriodoId\" = p.\"Id\" ");
+            sql.AppendLine("where p.\"Descricao\" = @termoPeriodo ");
+            sql.AppendLine("and \"Ano\" = @anoLetivo ");
+
+            var parametros = new { termoPeriodo, anoLetivo };
+            using (var conn = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem))
+            {
+                return await conn.QueryFirstOrDefaultAsync<PeriodoFixoSondagem>(sql.ToString(), parametros);
+            }
         }
 
         private bool EhTerceiroAnoPrimeiroPeriodoAteDoisMilEVinteTres(FiltroRelatorioAnaliticoSondagemDto filtro, IGrouping<string, TotalRespostasAnaliticoEscritaDto> anoTurma)
@@ -600,60 +466,6 @@ namespace SME.SR.Data
             }
 
             return quantidade;
-        }
-
-        private ItemRespostaCapacidadeDeLeituraDto MapearOrdemDoNarrarLocalizacao(IGrouping<string, OrdemPerguntaRespostaDto> ordemItem, int totalDeAlunos, List<IGrouping<string, OrdemPerguntaRespostaDto>> relatorioAgrupadoPergunta)
-        {
-            var localizacao = new ItemRespostaCapacidadeDeLeituraDto();
-            var perguntaItemLocalizacao = relatorioAgrupadoPergunta.FirstOrDefault()?.Where(x => x.PerguntaDescricao == PerguntaDescricaoSondagem.Localizacao).ToList();
-            if (perguntaItemLocalizacao != null)
-            {
-                var totalRespostas = perguntaItemLocalizacao.Select(s => s.QtdRespostas).ToList().Sum();
-                totalDeAlunos = totalDeAlunos >= totalRespostas ? totalDeAlunos : totalRespostas;
-
-                localizacao.Adequada = perguntaItemLocalizacao.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Adequada).Select(x => x.QtdRespostas).Sum();
-                localizacao.Inadequada = perguntaItemLocalizacao.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Inadequada).Select(x => x.QtdRespostas).Sum();
-                localizacao.NaoResolveu = perguntaItemLocalizacao.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.NaoResolveu).Select(x => x.QtdRespostas).Sum();
-                localizacao.SemPreenchimento = totalDeAlunos - totalRespostas;
-            }
-
-            return localizacao;
-        }
-
-        private ItemRespostaCapacidadeDeLeituraDto MapearOrdemDoNarrarInferencia(IGrouping<string, OrdemPerguntaRespostaDto> ordemItem, int totalDeAlunos, List<IGrouping<string, OrdemPerguntaRespostaDto>> relatorioAgrupadoPergunta)
-        {
-            var inferencia = new ItemRespostaCapacidadeDeLeituraDto();
-            var perguntaIteInferencia = relatorioAgrupadoPergunta.FirstOrDefault()?.Where(x => x.PerguntaDescricao == PerguntaDescricaoSondagem.Inferencia).ToList();
-            if (perguntaIteInferencia != null)
-            {
-                var totalRespostas = perguntaIteInferencia.Select(s => s.QtdRespostas).ToList().Sum();
-                totalDeAlunos = totalDeAlunos >= totalRespostas ? totalDeAlunos : totalRespostas;
-
-                inferencia.Adequada = perguntaIteInferencia.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Adequada).Select(x => x.QtdRespostas).Sum();
-                inferencia.Inadequada = perguntaIteInferencia.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Inadequada).Select(x => x.QtdRespostas).Sum();
-                inferencia.NaoResolveu = perguntaIteInferencia.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.NaoResolveu).Select(x => x.QtdRespostas).Sum();
-                inferencia.SemPreenchimento = totalDeAlunos - totalRespostas;
-            }
-
-            return inferencia;
-        }
-
-        private ItemRespostaCapacidadeDeLeituraDto MapearOrdemDoNarrarReflexao(IGrouping<string, OrdemPerguntaRespostaDto> ordemItem, int totalDeAlunos, List<IGrouping<string, OrdemPerguntaRespostaDto>> relatorioAgrupadoPergunta)
-        {
-            var reflexao = new ItemRespostaCapacidadeDeLeituraDto();
-            var perguntaItemReflexao = relatorioAgrupadoPergunta.FirstOrDefault()?.Where(x => x.PerguntaDescricao == PerguntaDescricaoSondagem.Reflexao).ToList();
-            if (perguntaItemReflexao != null)
-            {
-                var totalRespostas = perguntaItemReflexao.Select(s => s.QtdRespostas).ToList().Sum();
-                totalDeAlunos = totalDeAlunos >= totalRespostas ? totalDeAlunos : totalRespostas;
-
-                reflexao.Adequada = perguntaItemReflexao.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Adequada).Select(x => x.QtdRespostas).Sum();
-                reflexao.Inadequada = perguntaItemReflexao.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Inadequada).Select(x => x.QtdRespostas).Sum();
-                reflexao.NaoResolveu = perguntaItemReflexao.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.NaoResolveu).Select(x => x.QtdRespostas).Sum();
-                reflexao.SemPreenchimento = totalDeAlunos - totalRespostas;
-            }
-
-            return reflexao;
         }
 
         private string ObterTituloSemestreBimestre(TipoSondagem tipoSondagem, int anoLetivo)
