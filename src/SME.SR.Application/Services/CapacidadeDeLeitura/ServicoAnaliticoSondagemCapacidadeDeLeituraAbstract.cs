@@ -124,7 +124,7 @@ namespace SME.SR.Application.Services.CapacidadeDeLeitura
         {
             var resposta = new ItemRespostaCapacidadeDeLeituraDto();
 
-            if (perguntasResposta != null)
+            if (perguntasResposta != null && perguntasResposta.Count > 0)
             {
                 resposta.Adequada = perguntasResposta.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Adequada).Select(x => x.QtdRespostas).Sum();
                 resposta.Inadequada = perguntasResposta.Where(f => f.RespostaDescricao == RespostaDescricaoSondagem.Inadequada).Select(x => x.QtdRespostas).Sum();
