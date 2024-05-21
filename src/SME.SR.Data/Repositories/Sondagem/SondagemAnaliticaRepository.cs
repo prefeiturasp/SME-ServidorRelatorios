@@ -1,5 +1,4 @@
-﻿using Microsoft.ApplicationInsights.Metrics.Extensibility;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Models;
@@ -15,6 +14,8 @@ namespace SME.SR.Data
 {
     public class SondagemAnaliticaRepository : ISondagemAnaliticaRepository
     {
+        private const string OPCAO_TODAS = "-99";
+
         private readonly VariaveisAmbiente variaveisAmbiente;
         private readonly IAlunoRepository alunoRepository;
         private readonly IDreRepository dreRepository;
@@ -44,50 +45,88 @@ namespace SME.SR.Data
             var periodoFixo = await ObterPeriodoFixoSondagem(filtro.AnoLetivo, periodo.Id);
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
 
-            var modalidades = new List<int> { 5, 13 };
+            var dres = filtro.DreCodigo == OPCAO_TODAS ?
+                await dreRepository.ObterTodas() : new Dre[] { await dreRepository.ObterPorCodigo(filtro.DreCodigo) };
 
-            var consultaDados = await sondagemRelatorioRepository.ConsolidadoCapacidadeLeitura(new RelatorioPortuguesFiltroDto
-            {
-                AnoLetivo = filtro.AnoLetivo,
-                CodigoDre = filtro.DreCodigo,
-                CodigoUe = filtro.UeCodigo,
-                ComponenteCurricularId = SondagemComponenteCurricular.LINGUA_PORTUGUESA,
-                GrupoId = GrupoSondagem.CAPACIDADE_DE_LEITURA,
-                PeriodoId = periodo.Id
-            });
-            var agrupadoPorDre = consultaDados.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct().ToList();
+            var modalidades = new List<int> { (int)Modalidade.Fundamental, 13 };
+
+            var consultaDados = await sondagemRelatorioRepository
+                .ConsolidadoCapacidadeLeitura(new RelatorioPortuguesFiltroDto
+                {
+                    AnoLetivo = filtro.AnoLetivo,
+                    CodigoDre = filtro.DreCodigo,
+                    CodigoUe = filtro.UeCodigo,
+                    ComponenteCurricularId = SondagemComponenteCurricular.LINGUA_PORTUGUESA,
+                    GrupoId = GrupoSondagem.CAPACIDADE_DE_LEITURA,
+                    PeriodoId = periodo.Id
+                });
+
+            var agrupadoPorDre = (from dre in dres
+                                  from c in consultaDados
+                                  select dre.Codigo == c.CodigoDre ? c : new OrdemPerguntaRespostaDto() { CodigoDre = dre.Codigo })
+                                 .GroupBy(x => x.CodigoDre).Distinct();
+
             if (agrupadoPorDre.Any())
             {
-                var listaDres = await dreRepository.ObterPorCodigos(agrupadoPorDre.Select(x => x.Key).ToArray());
+                var listaDres = await dreRepository
+                    .ObterPorCodigos(agrupadoPorDre.Select(x => x.Key).ToArray());
+
                 foreach (var itemDre in agrupadoPorDre)
                 {
                     var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
-                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct().ToList();
-                    var listaUes = await ueRepository.ObterPorCodigos(agrupadoPorUe.Select(x => x.Key).ToArray());
+
+                    var uesDre = filtro.UeCodigo == OPCAO_TODAS ? await ueRepository
+                        .ObterPorDresId(new long[] { dres.First(d => d.Codigo == itemDre.Key).Id }) :
+                        new UePorDresIdResultDto[] { new UePorDresIdResultDto() { Codigo = filtro.UeCodigo } };
+
+                    var agrupadoPorUe = (from ue in uesDre
+                                         from i in itemDre
+                                         select ue.Codigo == i.CodigoUe ? i : new OrdemPerguntaRespostaDto() { CodigoUe = ue.Codigo, AnoTurma = i.AnoTurma }                                         )                                        
+                                         .GroupBy(x => x.CodigoUe).Distinct();                    
+
                     foreach (var itemUe in agrupadoPorUe)
                     {
-                        var relatorioAgrupadoPorAno = itemUe.Where(x => x.AnoTurma != null).GroupBy(p => p.AnoTurma).ToList();
-                        var totalDeAlunosPorAno = (await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio.Date, periodoFixo.DataFim.Date, itemUe.Key, itemDre.Key)).ToList();
+                        var turmasUe = (await turmaRepository
+                            .ObterTurmasPorUeEAnoLetivo(itemUe.Key, filtro.AnoLetivo))
+                            .Where(t => t.Ano.All(x => char.IsDigit(x)) && int.Parse(t.Ano) > 0 && t.ModalidadeCodigo == Modalidade.Fundamental);
 
-                        var totalTurmas = await ObterQuantidadeTurmaPorAno(itemUe.Key, filtro.AnoLetivo);
+                        var relatorioAgrupadoPorAno = (from t in turmasUe
+                                                       from i in itemUe
+                                                       where (i.AnoTurma != null && i.AnoTurma != "0" && i.AnoTurma.All(x => char.IsDigit(x)) && int.Parse(i.AnoTurma) > 0) || (t.Ano == i.AnoTurma)
+                                                       select t.Codigo == i.CodigoTurma ? i : new OrdemPerguntaRespostaDto() { AnoTurma = t.Ano, Ordem = i.Ordem })
+                                                       .GroupBy(p => p.AnoTurma)
+                                                       .OrderBy(p => p.Key);
+
+                        var totalDeAlunosPorAno = relatorioAgrupadoPorAno.Any() ? await alunoRepository
+                            .ObterTotalAlunosAtivosPorPeriodoEAnoTurma(filtro.AnoLetivo, modalidades.ToArray(), periodoFixo.DataInicio.Date, periodoFixo.DataFim.Date, itemUe.Key, itemDre.Key) : Enumerable.Empty<TotalAlunosAnoTurmaDto>();
+
+                        var totalTurmas = turmasUe.GroupBy(x => x.Ano)
+                            .Select(x => new TotalDeTurmasPorAnoDto() { Ano = x.Key, Quantidade = x.Count() });
 
                         foreach (var anoTurmaItem in relatorioAgrupadoPorAno)
                         {
-                            int quantidadeTurmas = totalTurmas?.FirstOrDefault(t => t.Ano == anoTurmaItem.Key).Quantidade ?? 0;
+                            int quantidadeTurmas = totalTurmas?
+                                .FirstOrDefault(t => t.Ano == anoTurmaItem.Key)?.Quantidade ?? 0;
 
                             var listaDtoOrdemNarrar = new List<RespostaCapacidadeDeLeituraDto>();
                             var listaDtoOrdemRelatar = new List<RespostaCapacidadeDeLeituraDto>();
                             var listaDtoOrdemArgumentar = new List<RespostaCapacidadeDeLeituraDto>();
                             var respostaSondagemAnaliticoCapacidadeDeLeituraDtoLista = new List<RespostaSondagemAnaliticoCapacidadeDeLeituraDto>();
 
-                            var agrupamentoPorOrderm = anoTurmaItem.GroupBy(x => x.Ordem);
+                            var agrupamentoPorOrdem = anoTurmaItem
+                                .GroupBy(x => x.Ordem);
 
+                            var ordemNarrarLista = agrupamentoPorOrdem
+                                .Where(x => x.Key == OrdemSondagem.ORDEM_DO_NARRAR).ToList();
 
-                            var ordemNarrarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_NARRAR).ToList();
-                            var ordemRelatarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_RELATAR).ToList();
-                            var ordemArgumentarLista = agrupamentoPorOrderm.Where(x => x.Key == OrdemSondagem.ORDEM_DO_ARGUMENTAR).ToList();
+                            var ordemRelatarLista = agrupamentoPorOrdem
+                                .Where(x => x.Key == OrdemSondagem.ORDEM_DO_RELATAR).ToList();
 
-                            var totalDeAlunos = totalDeAlunosPorAno.Where(x => x.AnoTurma == anoTurmaItem.Key).Select(x => x.QuantidadeAluno).Sum();
+                            var ordemArgumentarLista = agrupamentoPorOrdem
+                                .Where(x => x.Key == OrdemSondagem.ORDEM_DO_ARGUMENTAR).ToList();
+
+                            var totalDeAlunos = totalDeAlunosPorAno
+                                .Where(x => x.AnoTurma == anoTurmaItem.Key).Select(x => x.QuantidadeAluno).Sum();
 
                             if (ordemNarrarLista.Count() == 0)
                             {
@@ -97,6 +136,7 @@ namespace SME.SR.Data
                                 ordemNarrar.Inferencia.SemPreenchimento = totalDeAlunos;
                                 listaDtoOrdemNarrar.Add(ordemNarrar);
                             }
+
                             foreach (var ordemNarrarItem in ordemNarrarLista)
                             {
                                 var ordemNarrar = new RespostaCapacidadeDeLeituraDto
@@ -150,19 +190,18 @@ namespace SME.SR.Data
 
                             foreach (var listaDtoOrdemNarraritem in listaDtoOrdemNarrar)
                             {
-                                var resp = new RespostaSondagemAnaliticoCapacidadeDeLeituraDto();
-                                resp.OrdemDoNarrar = listaDtoOrdemNarraritem;
+                                var resp = new RespostaSondagemAnaliticoCapacidadeDeLeituraDto { OrdemDoNarrar = listaDtoOrdemNarraritem };
 
                                 foreach (var listaDtoOrdemRelatarItem in listaDtoOrdemRelatar)
                                 {
                                     resp.OrdemDoRelatar = listaDtoOrdemRelatarItem;
                                     foreach (var listaDtoOrdemArgumentaritem in listaDtoOrdemArgumentar)
-                                    {
                                         resp.OrdemDoArgumentar = listaDtoOrdemArgumentaritem;
-                                    }
                                 }
 
-                                var Ue = listaUes.FirstOrDefault(x => x.Codigo == itemUe.Key);
+                                var Ue = uesDre
+                                    .FirstOrDefault(x => x.Codigo == itemUe.Key);
+
                                 resp.Ue = Ue.TituloTipoEscolaNome;
                                 resp.Ano = int.Parse(anoTurmaItem.Key);
                                 resp.TotalDeTurma = quantidadeTurmas;
@@ -171,13 +210,13 @@ namespace SME.SR.Data
                             }
 
                             foreach (var respost in respostaSondagemAnaliticoCapacidadeDeLeituraDtoLista)
-                            {
                                 perguntas.Respostas.Add(respost);
-                            }
                         }
                     }
 
-                    var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
+                    var dre = listaDres
+                        .FirstOrDefault(x => x.Codigo == itemDre.Key);
+
                     perguntas.Dre = dre.Nome;
                     perguntas.DreSigla = dre.Abreviacao;
                     perguntas.AnoLetivo = filtro.AnoLetivo;
@@ -814,7 +853,7 @@ namespace SME.SR.Data
 
                 var listaUes = await ueRepository.ObterPorCodigos(consultarDados.Where(x => x.CodigoDre == dre.Codigo && x.CodigoUe != null).Select(x => x.CodigoUe).Distinct().ToArray());
 
-                var turmasDaDre = await turmaRepository.ObterTurmasPorUeAnosModalidadesAnoLetivoESemestre(listaUes.Select(x => x.Codigo).ToArray(), perguntasPorAno?.Select(p=> p.Key.AnoTurma)?.Distinct().ToArray(), modalidades.ToArray(), filtro.AnoLetivo, null);
+                var turmasDaDre = await turmaRepository.ObterTurmasPorUeAnosModalidadesAnoLetivoESemestre(listaUes.Select(x => x.Codigo).ToArray(), perguntasPorAno?.Select(p => p.Key.AnoTurma)?.Distinct().ToArray(), modalidades.ToArray(), filtro.AnoLetivo, null);
 
                 foreach (var ue in listaUes.OrderBy(ue => ue.TituloTipoEscolaNome))
                 {
