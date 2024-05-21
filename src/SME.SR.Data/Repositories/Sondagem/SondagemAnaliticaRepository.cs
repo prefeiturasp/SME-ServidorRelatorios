@@ -77,12 +77,12 @@ namespace SME.SR.Data
 
                     var uesDre = filtro.UeCodigo == OPCAO_TODAS ? await ueRepository
                         .ObterPorDresId(new long[] { dres.First(d => d.Codigo == itemDre.Key).Id }) :
-                        new UePorDresIdResultDto[] { new UePorDresIdResultDto() { Codigo = filtro.UeCodigo } };
+                        await ObterUe(filtro);
 
                     var agrupadoPorUe = (from ue in uesDre
                                          from i in itemDre
-                                         select ue.Codigo == i.CodigoUe ? i : new OrdemPerguntaRespostaDto() { CodigoUe = ue.Codigo, AnoTurma = i.AnoTurma }                                         )                                        
-                                         .GroupBy(x => x.CodigoUe).Distinct();                    
+                                         select ue.Codigo == i.CodigoUe ? i : new OrdemPerguntaRespostaDto() { CodigoUe = ue.Codigo, AnoTurma = i.AnoTurma })
+                                         .GroupBy(x => x.CodigoUe).Distinct();
 
                     foreach (var itemUe in agrupadoPorUe)
                     {
@@ -226,7 +226,7 @@ namespace SME.SR.Data
             }
 
             return retorno;
-        }
+        }       
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorioSondagemAnaliticoEscrita(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
@@ -1365,6 +1365,15 @@ namespace SME.SR.Data
                 Descricao = descricaoPergunta,
                 Resultado = respostaSondagemAnaliticoResultadoDto,
                 Ideia = respostaSondagemAnaliticoIdeiaDto
+            };
+        }
+
+        private async Task<UePorDresIdResultDto[]> ObterUe(FiltroRelatorioAnaliticoSondagemDto filtro)
+        {
+            var ue = await ueRepository.ObterPorCodigo(filtro.UeCodigo);
+            return new UePorDresIdResultDto[]
+            {
+                new UePorDresIdResultDto () { Codigo = filtro.UeCodigo, TipoEscola = ue?.TipoEscola ?? TipoEscola.Nenhum, Nome = ue?.Nome }
             };
         }
     }
