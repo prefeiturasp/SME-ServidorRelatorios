@@ -19,6 +19,9 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
 
         private const int ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA = 2022;
+        private const int ANO_LETIVO_DOIS_MIL_VINTE_QUATRO = 2024;
+        private const int ANO_LETIVO_DOIS_MIL_VINTE_CINCO = 2025;
+        private const int TERCEIRO_BIMESTRE = 3;
 
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
@@ -34,6 +37,7 @@ namespace SME.SR.Application
         {
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
             RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha;
+            var consideraNovaOpcaoRespostaSemPreenchimento = ConsideraNovaOpcaoRespostaSemPreenchimento(request.AnoLetivo,request.Bimestre);
 
             if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
                 planilha = (int.Parse(request.Ano) >= 7) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
@@ -49,23 +53,27 @@ namespace SME.SR.Application
             if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo || request.Proficiencia == ProficienciaSondagemEnum.CampoMultiplicativo)
             {
                 if (int.Parse(request.Ano) <= 3)
-                    GerarGraficosCamposAditivoMultiplicativoProficiencia(relatorio, planilha.Linhas.Count);
+                    GerarGraficosCamposAditivoMultiplicativoProficiencia(relatorio, planilha.Linhas.Count, consideraNovaOpcaoRespostaSemPreenchimento);
                 else
-                    GerarGraficosCamposAditivoMultiplicativo(relatorio, planilha.Linhas.Count);
+                    GerarGraficosCamposAditivoMultiplicativo(relatorio, planilha.Linhas.Count, consideraNovaOpcaoRespostaSemPreenchimento);
             }
             else if (request.Proficiencia == ProficienciaSondagemEnum.Numeros)
             {
-                GerarGraficoParaNumeros(relatorio);
+                GerarGraficoParaNumeros(relatorio, consideraNovaOpcaoRespostaSemPreenchimento);
             }
             else
             {
-                GerarGraficoAutoral(relatorio);
+                GerarGraficoAutoral(relatorio, consideraNovaOpcaoRespostaSemPreenchimento);
             }
 
             return relatorio;
         }
+        private static bool ConsideraNovaOpcaoRespostaSemPreenchimento(int anoLetivo, int bimestre)
+        {
+            return anoLetivo == ANO_LETIVO_DOIS_MIL_VINTE_QUATRO && bimestre >= TERCEIRO_BIMESTRE || anoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_CINCO;
+        }
 
-        private void GerarGraficosCamposAditivoMultiplicativoProficiencia(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos)
+        private void GerarGraficosCamposAditivoMultiplicativoProficiencia(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos, bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
@@ -109,20 +117,23 @@ namespace SME.SR.Application
                         grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntRespostas, chave));
                     }
 
-                    var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
-                    var qtdSemPreenchimento = qtdAlunos - totalRespostas;
-
-                    if (qtdSemPreenchimento > 0)
+                    if (!consideraNovaOpcaoRespostaSemPreenchimento)
                     {
-                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                        var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
+                        var qtdSemPreenchimento = qtdAlunos - totalRespostas;
 
-                        legendas.Add(new GraficoBarrasLegendaDto()
+                        if (qtdSemPreenchimento > 0)
                         {
-                            Chave = chave,
-                            Valor = "Sem preenchimento"
-                        });
+                            chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                            legendas.Add(new GraficoBarrasLegendaDto()
+                            {
+                                Chave = chave,
+                                Valor = "Sem preenchimento"
+                            });
+
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                        } 
                     }
 
                     var valorMaximoEixo = grafico.EixosX.Count > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
@@ -135,7 +146,7 @@ namespace SME.SR.Application
             }
         }
 
-        private void GerarGraficosCamposAditivoMultiplicativo(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos)
+        private void GerarGraficosCamposAditivoMultiplicativo(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos, bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
@@ -168,18 +179,20 @@ namespace SME.SR.Application
 
                     var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
                     qtdSemPreenchimento = qtdAlunos - totalRespostas;
-
-                    if (qtdSemPreenchimento > 0)
-                    {
-                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
-
-                        legendas.Add(new GraficoBarrasLegendaDto()
+                    if (!consideraNovaOpcaoRespostaSemPreenchimento) 
+                    { 
+                        if (qtdSemPreenchimento > 0)
                         {
-                            Chave = chave,
-                            Valor = "Sem preenchimento"
-                        });
+                            chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                            legendas.Add(new GraficoBarrasLegendaDto()
+                            {
+                                Chave = chave,
+                                Valor = "Sem preenchimento"
+                            });
+
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                        }   
                     }
 
                     var valorMaximoEixo = grafico.EixosX.Count > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
@@ -192,7 +205,7 @@ namespace SME.SR.Application
             }
         }
 
-        private void GerarGraficoParaNumeros(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio)
+        private void GerarGraficoParaNumeros(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var pergunta in relatorio.Cabecalho.Perguntas)
             {
@@ -223,26 +236,29 @@ namespace SME.SR.Application
                 var respostasNulasOuVazias = relatorio.Planilha.Linhas.SelectMany(l => l.OrdensRespostas
                     .Where(or => or.PerguntaId == pergunta?.Id && string.IsNullOrEmpty(or.Resposta))).GroupBy(b => b.Resposta);
 
-                if (respostasNulasOuVazias.Any())
-                {
-                    var qntSemRespostas = 0;
-
-                    foreach (var item in respostasNulasOuVazias)
+                if(!consideraNovaOpcaoRespostaSemPreenchimento)
+                { 
+                    if (respostasNulasOuVazias.Any())
                     {
-                        qntSemRespostas += item.Count();
-                    }
+                        var qntSemRespostas = 0;
 
-                    if (qntSemRespostas > 0)
-                    {
-                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
-
-                        legendas.Add(new GraficoBarrasLegendaDto()
+                        foreach (var item in respostasNulasOuVazias)
                         {
-                            Chave = chave,
-                            Valor = "Sem preenchimento"
-                        });
+                            qntSemRespostas += item.Count();
+                        }
 
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, chave));
+                        if (qntSemRespostas > 0)
+                        {
+                            chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+
+                            legendas.Add(new GraficoBarrasLegendaDto()
+                            {
+                                Chave = chave,
+                                Valor = "Sem preenchimento"
+                            });
+
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qntSemRespostas, chave));
+                        }
                     }
                 }
 
@@ -255,7 +271,7 @@ namespace SME.SR.Application
             }
         }
 
-        private void GerarGraficoAutoral(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio)
+        private void GerarGraficoAutoral(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio,bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
 
@@ -294,11 +310,22 @@ namespace SME.SR.Application
                 {
                     var chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                    legendas.Add(new GraficoBarrasLegendaDto()
+                    if (consideraNovaOpcaoRespostaSemPreenchimento)
                     {
-                        Chave = chave,
-                        Valor = string.IsNullOrEmpty(resposta.Resposta) ? "Sem Preenchimento" : resposta.Resposta
-                    });
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = string.IsNullOrEmpty(resposta.Resposta) ? string.Empty : resposta.Resposta
+                        });
+                    }
+                    else
+                    {
+                        legendas.Add(new GraficoBarrasLegendaDto()
+                        {
+                            Chave = chave,
+                            Valor = string.IsNullOrEmpty(resposta.Resposta) ? "Sem Preenchimento" : resposta.Resposta
+                        });
+                    }
 
                     grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(resposta.Quantidade, chave));
                 }
