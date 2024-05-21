@@ -12,5 +12,7 @@ namespace SME.SR.Infra
         public TipoEscola TipoEscola { get; set; }
         public string NomeRelatorio =>
             $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
+        public string TituloTipoEscolaNome =>
+            $"{TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
     }
 }
