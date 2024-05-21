@@ -22,6 +22,7 @@ namespace SME.SR.Application
         private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         private const int ANO_LETIVO_DOIS_MIL_VINTE_QUATRO = 2024;
         private const int ANO_LETIVO_DOIS_MIL_VINTE_CINCO = 2025;
+        private const int ANO_LETIVO_DOIS_MIL_VINTE_DOIS = 2022;
         private const int TERCEIRO_BIMESTRE = 3;
 
         public ObterSondagemMatAditMultiConsolidadoQueryHandler(IMathPoolCARepository mathPoolCARepository, IMathPoolCMRepository mathPoolCMRepository,
@@ -46,7 +47,7 @@ namespace SME.SR.Application
 
             var qtdAlunos = 0;
 
-            if (request.AnoLetivo < 2022)
+            if (request.AnoLetivo < ANO_LETIVO_DOIS_MIL_VINTE_DOIS)
             {
                 if (request.Proficiencia == ProficienciaSondagemEnum.CampoAditivo)
                 {
