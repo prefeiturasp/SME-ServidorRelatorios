@@ -1,7 +1,8 @@
 ﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using SME.SR.Application.Interfaces;
-using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,19 +12,17 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioAnaliticoSondagemQueryHandler : IRequestHandler<ObterRelatorioAnaliticoSondagemQuery, IEnumerable<RelatorioSondagemAnaliticoPorDreDto>>
     {
-        private readonly ISondagemAnaliticaRepository sondagemAnaliticaRepository;
-        private readonly IFabricaDeServicoAnaliticoSondagem fabricaDeServicoAnaliticoSondagem;
 
-        public ObterRelatorioAnaliticoSondagemQueryHandler(ISondagemAnaliticaRepository sondagemAnaliticaRepository,
-                                                           IFabricaDeServicoAnaliticoSondagem fabricaDeServicoAnaliticoSondagem)
+        private readonly IServiceScopeFactory servicos;
+
+        public ObterRelatorioAnaliticoSondagemQueryHandler(IServiceScopeFactory servicos)
         {
-            this.sondagemAnaliticaRepository = sondagemAnaliticaRepository ?? throw new System.ArgumentNullException(nameof(sondagemAnaliticaRepository));
-            this.fabricaDeServicoAnaliticoSondagem = fabricaDeServicoAnaliticoSondagem ?? throw new System.ArgumentNullException(nameof(fabricaDeServicoAnaliticoSondagem));
+            this.servicos = servicos ?? throw new System.ArgumentNullException(nameof(servicos));
         }
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> Handle(ObterRelatorioAnaliticoSondagemQuery request, CancellationToken cancellationToken)
         {
-            var servico = fabricaDeServicoAnaliticoSondagem.CriarServico(request.Filtro);
+            var servico = ObterServico(request.Filtro.TipoSondagem);
 
             if (servico != null)
                 return await servico.ObterRelatorio(request.Filtro);
@@ -31,20 +30,36 @@ namespace SME.SR.Application
             return Enumerable.Empty<RelatorioSondagemAnaliticoPorDreDto>();
         }
 
-        //TODO: Comentário para ser retido a cada feature
-        //private Dictionary<TipoSondagem, Func<FiltroRelatorioAnaliticoSondagemDto, Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>>>> ObterDicionarioAcaoObterRelatorio()
-        //{
-        //    return new Dictionary<TipoSondagem, Func<FiltroRelatorioAnaliticoSondagemDto, Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>>>>()
-        //    {
-        //        { TipoSondagem.LP_Leitura, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoLeitura },
-        //        { TipoSondagem.LP_LeituraVozAlta, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoLeituraDeVozAlta },
-        //        { TipoSondagem.LP_Escrita, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoEscrita },
-        //        { TipoSondagem.LP_ProducaoTexto, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoProducaoDeTexto },
-        //        { TipoSondagem.MAT_CampoAditivo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoAditivo },
-        //        { TipoSondagem.MAT_CampoMultiplicativo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoMultiplicativo },
-        //        { TipoSondagem.MAT_Numeros, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoNumero },
-        //        { TipoSondagem.MAT_IAD, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoIAD }
-        //    };
-        //}
+        private IServicoRepositorioAnalitico ObterServico(TipoSondagem tipoSondagem)
+        {
+            var dicionarioServico = ObterDicionarioTipoServico();
+
+            if (dicionarioServico.ContainsKey(tipoSondagem))
+                return ObterInstancia(dicionarioServico[tipoSondagem]);
+
+            return null;
+        }
+
+        private IServicoRepositorioAnalitico ObterInstancia(Type tipo)
+        {
+            using var scope = servicos.CreateScope();
+            return (IServicoRepositorioAnalitico)scope.ServiceProvider.GetService(tipo);
+        }
+
+        private Dictionary<TipoSondagem, Type> ObterDicionarioTipoServico()
+        {
+            return new Dictionary<TipoSondagem, Type>()
+            {
+                { TipoSondagem.LP_CapacidadeLeitura, typeof(IServicoAnaliticoSondagemCapacidadeDeLeitura) },
+                { TipoSondagem.LP_Leitura, typeof(IServicoAnaliticoSondagemLeitura) },
+                // { TipoSondagem.LP_LeituraVozAlta, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoLeituraDeVozAlta },
+                // { TipoSondagem.LP_Escrita, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoEscrita },
+                // { TipoSondagem.LP_ProducaoTexto, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoProducaoDeTexto },
+                //{ TipoSondagem.MAT_CampoAditivo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoAditivo },
+                //{ TipoSondagem.MAT_CampoMultiplicativo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoMultiplicativo },
+                //{ TipoSondagem.MAT_Numeros, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoNumero },
+                //{ TipoSondagem.MAT_IAD, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoIAD }
+            };
+        }
     }
 }

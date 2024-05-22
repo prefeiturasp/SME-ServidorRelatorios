@@ -1248,19 +1248,19 @@ namespace SME.SR.Data
 		        }
 	    }
 
-        public async Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterTotalDeTurmasPorUeAnoLetivoEModalidade(string codigoUe, int modalidade, int anoLetivo)
+        public async Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterTotalDeTurmasPorUeAnoLetivoEModalidade(long dreId, int modalidade, int anoLetivo)
         {
-            var query = $@"select count(distinct t.nome) Quantidade, t.ano as Ano
+            var query = $@"select count(distinct t.nome) Quantidade, u.ue_id as CodigoUe, t.ano as Ano
                             from turma t
                             inner join ue u on u.id = t.ue_id 
-                            where u.ue_id = @codigoUe and t.ano_letivo = @anoLetivo and t.modalidade_codigo = @modalidade
+                            where u.dre_id = @dreId and t.ano_letivo = @anoLetivo and t.modalidade_codigo = @modalidade
                             and t.ano > '0'
-                            group by t.ano";
+                            group by u.ue_id, t.ano";
 
             var parametros = new
             {
                 modalidade,
-                codigoUe,
+                dreId,
                 anoLetivo
             };
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))

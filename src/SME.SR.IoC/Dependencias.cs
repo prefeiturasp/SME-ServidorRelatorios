@@ -8,7 +8,6 @@ using RabbitMQ.Client;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Application.Services;
-using SME.SR.Application.Services.CapacidadeDeLeitura;
 using SME.SR.Application.UseCases;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
@@ -285,9 +284,8 @@ namespace SME.SR.IoC
 
         private static void RegistrarServicoRelatorioAnaliticoSondagem(IServiceCollection services)
         {
-            services.TryAddScoped<IFabricaDeServicoAnaliticoSondagem, FabricaDeServicoAnaliticoSondagem>();
             services.TryAddScoped<IServicoAnaliticoSondagemCapacidadeDeLeitura, ServicoAnaliticoSondagemCapacidadeDeLeitura>();
-            services.TryAddScoped<IServicoAnaliticoSondagemCapacidadeDeLeituraTodosPreenchido, ServicoAnaliticoSondagemCapacidadeDeLeituraTodosPreenchido>();
+            services.TryAddScoped<IServicoAnaliticoSondagemLeitura, ServicoAnaliticoSondagemLeitura>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
