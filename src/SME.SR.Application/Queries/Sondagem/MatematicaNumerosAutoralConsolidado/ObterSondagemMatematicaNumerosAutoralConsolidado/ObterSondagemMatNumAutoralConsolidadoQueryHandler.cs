@@ -16,22 +16,20 @@ namespace SME.SR.Application
     {
         private readonly IMathPoolNumbersRepository mathPoolNumbersRepository;
         private readonly ISondagemAutoralRepository sondagemAutoralRepository;
-        private const int ANO_LETIVO_DOIS_MIL_VINTE_QUATRO = 2024;
-        private const int ANO_LETIVO_DOIS_MIL_VINTE_CINCO = 2025;
+        private readonly IMediator mediator;
         private const int ANO_LETIVO_DOIS_MIL_VINTE_DOIS = 2022;
-        private const int TERCEIRO_BIMESTRE = 3;
         private const int TERCEIRO_ANO = 3;
 
-        public ObterSondagemMatNumAutoralConsolidadoQueryHandler(IMathPoolNumbersRepository mathPoolNumbersRepository, ISondagemAutoralRepository sondagemAutoralRepository)
+        public ObterSondagemMatNumAutoralConsolidadoQueryHandler(IMathPoolNumbersRepository mathPoolNumbersRepository, ISondagemAutoralRepository sondagemAutoralRepository, IMediator mediator)
         {
             this.mathPoolNumbersRepository = mathPoolNumbersRepository ?? throw new ArgumentNullException(nameof(mathPoolNumbersRepository));
             this.sondagemAutoralRepository = sondagemAutoralRepository ?? throw new ArgumentNullException(nameof(sondagemAutoralRepository));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto> Handle(ObterSondagemMatNumAutoralConsolidadoQuery request, CancellationToken cancellationToken)
         {
-            var consideraNovaOpcaoRespostaSemPreenchimento =
-                ConsideraNovaOpcaoRespostaSemPreenchimento(request.AnoLetivo, request.Bimestre);
+            var consideraNovaOpcaoRespostaSemPreenchimento = await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(request.Semestre,request.Bimestre,request.AnoLetivo), cancellationToken);
             var relatorio = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
             var perguntas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto>();
 
@@ -244,10 +242,6 @@ namespace SME.SR.Application
             respostaSemPreenchimento.AlunosQuantidade = quantidade >= 0 ? quantidade : 0;
             respostaSemPreenchimento.AlunosPercentual = (respostaSemPreenchimento.AlunosQuantidade > 0 ? (respostaSemPreenchimento.AlunosQuantidade * 100) / (double)totalDeAlunos : 0);
             return respostaSemPreenchimento;
-        }
-        private static bool ConsideraNovaOpcaoRespostaSemPreenchimento(int anoLetivo, int bimestre)
-        {
-            return anoLetivo == ANO_LETIVO_DOIS_MIL_VINTE_QUATRO && bimestre >= TERCEIRO_BIMESTRE || anoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_CINCO;
         }
     }
 
