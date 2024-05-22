@@ -39,14 +39,8 @@ namespace SME.SR.Application.Services
                     var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
                     var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct().ToList();
-                    var listaUes = await ObterUe(agrupadoPorUe.Select(x => x.Key).ToArray());
-                    var totalTurmas = await ObterQuantidadeTurmaPorAno(dre.Id, filtro.AnoLetivo);
 
-                    perguntas.Respostas.AddRange(await ObterRespostas(
-                                        agrupadoPorUe,
-                                        listaUes,
-                                        totalTurmas,
-                                        itemDre.Key));
+                    perguntas.Respostas.AddRange(await ObterRespostas(agrupadoPorUe,dre));
 
                     perguntas.Dre = dre.Nome;
                     perguntas.DreSigla = dre.Abreviacao;
@@ -65,50 +59,51 @@ namespace SME.SR.Application.Services
         }
 
         private RespostaSondagemAnaliticoCapacidadeDeLeituraDto ObterRespostaCapacidade(
-                                                            IEnumerable<IGrouping<string, OrdemPerguntaRespostaDto>> respostasAnoTurma,
-                                                            IEnumerable<Ue> ues,
-                                                            string codigoUe,
-                                                            int anoTurma,
+                                                            IGrouping<string, OrdemPerguntaRespostaDto> respostasAnoTurma,
+                                                            Ue ue,
                                                             IEnumerable<TotalDeTurmasPorAnoDto> totalDeTurmas,
-                                                            int totalDeAlunos = 0)
+                                                            int totalDeAlunos)
         {
             var resposta = new RespostaSondagemAnaliticoCapacidadeDeLeituraDto();
+            var respostaOrdem = respostasAnoTurma.GroupBy(x => x.Ordem);
 
-            resposta.OrdemDoNarrar = ObterResposta(OrdemSondagem.ORDEM_DO_NARRAR, respostasAnoTurma, totalDeAlunos);
-            resposta.OrdemDoArgumentar = ObterResposta(OrdemSondagem.ORDEM_DO_ARGUMENTAR, respostasAnoTurma, totalDeAlunos);
-            resposta.OrdemDoRelatar = ObterResposta(OrdemSondagem.ORDEM_DO_RELATAR, respostasAnoTurma, totalDeAlunos);
+            resposta.OrdemDoNarrar = ObterResposta(OrdemSondagem.ORDEM_DO_NARRAR, respostaOrdem, totalDeAlunos);
+            resposta.OrdemDoArgumentar = ObterResposta(OrdemSondagem.ORDEM_DO_ARGUMENTAR, respostaOrdem, totalDeAlunos);
+            resposta.OrdemDoRelatar = ObterResposta(OrdemSondagem.ORDEM_DO_RELATAR, respostaOrdem, totalDeAlunos);
 
-            var Ue = ues.FirstOrDefault(x => x.Codigo == codigoUe);
-            resposta.Ue = Ue.TituloTipoEscolaNome;
-            resposta.Ano = anoTurma;
-            resposta.TotalDeTurma = totalDeTurmas?.FirstOrDefault(t => t.Ano == anoTurma.ToString()).Quantidade ?? 0;
+            resposta.Ue = ue.TituloTipoEscolaNome;
+            resposta.Ano = int.Parse(respostasAnoTurma.Key);
+            resposta.TotalDeTurma = ObterTotalDeTurmas(totalDeTurmas, respostasAnoTurma.Key);
             resposta.TotalDeAlunos = totalDeAlunos > 0 ? totalDeAlunos : resposta.TotalDeReposta;
 
             return resposta;
         }
 
+
+
         private async Task<List<RespostaSondagemAnaliticoCapacidadeDeLeituraDto>> ObterRespostas(
                                                                             List<IGrouping<string, OrdemPerguntaRespostaDto>> relatorioAgrupadoPorUe,
-                                                                            IEnumerable<Ue> ues,
-                                                                            IEnumerable<TotalDeTurmasPorAnoDto> totalDeTurmas,
-                                                                            string codigoDre)
+                                                                            Dre dre)
         {
+            var ues = await ObterUe(relatorioAgrupadoPorUe.Select(x => x.Key).ToArray());
+            var totalDeTurmas = await ObterQuantidadeTurmaPorAnoDre(dre.Id);
             var respostas = new List<RespostaSondagemAnaliticoCapacidadeDeLeituraDto>();
-            var totalDeAlunosPorAno = await ObterTotalDeAlunosAnoTurma(codigoDre);
+            var totalDeAlunosPorAno = await ObterTotalDeAlunosPorDre(dre.Codigo);
 
             foreach (var itemUe in relatorioAgrupadoPorUe)
             {
-                var totalDeAlunosUe = ObterTotalDeAlunosPorUe(totalDeAlunosPorAno, itemUe.Key);
-                var totalTurmasUe = totalDeTurmas.Where(x => x.CodigoUe == itemUe.Key);
-                var relatorioAgrupadoPorAno = itemUe.Where(x => x.AnoTurma != null).GroupBy(p => p.AnoTurma).ToList();
+                var totalDeAlunosUe = await ObterTotalDeAlunosPorUe(dre.Codigo, itemUe.Key, totalDeAlunosPorAno);
+                var totalTurmasUe = await ObterQuantidadeTurmaPorAnoUe(dre.Id, itemUe.Key, totalDeTurmas);
+                var relatorioAgrupadoPorAno = itemUe.Where(x => x.AnoTurma != null)
+                                                    .OrderBy(x => x.AnoTurma)
+                                                    .GroupBy(p => p.AnoTurma);
+                var ue = ues.FirstOrDefault(x => x.Codigo == itemUe.Key);
 
                 foreach (var anoTurmaItem in relatorioAgrupadoPorAno)
                 {
                     respostas.Add(ObterRespostaCapacidade(
-                                            anoTurmaItem.GroupBy(x => x.Ordem),
-                                            ues,
-                                            itemUe.Key,
-                                            int.Parse(anoTurmaItem.Key),
+                                            anoTurmaItem,
+                                            ue,
                                             totalTurmasUe,
                                             ObterTotalDeAluno(totalDeAlunosUe, anoTurmaItem.Key)));
                 }
@@ -173,7 +168,7 @@ namespace SME.SR.Application.Services
 
         private int ObterValorSemPreenchimento(List<OrdemPerguntaRespostaDto> perguntaResposta, int totalDeAlunos)
         {
-            if (ComPreenchimentoDeTodosEstudantesIAD())
+            if (EhTodosPreenchidos())
                 return ObterValorSemPreenchimento(perguntaResposta);
 
             return ObterValorSemPreenchimentoCalculado(perguntaResposta, totalDeAlunos);

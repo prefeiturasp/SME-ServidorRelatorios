@@ -1690,16 +1690,17 @@ namespace SME.SR.Data
             return await conn.QueryAsync<AlunoTurma>(AlunoConsultas.AlunosMatriculasPorTurmas, new { codigosTurmas });
         }
 
-        public async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalAlunosAtivosPorPeriodoEAnoTurma(int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string dreId)
+        public async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalAlunosAtivosPorPeriodoEAnoTurma(int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId)
         {
             var parametros = new
             {
                 anoLetivo,
                 dataInicio,
                 dataFim,
-                codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH)
+                codigoDre = dreId.ToDbChar(DapperConstants.CODIGODRE_LENGTH),
+                codigoUe = ueId.ToDbChar(DapperConstants.CODIGOUE_EOL_LENGTH),
             };
-            var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId, dataInicio);
+            var query = AlunoConsultas.TotalDeAlunosAtivosPorPeriodo(dreId, ueId, dataInicio);
 
             using (var con = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {

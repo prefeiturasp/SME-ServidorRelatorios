@@ -52,7 +52,7 @@ namespace SME.SR.Application
             {
                 { TipoSondagem.LP_CapacidadeLeitura, typeof(IServicoAnaliticoSondagemCapacidadeDeLeitura) },
                 { TipoSondagem.LP_Leitura, typeof(IServicoAnaliticoSondagemLeitura) },
-                // { TipoSondagem.LP_LeituraVozAlta, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoLeituraDeVozAlta },
+                { TipoSondagem.LP_LeituraVozAlta, typeof(IServicoAnaliticoSondagemLeituraVozAlta) },
                 // { TipoSondagem.LP_Escrita, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoEscrita },
                 // { TipoSondagem.LP_ProducaoTexto, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoProducaoDeTexto },
                 //{ TipoSondagem.MAT_CampoAditivo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoAditivo },
