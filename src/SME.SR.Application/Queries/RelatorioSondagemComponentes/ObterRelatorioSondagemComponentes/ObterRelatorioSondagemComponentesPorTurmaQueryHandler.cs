@@ -19,9 +19,6 @@ namespace SME.SR.Application
         private readonly IMediator mediator;
 
         private const int ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA = 2022;
-        private const int ANO_LETIVO_DOIS_MIL_VINTE_QUATRO = 2024;
-        private const int ANO_LETIVO_DOIS_MIL_VINTE_CINCO = 2025;
-        private const int TERCEIRO_BIMESTRE = 3;
 
         public ObterRelatorioSondagemComponentesPorTurmaQueryHandler(
             IRelatorioSondagemComponentePorTurmaRepository relatorioSondagemComponentePorTurmaRepository,
@@ -37,7 +34,7 @@ namespace SME.SR.Application
         {
             RelatorioSondagemComponentesPorTurmaCabecalhoDto cabecalho = await ObterCabecalho(request);
             RelatorioSondagemComponentesPorTurmaPlanilhaDto planilha;
-            var consideraNovaOpcaoRespostaSemPreenchimento = ConsideraNovaOpcaoRespostaSemPreenchimento(request.AnoLetivo,request.Bimestre);
+            var consideraNovaOpcaoRespostaSemPreenchimento =await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(request.Semestre,request.Bimestre,request.AnoLetivo), cancellationToken);
 
             if (request.AnoLetivo < ANO_LETIVO_NOVO_RELATORIO_SONDAGEM_MATEMATICA)
                 planilha = (int.Parse(request.Ano) >= 7) ? await ObterPlanilhaAutoral(request, cabecalho.Perguntas) : await ObterPlanilha(request);
@@ -68,11 +65,6 @@ namespace SME.SR.Application
 
             return relatorio;
         }
-        private static bool ConsideraNovaOpcaoRespostaSemPreenchimento(int anoLetivo, int bimestre)
-        {
-            return anoLetivo == ANO_LETIVO_DOIS_MIL_VINTE_QUATRO && bimestre >= TERCEIRO_BIMESTRE || anoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_CINCO;
-        }
-
         private void GerarGraficosCamposAditivoMultiplicativoProficiencia(RelatorioSondagemComponentesPorTurmaRelatorioDto relatorio, int qtdAlunos, bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var ordem in relatorio.Cabecalho.Ordens)

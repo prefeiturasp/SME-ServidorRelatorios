@@ -18,26 +18,24 @@ namespace SME.SR.Application
         private readonly IPerguntasAutoralRepository perguntasAutoralRepository;
         private readonly ISondagemAutoralRepository sondagemAutoralRepository;
         private readonly IPerguntasAditMultiNumRepository perguntasAditMultiNumRepository;
+        private readonly IMediator mediator;
 
         private readonly char[] lstChaves = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-        private const int ANO_LETIVO_DOIS_MIL_VINTE_QUATRO = 2024;
-        private const int ANO_LETIVO_DOIS_MIL_VINTE_CINCO = 2025;
         private const int ANO_LETIVO_DOIS_MIL_VINTE_DOIS = 2022;
-        private const int TERCEIRO_BIMESTRE = 3;
 
         public ObterSondagemMatAditMultiConsolidadoQueryHandler(IMathPoolCARepository mathPoolCARepository, IMathPoolCMRepository mathPoolCMRepository,
-            IPerguntasAditMultiNumRepository perguntasAditMultiNumRepository, ISondagemAutoralRepository sondagemAutoralRepository)
+            IPerguntasAditMultiNumRepository perguntasAditMultiNumRepository, ISondagemAutoralRepository sondagemAutoralRepository,IMediator mediator)
         {
             this.mathPoolCARepository = mathPoolCARepository ?? throw new ArgumentNullException(nameof(mathPoolCARepository)); ;
             this.mathPoolCMRepository = mathPoolCMRepository ?? throw new ArgumentNullException(nameof(mathPoolCMRepository)); ;
             this.perguntasAditMultiNumRepository = perguntasAditMultiNumRepository ?? throw new ArgumentNullException(nameof(perguntasAditMultiNumRepository));
             this.sondagemAutoralRepository = sondagemAutoralRepository ?? throw new ArgumentNullException(nameof(sondagemAutoralRepository));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto> Handle(ObterSondagemMatAditMultiConsolidadoQuery request, CancellationToken cancellationToken)
         {
-            var consideraNovaOpcaoRespostaSemPreenchimento =
-                ConsideraNovaOpcaoRespostaSemPreenchimento(request.AnoLetivo, request.Bimestre);
+            var consideraNovaOpcaoRespostaSemPreenchimento = await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(request.Semestre,request.Bimestre,request.AnoLetivo), cancellationToken);
             var relatorio = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoDto();
             var respostas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto>();
             var perguntas = new List<RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntaDto>();
@@ -588,10 +586,6 @@ namespace SME.SR.Application
             }
 
             return $"ORDEM {ordem} - {ordemTitulo}";
-        }
-        private static bool ConsideraNovaOpcaoRespostaSemPreenchimento(int anoLetivo, int bimestre)
-        {
-            return anoLetivo == ANO_LETIVO_DOIS_MIL_VINTE_QUATRO && bimestre >= TERCEIRO_BIMESTRE || anoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_CINCO;
         }
     }
 }
