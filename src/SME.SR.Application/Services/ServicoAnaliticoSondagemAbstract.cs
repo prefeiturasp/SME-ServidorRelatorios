@@ -26,6 +26,7 @@ namespace SME.SR.Application.Services
         private const int SEGUNDO_SEMESTRE = 2;
         private const int ANO_LETIVO_2024 = 2024;
         private const int ANO_LETIVO_2025 = 2025;
+        private const string TODOS = "-99";
 
         protected ServicoAnaliticoSondagemAbstract(IAlunoRepository alunoRepository, 
                                                    IDreRepository dreRepository, 
@@ -49,9 +50,20 @@ namespace SME.SR.Application.Services
             return sondagemAnaliticaRepository.ObterPeriodoFixoSondagem(termo, filtro.AnoLetivo);
         }
 
-        protected Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterQuantidadeTurmaPorAno(long dreId, int anoLetivo, int modalidade = (int)Modalidade.Fundamental)
+        protected async Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterQuantidadeTurmaPorAnoDre(long dreId)
         {
-            return turmaRepository.ObterTotalDeTurmasPorUeAnoLetivoEModalidade(dreId, modalidade, anoLetivo);
+            if (filtro.UeCodigo != TODOS)
+                return Enumerable.Empty<TotalDeTurmasPorAnoDto>();
+
+            return await ObterQuantidadeTurmaPorAnoUe(dreId, string.Empty, null);
+        }
+
+        protected async Task<IEnumerable<TotalDeTurmasPorAnoDto>> ObterQuantidadeTurmaPorAnoUe(long dreId, string codigoUe, IEnumerable<TotalDeTurmasPorAnoDto> totalDeTurmas)
+        {
+            if (!(totalDeTurmas is null) && totalDeTurmas.Any())
+                return totalDeTurmas.Where(x => x.CodigoUe == codigoUe);
+
+            return await turmaRepository.ObterTotalDeTurmasPorUeAnoLetivoEModalidade(dreId, codigoUe, (int)Modalidade.Fundamental, filtro.AnoLetivo);
         }
 
         protected string ObterTituloSemestreBimestrePortugues(bool ehIAD)
@@ -74,24 +86,31 @@ namespace SME.SR.Application.Services
             return await ueRepository.ObterPorCodigos(codigos);
         }
 
-        private string ObterDescricaoSemestreBimestre(bool ehSemestre)
+        protected Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorDre(string codigoDre)
         {
-            var descricao = ehSemestre ? "Semestre" : "Bimestre";
+            if (EhTodosPreenchidos() || filtro.UeCodigo != TODOS)
+                return Task.FromResult(Enumerable.Empty<TotalAlunosAnoTurmaDto>());
 
-            return @$"{filtro.Periodo}° {descricao}";
+            return ObterTotalDeAlunosPorUe(codigoDre, string.Empty, null);
         }
 
-        protected Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosAnoTurma(string codigoDre)
+        protected Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorUe(
+                                                                string codigoDre, 
+                                                                string codigoUe,
+                                                                IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunos)
         {
-            var modalidades = new List<int> { 5, 13 };
             if (EhTodosPreenchidos())
                 return Task.FromResult(Enumerable.Empty<TotalAlunosAnoTurmaDto>());
 
+            if (!(totalDeAlunos is null) && totalDeAlunos.Any())
+                return Task.FromResult(totalDeAlunos.Where(x => x.CodigoUe == codigoUe));
+
             return alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(
                                                     filtro.AnoLetivo,
-                                                    modalidades.ToArray(),
+                                                    new int[] { 5, 13 },
                                                     this.periodoFixoSondagem.DataInicio.Date,
                                                     this.periodoFixoSondagem.DataFim.Date,
+                                                    codigoUe,
                                                     codigoDre);
         }
 
@@ -107,20 +126,27 @@ namespace SME.SR.Application.Services
             return filtro.AnoLetivo == ANO_LETIVO_2024 && bimestres.Contains(filtro.Periodo) || filtro.AnoLetivo >= ANO_LETIVO_2025;
         }
 
-        protected IEnumerable<TotalAlunosAnoTurmaDto> ObterTotalDeAlunosPorUe(IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunos, string codigoUe)
+        private string ObterDescricaoSemestreBimestre(bool ehSemestre)
         {
-            if (!(totalDeAlunos is null) || totalDeAlunos.Any())
-                return totalDeAlunos.Where(x => x.CodigoUe == codigoUe);
+            var descricao = ehSemestre ? "Semestre" : "Bimestre";
 
-            return Enumerable.Empty<TotalAlunosAnoTurmaDto>();
+            return @$"{filtro.Periodo}° {descricao}";
         }
 
         protected int ObterTotalDeAluno(IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunos, string anoTurma)
         {
-            if (!(totalDeAlunos is null) || totalDeAlunos.Any())
+            if (!(totalDeAlunos is null) && totalDeAlunos.Any())
                 return totalDeAlunos.Where(x => x.AnoTurma == anoTurma).Select(x => x.QuantidadeAluno).Sum();
 
             return 0;
+        }
+
+        protected int ObterTotalDeTurmas(IEnumerable<TotalDeTurmasPorAnoDto> totalDeTurmas, string anoTurma)
+        {
+            if (totalDeTurmas is null || !totalDeTurmas.Any())
+                return 0;
+
+            return totalDeTurmas?.FirstOrDefault(t => t.Ano == anoTurma).Quantidade ?? 0;
         }
     }
 }

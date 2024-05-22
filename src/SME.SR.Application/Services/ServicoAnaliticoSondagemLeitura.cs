@@ -35,12 +35,13 @@ namespace SME.SR.Application.Services
                     var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct();
                     var listaUes = await ObterUe(agrupadoPorUe.Select(x => x.Key).ToArray());
                     var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
-                    var totalTurmas = await ObterQuantidadeTurmaPorAno(dre.Id, filtro.AnoLetivo);
+                    var totalTurmas = await ObterQuantidadeTurmaPorAnoDre(dre.Id);
 
                     foreach (var itemUe in agrupadoPorUe)
                     {
-                        var totalTurmasUe = totalTurmas.Where(x => x.CodigoUe == itemUe.Key);
-                        var agrupamentoPorAnoTurma = itemUe.GroupBy(x => x.AnoTurma);
+                        var totalTurmasUe = await ObterQuantidadeTurmaPorAnoUe(dre.Id, itemUe.Key, totalTurmas);
+                        var agrupamentoPorAnoTurma = itemUe.OrderBy(x =>x.AnoTurma)
+                                                           .GroupBy(x => x.AnoTurma);
 
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
@@ -99,7 +100,7 @@ namespace SME.SR.Application.Services
 
         private Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagem()
         {
-            return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestrePortugues(true));
+            return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestrePortugues(false));
         }
     }
 }

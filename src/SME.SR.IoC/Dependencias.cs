@@ -286,6 +286,7 @@ namespace SME.SR.IoC
         {
             services.TryAddScoped<IServicoAnaliticoSondagemCapacidadeDeLeitura, ServicoAnaliticoSondagemCapacidadeDeLeitura>();
             services.TryAddScoped<IServicoAnaliticoSondagemLeitura, ServicoAnaliticoSondagemLeitura>();
+            services.TryAddScoped<IServicoAnaliticoSondagemLeituraVozAlta, ServicoAnaliticoSondagemLeituraVozAlta>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
