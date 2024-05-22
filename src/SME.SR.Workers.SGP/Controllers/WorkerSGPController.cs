@@ -14,7 +14,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -459,6 +459,36 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioBuscasAtivas([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBuscasAtivasUseCase useCase)
         {
             await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/produtividade-frequencia")]
+        [Action("relatorios/produtividade-frequencia", typeof(IRelatorioProdutividadeFrequenciaUseCase))]
+        public async Task<bool> RelatorioProdutividadeFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioProdutividadeFrequenciaUseCase useCase)
+        {
+            var filtroRelatorioDto = new FiltroRelatorioDto()
+            {
+                Action = "relatorios/produtividade-frequencia",
+                UsuarioLogadoRF = "6769195",
+                CodigoCorrelacao = new Guid("AF3A5649-E805-4CB3-B73E-5191C445DE19")
+            };
+
+            var relatorio = new FiltroRelatorioProdutividadeFrequenciaDto()
+            {
+                AnoLetivo = 2024,
+                CodigoUe = "094714",
+                UsuarioNome = "Jailson Volnei dos Santos",
+                UsuarioRf = "07916846950",
+                Bimestre = 1,
+                TipoRelatorioProdutividade = TipoRelatorioProdutividadeFrequencia.MédiaPorUE,
+                RfProfessor = "8288151",
+            };
+
+            var mensagem = JsonConvert.SerializeObject(relatorio, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            filtroRelatorioDto.Mensagem = mensagem;
+
+            await useCase.Executar(filtroRelatorioDto);
+            //await useCase.Executar(request);
             return true;
         }
     }

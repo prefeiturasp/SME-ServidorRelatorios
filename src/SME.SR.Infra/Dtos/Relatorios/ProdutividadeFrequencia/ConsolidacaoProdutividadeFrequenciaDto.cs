@@ -31,6 +31,51 @@ namespace SME.SR.Infra
         public int AnoLetivo { get; set; }
         public string CodigoComponenteCurricular { get; set; }
         public string NomeComponenteCurricular { get; set; }
+        public int MediaDiasDataAulaRegistroFrequencia { get; set; }
+    }
+
+    public static class ConsolidacaoProdutividadeFrequenciaExtension
+    {
+        public static IEnumerable<ConsolidacaoProdutividadeFrequenciaDto> AgruparPorUe(this IEnumerable<ConsolidacaoProdutividadeFrequenciaDto> source)
+        {
+            var retorno = source.GroupBy(consol => new { consol.CodigoUe, consol.DescricaoUe, consol.CodigoDre, consol.DescricaoDre, consol.Bimestre, consol.AnoLetivo });
+            return retorno.Select(consolAgrupado => 
+                new ConsolidacaoProdutividadeFrequenciaDto 
+                {
+                    CodigoUe = consolAgrupado.Key.CodigoUe,
+                    DescricaoUe = consolAgrupado.Key.DescricaoUe,
+                    CodigoDre = consolAgrupado.Key.CodigoDre,
+                    DescricaoDre = consolAgrupado.Key.DescricaoDre, 
+                    Bimestre = consolAgrupado.Key.Bimestre,
+                    AnoLetivo = consolAgrupado.Key.AnoLetivo,
+                    MediaDiasDataAulaRegistroFrequencia = consolAgrupado.Sum(c => c.DiferenciaDiasDataAulaRegistroFrequencia)/consolAgrupado.Count()
+                })
+                .OrderBy(consol => consol.CodigoDre)
+                .ThenBy(consol => consol.DescricaoUe)
+                .ThenBy(consol => consol.Bimestre);
+        }
+
+        public static IEnumerable<ConsolidacaoProdutividadeFrequenciaDto> AgruparPorProfessor(this IEnumerable<ConsolidacaoProdutividadeFrequenciaDto> source)
+        {
+            var retorno = source.GroupBy(consol => new { consol.CodigoUe, consol.DescricaoUe, consol.CodigoDre, consol.DescricaoDre, consol.Bimestre, consol.AnoLetivo, consol.RfProfessor, consol.NomeProfessor });
+            return retorno.Select(consolAgrupado =>
+                new ConsolidacaoProdutividadeFrequenciaDto
+                {
+                    CodigoUe = consolAgrupado.Key.CodigoUe,
+                    DescricaoUe = consolAgrupado.Key.DescricaoUe,
+                    CodigoDre = consolAgrupado.Key.CodigoDre,
+                    DescricaoDre = consolAgrupado.Key.DescricaoDre,
+                    Bimestre = consolAgrupado.Key.Bimestre,
+                    RfProfessor = consolAgrupado.Key.RfProfessor,
+                    NomeProfessor = consolAgrupado.Key.NomeProfessor,
+                    AnoLetivo = consolAgrupado.Key.AnoLetivo,
+                    MediaDiasDataAulaRegistroFrequencia = consolAgrupado.Sum(c => c.DiferenciaDiasDataAulaRegistroFrequencia) / consolAgrupado.Count()
+                })
+                .OrderBy(consol => consol.CodigoDre)
+                .ThenBy(consol => consol.DescricaoUe)
+                .ThenBy(consol => consol.NomeProfessor)
+                .ThenBy(consol => consol.Bimestre);
+        }
     }
 
 }
