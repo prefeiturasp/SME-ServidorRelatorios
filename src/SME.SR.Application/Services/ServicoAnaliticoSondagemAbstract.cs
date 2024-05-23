@@ -117,23 +117,16 @@ namespace SME.SR.Application.Services
                                                     codigoDre);
         }
 
-        protected bool ComPreenchimentoDeTodosEstudantesIAD()
+        protected bool EhPreenchimentoDeTodosEstudantesIAD()
         {
             return filtro.AnoLetivo == ANO_LETIVO_2024 && filtro.Periodo == SEGUNDO_SEMESTRE || filtro.AnoLetivo >= ANO_LETIVO_2025;
         }
 
-        protected bool ComPreenchimentoDeTodosEstudantes()
+        protected bool EhPreenchimentoDeTodosEstudantes()
         {
             var bimestres = new int[] { TERCEIRO_BIMESTRE, QUARTO_BIMESTRE };
 
             return filtro.AnoLetivo == ANO_LETIVO_2024 && bimestres.Contains(filtro.Periodo) || filtro.AnoLetivo >= ANO_LETIVO_2025;
-        }
-
-        private string ObterDescricaoSemestreBimestre(bool ehSemestre)
-        {
-            var descricao = ehSemestre ? "Semestre" : "Bimestre";
-
-            return @$"{filtro.Periodo}° {descricao}";
         }
 
         protected int ObterTotalDeAluno(IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunos, string anoTurma)
@@ -150,6 +143,18 @@ namespace SME.SR.Application.Services
                 return 0;
 
             return totalDeTurmas?.FirstOrDefault(t => t.Ano == anoTurma).Quantidade ?? 0;
+        }
+
+        protected Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagemPortugues(bool ehIAD)
+        {
+            return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestrePortugues(true));
+        }
+
+        private string ObterDescricaoSemestreBimestre(bool ehSemestre)
+        {
+            var descricao = ehSemestre ? "Semestre" : "Bimestre";
+
+            return @$"{filtro.Periodo}° {descricao}";
         }
     }
 }
