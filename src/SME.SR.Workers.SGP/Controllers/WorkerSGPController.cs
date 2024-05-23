@@ -461,5 +461,13 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/produtividade-frequencia")]
+        [Action("relatorios/produtividade-frequencia", typeof(IRelatorioProdutividadeFrequenciaUseCase))]
+        public async Task<bool> RelatorioProdutividadeFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioProdutividadeFrequenciaUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
     }
 }
