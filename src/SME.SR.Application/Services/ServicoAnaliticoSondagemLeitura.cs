@@ -23,7 +23,7 @@ namespace SME.SR.Application.Services
             periodoFixoSondagem = await ObterPeriodoFixoSondagem();
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var respostasLeitura = await sondagemAnaliticaRepository.ObterRepostasRelatorioAnaliticoDeLeitura(filtro, EhTodosPreenchidos());
+            var respostasLeitura = await sondagemAnaliticaRepository.ObterRespostasRelatorioAnaliticoDeLeitura(filtro, EhTodosPreenchidos());
             var agrupadoPorDre = respostasLeitura.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct();
 
             if (agrupadoPorDre.Any())

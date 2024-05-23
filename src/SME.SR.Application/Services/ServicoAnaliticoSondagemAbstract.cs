@@ -21,11 +21,14 @@ namespace SME.SR.Application.Services
         protected PeriodoFixoSondagem periodoFixoSondagem;
 
         protected const int ANO_ESCOLAR_2022 = 2022;
+        protected const int ANO_ESCOLAR_2023 = 2023;
+        protected const int PRIMEIRO_BIMESTRE = 1;
         private const int TERCEIRO_BIMESTRE = 3;
         private const int QUARTO_BIMESTRE = 4;
         private const int SEGUNDO_SEMESTRE = 2;
         private const int ANO_LETIVO_2024 = 2024;
         private const int ANO_LETIVO_2025 = 2025;
+        protected const string TURMA_TERCEIRO_ANO = "3";
         private const string TODOS = "-99";
 
         protected ServicoAnaliticoSondagemAbstract(IAlunoRepository alunoRepository, 
@@ -86,26 +89,26 @@ namespace SME.SR.Application.Services
             return await ueRepository.ObterPorCodigos(codigos);
         }
 
-        protected Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorDre(string codigoDre)
+        protected async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorDre(string codigoDre)
         {
             if (EhTodosPreenchidos() || filtro.UeCodigo != TODOS)
-                return Task.FromResult(Enumerable.Empty<TotalAlunosAnoTurmaDto>());
+                return Enumerable.Empty<TotalAlunosAnoTurmaDto>();
 
-            return ObterTotalDeAlunosPorUe(codigoDre, string.Empty, null);
+            return await ObterTotalDeAlunosPorUe(codigoDre, string.Empty, null);
         }
 
-        protected Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorUe(
+        protected async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorUe(
                                                                 string codigoDre, 
                                                                 string codigoUe,
                                                                 IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunos)
         {
             if (EhTodosPreenchidos())
-                return Task.FromResult(Enumerable.Empty<TotalAlunosAnoTurmaDto>());
+                return Enumerable.Empty<TotalAlunosAnoTurmaDto>();
 
             if (!(totalDeAlunos is null) && totalDeAlunos.Any())
-                return Task.FromResult(totalDeAlunos.Where(x => x.CodigoUe == codigoUe));
+                return totalDeAlunos.Where(x => x.CodigoUe == codigoUe);
 
-            return alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(
+            return await alunoRepository.ObterTotalAlunosAtivosPorPeriodoEAnoTurma(
                                                     filtro.AnoLetivo,
                                                     new int[] { 5, 13 },
                                                     this.periodoFixoSondagem.DataInicio.Date,
