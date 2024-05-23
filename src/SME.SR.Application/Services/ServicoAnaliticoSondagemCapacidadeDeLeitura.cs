@@ -25,7 +25,7 @@ namespace SME.SR.Application.Services
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorio(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
             this.filtro = filtro;
-            periodoFixoSondagem = await ObterPeriodoFixoSondagem();
+            periodoFixoSondagem = await ObterPeriodoFixoSondagemPortugues(true);
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
             var consultaDados = await ConsolidadoCapacidadeLeitura(periodoFixoSondagem.PeriodoId);
@@ -55,7 +55,7 @@ namespace SME.SR.Application.Services
 
         protected override bool EhTodosPreenchidos()
         {
-            return ComPreenchimentoDeTodosEstudantesIAD();
+            return EhPreenchimentoDeTodosEstudantesIAD();
         }
 
         private RespostaSondagemAnaliticoCapacidadeDeLeituraDto ObterRespostaCapacidade(
@@ -159,11 +159,6 @@ namespace SME.SR.Application.Services
             }
 
             return resposta;
-        }
-
-        private Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagem()
-        {
-            return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestrePortugues(true));
         }
 
         private int ObterValorSemPreenchimento(List<OrdemPerguntaRespostaDto> perguntaResposta, int totalDeAlunos)

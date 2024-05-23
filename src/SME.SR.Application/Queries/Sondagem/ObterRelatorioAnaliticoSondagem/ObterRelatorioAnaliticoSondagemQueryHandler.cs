@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SME.SR.Application.Interfaces;
+using SME.SR.Application.Services;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace SME.SR.Application
                 { TipoSondagem.LP_Leitura, typeof(IServicoAnaliticoSondagemLeitura) },
                 { TipoSondagem.LP_LeituraVozAlta, typeof(IServicoAnaliticoSondagemLeituraVozAlta) },
                 { TipoSondagem.LP_Escrita, typeof(IServicoAnaliticoSondagemEscrita) },
-                // { TipoSondagem.LP_ProducaoTexto, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoProducaoDeTexto },
+                { TipoSondagem.LP_ProducaoTexto, typeof(IServicoAnaliticoSondagemProducaoDeTexto) },
                 //{ TipoSondagem.MAT_CampoAditivo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoAditivo },
                 //{ TipoSondagem.MAT_CampoMultiplicativo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoMultiplicativo },
                 //{ TipoSondagem.MAT_Numeros, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoNumero },
