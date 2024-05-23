@@ -47,7 +47,7 @@ namespace SME.SR.Application
             var semestre = ObterSemestrePeriodo(request);
             var periodoCompleto = await ObterDatasPeriodoFixoAnual(0, semestre, request.AnoLetivo);
 
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio));
+            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(request.TurmaCodigo, periodoCompleto.PeriodoFim, periodoCompleto.PeriodoInicio), cancellationToken);
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 
@@ -58,21 +58,16 @@ namespace SME.SR.Application
             var dados = await relatorioSondagemPortuguesPorTurmaRepository.ObterPorFiltros(GrupoSondagemEnum.CapacidadeLeitura.Name(), ComponenteCurricularSondagemEnum.Portugues.Name(), periodo.Id, request.AnoLetivo, request.TurmaCodigo.ToString());
 
             ObterLinhas(relatorio, dados, alunosDaTurma);
-
-            GerarGrafico(relatorio, alunosDaTurma.Count());
+            var consideraNovaOpcaoRespostaSemPreenchimento = await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(request.Semestre,request.Bimestre,request.AnoLetivo), cancellationToken);
+            GerarGrafico(relatorio, alunosDaTurma.Count(),consideraNovaOpcaoRespostaSemPreenchimento);
 
             return relatorio;
         }
 
-        private int ObterSemestrePeriodo(ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQuery filtros)
+        private static int ObterSemestrePeriodo(ObterRelatorioSondagemPortuguesCapLeituraPorTurmaQuery filtros)
         {
-            if (filtros.Bimestre != 0)
-            {
-                if (filtros.Bimestre <= SEGUNDO_BIMESTRE)
-                    return PRIMEIRO_SEMESTRE;
-                return SEGUNDO_SEMESTRE;
-            }
-            return filtros.Semestre;
+            if (filtros.Bimestre == 0) return filtros.Semestre;
+            return filtros.Bimestre <= SEGUNDO_BIMESTRE ? PRIMEIRO_SEMESTRE : SEGUNDO_SEMESTRE;
         }
 
         private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
@@ -89,7 +84,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterPeriodoPorTipoQuery(semestre, TipoPeriodoSondagem.Semestre));
         }
 
-        private void GerarGrafico(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, int qtdAlunos)
+        private void GerarGrafico(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, int qtdAlunos, bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var ordem in relatorio.Cabecalho.Ordens)
             {
@@ -102,9 +97,9 @@ namespace SME.SR.Application
                         .SelectMany(l => l.OrdensRespostas.Where(or => or.OrdemId == ordem?.Id && or.PerguntaId == pergunta?.Id && !string.IsNullOrEmpty(or.Resposta)))
                         .GroupBy(b => b.Resposta).OrderByDescending(a => a.Key.StartsWith("Adequada"));
 
-                    int chaveIndex = 0;
-                    string chave = String.Empty;
-                    int qtdSemPreenchimento = 0;
+                    var chaveIndex = 0;
+                    var chave = string.Empty;
+                    var qtdSemPreenchimento = 0;
 
                     foreach (var resposta in respostas.Where(a => !string.IsNullOrEmpty(a.Key)))
                     {
@@ -123,20 +118,23 @@ namespace SME.SR.Application
                     var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
                     qtdSemPreenchimento = qtdAlunos - totalRespostas;
 
-                    if (qtdSemPreenchimento > 0)
+                    if (!consideraNovaOpcaoRespostaSemPreenchimento)
                     {
-                        chave = lstChaves[chaveIndex++].ToString();
-
-                        legendas.Add(new GraficoBarrasLegendaDto()
+                        if (qtdSemPreenchimento > 0)
                         {
-                            Chave = chave,
-                            Valor = "Sem preenchimento"
-                        });
+                            chave = lstChaves[chaveIndex++].ToString();
 
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                            legendas.Add(new GraficoBarrasLegendaDto()
+                            {
+                                Chave = chave,
+                                Valor = "Sem preenchimento"
+                            });
+
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                        }
                     }
 
-                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+                    var valorMaximoEixo = grafico.EixosX.Any() ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
                     grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                     grafico.Legendas = legendas;
@@ -146,7 +144,7 @@ namespace SME.SR.Application
             }
         }
 
-        private void ObterLinhas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<SondagemAutoralPorAlunoDto> dados, IEnumerable<Aluno> alunosEol)
+        private static void ObterLinhas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<SondagemAutoralPorAlunoDto> dados, IEnumerable<Aluno> alunosEol)
         {
             var alunosAgrupados = dados.GroupBy(x => x.CodigoAluno);
 
@@ -190,7 +188,7 @@ namespace SME.SR.Application
                 relatorio.Planilha.Linhas = relatorio.Planilha.Linhas.OrderBy(a => a.Aluno.Nome).ToList();
         }
 
-        private void ObterPerguntas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
+        private static void ObterPerguntas(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
         {
             if (perguntas != null && perguntas.Any())
             {
@@ -214,7 +212,7 @@ namespace SME.SR.Application
             }));
         }
 
-        private void MontarCabecalho(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, Dre dre, Ue ue, string anoTurma, string turmaNome, int anoLetivo, string periodo, string codigoRf, string usuario)
+        private static void MontarCabecalho(RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaDto relatorio, Dre dre, Ue ue, string anoTurma, string turmaNome, int anoLetivo, string periodo, string codigoRf, string usuario)
         {
             relatorio.Cabecalho = new RelatorioSondagemPortuguesCapacidadeLeituraPorTurmaCabecalhoDto()
             {
