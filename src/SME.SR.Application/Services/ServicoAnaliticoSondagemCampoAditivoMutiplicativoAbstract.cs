@@ -189,14 +189,12 @@ namespace SME.SR.Application.Services
                     string anoTurma,
                     IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunosUe)
         {
-            var totalDeAlunos = ObterTotalAlunosOuTotalRespostas(
-                                    respostasOrdem,
-                                    ObterTotalDeAluno(totalDeAlunosUe, anoTurma));
-            
-            if (totalDeAlunos == 0)
+            if (EhTodosPreenchidos())
                 return ObterTotalDeAlunos(respostasOrdem);
 
-            return totalDeAlunos;
+            return ObterTotalAlunosOuTotalRespostas(
+                                    respostasOrdem,
+                                    ObterTotalDeAluno(totalDeAlunosUe, anoTurma));
         }
 
         private int ObterTotalAlunosOuTotalRespostas(
