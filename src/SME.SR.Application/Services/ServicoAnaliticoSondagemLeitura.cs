@@ -24,15 +24,16 @@ namespace SME.SR.Application.Services
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
             var respostasLeitura = await sondagemAnaliticaRepository.ObterRespostasRelatorioAnaliticoDeLeitura(filtro, EhTodosPreenchidos());
-            var agrupadoPorDre = respostasLeitura.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct();
+            var agrupadoPorDre = respostasLeitura.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre);
 
             if (agrupadoPorDre.Any())
             {
                 var listaDres = await ObterDres(agrupadoPorDre.Select(x => x.Key).ToArray());
+                
                 foreach (var itemDre in agrupadoPorDre)
                 {
                     var relatorioSondagemAnaliticoLeituraDto = new RelatorioSondagemAnaliticoLeituraDto();
-                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct();
+                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe);
                     var listaUes = await ObterUe(agrupadoPorUe.Select(x => x.Key).ToArray());
                     var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     var totalTurmas = await ObterQuantidadeTurmaPorAnoDre(dre.Id);

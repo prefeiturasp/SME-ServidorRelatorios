@@ -23,17 +23,17 @@ namespace SME.SR.Application.Services
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
             var perguntasRespostas = await ObterPerguntasRespostas();
-            var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct();
+            var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre);
             
             if (agrupadoPorDre.Any())
             {
-                var listaDre = await ObterDres(agrupadoPorDre.Select(x => x.Key).ToArray());
+                var dres = await ObterDres(agrupadoPorDre.Select(x => x.Key).ToArray());
 
                 foreach (var itemDre in agrupadoPorDre)
                 {
                     var perguntas = new RelatorioSondagemAnaliticoLeituraDeVozAltaDto();
-                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct();
-                    var dre = listaDre.FirstOrDefault(x => x.Codigo == itemDre.Key);
+                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe);
+                    var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
 
                     perguntas.Respostas.AddRange(await ObterRespostas(agrupadoPorUe, dre));
 

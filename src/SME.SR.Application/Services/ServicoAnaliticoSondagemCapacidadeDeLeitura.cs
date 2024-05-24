@@ -29,7 +29,7 @@ namespace SME.SR.Application.Services
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
             var perguntasRespostas = await ConsolidadoCapacidadeLeitura(periodoFixoSondagem.PeriodoId);
-            var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct();
+            var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre);
 
             if (agrupadoPorDre.Any())
             {
@@ -38,7 +38,7 @@ namespace SME.SR.Application.Services
                 {
                     var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
-                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct().ToList();
+                    var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).ToList();
 
                     perguntas.Respostas.AddRange(await ObterRespostas(agrupadoPorUe,dre));
 
@@ -172,6 +172,7 @@ namespace SME.SR.Application.Services
         private int ObterValorSemPreenchimentoCalculado(List<OrdemPerguntaRespostaDto> perguntaResposta, int totalDeAlunos)
         {
             var totalRespostas = perguntaResposta.Select(s => s.QtdRespostas).ToList().Sum();
+
             totalDeAlunos = totalDeAlunos >= totalRespostas ? totalDeAlunos : totalRespostas;
 
             return totalDeAlunos - totalRespostas;
