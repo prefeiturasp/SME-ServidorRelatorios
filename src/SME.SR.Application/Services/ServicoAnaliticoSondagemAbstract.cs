@@ -147,7 +147,12 @@ namespace SME.SR.Application.Services
 
         protected Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagemPortugues(bool ehIAD)
         {
-            return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestrePortugues(true));
+            return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestrePortugues(ehIAD));
+        }
+
+        protected Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagemMatematica(bool ehIAD)
+        {
+            return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestreMatematica(ehIAD));
         }
 
         private string ObterDescricaoSemestreBimestre(bool ehSemestre)
