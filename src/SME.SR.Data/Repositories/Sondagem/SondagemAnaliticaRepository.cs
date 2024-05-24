@@ -471,7 +471,7 @@ namespace SME.SR.Data
                                 LeuComMuitaDificuldade = anoTurmaItem.Count(p => p.Pergunta == PerguntaDescricaoSondagem.LeuComMuitaDificuldade),
                                 LeuComAlgumaFluencia = anoTurmaItem.Count(p => p.Pergunta == PerguntaDescricaoSondagem.LeuComAlgumaFluencia),
                                 LeuComFluencia = anoTurmaItem.Count(p => p.Pergunta == PerguntaDescricaoSondagem.LeuComFluencia),
-                                SemPreenchimento = totalDeAlunos - quantidadeAlunoNaSondagem,
+                                SemPreenchimento = totalDeAlunos >= quantidadeAlunoNaSondagem ? totalDeAlunos - quantidadeAlunoNaSondagem : 0,
                                 Ano = int.Parse(anoTurmaItem.Key),
                                 TotalDeTurma = quantidadeTurmas,
                                 TotalDeAlunos = totalDeAlunos,
