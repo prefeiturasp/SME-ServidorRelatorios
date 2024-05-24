@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Refit;
-using Sentry;
+﻿using Refit;
 using SME.SR.Infra.Dtos.Requisicao;
 using SME.SR.Infra.Dtos.Resposta;
 using SME.SR.JRSClient.Extensions;
@@ -17,13 +15,11 @@ namespace SME.SR.JRSClient.Services
     {
         private readonly HttpClient httpClient;
         private readonly JasperCookieHandler jasperCookieHandler;
-        private readonly IConfiguration configuration;
 
-        public ExecucaoRelatorioService(HttpClient httpClient, Configuracoes configuracoes, JasperCookieHandler jasperCookieHandler, IConfiguration configuration) : base(httpClient, configuracoes)
+        public ExecucaoRelatorioService(HttpClient httpClient, Configuracoes configuracoes, JasperCookieHandler jasperCookieHandler) : base(httpClient, configuracoes)
         {
             this.httpClient = httpClient;
             this.jasperCookieHandler = jasperCookieHandler;
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
 
@@ -43,40 +39,20 @@ namespace SME.SR.JRSClient.Services
 
         public async Task<ExecucaoRelatorioRespostaDto> SolicitarRelatorio(ExecucaoRelatorioRequisicaoDto requisicao, string jSessionId)
         {
-            try
+            if (!string.IsNullOrWhiteSpace(jSessionId))
+                jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
+
+            var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
+
+            if (retorno.IsSuccessStatusCode)
+                return retorno.Content;
+            else
             {
-                if (!string.IsNullOrWhiteSpace(jSessionId))
-                    jasperCookieHandler.CookieContainer.Add(httpClient.BaseAddress, new System.Net.Cookie("JSESSIONID", jSessionId));
-
-                SentrySdk.AddBreadcrumb("Obtendo PostExecucaoRelatorioAsync", "6.1 - ExecucaoRelatorioService");
-                                
-                SentrySdk.CaptureMessage($"9.8 - URI - {requisicao.UnidadeRelatorioUri}");
-
-                var conteudoJson = $"{requisicao.Parametros.ParametrosRelatorio.FirstOrDefault().Nome} / {requisicao.Parametros.ParametrosRelatorio[0].Valor.FirstOrDefault()}";
-
-                SentrySdk.CaptureMessage($"9.9 - Conteudo json - {conteudoJson}");
-
-                var usuarioESenha64 = ObterUsuarioSenhaBase64();
-
-                SentrySdk.CaptureMessage($"10.0 - Usuario e senha Base 64 - {usuarioESenha64}");
-
-                var retorno = await restService.PostExecucaoRelatorioAsync(ObterCabecalhoAutenticacaoBasica(), requisicao);
-                if (retorno.IsSuccessStatusCode)
-                {
-                    SentrySdk.CaptureMessage("6.1 - ExecucaoRelatorioService - Sucesso ao executar envio do relatório");
-                    return retorno.Content;
-                }
-                SentrySdk.CaptureMessage($"10.1 - Retorno da requisição - {retorno.Content}");
-
-                SentrySdk.CaptureMessage($"10.2 - Retorno da requisição - {retorno.StatusCode}");
-
-                return default;
-
-            }
-            catch (Exception ex)
-            {
-                SentrySdk.CaptureException(ex);
-                throw ex;
+                var mensagemErroJasper = "Erro na requisição para o servidor Jasper";
+                if (retorno.Error != null)
+                    throw new Exception($"{mensagemErroJasper}. Mensagem: {retorno.Error.Message}.{(retorno.Error.HasContent ? $"Conteúdo: {retorno.Error.Content}." : string.Empty)}", retorno.Error);
+                else
+                    throw new Exception($"{mensagemErroJasper}. Status Code: {retorno.StatusCode}.");
             }
         }
 

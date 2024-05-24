@@ -214,7 +214,7 @@ namespace SME.SR.Application
                 CodigoTurma = codigoTurma,
                 CodigoAluno = codigoAluno
             });
-            return FrequenciaAluno.FormatarPercentual(frequenciaGlobal);
+            return FrequenciaAluno.FormatarPercentual(frequenciaGlobal ?? 0);
         }
 
         private async Task<RecomendacaoConselhoClasseAluno> ObterRecomendacoesPorFechamento(long fechamentoTurmaId, string codigoAluno)
