@@ -189,20 +189,32 @@ namespace SME.SR.Application.Services
                     string anoTurma,
                     IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunosUe)
         {
-            var totalDeAlunos = ObterTotalDeAluno(totalDeAlunosUe, anoTurma);
-
-            if (totalDeAlunos == 0)
+            if (EhTodosPreenchidos())
                 return ObterTotalDeAlunos(respostasOrdem);
 
-            return totalDeAlunos;
+            return ObterTotalAlunosOuTotalRespostas(
+                                    respostasOrdem,
+                                    ObterTotalDeAluno(totalDeAlunosUe, anoTurma));
+        }
+
+        private int ObterTotalAlunosOuTotalRespostas(
+                                IEnumerable<PerguntaRespostaOrdemDto> perguntasRespostasUe, 
+                                int totalAlunos)
+        {
+            var totalRespostas = ObterTotalDeAlunos(perguntasRespostasUe);
+
+            if (totalAlunos < totalRespostas)
+                return totalRespostas;
+
+            return totalAlunos;
         }
 
         private int ObterTotalDeAlunos(IEnumerable<PerguntaRespostaOrdemDto> respostasOrdem)
         {
-            return respostasOrdem.GroupBy(pergunta => pergunta.SubPerguntaDescricao)
-                                 .FirstOrDefault()
-                                 .Select(resposta => resposta.QtdRespostas)
-                                 .Sum();
+            return respostasOrdem?.GroupBy(pergunta => pergunta.SubPerguntaDescricao)
+                                 ?.FirstOrDefault()
+                                 ?.Select(resposta => resposta.QtdRespostas)
+                                 ?.Sum() ?? 0;
         }
 
         private string ObterDescricaoPergunta(
