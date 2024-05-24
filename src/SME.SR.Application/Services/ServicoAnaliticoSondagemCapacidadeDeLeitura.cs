@@ -28,15 +28,15 @@ namespace SME.SR.Application.Services
             periodoFixoSondagem = await ObterPeriodoFixoSondagemPortugues(true);
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var consultaDados = await ConsolidadoCapacidadeLeitura(periodoFixoSondagem.PeriodoId);
-            var agrupadoPorDre = consultaDados.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct().ToList();
+            var perguntasRespostas = await ConsolidadoCapacidadeLeitura(periodoFixoSondagem.PeriodoId);
+            var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct();
 
             if (agrupadoPorDre.Any())
             {
-                var listaDres = await ObterDres(agrupadoPorDre.Select(x => x.Key).ToArray());
+                var dres = await ObterDres(agrupadoPorDre.Select(x => x.Key).ToArray());
                 foreach (var itemDre in agrupadoPorDre)
                 {
-                    var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
+                    var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     var perguntas = new RelatorioSondagemAnaliticoCapacidadeDeLeituraDto();
                     var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe).Distinct().ToList();
 
