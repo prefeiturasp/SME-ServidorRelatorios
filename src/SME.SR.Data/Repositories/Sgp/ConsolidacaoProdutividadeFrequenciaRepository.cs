@@ -73,8 +73,10 @@ namespace SME.SR.Data
                                        ,consol.dif_data_aula_reg_freq DiferenciaDiasDataAulaRegistroFrequencia 
                                        ,consol.ano_letivo AnoLetivo 
                                        ,consol.componente_curricular_id CodigoComponenteCurricular 
-                                       ,consol.componente_curricular_nm NomeComponenteCurricular 
+                                       ,case when coalesce(cc.eh_territorio, true) then '' 
+                                             else consol.componente_curricular_nm end NomeComponenteCurricular
                                 from consolidacao_produtividade_frequencia consol
+                                left join componente_curricular cc on cc.id = consol.componente_curricular_id::int8
                                 where 1 = 1 ");
             query.AppendLine(ObterCondicoes(filtro));
             query.AppendLine(@"order by consol.dre_id, consol.ue_desc, consol.professor_nm, consol.turma_desc, consol.bimestre ");
