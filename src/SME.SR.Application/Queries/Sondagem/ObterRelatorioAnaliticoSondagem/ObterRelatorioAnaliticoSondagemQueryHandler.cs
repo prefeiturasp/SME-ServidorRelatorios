@@ -56,7 +56,7 @@ namespace SME.SR.Application
                 { TipoSondagem.LP_Escrita, typeof(IServicoAnaliticoSondagemEscrita) },
                 { TipoSondagem.LP_ProducaoTexto, typeof(IServicoAnaliticoSondagemProducaoDeTexto) },
                 { TipoSondagem.MAT_CampoAditivo, typeof(IServicoAnaliticoSondagemCampoAditivo) },
-                //{ TipoSondagem.MAT_CampoMultiplicativo, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoCampoMultiplicativo },
+                { TipoSondagem.MAT_CampoMultiplicativo, typeof(IServicoAnaliticoSondagemCampoMultiplicativo) },
                 //{ TipoSondagem.MAT_Numeros, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoNumero },
                 //{ TipoSondagem.MAT_IAD, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoIAD }
             };
