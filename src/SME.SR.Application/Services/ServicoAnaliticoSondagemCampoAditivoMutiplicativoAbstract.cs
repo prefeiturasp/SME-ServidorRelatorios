@@ -26,12 +26,12 @@ namespace SME.SR.Application.Services
 
             var retorno = new List<RelatorioSondagemAnaliticoCampoAditivoMultiplicativoDto>();
             var perguntasRespostas = await ObterPerguntaResposta();
-            var perguntasPorAno = perguntasRespostas.Where(x => x.AnoTurma != null).GroupBy(p => new { p.AnoTurma, p.OrdemPergunta, p.PerguntaDescricao }).ToList().OrderBy(x => x.Key.AnoTurma).ThenBy(d => d.Key.OrdemPergunta);
-            var dres = await ObterDres(perguntasRespostas.Where(x => x.CodigoDre != null).Select(x => x.CodigoDre).Distinct().ToArray());
-            var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre).Distinct();
+            var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre);
 
             if (agrupadoPorDre.Any())
             {
+                var dres = await ObterDres(agrupadoPorDre.Select(x => x.Key).ToArray());
+
                 foreach (var itemDre in agrupadoPorDre)
                 {
                     var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
@@ -109,7 +109,7 @@ namespace SME.SR.Application.Services
                     var agrupamentoOrdemPergunta = anoTurma.GroupBy(p => new { p.OrdemPergunta, p.PerguntaDescricao });
                     var reposta = new RespostaSondagemAnaliticoCampoAditivoMultiplicativoDto()
                     {
-                        TotalDeAlunos = ObterTotalDeAlunos(agrupamentoOrdemPergunta.FirstOrDefault().ToList(), anoTurma.Key, totalDeAlunosUe),
+                        TotalDeAlunos = ObterTotalDeAlunos(anoTurma.ToList(), anoTurma.Key, totalDeAlunosUe),
                         Ano = int.Parse(anoTurma.Key),
                         TotalDeTurma = ObterTotalDeTurmas(totalTurmasUe, anoTurma.Key),
                         Ue = ue.TituloTipoEscolaNome
@@ -182,39 +182,6 @@ namespace SME.SR.Application.Services
             var totalRespostas = resposta.Acertou + resposta.Errou + resposta.NaoResolveu;
 
             return totalDeAlunos >= totalRespostas ? totalDeAlunos - totalRespostas : 0;
-        }
-
-        private int ObterTotalDeAlunos(
-                    IEnumerable<PerguntaRespostaOrdemDto> respostasOrdem,
-                    string anoTurma,
-                    IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunosUe)
-        {
-            if (EhTodosPreenchidos())
-                return ObterTotalDeAlunos(respostasOrdem);
-
-            return ObterTotalAlunosOuTotalRespostas(
-                                    respostasOrdem,
-                                    ObterTotalDeAluno(totalDeAlunosUe, anoTurma));
-        }
-
-        private int ObterTotalAlunosOuTotalRespostas(
-                                IEnumerable<PerguntaRespostaOrdemDto> perguntasRespostasUe, 
-                                int totalAlunos)
-        {
-            var totalRespostas = ObterTotalDeAlunos(perguntasRespostasUe);
-
-            if (totalAlunos < totalRespostas)
-                return totalRespostas;
-
-            return totalAlunos;
-        }
-
-        private int ObterTotalDeAlunos(IEnumerable<PerguntaRespostaOrdemDto> respostasOrdem)
-        {
-            return respostasOrdem?.GroupBy(pergunta => pergunta.SubPerguntaDescricao)
-                                 ?.FirstOrDefault()
-                                 ?.Select(resposta => resposta.QtdRespostas)
-                                 ?.Sum() ?? 0;
         }
 
         private string ObterDescricaoPergunta(

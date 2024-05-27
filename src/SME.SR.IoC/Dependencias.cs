@@ -1,5 +1,6 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
+using Elastic.Apm.Api;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -291,6 +292,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IServicoAnaliticoSondagemProducaoDeTexto, ServicoAnaliticoSondagemProducaoDeTexto>();
             services.TryAddScoped<IServicoAnaliticoSondagemCampoAditivo, ServicoAnaliticoSondagemCampoAditivo>();
             services.TryAddScoped<IServicoAnaliticoSondagemCampoMultiplicativo, ServicoAnaliticoSondagemCampoMultiplicativo>();
+            services.TryAddScoped<IServicoAnaliticoSondagemNumeros, ServicoAnaliticoSondagemNumeros>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)

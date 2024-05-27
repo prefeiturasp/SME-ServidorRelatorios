@@ -155,6 +155,38 @@ namespace SME.SR.Application.Services
             return ObterPeriodoFixoSondagem(ObterTituloSemestreBimestreMatematica(ehIAD));
         }
 
+        protected int ObterTotalDeAlunos(
+            IEnumerable<PerguntaRespostaOrdemDto> respostasOrdem,
+            string anoTurma,
+            IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunosUe)
+        {
+            if (EhTodosPreenchidos())
+                return ObterTotalDeAlunos(respostasOrdem);
+
+            return ObterTotalAlunosOuTotalRespostas(
+                                    respostasOrdem,
+                                    ObterTotalDeAluno(totalDeAlunosUe, anoTurma));
+        }
+
+        private int ObterTotalAlunosOuTotalRespostas(
+                                IEnumerable<PerguntaRespostaOrdemDto> perguntasRespostasUe,
+                                int totalAlunos)
+        {
+            var totalRespostas = ObterTotalDeAlunos(perguntasRespostasUe);
+
+            if (totalAlunos < totalRespostas)
+                return totalRespostas;
+
+            return totalAlunos;
+        }
+
+        private int ObterTotalDeAlunos(IEnumerable<PerguntaRespostaOrdemDto> respostasOrdem)
+        {
+            return respostasOrdem.GroupBy(pergunta => new { pergunta.OrdemPergunta, pergunta.SubPerguntaDescricao })
+                                 .Select(subpergunta => subpergunta.Sum(x => x.QtdRespostas))
+                                 .Max();
+        }
+
         private string ObterDescricaoSemestreBimestre(bool ehSemestre)
         {
             var descricao = ehSemestre ? "Semestre" : "Bimestre";

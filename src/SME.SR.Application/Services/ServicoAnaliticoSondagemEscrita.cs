@@ -27,7 +27,7 @@ namespace SME.SR.Application.Services
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
             var respostasEscrita = await sondagemAnaliticaRepository.ObterRespostaRelatorioAnaliticoDeEscrita(filtro, EhTodosPreenchidos());
-            var agrupamentoPorDre = respostasEscrita.Where(x => x.DreCodigo != null).GroupBy(x => x.DreCodigo).Distinct().ToList();
+            var agrupamentoPorDre = respostasEscrita.Where(x => x.DreCodigo != null).GroupBy(x => x.DreCodigo);
             
             if (agrupamentoPorDre.Any())
             {
@@ -36,7 +36,7 @@ namespace SME.SR.Application.Services
                 foreach (var itemDre in agrupamentoPorDre)
                 {
                     var relatorioSondagemAnaliticoEscritaDto = new RelatorioSondagemAnaliticoEscritaDto();
-                    var agrupamentoPorUe = itemDre.GroupBy(x => x.UeCodigo).Distinct().ToList();
+                    var agrupamentoPorUe = itemDre.GroupBy(x => x.UeCodigo).ToList();
                     var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
 
                     relatorioSondagemAnaliticoEscritaDto.Respostas.AddRange(await ObterRespostas(agrupamentoPorUe, dre));
