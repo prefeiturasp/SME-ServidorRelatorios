@@ -58,7 +58,7 @@ namespace SME.SR.Application
                 { TipoSondagem.MAT_CampoAditivo, typeof(IServicoAnaliticoSondagemCampoAditivo) },
                 { TipoSondagem.MAT_CampoMultiplicativo, typeof(IServicoAnaliticoSondagemCampoMultiplicativo) },
                 { TipoSondagem.MAT_Numeros, typeof(IServicoAnaliticoSondagemNumeros) },
-                //{ TipoSondagem.MAT_IAD, sondagemAnaliticaRepository.ObterRelatorioSondagemAnaliticoIAD }
+                { TipoSondagem.MAT_IAD, typeof(IServicoAnaliticoSondagemIADMatematica) }
             };
         }
     }

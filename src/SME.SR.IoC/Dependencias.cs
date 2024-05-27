@@ -293,6 +293,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IServicoAnaliticoSondagemCampoAditivo, ServicoAnaliticoSondagemCampoAditivo>();
             services.TryAddScoped<IServicoAnaliticoSondagemCampoMultiplicativo, ServicoAnaliticoSondagemCampoMultiplicativo>();
             services.TryAddScoped<IServicoAnaliticoSondagemNumeros, ServicoAnaliticoSondagemNumeros>();
+            services.TryAddScoped<IServicoAnaliticoSondagemIADMatematica, ServicoAnaliticoSondagemIADMatematica>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
