@@ -26,10 +26,11 @@ namespace SME.SR.Application
         public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto>();
+            var consideraNovaOpcaoRespostaSemPreenchimento = await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(filtros.Semestre,filtros.Bimestre,filtros.AnoLetivo));
 
-            var respostas = !String.IsNullOrEmpty(filtros.GrupoId) ? await ObterRespostasGrupo(filtros) : await ObterRespostasProficiencia(filtros);
+            var respostas = !string.IsNullOrEmpty(filtros.GrupoId) ? await ObterRespostasGrupo(filtros,consideraNovaOpcaoRespostaSemPreenchimento) : await ObterRespostasProficiencia(filtros,consideraNovaOpcaoRespostaSemPreenchimento);
 
-            RelatorioSondagemPortuguesConsolidadoRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
+            var relatorio = new RelatorioSondagemPortuguesConsolidadoRelatorioDto()
             {
                 Cabecalho = await ObterCabecalho(filtros),
                 Respostas = respostas
@@ -46,7 +47,7 @@ namespace SME.SR.Application
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidado", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
 
-        private void GerarGrafico(RelatorioSondagemPortuguesConsolidadoRelatorioDto relatorio, string tipoRelatorio)
+        private static void GerarGrafico(RelatorioSondagemPortuguesConsolidadoRelatorioDto relatorio, string tipoRelatorio)
         {
             relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
             var grafico = new GraficoBarrasVerticalDto(800, $"Língua Portuguesa - {tipoRelatorio}");
@@ -123,7 +124,8 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostaDto>> ObterRespostasGrupo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostaDto>> ObterRespostasGrupo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros
+        ,bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             GrupoSondagemEnum grupoSondagemEnum = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ?
                 GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.ProducaoTexto;
@@ -155,17 +157,17 @@ namespace SME.SR.Application
             });
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
-
+            
             if (dados == null || !dados.Any())
             {
                 PreencherPerguntasForaLista(respostas, perguntas);
 
-                ObterSemPreenchimento(dados, alunosPorAno, respostas);
+                ObterSemPreenchimento(dados, alunosPorAno, respostas,consideraNovaOpcaoRespostaSemPreenchimento);
 
                 return respostas;
             }
 
-            PopularListaRetorno(dados, alunosPorAno, perguntas, respostas);
+            PopularListaRetorno(dados, alunosPorAno, perguntas, respostas,consideraNovaOpcaoRespostaSemPreenchimento);
 
             return respostas;
         }
@@ -177,7 +179,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
         }
 
-        private int ObterSemestrePeriodo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        private static int ObterSemestrePeriodo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
         {
             if (filtros.Bimestre != 0)
             {
@@ -188,18 +190,19 @@ namespace SME.SR.Application
             return filtros.Semestre;
         }
 
-        private void PopularListaRetorno(IEnumerable<SondagemAutoralDto> dados, int alunosPorAno, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas, List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas)
+        private static void PopularListaRetorno(IEnumerable<SondagemAutoralDto> dados, int alunosPorAno, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas, List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas
+        ,bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             foreach (var pergunta in perguntas)
             {
                 AdicionarPerguntaSeNaoExistir(respostas, pergunta, dados, alunosPorAno);
             }
 
-            ObterSemPreenchimento(dados, alunosPorAno, respostas);
+            ObterSemPreenchimento(dados, alunosPorAno, respostas,consideraNovaOpcaoRespostaSemPreenchimento);
             PreencherPerguntasForaLista(respostas, perguntas);
         }
 
-        private void AdicionarPerguntaSeNaoExistir(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas, PerguntasOrdemGrupoAutoralDto pergunta, IEnumerable<SondagemAutoralDto> dados, int alunosPorAno)
+        private static void AdicionarPerguntaSeNaoExistir(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas, PerguntasOrdemGrupoAutoralDto pergunta, IEnumerable<SondagemAutoralDto> dados, int alunosPorAno)
         {
             if (respostas.Any(x => x.Id.Equals(pergunta.PerguntaId)))
                 return;
@@ -220,7 +223,7 @@ namespace SME.SR.Application
             });
         }
 
-        private void ObterSemPreenchimento(IEnumerable<SondagemAutoralDto> dados, int alunosPorAno, List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas)
+        private static void ObterSemPreenchimento(IEnumerable<SondagemAutoralDto> dados, int alunosPorAno, List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas, bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             var alunosUnicos = dados.GroupBy(x => x.CodigoAluno);
 
@@ -230,16 +233,19 @@ namespace SME.SR.Application
 
             if (diferenca <= 0) return;
 
-            respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostaDto
+            if (!consideraNovaOpcaoRespostaSemPreenchimento)
             {
-                Resposta = "Sem preenchimento",
-                Total = alunosPorAno,
-                Quantidade = diferenca,
-                Percentual = Math.Round(((decimal)diferenca / (decimal)alunosPorAno) * 100, 2)
-            });
+                respostas.Add(new RelatorioSondagemPortuguesConsolidadoRespostaDto
+                {
+                    Resposta = "Sem preenchimento",
+                    Total = alunosPorAno,
+                    Quantidade = diferenca,
+                    Percentual = Math.Round(((decimal)diferenca / (decimal)alunosPorAno) * 100, 2)
+                });
+            }
         }
 
-        private void PreencherPerguntasForaLista(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
+        private static void PreencherPerguntasForaLista(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> respostas, IEnumerable<PerguntasOrdemGrupoAutoralDto> perguntas)
         {
             foreach (var pergunta in perguntas)
             {
@@ -257,7 +263,8 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostaDto>> ObterRespostasProficiencia(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
+        private async Task<List<RelatorioSondagemPortuguesConsolidadoRespostaDto>> ObterRespostasProficiencia(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros
+        ,bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             IEnumerable<RelatorioSondagemPortuguesPorTurmaPlanilhaQueryDto> linhasSondagem = null;
 
@@ -297,29 +304,32 @@ namespace SME.SR.Application
 
             foreach (var item in respAgrupado)
             {
-                RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+                var itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
                 if (!string.IsNullOrWhiteSpace(item.Label))
                 {
-                    itemRetorno.Resposta = MontarTextoProficiencia(item.Label);
+                    itemRetorno.Resposta = consideraNovaOpcaoRespostaSemPreenchimento ? MontarTextoProficienciaOpcaoSemResposta(item.Label) : MontarTextoProficiencia(item.Label);
                     itemRetorno.Quantidade = item.Value;
                     itemRetorno.Percentual = Math.Round((item.Value / (decimal)totalAlunosParticipantesSondagem) * 100, 2);
                     itemRetorno.Total = totalAlunosParticipantesSondagem;
                     respostas.Add(itemRetorno);
                 }                   
-            }            
+            }
 
-            if (alunosPorAno > totalRespostas && !respostas.Any(x => x.Percentual == 100))
+            if (!consideraNovaOpcaoRespostaSemPreenchimento)
             {
-                var totalSemPreenchimento = alunosPorAno - totalRespostas;
+                if (alunosPorAno > totalRespostas && !respostas.Any(x => x.Percentual == 100))
+                {
+                    var totalSemPreenchimento = alunosPorAno - totalRespostas;
 
-                RelatorioSondagemPortuguesConsolidadoRespostaDto itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
+                    var itemRetorno = new RelatorioSondagemPortuguesConsolidadoRespostaDto();
 
-                itemRetorno.Resposta = MontarTextoProficiencia(string.Empty);
-                itemRetorno.Quantidade = totalSemPreenchimento;
-                itemRetorno.Percentual = Math.Round(((decimal)totalSemPreenchimento / (decimal)totalAlunosParticipantesSondagem) * 100, 2);
-                itemRetorno.Total = totalAlunosParticipantesSondagem;
-                respostas.Add(itemRetorno);
+                    itemRetorno.Resposta = MontarTextoProficiencia(string.Empty);
+                    itemRetorno.Quantidade = totalSemPreenchimento;
+                    itemRetorno.Percentual = Math.Round(((decimal)totalSemPreenchimento / (decimal)totalAlunosParticipantesSondagem) * 100, 2);
+                    itemRetorno.Total = totalAlunosParticipantesSondagem;
+                    respostas.Add(itemRetorno);
+                }
             }
 
             if (filtros.ProficienciaId == ProficienciaSondagemEnum.Escrita && filtros.Ano != ANO_ESCOLAR_PROFICIENCIA_NIVEL)
@@ -328,7 +338,7 @@ namespace SME.SR.Application
             return respostas;
         }
 
-        private List<RelatorioSondagemPortuguesConsolidadoRespostaDto> OrdenarRespostasEscrita(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> listaRespostas)
+        private static List<RelatorioSondagemPortuguesConsolidadoRespostaDto> OrdenarRespostasEscrita(List<RelatorioSondagemPortuguesConsolidadoRespostaDto> listaRespostas)
         {
             var listaOrdenadaRespostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
@@ -359,25 +369,31 @@ namespace SME.SR.Application
             return listaOrdenadaRespostas;
         }
 
-        private string MontarTextoProficiencia(string proficiencia)
+        private static string MontarTextoProficienciaOpcaoSemResposta(string proficiencia)
         {
-            switch (proficiencia)
+            return proficiencia switch
             {
-                case "":
-                    return "Sem Preenchimento";
-                case "PS":
-                    return "Pré-Silábico";
-                case "SSV":
-                    return "Silábico sem valor";
-                case "SCV":
-                    return "Silábico com valor";
-                case "SA":
-                    return "Silábico alfabético";
-                case "A":
-                    return "Alfabético";
-                default:
-                    return proficiencia;
-            }
+                "PS" => "Pré-Silábico",
+                "SSV" => "Silábico sem valor",
+                "SCV" => "Silábico com valor",
+                "SA" => "Silábico alfabético",
+                "A" => "Alfabético",
+                "SemPreenchimento" => "Sem Preenchimento",
+                _ => proficiencia
+            };
+        }
+        private static string MontarTextoProficiencia(string proficiencia)
+        {
+            return proficiencia switch
+            {
+                "PS" => "Pré-Silábico",
+                "SSV" => "Silábico sem valor",
+                "SCV" => "Silábico com valor",
+                "SA" => "Silábico alfabético",
+                "A" => "Alfabético",
+                "" => "Sem Preenchimento",
+                _ => proficiencia
+            };
         }
     }
 }

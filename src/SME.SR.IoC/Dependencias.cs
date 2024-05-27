@@ -1,5 +1,6 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
+using Elastic.Apm.Api;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,8 +8,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using RabbitMQ.Client;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
+using SME.SR.Application.Services;
+using SME.SR.Application.UseCases;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Repositories.Cache;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
@@ -22,12 +26,6 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
-using SME.SR.Application.UseCases;
-using SME.SR.Data.Interfaces.Sondagem;
-using SME.SR.Data.Interfaces.ElasticSearch;
-using SME.SR.Data.Repositories.ElasticSearch;
-using SME.SR.Data.Interfaces.ElasticSearch.Base;
-using SME.SR.Data.Repositories.ElasticSearch.Base;
 
 namespace SME.SR.IoC
 {
@@ -97,6 +95,7 @@ namespace SME.SR.IoC
             RegistrarUseCase(services);
             RegistrarServicos(services);
             RegistrarOptions(services, configuration);
+            RegistrarServicoRelatorioAnaliticoSondagem(services);
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
@@ -284,6 +283,19 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioBuscasAtivasUseCase, RelatorioBuscasAtivasUseCase>();
             services.TryAddScoped<IRelatorioPropostaLaudaDePublicacaoUseCase, RelatorioPropostaLaudaDePublicacaoUseCase>();
             services.TryAddScoped<IRelatorioPropostaLaudaCompletaUseCase, RelatorioPropostaLaudaCompletaUseCase>();
+        }
+
+        private static void RegistrarServicoRelatorioAnaliticoSondagem(IServiceCollection services)
+        {
+            services.TryAddScoped<IServicoAnaliticoSondagemCapacidadeDeLeitura, ServicoAnaliticoSondagemCapacidadeDeLeitura>();
+            services.TryAddScoped<IServicoAnaliticoSondagemLeitura, ServicoAnaliticoSondagemLeitura>();
+            services.TryAddScoped<IServicoAnaliticoSondagemLeituraVozAlta, ServicoAnaliticoSondagemLeituraVozAlta>();
+            services.TryAddScoped<IServicoAnaliticoSondagemEscrita, ServicoAnaliticoSondagemEscrita>();
+            services.TryAddScoped<IServicoAnaliticoSondagemProducaoDeTexto, ServicoAnaliticoSondagemProducaoDeTexto>();
+            services.TryAddScoped<IServicoAnaliticoSondagemCampoAditivo, ServicoAnaliticoSondagemCampoAditivo>();
+            services.TryAddScoped<IServicoAnaliticoSondagemCampoMultiplicativo, ServicoAnaliticoSondagemCampoMultiplicativo>();
+            services.TryAddScoped<IServicoAnaliticoSondagemNumeros, ServicoAnaliticoSondagemNumeros>();
+            services.TryAddScoped<IServicoAnaliticoSondagemIADMatematica, ServicoAnaliticoSondagemIADMatematica>();
         }
 
         private static void RegistrarOptions(IServiceCollection services, IConfiguration configuration)
