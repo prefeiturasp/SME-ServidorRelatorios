@@ -22,7 +22,7 @@ namespace SME.SR.Application
         public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesPorTurmaFiltroDto>();
-            
+
             if (filtros.ProficienciaId == ProficienciaSondagemEnum.Autoral && filtros.GrupoId == GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException("Grupo fora do esperado.");
             
@@ -33,14 +33,14 @@ namespace SME.SR.Application
             if (alunosDaTurma == null || !alunosDaTurma.Any())
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
 
-            var relatorioPerguntas = await ObterPerguntas(filtros);
+            var relatorioPerguntas = await ObterPerguntas(filtros, consideraNovaOpcaoRespostaSemPreenchimento);
 
             var relatorio = new RelatorioSondagemPortuguesPorTurmaRelatorioDto()
             {
                 Cabecalho = await ObterCabecalho(filtros, relatorioPerguntas),
                 Planilha = new RelatorioSondagemPortuguesPorTurmaPlanilhaDto()
                 {
-                    Linhas = await ObterLinhas(filtros, alunosDaTurma)
+                    Linhas = await ObterLinhas(filtros, alunosDaTurma, relatorioPerguntas)
                 }
             };
 
@@ -228,7 +228,7 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>> ObterPerguntas(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros)
+        private async Task<List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>> ObterPerguntas(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             switch (filtros.ProficienciaId)
             {
@@ -245,8 +245,7 @@ namespace SME.SR.Application
                 case ProficienciaSondagemEnum.Autoral:
                     if (filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name())
                     {
-                        return await Task.FromResult(
-                            new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
+                        var perguntas = new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
                                 {
                                 new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
                                 {
@@ -268,44 +267,51 @@ namespace SME.SR.Application
                                     Id = "18d148be-d83c-4f24-9d03-dc003a05b9e4",
                                     Nome = "Leu com fluência"
                                 },
-                            });
+                            };
+
+                        AdicionarPerguntaSemPreenchimento(perguntas, consideraNovaOpcaoRespostaSemPreenchimento);
+
+                        return await Task.FromResult(perguntas);
                     }
                     if (filtros.GrupoId == GrupoSondagemEnum.ProducaoTexto.Name())
                     {
-                        return await Task.FromResult(
-                            new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
-                            {
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = "3173bff2-a148-4634-b029-b50c949ae2d6",
-                                    Nome = "Não produziu/entregou em branco"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = "98940cdb-d229-4282-a2e1-60e4a17dab64",
-                                    Nome = "Não apresentou dificuldades"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = "cfec69be-16fb-453d-8c47-fd5ebc4161ef",
-                                    Nome = "Escrita não alfabética"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = "ef0e79cd-dc31-4272-ad04-68f79a3a135d",
-                                    Nome = "Dificuldades com aspectos semânticos"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = "f4aae748-bfd8-482e-aee0-07a1cdad71ff",
-                                    Nome = "Dificuldades com aspectos textuais"
-                                },
-                                new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
-                                {
-                                    Id = "67a791d2-089d-40ee-8ddf-c64454ee5c54",
-                                    Nome = "Dificuldades com aspectos ortográficos e notacionais"
-                                },
-                            });
+                        var perguntas = new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>()
+                                        {
+                                            new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                            {
+                                                Id = "3173bff2-a148-4634-b029-b50c949ae2d6",
+                                                Nome = "Não produziu/entregou em branco"
+                                            },
+                                            new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                            {
+                                                Id = "98940cdb-d229-4282-a2e1-60e4a17dab64",
+                                                Nome = "Não apresentou dificuldades"
+                                            },
+                                            new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                            {
+                                                Id = "cfec69be-16fb-453d-8c47-fd5ebc4161ef",
+                                                Nome = "Escrita não alfabética"
+                                            },
+                                            new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                            {
+                                                Id = "ef0e79cd-dc31-4272-ad04-68f79a3a135d",
+                                                Nome = "Dificuldades com aspectos semânticos"
+                                            },
+                                            new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                            {
+                                                Id = "f4aae748-bfd8-482e-aee0-07a1cdad71ff",
+                                                Nome = "Dificuldades com aspectos textuais"
+                                            },
+                                            new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                                            {
+                                                Id = "67a791d2-089d-40ee-8ddf-c64454ee5c54",
+                                                Nome = "Dificuldades com aspectos ortográficos e notacionais"
+                                            }
+                                        };
+
+                        AdicionarPerguntaSemPreenchimento(perguntas, consideraNovaOpcaoRespostaSemPreenchimento);
+
+                        return await Task.FromResult(perguntas);
                     }
                     else return await Task.FromResult(new List<RelatorioSondagemPortuguesPorTurmaPerguntaDto>());
                 default:
@@ -313,7 +319,20 @@ namespace SME.SR.Application
             }
         }
 
-        private async Task<List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>> ObterLinhas(RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, IEnumerable<Aluno> alunos)
+        private void AdicionarPerguntaSemPreenchimento(List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas, bool consideraSemPreenchimento)
+        {
+            if (consideraSemPreenchimento)
+                perguntas.Add(new RelatorioSondagemPortuguesPorTurmaPerguntaDto()
+                {
+                    Id = "0882766a-9375-4e0a-bd39-8d96d75f7a22",
+                    Nome = "Sem preenchimento"
+                });
+        }
+
+        private async Task<List<RelatorioSondagemPortuguesPorTurmaPlanilhaLinhaDto>> ObterLinhas(
+                                                    RelatorioSondagemPortuguesPorTurmaFiltroDto filtros, 
+                                                    IEnumerable<Aluno> alunos,
+                                                    List<RelatorioSondagemPortuguesPorTurmaPerguntaDto> perguntas)
         {
             var grupo = filtros.GrupoId == GrupoSondagemEnum.LeituraVozAlta.Name() ? GrupoSondagemEnum.LeituraVozAlta : GrupoSondagemEnum.ProducaoTexto;
 
@@ -343,7 +362,6 @@ namespace SME.SR.Application
 
                 var respostasDto = new List<RelatorioSondagemPortuguesPorTurmaRespostaDto>();
 
-                var perguntas = await ObterPerguntas(filtros);
                 foreach (var pergunta in perguntas)
                 {
                     var resposta = linhasSondagem.FirstOrDefault(a => a.AlunoEolCode == aluno.CodigoAluno.ToString() && a.PerguntaId == pergunta.Id);
