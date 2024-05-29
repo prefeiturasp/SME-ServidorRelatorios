@@ -1255,7 +1255,7 @@ namespace SME.SR.Data
                             inner join ue u on u.id = t.ue_id 
                             where u.dre_id = @dreId 
                             {(string.IsNullOrEmpty(codigoUe) ? "" : " and u.ue_id = @codigoUe")}
-                              and t.historico = @historico
+                            {(anoLetivo == DateTime.Now.Year ? " and not t.historico" : string.Empty)}
                               and t.ano_letivo = @anoLetivo 
                               and t.modalidade_codigo = @modalidade
                               and t.ano > '0'
@@ -1266,8 +1266,7 @@ namespace SME.SR.Data
                 modalidade,
                 dreId,
                 codigoUe,
-                anoLetivo,
-                historico = anoLetivo < DateTime.Now.Year
+                anoLetivo
             };
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas))
             {
