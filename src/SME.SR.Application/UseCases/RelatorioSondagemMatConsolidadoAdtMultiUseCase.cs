@@ -48,9 +48,9 @@ namespace SME.SR.Application
             var dataReferencia = DateTime.Now;
 
             if (filtros.AnoLetivo < 2022 && filtros.Semestre > 0)
-                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo));
+                dataReferencia = (await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(filtros.Semestre, filtros.AnoLetivo)))?.PeriodoFim ?? DateTime.Now;
             else if (filtros.AnoLetivo >= 2022 && filtros.Bimestre > 0)
-                dataReferencia = await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo));
+                dataReferencia = (await mediator.Send(new ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(filtros.Bimestre, filtros.AnoLetivo)))?.PeriodoFim ?? DateTime.Now;
 
             var quantidadeTotalAlunosUeAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(filtros.Ano, ue?.Codigo, filtros.AnoLetivo, dataReferencia, filtros.DreCodigo, filtros.Modalidades));
 

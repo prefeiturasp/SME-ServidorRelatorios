@@ -15,28 +15,28 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<DateTime> ObterPeriodoAberturaFimPorBimestreAnoLetivo(int bimestre, int anoLetivo)
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoAberturaFimPorBimestreAnoLetivo(int bimestre, int anoLetivo)
         {
-            var query = new StringBuilder("select \"DataFim\" ");
+            var query = new StringBuilder("select \"DataInicio\" as PeriodoInicio,\"DataFim\" as PeriodoFim ");
             query.AppendLine("from \"PeriodoDeAberturas\" ");
             query.AppendLine("where \"Ano\" = @anoLetivo");
             query.AppendLine("and \"Bimestre\" = @bimestre");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
-            return await conexao.QueryFirstOrDefaultAsync<DateTime>(query.ToString(), new { bimestre, anoLetivo = anoLetivo.ToString() });
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new { bimestre, anoLetivo = anoLetivo.ToString() });
         }
 
-        public async Task<DateTime> ObterPeriodoFixoFimPorDescricaoAnoLetivo(string descricao, int anoLetivo)
+        public async Task<PeriodoCompletoSondagemDto> ObterPeriodoFixoFimPorDescricaoAnoLetivo(string descricao, int anoLetivo)
         {
-            var query = new StringBuilder("select \"DataFim\" ");
+            var query = new StringBuilder("select \"DataInicio\" as PeriodoInicio,\"DataFim\" as PeriodoFim  ");
             query.AppendLine("from \"PeriodoFixoAnual\" ");
             query.AppendLine("where \"Ano\" = @anoLetivo");
             query.AppendLine("and \"Descricao\" = @descricao");
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSondagem);
 
-            return await conexao.QueryFirstOrDefaultAsync<DateTime>(query.ToString(), new { descricao, anoLetivo });
+            return await conexao.QueryFirstOrDefaultAsync<PeriodoCompletoSondagemDto>(query.ToString(), new { descricao, anoLetivo });
         }
 
         public async Task<PeriodoSondagem> ObterPeriodoPorTipo(int periodo, TipoPeriodoSondagem tipoPeriodo)
