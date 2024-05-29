@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using SixLabors.Fonts;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -95,7 +95,7 @@ namespace SME.SR.Application
             {
                 var ultimoRegistroMatricula = itemsMesSelecionado.Last().Last();
                 var inativoNoMes = itemsMesSelecionado
-                    .Any(i => !SituacoesAtiva.Contains(i.Last().CodigoSituacaoMatricula) && i.Last().DataSituacao.Month == mesSelecionado);
+                    .Any(i => i.Last().Inativo && i.Last().DataSituacao.Month == mesSelecionado);
 
                 dadosSituacaoAluno.ImprimirRelatorio = true;
                 dadosSituacaoAluno.NomeFinalAluno = ultimoRegistroMatricula.ObterNomeFinal();
@@ -107,11 +107,6 @@ namespace SME.SR.Application
 
             return dadosSituacaoAluno;
         }
-        private int[] SituacoesAtiva => new[] { (int)SituacaoMatriculaAluno.Ativo,
-                        (int)SituacaoMatriculaAluno.Rematriculado,
-                        (int)SituacaoMatriculaAluno.PendenteRematricula,
-                        (int)SituacaoMatriculaAluno.SemContinuidade,
-                        (int)SituacaoMatriculaAluno.Concluido};
 
         private Modalidade ObterModalidade(int modalidadeCodigo)
         {
@@ -122,11 +117,13 @@ namespace SME.SR.Application
         private async Task<IEnumerable<IGrouping<object, DadosAlunosEscolaDto>>> FiltrarMatriculasConsideradasNoMes(IEnumerable<IGrouping<object, DadosAlunosEscolaDto>> lista, int mesConsiderado, int anoLetivoSelecionado)
         {
             if (lista.SelectMany(l => l.Select(m => m.AnoLetivo)).Contains(anoLetivoSelecionado))
+            {
                 return await Task.FromResult(lista
-                     .Where(l => (SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula) && (l.First().DataMatricula.Month < mesConsiderado || (l.First().DataSituacao.Month == mesConsiderado && l.First().DataSituacao.Day < DateTime.DaysInMonth(l.First().AnoLetivo, mesConsiderado))) ||
-                                 (!SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula) && l.Last().DataSituacao.Month >= mesConsiderado))));
+                     .Where(l => (l.Last().Ativo && l.First().DataMatricula.AntecedeMesAno(mesConsiderado, anoLetivoSelecionado)) ||
+                                 (l.Last().Inativo && l.Last().DataSituacao.PosteriorOuEquivalenteMesAno(mesConsiderado, anoLetivoSelecionado))));
+            }
             else
-                return await Task.FromResult(lista.Where(l => (SituacoesAtiva.Contains(l.Last().CodigoSituacaoMatricula))));
+                return await Task.FromResult(lista.Where(l => l.Last().Ativo));
         }
     }
 }
