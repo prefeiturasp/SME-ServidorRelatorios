@@ -12,8 +12,10 @@ using SME.SR.Application.Services;
 using SME.SR.Application.UseCases;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.ElasticSearch;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Repositories.Cache;
+using SME.SR.Data.Repositories.ElasticSearch;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
@@ -211,6 +213,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IBuscaAtivaRepository), typeof(BuscaAtivaRepository));
             services.TryAddScoped(typeof(IPropostaRepository), typeof(PropostaRepository));
             services.TryAddScoped(typeof(IConsolidacaoProdutividadeFrequenciaRepository), typeof(ConsolidacaoProdutividadeFrequenciaRepository));
+            services.TryAddScoped<IRepositorioElasticTurma, RepositorioElasticTurma>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)

@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using SME.SR.Infra;
 using System;
 
 namespace SME.SR.Application.Queries
 {
-    public class ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery : IRequest<DateTime>
+    public class ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery : IRequest<PeriodoCompletoSondagemDto>
     {
         public ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery(int bimestre, int anoLetivo)
         {

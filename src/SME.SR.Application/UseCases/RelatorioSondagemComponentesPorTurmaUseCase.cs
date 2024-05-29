@@ -23,7 +23,7 @@ namespace SME.SR.Application
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemComponentesPorTurmaFiltroDto>();
 
             var dataPeriodoFim = await ObterDataPeriodoFim(filtros.AnoLetivo, filtros.Semestre, filtros.Bimestre);
-            var alunosDaTurma = await mediator.Send(new ObterAlunosPorTurmaDataSituacaoMatriculaQuery(filtros.TurmaCodigo, dataPeriodoFim));
+            var alunosDaTurma = await ObterAlunos((int)filtros.TurmaCodigo, dataPeriodoFim);
 
             if (alunosDaTurma?.Any() != true)
                 throw new NegocioException("Não foi possível localizar os alunos da turma.");
@@ -41,6 +41,32 @@ namespace SME.SR.Application
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemComponentesPorTurma", relatorio, Guid.NewGuid(), envioPorRabbit: false));
         }
 
+        private async Task<IEnumerable<Aluno>> ObterAlunos(int codigoTurma, PeriodoCompletoSondagemDto periodo)
+        {
+            const int DEFICIENTE = 1;
+            var alunos = await mediator.Send(new ObterAlunosMatriculasPorTurmasQuery(new int[] { codigoTurma }));
+
+            alunos = alunos.Where(a => ((a.Ativo && a.DataMatricula.Date < (periodo?.PeriodoFim.Date ?? DateTime.Now.Date)) ||
+                                            (!a.Ativo && a.DataMatricula.Date < (periodo?.PeriodoFim.Date ?? DateTime.Now.Date) && a.DataSituacao.Date >= (periodo?.PeriodoInicio.Date ?? DateTime.Now.Date))) &&
+                                            (SituacaoMatriculaAluno)a.CodigoSituacaoMatricula != SituacaoMatriculaAluno.VinculoIndevido);
+            
+            return alunos.Select(aluno => new Aluno()
+            {
+                CodigoAluno = aluno.CodigoAluno,
+                CodigoSituacaoMatricula = (SituacaoMatriculaAluno)aluno.CodigoSituacaoMatricula,
+                CodigoTurma = aluno.CodigoTurma,
+                DataMatricula = aluno.DataMatricula,
+                DataNascimento = aluno.DataNascimento,
+                DataSituacao = aluno.DataSituacao,
+                NomeAluno = aluno.NomeAluno,
+                NomeSocialAluno = aluno.NomeSocialAluno,
+                NumeroAlunoChamada = aluno.NumeroAlunoChamada,
+                PossuiDeficiencia = aluno.PossuiDeficiencia == DEFICIENTE,
+                SituacaoMatricula = aluno.SituacaoMatricula,
+                
+            });
+        }
+
         private async Task<string> ObtenhaRelatorioPaginado(RelatorioSondagemComponentesPorTurmaRelatorioDto dtoSondagem)
         {
             var preparo = new PreparadorDeRelatorioPaginadoSondagemPorTurmaMatematica(dtoSondagem);
@@ -49,7 +75,7 @@ namespace SME.SR.Application
             return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPaginado/Index", dto, Guid.NewGuid(), envioPorRabbit: false));
         }
 
-        private async Task<DateTime> ObterDataPeriodoFim(int anoLetivo, int semestre, int bimestre)
+        private async Task<PeriodoCompletoSondagemDto> ObterDataPeriodoFim(int anoLetivo, int semestre, int bimestre)
         {
             if (anoLetivo < 2022)
                 return await mediator.Send(new ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
