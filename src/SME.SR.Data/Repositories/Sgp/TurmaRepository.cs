@@ -1255,7 +1255,7 @@ namespace SME.SR.Data
                             inner join ue u on u.id = t.ue_id 
                             where u.dre_id = @dreId 
                             {(string.IsNullOrEmpty(codigoUe) ? "" : " and u.ue_id = @codigoUe")}
-                            {(anoLetivo == DateTime.Now.Year ? " and not t.historico" : string.Empty)}
+                            {(anoLetivo == DateTime.Now.Year ? " and not t.historica" : string.Empty)}
                               and t.ano_letivo = @anoLetivo 
                               and t.modalidade_codigo = @modalidade
                               and t.ano > '0'
