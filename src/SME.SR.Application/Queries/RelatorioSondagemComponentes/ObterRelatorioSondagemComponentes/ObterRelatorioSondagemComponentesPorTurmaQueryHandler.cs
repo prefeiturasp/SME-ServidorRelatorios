@@ -254,7 +254,7 @@ namespace SME.SR.Application
                     }
                 }
 
-                var valorMaximoEixo = grafico.EixosX.Max(a => int.Parse(a.Valor.ToString()));
+                var valorMaximoEixo = grafico.EixosX.Any() ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
                 grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                 grafico.Legendas = legendas;
