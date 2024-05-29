@@ -33,7 +33,7 @@ namespace SME.SR.Application
             var relatorio = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto();
             var perguntas = new List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto>();
 
-            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Bimestre, request.Usuario.CodigoRf, request.Usuario.Nome);
+            MontarCabecalho(relatorio, request.Dre, request.Ue, request.TurmaAno.ToString(), request.AnoLetivo, request.Semestre, request.Bimestre, request.Usuario.CodigoRf, request.Usuario.Nome, request.QuantidadeTotalAlunos);
 
             if (request.TurmaAno > TERCEIRO_ANO || request.AnoLetivo >= ANO_LETIVO_DOIS_MIL_VINTE_DOIS)
             {
@@ -150,7 +150,7 @@ namespace SME.SR.Application
             }
         }
 
-        private static void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, int? bimestre, string rf, string usuario)
+        private static void MontarCabecalho(RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoDto relatorio, Dre dre, Ue ue, string anoTurma, int anoLetivo, int semestre, int? bimestre, string rf, string usuario, int totalAlunos)
         {
             relatorio.Ano = anoTurma;
             relatorio.AnoLetivo = anoLetivo;
@@ -163,6 +163,7 @@ namespace SME.SR.Application
             relatorio.Turma = "Todas";
             relatorio.Ue = ue != null ? ue.NomeComTipoEscola : "Todas";
             relatorio.Usuario = usuario;
+            relatorio.TotalDeAlunos = totalAlunos;
         }
 
         private static void AdicionarPergunta(IEnumerable<IGrouping<string, MathPoolNumber>> agrupamento, string grupo, List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> perguntas, int totalAlunosGeral
