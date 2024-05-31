@@ -23,7 +23,8 @@ namespace SME.SR.Application
         public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto>();
-             var consideraNovaOpcaoRespostaSemPreenchimento = await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(filtros.Semestre,filtros.Bimestre,filtros.AnoLetivo));
+            var consideraNovaOpcaoRespostaSemPreenchimento = await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(filtros.Semestre,filtros.Bimestre,filtros.AnoLetivo));
+
             if (filtros.GrupoId != GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException($"{ filtros.GrupoId } fora do esperado.");
 
@@ -251,13 +252,18 @@ namespace SME.SR.Application
 
                     if (!consideraNovaOpcaoRespostaSemPreenchimento)
                     {
-                        respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                        var dtoSemPreenchimento = respostasDto.Find(resp => resp.Resposta == "Sem preenchimento"); 
+                        
+                        if (dtoSemPreenchimento == null)
                         {
-                            Resposta = "Sem preenchimento",
-                            Quantidade = totalAlunos - totalRespostas,
-                            Total = alunosPorAno,
-                            Percentual = decimal.Divide(totalAlunos - totalRespostas, totalAlunos)
-                        });
+                            dtoSemPreenchimento = new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto();
+                            respostasDto.Add(dtoSemPreenchimento);
+                        }  
+   
+                        dtoSemPreenchimento.Resposta = "Sem preenchimento";
+                        dtoSemPreenchimento.Quantidade = totalAlunos - totalRespostas;
+                        dtoSemPreenchimento.Total = alunosPorAno;
+                        dtoSemPreenchimento.Percentual = decimal.Divide(totalAlunos - totalRespostas, totalAlunos);
                     }
 
                     perguntasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
