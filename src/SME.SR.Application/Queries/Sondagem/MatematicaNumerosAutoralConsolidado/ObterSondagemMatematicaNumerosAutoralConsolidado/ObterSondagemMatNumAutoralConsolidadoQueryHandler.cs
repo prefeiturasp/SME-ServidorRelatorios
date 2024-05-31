@@ -231,18 +231,27 @@ namespace SME.SR.Application
             }
 
             if (consideraNovaOpcaoRespostaSemPreenchimento) return;
-            var respostaSempreenchimento = CriaRespostaSemPreenchimento(totalDeAlunos, totalRespostas);
-            pergunta.Respostas.Add(respostaSempreenchimento);
+
+            var respostaSempreenchimento = pergunta.Respostas.Find(resp => resp.Resposta == "Sem preenchimento");
+
+            if (respostaSempreenchimento == null)
+            {
+                respostaSempreenchimento = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto();
+                pergunta.Respostas.Add(respostaSempreenchimento);
+            }
+
+            CarregarRespostaSemPreenchimento(totalDeAlunos, totalRespostas, respostaSempreenchimento);
         }
 
-        private static RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto CriaRespostaSemPreenchimento(int totalDeAlunos, int quantidadeTotalRespostasPergunta)
+        private static void CarregarRespostaSemPreenchimento(
+                                                             int totalDeAlunos, 
+                                                             int quantidadeTotalRespostasPergunta,
+                                                             RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto respostaSemPreenchimento)
         {
-            var respostaSemPreenchimento = new RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoRespostaDto();
             var quantidade = totalDeAlunos - quantidadeTotalRespostasPergunta;
             respostaSemPreenchimento.Resposta = "Sem preenchimento";
             respostaSemPreenchimento.AlunosQuantidade = quantidade >= 0 ? quantidade : 0;
             respostaSemPreenchimento.AlunosPercentual = (respostaSemPreenchimento.AlunosQuantidade > 0 ? (respostaSemPreenchimento.AlunosQuantidade * 100) / (double)totalDeAlunos : 0);
-            return respostaSemPreenchimento;
         }
     }
 
