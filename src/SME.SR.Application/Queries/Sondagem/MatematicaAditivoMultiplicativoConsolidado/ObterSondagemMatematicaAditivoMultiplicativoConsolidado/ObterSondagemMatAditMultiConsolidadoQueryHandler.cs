@@ -202,6 +202,8 @@ namespace SME.SR.Application
 
             GerarGrafico(relatorio, qtdAlunos, consideraNovaOpcaoRespostaSemPreenchimento);
 
+            relatorio.TotalDeAlunos = request.QuantidadeTotalAlunos;
+
             return relatorio;
         }
 
