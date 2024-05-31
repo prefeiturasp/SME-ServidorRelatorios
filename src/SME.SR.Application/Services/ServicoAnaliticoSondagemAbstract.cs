@@ -142,7 +142,7 @@ namespace SME.SR.Application.Services
             if (totalDeTurmas is null || !totalDeTurmas.Any())
                 return 0;
 
-            return totalDeTurmas?.FirstOrDefault(t => t.Ano == anoTurma).Quantidade ?? 0;
+            return totalDeTurmas?.FirstOrDefault(t => t.Ano == anoTurma)?.Quantidade ?? 0;
         }
 
         protected Task<PeriodoFixoSondagem> ObterPeriodoFixoSondagemPortugues(bool ehIAD)
