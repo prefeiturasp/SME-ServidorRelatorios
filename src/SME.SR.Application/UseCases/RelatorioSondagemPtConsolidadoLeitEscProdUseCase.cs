@@ -292,8 +292,11 @@ namespace SME.SR.Application
 
             var respostas = new List<RelatorioSondagemPortuguesConsolidadoRespostaDto>();
 
-            var respAgrupado = linhasSondagem.DistinctBy(l=> l.AlunoEolCode).ToList()
-                .GroupBy(o => o.Resposta).Select(g => new { Label = g.Key, Value = g.Count() }).OrderBy(r => r.Label).ToList();
+            var respAgrupado = linhasSondagem.GroupBy(o => o.Resposta)
+                                              .Where(x => x.Key.Length > 0)
+                                              .Select(g => new { Label = g.Key, Value = g.Count() })
+                                              .OrderBy(r => r.Label)
+                                              .ToList();
 
             int totalRespostas = 0;
             int totalAlunosParticipantesSondagem = alunosPorAno;
