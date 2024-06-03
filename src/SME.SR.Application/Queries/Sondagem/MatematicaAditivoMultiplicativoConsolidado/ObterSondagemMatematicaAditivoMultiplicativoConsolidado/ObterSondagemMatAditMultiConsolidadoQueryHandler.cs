@@ -154,13 +154,13 @@ namespace SME.SR.Application
 
                 qtdAlunos = listaAlunos.DistinctBy(a => a.CodigoAluno).Count();
                 var ordem = 1;
-                foreach (var perguntaOrdem in listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == null))
+                foreach (var perguntaOrdem in listaPerguntasOrdem.GroupBy(lpo => new { lpo.PerguntaIdPai, lpo.PerguntaDescricaoPai }))
                 {
-                    var perguntaFilho = listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == perguntaOrdem.Id);
+                    var perguntaFilho = listaPerguntasOrdem.Where(lpo => lpo.PerguntaId == perguntaOrdem.Key.PerguntaIdPai);
 
                     var perguntasRespostas = new RelatorioSondagemComponentesMatematicaAditMulConsolidadoPerguntasRespostasDto();
 
-                    perguntasRespostas.Ordem = $"ORDEM {ordem} - {perguntaOrdem.Pergunta}";
+                    perguntasRespostas.Ordem = $"ORDEM {ordem} - {perguntaOrdem.Key.PerguntaDescricaoPai}";
 
                     foreach (var pergunta in perguntaFilho)
                     {
