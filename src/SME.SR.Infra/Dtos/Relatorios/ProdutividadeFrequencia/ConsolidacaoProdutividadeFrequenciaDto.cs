@@ -31,7 +31,7 @@ namespace SME.SR.Infra
         public int AnoLetivo { get; set; }
         public string CodigoComponenteCurricular { get; set; }
         public string NomeComponenteCurricular { get; set; }
-        public int MediaDiasDataAulaRegistroFrequencia { get; set; }
+        public double MediaDiasDataAulaRegistroFrequencia { get; set; }
     }
 
     public static class ConsolidacaoProdutividadeFrequenciaExtension
@@ -48,7 +48,7 @@ namespace SME.SR.Infra
                     DescricaoDre = consolAgrupado.Key.DescricaoDre, 
                     Bimestre = consolAgrupado.Key.Bimestre,
                     AnoLetivo = consolAgrupado.Key.AnoLetivo,
-                    MediaDiasDataAulaRegistroFrequencia = consolAgrupado.Sum(c => c.DiferenciaDiasDataAulaRegistroFrequencia)/consolAgrupado.Count()
+                    MediaDiasDataAulaRegistroFrequencia = Math.Round((double) consolAgrupado.Sum(c => c.DiferenciaDiasDataAulaRegistroFrequencia)/consolAgrupado.Count(), 2)
                 })
                 .OrderBy(consol => consol.CodigoDre)
                 .ThenBy(consol => consol.DescricaoUe)
@@ -69,7 +69,7 @@ namespace SME.SR.Infra
                     RfProfessor = consolAgrupado.Key.RfProfessor,
                     NomeProfessor = consolAgrupado.Key.NomeProfessor,
                     AnoLetivo = consolAgrupado.Key.AnoLetivo,
-                    MediaDiasDataAulaRegistroFrequencia = consolAgrupado.Sum(c => c.DiferenciaDiasDataAulaRegistroFrequencia) / consolAgrupado.Count()
+                    MediaDiasDataAulaRegistroFrequencia = Math.Round((double)consolAgrupado.Sum(c => c.DiferenciaDiasDataAulaRegistroFrequencia) / consolAgrupado.Count(), 2)
                 })
                 .OrderBy(consol => consol.CodigoDre)
                 .ThenBy(consol => consol.DescricaoUe)
