@@ -37,9 +37,11 @@ namespace SME.SR.Application.Services
                     var listaUes = await ObterUe(agrupadoPorUe.Select(x => x.Key).ToArray());
                     var dre = listaDres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     var totalTurmas = await ObterQuantidadeTurmaPorAnoDre(dre.Id);
+                    var totalAlunosDre = await ObterTotalDeAlunosPorDre(dre.Codigo);
 
                     foreach (var itemUe in agrupadoPorUe)
                     {
+                        var totalDeAlunosUe = await ObterTotalDeAlunosPorUe(dre.Codigo, itemUe.Key, totalAlunosDre);
                         var totalTurmasUe = await ObterQuantidadeTurmaPorAnoUe(dre.Id, itemUe.Key, totalTurmas);
                         var agrupamentoPorAnoTurma = itemUe.OrderBy(x =>x.AnoTurma)
                                                            .GroupBy(x => x.AnoTurma);
@@ -47,7 +49,11 @@ namespace SME.SR.Application.Services
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
                             var ue = listaUes.FirstOrDefault(x => x.Codigo == itemUe.Key);
-                            var respostaSondagemAnaliticoLeituraDto = ObterResposta(anoTurma, ue, totalTurmasUe);
+                            var respostaSondagemAnaliticoLeituraDto = ObterResposta(
+                                                                                    anoTurma, 
+                                                                                    ue, 
+                                                                                    totalTurmasUe, 
+                                                                                    ObterTotalDeAluno(totalDeAlunosUe, anoTurma.Key));
 
                             relatorioSondagemAnaliticoLeituraDto.Respostas.Add(respostaSondagemAnaliticoLeituraDto);
                         }
@@ -72,7 +78,8 @@ namespace SME.SR.Application.Services
         private RespostaSondagemAnaliticoLeituraDto ObterResposta(
                                                                 IGrouping<string, TotalRespostasAnaliticoLeituraDto> respostaAnoTurma,
                                                                 Ue ue,
-                                                                IEnumerable<TotalDeTurmasPorAnoDto> totalTurmaUe)
+                                                                IEnumerable<TotalDeTurmasPorAnoDto> totalTurmaUe,
+                                                                int totalDeAlunos)
         {
             var resposta = new RespostaSondagemAnaliticoLeituraDto();
 
@@ -83,20 +90,11 @@ namespace SME.SR.Application.Services
                 Nivel3 = respostaAnoTurma.Select(x => x.Nivel3).Sum(),
                 Nivel4 = respostaAnoTurma.Select(x => x.Nivel4).Sum(),
                 SemPreenchimento = respostaAnoTurma.Select(x => x.SemPreenchimento).Sum(),
-                TotalDeAlunos = TotaldeAlunos(respostaAnoTurma),
+                TotalDeAlunos = totalDeAlunos,
                 Ano = int.Parse(respostaAnoTurma.Key),
                 TotalDeTurma = totalTurmaUe?.FirstOrDefault(t => t.Ano == respostaAnoTurma.Key).Quantidade ?? 0,
                 Ue = ue.TituloTipoEscolaNome
             };
-        }
-
-        private int TotaldeAlunos(IGrouping<string, TotalRespostasAnaliticoLeituraDto> respostaAnoTurma)
-        {
-            return respostaAnoTurma.Select(x => x.SemPreenchimento).Sum() +
-                   respostaAnoTurma.Select(x => x.Nivel1).Sum() +
-                   respostaAnoTurma.Select(x => x.Nivel2).Sum() +
-                   respostaAnoTurma.Select(x => x.Nivel3).Sum() +
-                   respostaAnoTurma.Select(x => x.Nivel4).Sum();
         }
     }
 }
