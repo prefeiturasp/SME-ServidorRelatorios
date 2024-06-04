@@ -91,7 +91,7 @@ namespace SME.SR.Application.Services
 
         protected async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorDre(string codigoDre)
         {
-            if (EhTodosPreenchidos() || filtro.UeCodigo != TODOS)
+            if (filtro.UeCodigo != TODOS)
                 return Enumerable.Empty<TotalAlunosAnoTurmaDto>();
 
             return await ObterTotalDeAlunosPorUe(codigoDre, string.Empty, null);
@@ -102,9 +102,6 @@ namespace SME.SR.Application.Services
                                                                 string codigoUe,
                                                                 IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunos)
         {
-            if (EhTodosPreenchidos())
-                return Enumerable.Empty<TotalAlunosAnoTurmaDto>();
-
             if (!(totalDeAlunos is null) && totalDeAlunos.Any())
                 return totalDeAlunos.Where(x => x.CodigoUe == codigoUe);
 
@@ -160,9 +157,6 @@ namespace SME.SR.Application.Services
             string anoTurma,
             IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunosUe)
         {
-            if (EhTodosPreenchidos())
-                return ObterTotalDeAlunos(respostasOrdem);
-
             return ObterTotalAlunosOuTotalRespostas(
                                     respostasOrdem,
                                     ObterTotalDeAluno(totalDeAlunosUe, anoTurma));
