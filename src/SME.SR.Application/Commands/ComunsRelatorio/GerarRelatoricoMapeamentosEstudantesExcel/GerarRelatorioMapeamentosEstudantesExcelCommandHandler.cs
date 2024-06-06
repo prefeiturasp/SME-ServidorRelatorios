@@ -109,12 +109,6 @@ namespace SME.SR.Application
                 titulos[c.nmColuna] = c.titulo
             );
             data.Rows.Add(titulos);
-
-            /*titulos = data.NewRow();
-            ColunasCabecalho.ForEach(c =>
-                titulos[c.nmColuna] = ""
-            );
-            data.Rows.Add(titulos);*/
             return data;
         }
 
