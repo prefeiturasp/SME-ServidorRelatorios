@@ -145,9 +145,10 @@
 
                     totalQuantidade += respostas.AlunosQuantidade;
                 }
+
                 <tr class="fundo-cinza">
                     <td class="alinhar-esquerda espaco-esquerda-15">TOTAL</td>
-                    <td>@totalQuantidade</td>
+                    <td>@(totalQuantidade > Model.TotalDeAlunos ? totalQuantidade : Model.TotalDeAlunos)</td>
                     <td>100</td>
                 </tr>
             </tbody>

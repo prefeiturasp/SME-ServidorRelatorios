@@ -11,5 +11,6 @@
         public RespostaCapacidadeDeLeituraDto OrdemDoNarrar { get; set; }
         public RespostaCapacidadeDeLeituraDto OrdemDoRelatar { get; set; }
         public RespostaCapacidadeDeLeituraDto OrdemDoArgumentar { get; set; }
+        public int TotalDeReposta { get { return OrdemDoNarrar.Localizacao.Total; } }
     }
 }

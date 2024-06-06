@@ -461,5 +461,21 @@ namespace SME.SR.Workers.SGP.Controllers
             await relatorioPlanoAnualUseCase.Executar(request);
             return true;
         }
+
+        [HttpGet("relatorios/buscasativas")]
+        [Action("relatorios/buscasativas", typeof(IRelatorioBuscasAtivasUseCase))]
+        public async Task<bool> RelatorioBuscasAtivas([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBuscasAtivasUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/produtividade-frequencia")]
+        [Action("relatorios/produtividade-frequencia", typeof(IRelatorioProdutividadeFrequenciaUseCase))]
+        public async Task<bool> RelatorioProdutividadeFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioProdutividadeFrequenciaUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
     }
 }
