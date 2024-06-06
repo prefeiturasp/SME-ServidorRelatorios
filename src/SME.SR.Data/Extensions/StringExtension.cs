@@ -3,6 +3,7 @@ using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SME.SR.Data.Extensions
 {
@@ -56,6 +57,11 @@ namespace SME.SR.Data.Extensions
         public static bool EhIdComponenteCurricularTerritorioSaberAgrupado(this long source)
         {
             return source >= TerritorioSaberConstants.COMPONENTE_AGRUPAMENTO_TERRITORIO_SABER_ID_INICIAL;
+        }
+
+        public static string SomenteNumeros(this string valor)
+        {
+            return string.IsNullOrEmpty(valor) ? string.Empty : Regex.Replace(valor, "[^0-9]", "");
         }
     }
 }
