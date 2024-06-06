@@ -16,6 +16,8 @@
         public const string LeuComMuitaDificuldade = "Leu com muita dificuldade";
         public const string LeuComAlgumaFluencia = "Leu com alguma fluência";
         public const string LeuComFluencia = "Leu com fluência";
-        
+        public const string SemPreenchimento = "Sem preenchimento";
+
+
     }
 }
