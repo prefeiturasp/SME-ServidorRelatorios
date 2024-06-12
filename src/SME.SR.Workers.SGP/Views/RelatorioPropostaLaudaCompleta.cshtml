@@ -1,0 +1,96 @@
+﻿@using SME.SR.Infra.Dtos.Relatorios.Conecta;
+
+@model RelatorioPaginaLaudaCompletaDto
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RELATÓRIO DE PROPOSTA LAUDA COMPLETA</title>
+</head>
+
+<body class="body-relatorio">
+    <style>
+
+        .body-relatorio {
+            margin: 0.5cm auto;
+            font-family: 'Roboto Mono', monospace;
+            width: 21cm;
+            min-height: 29.7cm;
+            background: white;
+            color: #42474a;
+        }
+
+        .titulo {
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .divCampo{
+            border: 1px solid #42474a !important;
+            margin-top: 5px;
+        }
+
+        .content {
+            margin-top: 10px; 
+            font-size: 14px;
+        }
+    </style>
+
+    <div id="page" class="pagina">
+        <header id="header">
+            <div class='titulo'>PREFEITURA DA CIDADE DE SÃO PAULO</div>
+            <div class='titulo'>SECRETARIA MUNICIPAL DE EDUCAÇÃO</div>
+            <div class='titulo'>COPED / DF - DIVISÃO DE FORMAÇÃO</div>
+            <div class='titulo'>PROPOSTA DE FORMAÇÃO</div>
+            <div class='titulo'>Texto de autoria da área promotora</div>
+        </header>
+        <div class="content">
+            @{ GerarConteudo(); }
+        </div>
+     </div>
+    <footer class="footer">
+        <div class="titulo-sgp-rodape">
+        </div>
+    </footer>
+    </div>
+</body>
+</html>
+
+@{
+    void GerarConteudo()
+    {
+        foreach(var campo in Model.Campos)
+        {
+            <div class="divCampo">
+               @{ GerarCampo(campo); }
+            </div>
+        }
+    }
+
+    void GerarCampo(RelatorioCampoLaudaCompletaDto campo)
+    {
+        var campoMesmaLinha = !campo.OutraLinha ? campo.Descricao : string.Empty;
+
+        <div>
+            @if (campo.MostrarNome)
+            {
+                <strong>@campo.NomeCampo:</strong> @campoMesmaLinha
+            } 
+        </div>
+
+        GerarDescricao(campo.OutraLinha, campo.Descricao);
+    }
+
+    void GerarDescricao(bool adicionarDescricao, string descricao)
+    {
+        if (adicionarDescricao)
+        {
+            <div>@Html.Raw(descricao)</div>
+        }
+    }
+}

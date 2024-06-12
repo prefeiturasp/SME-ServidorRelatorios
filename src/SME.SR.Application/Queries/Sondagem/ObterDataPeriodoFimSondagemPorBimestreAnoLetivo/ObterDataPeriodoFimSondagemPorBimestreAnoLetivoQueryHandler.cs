@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Queries
 {
-    public class ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQueryHandler : IRequestHandler<ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery, DateTime>
+    public class ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQueryHandler : IRequestHandler<ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery, PeriodoCompletoSondagemDto>
     {
         private readonly IPeriodoSondagemRepository periodoSondagemRepository;
 
@@ -15,26 +15,23 @@ namespace SME.SR.Application.Queries
         {
             this.periodoSondagemRepository = periodoSondagemRepository ?? throw new ArgumentNullException(nameof(periodoSondagemRepository));
         }
-        public async Task<DateTime> Handle(ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery request, CancellationToken cancellationToken)
+        public async Task<PeriodoCompletoSondagemDto> Handle(ObterDataPeriodoFimSondagemPorBimestreAnoLetivoQuery request, CancellationToken cancellationToken)
         {
-
             var descricaoBimestre = $"{request.Bimestre}° Bimestre";
 
-            var dataFimPeriodoFixo = await periodoSondagemRepository.ObterPeriodoFixoFimPorDescricaoAnoLetivo(descricaoBimestre, request.AnoLetivo);
+            var periodoFixo = await periodoSondagemRepository.ObterPeriodoFixoFimPorDescricaoAnoLetivo(descricaoBimestre, request.AnoLetivo);
 
-            if (dataFimPeriodoFixo == default || dataFimPeriodoFixo.Ticks == 0)
+            if (periodoFixo is null || periodoFixo.PeriodoFim == default || periodoFixo.PeriodoFim.Ticks == 0)
             {
-                var dataFimPeriodoAbertura = await periodoSondagemRepository.ObterPeriodoAberturaFimPorBimestreAnoLetivo(request.Bimestre, request.AnoLetivo);
+                var periodoAbertura = await periodoSondagemRepository.ObterPeriodoAberturaFimPorBimestreAnoLetivo(request.Bimestre, request.AnoLetivo);
 
-                if (dataFimPeriodoAbertura == default || dataFimPeriodoAbertura.Ticks == 0)
+                if (periodoAbertura is null || periodoAbertura.PeriodoFim == default || periodoAbertura.PeriodoFim.Ticks == 0)
                     throw new NegocioException("Não foi possível localizar a data fim do período da sondagem.");
 
-                return dataFimPeriodoAbertura;
+                return periodoAbertura;
             }
-            else
-            {
-                return dataFimPeriodoFixo;
-            }
+
+            return periodoFixo;
         }
     }
 }

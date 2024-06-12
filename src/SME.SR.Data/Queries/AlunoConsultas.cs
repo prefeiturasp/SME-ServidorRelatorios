@@ -412,6 +412,8 @@ namespace SME.SR.Data
 								amn.CodigoAluno cd_aluno,
 								se.sg_resumida_serie
 				FROM alunos_matriculas_norm amn	
+								se.sg_resumida_serie
+				FROM alunos_matriculas_norm amn	
 					INNER JOIN turma_escola te
 						ON amn.CodigoTurma = te.cd_turma_escola
 					INNER JOIN serie_turma_escola ste
