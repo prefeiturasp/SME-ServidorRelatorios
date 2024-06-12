@@ -13,6 +13,7 @@ namespace SME.SR.Data
     {
         private const int SITUACAO_PUBLICADA = 1;
         private const int HOMOLOGADA = 1;
+        private const int SITUACAO_APROVADA = 9; 
 
         private readonly VariaveisAmbiente variaveisAmbiente;
 
@@ -23,7 +24,14 @@ namespace SME.SR.Data
 
         public async Task<Proposta> ObterProposta(long propostaId)
         {
-            var parametro = new { propostaId, situacaoPublicada = SITUACAO_PUBLICADA, homologada = HOMOLOGADA };
+            var parametro = new
+            {
+                propostaId,
+                situacaoPublicada = SITUACAO_PUBLICADA,
+                situacaoAprovada = SITUACAO_APROVADA,
+                homologada = HOMOLOGADA
+            };
+            
             var query = new StringBuilder();
 
             query.AppendLine(ObterQueryProposta());
@@ -53,7 +61,14 @@ namespace SME.SR.Data
 
         public async Task<PropostaCompleta> ObterPropostaCompleta(long propostaId)
         {
-            var parametro = new { propostaId, situacaoPublicada = SITUACAO_PUBLICADA, homologada = HOMOLOGADA };
+            var parametro = new
+            {
+                propostaId,
+                situacaoPublicada = SITUACAO_PUBLICADA,
+                situacaoAprovada = SITUACAO_APROVADA,
+                homologada = HOMOLOGADA
+            };
+
             var query = new StringBuilder();
 
             query.AppendLine(ObterQueryPropostaCompleta());
@@ -106,7 +121,7 @@ namespace SME.SR.Data
             query.AppendLine("INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id ");
             query.AppendLine("WHERE p.id = @propostaId ");
             query.AppendLine(" AND NOT p.excluido ");
-            query.AppendLine(" AND p.situacao = @situacaoPublicada");
+            query.AppendLine(" AND p.situacao in (@situacaoPublicada, @situacaoAprovada)");
             query.AppendLine(" AND p.formacao_homologada = @homologada;");
 
             return query.ToString();
@@ -127,7 +142,7 @@ namespace SME.SR.Data
             query.AppendLine("INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id ");
             query.AppendLine("WHERE p.id = @propostaId ");
             query.AppendLine(" AND NOT p.excluido ");
-            query.AppendLine(" AND p.situacao = @situacaoPublicada");
+            query.AppendLine(" AND p.situacao in (@situacaoPublicada, @situacaoAprovada)");
             query.AppendLine(" AND p.formacao_homologada = @homologada;");
 
             return query.ToString();
