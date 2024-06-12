@@ -21,8 +21,8 @@ namespace SME.SR.Application.UseCases
             if (proposta == null || proposta.Id == 0)
                 return string.Empty;
 
-            /*if (proposta.EhAreaPromotoraDireta)
-                return await mediator.Send(new GerarRelatorioLaudaDePublicacaoDiretaDocCommand(proposta));*/
+            if (proposta.EhAreaPromotoraDireta)
+                return await mediator.Send(new GerarRelatorioLaudaDePublicacaoDiretaDocCommand(proposta));
 
             return await mediator.Send(new GerarRelatorioLaudaDePublicacaoParceiraDocCommand(proposta)); 
         }
