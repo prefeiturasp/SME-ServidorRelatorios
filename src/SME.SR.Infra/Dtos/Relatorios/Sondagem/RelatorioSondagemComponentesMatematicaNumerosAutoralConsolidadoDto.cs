@@ -19,7 +19,7 @@ namespace SME.SR.Infra
         public string RF { get; set; }
         public string Usuario { get; set; }
         public string Turma { get; set; }
-
+        public int TotalDeAlunos { get; set; }
         public List<RelatorioSondagemComponentesMatematicaNumerosAutoralConsolidadoPerguntasRespostasDto> PerguntasRespostas { get; set; }
         public List<GraficoBarrasVerticalDto> GraficosBarras { get; set; }
     }
