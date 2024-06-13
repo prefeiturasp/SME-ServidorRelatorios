@@ -116,7 +116,9 @@ namespace SME.SR.Data
                                      p.data_realizacao_inicio as DataRealizacaoInicio, p.data_realizacao_fim as DataRealizacaoFim,
                                      p.quantidade_turmas as QuantidadeTurmas, p.quantidade_vagas_turma as QuantidadeVagasTurmas, 
                                      p.data_inscricao_inicio as DataInscricaoInicio, p.data_inscricao_fim as DataInscricaoFim,
-                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna ");
+                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna,
+                                     p.publico_alvo_outros as PublicoAlvo_Outros, p.funcao_especifica_outros as FuncaoEspecifica_Outros, 
+                                     p.outros_criterios as Criterios_Outros, p.criterio_validacao_inscricao_outros as CriteriosValidacao_Outros ");
             query.AppendLine("FROM proposta p ");
             query.AppendLine("INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id ");
             query.AppendLine("WHERE p.id = @propostaId ");
@@ -137,7 +139,9 @@ namespace SME.SR.Data
                                      p.data_realizacao_inicio as DataRealizacaoInicio, p.data_realizacao_fim as DataRealizacaoFim,
                                      p.quantidade_turmas as QuantidadeTurmas, p.quantidade_vagas_turma as QuantidadeVagasTurmas, 
                                      p.data_inscricao_inicio as DataInscricaoInicio, p.data_inscricao_fim as DataInscricaoFim,
-                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna ");
+                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna,
+                                     p.publico_alvo_outros as PublicoAlvo_Outros, p.funcao_especifica_outros as FuncaoEspecifica_Outros, 
+                                     p.outros_criterios as Criterios_Outros, p.criterio_validacao_inscricao_outros as CriteriosValidacao_Outros");
             query.AppendLine("FROM proposta p ");
             query.AppendLine("INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id ");
             query.AppendLine("WHERE p.id = @propostaId ");

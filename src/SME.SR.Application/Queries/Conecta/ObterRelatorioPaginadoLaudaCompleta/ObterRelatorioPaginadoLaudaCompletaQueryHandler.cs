@@ -16,7 +16,8 @@ namespace SME.SR.Application
     {
         private const int TOTAL_CARACTER_LINHA = 92;
         private const int TOTAL_LINHAS = 52;
-        private const int TOTAL_CARACTER_LINHA_PAG = 5300; 
+        private const int TOTAL_CARACTER_LINHA_PAG = 5300;
+        private const string RESPOSTA_OUTROS = "OUTROS";
 
         private int totalLinhaPaginaAtual = 0;
         private PropostaCompleta propostaCompleta;
@@ -238,10 +239,18 @@ namespace SME.SR.Application
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoCriterioCertificacao()
-        {   
-            var criterios = propostaCompleta.CriteriosCertificacao is null ? 
+        {
+            var criteriosCertificacao = propostaCompleta.CriteriosCertificacao.ToList();
+            criteriosCertificacao.ForEach(item =>
+            {
+                if (item.Nome.ToUpper().Equals(RESPOSTA_OUTROS))
+                    item.DescricaoAdicional = propostaCompleta.Criterios_Outros;
+            });
+
+            var criterios = criteriosCertificacao is null ? 
                           string.Empty : 
-                          String.Join(", ", propostaCompleta.CriteriosCertificacao.Select(p => p.Nome));
+                          String.Join(", ", criteriosCertificacao.Select(p => $@"{p.Nome}{(string.IsNullOrEmpty(p.DescricaoAdicional)
+                                                                                                                ? string.Empty : $": {p.DescricaoAdicional}")}"));
             
             return ObterCampo("CRITÉRIOS DE AVALIAÇÃO E APROVAÇÃO PARA EXPEDIÇÃO DE CERTIFICADO", criterios, true);
         }
@@ -268,12 +277,24 @@ namespace SME.SR.Application
 
         private RelatorioCampoLaudaCompletaDto ObterCampoPublicoAlvo()
         {
-            return ObterCampo("PÚBLICO ALVO", ObterDescricao(propostaCompleta.PublicosAlvo), true);
+            var publicosAlvo = propostaCompleta.PublicosAlvo.ToList();
+            publicosAlvo.ForEach(item =>
+            {
+                if (item.Nome.ToUpper().Equals(RESPOSTA_OUTROS))
+                    item.DescricaoAdicional = propostaCompleta.PublicoAlvo_Outros;
+            });
+            return ObterCampo("PÚBLICO ALVO", ObterDescricao(publicosAlvo), true);
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoFuncao()
         {
-            return ObterCampo("FUNÇÃO ESPECÍFICA", ObterDescricao(propostaCompleta.FuncaoEspecifica), true);
+            var funcoes = propostaCompleta.FuncaoEspecifica.ToList();
+            funcoes.ForEach(item =>
+            {
+                if (item.Nome.ToUpper().Equals(RESPOSTA_OUTROS))
+                    item.DescricaoAdicional = propostaCompleta.FuncaoEspecifica_Outros;
+            });
+            return ObterCampo("FUNÇÃO ESPECÍFICA", ObterDescricao(funcoes), true);
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoVagasRemanecentes()
@@ -283,7 +304,8 @@ namespace SME.SR.Application
 
         private string ObterDescricao(IEnumerable<PropostaPublicoAlvo> publico)
         {
-            return publico is null ? string.Empty : String.Join(", ", publico.Select(p => p.Nome)).ToUpper();
+            return publico is null ? string.Empty : String.Join(", ", publico.Select(p => $@"{p.Nome.ToUpper()}{(string.IsNullOrEmpty(p.DescricaoAdicional)
+                                                                                                                ? string.Empty : $": {p.DescricaoAdicional.ToUpper()}")}"));
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoCorpoDocente()
@@ -298,13 +320,21 @@ namespace SME.SR.Application
 
         private RelatorioCampoLaudaCompletaDto ObterCampoInscricao()
         {
+            var criteriosValidacao = propostaCompleta.CriteriosValidacao.ToList();
+            criteriosValidacao.ForEach(item =>
+            {
+                if (item.Nome.ToUpper().Equals(RESPOSTA_OUTROS))
+                    item.DescricaoAdicional = propostaCompleta.CriteriosValidacao_Outros;
+            });
+
             var descricao = new StringBuilder();
             var textoPeriodo = "DE {0} ATÉ {1}";
             var textoLink = "<br> PELO LINK: {0}";
             var link = propostaCompleta.EhAreaPromotoraDireta ? "https://conectaformacao.sme.prefeitura.sp.gov.br/area-publica" : propostaCompleta.LinkInscricaoExterna;
-            var criterios = propostaCompleta.CriteriosValidacao is null ?
+            var criterios = criteriosValidacao is null ?
                             string.Empty :
-                            String.Join(", ", propostaCompleta.CriteriosValidacao.Select(p => p.Nome));
+                            String.Join(", ", criteriosValidacao.Select(p => $@"{p.Nome}{(string.IsNullOrEmpty(p.DescricaoAdicional)
+                                                                                                                ? string.Empty : $": {p.DescricaoAdicional}")}"));
 
             descricao.AppendLine(String.Format(textoPeriodo, propostaCompleta.DataInscricaoInicio.ToString("dd/MM/yyyy"), propostaCompleta.DataInscricaoFim.ToString("dd/MM/yyyy")));
             descricao.AppendLine(String.Format(textoLink, link));
