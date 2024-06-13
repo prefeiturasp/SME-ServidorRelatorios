@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
+using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
 using SME.SR.Workers.SGP.Filters;
@@ -417,6 +419,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/mapeamentosestudantes")]
+        [Action("relatorios/mapeamentosestudantes", typeof(IRelatorioMapeamentosEstudantesUseCase))]
+        public async Task<bool> RelatorioMapeamentosEstudantes([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioMapeamentosEstudantesUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
         #region App Escola Aqui
         [HttpGet("relatorios/acompanhamento-aprendizagem-escolaaqui")]
         [Action("relatorios/acompanhamento-aprendizagem-escolaaqui", typeof(IRelatorioAcompanhamentoAprendizagemUseCase))]
@@ -441,6 +451,22 @@ namespace SME.SR.Workers.SGP.Controllers
         public async Task<bool> RelatorioPlanoAnual([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAnualUseCase relatorioPlanoAnualUseCase)
         {
             await relatorioPlanoAnualUseCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/buscasativas")]
+        [Action("relatorios/buscasativas", typeof(IRelatorioBuscasAtivasUseCase))]
+        public async Task<bool> RelatorioBuscasAtivas([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioBuscasAtivasUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/produtividade-frequencia")]
+        [Action("relatorios/produtividade-frequencia", typeof(IRelatorioProdutividadeFrequenciaUseCase))]
+        public async Task<bool> RelatorioProdutividadeFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioProdutividadeFrequenciaUseCase useCase)
+        {
+            await useCase.Executar(request);
             return true;
         }
     }

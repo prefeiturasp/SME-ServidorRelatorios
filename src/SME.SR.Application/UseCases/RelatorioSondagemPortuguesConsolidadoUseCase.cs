@@ -23,6 +23,7 @@ namespace SME.SR.Application
         public async Task<string> Executar(FiltroRelatorioSincronoDto request)
         {
             var filtros = request.ObterObjetoFiltro<RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto>();
+            var consideraNovaOpcaoRespostaSemPreenchimento = await mediator.Send(new UtilizarNovaOpcaoRespostaSemPreenchimentoQuery(filtros.Semestre,filtros.Bimestre,filtros.AnoLetivo));
 
             if (filtros.GrupoId != GrupoSondagemEnum.CapacidadeLeitura.Name())
                 throw new NegocioException($"{ filtros.GrupoId } fora do esperado.");
@@ -30,7 +31,7 @@ namespace SME.SR.Application
             var semestre = ObterSemestrePeriodo(filtros);
             var periodoCompleto = await ObterDatasPeriodoFixoAnual(0, semestre, filtros.AnoLetivo);
 
-            int alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
+            var alunosPorAno = await mediator.Send(new ObterTotalAlunosPorUeAnoSondagemQuery(
                 filtros.Ano.ToString(),
                 filtros.UeCodigo,
                 filtros.AnoLetivo,
@@ -40,16 +41,16 @@ namespace SME.SR.Application
                 true, 
                 periodoCompleto.PeriodoInicio));
 
-            RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
+            var relatorio = new RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto()
             {
                 Cabecalho = await ObterCabecalho(filtros),
-                Planilhas = await ObterPlanilhas(filtros, alunosPorAno)
+                Planilhas = await ObterPlanilhas(filtros, alunosPorAno,consideraNovaOpcaoRespostaSemPreenchimento)
             };
 
             if (relatorio == null)
                 throw new NegocioException("Não foi possível localizar dados com os filtros informados.");
 
-            GerarGrafico(relatorio, 0);
+            GerarGrafico(relatorio, 0,consideraNovaOpcaoRespostaSemPreenchimento);
 
             return await mediator
                 .Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioSondagemPortuguesConsolidadoCapacidadeLeitura", relatorio, Guid.NewGuid(), envioPorRabbit: false));
@@ -57,13 +58,8 @@ namespace SME.SR.Application
 
         private int ObterSemestrePeriodo(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros)
         {
-            if (filtros.Bimestre != 0)
-            {
-                if (filtros.Bimestre <= SEGUNDO_BIMESTRE)
-                    return PRIMEIRO_SEMESTRE;
-                return SEGUNDO_SEMESTRE;
-            }
-            return filtros.Semestre;
+            if (filtros.Bimestre == 0) return filtros.Semestre;
+            return filtros.Bimestre <= SEGUNDO_BIMESTRE ? PRIMEIRO_SEMESTRE : SEGUNDO_SEMESTRE;
         }
 
         private async Task<PeriodoCompletoSondagemDto> ObterDatasPeriodoFixoAnual(int bimestre, int semestre, int anoLetivo)
@@ -73,7 +69,7 @@ namespace SME.SR.Application
             return await mediator.Send(new ObterDatasPeriodoSondagemPorSemestreAnoLetivoQuery(semestre, anoLetivo));
         }
 
-        private void GerarGrafico(RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio, int qtdAlunos)
+        private static void GerarGrafico(RelatorioSondagemPortuguesConsolidadoLeituraRelatorioDto relatorio, int qtdAlunos,bool consideraNovaOpcaoRespostaSemPreenchimento)
         {
             relatorio.GraficosBarras = new List<GraficoBarrasVerticalDto>();
             foreach (var ordem in relatorio.Planilhas)
@@ -83,9 +79,8 @@ namespace SME.SR.Application
                     var legendas = new List<GraficoBarrasLegendaDto>();
                     var grafico = new GraficoBarrasVerticalDto(420, $"{ordem.Ordem} - {pergunta.Pergunta}");
 
-                    int chaveIndex = 0;
-                    string chave = String.Empty;
-                    int qtdSemPreenchimento = 0;
+                    var chaveIndex = 0;
+                    var chave = string.Empty;
 
                     foreach (var resposta in pergunta.Respostas)
                     {
@@ -101,22 +96,26 @@ namespace SME.SR.Application
                     }
 
                     var totalRespostas = (int)grafico.EixosX.Sum(e => e.Valor);
-                    qtdSemPreenchimento = qtdAlunos - totalRespostas;
 
-                    if (qtdSemPreenchimento > 0)
+                    if (!consideraNovaOpcaoRespostaSemPreenchimento)
                     {
-                        chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
+                        var qtdSemPreenchimento = qtdAlunos - totalRespostas;
 
-                        legendas.Add(new GraficoBarrasLegendaDto()
+                        if (qtdSemPreenchimento > 0)
                         {
-                            Chave = chave,
-                            Valor = "Sem preenchimento"
-                        });
+                            chave = Constantes.ListaChavesGraficos[chaveIndex++].ToString();
 
-                        grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                            legendas.Add(new GraficoBarrasLegendaDto()
+                            {
+                                Chave = chave,
+                                Valor = "Sem preenchimento"
+                            });
+
+                            grafico.EixosX.Add(new GraficoBarrasVerticalEixoXDto(qtdSemPreenchimento, chave));
+                        }
                     }
 
-                    var valorMaximoEixo = grafico.EixosX.Count() > 0 ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
+                    var valorMaximoEixo = grafico.EixosX.Any() ? grafico.EixosX.Max(a => int.Parse(a.Valor.ToString())) : 0;
 
                     grafico.EixoYConfiguracao = new GraficoBarrasVerticalEixoYDto(350, "Quantidade Alunos", valorMaximoEixo.ArredondaParaProximaDezena(), 10);
                     grafico.Legendas = legendas;
@@ -130,21 +129,21 @@ namespace SME.SR.Application
         {
             var usuario = await mediator.Send(new ObterUsuarioPorCodigoRfQuery() { UsuarioRf = filtros.UsuarioRF });
 
-            string dreAbreviacao = "Todas";
+            var dreAbreviacao = "Todas";
             if (filtros.DreCodigo != null && filtros.DreCodigo != "0")
             {
                 var dre = await mediator.Send(new ObterDrePorCodigoQuery() { DreCodigo = filtros.DreCodigo });
                 dreAbreviacao = dre.Abreviacao;
             }
 
-            string ueNomeComTipoEscola = "Todas";
+            var ueNomeComTipoEscola = "Todas";
             if (filtros.UeCodigo != null & filtros.UeCodigo != String.Empty)
             {
                 var ue = await mediator.Send(new ObterUePorCodigoQuery(filtros.UeCodigo));
                 ueNomeComTipoEscola = ue.NomeComTipoEscola;
             }
 
-            var proficiencia = !String.IsNullOrEmpty(filtros.GrupoId) ? filtros.GrupoId : filtros.ProficienciaId.ToString();
+            var proficiencia = !string.IsNullOrEmpty(filtros.GrupoId) ? filtros.GrupoId : filtros.ProficienciaId.ToString();
             if (proficiencia == GrupoSondagemEnum.CapacidadeLeitura.Name())
             {
                 proficiencia = GrupoSondagemEnum.CapacidadeLeitura.ShortName();
@@ -174,11 +173,12 @@ namespace SME.SR.Application
             });
         }
 
-        private async Task<List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>> ObterPlanilhas(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros, int alunosPorAno, GrupoSondagemEnum grupoSondagemEnum = GrupoSondagemEnum.CapacidadeLeitura)
+        private async Task<List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaDto>> ObterPlanilhas(RelatorioSondagemPortuguesConsolidadoLeituraFiltroDto filtros, int alunosPorAno
+           ,bool consideraNovaOpcaoRespostaSemPreenchimento , GrupoSondagemEnum grupoSondagemEnum = GrupoSondagemEnum.CapacidadeLeitura)
         {
             var periodo = await mediator.Send(new ObterPeriodoPorTipoQuery(Math.Max(filtros.Semestre, filtros.Bimestre), filtros.Semestre != 0 ? TipoPeriodoSondagem.Semestre : TipoPeriodoSondagem.Bimestre));
 
-            IEnumerable<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaQueryDto> linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery()
+            var linhasSondagem = await mediator.Send(new ObterRelatorioSondagemPortuguesConsolidadoLeituraQuery()
             {
                 DreCodigo = filtros.DreCodigo,
                 UeCodigo = filtros.UeCodigo,
@@ -195,13 +195,17 @@ namespace SME.SR.Application
             if (ordens.Count == 0)
             {
                 var respostasDto = new List<RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto>();
-                respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+
+                if (!consideraNovaOpcaoRespostaSemPreenchimento)
                 {
-                    Resposta = "Sem preenchimento",
-                    Quantidade = alunosPorAno,
-                    Total = alunosPorAno,
-                    Percentual = 1
-                });
+                    respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    {
+                        Resposta = "Sem preenchimento",
+                        Quantidade = alunosPorAno,
+                        Total = alunosPorAno,
+                        Percentual = 1
+                    });
+                }
 
                 var ordensSondagem = await mediator.Send(new ObterOrdensSondagemPorGrupoQuery() { Grupo = grupoSondagemEnum });
                 foreach (var ordem in ordensSondagem)
@@ -213,7 +217,7 @@ namespace SME.SR.Application
                         {
                             new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
                             {
-                                Pergunta = String.Empty,
+                                Pergunta = string.Empty,
                                 Respostas = respostasDto
                             }
                         }
@@ -242,17 +246,25 @@ namespace SME.SR.Application
                             Resposta = resposta.Resposta,
                             Quantidade = resposta.Quantidade,
                             Total = totalAlunos,
-                            Percentual = Decimal.Divide(resposta.Quantidade, totalAlunos)
+                            Percentual = decimal.Divide(resposta.Quantidade, totalAlunos)
                         });
                     }
 
-                    respostasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto()
+                    if (!consideraNovaOpcaoRespostaSemPreenchimento)
                     {
-                        Resposta = "Sem preenchimento",
-                        Quantidade = totalAlunos - totalRespostas,
-                        Total = alunosPorAno,
-                        Percentual = Decimal.Divide(totalAlunos - totalRespostas, totalAlunos)
-                    });
+                        var dtoSemPreenchimento = respostasDto.Find(resp => resp.Resposta == "Sem preenchimento"); 
+                        
+                        if (dtoSemPreenchimento == null)
+                        {
+                            dtoSemPreenchimento = new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaRespostaDto();
+                            respostasDto.Add(dtoSemPreenchimento);
+                        }  
+   
+                        dtoSemPreenchimento.Resposta = "Sem preenchimento";
+                        dtoSemPreenchimento.Quantidade = totalAlunos - totalRespostas;
+                        dtoSemPreenchimento.Total = alunosPorAno;
+                        dtoSemPreenchimento.Percentual = decimal.Divide(totalAlunos - totalRespostas, totalAlunos);
+                    }
 
                     perguntasDto.Add(new RelatorioSondagemPortuguesConsolidadoLeituraPlanilhaPerguntaDto()
                     {

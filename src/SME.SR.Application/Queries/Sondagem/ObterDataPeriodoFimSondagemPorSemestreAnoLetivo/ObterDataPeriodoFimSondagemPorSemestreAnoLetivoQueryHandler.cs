@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQueryHandler : IRequestHandler<ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery, DateTime>
+    public class ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQueryHandler : IRequestHandler<ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery, PeriodoCompletoSondagemDto>
     {
         private readonly IPeriodoSondagemRepository periodoSondagemRepository;
 
@@ -15,14 +15,14 @@ namespace SME.SR.Application
         {
             this.periodoSondagemRepository = periodoSondagemRepository ?? throw new ArgumentNullException(nameof(periodoSondagemRepository));
         }
-        public async Task<DateTime> Handle(ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery request, CancellationToken cancellationToken)
+        public async Task<PeriodoCompletoSondagemDto> Handle(ObterDataPeriodoFimSondagemPorSemestreAnoLetivoQuery request, CancellationToken cancellationToken)
         {
             //TODO Melhorar esta consulta para ser Por Id, mas para isso é necessário alterações no front;
             var descricaoSemestre = $"{request.Semestre}° Semestre";
 
-            var dataFimPeriodoFixo = await periodoSondagemRepository.ObterPeriodoFixoFimPorDescricaoAnoLetivo(descricaoSemestre, request.AnoLetivo);
+            var periodoFixo = await periodoSondagemRepository.ObterPeriodoFixoFimPorDescricaoAnoLetivo(descricaoSemestre, request.AnoLetivo);
 
-            if (dataFimPeriodoFixo == default || dataFimPeriodoFixo.Ticks == 0)
+            if (periodoFixo is null || periodoFixo.PeriodoFim  == default || periodoFixo.PeriodoFim.Ticks == 0)
             {
                 int bimestre;
 
@@ -31,17 +31,15 @@ namespace SME.SR.Application
 
                 else bimestre = 4;
 
-                var dataFimPeriodoAbertura = await periodoSondagemRepository.ObterPeriodoAberturaFimPorBimestreAnoLetivo(bimestre, request.AnoLetivo);
+                var periodoAbertura = await periodoSondagemRepository.ObterPeriodoAberturaFimPorBimestreAnoLetivo(bimestre, request.AnoLetivo);
 
-                if (dataFimPeriodoAbertura == default || dataFimPeriodoAbertura.Ticks == 0)
+                if (periodoAbertura is null || periodoAbertura.PeriodoFim == default || periodoAbertura.PeriodoFim.Ticks == 0)
                     throw new NegocioException("Não foi possível localizar a data fim do período da sondagem.");
 
-                return dataFimPeriodoAbertura;
+                return periodoAbertura;
             }
-            else
-            {
-                return dataFimPeriodoFixo;
-            }
+
+            return periodoFixo;
         }
     }
 }
