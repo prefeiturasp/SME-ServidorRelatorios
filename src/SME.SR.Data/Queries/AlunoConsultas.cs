@@ -407,16 +407,15 @@ namespace SME.SR.Data
 																	from lista";
 
         internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId, DateTime dataInicio) =>
-        $@"SELECT CodigoUe, AnoTurma, sum(totalAluno) QuantidadeAluno 
-				FROM( 
-				SELECT 	COUNT(distinct m.cd_aluno) totalAluno,
-						se.sg_resumida_serie as AnoTurma,
-						ue.cd_unidade_educacao as CodigoUe
-				FROM v_matricula_cotic m
-					INNER JOIN matricula_turma_escola mte
-						ON m.cd_matricula = mte.cd_matricula	
+        $@"WITH lista AS (
+				SELECT DISTINCT amn.CodigoTurma cd_turma_escola,
+								amn.CodigoAluno cd_aluno,
+								se.sg_resumida_serie
+				FROM alunos_matriculas_norm amn	
+								se.sg_resumida_serie
+				FROM alunos_matriculas_norm amn	
 					INNER JOIN turma_escola te
-						ON mte.cd_turma_escola = te.cd_turma_escola
+						ON amn.CodigoTurma = te.cd_turma_escola
 					INNER JOIN serie_turma_escola ste
 						ON te.cd_turma_escola = ste.cd_turma_escola
 					INNER JOIN serie_turma_grade stg
@@ -426,26 +425,24 @@ namespace SME.SR.Data
 					INNER JOIN etapa_ensino ee
 						ON se.cd_etapa_ensino = ee.cd_etapa_ensino
 					INNER JOIN v_cadastro_unidade_educacao ue
-						ON te.cd_escola = ue.cd_unidade_educacao
-					INNER JOIN alunos_matriculas_norm aln 
-						ON aln.CodigoMatricula = m.cd_matricula
+						ON te.cd_escola = ue.cd_unidade_educacao					
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
-					  ((mte.cd_situacao_aluno = 10 or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim))
-					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim
+					  ((amn.CodigoSituacaoMatricula = 10 or (amn.CodigoSituacaoMatricula in (1, 6, 13, 5) and CAST(amn.DataMatricula AS DATE) < @dataFim))
+					  or (amn.CodigoSituacaoMatricula not in (1, 6, 10, 13, 5) and CAST(amn.DataMatricula AS DATE) < @dataFim
 					  {(dataInicio == null || dataInicio == DateTime.MinValue
-                   ? "and mte.dt_situacao_aluno >= @dataFim))"
-                   : "and(mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))")}
-					  and aln.AnoLetivo = anoLetivo
+                   ? "and amn.DataSituacao >= @dataFim))"
+                   : "and(amn.DataSituacao > @dataFim or (amn.DataSituacao > @dataInicio and amn.DataSituacao <= @dataFim))))")}
+					  and amn.AnoLetivo = anoLetivo
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
-				      {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}							  
-				      GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}
 				UNION
 
-				SELECT 	COUNT(distinct matr.cd_aluno) totalAluno,
-						se.sg_resumida_serie as AnoTurma,
-						ue.cd_unidade_educacao as CodigoUe
+				SELECT
+					mte.cd_turma_escola,
+					matr.cd_aluno,
+					se.sg_resumida_serie
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -481,10 +478,9 @@ namespace SME.SR.Data
 						    mte.cd_matricula = mte3.cd_matricula and mte.cd_turma_escola = mte3.cd_turma_escola 
                             and matr3.cd_matricula = matr.cd_matricula and matr3.an_letivo = matr.an_letivo)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
-					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}						  
-						GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao) tab
-						GROUP BY CodigoUe, AnoTurma
-						ORDER BY CodigoUe, AnoTurma";
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)})
+			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
+				FROM lista group by sg_resumida_serie ";
 
 
         internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT DISTINCT

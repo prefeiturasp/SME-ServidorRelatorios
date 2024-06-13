@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SME.SR.Infra
 {
@@ -29,5 +30,12 @@ namespace SME.SR.Infra
         public long CodigoMatricula { get; set; }
         public int AnoLetivo { get; set; }
         public int Sequencia { get; set; }
+        public bool Ativo { get { return SituacoesAtivo.Contains(CodigoSituacaoMatricula); } }
+        public bool Inativo { get { return !Ativo; } }
+        private int[] SituacoesAtivo => new[] { (int)SituacaoMatriculaAluno.Ativo,
+                                                (int)SituacaoMatriculaAluno.Rematriculado,
+                                                (int)SituacaoMatriculaAluno.PendenteRematricula,
+                                                (int)SituacaoMatriculaAluno.SemContinuidade,
+                                                (int)SituacaoMatriculaAluno.Concluido };        
     }
 }
