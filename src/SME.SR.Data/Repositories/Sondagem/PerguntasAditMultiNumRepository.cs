@@ -22,15 +22,17 @@ namespace SME.SR.Data.Repositories.Sondagem
         {
             StringBuilder query = new StringBuilder();
 
-            query.Append(" select \"AnoEscolar\", p.\"Id\" Id, p.\"PerguntaId\", p.\"Descricao\" Pergunta");
-            query.Append(" from \"Pergunta\" p ");
-            query.Append(" inner join \"PerguntaAnoEscolar\" pae on pae.\"PerguntaId\" = p.\"Id\" ");
+            query.Append("SELECT \"AnoEscolar\", ppai.\"Id\" as PerguntaIdPai, ppai.\"Descricao\" as PerguntaDescricaoPai,");
+            query.Append(" pfilho.\"Id\", pfilho.\"Descricao\" Pergunta, pfilho.\"PerguntaId\"");
+            query.Append(" FROM \"PerguntaAnoEscolar\" pae");
+            query.Append(" INNER JOIN \"Pergunta\" ppai ON ppai.\"Id\" = pae.\"PerguntaId\"");
+            query.Append(" INNER JOIN \"Pergunta\" pfilho ON pfilho.\"PerguntaId\" = pae.\"PerguntaId\"");
 
             if (anoTurma > 0)
                 query.Append("and \"AnoEscolar\" = @anoTurma ");
 
             if (componenteCurricularSondagem != null)
-                query.Append("and p.\"ComponenteCurricularId\" = @componenteCurricularId ");
+                query.Append("and ppai.\"ComponenteCurricularId\" = @componenteCurricularId ");
 
             query.Append("and pae.\"Grupo\" = @proficiencia ");
 
