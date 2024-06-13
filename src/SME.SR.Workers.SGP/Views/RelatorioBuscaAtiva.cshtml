@@ -130,12 +130,13 @@
                             @{
                                 MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
                                 contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
-
                                 foreach (var questaoIndex in detalhe.Questoes.Select((questao, index) => new { Questao = questao, Index = index+1 }))
                                 {
-                                    var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questaoIndex.Questao.Questao.Length + questaoIndex.Questao.Resposta.Length);
+                                    var lengthResposta = questaoIndex.Questao.Resposta?.Length ?? 0;
+                                    var resposta = questaoIndex.Questao.Resposta ?? string.Empty;
+                                    var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questaoIndex.Questao.Questao.Length + lengthResposta);
                                     AvaliarQuebraPagina(qdadeLinhasPrevista);
-                                    MontarLinhaSimples(questaoIndex.Questao.Questao, questaoIndex.Questao.Resposta, RetornarClasseCssFundoCinzaLinhaPar(questaoIndex.Index));
+                                    MontarLinhaSimples(questaoIndex.Questao.Questao, resposta, RetornarClasseCssFundoCinzaLinhaPar(questaoIndex.Index));
                                     contadorQuebrarPagina += qdadeLinhasPrevista;
                                 }
                             }
