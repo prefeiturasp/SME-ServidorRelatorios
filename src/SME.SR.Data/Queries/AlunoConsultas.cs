@@ -407,10 +407,11 @@ namespace SME.SR.Data
 																	from lista";
 
         internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId, DateTime dataInicio) =>
-        $@"WITH lista AS (
-				SELECT DISTINCT amn.CodigoTurma cd_turma_escola,
-								amn.CodigoAluno cd_aluno,
-								se.sg_resumida_serie
+        $@"SELECT CodigoUe, AnoTurma, sum(totalAluno) QuantidadeAluno 
+				FROM( 
+				SELECT 	COUNT(distinct amn.CodigoAluno) totalAluno,
+						se.sg_resumida_serie as AnoTurma,
+						ue.cd_unidade_educacao as CodigoUe
 				FROM alunos_matriculas_norm amn	
 					INNER JOIN turma_escola te
 						ON amn.CodigoTurma = te.cd_turma_escola
@@ -435,12 +436,12 @@ namespace SME.SR.Data
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
 					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}
+						GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao
 				UNION
 
-				SELECT
-					mte.cd_turma_escola,
-					matr.cd_aluno,
-					se.sg_resumida_serie
+				SELECT 	COUNT(distinct matr.cd_aluno) totalAluno,
+						se.sg_resumida_serie as AnoTurma,
+						ue.cd_unidade_educacao as CodigoUe
 				FROM
 					v_aluno_cotic aluno
 				INNER JOIN v_historico_matricula_cotic matr ON
@@ -476,9 +477,10 @@ namespace SME.SR.Data
 						    mte.cd_matricula = mte3.cd_matricula and mte.cd_turma_escola = mte3.cd_turma_escola 
                             and matr3.cd_matricula = matr.cd_matricula and matr3.an_letivo = matr.an_letivo)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
-					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)})
-			SELECT sg_resumida_serie as AnoTurma, COUNT(DISTINCT cd_aluno) as QuantidadeAluno
-				FROM lista group by sg_resumida_serie ";
+					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}
+			 GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao) tab
+						GROUP BY CodigoUe, AnoTurma
+						ORDER BY CodigoUe, AnoTurma ";
 
 
         internal static string AlunosAtivosPorTurmaEPeriodo = @"SELECT DISTINCT

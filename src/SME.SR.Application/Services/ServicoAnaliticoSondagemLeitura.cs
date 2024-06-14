@@ -89,12 +89,39 @@ namespace SME.SR.Application.Services
                 Nivel2 = respostaAnoTurma.Select(x => x.Nivel2).Sum(),
                 Nivel3 = respostaAnoTurma.Select(x => x.Nivel3).Sum(),
                 Nivel4 = respostaAnoTurma.Select(x => x.Nivel4).Sum(),
-                SemPreenchimento = respostaAnoTurma.Select(x => x.SemPreenchimento).Sum(),
+                SemPreenchimento = ObterTotalSemPreenchimento(respostaAnoTurma, totalDeAlunos),
                 TotalDeAlunos = totalDeAlunos,
                 Ano = int.Parse(respostaAnoTurma.Key),
                 TotalDeTurma = totalTurmaUe?.FirstOrDefault(t => t.Ano == respostaAnoTurma.Key).Quantidade ?? 0,
                 Ue = ue.TituloTipoEscolaNome
             };
+        }
+
+        private int ObterTotalSemPreenchimento(
+                            IGrouping<string, TotalRespostasAnaliticoLeituraDto> respostaAnoTurma,
+                            int totalDeAlunos)
+        {
+            if (EhTodosPreenchidos())
+                return ObterTotalSemPreenchimento(respostaAnoTurma);
+
+            return ObterTotalSemPreenchimentoCalculado(respostaAnoTurma, totalDeAlunos);
+        }
+
+        private int ObterTotalSemPreenchimento(IGrouping<string, TotalRespostasAnaliticoLeituraDto> respostaAnoTurma)
+        {
+            return respostaAnoTurma.Select(x => x.SemPreenchimento).Sum();
+        }
+
+        private int ObterTotalSemPreenchimentoCalculado(
+                            IGrouping<string, TotalRespostasAnaliticoLeituraDto> respostaAnoTurma,
+                            int totalDeAlunos)
+        {
+            var totalRepostas = respostaAnoTurma.Select(x => x.Nivel1).Sum()
+                                + respostaAnoTurma.Select(x => x.Nivel2).Sum()
+                                + respostaAnoTurma.Select(x => x.Nivel3).Sum()
+                                + respostaAnoTurma.Select(x => x.Nivel4).Sum();
+
+            return totalDeAlunos <= totalRepostas ? 0 : totalDeAlunos - totalRepostas;
         }
     }
 }
