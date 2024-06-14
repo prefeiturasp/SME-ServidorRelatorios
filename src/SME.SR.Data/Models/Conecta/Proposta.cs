@@ -34,6 +34,10 @@ namespace SME.SR.Data.Models.Conecta
         public string CargaHorariaPresencialFormatada { get { return ObterHora(CargaHorariaPresencial); } }
         public string CargaHorariaSincronaFormatada { get { return ObterHora(CargaHorariaSincrona); } }
         public string CargaHorariaDistanciaFormatada { get { return ObterHora(CargaHorariaDistancia); } }
+        public string PublicoAlvo_Outros { get; set; }
+        public string FuncaoEspecifica_Outros { get; set; }
+        public string Criterios_Outros { get; set; }
+        public string CriteriosValidacao_Outros { get; set; }
 
         public string ObterPeriodoRealizacao()
         {
