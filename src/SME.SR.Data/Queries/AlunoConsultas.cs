@@ -409,12 +409,14 @@ namespace SME.SR.Data
         internal static string TotalDeAlunosAtivosPorPeriodo(string dreId, string ueId, DateTime dataInicio) =>
         $@"SELECT CodigoUe, AnoTurma, sum(totalAluno) QuantidadeAluno 
 				FROM( 
-				SELECT 	COUNT(distinct amn.CodigoAluno) totalAluno,
+				SELECT COUNT(distinct m.cd_aluno) totalAluno,
 						se.sg_resumida_serie as AnoTurma,
 						ue.cd_unidade_educacao as CodigoUe
-				FROM alunos_matriculas_norm amn	
+				FROM v_matricula_cotic m
+					INNER JOIN matricula_turma_escola mte
+						ON m.cd_matricula = mte.cd_matricula	
 					INNER JOIN turma_escola te
-						ON amn.CodigoTurma = te.cd_turma_escola
+						ON mte.cd_turma_escola = te.cd_turma_escola
 					INNER JOIN serie_turma_escola ste
 						ON te.cd_turma_escola = ste.cd_turma_escola
 					INNER JOIN serie_turma_grade stg
@@ -424,19 +426,21 @@ namespace SME.SR.Data
 					INNER JOIN etapa_ensino ee
 						ON se.cd_etapa_ensino = ee.cd_etapa_ensino
 					INNER JOIN v_cadastro_unidade_educacao ue
-						ON te.cd_escola = ue.cd_unidade_educacao					
+						ON te.cd_escola = ue.cd_unidade_educacao
+					INNER JOIN alunos_matriculas_norm aln 
+						ON aln.CodigoMatricula = m.cd_matricula
 				WHERE te.an_letivo = @anoLetivo AND
 					  te.cd_tipo_turma = 1 AND
-					  ((amn.CodigoSituacaoMatricula = 10 or (amn.CodigoSituacaoMatricula in (1, 6, 13, 5) and CAST(amn.DataMatricula AS DATE) < @dataFim))
-					  or (amn.CodigoSituacaoMatricula not in (1, 6, 10, 13, 5) and CAST(amn.DataMatricula AS DATE) < @dataFim
+					  ((mte.cd_situacao_aluno = 10 or (mte.cd_situacao_aluno in (1, 6, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim))
+					  or (mte.cd_situacao_aluno not in (1, 6, 10, 13, 5) and CAST(aln.DataMatricula AS DATE) < @dataFim
 					  {(dataInicio == null || dataInicio == DateTime.MinValue
-                   ? "and amn.DataSituacao >= @dataFim))"
-                   : "and(amn.DataSituacao > @dataFim or (amn.DataSituacao > @dataInicio and amn.DataSituacao <= @dataFim))))")}
-					  and amn.AnoLetivo = anoLetivo
+                   ? "and mte.dt_situacao_aluno >= @dataFim))"
+                   : "and(mte.dt_situacao_aluno > @dataFim or (mte.dt_situacao_aluno > @dataInicio and mte.dt_situacao_aluno <= @dataFim))))")}
+					  and aln.AnoLetivo = anoLetivo
 					  AND ee.cd_etapa_ensino in (@modalidades)
 					  {(!string.IsNullOrWhiteSpace(dreId) ? " AND ue.cd_unidade_administrativa_referencia = @codigoDre" : string.Empty)}
 					  {(!string.IsNullOrWhiteSpace(ueId) ? " AND ue.cd_unidade_educacao = @codigoUe" : string.Empty)}
-						GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao
+				GROUP BY se.sg_resumida_serie, ue.cd_unidade_educacao
 				UNION
 
 				SELECT 	COUNT(distinct matr.cd_aluno) totalAluno,
