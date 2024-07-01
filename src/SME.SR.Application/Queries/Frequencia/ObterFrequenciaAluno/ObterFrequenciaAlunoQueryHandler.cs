@@ -87,12 +87,11 @@ namespace SME.SR.Application
                         frequenciaAluno.TotalAusencias += frequenciaAlunoPeriodo.TotalAusencias;
                         frequenciaAluno.TotalCompensacoes += frequenciaAlunoPeriodo.TotalCompensacoes;
                     }
-                    else
+                    else if (request.Turma.AnoLetivo.Equals(2020))
                     {
                         // Se não tem ausencia não vai ter registro de frequencia então soma apenas aulas do bimestre
                         var aula = totalAulas.FirstOrDefault(a => a.Bimestre == periodoEscolarTurma.Bimestre);
                         frequenciaAluno.TotalAulas += aula != null ? aula.AulasQuantidade : 0;
-                        
                     }
                         
                 }
