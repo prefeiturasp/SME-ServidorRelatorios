@@ -12,7 +12,8 @@ namespace SME.SR.Application
         public bool PossuiNotaRodape { get; set; }
         public string NotaRodape { get; set; }
         public bool RelatorioFrequenciaGlobal { get; set; }
-        public GerarExcelGenericoCommand(IList<object> objetoExportacaoExcel, string nomeWorkSheet, Guid codigoCorrelacao, bool possuiNotaRodape = false, string notaRodape = null, bool relatorioFrequenciaGlobal =false)
+        public string MensagemTitulo { get; set; }
+        public GerarExcelGenericoCommand(IList<object> objetoExportacaoExcel, string nomeWorkSheet, Guid codigoCorrelacao, bool possuiNotaRodape = false, string notaRodape = null, bool relatorioFrequenciaGlobal =false, string mensagemTitulo = "")
         {
             ObjetoExportacao = objetoExportacaoExcel;
             NomeWorkSheet = nomeWorkSheet;
@@ -20,6 +21,7 @@ namespace SME.SR.Application
             PossuiNotaRodape = possuiNotaRodape;
             NotaRodape = notaRodape;
             RelatorioFrequenciaGlobal = relatorioFrequenciaGlobal;
+            MensagemTitulo= mensagemTitulo;
         }
     }
 }
