@@ -142,7 +142,7 @@
             foreach (var ordem in Model.Cabecalho.Ordens)
             {
                 var quebraPalavra = String.IsNullOrEmpty(ordem.Id) ? "quebra-palavra" : "";
-
+                
                 foreach (var pergunta in Model.Cabecalho.Perguntas)
                 {
                     var resp = "";
@@ -160,7 +160,10 @@
                     }
                     else
                     {
-                        str += $@"<td  class='{quebraPalavra}'>{resp}</td>";
+                        if (resp.Contains("Sem"))
+                            str += $@"<td style='font-size: 8px'>{resp}</td>";
+                        else
+                          str += $@"<td class='{quebraPalavra}'>{resp}</td>";
                     }
                 }
             }
