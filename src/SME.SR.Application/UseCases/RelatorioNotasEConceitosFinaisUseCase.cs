@@ -22,13 +22,13 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroNotasConceitosFinais;
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
             var relatorioNotasEConceitosFinaisDto = await mediator.Send(new ObterRelatorioNotasEConceitosFinaisPdfQuery(filtros));
-            var msgTituloRelatorio = $"Relatório de Notas e Conceitos Finais - Dre {relatorioNotasEConceitosFinaisDto.DreNome}";
+            var msgTituloRelatorio = $"Relatório de Notas e Conceitos Finais - {relatorioNotasEConceitosFinaisDto.DreNome}";
             switch (filtros.TipoFormatoRelatorio)
             {
                 case TipoFormatoRelatorio.Xlsx:
                     var relatorioDto = await mediator.Send(new ObterRelatorioNotasEConceitosFinaisExcelQuery() { RelatorioNotasEConceitosFinais = relatorioNotasEConceitosFinaisDto });
                     if (relatorioDto == null)
-                        throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
+                        throw new NegocioException($"Não foi possível transformar os dados obtidos em dados excel - {relatorioNotasEConceitosFinaisDto.DreNome}");
 
                     var possuiNotaFechamento = relatorioDto.Any(r => r.NotaConceito.Contains("*"));
 
