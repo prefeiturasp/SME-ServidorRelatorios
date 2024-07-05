@@ -159,7 +159,7 @@ namespace SME.SR.Application
             }
 
             if (relatorioNotasEConceitosFinaisDto.Dres.Count == 0)
-                throw new NegocioException("Não encontramos dados para geração do relatório!");
+                throw new NegocioException($"Não encontramos dados para geração do relatório! Dre {dres.FirstOrDefault()?.Abreviacao}");
 
             return relatorioNotasEConceitosFinaisDto;
         }
