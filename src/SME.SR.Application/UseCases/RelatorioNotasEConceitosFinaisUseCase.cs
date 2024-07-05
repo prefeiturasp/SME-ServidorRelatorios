@@ -22,7 +22,7 @@ namespace SME.SR.Application
             request.RotaErro = RotasRabbitSGP.RotaRelatoriosComErroNotasConceitosFinais;
             var filtros = request.ObterObjetoFiltro<FiltroRelatorioNotasEConceitosFinaisDto>();
             var relatorioNotasEConceitosFinaisDto = await mediator.Send(new ObterRelatorioNotasEConceitosFinaisPdfQuery(filtros));
-
+            var msgTituloRelatorio = $"Relatório de Notas e Conceitos Finais - Dre {relatorioNotasEConceitosFinaisDto.DreNome}";
             switch (filtros.TipoFormatoRelatorio)
             {
                 case TipoFormatoRelatorio.Xlsx:
@@ -32,11 +32,13 @@ namespace SME.SR.Application
 
                     var possuiNotaFechamento = relatorioDto.Any(r => r.NotaConceito.Contains("*"));
 
-                    await mediator.Send(new GerarExcelGenericoCommand(relatorioDto.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao, possuiNotaFechamento, "* Estudante sem conselho de classe registrado , ** Aguardando aprovação"));
+                    await mediator.Send(new GerarExcelGenericoCommand(relatorioDto.ToList<object>(), "RelatorioNotasEConceitosFinais", request.CodigoCorrelacao, 
+                                                                      possuiNotaFechamento, "* Estudante sem conselho de classe registrado , ** Aguardando aprovação",
+                                                                      mensagemTitulo: msgTituloRelatorio));
 
                     break;
                 case TipoFormatoRelatorio.Pdf:
-                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotasEConceitosFinais", relatorioNotasEConceitosFinaisDto, request.CodigoCorrelacao));
+                    await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioNotasEConceitosFinais", relatorioNotasEConceitosFinaisDto, request.CodigoCorrelacao, mensagemTitulo: msgTituloRelatorio));
                     break;
                 case TipoFormatoRelatorio.Rtf:
                 case TipoFormatoRelatorio.Html:
