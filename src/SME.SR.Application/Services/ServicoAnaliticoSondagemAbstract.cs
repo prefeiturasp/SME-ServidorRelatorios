@@ -29,7 +29,7 @@ namespace SME.SR.Application.Services
         private const int ANO_LETIVO_2024 = 2024;
         private const int ANO_LETIVO_2025 = 2025;
         protected const string TURMA_TERCEIRO_ANO = "3";
-        private const string TODOS = "-99";
+        protected const string TODOS = "-99";
 
         protected ServicoAnaliticoSondagemAbstract(IAlunoRepository alunoRepository, 
                                                    IDreRepository dreRepository, 
