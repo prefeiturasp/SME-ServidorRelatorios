@@ -24,53 +24,29 @@ namespace SME.SR.Application.Services
 
             var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
             var respostasLeitura = await sondagemAnaliticaRepository.ObterRespostasRelatorioAnaliticoDeLeitura(filtro, EhTodosPreenchidos());
-            //var agrupadoPorDre = perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre);
-            var dres = filtro.DreCodigo == TODOS ?
-                await dreRepository.ObterTodas() : new Dre[] { await dreRepository.ObterPorCodigo(filtro.DreCodigo) };
+            var dres = await ObterDres();
 
             if (respostasLeitura.Any(x => x.CodigoDre != null))
             {
-                var agrupadoPorDre = (from dre in dres
-                                      from c in respostasLeitura
-                                      select dre.Codigo == c.CodigoDre ? c : new TotalRespostasAnaliticoLeituraDto() { CodigoDre = dre.Codigo })
-                                 .GroupBy(x => x.CodigoDre).Distinct();
+                var agrupadoPorDre = ObterAgrupamentoPorDre(dres, respostasLeitura);
 
                 foreach (var itemDre in agrupadoPorDre)
                 {
                     var relatorioSondagemAnaliticoLeituraDto = new RelatorioSondagemAnaliticoLeituraDto();
-                    //var agrupadoPorUe = itemDre.GroupBy(x => x.CodigoUe);
                     var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
                     var totalTurmas = await ObterQuantidadeTurmaPorAnoDre(dre.Id);
                     var totalAlunosDre = await ObterTotalDeAlunosPorDre(dre.Codigo);
 
-                    var uesDre = filtro.UeCodigo == TODOS ? await ueRepository
-                        .ObterPorDresId(new long[] { dres.First(d => d.Codigo == itemDre.Key).Id }) :
-                        new UePorDresIdResultDto[] { new UePorDresIdResultDto() { Codigo = filtro.UeCodigo } };
-
-                    var agrupadoPorUe = (from ue in uesDre
-                                         from i in itemDre
-                                         select ue.Codigo == i.CodigoUe ? i : new TotalRespostasAnaliticoLeituraDto() { CodigoUe = ue.Codigo, AnoTurma = i.AnoTurma })
-                                         .GroupBy(x => x.CodigoUe).Distinct().ToList();
-
+                    var uesDre = await ObterUesDre(dres.First(d => d.Codigo == itemDre.Key).Id);
+                    var agrupadoPorUe = ObterAgrupamentoPorUe(uesDre, itemDre).ToList();
                     var listaUes = await ObterUe(agrupadoPorUe.Select(x => x.Key).ToArray());
 
                     foreach (var itemUe in agrupadoPorUe)
                     {
                         var totalDeAlunosUe = await ObterTotalDeAlunosPorUe(dre.Codigo, itemUe.Key, totalAlunosDre);
                         var totalTurmasUe = await ObterQuantidadeTurmaPorAnoUe(dre.Id, itemUe.Key, totalTurmas);
-                        /*var agrupamentoPorAnoTurma = itemUe.OrderBy(x =>x.AnoTurma)
-                                                           .GroupBy(x => x.AnoTurma);*/
-
-                        var turmasUe = (await turmaRepository
-                            .ObterTurmasPorUeEAnoLetivo(itemUe.Key, filtro.AnoLetivo))
-                            .Where(t => t.Ano.All(x => char.IsDigit(x)) && int.Parse(t.Ano) > 0 && t.ModalidadeCodigo == Modalidade.Fundamental);
-
-                        var agrupamentoPorAnoTurma = (from t in turmasUe
-                                                       from i in itemUe
-                                                       where (i.AnoTurma != null && i.AnoTurma != "0" && i.AnoTurma.All(x => char.IsDigit(x)) && int.Parse(i.AnoTurma) > 0) || (t.Ano == i.AnoTurma)
-                                                       select t.Codigo == i.TurmaCodigo ? i : new TotalRespostasAnaliticoLeituraDto() { AnoTurma = t.Ano, TurmaCodigo = t.Codigo })
-                                                               .GroupBy(p => p.AnoTurma)
-                                                               .OrderBy(p => p.Key);
+                        var turmasUe = await ObterTurmasUe(itemUe.Key);
+                        var agrupamentoPorAnoTurma = ObterAgrupamentoPorAnoTurma(turmasUe, itemUe);
 
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
@@ -149,5 +125,34 @@ namespace SME.SR.Application.Services
 
             return totalDeAlunos <= totalRepostas ? 0 : totalDeAlunos - totalRepostas;
         }
+
+        private IEnumerable<IGrouping<string, TotalRespostasAnaliticoLeituraDto>> ObterAgrupamentoPorDre(IEnumerable<Dre> dres, IEnumerable<TotalRespostasAnaliticoLeituraDto> perguntasRespostas)
+            => filtro.ApresentarTurmasUesDresSemLancamento
+                ? (from dre in dres
+                    from c in perguntasRespostas
+                    select dre.Codigo == c.CodigoDre ? c : new TotalRespostasAnaliticoLeituraDto() { CodigoDre = dre.Codigo })
+                                     .GroupBy(x => x.CodigoDre).Distinct()
+                : perguntasRespostas.Where(x => x.CodigoDre != null).GroupBy(x => x.CodigoDre);
+
+
+        private IEnumerable<IGrouping<string, TotalRespostasAnaliticoLeituraDto>> ObterAgrupamentoPorUe(IEnumerable<UePorDresIdResultDto> ues, IEnumerable<TotalRespostasAnaliticoLeituraDto> perguntasRespostas)
+            => filtro.ApresentarTurmasUesDresSemLancamento
+                ? (from ue in ues
+                    from i in perguntasRespostas
+                    select ue.Codigo == i.CodigoUe ? i : new TotalRespostasAnaliticoLeituraDto() { CodigoUe = ue.Codigo, AnoTurma = i.AnoTurma })
+                                             .GroupBy(x => x.CodigoUe).Distinct()
+                : perguntasRespostas.GroupBy(x => x.CodigoUe);
+
+
+        private IEnumerable<IGrouping<string, TotalRespostasAnaliticoLeituraDto>> ObterAgrupamentoPorAnoTurma(IEnumerable<Turma> turmas, IEnumerable<TotalRespostasAnaliticoLeituraDto> perguntasRespostas)
+         => filtro.ApresentarTurmasUesDresSemLancamento
+                ? (from t in turmas
+                 from i in perguntasRespostas
+                 where (i.AnoTurma != null && i.AnoTurma != "0" && i.AnoTurma.All(x => char.IsDigit(x)) && int.Parse(i.AnoTurma) > 0) || (t.Ano == i.AnoTurma)
+                 select t.Codigo == i.TurmaCodigo ? i : new TotalRespostasAnaliticoLeituraDto() { AnoTurma = t.Ano, TurmaCodigo = t.Codigo })
+                                                                   .GroupBy(p => p.AnoTurma)
+                                                                   .OrderBy(p => p.Key)
+                : perguntasRespostas.OrderBy(x => x.AnoTurma)
+                                    .GroupBy(x => x.AnoTurma);
     }
 }
