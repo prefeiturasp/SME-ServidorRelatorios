@@ -45,7 +45,10 @@ namespace SME.SR.Application
                 var alunosEscola = await mediator
                     .Send(new ObterDadosAlunosEscolaQuery(agrupamentoUe.Key, filtro.CodigoDre, filtro.AnoLetivo, null));
 
-                var agrupamento = alunosEscola.OrderBy(x => x.CodigoAluno).GroupBy(x => new { x.CodigoAluno, x.NomeAluno, x.CodigoTurma });
+                var agrupamento = alunosEscola.OrderBy(x => x.CodigoAluno)
+                                              .ThenBy(x => x.CodigoMatricula)
+                                              .ThenBy(x => x.DataMatricula)
+                                              .ThenBy(x => x.DataSituacao).GroupBy(x => new { x.CodigoAluno, x.NomeAluno, x.CodigoTurma });
 
                 foreach (var item in agrupamentoUe)
                 {
