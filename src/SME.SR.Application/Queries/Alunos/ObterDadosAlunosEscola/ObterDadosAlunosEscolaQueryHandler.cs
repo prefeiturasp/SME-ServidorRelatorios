@@ -22,7 +22,7 @@ namespace SME.SR.Application
 
         public async Task<IEnumerable<DadosAlunosEscolaDto>> Handle(ObterDadosAlunosEscolaQuery request, CancellationToken cancellationToken)
         {
-            var cacheChave = $"dados-alunos-escola:{request.CodigoUe}";
+            var cacheChave = $"matriculas-alunos-ue-dre:{request.CodigoUe}-{request.CodigoDre}";
             var cacheAlunos = repositorioCache.Obter(cacheChave);
 
             if (cacheAlunos != null)
