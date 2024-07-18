@@ -12,6 +12,7 @@ namespace SME.SR.Application
 {
     public class RelatorioFrequenciaGlobalUseCase : AbstractUseCase, IRelatorioFrequenciaGlobalUseCase
     {
+        private string MsgTituloRelatorio { get; set; }
         public RelatorioFrequenciaGlobalUseCase(IMediator mediator) : base(mediator)
         {
         }
@@ -21,9 +22,11 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroFrequenciaGlobalDto>();
+            var dre = await mediator.Send(new ObterDrePorCodigoQuery(filtroRelatorio.CodigoDre));
+            MsgTituloRelatorio = $"Relatório de frequência mensal - {dre.Abreviacao}";
             var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
             if (listaDeFrenquenciaGlobal?.Any() != true)                
-                throw new NegocioException("Não foi possível localizar informações com os filtros selecionados");
+                throw new NegocioException($"Não foi possível localizar informações com os filtros selecionados - {dre.Abreviacao}");
             else
             {
                 switch (filtroRelatorio.TipoFormatoRelatorio)
@@ -76,7 +79,7 @@ namespace SME.SR.Application
             var preparo = new PreparadorDeRelatorioPaginadoFrequenciaGlobalMensal(dto, cabecalho);
             var dtoPaginado = preparo.ObtenhaRelatorioPaginadoDto();
 
-            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPaginado/Index", dtoPaginado, codigoCorrelacao));
+            return await mediator.Send(new GerarRelatorioHtmlParaPdfCommand("RelatorioPaginado/Index", dtoPaginado, codigoCorrelacao, mensagemTitulo: MsgTituloRelatorio));
         }
         private async Task MapearCabecalho(FrequenciaMensalCabecalhoDto cabecalhoDto, FiltroFrequenciaGlobalDto filtroRelatorio)
         {
@@ -128,7 +131,7 @@ namespace SME.SR.Application
         }
         private async Task ExecuteExcel(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao)
         {
-            await mediator.Send(new GerarExcelGenericoCommand(listaDeFrequencia.Cast<object>().ToList(), "Frequência Global", codigoCorrelacao, relatorioFrequenciaGlobal: true));
+            await mediator.Send(new GerarExcelGenericoCommand(listaDeFrequencia.Cast<object>().ToList(), "Frequência Global", codigoCorrelacao, relatorioFrequenciaGlobal: true, mensagemTitulo: MsgTituloRelatorio));
         }
         private string ObterNomeMesReferencia(int mes)
             => Enum.GetValues(typeof(Mes)).Cast<Mes>().Where(x => (int)x == mes).FirstOrDefault().ToString();
