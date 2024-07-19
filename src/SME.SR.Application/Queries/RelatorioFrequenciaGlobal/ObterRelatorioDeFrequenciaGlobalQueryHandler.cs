@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
@@ -40,7 +41,7 @@ namespace SME.SR.Application
         private async Task<List<FrequenciaGlobalDto>> MapearRetornoQuery(FiltroFrequenciaGlobalDto filtro, IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
             var retornoMapeado = new ConcurrentBag<FrequenciaGlobalDto>(); 
-            var alunosEscola = await ObterMatriculasAlunos(filtro.CodigoUe, filtro.CodigoDre, filtro.AnoLetivo);
+            var alunosEscola = await ObterMatriculasAlunos(filtro.CodigoUe, filtro.CodigoDre, filtro.AnoLetivo, retornoQuery);
             var agrupamento = alunosEscola
                 .OrderBy(x => x.CodigoAluno)
                 .ThenBy(x => x.CodigoMatricula)
@@ -103,9 +104,20 @@ namespace SME.SR.Application
             public string CodigoTurma { get; set; }
         }
 
-        private async Task<IEnumerable<DadosAlunosEscolaDto>> ObterMatriculasAlunos(string codigoUe, string codigoDre, int anoLetivo)
-            => await mediator
-                    .Send(new ObterDadosAlunosEscolaQuery(codigoUe, codigoDre, anoLetivo, null));
+        private async Task<IEnumerable<DadosAlunosEscolaDto>> ObterMatriculasAlunos(string codigoUe, string codigoDre, int anoLetivo, IEnumerable<FrequenciaAlunoMensalConsolidadoDto> frequencias)
+        {
+            List<DadosAlunosEscolaDto> alunos = new List<DadosAlunosEscolaDto>();
+            List<Dre> dres;
+            if (string.IsNullOrEmpty(codigoDre) || (codigoDre == FILTRO_OPCAO_TODOS))
+                dres = frequencias.Select(x => x.DreCodigo).Distinct().Select(x => new Dre() { Codigo = x }).ToList();
+            else
+                dres = new List<Dre> { await mediator.Send(new ObterDrePorCodigoQuery(codigoDre)) };
+            foreach (var dre in dres)
+                alunos.AddRange(await mediator
+                                .Send(new ObterDadosAlunosEscolaQuery(codigoUe, dre.Codigo, anoLetivo, null)));
+
+            return alunos;
+        }
 
         private UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto DeveImprimirNoRelatorio(IEnumerable<DadosAlunosEscolaDto> agrupamento, int mesSelecionado, int anoLetivoSelecionado)
         {
