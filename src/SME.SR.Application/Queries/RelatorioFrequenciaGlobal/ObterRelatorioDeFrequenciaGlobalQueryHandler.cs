@@ -16,14 +16,17 @@ namespace SME.SR.Application
     public class ObterRelatorioDeFrequenciaGlobalQueryHandler : IRequestHandler<ObterRelatorioDeFrequenciaGlobalQuery, List<FrequenciaGlobalDto>>
     {
         private const string FILTRO_OPCAO_TODOS = "-99";
+        private readonly VariaveisAmbiente variaveisAmbiente;
+
 
         private readonly IFrequenciaAlunoRepository frequenciaAlunoRepository;
         private readonly IMediator mediator;
 
-        public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository, IMediator mediator)
+        public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository, IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
             this.frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
         public async Task<List<FrequenciaGlobalDto>> Handle(ObterRelatorioDeFrequenciaGlobalQuery request, CancellationToken cancellationToken)
@@ -52,7 +55,7 @@ namespace SME.SR.Application
 
             retornoQuery
                 .AsParallel() 
-                .WithDegreeOfParallelism(100) 
+                .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas) 
                 .GroupBy(x => x.UeCodigo)
                 .ForAll(agrupamentoUe =>
                 {
