@@ -57,15 +57,16 @@ namespace SME.SR.Application
 
             await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {filtro.LogId.ToString()}", LogNivel.Informacao, $"Populando Dto relatório (paralelo)"));
             /*retornoQuery
-                .AsParallel() 
-                .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoUes) 
-                .GroupBy(x => x.UeCodigo)
-                .ForAll(agrupamentoUe =>*/
-            retornoQuery
                 .GroupBy(x => x.UeCodigo)
                 .ToList()
                 .ForEach(agrupamentoUe =>
-            {
+            */
+            retornoQuery
+                .AsParallel()
+                .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoUes)
+                .GroupBy(x => x.UeCodigo)
+                .ForAll(agrupamentoUe =>
+            { 
                     foreach (var item in agrupamentoUe)
                     {
                         if (agrupamento.TryGetValue($"{item.CodigoEol}-{item.TurmaCodigo}", out var alunoAgrupado))
