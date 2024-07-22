@@ -35,10 +35,9 @@ namespace SME.SR.Application
             var retornoQuery = await frequenciaAlunoRepository.ObterFrequenciaAlunoMensal(request.Filtro.ExibirHistorico, request.Filtro.AnoLetivo,
                 request.Filtro.CodigoDre, request.Filtro.CodigoUe, request.Filtro.Modalidade, request.Filtro.Semestre, request.Filtro.CodigosTurmas.Select(c => c).ToArray(),
                 request.Filtro.MesesReferencias.Select(c => Convert.ToInt32(c)).ToArray(), request.Filtro.ApenasAlunosPercentualAbaixoDe);
-            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {request.Filtro.LogId.ToString()}", LogNivel.Informacao, $"Dados obtidos BD {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             if (retornoQuery == null || !retornoQuery.Any())
                 return Enumerable.Empty<FrequenciaGlobalDto>().ToList();
-
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {request.Filtro.LogId.ToString()}", LogNivel.Informacao, $"Dados obtidos BD ({retornoQuery.Count()}) {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             return await MapearRetornoQuery(request.Filtro, retornoQuery);
         }
 
