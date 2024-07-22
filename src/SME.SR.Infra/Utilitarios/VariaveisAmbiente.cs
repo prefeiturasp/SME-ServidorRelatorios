@@ -56,6 +56,6 @@ namespace SME.SR.Infra
         public int ProcessamentoMaximoUes => !string.IsNullOrEmpty(configuration.GetSection("SR:ProcessamentoMaximoUes").Value) ?
             int.Parse(configuration.GetSection("SR:ProcessamentoMaximoUes").Value) :
             (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SR__ProcessamentoMaximoUes")) ?
-            int.Parse(Environment.GetEnvironmentVariable("SR__ProcessamentoMaximoUes")) : 30);
+            int.Parse(Environment.GetEnvironmentVariable("SR__ProcessamentoMaximoUes")) : 10);
     }
 }
