@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SME.SR.Infra
 {
@@ -16,5 +17,6 @@ namespace SME.SR.Infra
         public IList<string> MesesReferencias { get; set; }
         public int ApenasAlunosPercentualAbaixoDe { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
+        public Guid LogId { get; set; }
     }
 }
