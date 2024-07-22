@@ -28,7 +28,7 @@ namespace SME.SR.Application
                 throw new NegocioException($"Não foi possível localizar informações com os filtros selecionados");
             else
             {
-                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {guidLog.ToString()}", LogNivel.Informacao, $"Gerando relatório PDF/Excel {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {guidLog.ToString()}", LogNivel.Informacao, $"Gerando relatório PDF/Excel"));
                 switch (filtroRelatorio.TipoFormatoRelatorio)
                 {
                     case TipoFormatoRelatorio.Pdf:
@@ -40,7 +40,7 @@ namespace SME.SR.Application
                     default:
                         throw new NegocioException($"Não foi possível exportar este relátorio para o formato {filtroRelatorio.TipoFormatoRelatorio}");
                 }
-                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {guidLog.ToString()}", LogNivel.Informacao, $"Relatório PDF/Excel gerado {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {guidLog.ToString()}", LogNivel.Informacao, $"Relatório PDF/Excel gerado"));
             }
         }
 
