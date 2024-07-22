@@ -31,10 +31,11 @@ namespace SME.SR.Application
 
         public async Task<List<FrequenciaGlobalDto>> Handle(ObterRelatorioDeFrequenciaGlobalQuery request, CancellationToken cancellationToken)
         {
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {request.Filtro.LogId.ToString()}", LogNivel.Informacao, $"Obtendo dados BD {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             var retornoQuery = await frequenciaAlunoRepository.ObterFrequenciaAlunoMensal(request.Filtro.ExibirHistorico, request.Filtro.AnoLetivo,
                 request.Filtro.CodigoDre, request.Filtro.CodigoUe, request.Filtro.Modalidade, request.Filtro.Semestre, request.Filtro.CodigosTurmas.Select(c => c).ToArray(),
                 request.Filtro.MesesReferencias.Select(c => Convert.ToInt32(c)).ToArray(), request.Filtro.ApenasAlunosPercentualAbaixoDe);
-
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {request.Filtro.LogId.ToString()}", LogNivel.Informacao, $"Dados obtidos BD {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             if (retornoQuery == null || !retornoQuery.Any())
                 return Enumerable.Empty<FrequenciaGlobalDto>().ToList();
 
@@ -43,16 +44,19 @@ namespace SME.SR.Application
 
         private async Task<List<FrequenciaGlobalDto>> MapearRetornoQuery(FiltroFrequenciaGlobalDto filtro, IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
-            var retornoMapeado = new ConcurrentBag<FrequenciaGlobalDto>(); 
+            var retornoMapeado = new ConcurrentBag<FrequenciaGlobalDto>();
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {filtro.LogId.ToString()}", LogNivel.Informacao, $"Obtendo matrículas BD {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             var alunosEscola = await ObterMatriculasAlunos(filtro.CodigoUe, filtro.CodigoDre, filtro.AnoLetivo, retornoQuery);
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {filtro.LogId.ToString()}", LogNivel.Informacao, $"Matrículas obtidas BD {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             var agrupamento = alunosEscola
                 .OrderBy(x => x.CodigoAluno)
                 .ThenBy(x => x.CodigoMatricula)
                 .ThenBy(x => x.DataMatricula)
                 .ThenBy(x => x.DataSituacao)
                 .GroupBy(x => new { CodigoAluno = x.CodigoAluno.ToString(), CodigoTurma = x.CodigoTurma })
-                .ToDictionary(g => $"{g.Key.CodigoAluno.ToString()}-{g.Key.CodigoTurma}", g => g.ToList()); 
+                .ToDictionary(g => $"{g.Key.CodigoAluno.ToString()}-{g.Key.CodigoTurma}", g => g.ToList());
 
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {filtro.LogId.ToString()}", LogNivel.Informacao, $"Populando Dto relatório (paralelo) {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             retornoQuery
                 .AsParallel() 
                 .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas) 
@@ -91,6 +95,7 @@ namespace SME.SR.Application
                         }
                     }
                 });
+            await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {filtro.LogId.ToString()}", LogNivel.Informacao, $"Dto relatório populado (paralelo) {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
 
             return retornoMapeado
                 .OrderBy(c => c.SiglaDre)

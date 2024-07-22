@@ -20,12 +20,15 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
+            var guidLog = Guid.NewGuid();
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroFrequenciaGlobalDto>();
+            filtroRelatorio.LogId = guidLog;
             var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
             if (listaDeFrenquenciaGlobal?.Any() != true)                
                 throw new NegocioException($"Não foi possível localizar informações com os filtros selecionados");
             else
             {
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {guidLog.ToString()}", LogNivel.Informacao, $"Gerando relatório PDF/Excel {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
                 switch (filtroRelatorio.TipoFormatoRelatorio)
                 {
                     case TipoFormatoRelatorio.Pdf:
@@ -37,6 +40,7 @@ namespace SME.SR.Application
                     default:
                         throw new NegocioException($"Não foi possível exportar este relátorio para o formato {filtroRelatorio.TipoFormatoRelatorio}");
                 }
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {guidLog.ToString()}", LogNivel.Informacao, $"Relatório PDF/Excel gerado {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             }
         }
 
