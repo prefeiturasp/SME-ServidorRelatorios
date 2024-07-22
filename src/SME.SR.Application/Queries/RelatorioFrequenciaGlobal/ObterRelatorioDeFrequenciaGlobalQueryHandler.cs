@@ -58,7 +58,7 @@ namespace SME.SR.Application
             await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {filtro.LogId.ToString()}", LogNivel.Informacao, $"Populando Dto relatório (paralelo) {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}"));
             retornoQuery
                 .AsParallel() 
-                .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoTurmas) 
+                .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoUes) 
                 .GroupBy(x => x.UeCodigo)
                 .ForAll(agrupamentoUe =>
                 {
