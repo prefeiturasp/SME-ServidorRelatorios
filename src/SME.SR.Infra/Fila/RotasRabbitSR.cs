@@ -1,4 +1,6 @@
-﻿namespace SME.SR.Infra
+﻿using System.Collections.Generic;
+
+namespace SME.SR.Infra
 {
     public static class RotasRabbitSR
     {
@@ -89,5 +91,23 @@
         public const string RotaRelatoriosSolicitadosMapeamentoEstudante = "sr.relatorios.solicitados.mapeamentoestudante";
         public const string RotaRelatoriosSolicitadosBuscaAtiva = "sr.relatorios.solicitados.buscaativa";
         public const string RotaRelatoriosSolicitadosProdutividadeFrequencia = "sr.relatorios.solicitados.produtividade.frequencia";
+    }
+
+    public static class ArgumentosRabbitSR
+    {
+        private const string ARGUMENTO_X_CONSUMER_TIMEOUT = "x-consumer-timeout";
+        private static readonly Dictionary<string, Dictionary<string, object>> configuracoes = new Dictionary<string, Dictionary<string, object>>();
+
+        static ArgumentosRabbitSR()
+        {
+            configuracoes[RotasRabbitSR.RotaRelatoriosSolicitadosFrequenciaMensal] = 
+                new Dictionary<string, object>
+                {
+                    { ARGUMENTO_X_CONSUMER_TIMEOUT, 4 * 3600000 }
+                }; ;
+        }
+
+        public static Dictionary<string, object> ObterConfiguracao(string nomeFila)
+            => configuracoes.TryGetValue(nomeFila, out var configuracao) ? configuracao : null;
     }
 }
