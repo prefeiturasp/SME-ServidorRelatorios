@@ -17,6 +17,5 @@ namespace SME.SR.Infra
         public IList<string> MesesReferencias { get; set; }
         public int ApenasAlunosPercentualAbaixoDe { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
-        public Guid LogId { get; set; }
     }
 }
