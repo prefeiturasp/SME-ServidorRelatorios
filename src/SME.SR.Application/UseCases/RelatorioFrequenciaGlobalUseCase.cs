@@ -20,9 +20,7 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var guidLog = Guid.NewGuid();
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroFrequenciaGlobalDto>();
-            filtroRelatorio.LogId = guidLog;
             var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
             if (listaDeFrenquenciaGlobal?.Any() != true)                
                 throw new NegocioException($"Não foi possível localizar informações com os filtros selecionados");
