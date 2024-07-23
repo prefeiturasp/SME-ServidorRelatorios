@@ -64,27 +64,20 @@ namespace SME.SR.Application
                             var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes, filtro.AnoLetivo);
                             if (dadosSituacaoAluno.ImprimirRelatorio)
                             {
-                                var aluno = alunosEscola
-                                    .Select(c => new { c.CodigoAluno, c.NomeAluno, c.NomeSocialAluno, c.NumeroAlunoChamada, c.CodigoTurma })
-                                    .FirstOrDefault(c => c.CodigoAluno.ToString() == item.CodigoEol
-                                                         && (filtro.CodigosTurmas.First() == FILTRO_OPCAO_TODOS
-                                                            || (filtro.CodigosTurmas.First() != FILTRO_OPCAO_TODOS
-                                                                && filtro.CodigosTurmas.Contains(c.CodigoTurma))));
-
                                 retornoMapeado.Add(new FrequenciaGlobalDto()
-                                {
-                                    SiglaDre = item.DreSigla,
-                                    DreCodigo = item.DreCodigo,
-                                    UeNome = string.Concat(item.DescricaoTipoEscola, " - ", item.UeNome),
-                                    UeCodigo = item.UeCodigo,
-                                    Mes = item.Mes,
-                                    TurmaCodigo = item.TurmaCodigo,
-                                    Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
-                                    CodigoEOL = item.CodigoEol,
-                                    Estudante = dadosSituacaoAluno.NomeFinalAluno,
-                                    NumeroChamadda = aluno?.NumeroAlunoChamada ?? string.Empty,
-                                    PercentualFrequencia = item.Percentual
-                                });
+                                    {
+                                        SiglaDre = item.DreSigla,
+                                        DreCodigo = item.DreCodigo,
+                                        UeNome = string.Concat(item.DescricaoTipoEscola, " - ", item.UeNome),
+                                        UeCodigo = item.UeCodigo,
+                                        Mes = item.Mes,
+                                        TurmaCodigo = item.TurmaCodigo,
+                                        Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
+                                        CodigoEOL = item.CodigoEol,
+                                        Estudante = dadosSituacaoAluno.NomeFinalAluno,
+                                        NumeroChamadda = dadosSituacaoAluno.NroChamada,
+                                        PercentualFrequencia = item.Percentual
+                                    });
                             }
                         }
                     }
@@ -120,7 +113,7 @@ namespace SME.SR.Application
             return alunos;
         }
 
-        private UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto DeveImprimirNoRelatorio(IEnumerable<DadosAlunosEscolaDto> agrupamento, int mesSelecionado, int anoLetivoSelecionado)
+        private UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto DeveImprimirNoRelatorio(List<DadosAlunosEscolaDto> agrupamento, int mesSelecionado, int anoLetivoSelecionado)
         {
             var dadosSituacaoAluno = new UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto { ImprimirRelatorio = false };
             var itemsMesSelecionado = FiltrarMatriculasConsideradasNoMes(agrupamento, mesSelecionado, anoLetivoSelecionado);
@@ -132,6 +125,7 @@ namespace SME.SR.Application
 
                 dadosSituacaoAluno.ImprimirRelatorio = true;
                 dadosSituacaoAluno.NomeFinalAluno = ultimoRegistroMatricula.ObterNomeFinal();
+                dadosSituacaoAluno.NroChamada = ultimoRegistroMatricula.NumeroAlunoChamada;
 
                 if (inativoNoMes)
                     dadosSituacaoAluno.NomeFinalAluno += " - " + ultimoRegistroMatricula.SituacaoMatricula
@@ -147,7 +141,7 @@ namespace SME.SR.Application
                 .Cast<Modalidade>().FirstOrDefault(x => (int)x == modalidadeCodigo);
         }
 
-        private IEnumerable<DadosAlunosEscolaDto> FiltrarMatriculasConsideradasNoMes(IEnumerable<DadosAlunosEscolaDto> lista, int mesConsiderado, int anoLetivoSelecionado)
+        private IEnumerable<DadosAlunosEscolaDto> FiltrarMatriculasConsideradasNoMes(List<DadosAlunosEscolaDto> lista, int mesConsiderado, int anoLetivoSelecionado)
         {
             if (lista.Any(x => x.AnoLetivo == anoLetivoSelecionado))
             {
