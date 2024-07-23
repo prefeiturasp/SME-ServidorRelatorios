@@ -100,11 +100,11 @@ namespace SME.SR.Infra
 
         static ArgumentosRabbitSR()
         {
-            configuracoes[RotasRabbitSR.RotaRelatoriosSolicitadosFrequenciaMensal] = 
+            /*configuracoes[RotasRabbitSR.RotaRelatoriosSolicitadosFrequenciaMensal] = 
                 new Dictionary<string, object>
                 {
-                    { ARGUMENTO_X_CONSUMER_TIMEOUT, 12 * 3600000 }
-                }; 
+                    { ARGUMENTO_X_CONSUMER_TIMEOUT, 4 * 3600000 }
+                }; */
         }
 
         public static Dictionary<string, object> ObterConfiguracao(string nomeFila)
