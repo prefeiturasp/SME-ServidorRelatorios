@@ -14,5 +14,6 @@ namespace SME.SR.Infra
         public string LoginUsuarioLogado { get; set; }
         public Guid PerfilUsuarioLogado { get; set; }
         public TipoSondagem TipoSondagem { get; set; }
+        public bool ApresentarTurmasUesDresSemLancamento { get; set; }
     }
 }
