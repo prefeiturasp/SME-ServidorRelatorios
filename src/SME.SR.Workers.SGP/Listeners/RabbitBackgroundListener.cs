@@ -88,7 +88,7 @@ namespace SME.SR.Workers.SGP.Services
             foreach (var fila in tipoRotas.ObterConstantesPublicas<string>()
                                           .Where(r => !configuracaoFilasRabbit.GetFilasIgnoradas.Contains(r)))
             {
-                canalRabbit.QueueDeclare(fila, true, false, false);
+                canalRabbit.QueueDeclare(fila, true, false, false, ArgumentosRabbitSR.ObterConfiguracao(fila));
                 canalRabbit.QueueBind(fila, exchange, fila, null);
             }
         }
@@ -97,7 +97,7 @@ namespace SME.SR.Workers.SGP.Services
         {
             foreach (var fila in configuracaoFilasRabbit.GetFilas)
             {
-                canalRabbit.QueueDeclare(fila, true, false, false);
+                canalRabbit.QueueDeclare(fila, true, false, false, ArgumentosRabbitSR.ObterConfiguracao(fila));
                 canalRabbit.QueueBind(fila, exchange, fila, null);
             }
         }
