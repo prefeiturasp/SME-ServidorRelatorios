@@ -16,14 +16,17 @@ namespace SME.SR.Application
     public class ObterRelatorioDeFrequenciaGlobalQueryHandler : IRequestHandler<ObterRelatorioDeFrequenciaGlobalQuery, List<FrequenciaGlobalDto>>
     {
         private const string FILTRO_OPCAO_TODOS = "-99";
+        private readonly VariaveisAmbiente variaveisAmbiente;
+
 
         private readonly IFrequenciaAlunoRepository frequenciaAlunoRepository;
         private readonly IMediator mediator;
 
-        public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository, IMediator mediator)
+        public ObterRelatorioDeFrequenciaGlobalQueryHandler(IFrequenciaAlunoRepository frequenciaAlunoRepository, IMediator mediator, VariaveisAmbiente variaveisAmbiente)
         {
             this.frequenciaAlunoRepository = frequenciaAlunoRepository ?? throw new ArgumentNullException(nameof(frequenciaAlunoRepository));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
         public async Task<List<FrequenciaGlobalDto>> Handle(ObterRelatorioDeFrequenciaGlobalQuery request, CancellationToken cancellationToken)
@@ -31,16 +34,14 @@ namespace SME.SR.Application
             var retornoQuery = await frequenciaAlunoRepository.ObterFrequenciaAlunoMensal(request.Filtro.ExibirHistorico, request.Filtro.AnoLetivo,
                 request.Filtro.CodigoDre, request.Filtro.CodigoUe, request.Filtro.Modalidade, request.Filtro.Semestre, request.Filtro.CodigosTurmas.Select(c => c).ToArray(),
                 request.Filtro.MesesReferencias.Select(c => Convert.ToInt32(c)).ToArray(), request.Filtro.ApenasAlunosPercentualAbaixoDe);
-
             if (retornoQuery == null || !retornoQuery.Any())
                 return Enumerable.Empty<FrequenciaGlobalDto>().ToList();
-
             return await MapearRetornoQuery(request.Filtro, retornoQuery);
         }
 
         private async Task<List<FrequenciaGlobalDto>> MapearRetornoQuery(FiltroFrequenciaGlobalDto filtro, IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
-            var retornoMapeado = new ConcurrentBag<FrequenciaGlobalDto>(); 
+            var retornoMapeado = new ConcurrentBag<FrequenciaGlobalDto>();
             var alunosEscola = await ObterMatriculasAlunos(filtro.CodigoUe, filtro.CodigoDre, filtro.AnoLetivo, retornoQuery);
             var agrupamento = alunosEscola
                 .OrderBy(x => x.CodigoAluno)
@@ -48,14 +49,14 @@ namespace SME.SR.Application
                 .ThenBy(x => x.DataMatricula)
                 .ThenBy(x => x.DataSituacao)
                 .GroupBy(x => new { CodigoAluno = x.CodigoAluno.ToString(), CodigoTurma = x.CodigoTurma })
-                .ToDictionary(g => $"{g.Key.CodigoAluno.ToString()}-{g.Key.CodigoTurma}", g => g.ToList()); 
+                .ToDictionary(g => $"{g.Key.CodigoAluno.ToString()}-{g.Key.CodigoTurma}", g => g.ToList());
 
             retornoQuery
-                .AsParallel() 
-                .WithDegreeOfParallelism(100) 
+                .AsParallel()
+                .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoUes)
                 .GroupBy(x => x.UeCodigo)
                 .ForAll(agrupamentoUe =>
-                {
+            { 
                     foreach (var item in agrupamentoUe)
                     {
                         if (agrupamento.TryGetValue($"{item.CodigoEol}-{item.TurmaCodigo}", out var alunoAgrupado))
@@ -88,7 +89,7 @@ namespace SME.SR.Application
                         }
                     }
                 });
-
+            
             return retornoMapeado
                 .OrderBy(c => c.SiglaDre)
                 .ThenBy(c => c.UeNome)
