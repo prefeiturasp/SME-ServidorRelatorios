@@ -2,6 +2,7 @@
 using SME.SR.Application.Interfaces;
 using SME.SR.Data;
 using SME.SR.Infra;
+using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,24 @@ namespace SME.SR.Application
         public async Task Executar(FiltroRelatorioDto request)
         {
             var filtroRelatorio = request.ObterObjetoFiltro<FiltroFrequenciaGlobalDto>();
+            var filtroTodos = filtroRelatorio.CodigoDre.EstaFiltrandoTodas();
+            var logId = Guid.NewGuid().ToString();
+
+            if (filtroTodos)
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"Consultando dados e populando DTO"));
+            
             var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
+
+            if (filtroTodos)
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"DTO populado"));
+
             if (listaDeFrenquenciaGlobal?.Any() != true)                
                 throw new NegocioException($"Não foi possível localizar informações com os filtros selecionados");
             else
             {
+                if (filtroTodos)
+                    await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"Gerando PDF/Excel"));
+
                 switch (filtroRelatorio.TipoFormatoRelatorio)
                 {
                     case TipoFormatoRelatorio.Pdf:
