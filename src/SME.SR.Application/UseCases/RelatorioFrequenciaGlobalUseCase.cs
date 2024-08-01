@@ -51,6 +51,9 @@ namespace SME.SR.Application
                     default:
                         throw new NegocioException($"Não foi possível exportar este relátorio para o formato {filtroRelatorio.TipoFormatoRelatorio}");
                 }
+
+                if (filtroTodos)
+                    await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"Gerado"));
             }
         }
 
