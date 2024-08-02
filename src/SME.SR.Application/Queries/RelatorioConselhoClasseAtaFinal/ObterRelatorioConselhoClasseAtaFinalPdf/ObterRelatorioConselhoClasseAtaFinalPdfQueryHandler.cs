@@ -214,7 +214,7 @@ namespace SME.SR.Application
             foreach (var codigo in codigos)
                 turmas.Add(await ObterTurma(codigo));
 
-            return turmas;
+            return turmas.Where(t => t != null).ToList();
         }
 
         private string[] ObterCodigosTurmaParaListagem(TipoTurma tipoTurma, string codigo, List<Turma> turmas)
@@ -257,7 +257,7 @@ namespace SME.SR.Application
             foreach (var lta in listaTurmasAlunos)
             {
                 var turmaAluno = await ObterTurma(lta.Key.ToString());
-                if (turmaAluno.TipoTurma != tipoTurma)
+                if (turmaAluno != null && turmaAluno.TipoTurma != tipoTurma)
                     listaTurmas.Add(turmaAluno.Codigo);
             }
 
@@ -1093,7 +1093,17 @@ namespace SME.SR.Application
         }
 
         private async Task<Turma> ObterTurma(string turmaCodigo)
-            => await mediator.Send(new ObterTurmaQuery(turmaCodigo));
+        {
+            try
+            {
+                return await mediator.Send(new ObterTurmaQuery(turmaCodigo));
+            }
+            catch 
+            {
+                return null;
+            }
+        }
+            
         private async Task<IEnumerable<FrequenciaAluno>> ObterFrequenciaComponente(string[] turmasCodigo, IEnumerable<(string CodigoTurma, long ComponenteCurricularId)> componentesCurricularesPorTurma, int[] bimestres, long tipoCalendarioId, IEnumerable<(string codigoAluno, DateTime dataMatricula, DateTime? dataSituacao)> alunosDatasMatriculas)
             => await mediator.Send(new ObterFrequenciaComponenteGlobalPorTurmaQuery(turmasCodigo, componentesCurricularesPorTurma, bimestres, tipoCalendarioId, alunosDatasMatriculas));
 
