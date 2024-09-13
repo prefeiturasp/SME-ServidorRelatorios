@@ -4,6 +4,7 @@ using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.Sondagem;
+using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,8 +201,16 @@ namespace SME.SR.Application.Services
                         .ObterPorDresId(new long[] { dreId })
                 : new UePorDresIdResultDto[] { new UePorDresIdResultDto() { Codigo = filtro.UeCodigo } };
         protected virtual async Task<IEnumerable<Turma>> ObterTurmasUe(string ueCodigo)
-            => (await turmaRepository
+        {
+            var ehIAD = filtro.TipoSondagem.EhUmDosValores(TipoSondagem.MAT_IAD, TipoSondagem.LP_CapacidadeLeitura, TipoSondagem.LP_LeituraVozAlta, TipoSondagem.LP_ProducaoTexto);
+            return (await turmaRepository
                             .ObterTurmasPorUeEAnoLetivo(ueCodigo, filtro.AnoLetivo))
-                            .Where(t => t.Ano.All(x => char.IsDigit(x)) && int.Parse(t.Ano) > 0 && t.ModalidadeCodigo == Modalidade.Fundamental);
+                            .Where(t => t.Ano.All(x => char.IsDigit(x)) 
+                                                       && int.Parse(t.Ano) > 0 
+                                                       && t.ModalidadeCodigo == Modalidade.Fundamental
+                                                       && (!ehIAD || (ehIAD && int.Parse(t.Ano) > 3))
+                                   );
+
+        }
     }
 }
