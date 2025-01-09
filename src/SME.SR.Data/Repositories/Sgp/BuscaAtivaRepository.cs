@@ -19,10 +19,13 @@ namespace SME.SR.Data
         public BuscaAtivaRepository(VariaveisAmbiente variaveisAmbiente)
         {
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
-        }       
+        }
 
         private string ObterCondicaoTurmas(FiltroRelatorioBuscasAtivasDto filtro) =>
                     filtro.TurmasCodigo.Any() ? " and t.turma_id = ANY(@turmasCodigo) " : string.Empty;
+
+        private string ObterCondicaoUes(FiltroRelatorioBuscasAtivasDto filtro) =>
+                    filtro.UeCodigo == "-99" ? string.Empty : " and u.ue_id = @ueCodigo ";
 
         private string ObterCondicaoSemestre(FiltroRelatorioBuscasAtivasDto filtro) =>
                     filtro.Semestre.HasValue ? " and t.semestre = @semestre " : string.Empty;
@@ -53,6 +56,7 @@ namespace SME.SR.Data
             var funcoes = new List<Func<FiltroRelatorioBuscasAtivasDto, string>>
             {
                 ObterCondicaoTurmas,
+                ObterCondicaoUes,
                 ObterCondicaoSemestre,
                 ObterCondicaoAluno,
                 ObterCondicaoABAE,
@@ -126,7 +130,6 @@ namespace SME.SR.Data
                               left join vw_resposta qObsGeralAoContatarResponsavel on qObsGeralAoContatarResponsavel.registro_acao_busca_ativa_id = raba.id and qObsGeralAoContatarResponsavel.nome_componente = 'OBS_GERAL'
                               left join vw_resposta qObsGeralAoNaoContatarResponsavel on qObsGeralAoNaoContatarResponsavel.registro_acao_busca_ativa_id = raba.id and qObsGeralAoNaoContatarResponsavel.nome_componente = 'OBS_GERAL_NAO_CONTATOU_RESP'
                               where not raba.excluido 
-                                    and u.ue_id = @ueCodigo
                                     and t.modalidade_codigo = @modalidade
                                     and t.ano_letivo = @anoLetivo ");
 
