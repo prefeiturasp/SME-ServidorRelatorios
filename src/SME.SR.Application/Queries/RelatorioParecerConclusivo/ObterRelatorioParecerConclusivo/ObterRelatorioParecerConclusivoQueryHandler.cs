@@ -100,6 +100,8 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
                 uesDaDre.Add(ue);
             }
 
+            uesDaDre = uesDaDre.Where(u => parecesParaTratar.Any(p => p.UeCodigo == u.Codigo))?.ToList();
+
             foreach (var ueDaDre in uesDaDre)
             {
                 var ueParaAdicionar = new RelatorioParecerConclusivoUeDto();
@@ -110,7 +112,6 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
 
                 dreParaAdicionar.Ues.Add(ueParaAdicionar);
             }
-
         }
 
         private async Task TrataCiclosDaUe(IEnumerable<RelatorioParecerConclusivoRetornoDto> parecesParaTratar, long ueId, RelatorioParecerConclusivoUeDto ueParaAdicionar, int anoLetivo, int modalidadeId, long cicloIdEnviado,
@@ -148,42 +149,47 @@ long dreId, string ueCodigoEnviado, long cicloIdEnviado, int modalidadeId, int? 
                     else
                         alunosDasTurmas = await mediator.Send(new ObterAlunosPorTurmasQuery(turmasFiltradas.Select(a => long.Parse(a.Codigo))));
 
-                    foreach (var turma in turmasFiltradas)
+                    var parecesParaTratarCiclo = parecesParaTratar.Where(p => p.CicloId == cicloAgrupado.Id)?.ToList();
+
+                    if (parecesParaTratarCiclo.Any())
                     {
-                        var alunos = alunosDasTurmas.Where(a => a.CodigoTurma == int.Parse(turma.Codigo)).OrderBy(a => a.ObterNomeFinal());
-
-                        var codigosAlunos = alunos?.Select(a => a.CodigoAluno).Distinct();
-
-                        codigosAlunos = parecesParaTratar.Any() && parecerConclusivoId < 0
-                            ? parecesParaTratar.Where(p => codigosAlunos.Any(c => c == p.AlunoCodigo)).Select(p => p.AlunoCodigo).Distinct()
-                            : codigosAlunos;
-
-                        if (codigosAlunos != null && codigosAlunos.Any())
+                        foreach (var turma in turmasFiltradas)
                         {
-                            foreach (var alunoDaTurma in alunos.Where(a => codigosAlunos.Any(c => c == a.CodigoAluno))?.ToList())
+                            var alunos = alunosDasTurmas.Where(a => a.CodigoTurma == int.Parse(turma.Codigo)).OrderBy(a => a.ObterNomeFinal());
+
+                            var codigosAlunos = alunos?.Select(a => a.CodigoAluno)?.Distinct()?.ToList();
+
+                            codigosAlunos = parecesParaTratar.Any() && parecerConclusivoId < 0
+                                ? parecesParaTratar.Where(p => codigosAlunos.Any(c => c == p.AlunoCodigo)).Select(p => p.AlunoCodigo)?.Distinct()?.ToList()
+                                : codigosAlunos;
+
+                            if (codigosAlunos != null && codigosAlunos.Any())
                             {
-                                var parecerParaIncluir = new RelatorioParecerConclusivoAlunoDto();
-                                var numeroAlunoChamadaConvertido = String.IsNullOrEmpty(alunoDaTurma.NumeroAlunoChamada) ? "" : Int32.Parse(alunoDaTurma.NumeroAlunoChamada).ToString();
-                                parecerParaIncluir.AlunoCodigo = alunoDaTurma.CodigoAluno.ToString();
-                                parecerParaIncluir.AlunoNomeCompleto = alunoDaTurma.ObterNomeFinal();
-                                parecerParaIncluir.AlunoNumeroChamada = numeroAlunoChamadaConvertido;
-                                parecerParaIncluir.TurmaNome = turma.Nome;
-
-                                var parecerFiltradoParaIncluir = parecesParaTratar.FirstOrDefault(a => a.TurmaId.ToString() == turma.Codigo
-                                                                 && a.AlunoCodigo == alunoDaTurma.CodigoAluno && a.Ano == cicloAgrupado.Ano.ToString()
-                                                                 && a.CicloId == cicloAgrupado.Id);
-
-                                if (parecerFiltradoParaIncluir != null || parecerConclusivoId == 0 ||
-                                   (parecerFiltradoParaIncluir == null && parecerConclusivoId < 0))
+                                foreach (var alunoDaTurma in alunos.Where(a => codigosAlunos.Any(c => c == a.CodigoAluno))?.ToList())
                                 {
-                                    parecerParaIncluir.ParecerConclusivoDescricao = parecerFiltradoParaIncluir == null ?
-                                                                                        "Sem Parecer" : parecerFiltradoParaIncluir.ParecerConclusivo;
-                                    await VerificarParecerEmAprovacao(parecerParaIncluir, anoLetivo);
-                                    anoParaIncluir.PareceresConclusivos.Add(parecerParaIncluir);
+                                    var parecerParaIncluir = new RelatorioParecerConclusivoAlunoDto();
+                                    var numeroAlunoChamadaConvertido = String.IsNullOrEmpty(alunoDaTurma.NumeroAlunoChamada) ? "" : Int32.Parse(alunoDaTurma.NumeroAlunoChamada).ToString();
+                                    parecerParaIncluir.AlunoCodigo = alunoDaTurma.CodigoAluno.ToString();
+                                    parecerParaIncluir.AlunoNomeCompleto = alunoDaTurma.ObterNomeFinal();
+                                    parecerParaIncluir.AlunoNumeroChamada = numeroAlunoChamadaConvertido;
+                                    parecerParaIncluir.TurmaNome = turma.Nome;
+
+                                    var parecerFiltradoParaIncluir = parecesParaTratar.FirstOrDefault(a => a.TurmaId.ToString() == turma.Codigo
+                                                                     && a.AlunoCodigo == alunoDaTurma.CodigoAluno && a.Ano == cicloAgrupado.Ano.ToString()
+                                                                     && a.CicloId == cicloAgrupado.Id);
+
+                                    if (parecerFiltradoParaIncluir != null || parecerConclusivoId == 0 ||
+                                       (parecerFiltradoParaIncluir == null && parecerConclusivoId < 0))
+                                    {
+                                        parecerParaIncluir.ParecerConclusivoDescricao = string.IsNullOrEmpty(parecerFiltradoParaIncluir.ParecerConclusivo) ?
+                                                                                            "Sem Parecer" : parecerFiltradoParaIncluir.ParecerConclusivo;
+                                        await VerificarParecerEmAprovacao(parecerParaIncluir, anoLetivo);
+                                        anoParaIncluir.PareceresConclusivos.Add(parecerParaIncluir);
+                                    }
                                 }
                             }
-                        }
 
+                        }
                     }
 
                     if (anoParaIncluir.PareceresConclusivos.Any())

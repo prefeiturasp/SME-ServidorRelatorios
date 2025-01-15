@@ -15,7 +15,6 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IPendenciaRepository fechamentoPendenciaRepository;
-
         public ObterRelatorioPedenciasQueryHandler(IMediator mediator, IPendenciaRepository fechamentoPendenciaRepository)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -37,7 +36,6 @@ namespace SME.SR.Application
             var resultadoQuery = await fechamentoPendenciaRepository.ObterPendencias(filtros.AnoLetivo, filtros.DreCodigo, filtros.UeCodigo,
                 (int)filtros.Modalidade, filtros.Semestre, filtros.TurmasCodigo, filtros.ComponentesCurriculares, filtros.Bimestre, filtros.ExibirPendenciasResolvidas, filtros.TipoPendenciaGrupo, filtros.UsuarioRf, filtros.ExibirHistorico);
 
-
             if (resultadoQuery == null || !resultadoQuery.Any())
                 throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
 
@@ -46,14 +44,13 @@ namespace SME.SR.Application
             var componentesCurricularesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesCurricularesIds));
 
             var retorno = new RelatorioPendenciasDto();
-            var retornoLinearParaCabecalho = resultadoQuery.Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0 && x.OutrasPendencias == false).FirstOrDefault();
-            if (retornoLinearParaCabecalho == null)
-                throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
-
+            var retornoLinearParaCabecalho = resultadoQuery
+                .Where(x => x.DreNome?.Length > 0 && x.UeNome?.Length > 0 && (TipoPendencia)x.Tipo == TipoPendencia.AEE || ((TipoPendencia)x.Tipo != TipoPendencia.AEE && !x.OutrasPendencias)).FirstOrDefault() ??
+                    throw new NegocioException("Não foram localizadas pendências com os filtros selecionados.");
             retorno.UsuarioLogadoNome = filtros.UsuarioLogadoNome;
             retorno.UsuarioLogadoRf = filtros.UsuarioLogadoRf;
             retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
-            
+
             retorno.UeNome = string.IsNullOrEmpty(retornoLinearParaCabecalho.UeNome) ? "Todas" : retornoLinearParaCabecalho.UeNome;
             retorno.DreNome = retornoLinearParaCabecalho.DreNome;
             var qtdModalidades = resultadoQuery?.Where(c => c.ModalidadeCodigo > 0).GroupBy(c => c.ModalidadeCodigo).Count();
@@ -66,7 +63,7 @@ namespace SME.SR.Application
             retorno.Usuario = filtros.UsuarioNome;
             retorno.RF = filtros.UsuarioRf;
             retorno.ExibeDetalhamento = filtros.ExibirDetalhamento;
-            retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");            
+            retorno.Data = DateTime.Now.ToString("dd/MM/yyyy");
             retorno.Ano = filtros.AnoLetivo.ToString();
             retorno.EhSemestral = ((Modalidade)retornoLinearParaCabecalho.ModalidadeCodigo).EhSemestral();
 
@@ -133,7 +130,7 @@ namespace SME.SR.Application
                         }
                         var componentesDaTurma = resultadoQuery.Where(a => a.TurmaCodigo == turmaCodigo && a.Bimestre == bimestreDaTurma).Select(a => a.DisciplinaId).Distinct();
 
-                        if(componentesDaTurma.Any())
+                        if (componentesDaTurma.Any())
                         {
                             var componentesICurricularsTurmads = componentesDaTurma.ToArray();
                             var componentesDescricoes = await mediator.Send(new ObterComponentesCurricularesEolPorIdsQuery(componentesICurricularsTurmads));
@@ -238,7 +235,7 @@ namespace SME.SR.Application
                 pendenciaParaAdicionar.QuantidadeDeAulas = item.QuantidadeDeAulas;
                 pendenciaParaAdicionar.QuantidadeDeDias = item.QuantidadeDeDias;
                 pendenciaParaAdicionar.ExibirDetalhamento = item.ExibirDetalhes;
-                
+
 
                 if (exibirDetalhamento)
                 {

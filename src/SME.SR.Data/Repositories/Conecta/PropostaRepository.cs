@@ -13,6 +13,7 @@ namespace SME.SR.Data
     {
         private const int SITUACAO_PUBLICADA = 1;
         private const int HOMOLOGADA = 1;
+        private const int SITUACAO_APROVADA = 9; 
 
         private readonly VariaveisAmbiente variaveisAmbiente;
 
@@ -23,7 +24,14 @@ namespace SME.SR.Data
 
         public async Task<Proposta> ObterProposta(long propostaId)
         {
-            var parametro = new { propostaId, situacaoPublicada = SITUACAO_PUBLICADA, homologada = HOMOLOGADA };
+            var parametro = new
+            {
+                propostaId,
+                situacaoPublicada = SITUACAO_PUBLICADA,
+                situacaoAprovada = SITUACAO_APROVADA,
+                homologada = HOMOLOGADA
+            };
+            
             var query = new StringBuilder();
 
             query.AppendLine(ObterQueryProposta());
@@ -53,7 +61,14 @@ namespace SME.SR.Data
 
         public async Task<PropostaCompleta> ObterPropostaCompleta(long propostaId)
         {
-            var parametro = new { propostaId, situacaoPublicada = SITUACAO_PUBLICADA, homologada = HOMOLOGADA };
+            var parametro = new
+            {
+                propostaId,
+                situacaoPublicada = SITUACAO_PUBLICADA,
+                situacaoAprovada = SITUACAO_APROVADA,
+                homologada = HOMOLOGADA
+            };
+
             var query = new StringBuilder();
 
             query.AppendLine(ObterQueryPropostaCompleta());
@@ -101,12 +116,14 @@ namespace SME.SR.Data
                                      p.data_realizacao_inicio as DataRealizacaoInicio, p.data_realizacao_fim as DataRealizacaoFim,
                                      p.quantidade_turmas as QuantidadeTurmas, p.quantidade_vagas_turma as QuantidadeVagasTurmas, 
                                      p.data_inscricao_inicio as DataInscricaoInicio, p.data_inscricao_fim as DataInscricaoFim,
-                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna ");
+                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna,
+                                     p.publico_alvo_outros as PublicoAlvo_Outros, p.funcao_especifica_outros as FuncaoEspecifica_Outros, 
+                                     p.outros_criterios as Criterios_Outros, p.criterio_validacao_inscricao_outros as CriteriosValidacao_Outros ");
             query.AppendLine("FROM proposta p ");
             query.AppendLine("INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id ");
             query.AppendLine("WHERE p.id = @propostaId ");
             query.AppendLine(" AND NOT p.excluido ");
-            query.AppendLine(" AND p.situacao = @situacaoPublicada");
+            query.AppendLine(" AND p.situacao in (@situacaoPublicada, @situacaoAprovada)");
             query.AppendLine(" AND p.formacao_homologada = @homologada;");
 
             return query.ToString();
@@ -122,12 +139,14 @@ namespace SME.SR.Data
                                      p.data_realizacao_inicio as DataRealizacaoInicio, p.data_realizacao_fim as DataRealizacaoFim,
                                      p.quantidade_turmas as QuantidadeTurmas, p.quantidade_vagas_turma as QuantidadeVagasTurmas, 
                                      p.data_inscricao_inicio as DataInscricaoInicio, p.data_inscricao_fim as DataInscricaoFim,
-                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna ");
+                                     p.numero_homologacao as NumeroHomologacao, p.link_inscricoes_externa as LinkInscricaoExterna,
+                                     p.publico_alvo_outros as PublicoAlvo_Outros, p.funcao_especifica_outros as FuncaoEspecifica_Outros, 
+                                     p.outros_criterios as Criterios_Outros, p.criterio_validacao_inscricao_outros as CriteriosValidacao_Outros");
             query.AppendLine("FROM proposta p ");
             query.AppendLine("INNER JOIN area_promotora ap ON ap.id = p.area_promotora_id ");
             query.AppendLine("WHERE p.id = @propostaId ");
             query.AppendLine(" AND NOT p.excluido ");
-            query.AppendLine(" AND p.situacao = @situacaoPublicada");
+            query.AppendLine(" AND p.situacao in (@situacaoPublicada, @situacaoAprovada)");
             query.AppendLine(" AND p.formacao_homologada = @homologada;");
 
             return query.ToString();

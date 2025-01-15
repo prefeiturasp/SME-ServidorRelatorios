@@ -3,13 +3,16 @@ using SME.SR.Data.Interfaces;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Models;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.Sondagem;
+using SME.SR.Infra.Utilitarios;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application.Services
 {
-    public abstract class ServicoAnaliticoSondagemAbstract 
+    public abstract class ServicoAnaliticoSondagemAbstract
     {
         protected readonly IAlunoRepository alunoRepository;
         protected readonly IDreRepository dreRepository;
@@ -29,11 +32,11 @@ namespace SME.SR.Application.Services
         private const int ANO_LETIVO_2024 = 2024;
         private const int ANO_LETIVO_2025 = 2025;
         protected const string TURMA_TERCEIRO_ANO = "3";
-        private const string TODOS = "-99";
+        protected const string TODOS = "-99";
 
-        protected ServicoAnaliticoSondagemAbstract(IAlunoRepository alunoRepository, 
-                                                   IDreRepository dreRepository, 
-                                                   IUeRepository ueRepository, 
+        protected ServicoAnaliticoSondagemAbstract(IAlunoRepository alunoRepository,
+                                                   IDreRepository dreRepository,
+                                                   IUeRepository ueRepository,
                                                    ISondagemRelatorioRepository sondagemRelatorioRepository,
                                                    ISondagemAnaliticaRepository sondagemAnaliticaRepository,
                                                    ITurmaRepository turmaRepository)
@@ -98,7 +101,7 @@ namespace SME.SR.Application.Services
         }
 
         protected async Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalDeAlunosPorUe(
-                                                                string codigoDre, 
+                                                                string codigoDre,
                                                                 string codigoUe,
                                                                 IEnumerable<TotalAlunosAnoTurmaDto> totalDeAlunos)
         {
@@ -186,6 +189,28 @@ namespace SME.SR.Application.Services
             var descricao = ehSemestre ? "Semestre" : "Bimestre";
 
             return @$"{filtro.Periodo}° {descricao}";
+        }
+
+        protected virtual async Task<IEnumerable<Dre>> ObterDres()
+            => filtro.DreCodigo == TODOS
+                ? await dreRepository.ObterTodas()
+                : new Dre[] { await dreRepository.ObterPorCodigo(filtro.DreCodigo) };
+        protected virtual async Task<IEnumerable<UePorDresIdResultDto>> ObterUesDre(long dreId)
+            => filtro.UeCodigo == TODOS
+                ? await ueRepository
+                        .ObterPorDresId(new long[] { dreId })
+                : new UePorDresIdResultDto[] { new UePorDresIdResultDto() { Codigo = filtro.UeCodigo } };
+        protected virtual async Task<IEnumerable<Turma>> ObterTurmasUe(string ueCodigo)
+        {
+            var ehIAD = filtro.TipoSondagem.EhUmDosValores(TipoSondagem.MAT_IAD, TipoSondagem.LP_CapacidadeLeitura, TipoSondagem.LP_LeituraVozAlta, TipoSondagem.LP_ProducaoTexto);
+            return (await turmaRepository
+                            .ObterTurmasPorUeEAnoLetivo(ueCodigo, filtro.AnoLetivo))
+                            .Where(t => t.Ano.All(x => char.IsDigit(x)) 
+                                                       && int.Parse(t.Ano) > 0 
+                                                       && t.ModalidadeCodigo == Modalidade.Fundamental
+                                                       && (!ehIAD || (ehIAD && int.Parse(t.Ano) > 3))
+                                   );
+
         }
     }
 }

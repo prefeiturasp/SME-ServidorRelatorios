@@ -5,6 +5,7 @@ using SME.SR.Data.Models.Conecta;
 using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Word;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,6 +15,8 @@ namespace SME.SR.Application
     {
         private Proposta proposta;
         private Paragraph paragrafo;
+        private const string RESPOSTA_OUTROS = "OUTROS";
+
 
         public async Task<string> Handle(GerarRelatorioLaudaDePublicacaoDiretaDocCommand request, CancellationToken cancellationToken)
         {
@@ -56,10 +59,18 @@ namespace SME.SR.Application
 
         private void CarregarPublicoAlvo()
         {
+            var publicosAlvo = proposta.PublicosAlvo.ToList();
+            publicosAlvo.ForEach(item =>
+            {
+                if (item.Nome.ToUpper().Equals(RESPOSTA_OUTROS))
+                    item.DescricaoAdicional = proposta.PublicoAlvo_Outros;
+            });
+
             paragrafo.InserirTextoNegrito("PÚBLICO-ALVO: ", true);
 
-            foreach (var cargoFuncao in proposta.PublicosAlvo)
-                paragrafo.InserirTexto(cargoFuncao.Nome.ToUpper(), true);
+            foreach (var cargoFuncao in publicosAlvo)
+                paragrafo.InserirTexto($@"{cargoFuncao.Nome.ToUpper()}{(string.IsNullOrEmpty(cargoFuncao.DescricaoAdicional)
+                                                                       ? string.Empty : $": {cargoFuncao.DescricaoAdicional.ToUpper()}")}", true);
 
             paragrafo.InserirTexto(String.Format("CARGA HORÁRIA TOTAL: {0}", proposta.TotalCargaHoraria));
 
@@ -93,6 +104,13 @@ namespace SME.SR.Application
 
         private void CarregarInscricoes(MainDocumentPart mainPart)
         {
+            var criteriosValidacao = proposta.CriteriosValidacao.ToList();
+            criteriosValidacao.ForEach(item =>
+            {
+                if (item.Nome.ToUpper().Equals(RESPOSTA_OUTROS))
+                    item.DescricaoAdicional = proposta.CriteriosValidacao_Outros;
+            });
+
             paragrafo.InserirTextoNegrito("INSCRIÇÕES: ");
             var textoPeriodo = "DE {0} ATÉ {1}, PELO LINK:";
             paragrafo.InserirTexto(String.Format(textoPeriodo, proposta.DataInscricaoInicio.ToString("dd/MM/yyyy"), proposta.DataInscricaoFim.ToString("dd/MM/yyyy")));
@@ -100,16 +118,24 @@ namespace SME.SR.Application
             paragrafo.InserirLink(link, link, mainPart);
             paragrafo.InserirTexto(string.Empty, true);
 
-            foreach (var criterio in proposta.CriteriosValidacao)
-                paragrafo.InserirTexto(criterio.Nome.ToUpper(), true);
+            foreach (var criterio in criteriosValidacao)
+                paragrafo.InserirTexto($@"{criterio.Nome.ToUpper()}{(string.IsNullOrEmpty(criterio.DescricaoAdicional)
+                                                          ? string.Empty : $": {criterio.DescricaoAdicional.ToUpper()}")}", true);
         }
 
         private void CarregarCertificacao()
         {
+            var criteriosCertificacao = proposta.CriteriosCertificacao.ToList();
+            criteriosCertificacao.ForEach(item =>
+            {
+                if (item.Nome.ToUpper().Equals(RESPOSTA_OUTROS))
+                    item.DescricaoAdicional = proposta.Criterios_Outros;
+            });
             paragrafo.InserirTextoNegrito("CERTIFICAÇÃO: ", true);
 
-            foreach (var certificacao in proposta.CriteriosCertificacao)
-                paragrafo.InserirTexto(certificacao.Nome.ToUpper(), true);
+            foreach (var certificacao in criteriosCertificacao)
+                paragrafo.InserirTexto($@"{certificacao.Nome.ToUpper()}{(string.IsNullOrEmpty(certificacao.DescricaoAdicional)
+                                                            ? string.Empty : $": {certificacao.DescricaoAdicional.ToUpper()}")}", true);
         }
 
         private void CarregarRegentes()

@@ -12,6 +12,8 @@ namespace SME.SR.Data
 {
     public class SondagemAnaliticaRepository : ISondagemAnaliticaRepository
     {
+        private const string OPCAO_TODAS = "-99";
+
         private readonly VariaveisAmbiente variaveisAmbiente;
 
         public SondagemAnaliticaRepository(VariaveisAmbiente variaveisAmbiente)
