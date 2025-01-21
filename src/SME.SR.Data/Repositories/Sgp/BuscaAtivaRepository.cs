@@ -25,7 +25,7 @@ namespace SME.SR.Data
                     filtro.TurmasCodigo.Any() ? " and t.turma_id = ANY(@turmasCodigo) " : string.Empty;
 
         private string ObterCondicaoUes(FiltroRelatorioBuscasAtivasDto filtro) =>
-                    filtro.UeCodigo == "-99" ? string.Empty : " and u.ue_id = @ueCodigo ";
+                    string.IsNullOrEmpty(filtro.UeCodigo) ? string.Empty : " and u.ue_id = @ueCodigo ";
 
         private string ObterCondicaoSemestre(FiltroRelatorioBuscasAtivasDto filtro) =>
                     filtro.Semestre.HasValue ? " and t.semestre = @semestre " : string.Empty;
