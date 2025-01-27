@@ -17,6 +17,7 @@ namespace SME.SR.Infra
         public List<int> Bimestres { get; set; }
         public CondicoesRelatorioFaltasFrequencia Condicao { get; set; }
         public int QuantidadeAusencia { get; set; }
+        public TipoQuantidadeAusencia TipoQuantidadeAusencia { get; set; }
         public TipoFormatoRelatorio TipoFormatoRelatorio { get; set; }
         public string NomeUsuario { get; set; }
         public string CodigoRf { get; set; }
