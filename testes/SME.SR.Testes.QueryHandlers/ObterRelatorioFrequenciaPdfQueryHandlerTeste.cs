@@ -9,10 +9,12 @@ namespace SME.SR.Testes.QueryHandlers
 {
     public class TesteCalcularCondicaoFalta
     {
-        private static bool InvocarMetodoPrivate(int totalAusencias, int totalCompensacoes, int totalPresenca, int totalAulas, string frequenciaFormatada, CondicoesRelatorioFaltasFrequencia condicao)
+        private static bool InvocarMetodoPrivate(
+            int totalAusencias, int totalCompensacoes, int totalPresenca, int totalAulas,
+            string frequenciaFormatada, CondicoesRelatorioFaltasFrequencia condicao,
+            TipoQuantidadeAusencia tipoQuantidadeAusencia, double quantidadeAusencia)
         {
             var tipo = typeof(ObterRelatorioFrequenciaPdfQueryHandler);
-
             var metodo = tipo.GetMethod("CalcularCondicaoFalta", BindingFlags.NonPublic | BindingFlags.Static);
 
             var aluno = new RelatorioFrequenciaAlunoDto
@@ -25,8 +27,6 @@ namespace SME.SR.Testes.QueryHandlers
             };
 
             var tipoRelatorio = TipoRelatorioFaltasFrequencia.Ano;
-            double quantidadeAusencia = 5;
-            var tipoQuantidadeAusencia = TipoQuantidadeAusencia.Fixa;
 
             var operacao = new Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>>()
             {
@@ -38,31 +38,54 @@ namespace SME.SR.Testes.QueryHandlers
             return (bool)metodo.Invoke(null, new object[] { aluno, tipoRelatorio, condicao, quantidadeAusencia, tipoQuantidadeAusencia, operacao });
         }
 
+
         [Fact]
         public void Deve_Retornar_True_Quando_Faltas_Atingem_Limite()
         {
-            bool resultado = InvocarMetodoPrivate(15, 5, 10, 20, "85", CondicoesRelatorioFaltasFrequencia.Maior);
+            bool resultado = InvocarMetodoPrivate(15, 5, 10, 20, "85", CondicoesRelatorioFaltasFrequencia.Maior, TipoQuantidadeAusencia.Fixa, 5);
             Assert.True(resultado);
         }
 
         [Fact]
         public void Deve_Retornar_False_Quando_Faltas_Nao_Atingem_Limite()
         {
-            bool resultado = InvocarMetodoPrivate(8, 3, 10, 20, "85", CondicoesRelatorioFaltasFrequencia.Maior);
+            bool resultado = InvocarMetodoPrivate(8, 3, 10, 20, "85", CondicoesRelatorioFaltasFrequencia.Maior, TipoQuantidadeAusencia.Fixa, 5);
             Assert.False(resultado);
         }
 
         [Fact]
         public void Deve_Retornar_False_Quando_Frequencia_100()
         {
-            bool resultado = InvocarMetodoPrivate(0, 0, 20, 20, "100", CondicoesRelatorioFaltasFrequencia.Maior);
+            bool resultado = InvocarMetodoPrivate(0, 0, 20, 20, "100", CondicoesRelatorioFaltasFrequencia.Maior, TipoQuantidadeAusencia.Fixa, 5);
             Assert.False(resultado);
         }
 
         [Fact]
         public void Deve_Retornar_False_Quando_Tipo_De_Ausencia_Variavel()
         {
-            bool resultado = InvocarMetodoPrivate(10, 5, 10, 20, "85", CondicoesRelatorioFaltasFrequencia.Maior);
+            bool resultado = InvocarMetodoPrivate(10, 5, 10, 20, "85", CondicoesRelatorioFaltasFrequencia.Maior, TipoQuantidadeAusencia.Fixa, 5);
+            Assert.False(resultado);
+        }
+
+
+        [Fact]
+        public void Deve_Retornar_True_Quando_Frequencia_Abaixo_Do_Limite()
+        {
+            bool resultado = InvocarMetodoPrivate(10, 5, 10, 20, "40", CondicoesRelatorioFaltasFrequencia.Menor, TipoQuantidadeAusencia.Percentual, 70);
+            Assert.True(resultado);
+        }
+
+        [Fact]
+        public void Deve_Retornar_False_Quando_Frequencia_Acima_Do_Limite()
+        {
+            bool resultado = InvocarMetodoPrivate(1, 0, 19, 20, "90", CondicoesRelatorioFaltasFrequencia.Menor, TipoQuantidadeAusencia.Percentual, 70);
+            Assert.False(resultado);
+        }
+
+        [Fact]
+        public void Deve_Retornar_False_Quando_Frequencia_Vazia()
+        {
+            bool resultado = InvocarMetodoPrivate(10, 5, 10, 20, "", CondicoesRelatorioFaltasFrequencia.Menor, TipoQuantidadeAusencia.Percentual, 70);
             Assert.False(resultado);
         }
     }
