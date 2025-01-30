@@ -3,7 +3,7 @@ using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
 using System.Collections.Generic;
 
-namespace SME.SR.Tests.Application.Queries.RelatorioFaltasFrequencia
+namespace SME.SR.Testes.QueryHandlers
 {
     public class ObterRelatorioFrequenciaPdfQueryTeste
     {
