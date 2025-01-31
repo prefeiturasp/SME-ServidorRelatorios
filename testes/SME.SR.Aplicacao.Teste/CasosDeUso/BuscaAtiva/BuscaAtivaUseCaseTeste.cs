@@ -25,7 +25,7 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
             DataInicioRegistroAcao = DateTime.Now.AddMonths(-1),
             DataFimRegistroAcao = DateTime.Now,
             OpcoesRespostaIdMotivoAusencia = new long[] { 1, 2 },
-            UsuarioNome = "Usuário Teste",
+            UsuarioNome = "Usuï¿½rio Teste",
             UsuarioRf = "RF123"
         });
 
@@ -44,9 +44,9 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
                 DataRegistroAcao = DateTime.Now,
                 ProcedimentoRealizado = "Visita Realizada",
                 ConseguiuContatoResponsavel = "Sim",
-                QuestoesObsDuranteVisita = "Observações",
+                QuestoesObsDuranteVisita = "Observaï¿½ï¿½es",
                 JustificativaMotivoFalta = "Falta justificada",
-                JustificativaMotivoFaltaOpcaoOutros = "Motivo específico"
+                JustificativaMotivoFaltaOpcaoOutros = "Motivo especï¿½fico"
             }
         };
 
@@ -72,6 +72,7 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
             mockMediator.Setup(m => m.Send(It.IsAny<ObterResumoBuscasAtivasQuery>(), default))
                         .ReturnsAsync(new List<BuscaAtivaSimplesDto>());
 
+
             await Assert.ThrowsAsync<NegocioException>(() => useCase.Executar(filtroRelatorio));
         }
 
@@ -82,7 +83,7 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
 
             mockMediator.Setup(m => m.Send(It.IsAny<ObterResumoBuscasAtivasQuery>(), default)).ReturnsAsync(registrosAcaoBuscaAtivaDefault);
             mockMediator.Setup(m => m.Send(It.IsAny<GerarRelatorioHtmlParaPdfCommand>(), default))
-                        .ReturnsAsync("Relatório gerado com sucesso");
+                        .ReturnsAsync("Relatï¿½rio gerado com sucesso");
 
             await useCase.Executar(filtroRelatorio);
 
@@ -120,10 +121,10 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
 
             mockMediator.Setup(m => m.Send(It.IsAny<ObterResumoBuscasAtivasQuery>(), default)).ReturnsAsync(registrosAcaoBuscaAtivaDefault);
             mockMediator.Setup(m => m.Send(It.IsAny<GerarRelatorioHtmlParaPdfCommand>(), default))
-                        .ThrowsAsync(new Exception("Erro ao gerar o relatório"));
+                        .ThrowsAsync(new Exception("Erro ao gerar o relatï¿½rio"));
 
             var exception = await Assert.ThrowsAsync<Exception>(() => useCase.Executar(filtroRelatorio));
-            Assert.Equal("Erro ao gerar o relatório", exception.Message);
+            Assert.Equal("Erro ao gerar o relatï¿½rio", exception.Message);
         }
 
        
