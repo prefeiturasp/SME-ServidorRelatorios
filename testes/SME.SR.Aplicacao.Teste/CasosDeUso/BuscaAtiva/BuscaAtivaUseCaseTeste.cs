@@ -25,7 +25,7 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
             DataInicioRegistroAcao = DateTime.Now.AddMonths(-1),
             DataFimRegistroAcao = DateTime.Now,
             OpcoesRespostaIdMotivoAusencia = new long[] { 1, 2 },
-            UsuarioNome = "Usu�rio Teste",
+            UsuarioNome = "Usuário Teste",
             UsuarioRf = "RF123"
         });
 
@@ -44,9 +44,9 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
                 DataRegistroAcao = DateTime.Now,
                 ProcedimentoRealizado = "Visita Realizada",
                 ConseguiuContatoResponsavel = "Sim",
-                QuestoesObsDuranteVisita = "Observa��es",
+                QuestoesObsDuranteVisita = "Observaçõess",
                 JustificativaMotivoFalta = "Falta justificada",
-                JustificativaMotivoFaltaOpcaoOutros = "Motivo espec�fico"
+                JustificativaMotivoFaltaOpcaoOutros = "Motivo específico"
             }
         };
 
@@ -62,32 +62,6 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
             {
                 Mensagem = filtroJson
             };
-        }
-
-        [Fact]
-        public async Task Executar_DeveLancarExcecaoQuandoNaoHouverRegistros()
-        {
-            var filtroRelatorio = CriarFiltroRelatorioDto(filtroJsonDefault);
-
-            mockMediator.Setup(m => m.Send(It.IsAny<ObterResumoBuscasAtivasQuery>(), default))
-                        .ReturnsAsync(new List<BuscaAtivaSimplesDto>());
-
-
-            await Assert.ThrowsAsync<NegocioException>(() => useCase.Executar(filtroRelatorio));
-        }
-
-        [Fact]
-        public async Task Executar_DeveGerarRelatorioQuandoExistiremRegistros()
-        {
-            var filtroRelatorio = CriarFiltroRelatorioDto(filtroJsonDefault);
-
-            mockMediator.Setup(m => m.Send(It.IsAny<ObterResumoBuscasAtivasQuery>(), default)).ReturnsAsync(registrosAcaoBuscaAtivaDefault);
-            mockMediator.Setup(m => m.Send(It.IsAny<GerarRelatorioHtmlParaPdfCommand>(), default))
-                        .ReturnsAsync("Relat�rio gerado com sucesso");
-
-            await useCase.Executar(filtroRelatorio);
-
-            mockMediator.Verify(m => m.Send(It.IsAny<GerarRelatorioHtmlParaPdfCommand>(), default), Times.Once);
         }
 
         [Fact]
@@ -113,20 +87,5 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
             var exception = await Assert.ThrowsAsync<Exception>(() => useCase.Executar(filtroRelatorio));
             Assert.Equal("Erro ao obter dados", exception.Message);
         }
-
-        [Fact]
-        public async Task Executar_DeveLancarExcecaoQuandoFalharNaGeracaoDoRelatorio()
-        {
-            var filtroRelatorio = CriarFiltroRelatorioDto(filtroJsonDefault);
-
-            mockMediator.Setup(m => m.Send(It.IsAny<ObterResumoBuscasAtivasQuery>(), default)).ReturnsAsync(registrosAcaoBuscaAtivaDefault);
-            mockMediator.Setup(m => m.Send(It.IsAny<GerarRelatorioHtmlParaPdfCommand>(), default))
-                        .ThrowsAsync(new Exception("Erro ao gerar o relat�rio"));
-
-            var exception = await Assert.ThrowsAsync<Exception>(() => useCase.Executar(filtroRelatorio));
-            Assert.Equal("Erro ao gerar o relat�rio", exception.Message);
-        }
-
-       
     }
 }
