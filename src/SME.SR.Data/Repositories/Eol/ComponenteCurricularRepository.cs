@@ -443,7 +443,8 @@ namespace SME.SR.Data
             };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            var resultado = await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+
+            var resultado = await conexao.QueryAsync<ComponenteCurricular>(query, parametros, commandTimeout: 120);
 
             if (!consideraHistorico && !resultado.Any())
                 resultado = await conexao.QueryAsync<ComponenteCurricular>(ComponenteCurricularConsultas.BuscarPorAlunosHistorico, parametros);
