@@ -180,7 +180,7 @@ namespace SME.SR.Data
 			                                              qPAP.resposta as participaPAP,
 			                                              qMaisEducacao.resposta as participaProjetosMaisEducacao,
 			                                              qProgramaSP.opcao_resposta_nome as programaSPIntegral,
-			                                              qavaliacoesexternas.resposta as avaliacoesExternasProvaSP,
+			                                              COALESCE(qavaliacoesexternas.resposta, '[]') AS avaliacoesExternasProvaSP,
                                                           qFortalecimentoAprend.resposta as projetosFortalecimentoAprendizagem
 			                                              from (select me.id, d.dre_id dreCodigo, 
 			                                                           d.abreviacao as dreAbreviacao,
