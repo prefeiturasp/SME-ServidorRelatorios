@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Moq;
-using Xunit;
+﻿using Moq;
 using SME.SR.Application;
 using SME.SR.Infra;
+using Shouldly;
 using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Infra.Dtos.Relatorios.MapeamentoEstudante;
@@ -122,11 +116,11 @@ namespace SME.SR.Aplicacao.Teste.Commands.ComunsRelatorio.GerarRelatoricoMapeame
             await handler.ExecutarHandle(command, CancellationToken.None);
 
             // Assert - verificar se o arquivo foi salvo
-            File.Exists(caminhoEsperado).Should().BeTrue("o Excel deve ser salvo no caminho esperado");
+            File.Exists(caminhoEsperado).ShouldBeTrue("o Excel deve ser salvo no caminho esperado");
 
             // Assert - verificar se a fila foi chamada corretamente
-            filaDtoRecebido.Should().NotBeNull("deve publicar na fila ao final do Handle");
-            filaDtoRecebido.CodigoCorrelacao.Should().Be(codigoCorrelacao);
+            filaDtoRecebido.ShouldNotBeNull("deve publicar na fila ao final do Handle");
+            filaDtoRecebido.CodigoCorrelacao.ShouldBe(codigoCorrelacao);
 
             // Cleanup
             if (File.Exists(caminhoEsperado))
@@ -166,11 +160,11 @@ namespace SME.SR.Aplicacao.Teste.Commands.ComunsRelatorio.GerarRelatoricoMapeame
             await handler.ExecutarHandle(command, CancellationToken.None);
 
             // Assert - verificar se o arquivo foi salvo
-            File.Exists(caminhoEsperado).Should().BeTrue("o Excel deve ser salvo no caminho esperado");
+            File.Exists(caminhoEsperado).ShouldBeTrue("o Excel deve ser salvo no caminho esperado");
 
             // Assert - verificar se a fila foi chamada corretamente
-            filaDtoRecebido.Should().NotBeNull("deve publicar na fila ao final do Handle");
-            filaDtoRecebido.CodigoCorrelacao.Should().Be(codigoCorrelacao);
+            filaDtoRecebido.ShouldNotBeNull("deve publicar na fila ao final do Handle");
+            filaDtoRecebido.CodigoCorrelacao.ShouldBe(codigoCorrelacao);
 
             // Cleanup
             if (File.Exists(caminhoEsperado))
