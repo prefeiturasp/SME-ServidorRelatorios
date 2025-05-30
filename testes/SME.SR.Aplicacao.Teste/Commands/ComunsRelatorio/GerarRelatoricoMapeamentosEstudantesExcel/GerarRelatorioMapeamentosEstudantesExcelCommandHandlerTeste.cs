@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using SME.SR.Application;
 using SME.SR.Infra;
 using MediatR;
