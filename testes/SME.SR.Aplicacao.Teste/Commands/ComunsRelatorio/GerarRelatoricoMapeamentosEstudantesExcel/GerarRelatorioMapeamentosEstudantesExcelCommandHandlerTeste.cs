@@ -1,6 +1,7 @@
 using Moq;
 using SME.SR.Application;
 using SME.SR.Infra;
+using Shouldly;
 using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Infra.Dtos.Relatorios.MapeamentoEstudante;
