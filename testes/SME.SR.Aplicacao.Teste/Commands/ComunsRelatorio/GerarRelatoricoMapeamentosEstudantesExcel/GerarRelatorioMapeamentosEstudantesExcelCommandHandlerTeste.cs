@@ -1,7 +1,6 @@
 ﻿using Moq;
 using SME.SR.Application;
 using SME.SR.Infra;
-using Shouldly;
 using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Infra.Dtos.Relatorios.MapeamentoEstudante;
@@ -112,15 +111,18 @@ namespace SME.SR.Aplicacao.Teste.Commands.ComunsRelatorio.GerarRelatoricoMapeame
             var caminhoEsperado = Path.Combine(caminhoBase, "relatorios", $"{codigoCorrelacao}.xlsx");
 
             // Act
-            var handler = new GerarRelatorioMapeamentosEstudantesExcelCommandHandlerFake(_mediatorMock.Object, _servicoFilaMock.Object);
+            var handler = new GerarRelatorioMapeamentosEstudantesExcelCommandHandlerFake(
+                _mediatorMock.Object,
+                _servicoFilaMock.Object
+            );
             await handler.ExecutarHandle(command, CancellationToken.None);
 
             // Assert - verificar se o arquivo foi salvo
-            File.Exists(caminhoEsperado).ShouldBeTrue("o Excel deve ser salvo no caminho esperado");
-
+            Assert.True(File.Exists(caminhoEsperado), "O Excel deve ser salvo no caminho esperado");
+                        
             // Assert - verificar se a fila foi chamada corretamente
-            filaDtoRecebido.ShouldNotBeNull("deve publicar na fila ao final do Handle");
-            filaDtoRecebido.CodigoCorrelacao.ShouldBe(codigoCorrelacao);
+            Assert.NotNull(filaDtoRecebido);
+            Assert.Equal(codigoCorrelacao, filaDtoRecebido.CodigoCorrelacao);
 
             // Cleanup
             if (File.Exists(caminhoEsperado))
@@ -160,11 +162,11 @@ namespace SME.SR.Aplicacao.Teste.Commands.ComunsRelatorio.GerarRelatoricoMapeame
             await handler.ExecutarHandle(command, CancellationToken.None);
 
             // Assert - verificar se o arquivo foi salvo
-            File.Exists(caminhoEsperado).ShouldBeTrue("o Excel deve ser salvo no caminho esperado");
+            Assert.True(File.Exists(caminhoEsperado), "O Excel deve ser salvo no caminho esperado");
 
             // Assert - verificar se a fila foi chamada corretamente
-            filaDtoRecebido.ShouldNotBeNull("deve publicar na fila ao final do Handle");
-            filaDtoRecebido.CodigoCorrelacao.ShouldBe(codigoCorrelacao);
+            Assert.NotNull(filaDtoRecebido);
+            Assert.Equal(codigoCorrelacao, filaDtoRecebido.CodigoCorrelacao);
 
             // Cleanup
             if (File.Exists(caminhoEsperado))
