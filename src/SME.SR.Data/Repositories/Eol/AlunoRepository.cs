@@ -1600,12 +1600,8 @@ namespace SME.SR.Data
             sql += @" and te.an_letivo = @anoLetivo )
 								select *
 								from matriculas
-								where sequencia in (1,2)
-								and not exists (select 1
-													from alunos_matriculas_norm
-												where CodigoMatricula = matriculas.CodigoMatricula and
-													  CodigoTurma = matriculas.CodigoTurma and
-													  CodigoSituacaoMatricula = @codigoSituacaoVinculoIndevido)";
+								where sequencia = 1
+								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido ";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
