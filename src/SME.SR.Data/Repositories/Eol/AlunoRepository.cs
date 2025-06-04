@@ -1600,7 +1600,6 @@ namespace SME.SR.Data
             sql += @" and te.an_letivo = @anoLetivo )
 								select *
 								from matriculas
-
 								where sequencia = 1
 								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido ";
 
