@@ -16,5 +16,7 @@ namespace SME.SR.Infra
         [Display(Name = "O próprio estudante")]
         Estudante = 4,
 
+        [Display(Name = "Responsável Estrangeiro ou Naturalizado")]
+        ResponsavelEstrangeiroOuNaturalizado = 5
     }
 }
