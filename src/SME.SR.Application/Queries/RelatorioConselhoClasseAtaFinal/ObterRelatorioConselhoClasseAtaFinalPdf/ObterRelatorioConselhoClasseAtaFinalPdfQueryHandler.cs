@@ -370,15 +370,12 @@ namespace SME.SR.Application
 
             int quantidadePaginasVertical = (int)Math.Ceiling(dadosRelatorio.Linhas.Count / (decimal)quantidadeDeLinhasPorPagina);
 
-            // INÍCIO DA CORREÇÃO
             var totalPaginas = quantidadePaginasHorizontal * quantidadePaginasVertical;
             var paginasDisciplina = (int)Math.Ceiling(todasAsDisciplinas.Count / (decimal)maximoComponentesPorPagina);
 
-            // Tem que dividir paginasDisciplina por quantidadePaginasVertical
             paginasDisciplina = (int)Math.Ceiling(paginasDisciplina / (decimal)quantidadePaginasVertical);
 
             quantidadePaginasHorizontal = Math.Max(quantidadePaginasHorizontal, paginasDisciplina);
-            // TÉRMINO DA CORREÇÃO
 
             int contPagina = 1;
 
