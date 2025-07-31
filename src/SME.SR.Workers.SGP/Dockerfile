@@ -12,6 +12,8 @@ COPY ["src/SME.SR.Data/SME.SR.Data.csproj", "src/SME.SR.Data/"]
 COPY ["src/SME.SR.Infra/SME.SR.Infra.csproj", "src/SME.SR.Infra/"]
 COPY ["src/SME.SR.JRSClient/SME.SR.JRSClient.csproj", "src/SME.SR.JRSClient/"]
 COPY ["src/SME.SR.Workers.SGP/SME.SR.Workers.SGP.csproj", "src/SME.SR.Workers.SGP/"]
+COPY ["src/SME.SR.IoC/SME.SR.IoC.csproj", "src/SME.SR.IoC/"]
+COPY ["src/SME.SR.HtmlPdf/SME.SR.HtmlPdf.csproj", "src/SME.SR.HtmlPdf/"]
 RUN dotnet restore "src/SME.SR.Workers.SGP/SME.SR.Workers.SGP.csproj"
 COPY . .
 WORKDIR "/src/src/SME.SR.Workers.SGP"
