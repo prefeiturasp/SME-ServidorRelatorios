@@ -1601,11 +1601,7 @@ namespace SME.SR.Data
 								select *
 								from matriculas
 								where sequencia in (1,2)
-								and not exists (select 1
-													from alunos_matriculas_norm
-												where CodigoMatricula = matriculas.CodigoMatricula and
-													  CodigoTurma = matriculas.CodigoTurma and
-													  CodigoSituacaoMatricula = @codigoSituacaoVinculoIndevido)";
+								and CodigoSituacaoMatricula <> 4";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
