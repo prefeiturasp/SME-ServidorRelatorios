@@ -10,17 +10,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico
+namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosAnalitico
 {
-    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler : IRequestHandler<GerarRelatorioControleLivrosEmprestadosSinteticoCommand, string>
+    public class GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler : IRequestHandler<GerarRelatorioControleLivrosEmprestadosAnaliticoCommand, string>
     {
         private readonly IMediator mediator;
 
-        public GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler(IMediator mediator)
+        public GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler(IMediator mediator)
         {
             this.mediator = mediator;
         }
-        public async Task<string> Handle(GerarRelatorioControleLivrosEmprestadosSinteticoCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(GerarRelatorioControleLivrosEmprestadosAnaliticoCommand request, CancellationToken cancellationToken)
         {
             var livros = await mediator.Send(new ObterRelatorioCDEPControleLivrosEmprestadoQuery()
             {
@@ -30,22 +30,13 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             if (!livros.Any())
                 throw new NegocioException("Não possui informações.");
 
-            var emprestimosAgrupados = livros
-                           .GroupBy(e => e.Tombo)
-                           .Select(g => new AcervoSolicitacaoSinteticoDto
-                           {
-                               Tombo = g.Key,
-                               Titulo = g.First().Titulo,
-                               QuantidadeEmprestimos = g.Count(),
-                           })
-                       .ToList();
-
-            await GerarRelatorio(emprestimosAgrupados, request.Filtros.CodigoCorrelacao, request.Filtros.Usuario);
+            await GerarRelatorio(livros, request.Filtros.CodigoCorrelacao, request.Filtros.Usuario);
 
             return request.Filtros.CodigoCorrelacao.ToString();
         }
 
-        public async Task GerarRelatorio(IEnumerable<AcervoSolicitacaoSinteticoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario)
+
+        public async Task GerarRelatorio(IEnumerable<AcervoSolicitacaoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario)
         {
             var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario);
 
@@ -67,7 +58,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             }
         }
 
-        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoSinteticoDto> downloadProvasBoletimEscolarDtos, string usuario)
+        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoDto> downloadProvasBoletimEscolarDtos, string usuario)
         {
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
@@ -84,14 +75,18 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 await writer.WriteLineAsync(cabecalhoHtml);
 
                 await writer.WriteLineAsync("<table border='1'>");
-                await writer.WriteLineAsync("<tr><th>Tombo</th><th>Título</th><th>Quantidade de empréstimos</th></tr>");
+                await writer.WriteLineAsync("<tr><th>Tombo</th><th>Título</th><th>Situação</th><th>Quantidade de empréstimos</th><th>Leitor</th><th>Data de retirada</th><th>Data de devolução</th></tr>");
 
                 foreach (var item in downloadProvasBoletimEscolarDtos)
                 {
                     await writer.WriteLineAsync("<tr>" +
                         $"<td class=\"numero\">{item.Tombo}</td>" +
                         $"<td>{item.Titulo}</td>" +
+                        $"<td>{item.SituacaoEmprestimo}</td>" +
                         $"<td class=\"numero\">{item.QuantidadeEmprestimos}</td>" +
+                        $"<td>{item.Solicitante}</td>" +
+                        $"<td>{item.DataEmprestimo}</td>" +
+                        $"<td>{item.DataDevolucao}</td>" +
                         "</tr>");
                 }
 

@@ -20,30 +20,25 @@ namespace SME.SR.Data.Repositories.CDEP
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosSintetico(long[] tiposAcervosPermitidos, string? leitor, string? tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
+        public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivros(long[] tiposAcervosPermitidos, 
+            string leitor, string tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
         {
             var query = new StringBuilder();
             query.AppendLine(@"
                                 SELECT
-                                    a.Tombo,
-                                    a.Titulo,
-                                    u.NomeCompleto as Leitor,
-                                    situacao_emprestimo.situacao as SituacaoEmprestimo,
-                                    asi.DataVisita as DataEmprestimo,
-                                    ae.DataDevolucao as DataDevolucao
+	                                a.codigo as Tombo,
+	                                a.Titulo,
+	                                ae.situacao as SituacaoEmprestimo,
+	                                ae.dt_emprestimo as DataEmprestimo,
+	                                ae.dt_devolucao as DataDevolucao,
+	                                u.nome as solicitante
+	
                                 FROM acervo_solicitacao_item asi
                                     JOIN acervo_solicitacao aso ON aso.id = asi.acervo_solicitacao_id
                                     JOIN acervo a ON a.id = asi.acervo_id
                                     JOIN usuario u ON u.id = aso.usuario_id
-                                    LEFT JOIN acervo_emprestimo ae ON ae.acervo_solicitacao_item_id = asi.id AND NOT ae.excluido AND
-                                    LEFT JOIN LATERAL (
-                                        SELECT situacao
-                                        FROM acervo_emprestimo ae_latest
-                                        WHERE ae_latest.acervo_solicitacao_item_id = asi.id
-                                        AND NOT ae_latest.excluido
-                                        ORDER BY ae_latest.id DESC
-                                        LIMIT 1
-                                    ) situacao_emprestimo ON TRUE
+                                    JOIN acervo_emprestimo ae ON ae.acervo_solicitacao_item_id = asi.id AND NOT ae.excluido 
+    
                                 WHERE
                                     NOT asi.excluido
                                     AND NOT aso.excluido
@@ -59,8 +54,6 @@ namespace SME.SR.Data.Repositories.CDEP
             AdicionarFiltroTombo(query, parametros, tombo);
             AdicionarFiltroSituacao(query, parametros, situacaoEmprestimo, somenteDevolvidos);
 
-            query.AppendLine(" GROUP BY a.Tombo, a.Titulo, u.NomeCompleto, situacao_emprestimo.situacao, asi.DataVisita, ae.DataDevolucao");
-
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
             return await conexao.QueryAsync<AcervoSolicitacaoDto>(query.ToString(), parametros);
         }
@@ -69,7 +62,7 @@ namespace SME.SR.Data.Repositories.CDEP
         {
             if (!string.IsNullOrWhiteSpace(leitor))
             {
-                query.AppendLine(" AND u.nomecompleto ILIKE @Leitor");
+                query.AppendLine(" AND u.nome ILIKE @Leitor");
                 parametros.Add("Leitor", $"%{leitor}%");
             }
         }
@@ -78,16 +71,16 @@ namespace SME.SR.Data.Repositories.CDEP
         {
             if (!string.IsNullOrWhiteSpace(tombo))
             {
-                query.AppendLine(" AND a.tombo ILIKE @Tombo");
+                query.AppendLine(" AND a.codigo ILIKE @Tombo");
                 parametros.Add("Tombo", $"%{tombo}%");
             }
         }
 
         private void AdicionarFiltroSituacao(StringBuilder query, DynamicParameters parametros, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
         {
-            if (situacaoEmprestimo.HasValue)
+            if (situacaoEmprestimo.HasValue && situacaoEmprestimo.Value > 0)
             {
-                query.AppendLine(" AND situacao_emprestimo.situacao = @SituacaoEmprestimo");
+                query.AppendLine(" AND ae.situacao = @SituacaoEmprestimo");
                 parametros.Add("SituacaoEmprestimo", (int)situacaoEmprestimo.Value);
                 return;
             }
@@ -96,18 +89,18 @@ namespace SME.SR.Data.Repositories.CDEP
             {
                 if (somenteDevolvidos.Value)
                 {
-                    query.AppendLine(" AND situacao_emprestimo.situacao = @SituacaoDevolvido");
+                    query.AppendLine(" AND ae.situacao = @SituacaoDevolvido");
                     parametros.Add("SituacaoDevolvido", (int)SituacaoEmprestimo.DEVOLVIDO);
                 }
                 else
                 {
-                    query.AppendLine(" AND situacao_emprestimo.situacao <> @SituacaoDevolvido");
+                    query.AppendLine(" AND ae.situacao <> @SituacaoDevolvido");
                     parametros.Add("SituacaoDevolvido", (int)SituacaoEmprestimo.DEVOLVIDO);
                 }
                 return;
             }
 
-            query.AppendLine(" AND situacao_emprestimo.situacao <> @SituacaoDevolvido");
+            query.AppendLine(" AND ae.situacao <> @SituacaoDevolvido");
             parametros.Add("SituacaoDevolvido", (int)SituacaoEmprestimo.DEVOLVIDO);
         }
     }

@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\CDEP\GerarRelatorioControleLivrosEmprestadosAnalitico\" />
     <Folder Include="Queries\Alunos\ObterAlunosFrequenciaControleMensal\" />
     <Folder Include="Queries\HistoricoEscolar\MontarHistoricoEscolarTransferenciaEJA\" />
   </ItemGroup>
