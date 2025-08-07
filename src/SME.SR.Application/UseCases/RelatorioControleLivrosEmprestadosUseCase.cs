@@ -1,18 +1,18 @@
 ﻿using MediatR;
 using Sentry;
 using SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico;
-using SME.SR.Application.Interfaces.UseCases;
+using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using System;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application.UseCases
 {
-    public class RelatorioControleLivrosEmprestadosSinteticoUseCase : IRelatorioControleLivrosEmprestadosUseCase
+    public class RelatorioControleLivrosEmprestadosUseCase : IRelatorioControleLivrosEmprestadosUseCase
     {
         private readonly IMediator mediator;
 
-        public RelatorioControleLivrosEmprestadosSinteticoUseCase(IMediator mediator)
+        public RelatorioControleLivrosEmprestadosUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosEmprestadoSintetico;
-using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System;
@@ -25,7 +24,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
         {
             var livros = await mediator.Send(new ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQuery()
             {
-                situacaoSolicitacaoItem = request.Filtros.SituacaoSolicitacaoItem
+                filtros = request.Filtros
             });
 
             if (!livros.Any())
@@ -80,12 +79,9 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 foreach (var item in downloadProvasBoletimEscolarDtos)
                 {
                     await writer.WriteLineAsync("<tr>" +
-                        $"<td class=\"numero\">Tombo</td>" +
+                        $"<td class=\"numero\">{item.Tombo}</td>" +
                         $"<td>{item.Titulo}</td>" +
-                        $"<td class=\"numero\">Título</td>" +
-                        $"<td>{item.Titulo}</td>" +
-                        $"<td class=\"numero\">Quantidade de empréstimos</td>" +
-                        $"<td>{item.Titulo}</td>" +
+                        $"<td class=\"numero\">{item.QuantidadeEmprestimos}</td>" +
                         "</tr>");
                 }
 
@@ -100,10 +96,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
         {
             return $@"
                         <div style='display: flex; justify-content: space-between; align-items: center; padding: 10px;'>
-                            <div>
-                                <img src='{ObterLogo()}' alt='Logo Cidade de São Paulo' style='width: 150px;'>
-                            </div>
-                            <div style='text-align: right;'>
+                            <div style='text-align: center;'>
                                 <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</p>
                                 <h3 style='margin-top: 0;'>Relatório de Controle de Livros Emprestados</h3>
                             </div>
@@ -116,12 +109,6 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                             </tr>
                         </table>
                     ";
-        }
-
-        private static byte[] ObterLogo()
-        {
-            string base64Logo = SmeConstants.LogoSmeMono.Substring(SmeConstants.LogoSmeMono.IndexOf(',') + 1);
-            return Convert.FromBase64String(base64Logo);
         }
     }
 }

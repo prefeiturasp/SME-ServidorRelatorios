@@ -7,6 +7,6 @@ namespace SME.SR.Data.Interfaces.CDEP
 {
     public interface IRelatorioControleLivrosRepository
     {
-        Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosSintetico(SituacaoSolicitacaoItem situacaoSolicitacaoItem);
+        Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosSintetico(long[] tiposAcervosPermitidos, string? leitor, string? tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos);
     }
 }

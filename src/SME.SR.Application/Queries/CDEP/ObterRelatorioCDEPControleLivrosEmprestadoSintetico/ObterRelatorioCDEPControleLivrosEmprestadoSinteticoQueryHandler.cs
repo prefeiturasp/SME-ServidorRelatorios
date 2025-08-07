@@ -9,18 +9,20 @@ namespace SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosEmpres
 {
     public class ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQueryHandler : IRequestHandler<ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQuery, IEnumerable<AcervoSolicitacaoDto>>
     {
-        private readonly IMediator mediator;
         private readonly IRelatorioControleLivrosRepository relatorioControleLivrosRepository;
 
-        public ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQueryHandler(IMediator mediator, IRelatorioControleLivrosRepository relatorioControleLivrosRepository)
+        public ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQueryHandler(IRelatorioControleLivrosRepository relatorioControleLivrosRepository)
         {
-            this.mediator = mediator;
             this.relatorioControleLivrosRepository = relatorioControleLivrosRepository;
         }
 
         public async Task<IEnumerable<AcervoSolicitacaoDto>> Handle(ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQuery request, CancellationToken cancellationToken)
         {
-            return await relatorioControleLivrosRepository.ObterRelatorioControleLivrosSintetico(request.situacaoSolicitacaoItem);
+            return await relatorioControleLivrosRepository.ObterRelatorioControleLivrosSintetico(request.filtros.TiposAcervosPermitidos, 
+                                                                                                 request.filtros.Leitor, 
+                                                                                                 request.filtros.Tombo, 
+                                                                                                 request.filtros.SituacaoEmprestimo, 
+                                                                                                 request.filtros.SomenteDevolvidos);
         }
     }
 }
