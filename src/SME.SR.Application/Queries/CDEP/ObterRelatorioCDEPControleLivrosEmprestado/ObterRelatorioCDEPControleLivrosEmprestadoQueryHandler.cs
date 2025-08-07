@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosEmprestadoSintetico
 {
-    public class ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQueryHandler : IRequestHandler<ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQuery, IEnumerable<AcervoSolicitacaoDto>>
+    public class ObterRelatorioCDEPControleLivrosEmprestadoQueryHandler : IRequestHandler<ObterRelatorioCDEPControleLivrosEmprestadoQuery, IEnumerable<AcervoSolicitacaoDto>>
     {
         private readonly IRelatorioControleLivrosRepository relatorioControleLivrosRepository;
 
-        public ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQueryHandler(IRelatorioControleLivrosRepository relatorioControleLivrosRepository)
+        public ObterRelatorioCDEPControleLivrosEmprestadoQueryHandler(IRelatorioControleLivrosRepository relatorioControleLivrosRepository)
         {
             this.relatorioControleLivrosRepository = relatorioControleLivrosRepository;
         }
 
-        public async Task<IEnumerable<AcervoSolicitacaoDto>> Handle(ObterRelatorioCDEPControleLivrosEmprestadoSinteticoQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AcervoSolicitacaoDto>> Handle(ObterRelatorioCDEPControleLivrosEmprestadoQuery request, CancellationToken cancellationToken)
         {
-            return await relatorioControleLivrosRepository.ObterRelatorioControleLivrosSintetico(request.filtros.TiposAcervosPermitidos, 
+            return await relatorioControleLivrosRepository.ObterRelatorioControleLivros(request.filtros.TiposAcervosPermitidos, 
                                                                                                  request.filtros.Leitor, 
                                                                                                  request.filtros.Tombo, 
                                                                                                  request.filtros.SituacaoEmprestimo, 

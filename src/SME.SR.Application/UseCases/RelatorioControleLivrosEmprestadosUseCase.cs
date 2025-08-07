@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Sentry;
+using SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosAnalitico;
 using SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
@@ -27,9 +28,8 @@ namespace SME.SR.Application.UseCases
                 {
                     case ModeloRelatorio.Sintetico:
                        return await mediator.Send(new GerarRelatorioControleLivrosEmprestadosSinteticoCommand(filtros));
-                    //case ModeloRelatorio.Analitico:
-                    //    await mediator.Send(new GerarRelatorioControleLivrosEmprestadosAnaliticoCommand(filtros));
-                    //    break;
+                    case ModeloRelatorio.Analitico:
+                        return await mediator.Send(new GerarRelatorioControleLivrosEmprestadosAnaliticoCommand(filtros));
                     default:
                         break;
                 }
