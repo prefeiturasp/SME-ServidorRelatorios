@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Infra.Dtos.Relatorios.CDEP;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico
 {
