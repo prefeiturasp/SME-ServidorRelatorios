@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.SR.Data.Interfaces.CDEP;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System.Collections.Generic;
 using System.Threading;

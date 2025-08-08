@@ -3,7 +3,7 @@ using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SME.SR.Data.Interfaces.CDEP
+namespace SME.SR.Data.Interfaces
 {
     public interface IRelatorioControleLivrosRepository
     {
