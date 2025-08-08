@@ -4,6 +4,7 @@ using SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosAn
 using SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico;
 using SME.SR.Application.UseCases;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.CDEP;
 
 namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
 {
