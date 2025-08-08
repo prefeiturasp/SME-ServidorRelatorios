@@ -1,6 +1,5 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
-using Elastic.Apm.Api;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +11,11 @@ using SME.SR.Application.Services;
 using SME.SR.Application.UseCases;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.CDEP;
 using SME.SR.Data.Interfaces.ElasticSearch;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Repositories.Cache;
+using SME.SR.Data.Repositories.CDEP;
 using SME.SR.Data.Repositories.ElasticSearch;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
@@ -213,6 +214,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IBuscaAtivaRepository), typeof(BuscaAtivaRepository));
             services.TryAddScoped(typeof(IPropostaRepository), typeof(PropostaRepository));
             services.TryAddScoped(typeof(IConsolidacaoProdutividadeFrequenciaRepository), typeof(ConsolidacaoProdutividadeFrequenciaRepository));
+            services.TryAddScoped(typeof(IRelatorioControleLivrosRepository), typeof(RelatorioControleLivrosRepository));
             services.TryAddScoped<IRepositorioElasticTurma, RepositorioElasticTurma>();
         }
 
@@ -286,6 +288,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioBuscasAtivasUseCase, RelatorioBuscasAtivasUseCase>();
             services.TryAddScoped<IRelatorioPropostaLaudaDePublicacaoUseCase, RelatorioPropostaLaudaDePublicacaoUseCase>();
             services.TryAddScoped<IRelatorioPropostaLaudaCompletaUseCase, RelatorioPropostaLaudaCompletaUseCase>();
+            services.TryAddScoped<IRelatorioControleLivrosEmprestadosUseCase, RelatorioControleLivrosEmprestadosUseCase>();
         }
 
         private static void RegistrarServicoRelatorioAnaliticoSondagem(IServiceCollection services)

@@ -13,9 +13,9 @@ namespace SME.SR.IoC
     {
         public static void RegistraElasticSearch(this IServiceCollection services, IConfiguration configuration)
         {
-            var urls = configuration["ElasticSearch:Urls"];
-            var usuario = configuration["ElasticSearch:Usuario"];
-            var senha = configuration["ElasticSearch:Senha"];
+            var urls = "https://10.50.1.80:9200/";
+            var usuario = "elastic";
+            var senha = "oQtidzN3pnH8lQVF81hL";
             var nodes = new List<Uri>();
 
             if (string.IsNullOrEmpty(urls))
