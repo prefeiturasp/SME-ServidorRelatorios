@@ -54,6 +54,12 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
+            var caminhoDiretorio = Path.Combine(caminhoBase, "relatorios");
+            if (!Directory.Exists(caminhoDiretorio))
+            {
+                Directory.CreateDirectory(caminhoDiretorio);
+            }
+
             await SaveMemoryStreamToFile(memoryStreamDoRelatorio, $"{caminhoParaSalvar}.xls");
 
             memoryStreamDoRelatorio.Dispose();

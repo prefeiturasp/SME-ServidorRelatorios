@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Workers.SGP.Filters;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP.Controllers
 {
     [ApiController]
-    //[ChaveIntegracaoSrApi]
+    [ChaveIntegracaoSrApi]
     [Route("api/v1/cdep")]
     public class CDEPController : ControllerBase
     {
