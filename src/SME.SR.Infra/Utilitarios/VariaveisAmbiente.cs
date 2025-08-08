@@ -58,8 +58,8 @@ namespace SME.SR.Infra
             (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SR__ProcessamentoMaximoUes")) ?
             int.Parse(Environment.GetEnvironmentVariable("SR__ProcessamentoMaximoUes")) : 10);
 
-        public string ConnectionStringCDEP => !string.IsNullOrEmpty(configuration.GetSection("ConnectionStrings:CDEP_Connection").Value) ?
-         configuration.GetSection("ConnectionStrings:CDEP_Connection").Value :
-         Environment.GetEnvironmentVariable("ConnectionStrings__CDEP_Connection");
+        public string ConnectionStringCDEP => !string.IsNullOrEmpty(configuration.GetSection("CDEP_Connection").Value) ?
+             configuration.GetSection("CDEP_Connection").Value :
+             Environment.GetEnvironmentVariable("CDEP_Connection");
     }
 }
