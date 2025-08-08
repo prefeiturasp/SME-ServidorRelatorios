@@ -21,7 +21,7 @@ namespace SME.SR.Data.Repositories.CDEP
         }
 
         public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivros(long[] tiposAcervosPermitidos, 
-            string leitor, string tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
+            string solicitante, string tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
         {
             var query = new StringBuilder();
             query.AppendLine(@"
@@ -50,7 +50,7 @@ namespace SME.SR.Data.Repositories.CDEP
             var parametros = new DynamicParameters();
             parametros.Add("tiposAcervosPermitidos", tiposAcervosPermitidos);
 
-            AdicionarFiltroLeitor(query, parametros, leitor);
+            AdicionarFiltroSolicitante(query, parametros, solicitante);
             AdicionarFiltroTombo(query, parametros, tombo);
             AdicionarFiltroSituacao(query, parametros, situacaoEmprestimo, somenteDevolvidos);
 
@@ -58,12 +58,12 @@ namespace SME.SR.Data.Repositories.CDEP
             return await conexao.QueryAsync<AcervoSolicitacaoDto>(query.ToString(), parametros);
         }
 
-        private void AdicionarFiltroLeitor(StringBuilder query, DynamicParameters parametros, string? leitor)
+        private void AdicionarFiltroSolicitante(StringBuilder query, DynamicParameters parametros, string? solicitante)
         {
-            if (!string.IsNullOrWhiteSpace(leitor))
+            if (!string.IsNullOrWhiteSpace(solicitante))
             {
-                query.AppendLine(" AND u.nome ILIKE @Leitor");
-                parametros.Add("Leitor", $"%{leitor}%");
+                query.AppendLine(" AND u.login = @Solicitante");
+                parametros.Add("Solicitante", $"{solicitante}");
             }
         }
 

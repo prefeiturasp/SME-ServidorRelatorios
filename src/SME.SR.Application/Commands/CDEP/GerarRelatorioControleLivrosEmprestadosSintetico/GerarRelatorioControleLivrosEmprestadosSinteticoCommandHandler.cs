@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico
 {
-    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler : IRequestHandler<GerarRelatorioControleLivrosEmprestadosSinteticoCommand, string>
+    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosSinteticoCommand, string>
     {
         private readonly IMediator mediator;
 
@@ -40,14 +40,16 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                            })
                        .ToList();
 
-            await GerarRelatorio(emprestimosAgrupados, request.Filtros.CodigoCorrelacao, request.Filtros.Usuario);
+            var codigoCorrelacao = Guid.NewGuid();
 
-            return request.Filtros.CodigoCorrelacao.ToString();
+            await GerarRelatorio(emprestimosAgrupados, codigoCorrelacao, request.Filtros.Usuario, request.Filtros.UsuarioRF);
+
+            return codigoCorrelacao.ToString();
         }
 
-        public async Task GerarRelatorio(IEnumerable<AcervoSolicitacaoSinteticoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario)
+        public async Task GerarRelatorio(IEnumerable<AcervoSolicitacaoSinteticoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario, string rf)
         {
-            var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario);
+            var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario, rf);
 
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
@@ -57,17 +59,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             memoryStreamDoRelatorio.Dispose();
         }
 
-        private static async Task SaveMemoryStreamToFile(MemoryStream memoryStream, string filePath)
-        {
-            memoryStream.Position = 0;
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-            {
-                await memoryStream.CopyToAsync(fileStream);
-            }
-        }
-
-        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoSinteticoDto> downloadProvasBoletimEscolarDtos, string usuario)
+        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoSinteticoDto> downloadProvasBoletimEscolarDtos, string usuario, string rf)
         {
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
@@ -80,7 +72,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 await writer.WriteLineAsync("</style>");
                 await writer.WriteLineAsync("</head><body>");
 
-                var cabecalhoHtml = ObterCabecalhoHtml(usuario);
+                var cabecalhoHtml = ObterCabecalhoHtml(usuario, rf);
                 await writer.WriteLineAsync(cabecalhoHtml);
 
                 await writer.WriteLineAsync("<table border='1'>");
@@ -100,25 +92,6 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 memoryStream.Position = 0;
                 return memoryStream;
             }
-        }
-
-        private static string ObterCabecalhoHtml(string usuario)
-        {
-            return $@"
-                        <div style='display: flex; justify-content: space-between; align-items: center; padding: 10px;'>
-                            <div style='text-align: center;'>
-                                <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</p>
-                                <h3 style='margin-top: 0;'>Relatório de Controle de Livros Emprestados</h3>
-                            </div>
-                        </div>
-                        <table border='1' cellpadding='5' cellspacing='0' style='width: 100%; margin-bottom: 20px; border-collapse: collapse;'>
-                            <tr>
-                                <td><strong>{usuario}</td>
-                                <td><strong>RF:</strong></td>
-                                <td><strong>DATA:</strong> {DateTime.Now.ToString("dd-MM-yyyy")}</td>
-                            </tr>
-                        </table>
-                    ";
         }
     }
 }
