@@ -4,6 +4,7 @@ using SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosAn
 using SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
+using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System;
 using System.Threading.Tasks;
 
