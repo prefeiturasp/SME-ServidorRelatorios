@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
-using SME.SR.Data.Interfaces.CDEP;
+using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.CDEP;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.SR.Data.Repositories.CDEP
+namespace SME.SR.Data
 {
     public class RelatorioControleLivrosRepository : IRelatorioControleLivrosRepository
     {
