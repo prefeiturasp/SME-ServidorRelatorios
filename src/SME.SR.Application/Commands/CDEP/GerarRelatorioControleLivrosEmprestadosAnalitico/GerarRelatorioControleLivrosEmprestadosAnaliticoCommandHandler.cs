@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosEmprestadoSintetico;
 using SME.SR.Infra;
+using SME.SR.Infra.CDEP;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosAnalitico
 {
-    public class GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler : IRequestHandler<GerarRelatorioControleLivrosEmprestadosAnaliticoCommand, string>
+    public class GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosAnaliticoCommand, string>
     {
         private readonly IMediator mediator;
 
@@ -30,15 +32,17 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             if (!livros.Any())
                 throw new NegocioException("Não possui informações.");
 
-            await GerarRelatorio(livros, request.Filtros.CodigoCorrelacao, request.Filtros.Usuario);
+            var codigoCorrelacao = Guid.NewGuid();
 
-            return request.Filtros.CodigoCorrelacao.ToString();
+            await GerarRelatorio(livros, codigoCorrelacao, request.Filtros.Usuario, request.Filtros.UsuarioRF);
+
+            return codigoCorrelacao.ToString();
         }
 
 
-        public async Task GerarRelatorio(IEnumerable<AcervoSolicitacaoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario)
+        public async Task GerarRelatorio(IEnumerable<AcervoSolicitacaoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario, string rf)
         {
-            var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario);
+            var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario, rf);
 
             var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
             var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
@@ -48,17 +52,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             memoryStreamDoRelatorio.Dispose();
         }
 
-        private static async Task SaveMemoryStreamToFile(MemoryStream memoryStream, string filePath)
-        {
-            memoryStream.Position = 0;
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-            {
-                await memoryStream.CopyToAsync(fileStream);
-            }
-        }
-
-        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoDto> downloadProvasBoletimEscolarDtos, string usuario)
+        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoDto> acervos, string usuario, string rf)
         {
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
@@ -68,26 +62,55 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 await writer.WriteLineAsync("<style>");
                 await writer.WriteLineAsync("th { font-weight: bold; }");
                 await writer.WriteLineAsync(".numero { text-align: center; }");
+                await writer.WriteLineAsync(".data { text-align: right; }");
                 await writer.WriteLineAsync("</style>");
                 await writer.WriteLineAsync("</head><body>");
 
-                var cabecalhoHtml = ObterCabecalhoHtml(usuario);
+                var cabecalhoHtml = ObterCabecalhoHtml(usuario, rf);
                 await writer.WriteLineAsync(cabecalhoHtml);
 
-                await writer.WriteLineAsync("<table border='1'>");
-                await writer.WriteLineAsync("<tr><th>Tombo</th><th>Título</th><th>Situação</th><th>Quantidade de empréstimos</th><th>Leitor</th><th>Data de retirada</th><th>Data de devolução</th></tr>");
+                await writer.WriteLineAsync("<table border='1' cellspacing='0' cellpadding='5'>");
+                await writer.WriteLineAsync("<tr>" +
+                    "<th>Tombo</th>" +
+                    "<th>Título</th>" +
+                    "<th>Situação</th>" +
+                    "<th>Quantidade de empréstimos</th>" +
+                    "<th>Leitor</th>" +
+                    "<th>Data de retirada</th>" +
+                    "<th>Data de devolução</th>" +
+                    "</tr>");
 
-                foreach (var item in downloadProvasBoletimEscolarDtos)
+                var acervosGroup = acervos.GroupBy(x => x.Tombo).ToList();
+
+                foreach (var grupo in acervosGroup)
                 {
+                    var primeiro = grupo.First();
+                    int numEmprestimos = grupo.Count();
+
+                    // Primeira linha do agrupamento
                     await writer.WriteLineAsync("<tr>" +
-                        $"<td class=\"numero\">{item.Tombo}</td>" +
-                        $"<td>{item.Titulo}</td>" +
-                        $"<td>{item.SituacaoEmprestimo}</td>" +
-                        $"<td class=\"numero\">{item.QuantidadeEmprestimos}</td>" +
-                        $"<td>{item.Solicitante}</td>" +
-                        $"<td>{item.DataEmprestimo}</td>" +
-                        $"<td>{item.DataDevolucao}</td>" +
+                        $"<td class=\"numero\">{primeiro.Tombo}</td>" +
+                        $"<td>{primeiro.Titulo}</td>" +
+                        $"<td>{ObterDescricaoSituacao(primeiro.SituacaoEmprestimo)}</td>" +
+                        $"<td class=\"numero\">{numEmprestimos}</td>" +
+                        "<td></td>" + // Leitor vazio
+                        "<td class=\"data\"></td>" + // Data retirada vazia
+                        "<td class=\"data\"></td>" + // Data devolução vazia
                         "</tr>");
+
+                    // Linhas dos empréstimos
+                    foreach (var emprestimo in grupo)
+                    {
+                        await writer.WriteLineAsync("<tr>" +
+                            "<td></td>" + // Tombo vazio
+                            "<td></td>" + // Título vazio
+                            "<td></td>" + // Situação vazia
+                            "<td></td>" + // Quantidade vazia
+                            $"<td>{emprestimo.Solicitante}</td>" +
+                            $"<td class=\"data\">{emprestimo.DataEmprestimo:dd/MM/yyyy}</td>" +
+                            $"<td class=\"data\">{emprestimo.DataDevolucao:dd/MM/yyyy}</td>" +
+                            "</tr>");
+                    }
                 }
 
                 await writer.WriteLineAsync("</table></body></html>");
@@ -97,23 +120,12 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             }
         }
 
-        private static string ObterCabecalhoHtml(string usuario)
+        private static string ObterDescricaoSituacao(SituacaoEmprestimo situacao)
         {
-            return $@"
-                        <div style='display: flex; justify-content: space-between; align-items: center; padding: 10px;'>
-                            <div style='text-align: center;'>
-                                <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</p>
-                                <h3 style='margin-top: 0;'>Relatório de Controle de Livros Emprestados</h3>
-                            </div>
-                        </div>
-                        <table border='1' cellpadding='5' cellspacing='0' style='width: 100%; margin-bottom: 20px; border-collapse: collapse;'>
-                            <tr>
-                                <td><strong>{usuario}</td>
-                                <td><strong>RF:</strong></td>
-                                <td><strong>DATA:</strong> {DateTime.Now.ToString("dd-MM-yyyy")}</td>
-                            </tr>
-                        </table>
-                    ";
+            var fieldInfo = situacao.GetType().GetField(situacao.ToString());
+            var descriptionAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(DisplayAttribute));
+            return descriptionAttribute?.Description ?? situacao.ToString();
         }
+
     }
 }

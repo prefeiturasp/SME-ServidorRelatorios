@@ -19,7 +19,7 @@ namespace SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosEmpres
         public async Task<IEnumerable<AcervoSolicitacaoDto>> Handle(ObterRelatorioCDEPControleLivrosEmprestadoQuery request, CancellationToken cancellationToken)
         {
             return await relatorioControleLivrosRepository.ObterRelatorioControleLivros(request.filtros.TiposAcervosPermitidos, 
-                                                                                                 request.filtros.Leitor, 
+                                                                                                 request.filtros.Solicitante, 
                                                                                                  request.filtros.Tombo, 
                                                                                                  request.filtros.SituacaoEmprestimo, 
                                                                                                  request.filtros.SomenteDevolvidos);
