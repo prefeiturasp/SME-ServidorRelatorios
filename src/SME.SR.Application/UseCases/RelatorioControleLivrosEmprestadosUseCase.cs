@@ -6,6 +6,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application.UseCases
@@ -19,7 +20,7 @@ namespace SME.SR.Application.UseCases
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<string> Executar(FiltroRelatorioSincronoDto request)
+        public async Task<MemoryStream> Executar(FiltroRelatorioSincronoDto request)
         {
             try
             {
@@ -32,7 +33,7 @@ namespace SME.SR.Application.UseCases
                     case ModeloRelatorio.Analitico:
                         return await mediator.Send(new GerarRelatorioControleLivrosEmprestadosAnaliticoCommand(filtros));
                     default:
-                        break;
+                        return await mediator.Send(new GerarRelatorioControleLivrosEmprestadosSinteticoCommand(filtros));
                 }
 
 
@@ -42,8 +43,6 @@ namespace SME.SR.Application.UseCases
                 SentrySdk.CaptureException(ex);
                 throw ex;
             }
-
-            return string.Empty;
         }
     }
 }
