@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
+using System.IO;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico
 {
-    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommand : IRequest<string>
+    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommand : IRequest<MemoryStream>
     {
         public GerarRelatorioControleLivrosEmprestadosSinteticoCommand(FiltroRelatorioControleLivro filtros)
         {
