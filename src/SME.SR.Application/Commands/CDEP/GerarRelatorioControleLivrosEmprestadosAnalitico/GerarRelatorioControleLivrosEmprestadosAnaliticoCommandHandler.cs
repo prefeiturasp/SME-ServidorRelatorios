@@ -34,13 +34,11 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
 
             var codigoCorrelacao = Guid.NewGuid();
 
-            await GerarRelatorio(livros, codigoCorrelacao, request.Filtros.Usuario, request.Filtros.UsuarioRF);
-
-            return codigoCorrelacao.ToString();
+            return await GerarRelatorio(livros, codigoCorrelacao, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }
 
 
-        public async Task GerarRelatorio(IEnumerable<AcervoSolicitacaoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario, string rf)
+        public async Task<string> GerarRelatorio(IEnumerable<AcervoSolicitacaoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario, string rf)
         {
             var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario, rf);
 
@@ -53,9 +51,13 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 Directory.CreateDirectory(caminhoDiretorio);
             }
 
-            await SaveMemoryStreamToFile(memoryStreamDoRelatorio, $"{caminhoParaSalvar}.xls");
+            var caminhoArquivo = $"{caminhoParaSalvar}.xls";
+
+            await SaveMemoryStreamToFile(memoryStreamDoRelatorio, caminhoArquivo);
 
             memoryStreamDoRelatorio.Dispose();
+
+            return caminhoArquivo;
         }
 
         private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoDto> acervos, string usuario, string rf)
