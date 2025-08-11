@@ -12,10 +12,11 @@ namespace SME.SR.Workers.SGP.Controllers
     public class CDEPController : ControllerBase
     {
         [HttpPost("controle-livros-emprestados")]
-        public async Task<string> RelatorioControleLivrosEmprestados([FromBody] FiltroRelatorioSincronoDto request, 
+        public async Task<IActionResult> RelatorioControleLivrosEmprestados([FromBody] FiltroRelatorioSincronoDto request, 
             [FromServices] IRelatorioControleLivrosEmprestadosUseCase relatorioControleLivrosEmprestados)
         {
-            return await relatorioControleLivrosEmprestados.Executar(request);
+            var file = await relatorioControleLivrosEmprestados.Executar(request);
+            return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
         }
     }
 }

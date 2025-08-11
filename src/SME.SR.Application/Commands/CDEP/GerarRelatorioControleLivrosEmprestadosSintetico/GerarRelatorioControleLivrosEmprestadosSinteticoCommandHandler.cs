@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico
 {
-    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosSinteticoCommand, string>
+    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosSinteticoCommand, MemoryStream>
     {
         private readonly IMediator mediator;
 
@@ -20,7 +20,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
         {
             this.mediator = mediator;
         }
-        public async Task<string> Handle(GerarRelatorioControleLivrosEmprestadosSinteticoCommand request, CancellationToken cancellationToken)
+        public async Task<MemoryStream> Handle(GerarRelatorioControleLivrosEmprestadosSinteticoCommand request, CancellationToken cancellationToken)
         {
             var livros = await mediator.Send(new ObterRelatorioCDEPControleLivrosEmprestadoQuery()
             {
@@ -42,32 +42,10 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
 
             var codigoCorrelacao = Guid.NewGuid();
 
-            return await GerarRelatorio(emprestimosAgrupados, codigoCorrelacao, request.Filtros.Usuario, request.Filtros.UsuarioRF);
+            return await GerarAqruivoParaExcel(emprestimosAgrupados, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }
 
-        public async Task<string> GerarRelatorio(IEnumerable<AcervoSolicitacaoSinteticoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario, string rf)
-        {
-            var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario, rf);
-
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
-
-            var caminhoDiretorio = Path.Combine(caminhoBase, "relatorios");
-            if (!Directory.Exists(caminhoDiretorio))
-            {
-                Directory.CreateDirectory(caminhoDiretorio);
-            }
-
-            var caminhoArquivo = $"{caminhoParaSalvar}.xls";
-
-            await SaveMemoryStreamToFile(memoryStreamDoRelatorio, caminhoArquivo);
-
-            memoryStreamDoRelatorio.Dispose();
-
-            return caminhoArquivo;
-        }
-
-        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoSinteticoDto> downloadProvasBoletimEscolarDtos, string usuario, string rf)
+        private async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoSinteticoDto> dadosDoRelatorio, string usuario, string rf)
         {
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
@@ -86,7 +64,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 await writer.WriteLineAsync("<table border='1'>");
                 await writer.WriteLineAsync("<tr><th>Tombo</th><th>Título</th><th>Quantidade de empréstimos</th></tr>");
 
-                foreach (var item in downloadProvasBoletimEscolarDtos)
+                foreach (var item in dadosDoRelatorio)
                 {
                     await writer.WriteLineAsync("<tr>" +
                         $"<td class=\"numero\">{item.Tombo}</td>" +

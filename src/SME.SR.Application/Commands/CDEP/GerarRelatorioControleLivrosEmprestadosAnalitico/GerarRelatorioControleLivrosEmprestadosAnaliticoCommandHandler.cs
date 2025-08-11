@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosAnalitico
 {
-    public class GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosAnaliticoCommand, string>
+    public class GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosAnaliticoCommand, MemoryStream>
     {
         private readonly IMediator mediator;
 
@@ -22,7 +22,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
         {
             this.mediator = mediator;
         }
-        public async Task<string> Handle(GerarRelatorioControleLivrosEmprestadosAnaliticoCommand request, CancellationToken cancellationToken)
+        public async Task<MemoryStream> Handle(GerarRelatorioControleLivrosEmprestadosAnaliticoCommand request, CancellationToken cancellationToken)
         {
             var livros = await mediator.Send(new ObterRelatorioCDEPControleLivrosEmprestadoQuery()
             {
@@ -34,31 +34,9 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
 
             var codigoCorrelacao = Guid.NewGuid();
 
-            return await GerarRelatorio(livros, codigoCorrelacao, request.Filtros.Usuario, request.Filtros.UsuarioRF);
+            return await GerarAqruivoParaExcel(livros, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }
 
-
-        public async Task<string> GerarRelatorio(IEnumerable<AcervoSolicitacaoDto> dadosDoRelatorio, Guid codigoCorrelacao, string usuario, string rf)
-        {
-            var memoryStreamDoRelatorio = await GerarAqruivoParaExcel(dadosDoRelatorio, usuario, rf);
-
-            var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
-            var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
-
-            var caminhoDiretorio = Path.Combine(caminhoBase, "relatorios");
-            if (!Directory.Exists(caminhoDiretorio))
-            {
-                Directory.CreateDirectory(caminhoDiretorio);
-            }
-
-            var caminhoArquivo = $"{caminhoParaSalvar}.xls";
-
-            await SaveMemoryStreamToFile(memoryStreamDoRelatorio, caminhoArquivo);
-
-            memoryStreamDoRelatorio.Dispose();
-
-            return caminhoArquivo;
-        }
 
         private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoDto> acervos, string usuario, string rf)
         {
