@@ -1,10 +1,12 @@
-﻿using System;
+﻿using SME.SR.Infra.CDEP;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.CDEP
 {
-    public abstract class GerarRelatorioControleLivrosEmprestadosBase
+    public abstract class GerarRelatorioControleLivrosBase
     {
         protected static string ObterCabecalhoHtml(string usuario, string rf)
         {
@@ -33,6 +35,20 @@ namespace SME.SR.Application.Commands.CDEP
             {
                 await memoryStream.CopyToAsync(fileStream);
             }
+        }
+
+        protected static string ObterDescricaoSituacao(SituacaoEmprestimo situacao)
+        {
+            var fieldInfo = situacao.GetType().GetField(situacao.ToString());
+            var descriptionAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(DisplayAttribute));
+            return descriptionAttribute?.Description ?? situacao.ToString();
+        }
+
+        protected static string ObterTipoAcervo(TipoAcervo tipoAcervo)
+        {
+            var fieldInfo = tipoAcervo.GetType().GetField(tipoAcervo.ToString());
+            var descriptionAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(DisplayAttribute));
+            return descriptionAttribute?.Description ?? tipoAcervo.ToString();
         }
     }
 }

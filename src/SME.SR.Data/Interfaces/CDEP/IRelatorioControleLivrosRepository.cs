@@ -7,6 +7,7 @@ namespace SME.SR.Data.Interfaces
 {
     public interface IRelatorioControleLivrosRepository
     {
-        Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivros(long[] tiposAcervosPermitidos, string solicitante, string tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos);
+        Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosEmpresados(long[] tiposAcervosPermitidos, string solicitante, string tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos);
+        Task<IEnumerable<ControleAcervoDTO>> ObterRelatorioControleAcervos(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, SituacaoAcervo? situacaoAcervo);
     }
 }

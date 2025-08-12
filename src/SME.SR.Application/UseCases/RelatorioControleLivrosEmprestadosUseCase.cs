@@ -35,8 +35,6 @@ namespace SME.SR.Application.UseCases
                     default:
                         return await mediator.Send(new GerarRelatorioControleLivrosEmprestadosSinteticoCommand(filtros));
                 }
-
-
             }
             catch (Exception ex)
             {

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using RabbitMQ.Client;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
+using SME.SR.Application.Interfaces.UseCases;
 using SME.SR.Application.Services;
 using SME.SR.Application.UseCases;
 using SME.SR.Data;
@@ -36,10 +37,10 @@ namespace SME.SR.IoC
         {
             var factory = new ConnectionFactory
             {
-                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
-                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
-                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
-                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
+                HostName = "10.50.1.209",
+                UserName = "usr_amcom",
+                Password = "AMcom20anos",
+                VirtualHost = "hom"
             };
 
             var conexaoRabbit = factory.CreateConnection();
@@ -287,6 +288,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioPropostaLaudaDePublicacaoUseCase, RelatorioPropostaLaudaDePublicacaoUseCase>();
             services.TryAddScoped<IRelatorioPropostaLaudaCompletaUseCase, RelatorioPropostaLaudaCompletaUseCase>();
             services.TryAddScoped<IRelatorioControleLivrosEmprestadosUseCase, RelatorioControleLivrosEmprestadosUseCase>();
+            services.TryAddScoped<IRelatorioControleAcervoUseCase, RelatorioControleAcervoUseCase>();
         }
 
         private static void RegistrarServicoRelatorioAnaliticoSondagem(IServiceCollection services)
