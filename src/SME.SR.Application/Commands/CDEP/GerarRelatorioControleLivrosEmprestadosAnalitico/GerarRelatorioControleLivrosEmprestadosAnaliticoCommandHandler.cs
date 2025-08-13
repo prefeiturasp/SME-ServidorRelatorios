@@ -50,7 +50,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 await writer.WriteLineAsync("</style>");
                 await writer.WriteLineAsync("</head><body>");
 
-                var cabecalhoHtml = ObterCabecalhoHtml(usuario, rf);
+                var cabecalhoHtml = ObterCabecalhoHtml("Relatório de Controle de Livros Emprestados", usuario, rf);
                 await writer.WriteLineAsync(cabecalhoHtml);
 
                 await writer.WriteLineAsync("<table border='1' cellspacing='0' cellpadding='5'>");

@@ -8,7 +8,7 @@ namespace SME.SR.Application.Commands.CDEP
 {
     public abstract class GerarRelatorioControleLivrosBase
     {
-        protected static string ObterCabecalhoHtml(string usuario, string rf, string autor = null)
+        protected static string ObterCabecalhoHtml(string título, string usuario, string rf, string autor = null)
         {
             var colunaAutor = string.Empty;
             if (!string.IsNullOrWhiteSpace(autor))
@@ -18,7 +18,7 @@ namespace SME.SR.Application.Commands.CDEP
                 <div style='display: flex; justify-content: space-between; align-items: center; padding: 10px;'>
                     <div style='text-align: center;'>
                         <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</p>
-                        <h3 style='margin-top: 0;'>Relatório de Controle de Livros Emprestados</h3>
+                        <h3 style='margin-top: 0;'>{título}</h3>
                     </div>
                 </div>
                 <table border='1' cellpadding='5' cellspacing='0' style='width: 100%; margin-bottom: 20px; border-collapse: collapse;'>
