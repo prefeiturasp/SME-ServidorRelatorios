@@ -1,4 +1,5 @@
 ﻿using SME.SR.Infra.CDEP;
+using System.Collections.Generic;
 
 namespace SME.SR.Infra.Dtos.Relatorios.CDEP
 {
@@ -9,7 +10,7 @@ namespace SME.SR.Infra.Dtos.Relatorios.CDEP
         public string Usuario { get; set; }
         public string UsuarioRF { get; set; }
         public SituacaoSolicitacaoItem SituacaoSolicitacaoItem { get; set; }
-        public SituacaoEmprestimo SituacaoEmprestimo { get; set; }
+        public List<SituacaoEmprestimo>? SituacaoEmprestimo { get; set; }
         public ModeloRelatorio Modelo { get; set; }
         public bool SomenteDevolvidos { get; set; }
         public long[] TiposAcervosPermitidos { get; set; }
