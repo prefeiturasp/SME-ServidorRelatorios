@@ -59,14 +59,13 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervo
                     "<th>Quantidade</th>" +
                     "</tr>");
 
-                var acervosGroup = acervos.GroupBy(x => x.Tombo).ToList();
+                var acervosGroup = acervos.GroupBy(x => new { x.Tombo, x.SituacaoEmprestimo }).ToList();
 
                 foreach (var grupo in acervosGroup)
                 {
                     var primeiro = grupo.First();
                     int numEmprestimos = grupo.Count();
 
-                    // Primeira linha do agrupamento
                     await writer.WriteLineAsync("<tr>" +
                         $"<td>{ObterTipoAcervo(primeiro.TipoAcervo)}</td>" +
                         $"<td>{primeiro.Titulo}</td>" +

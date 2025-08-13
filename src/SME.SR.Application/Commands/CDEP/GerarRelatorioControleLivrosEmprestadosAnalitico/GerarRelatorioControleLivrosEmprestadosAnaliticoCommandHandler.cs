@@ -64,7 +64,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                     "<th>Data de devolução</th>" +
                     "</tr>");
 
-                var acervosGroup = acervos.GroupBy(x => x.Tombo).ToList();
+                var acervosGroup = acervos.GroupBy(x => new { x.Tombo, x.SituacaoEmprestimo }).ToList();
 
                 foreach (var grupo in acervosGroup)
                 {
