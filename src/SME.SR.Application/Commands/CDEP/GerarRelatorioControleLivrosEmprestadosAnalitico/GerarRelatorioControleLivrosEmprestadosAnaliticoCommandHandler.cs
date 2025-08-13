@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosAnalitico
 {
-    public class GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosAnaliticoCommand, MemoryStream>
+    public class GerarRelatorioControleLivrosEmprestadosAnaliticoCommandHandler : GerarRelatorioControleLivrosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosAnaliticoCommand, MemoryStream>
     {
         private readonly IMediator mediator;
 
@@ -31,8 +31,6 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
 
             if (!livros.Any())
                 throw new NegocioException("Não possui informações.");
-
-            var codigoCorrelacao = Guid.NewGuid();
 
             return await GerarAqruivoParaExcel(livros, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }
@@ -105,13 +103,5 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                 return memoryStream;
             }
         }
-
-        private static string ObterDescricaoSituacao(SituacaoEmprestimo situacao)
-        {
-            var fieldInfo = situacao.GetType().GetField(situacao.ToString());
-            var descriptionAttribute = (DisplayAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(DisplayAttribute));
-            return descriptionAttribute?.Description ?? situacao.ToString();
-        }
-
     }
 }

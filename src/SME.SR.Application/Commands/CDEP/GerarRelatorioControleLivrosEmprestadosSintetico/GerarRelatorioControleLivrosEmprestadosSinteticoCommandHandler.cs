@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestadosSintetico
 {
-    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler : GerarRelatorioControleLivrosEmprestadosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosSinteticoCommand, MemoryStream>
+    public class GerarRelatorioControleLivrosEmprestadosSinteticoCommandHandler : GerarRelatorioControleLivrosBase, IRequestHandler<GerarRelatorioControleLivrosEmprestadosSinteticoCommand, MemoryStream>
     {
         private readonly IMediator mediator;
 
@@ -39,8 +39,6 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
                                QuantidadeEmprestimos = g.Count(),
                            })
                        .ToList();
-
-            var codigoCorrelacao = Guid.NewGuid();
 
             return await GerarAqruivoParaExcel(emprestimosAgrupados, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }

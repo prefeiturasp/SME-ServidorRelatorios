@@ -20,7 +20,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivros(long[] tiposAcervosPermitidos, 
+        public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosEmpresados(long[] tiposAcervosPermitidos, 
             string solicitante, string tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
         {
             var query = new StringBuilder();
@@ -102,6 +102,47 @@ namespace SME.SR.Data
 
             query.AppendLine(" AND ae.situacao <> @SituacaoDevolvido");
             parametros.Add("SituacaoDevolvido", (int)SituacaoEmprestimo.DEVOLVIDO);
+        }
+
+        public async Task<IEnumerable<ControleAcervoDTO>> ObterRelatorioControleAcervos(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, SituacaoAcervo? situacaoAcervo)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                SELECT
+                                    a.Tipo as TipoAcervo,
+	                                a.Titulo,
+	                                a.codigo as Tombo,
+	                                ae.situacao as SituacaoEmprestimo
+                                FROM acervo_solicitacao_item asi
+                                    JOIN acervo_solicitacao aso ON aso.id = asi.acervo_solicitacao_id
+                                    JOIN acervo a ON a.id = asi.acervo_id
+                                    JOIN usuario u ON u.id = aso.usuario_id
+                                    JOIN acervo_emprestimo ae ON ae.acervo_solicitacao_item_id = asi.id AND NOT ae.excluido 
+                                WHERE
+                                    NOT asi.excluido
+                                    AND NOT aso.excluido
+                                    AND NOT a.excluido
+                                    AND NOT u.excluido
+                                    AND a.tipo = ANY(@tiposAcervosPermitidos)
+                            ");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("tiposAcervosPermitidos", tiposAcervosPermitidos);
+
+            if (situacaoAcervo.HasValue && situacaoAcervo.Value > 0)
+            {
+                query.AppendLine(" AND COALESCE(a.situacao, 1) = @Situacao");
+                parametros.Add("Situacao", (int)situacaoAcervo.Value);
+            }
+
+            if (tipoAcervo.HasValue && tipoAcervo.Value > 0)
+            {
+                query.AppendLine(" AND a.Tipo = @TipoAcervo");
+                parametros.Add("TipoAcervo", tipoAcervo);
+            }
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<ControleAcervoDTO>(query.ToString(), parametros);
         }
     }
 }
