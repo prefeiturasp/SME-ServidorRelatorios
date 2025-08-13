@@ -57,7 +57,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervoAutor
                     "<th>Autor/Crédito</th>" +
                     "<th>Título de acervo</th>" +
                     "<th>Tombo/Código</th>" +
-                    "<th>Título/código</th>" +
+                    "<th>Título</th>" +
                     "</tr>");
 
                 foreach (var acervo in acervos)
