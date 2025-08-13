@@ -62,7 +62,6 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervoAutor
 
                 foreach (var acervo in acervos)
                 {
-                    // Primeira linha do agrupamento
                     await writer.WriteLineAsync("<tr>" +
                         $"<td>{acervo.Autor}</td>" +
                         $"<td>{ObterTipoAcervo(acervo.TipoAcervo)}</td>" +

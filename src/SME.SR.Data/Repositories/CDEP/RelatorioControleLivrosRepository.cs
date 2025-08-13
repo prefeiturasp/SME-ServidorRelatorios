@@ -22,7 +22,7 @@ namespace SME.SR.Data
             this.variaveisAmbiente = variaveisAmbiente ?? throw new ArgumentNullException(nameof(variaveisAmbiente));
         }
 
-        public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosEmpresados(long[] tiposAcervosPermitidos, 
+        public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosEmpresados(long[] tiposAcervosPermitidos,
             string solicitante, string tombo, List<SituacaoEmprestimo>? situacaoEmprestimo, bool? somenteDevolvidos)
         {
             var query = new StringBuilder();
@@ -80,30 +80,22 @@ namespace SME.SR.Data
 
         private void AdicionarFiltroSituacao(StringBuilder query, DynamicParameters parametros, List<SituacaoEmprestimo> situacaoEmprestimo, bool? somenteDevolvidos)
         {
-            if (situacaoEmprestimo != null && situacaoEmprestimo.Any())
-            {
-                query.AppendLine(" AND ae.situacao = ANY(@SituacoesEmprestimo)");
-                parametros.Add("SituacoesEmprestimo", situacaoEmprestimo.Select(s => (int)s).ToArray());
-                return;
-            }
-
             if (somenteDevolvidos.HasValue)
             {
                 if (somenteDevolvidos.Value)
                 {
                     query.AppendLine(" AND ae.situacao = @SituacaoDevolvido");
                     parametros.Add("SituacaoDevolvido", (int)SituacaoEmprestimo.DEVOLVIDO);
+                    return;
                 }
-                else
-                {
-                    query.AppendLine(" AND ae.situacao <> @SituacaoDevolvido");
-                    parametros.Add("SituacaoDevolvido", (int)SituacaoEmprestimo.DEVOLVIDO);
-                }
-                return;
             }
 
-            query.AppendLine(" AND ae.situacao <> @SituacaoDevolvido");
-            parametros.Add("SituacaoDevolvido", (int)SituacaoEmprestimo.DEVOLVIDO);
+            if (situacaoEmprestimo != null && situacaoEmprestimo.Any())
+            {
+                query.AppendLine(" AND ae.situacao = ANY(@SituacoesEmprestimo)");
+                parametros.Add("SituacoesEmprestimo", situacaoEmprestimo.Select(s => (int)s).ToArray());
+                return;
+            }
         }
 
         public async Task<IEnumerable<ControleAcervoDTO>> ObterRelatorioControleAcervos(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, SituacaoAcervo? situacaoAcervo)
