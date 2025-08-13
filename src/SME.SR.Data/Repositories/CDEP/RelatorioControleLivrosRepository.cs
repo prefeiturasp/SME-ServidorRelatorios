@@ -147,7 +147,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ControleAcervoDTO>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<ControleAcervoAutorDTO>> ObterRelatorioControleAcervosAutor(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, List<string> autores)
+        public async Task<IEnumerable<ControleAcervoAutorDTO>> ObterRelatorioControleAcervosAutor(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, List<int> autores)
         {
             var query = new StringBuilder();
             query.AppendLine(@"
@@ -175,14 +175,14 @@ namespace SME.SR.Data
 
             if (autores?.Count > 0)
             {
-                query.AppendLine(" AND ca.nome ILIKE ANY(SELECT '%' || unnest(@Autores) || '%')");
-                parametros.Add("Autores", autores);
+                query.AppendLine(" AND ca.Id = ANY(@autores)");
+                parametros.Add("autores", autores);
             }
 
             if (tipoAcervo.HasValue && tipoAcervo.Value > 0)
             {
-                query.AppendLine(" AND a.Tipo = @TipoAcervo");
-                parametros.Add("TipoAcervo", tipoAcervo);
+                query.AppendLine(" AND a.Tipo = @tipoAcervo");
+                parametros.Add("tipoAcervo", tipoAcervo);
             }
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
