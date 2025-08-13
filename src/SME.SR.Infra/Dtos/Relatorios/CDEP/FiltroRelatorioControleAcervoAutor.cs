@@ -7,7 +7,7 @@ namespace SME.SR.Infra.Dtos.Relatorios.CDEP
     {
         public string Usuario { get; set; }
         public string UsuarioRF { get; set; }
-        public List<string> Autores { get; set; }
+        public List<int> Autores { get; set; }
         public TipoAcervo TipoAcervo { get; set; }
         public long[] TiposAcervosPermitidos { get; set; }
     }
