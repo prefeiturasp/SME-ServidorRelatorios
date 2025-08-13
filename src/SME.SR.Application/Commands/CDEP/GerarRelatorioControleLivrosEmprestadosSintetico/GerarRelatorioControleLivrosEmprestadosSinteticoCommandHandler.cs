@@ -2,7 +2,6 @@
 using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosEmprestadoSintetico;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
