@@ -49,7 +49,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervoAutor
 
                 var autores = acervos.Select(a => a.Autor).Distinct().OrderBy(a => a).ToList();
 
-                var cabecalhoHtml = ObterCabecalhoHtml(usuario, rf, autores?.Count > 1 ? string.Empty : autores.FirstOrDefault());
+                var cabecalhoHtml = ObterCabecalhoHtml("Relatório de Controle por Autor/Crédito", usuario, rf, autores?.Count > 1 ? string.Empty : autores.FirstOrDefault());
                 await writer.WriteLineAsync(cabecalhoHtml);
 
                 await writer.WriteLineAsync("<table border='1' cellspacing='0' cellpadding='5'>");
