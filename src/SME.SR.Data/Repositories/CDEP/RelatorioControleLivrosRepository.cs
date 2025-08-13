@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.EntityFrameworkCore.Internal;
 using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
@@ -6,6 +7,7 @@ using SME.SR.Infra.CDEP;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +23,7 @@ namespace SME.SR.Data
         }
 
         public async Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosEmpresados(long[] tiposAcervosPermitidos, 
-            string solicitante, string tombo, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
+            string solicitante, string tombo, List<SituacaoEmprestimo>? situacaoEmprestimo, bool? somenteDevolvidos)
         {
             var query = new StringBuilder();
             query.AppendLine(@"
@@ -76,12 +78,12 @@ namespace SME.SR.Data
             }
         }
 
-        private void AdicionarFiltroSituacao(StringBuilder query, DynamicParameters parametros, SituacaoEmprestimo? situacaoEmprestimo, bool? somenteDevolvidos)
+        private void AdicionarFiltroSituacao(StringBuilder query, DynamicParameters parametros, List<SituacaoEmprestimo> situacaoEmprestimo, bool? somenteDevolvidos)
         {
-            if (situacaoEmprestimo.HasValue && situacaoEmprestimo.Value > 0)
+            if (situacaoEmprestimo != null && situacaoEmprestimo.Any())
             {
-                query.AppendLine(" AND ae.situacao = @SituacaoEmprestimo");
-                parametros.Add("SituacaoEmprestimo", (int)situacaoEmprestimo.Value);
+                query.AppendLine(" AND ae.situacao = ANY(@SituacoesEmprestimo)");
+                parametros.Add("SituacoesEmprestimo", situacaoEmprestimo.Select(s => (int)s).ToArray());
                 return;
             }
 
@@ -143,6 +145,48 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
             return await conexao.QueryAsync<ControleAcervoDTO>(query.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<ControleAcervoAutorDTO>> ObterRelatorioControleAcervosAutor(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, List<string> autores)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                  SELECT
+  	                                    ca.nome as Autor,
+                                        a.Tipo as TipoAcervo,
+                                        a.codigo as Tombo,
+                                        a.Titulo  
+                                    FROM acervo_solicitacao_item asi
+                                        JOIN acervo_solicitacao aso ON aso.id = asi.acervo_solicitacao_id
+                                        JOIN acervo a ON a.id = asi.acervo_id
+                                        JOIN usuario u ON u.id = aso.usuario_id 
+                                        LEFT JOIN acervo_credito_autor aca ON aca.acervo_id = a.id
+	                                    LEFT JOIN credito_autor ca ON aca.credito_autor_id = ca.id
+                                    WHERE
+                                        NOT asi.excluido
+                                        AND NOT aso.excluido
+                                        AND NOT a.excluido
+                                        AND NOT u.excluido	
+                                    AND a.tipo = ANY(@tiposAcervosPermitidos)
+                            ");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("tiposAcervosPermitidos", tiposAcervosPermitidos);
+
+            if (autores?.Count > 0)
+            {
+                query.AppendLine(" AND ca.nome ILIKE ANY(SELECT '%' || unnest(@Autores) || '%')");
+                parametros.Add("Autores", autores);
+            }
+
+            if (tipoAcervo.HasValue && tipoAcervo.Value > 0)
+            {
+                query.AppendLine(" AND a.Tipo = @TipoAcervo");
+                parametros.Add("TipoAcervo", tipoAcervo);
+            }
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<ControleAcervoAutorDTO>(query.ToString(), parametros);
         }
     }
 }

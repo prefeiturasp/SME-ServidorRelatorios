@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleAcervo;
+using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleAcervoAutor;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
 using System.Collections.Generic;
@@ -9,22 +9,22 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervo
+namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervoAutor
 {
-    public class GerarRelatorioControleAcervoCommandHandler : GerarRelatorioControleLivrosBase, IRequestHandler<GerarRelatorioControleAcervoCommand, MemoryStream>
+    public class GerarRelatorioControleAcervoAutorCommandHandler : GerarRelatorioControleLivrosBase, IRequestHandler<GerarRelatorioControleAcervoAutorCommand, MemoryStream>
     {
         private readonly IMediator mediator;
 
-        public GerarRelatorioControleAcervoCommandHandler(IMediator mediator)
+        public GerarRelatorioControleAcervoAutorCommandHandler(IMediator mediator)
         {
             this.mediator = mediator;
         }
 
-        public async Task<MemoryStream> Handle(GerarRelatorioControleAcervoCommand request, CancellationToken cancellationToken)
+        public async Task<MemoryStream> Handle(GerarRelatorioControleAcervoAutorCommand request, CancellationToken cancellationToken)
         {
-            var acervos = await mediator.Send(new ObterRelatorioCDEPControleAcervoQuery()
+            var acervos = await mediator.Send(new ObterRelatorioCDEPControleAcervoAutorQuery()
             {
-                filtros = request.Filtros
+                Filtros = request.Filtros
             });
 
             if (!acervos.Any())
@@ -33,7 +33,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervo
             return await GerarAqruivoParaExcel(acervos, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }
 
-        private async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<ControleAcervoDTO> acervos, string usuario, string rf)
+        private async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<ControleAcervoAutorDTO> acervos, string usuario, string rf)
         {
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
@@ -47,32 +47,27 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervo
                 await writer.WriteLineAsync("</style>");
                 await writer.WriteLineAsync("</head><body>");
 
-                var cabecalhoHtml = ObterCabecalhoHtml("Relatório de Controle do Tombo/Código", usuario, rf);
+                var autores = acervos.Select(a => a.Autor).Distinct().OrderBy(a => a).ToList();
+
+                var cabecalhoHtml = ObterCabecalhoHtml("Relatório de Controle por Autor/Crédito", usuario, rf, autores?.Count > 1 ? string.Empty : autores.FirstOrDefault());
                 await writer.WriteLineAsync(cabecalhoHtml);
 
                 await writer.WriteLineAsync("<table border='1' cellspacing='0' cellpadding='5'>");
                 await writer.WriteLineAsync("<tr>" +
-                    "<th>Tipo do acervo</th>" +
-                    "<th>Título do acervo</th>" +
+                    "<th>Autor/Crédito</th>" +
+                    "<th>Título de acervo</th>" +
                     "<th>Tombo/Código</th>" +
-                    "<th>Situação do tombo/código</th>" +
-                    "<th>Quantidade</th>" +
+                    "<th>Título/código</th>" +
                     "</tr>");
 
-                var acervosGroup = acervos.GroupBy(x => x.Tombo).ToList();
-
-                foreach (var grupo in acervosGroup)
+                foreach (var acervo in acervos)
                 {
-                    var primeiro = grupo.First();
-                    int numEmprestimos = grupo.Count();
-
                     // Primeira linha do agrupamento
                     await writer.WriteLineAsync("<tr>" +
-                        $"<td>{ObterTipoAcervo(primeiro.TipoAcervo)}</td>" +
-                        $"<td>{primeiro.Titulo}</td>" +
-                        $"<td class=\"numero\">{primeiro.Tombo}</td>" +
-                        $"<td>{ObterDescricaoSituacao(primeiro.SituacaoEmprestimo)}</td>" +
-                        $"<td class=\"numero\">{numEmprestimos}</td>" +
+                        $"<td>{acervo.Autor}</td>" +
+                        $"<td>{ObterTipoAcervo(acervo.TipoAcervo)}</td>" +
+                        $"<td class=\"numero\">{acervo.Tombo}</td>" +
+                        $"<td>{acervo.Titulo}</td>" +
                         "</tr>");
                 }
 

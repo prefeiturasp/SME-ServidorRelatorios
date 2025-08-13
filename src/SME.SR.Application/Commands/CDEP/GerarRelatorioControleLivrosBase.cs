@@ -8,23 +8,28 @@ namespace SME.SR.Application.Commands.CDEP
 {
     public abstract class GerarRelatorioControleLivrosBase
     {
-        protected static string ObterCabecalhoHtml(string usuario, string rf)
+        protected static string ObterCabecalhoHtml(string título, string usuario, string rf, string autor = null)
         {
+            var colunaAutor = string.Empty;
+            if (!string.IsNullOrWhiteSpace(autor))
+                colunaAutor = $"<td><strong>AUTOR:</strong> {autor}</td>";
+
             return $@"
-                        <div style='display: flex; justify-content: space-between; align-items: center; padding: 10px;'>
-                            <div style='text-align: center;'>
-                                <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</p>
-                                <h3 style='margin-top: 0;'>Relatório de Controle de Livros Emprestados</h3>
-                            </div>
-                        </div>
-                        <table border='1' cellpadding='5' cellspacing='0' style='width: 100%; margin-bottom: 20px; border-collapse: collapse;'>
-                            <tr>
-                                <td><strong>{usuario}</td>
-                                <td><strong>RF: {rf}</strong></td>
-                                <td><strong>DATA:</strong> {DateTime.Now.ToString("dd-MM-yyyy")}</td>
-                            </tr>
-                        </table>
-                    ";
+                <div style='display: flex; justify-content: space-between; align-items: center; padding: 10px;'>
+                    <div style='text-align: center;'>
+                        <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</p>
+                        <h3 style='margin-top: 0;'>{título}</h3>
+                    </div>
+                </div>
+                <table border='1' cellpadding='5' cellspacing='0' style='width: 100%; margin-bottom: 20px; border-collapse: collapse;'>
+                    <tr>
+                        <td><strong>{usuario}</td>
+                        <td><strong>RF: {rf}</strong></td>
+                        {colunaAutor}
+                        <td><strong>DATA:</strong> {DateTime.Now.ToString("dd-MM-yyyy")}</td>
+                    </tr>
+                </table>
+            ";
         }
 
         protected static async Task SaveMemoryStreamToFile(MemoryStream memoryStream, string filePath)
