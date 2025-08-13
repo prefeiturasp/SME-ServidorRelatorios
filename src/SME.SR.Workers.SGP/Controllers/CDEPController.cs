@@ -13,19 +13,49 @@ namespace SME.SR.Workers.SGP.Controllers
     public class CDEPController : ControllerBase
     {
         [HttpPost("controle-livros-emprestados")]
-        public async Task<IActionResult> RelatorioControleLivrosEmprestados([FromBody] FiltroRelatorioSincronoDto request, 
+        public async Task<IActionResult> RelatorioControleLivrosEmprestados([FromBody] FiltroRelatorioSincronoDto request,
             [FromServices] IRelatorioControleLivrosEmprestadosUseCase relatorioControleLivrosEmprestados)
         {
-            var file = await relatorioControleLivrosEmprestados.Executar(request);
-            return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+            try
+            {
+                var file = await relatorioControleLivrosEmprestados.Executar(request);
+                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
         }
 
         [HttpPost("controle-acervo")]
         public async Task<IActionResult> RelatorioControleAcervo([FromBody] FiltroRelatorioSincronoDto request,
             [FromServices] IRelatorioControleAcervoUseCase relatorioControleAcervoUseCase)
         {
-            var file = await relatorioControleAcervoUseCase.Executar(request);
-            return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+            try
+            {
+                var file = await relatorioControleAcervoUseCase.Executar(request);
+                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
+        }
+
+        [HttpPost("controle-acervo-autor")]
+        public async Task<IActionResult> RelatorioControleAcervoAutor([FromBody] FiltroRelatorioSincronoDto request,
+            [FromServices] IRelatorioControleAcervoAutorUseCase relatorioControleAcervoAutorUseCase)
+        {
+            try
+            {
+                var file = await relatorioControleAcervoAutorUseCase.Executar(request);
+                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
         }
     }
 }
