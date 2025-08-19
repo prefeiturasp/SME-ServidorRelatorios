@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore.Internal;
 using Npgsql;
 using SME.SR.Data.Interfaces;
@@ -179,6 +180,54 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
             return await conexao.QueryAsync<ControleAcervoAutorDTO>(query.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<AcervoDevolucaoDto>> ObterRelatorioControleDevolucaoLivros(long[] tiposAcervosPermitidos, List<int> solicitante, bool? somenteAtrasados = false)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                SELECT
+	                                u.nome as solicitante,
+                                    a.codigo as Tombo,
+                                    a.Titulo,
+	                                u.Telefone,
+	                                u.email,
+                                    ae.dt_emprestimo as DataEmprestimo,
+                                    ae.dt_devolucao as DataDevolucao
+	
+                                FROM acervo_solicitacao_item asi
+                                    JOIN acervo_solicitacao aso ON aso.id = asi.acervo_solicitacao_id
+                                    JOIN acervo a ON a.id = asi.acervo_id
+                                    JOIN usuario u ON u.id = aso.usuario_id
+                                    JOIN acervo_emprestimo ae ON ae.acervo_solicitacao_item_id = asi.id AND NOT ae.excluido 
+    
+                                WHERE
+                                    NOT asi.excluido
+                                    AND NOT aso.excluido
+                                    AND NOT a.excluido
+                                    AND NOT u.excluido
+                                    AND a.tipo = ANY(@tiposAcervosPermitidos)
+                            ");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("tiposAcervosPermitidos", tiposAcervosPermitidos);
+
+            if (somenteAtrasados.HasValue)
+            {
+                if (somenteAtrasados.Value)
+                {
+                    query.AppendLine(" AND ae.dt_devolucao IS NULL");
+                }
+            }
+
+            if (solicitante?.Count > 0)
+            {
+                query.AppendLine(" AND u.id = ANY(@Solicitante)");
+                parametros.Add("Solicitante", solicitante);
+            }
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<AcervoDevolucaoDto>(query.ToString(), parametros);
         }
     }
 }

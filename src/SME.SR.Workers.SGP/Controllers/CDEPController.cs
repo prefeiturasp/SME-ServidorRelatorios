@@ -57,5 +57,21 @@ namespace SME.SR.Workers.SGP.Controllers
                 return NoContent();
             }
         }
+
+        [HttpPost("controle-devolucao-livros")]
+        public async Task<IActionResult> RelatorioControleDevolucaoLivros([FromBody] FiltroRelatorioSincronoDto request,
+            [FromServices] IRelatorioControleDevolucaoLivrosUseCase relatorioControleDevolucaoLivrosUseCase)
+        {
+            try
+            {
+                var file = await relatorioControleDevolucaoLivrosUseCase.Executar(request);
+                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
+        }
     }
 }
