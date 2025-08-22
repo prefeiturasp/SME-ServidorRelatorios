@@ -140,6 +140,44 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ControleAcervoDTO>(query.ToString(), parametros);
         }
 
+        public async Task<IEnumerable<ControleEditoraDTO>> ObterRelatorioControleEditoras(List<int>? idEditoras)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                 SELECT e.nome as Editora,
+                        coalesce(a.codigo_novo, a.codigo) as tombo,
+                        a.titulo,
+                        ae.situacao as situacaoemprestimo
+                 FROM acervo a
+                 INNER JOIN acervo_bibliografico ab on ab.acervo_id = a.id
+                 INNER JOIN editora e on e.id = ab.editora_id
+                 INNER JOIN acervo_solicitacao_item asi on asi.acervo_id = a.id
+                 INNER JOIN (
+                     select acervo_emprestimo.acervo_solicitacao_item_id, max(acervo_emprestimo.id) as id
+                     from acervo_emprestimo
+                     group by acervo_emprestimo.acervo_solicitacao_item_id
+                 ) as ultimoEmprestimo on asi.id = ultimoEmprestimo.acervo_solicitacao_item_id
+                 INNER join acervo_emprestimo ae on ae.id = ultimoEmprestimo.id
+                 INNER join acervo_solicitacao on acervo_solicitacao.id = asi.acervo_solicitacao_id
+                 WHERE e.excluido is not true
+                 AND a.excluido is not true
+                 AND ae.excluido is not true
+            ");
+
+            var parametros = new DynamicParameters();
+
+            if (idEditoras != null && idEditoras.Any())
+            {
+                query.AppendLine(" AND ab.editora_id = ANY(@IdEditoras)");
+                parametros.Add("IdEditoras", idEditoras);
+            }
+
+            query.AppendLine(" ORDER BY Editora");
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<ControleEditoraDTO>(query.ToString(), parametros);
+        }
+
         public async Task<IEnumerable<ControleAcervoAutorDTO>> ObterRelatorioControleAcervosAutor(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, List<int> autores)
         {
             var query = new StringBuilder();
