@@ -174,7 +174,7 @@ namespace SME.SR.Data
 
             query.AppendLine(" ORDER BY Editora");
 
-            using var conexao = new NpgsqlConnection("User ID=usr_gestaoacervo;Password=Ye@#6r37;Host=10.50.1.206;Port=5432;Database=db_gestaoacervo;Pooling=true");
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
             return await conexao.QueryAsync<ControleEditoraDTO>(query.ToString(), parametros);
         }
 
