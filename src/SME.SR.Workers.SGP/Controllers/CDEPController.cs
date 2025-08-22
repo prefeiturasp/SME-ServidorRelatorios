@@ -42,6 +42,21 @@ namespace SME.SR.Workers.SGP.Controllers
             }
         }
 
+        [HttpPost("controle-editora")]
+        public async Task<IActionResult> RelatorioControleEditora([FromBody] FiltroRelatorioSincronoDto request,
+           [FromServices] IRelatorioControleEditoraUseCase relatorioControleEditoraUseCase)
+        {
+            try
+            {
+                var file = await relatorioControleEditoraUseCase.Executar(request);
+                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
+        }
+
         [HttpPost("controle-acervo-autor")]
         public async Task<IActionResult> RelatorioControleAcervoAutor([FromBody] FiltroRelatorioSincronoDto request,
             [FromServices] IRelatorioControleAcervoAutorUseCase relatorioControleAcervoAutorUseCase)
