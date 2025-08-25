@@ -107,17 +107,10 @@ namespace SME.SR.Data
                                     a.Tipo as TipoAcervo,
 	                                a.Titulo,
 	                                a.codigo as Tombo,
-	                                ae.situacao as SituacaoEmprestimo
-                                FROM acervo_solicitacao_item asi
-                                    LEFT JOIN acervo_solicitacao aso ON aso.id = asi.acervo_solicitacao_id
-                                    LEFT JOIN acervo a ON a.id = asi.acervo_id
-                                    LEFT JOIN usuario u ON u.id = aso.usuario_id
-                                    LEFT JOIN acervo_emprestimo ae ON ae.acervo_solicitacao_item_id = asi.id AND NOT ae.excluido 
+	                                a.situacao as SituacaoEmprestimo
+                                FROM acervo a 
                                 WHERE
-                                    NOT asi.excluido
-                                    AND NOT aso.excluido
-                                    AND NOT a.excluido
-                                    AND NOT u.excluido
+                                    NOT a.excluido
                                     AND a.tipo = ANY(@tiposAcervosPermitidos)
                             ");
 
