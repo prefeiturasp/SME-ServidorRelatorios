@@ -16,8 +16,17 @@ namespace SME.SR.Application.Commands.CDEP
 
             return $@"
                 <div style='display: flex; justify-content: space-between; align-items: center; padding: 10px;'>
+                 <div>
+                   <div>
+                      <img 
+                           style='height: 64px; float: left;' 
+                           src='{SME.SR.HtmlPdf.SmeConstants.LogoSmeMonoNovo}' 
+                           alt='Logo SGP' 
+                            />
+                        </div>
+                   </div>
                     <div style='text-align: center;'>
-                        <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>SGP - SISTEMA DE GESTÃO PEDAGÓGICA</p>
+                        <p style='font-size: 14px; font-weight: bold; margin-bottom: 5px;'>CDEP - CENTRO DE DOCUMENTAÇÃO DA EDUCAÇÃO PAULISTANA</p>
                         <h3 style='margin-top: 0;'>{título}</h3>
                     </div>
                 </div>
