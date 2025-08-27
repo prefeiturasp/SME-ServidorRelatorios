@@ -70,7 +70,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleAcervo
                         $"<td>{primeiro.Editora}</td>" +
                         $"<td class=\"numero\">{primeiro.Tombo}</td>" +
                         $"<td>{primeiro.Titulo}</td>" +
-                        $"<td>{ObterDescricaoSituacao(primeiro.SituacaoEmprestimo)}</td>" +
+                        $"<td>{(primeiro?.SituacaoEmprestimo != null && primeiro.SituacaoEmprestimo != 0 ? ObterDescricaoSituacao(primeiro.SituacaoEmprestimo) : "")}</td>" +
                         "</tr>");
                 }
 
