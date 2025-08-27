@@ -10,6 +10,6 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<AcervoSolicitacaoDto>> ObterRelatorioControleLivrosEmpresados(long[] tiposAcervosPermitidos, string solicitante, string tombo, List<SituacaoEmprestimo> situacaoEmprestimo, bool? somenteDevolvidos);
         Task<IEnumerable<ControleAcervoDTO>> ObterRelatorioControleAcervos(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, SituacaoAcervo? situacaoAcervo);
         Task<IEnumerable<ControleAcervoAutorDTO>> ObterRelatorioControleAcervosAutor(long[] tiposAcervosPermitidos, TipoAcervo? tipoAcervo, List<int> autores);
-        Task<IEnumerable<AcervoDevolucaoDto>> ObterRelatorioControleDevolucaoLivros(long[] tiposAcervosPermitidos, int? solicitante, bool? somenteAtrasados = false);
+        Task<IEnumerable<AcervoDevolucaoDto>> ObterRelatorioControleDevolucaoLivros(long[] tiposAcervosPermitidos, string solicitante, bool? somenteAtrasados = false);
     }
 }
