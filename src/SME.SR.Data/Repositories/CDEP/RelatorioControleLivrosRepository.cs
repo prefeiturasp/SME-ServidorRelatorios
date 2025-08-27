@@ -140,21 +140,12 @@ namespace SME.SR.Data
                  SELECT e.nome as Editora,
                         coalesce(a.codigo_novo, a.codigo) as tombo,
                         a.titulo,
-                        ae.situacao as situacaoemprestimo
+                        a.situacao as situacaoemprestimo
                  FROM acervo a
                  INNER JOIN acervo_bibliografico ab on ab.acervo_id = a.id
                  INNER JOIN editora e on e.id = ab.editora_id
-                 INNER JOIN acervo_solicitacao_item asi on asi.acervo_id = a.id
-                 INNER JOIN (
-                     select acervo_emprestimo.acervo_solicitacao_item_id, max(acervo_emprestimo.id) as id
-                     from acervo_emprestimo
-                     group by acervo_emprestimo.acervo_solicitacao_item_id
-                 ) as ultimoEmprestimo on asi.id = ultimoEmprestimo.acervo_solicitacao_item_id
-                 INNER join acervo_emprestimo ae on ae.id = ultimoEmprestimo.id
-                 INNER join acervo_solicitacao on acervo_solicitacao.id = asi.acervo_solicitacao_id
                  WHERE e.excluido is not true
                  AND a.excluido is not true
-                 AND ae.excluido is not true
             ");
 
             var parametros = new DynamicParameters();
