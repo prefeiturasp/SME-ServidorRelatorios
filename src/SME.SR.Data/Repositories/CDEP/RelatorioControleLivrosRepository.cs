@@ -213,7 +213,7 @@ namespace SME.SR.Data
             return await conexao.QueryAsync<ControleAcervoAutorDTO>(query.ToString(), parametros);
         }
 
-        public async Task<IEnumerable<AcervoDevolucaoDto>> ObterRelatorioControleDevolucaoLivros(long[] tiposAcervosPermitidos, int? solicitante, bool? somenteAtrasados = false)
+        public async Task<IEnumerable<AcervoDevolucaoDto>> ObterRelatorioControleDevolucaoLivros(long[] tiposAcervosPermitidos, string solicitante, bool? somenteAtrasados = false)
         {
             var query = new StringBuilder();
             query.AppendLine(@"
@@ -251,9 +251,9 @@ namespace SME.SR.Data
                 }
             }
 
-            if (solicitante != null && solicitante > 0)
+            if (!string.IsNullOrWhiteSpace(solicitante))
             {
-                query.AppendLine(" AND u.id = @Solicitante");
+                query.AppendLine(" AND u.login = @Solicitante");
                 parametros.Add("Solicitante", solicitante);
             }
 

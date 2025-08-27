@@ -2,7 +2,7 @@
 {
     public class FiltroRelatorioControleDevolucaoLivro
     {
-        public int? Solicitante { get; set; }
+        public string Solicitante { get; set; }
         public string Usuario { get; set; }
         public string UsuarioRF { get; set; }
         public long[] TiposAcervosPermitidos { get; set; }
