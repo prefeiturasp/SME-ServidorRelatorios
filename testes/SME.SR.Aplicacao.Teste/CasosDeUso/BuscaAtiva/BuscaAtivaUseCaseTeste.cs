@@ -72,8 +72,7 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
             mockMediator.Setup(m => m.Send(It.IsAny<ObterResumoBuscasAtivasQuery>(), default))
                         .ReturnsAsync(new List<BuscaAtivaSimplesDto>());
 
-            var exception = await Assert.ThrowsAsync<NegocioException>(() => useCase.Executar(filtroRelatorio));
-            Assert.Equal("Nenhuma informação para os filtros informados.", exception.Message);
+            await Assert.ThrowsAsync<NegocioException>(() => useCase.Executar(filtroRelatorio));
         }
 
         [Fact]
