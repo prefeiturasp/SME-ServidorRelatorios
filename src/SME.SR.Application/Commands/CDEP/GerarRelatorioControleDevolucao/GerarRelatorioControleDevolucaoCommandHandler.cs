@@ -65,14 +65,14 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleDevolucao
                 foreach (var acervo in acervos)
                 {
                     await writer.WriteLineAsync("<tr>" +
-                        $"<td>{acervo.Solicitante}</td>" +
+                        $"<td>{acervo.Solicitante} ({acervo.Login})</td>" +
                         $"<td>{acervo.Tombo}</td>" +
                         $"<td>{acervo.Titulo}</td>" +
                         $"<td>{acervo.Telefone}</td>" +
                         $"<td>{acervo.Email}</td>" +
                         $"<td class=\"data\">{acervo.DataEmprestimo:dd/MM/yyyy}</td>" +
                         $"<td class=\"data\">{acervo.DataDevolucao:dd/MM/yyyy}</td>" +
-                        $"<td class=\"numero\">{acervo.DiasEmprestimo}</td>" +
+                        $"<td class=\"numero\">{acervo.DiasAtraso}</td>" +
                         "</tr>");
                 }
 
