@@ -18,8 +18,8 @@ namespace SME.SR.Workers.SGP.Filters
             if (!context.HttpContext.Request.Headers.TryGetValue(ChaveIntegracaoHeader, out var chaveRecebida) ||
                 !chaveRecebida.Equals(chaveApi))
             {
-                //context.Result = new UnauthorizedResult();
-                //return;
+                context.Result = new UnauthorizedResult();
+                return;
             }
 
             await next();
