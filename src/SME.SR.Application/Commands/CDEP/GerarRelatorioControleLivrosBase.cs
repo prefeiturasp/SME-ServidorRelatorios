@@ -26,7 +26,7 @@ namespace SME.SR.Application.Commands.CDEP
                         <td><strong>{usuario}</td>
                         <td><strong>RF: {rf}</strong></td>
                         {colunaAutor}
-                        <td><strong>DATA:</strong> {DateTime.Now.ToString("dd-MM-yyyy")}</td>
+                        <td><strong>DATA:</strong> {DateTime.Now:dd/MM/yyyy}</td>
                     </tr>
                 </table>
             ";
