@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using ClosedXML.Excel;
+using ClosedXML.Excel.Drawings;
+using MediatR;
 using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosEmprestadoSintetico;
 using SME.SR.Infra;
 using SME.SR.Infra.CDEP;
@@ -32,76 +34,94 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleLivrosEmprestad
             if (!livros.Any())
                 throw new NegocioException("Não possui informações.");
 
-            return await GerarAqruivoParaExcel(livros, request.Filtros.Usuario, request.Filtros.UsuarioRF);
+            return GerarArquivoParaExcel(livros, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }
 
 
-        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoSolicitacaoDto> acervos, string usuario, string rf)
+        public static MemoryStream GerarArquivoParaExcel(IEnumerable<AcervoSolicitacaoDto> acervos, string usuario, string rf)
         {
-            var memoryStream = new MemoryStream();
-            using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
+            var stream = new MemoryStream();
+            using var workbook = new XLWorkbook();
+            var sheet = workbook.Worksheets.Add("Relatório");
+
+            int row = 1;
+            row++;
+
+            var image = sheet.AddPicture(ObterLogo())
+                       .MoveTo(sheet.Cell(row, 1))
+                       .WithSize(100, 60);
+
+            // Título institucional
+            sheet.Range(row, 2, row, 7).Merge();
+            sheet.Cell(row, 2).Value = "CDEP - CENTRO DE DOCUMENTAÇÃO DA EDUCAÇÃO PAULISTANA";
+            sheet.Cell(row, 2).Style.Font.Bold = true;
+            sheet.Cell(row, 2).Style.Font.FontSize = 14;
+            sheet.Cell(row, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            sheet.Row(row).Height = 25;
+            row++;
+
+            // Título do relatório
+            sheet.Range(row, 2, row, 7).Merge();
+            sheet.Cell(row, 2).Value = "Relatório de Controle de Livros Emprestados";
+            sheet.Cell(row, 2).Style.Font.Bold = true;
+            sheet.Cell(row, 2).Style.Font.FontSize = 12;
+            sheet.Cell(row, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            sheet.Row(row).Height = 20;
+            row += 2;
+
+            // Informações do usuário
+            sheet.Cell(row, 1).Value = "Usuário:";
+            sheet.Cell(row, 2).Value = usuario;
+            sheet.Cell(row, 3).Value = $"RF: {rf}";
+            sheet.Cell(row, 5).Value = $"Data: {DateTime.Now.ToString("dd/MM/yyyy")}";
+            row += 2;
+
+            // Cabeçalho da tabela
+            var headers = new[] {
+                        "Tombo", "Título", "Situação", "Quantidade de empréstimos", "Leitor", "Data de retirada", "Data de devolução"
+                    };
+
+            for (int col = 0; col < headers.Length; col++)
             {
-                await writer.WriteLineAsync("<html><head>");
-                await writer.WriteLineAsync("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
-                await writer.WriteLineAsync("<style>");
-                await writer.WriteLineAsync("th { font-weight: bold; }");
-                await writer.WriteLineAsync(".numero { text-align: center; }");
-                await writer.WriteLineAsync(".data { text-align: right; }");
-                await writer.WriteLineAsync("</style>");
-                await writer.WriteLineAsync("</head><body>");
-
-                var cabecalhoHtml = ObterCabecalhoHtml("Relatório de Controle de Livros Emprestados", usuario, rf);
-                await writer.WriteLineAsync(cabecalhoHtml);
-
-                await writer.WriteLineAsync("<table border='1' cellspacing='0' cellpadding='5'>");
-                await writer.WriteLineAsync("<tr>" +
-                    "<th>Tombo</th>" +
-                    "<th>Título</th>" +
-                    "<th>Situação</th>" +
-                    "<th>Quantidade de empréstimos</th>" +
-                    "<th>Leitor</th>" +
-                    "<th>Data de retirada</th>" +
-                    "<th>Data de devolução</th>" +
-                    "</tr>");
-
-                var acervosGroup = acervos.GroupBy(x => new { x.Tombo, x.SituacaoEmprestimo }).ToList();
-
-                foreach (var grupo in acervosGroup)
-                {
-                    var primeiro = grupo.First();
-                    int numEmprestimos = grupo.Count();
-
-                    // Primeira linha do agrupamento
-                    await writer.WriteLineAsync("<tr>" +
-                        $"<td class=\"numero\">{primeiro.Tombo}</td>" +
-                        $"<td>{primeiro.Titulo}</td>" +
-                        $"<td>{ObterDescricaoSituacao(primeiro.SituacaoEmprestimo)}</td>" +
-                        $"<td class=\"numero\">{numEmprestimos}</td>" +
-                        "<td></td>" + // Leitor vazio
-                        "<td class=\"data\"></td>" + // Data retirada vazia
-                        "<td class=\"data\"></td>" + // Data devolução vazia
-                        "</tr>");
-
-                    // Linhas dos empréstimos
-                    foreach (var emprestimo in grupo)
-                    {
-                        await writer.WriteLineAsync("<tr>" +
-                            "<td></td>" + // Tombo vazio
-                            "<td></td>" + // Título vazio
-                            "<td></td>" + // Situação vazia
-                            "<td></td>" + // Quantidade vazia
-                            $"<td>{emprestimo.Solicitante}</td>" +
-                            $"<td class=\"data\">{emprestimo.DataEmprestimo:dd/MM/yyyy}</td>" +
-                            $"<td class=\"data\">{emprestimo.DataDevolucao:dd/MM/yyyy}</td>" +
-                            "</tr>");
-                    }
-                }
-
-                await writer.WriteLineAsync("</table></body></html>");
-                await writer.FlushAsync();
-                memoryStream.Position = 0;
-                return memoryStream;
+                sheet.Cell(row, col + 1).Value = headers[col];
+                sheet.Cell(row, col + 1).Style.Font.Bold = true;
+                sheet.Cell(row, col + 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+                sheet.Cell(row, col + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                sheet.Cell(row, col + 1).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             }
+
+            row++;
+
+            // Agrupamento e dados
+            var acervosGroup = acervos.GroupBy(x => new { x.Tombo, x.SituacaoEmprestimo }).ToList();
+
+            foreach (var grupo in acervosGroup)
+            {
+                var primeiro = grupo.First();
+                int numEmprestimos = grupo.Count();
+
+                // Linha principal do agrupamento
+                sheet.Cell(row, 1).Value = primeiro.Tombo;
+                sheet.Cell(row, 2).Value = primeiro.Titulo;
+                sheet.Cell(row, 3).Value = ObterDescricaoSituacao(primeiro.SituacaoEmprestimo);
+                sheet.Cell(row, 4).Value = numEmprestimos;
+                row++;
+
+                // Linhas dos empréstimos
+                foreach (var emprestimo in grupo)
+                {
+                    sheet.Cell(row, 5).Value = emprestimo.Solicitante;
+                    sheet.Cell(row, 6).Value = emprestimo.DataEmprestimo.ToString("dd/MM/yyyy");
+                    sheet.Cell(row, 7).Value = emprestimo.DataDevolucao.ToString("dd/MM/yyyy");
+                    row++;
+                }
+            }
+
+            sheet.Columns().AdjustToContents();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+            return stream;
         }
+
     }
 }

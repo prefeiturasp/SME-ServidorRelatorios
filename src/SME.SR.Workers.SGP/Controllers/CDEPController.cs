@@ -19,7 +19,9 @@ namespace SME.SR.Workers.SGP.Controllers
             try
             {
                 var file = await relatorioControleLivrosEmprestados.Executar(request);
-                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+                return File(file,
+                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                      "relatorio.xlsx");
             }
             catch (System.Exception)
             {
@@ -34,7 +36,9 @@ namespace SME.SR.Workers.SGP.Controllers
             try
             {
                 var file = await relatorioControleAcervoUseCase.Executar(request);
-                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+                return File(file,
+                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                       "relatorio.xlsx");
             }
             catch (System.Exception)
             {
@@ -49,7 +53,9 @@ namespace SME.SR.Workers.SGP.Controllers
             try
             {
                 var file = await relatorioControleEditoraUseCase.Executar(request);
-                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+                return File(file,
+                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                      "relatorio.xlsx");
             }
             catch (System.Exception)
             {
@@ -64,7 +70,9 @@ namespace SME.SR.Workers.SGP.Controllers
             try
             {
                 var file = await relatorioControleAcervoAutorUseCase.Executar(request);
-                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+                return File(file,
+                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                       "relatorio.xlsx");
 
             }
             catch (System.Exception)
@@ -80,7 +88,9 @@ namespace SME.SR.Workers.SGP.Controllers
             try
             {
                 var file = await relatorioControleDevolucaoLivrosUseCase.Executar(request);
-                return File(file, "application/vnd.ms-excel", "relatorio.xls", enableRangeProcessing: true);
+                return File(file,
+                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                     "relatorio.xlsx");
 
             }
             catch (System.Exception)
