@@ -1,7 +1,10 @@
-﻿using MediatR;
+﻿using ClosedXML.Excel;
+using ClosedXML.Excel.Drawings;
+using MediatR;
 using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleLivrosDevolvidos;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,57 +33,90 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioControleDevolucao
             if (!livros.Any())
                 throw new NegocioException("Não possui informações.");
 
-            return await GerarAqruivoParaExcel(livros, request.Filtros.Usuario, request.Filtros.UsuarioRF);
+            return GerarRelatorioLivros(livros, request.Filtros.Usuario, request.Filtros.UsuarioRF);
         }
 
-        private static async Task<MemoryStream> GerarAqruivoParaExcel(IEnumerable<AcervoDevolucaoDto> acervos, string usuario, string rf)
+        public static MemoryStream GerarRelatorioLivros(IEnumerable<AcervoDevolucaoDto> acervos, string usuario, string rf, string autor = null)
         {
-            var memoryStream = new MemoryStream();
-            using (var writer = new StreamWriter(memoryStream, Encoding.UTF8, leaveOpen: true))
+            var stream = new MemoryStream();
+            using var workbook = new XLWorkbook();
+            var sheet = workbook.Worksheets.Add("Relatório");
+
+            int row = 1;
+            row++;
+
+            // Logo
+            var image = sheet.AddPicture(ObterLogo())
+                .MoveTo(sheet.Cell(row, 1))
+                .WithSize(100, 60);
+
+            // Título institucional
+            sheet.Range(row, 2, row, 6).Merge();
+            sheet.Cell(row, 2).Value = "CDEP - CENTRO DE DOCUMENTAÇÃO DA EDUCAÇÃO PAULISTANA";
+            sheet.Cell(row, 2).Style.Font.Bold = true;
+            sheet.Cell(row, 2).Style.Font.FontSize = 14;
+            sheet.Cell(row, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            sheet.Row(row).Height = 25;
+            row++;
+
+            // Título do relatório
+            sheet.Range(row, 2, row, 6).Merge();
+            sheet.Cell(row, 2).Value = "Relatório de Controle Devolução de Livros";
+            sheet.Cell(row, 2).Style.Font.Bold = true;
+            sheet.Cell(row, 2).Style.Font.FontSize = 12;
+            sheet.Cell(row, 2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            sheet.Row(row).Height = 20;
+            row += 2;
+
+            // Informações do usuário
+            sheet.Cell(row, 1).Value = "Usuário:";
+            sheet.Cell(row, 2).Value = usuario;
+            sheet.Cell(row, 3).Value = $"RF: {rf}";
+
+            if (!string.IsNullOrWhiteSpace(autor))
             {
-                await writer.WriteLineAsync("<html><head>");
-                await writer.WriteLineAsync("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
-                await writer.WriteLineAsync("<style>");
-                await writer.WriteLineAsync("th { font-weight: bold; }");
-                await writer.WriteLineAsync(".numero { text-align: center; }");
-                await writer.WriteLineAsync(".data { text-align: right; }");
-                await writer.WriteLineAsync("</style>");
-                await writer.WriteLineAsync("</head><body>");
-
-                var cabecalhoHtml = ObterCabecalhoHtml("Relatório de Controle Devolução de Livros", usuario, rf);
-                await writer.WriteLineAsync(cabecalhoHtml);
-
-                await writer.WriteLineAsync("<table border='1' cellspacing='0' cellpadding='5'>");
-                await writer.WriteLineAsync("<tr>" +
-                    "<th>Solicitante</th>" +
-                    "<th>Tombo</th>" +
-                    "<th>Título</th>" +
-                    "<th>Telefone</th>" +
-                    "<th>Email</th>" +
-                    "<th>Data do empréstimo</th>" +
-                    "<th>Data prevista de devolução</th>" +
-                    "<th>Dias em atraso</th>" +
-                    "</tr>");
-
-                foreach (var acervo in acervos)
-                {
-                    await writer.WriteLineAsync("<tr>" +
-                        $"<td>{acervo.Solicitante} ({acervo.Login})</td>" +
-                        $"<td>{acervo.Tombo}</td>" +
-                        $"<td>{acervo.Titulo}</td>" +
-                        $"<td>{acervo.Telefone}</td>" +
-                        $"<td>{acervo.Email}</td>" +
-                        $"<td class=\"data\">{acervo.DataEmprestimo:dd/MM/yyyy}</td>" +
-                        $"<td class=\"data\">{acervo.DataDevolucao:dd/MM/yyyy}</td>" +
-                        $"<td class=\"numero\">{acervo.DiasAtraso}</td>" +
-                        "</tr>");
-                }
-
-                await writer.WriteLineAsync("</table></body></html>");
-                await writer.FlushAsync();
-                memoryStream.Position = 0;
-                return memoryStream;
+                sheet.Cell(row, 4).Value = "Autor:";
+                sheet.Cell(row, 5).Value = autor;
             }
+
+            sheet.Cell(row, 6).Value = $"Data: {DateTime.Now.ToString("dd/MM/yyyy")}";
+            row += 2;
+
+            // Cabeçalho da tabela
+            var headers = new[] {
+                                    "Solicitante", "Tombo", "Título", "Telefone", "Email",
+                                    "Data do empréstimo", "Data de devolução", "Dias em atraso"
+                                };
+
+            for (int col = 0; col < headers.Length; col++)
+            {
+                sheet.Cell(row, col + 1).Value = headers[col];
+                sheet.Cell(row, col + 1).Style.Font.Bold = true;
+                sheet.Cell(row, col + 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+                sheet.Cell(row, col + 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                sheet.Cell(row, col + 1).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            }
+
+            row++;
+
+            // Dados
+            foreach (var acervo in acervos)
+            {
+                sheet.Cell(row, 1).Value = $"{acervo.Solicitante} ({acervo.Login})";
+                sheet.Cell(row, 2).Value = acervo.Tombo;
+                sheet.Cell(row, 3).Value = acervo.Titulo;
+                sheet.Cell(row, 4).Value = acervo.Telefone;
+                sheet.Cell(row, 5).Value = acervo.Email;
+                sheet.Cell(row, 6).Value = acervo.DataEmprestimo.ToString("dd/MM/yyyy");
+                sheet.Cell(row, 7).Value = acervo.DataDevolucao.ToString("dd/MM/yyyy");
+                sheet.Cell(row, 8).Value = acervo.DiasAtraso;
+                row++;
+            }
+
+            sheet.Columns().AdjustToContents();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+            return stream;
         }
     }
 }
