@@ -5,6 +5,11 @@ using SME.SR.Application;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
 {
