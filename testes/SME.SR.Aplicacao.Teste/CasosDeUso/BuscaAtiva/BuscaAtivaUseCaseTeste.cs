@@ -4,10 +4,6 @@ using Newtonsoft.Json;
 using SME.SR.Application;
 using SME.SR.Infra;
 using SME.SR.Application.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
 {

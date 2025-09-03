@@ -4,10 +4,6 @@ using Newtonsoft.Json;
 using SME.SR.Application;
 using SME.SR.Application.Queries.RelatorioFaltasFrequencia;
 using SME.SR.Infra;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio { 
 

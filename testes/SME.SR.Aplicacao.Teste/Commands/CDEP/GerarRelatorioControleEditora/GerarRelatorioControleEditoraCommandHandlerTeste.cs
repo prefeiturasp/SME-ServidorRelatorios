@@ -7,12 +7,6 @@ using SME.SR.Application.Queries.CDEP.ObterRelatorioCDEPControleEditora;
 using SME.SR.Infra;
 using SME.SR.Infra.CDEP;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SME.SR.Tests.Application.Commands.CDEP.GerarRelatorioControleEditora
 {
