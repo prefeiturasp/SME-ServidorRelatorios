@@ -4,7 +4,12 @@ using SME.SR.Application.UseCases;
 using SME.SR.Infra;
 using SME.SR.Infra.CDEP;
 using SME.SR.Infra.Dtos.Relatorios.CDEP;
+using System;
+using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
 {

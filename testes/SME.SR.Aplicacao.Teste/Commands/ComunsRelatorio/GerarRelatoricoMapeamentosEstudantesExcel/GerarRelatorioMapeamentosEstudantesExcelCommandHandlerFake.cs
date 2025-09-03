@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SME.SR.Application;
 using SME.SR.Infra;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SME.SR.Aplicacao.Teste.Commands.ComunsRelatorio.GerarRelatoricoMapeamentosEstudantesExcel
 {
