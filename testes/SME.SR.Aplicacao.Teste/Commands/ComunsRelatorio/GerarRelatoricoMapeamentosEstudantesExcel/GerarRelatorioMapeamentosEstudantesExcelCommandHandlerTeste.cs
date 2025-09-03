@@ -4,12 +4,6 @@ using SME.SR.Infra;
 using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Infra.Dtos.Relatorios.MapeamentoEstudante;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.IO;
-using Xunit;
 
 namespace SME.SR.Aplicacao.Teste.Commands.ComunsRelatorio.GerarRelatoricoMapeamentosEstudantesExcel
 {
