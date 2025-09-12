@@ -1600,8 +1600,8 @@ namespace SME.SR.Data
             sql += @" and te.an_letivo = @anoLetivo )
 								select *
 								from matriculas
-								where sequencia in (1,2)
-								and CodigoSituacaoMatricula <> 4";
+								where sequencia = 1
+								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido ";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 

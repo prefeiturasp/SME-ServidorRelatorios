@@ -24,6 +24,7 @@
         public const string RotaRelatoriosComErroPapGraficos = "sgp.relatorios.erro.notificar.papgraficos";
         public const string RotaRelatoriosComErroPapRelatorioSemestral = "sgp.relatorios.erro.notificar.paprelatoriosemestral";
         public const string RotaRelatoriosComErroFrequencia = "sgp.relatorios.erro.notificar.frequencia";
+        public const string RotaRelatoriosComErroFrequenciaMensal = "sgp.relatorios.erro.notificar.frequenciamensal";
         public const string RotaRelatoriosComErroCompensacaoAusencia = "sgp.relatorios.erro.notificar.compensacaoausencia";
         public const string RotaRelatoriosComErroControleGrade = "sgp.relatorios.erro.notificar.controlegrade";
         public const string RotaRelatoriosComErroControlePlanejamentoDiario = "sgp.relatorios.erro.notificar.controleplanejamentodiario";

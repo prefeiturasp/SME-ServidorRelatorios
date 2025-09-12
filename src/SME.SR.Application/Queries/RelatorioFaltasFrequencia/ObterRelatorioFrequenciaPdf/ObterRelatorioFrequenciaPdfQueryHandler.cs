@@ -6,6 +6,7 @@ using SME.SR.Infra.Dtos.ElasticSearch;
 using SME.SR.Infra.Utilitarios;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -97,10 +98,10 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                                 .FirstOrDefault(p => p.Bimestre == int.Parse(bimestre.Numero));
 
                             foreach (var componente in bimestre.Componentes)
-                            {                                   
+                            {
                                 var turmasccc = componente.Alunos.Select(c => c.CodigoTurma).Distinct().ToList();
 
-                                componente.NomeComponente = await ObterNomeComponente(componente.CodigoComponente); 
+                                componente.NomeComponente = await ObterNomeComponente(componente.CodigoComponente);
 
                                 var frequencias = await mediator
                                     .Send(new ObterFrequenciasAlunosConsolidadoQuery(turmasccc.ToArray(), componente.CodigoComponente, bimestre.Numero));
@@ -435,11 +436,13 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
             if (filtro.Condicao != CondicoesRelatorioFaltasFrequencia.TodosEstudantes)
             {
                 componente.Alunos = (from a in componente.Alunos
-                                     where
-                                     ((filtro.TipoRelatorio == TipoRelatorioFaltasFrequencia.Ano) ?
-                                        operacao[filtro.Condicao](a.NumeroFaltasNaoCompensadas, filtro.QuantidadeAusencia)
-                                     :
-                                        operacao[filtro.Condicao](a.TotalAusencias, filtro.QuantidadeAusencia))
+                                     where CalcularCondicaoFalta(
+                                         a,
+                                         filtro.TipoRelatorio,
+                                         filtro.Condicao,
+                                         filtro.QuantidadeAusencia,
+                                         filtro.TipoQuantidadeAusencia,
+                                         operacao)
                                      select a)
                                      .Where(a => !string.IsNullOrWhiteSpace(a.NomeAluno) && !string.IsNullOrWhiteSpace(a.NumeroChamada))
                                      .OrderByDescending(c => !string.IsNullOrWhiteSpace(c.NumeroChamada))
@@ -502,6 +505,48 @@ namespace SME.SR.Application.Queries.RelatorioFaltasFrequencia
                     if (bimestreAtual.Componentes.Any())
                         bimestres.Add(bimestreAtual);
                 }
+            }
+        }
+
+        private static bool CalcularCondicaoFalta(
+                                RelatorioFrequenciaAlunoDto aluno,
+                                TipoRelatorioFaltasFrequencia tipoRelatorio,
+                                CondicoesRelatorioFaltasFrequencia condicao,
+                                double quantidadeAusencia,
+                                TipoQuantidadeAusencia tipoQuantidadeAusencia,
+                                Dictionary<CondicoesRelatorioFaltasFrequencia, Func<double, double, bool>> operacao)
+        {
+            if (tipoQuantidadeAusencia == TipoQuantidadeAusencia.Fixa)
+            {
+                double valorFaltas = tipoRelatorio == TipoRelatorioFaltasFrequencia.Ano
+                    ? aluno.NumeroFaltasNaoCompensadas
+                    : aluno.TotalAusencias;
+
+                return operacao[condicao](valorFaltas, quantidadeAusencia);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(aluno.Frequencia))
+                    return false;
+
+                if (double.TryParse(aluno.Frequencia, NumberStyles.Any, CultureInfo.CurrentCulture, out double frequencia))
+                {
+                    var valorComparar = 100 - quantidadeAusencia;
+
+                    switch (condicao)
+                    {
+                        case CondicoesRelatorioFaltasFrequencia.Maior:
+                            return frequencia < valorComparar;
+                        case CondicoesRelatorioFaltasFrequencia.Menor:
+                            return frequencia > valorComparar;
+                        case CondicoesRelatorioFaltasFrequencia.Igual:
+                            return Math.Abs(frequencia - valorComparar) < 0.01;
+                        default:
+                            return false;
+                    }
+                }
+
+                return false;
             }
         }
     }
