@@ -23,7 +23,7 @@ namespace SME.SR.Infra
         public string TurmaCodigo { get; set; }
 
         [Display(Description = "Turma")]
-        public string Turma {  get; set; }
+        public string Turma { get; set; }
 
         [Display(Description = "Código EOL")]
         public string CodigoEOL { get; set; }
@@ -33,6 +33,15 @@ namespace SME.SR.Infra
 
         [Display(Description = "Estudante")]
         public string Estudante { get; set; }
+
+        [Display(Description = "Quant. Aulas")]
+        public int QuantidadeAulas { get; set; }
+
+        [Display(Description = "Quant. Ausências")]
+        public int QuantidadeAusencias { get; set; }
+
+        [Display(Description = "Quant. Comp. Ausências")]
+        public int QuantidadeCompensacoesAusencias { get; set; }
 
         [Display(Description = "% Frequência")]
         public decimal? PercentualFrequencia { get; set; }

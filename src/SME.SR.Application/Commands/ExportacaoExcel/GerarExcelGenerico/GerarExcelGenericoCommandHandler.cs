@@ -47,6 +47,8 @@ namespace SME.SR.Application
                     if (request.PossuiNotaRodape)
                         MontarRodape(request, worksheet);
 
+                    worksheet.Columns().AdjustToContents();
+
                     var caminhoBase = AppDomain.CurrentDomain.BaseDirectory;
                     var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", request.CodigoCorrelacao.ToString());
 
@@ -149,9 +151,6 @@ namespace SME.SR.Application
             worksheet.Cells(colunaNome).Style.Border.LeftBorderColor = XLColor.Black;
 
             worksheet.Cells(colunaNome).Style.Font.Bold = true;
-
-            worksheet.Columns().AdjustToContents();
-
         }
         private static void CorpoFormataStylo(IXLWorksheet worksheet, string celulaNome)
         {

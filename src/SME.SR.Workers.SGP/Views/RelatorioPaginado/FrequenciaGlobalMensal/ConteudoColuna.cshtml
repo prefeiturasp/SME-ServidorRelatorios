@@ -41,7 +41,10 @@
 
             retorno += $@"<tr><th>{@linha.NumeroAluno}</th>";
             retorno += $@"<th class='alinhar-esquerda'>{@linha.NomeAluno}</th>";
-            retorno += $@"<th>{@linha.ProcentagemFrequencia}</th>";
+            retorno += $@"<th>{@linha.QuantidadeAulas}</th>";
+            retorno += $@"<th>{@linha.QuantidadeAusencias}</th>";
+            retorno += $@"<th>{@linha.QuantidadeCompensacoes}</th>";
+            retorno += $@"<th class='alinhar-direita'>{@linha.ProcentagemFrequencia}</th>";
             retorno += "</tr>";
 
         }

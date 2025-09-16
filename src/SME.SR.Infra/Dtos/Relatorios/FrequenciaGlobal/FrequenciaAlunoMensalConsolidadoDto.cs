@@ -13,5 +13,8 @@
         public string TurmaCodigo { get; set; }
         public string CodigoEol { get; set; }
         public decimal Percentual { get; set; }
+        public int QuantidadeAulas { get; set; }
+        public int QuantidadeAusencias { get; set; }
+        public int QuantidadeCompensacoes { get; set; }
     }
 }
