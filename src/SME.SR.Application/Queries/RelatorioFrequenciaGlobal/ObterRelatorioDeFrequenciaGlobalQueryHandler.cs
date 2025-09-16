@@ -76,8 +76,11 @@ namespace SME.SR.Application
                                         CodigoEOL = item.CodigoEol,
                                         Estudante = dadosSituacaoAluno.NomeFinalAluno,
                                         NumeroChamadda = dadosSituacaoAluno.NroChamada,
-                                        PercentualFrequencia = item.Percentual
-                                    });
+                                        PercentualFrequencia = item.Percentual,
+                                        QuantidadeCompensacoesAusencias = item.QuantidadeCompensacoes,
+                                        QuantidadeAusencias = item.QuantidadeAusencias,
+                                        QuantidadeAulas = item.QuantidadeAulas
+                                });
                             }
                         }
                     }

@@ -80,9 +80,30 @@ namespace SME.SR.Infra
                 },
                 new Coluna<FrequenciaMensalDto>()
                 {
-                    Largura = 86,
+                    Largura = 62,
                     Titulo = "NOME",
                     Nome = "NomeAluno",
+                    UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                },
+                new Coluna<FrequenciaMensalDto>()
+                {
+                    Largura = 8,
+                    Titulo = "AULAS",
+                    Nome = "QuantidadeAulas",
+                    UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                },
+                new Coluna<FrequenciaMensalDto>()
+                {
+                    Largura = 8,
+                    Titulo = "AUSENC",
+                    Nome = "QuantidadeAusencias",
+                    UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
+                },
+                new Coluna<FrequenciaMensalDto>()
+                {
+                    Largura = 8,
+                    Titulo = "COMP.",
+                    Nome = "QuantidadeCompensacoes",
                     UnidadeDeTamanho = EnumUnidadeDeTamanho.PERCENTUAL
                 },
                 new Coluna<FrequenciaMensalDto>()
