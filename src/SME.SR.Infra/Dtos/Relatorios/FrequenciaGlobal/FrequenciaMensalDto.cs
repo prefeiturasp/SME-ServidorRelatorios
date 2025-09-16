@@ -13,6 +13,9 @@
         public string CodigoAluno { get; set; }
         public string NumeroAluno { get; set; }
         public string NomeAluno { get; set; }
+        public int QuantidadeAulas { get; set; }
+        public int QuantidadeAusencias { get; set; }
+        public int QuantidadeCompensacoes { get; set; }
         public decimal? ProcentagemFrequencia { get; set; }
     }
 }
