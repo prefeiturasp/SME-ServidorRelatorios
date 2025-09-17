@@ -49,6 +49,8 @@ namespace SME.SR.Infra
 
         public const string RotaRelatoriosSolicitadosFrequenciaMensal = "sr.relatorios.solicitados.frequenciamensal";
 
+        public const string RotaRelatoriosSolicitadosFrequenciaMensalTodosDreUe = "sr.relatorios.solicitados.frequenciamensal.todos";
+
         public const string RotaRelatoriosSolicitadosCompensacaoAusencia = "sr.relatorios.solicitados.compensacaoausencia";
 
         public const string RotaRelatoriosSolicitadosControleGrade = "sr.relatorios.solicitados.controlegrade";
