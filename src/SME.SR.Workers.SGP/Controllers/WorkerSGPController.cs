@@ -347,6 +347,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/frequencia-global-todos")]
+        [Action("relatorios/frequencia-global-todos", typeof(IRelatorioFrequenciaGlobalUseCase))]
+        public async Task<bool> RelatorioFrequenciaGlobalTodos([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioFrequenciaGlobalUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/planoaee")]
         [Action("relatorios/planoaee", typeof(IRelatorioPlanoAeeUseCase))]
         public async Task<bool> RelatorioPlanoAee([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioPlanoAeeUseCase useCase)
