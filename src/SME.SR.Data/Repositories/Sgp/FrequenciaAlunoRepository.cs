@@ -616,6 +616,8 @@ namespace SME.SR.Data
 
             if (codigoDre != "-99")
                 query += " and d.dre_id = @codigoDre";
+            else
+                query += " and t.tipo_turma = @tipoTurma";
 
             if (codigoUe != "-99")
                 query += " and u.ue_id = @codigoUe";
@@ -641,6 +643,7 @@ namespace SME.SR.Data
             {
                 exibirHistorico,
                 anoLetivo,
+                tipoTurma = (int)TipoTurma.Regular,
                 codigoDre,
                 codigoUe,
                 modalidade,
