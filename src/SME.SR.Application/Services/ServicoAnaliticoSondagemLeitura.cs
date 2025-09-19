@@ -51,13 +51,15 @@ namespace SME.SR.Application.Services
                         foreach (var anoTurma in agrupamentoPorAnoTurma)
                         {
                             var ue = listaUes.FirstOrDefault(x => x.Codigo == itemUe.Key);
-                            var respostaSondagemAnaliticoLeituraDto = ObterResposta(
+                            if (ue != null)
+                            {
+                                var respostaSondagemAnaliticoLeituraDto = ObterResposta(
                                                                                     anoTurma, 
                                                                                     ue, 
                                                                                     totalTurmasUe, 
                                                                                     ObterTotalDeAluno(totalDeAlunosUe, anoTurma.Key));
-
-                            relatorioSondagemAnaliticoLeituraDto.Respostas.Add(respostaSondagemAnaliticoLeituraDto);
+                                relatorioSondagemAnaliticoLeituraDto.Respostas.Add(respostaSondagemAnaliticoLeituraDto);
+                            }
                         }
                     }
 
