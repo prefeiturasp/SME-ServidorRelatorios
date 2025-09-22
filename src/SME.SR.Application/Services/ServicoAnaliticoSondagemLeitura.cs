@@ -96,7 +96,7 @@ namespace SME.SR.Application.Services
                 SemPreenchimento = ObterTotalSemPreenchimento(respostaAnoTurma, totalDeAlunos),
                 TotalDeAlunos = totalDeAlunos,
                 Ano = int.Parse(respostaAnoTurma.Key),
-                TotalDeTurma = totalTurmaUe?.FirstOrDefault(t => t.Ano == respostaAnoTurma.Key).Quantidade ?? 0,
+                TotalDeTurma = totalTurmaUe?.FirstOrDefault(t => t.Ano == respostaAnoTurma.Key)?.Quantidade ?? 0,
                 Ue = ue.TituloTipoEscolaNome
             };
         }
