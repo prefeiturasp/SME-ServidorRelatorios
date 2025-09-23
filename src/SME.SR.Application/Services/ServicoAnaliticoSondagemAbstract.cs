@@ -205,7 +205,8 @@ namespace SME.SR.Application.Services
             var ehIAD = filtro.TipoSondagem.EhUmDosValores(TipoSondagem.MAT_IAD, TipoSondagem.LP_CapacidadeLeitura, TipoSondagem.LP_LeituraVozAlta, TipoSondagem.LP_ProducaoTexto);
             return (await turmaRepository
                             .ObterTurmasPorUeEAnoLetivo(ueCodigo, filtro.AnoLetivo))
-                            .Where(t => t.Ano.All(x => char.IsDigit(x)) 
+                            .Where(t => !string.IsNullOrEmpty(t.Ano)
+                                                       && t.Ano.All(x => char.IsDigit(x)) 
                                                        && int.Parse(t.Ano) > 0 
                                                        && t.ModalidadeCodigo == Modalidade.Fundamental
                                                        && (!ehIAD || (ehIAD && int.Parse(t.Ano) > 3))
