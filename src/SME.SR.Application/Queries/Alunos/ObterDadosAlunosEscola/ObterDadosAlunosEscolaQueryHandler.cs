@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosAlunosEscolaQueryHandler : IRequestHandler<ObterDadosAlunosEscolaQuery, IEnumerable<DadosAlunosEscolaDto>>
+    public class ObterDadosAlunosEscolaQueryHandler : IRequestHandler<ObterDadosAlunosEscolaQuery, IEnumerable<DadosMatriculaAlunoDto>>
     {
         private readonly IAlunoRepository alunoRepository;
         private readonly IRepositorioCache repositorioCache;
@@ -20,16 +20,16 @@ namespace SME.SR.Application
             this.repositorioCache = repositorioCache ?? throw new ArgumentNullException(nameof(repositorioCache));
         }
 
-        public async Task<IEnumerable<DadosAlunosEscolaDto>> Handle(ObterDadosAlunosEscolaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DadosMatriculaAlunoDto>> Handle(ObterDadosAlunosEscolaQuery request, CancellationToken cancellationToken)
         {
             var cacheChave = $"matriculas-alunos-ue-dre:{request.CodigoUe}-{request.CodigoDre}";
             var cacheAlunos = repositorioCache.Obter(cacheChave);
 
             if (cacheAlunos != null)
-                return JsonConvert.DeserializeObject<List<DadosAlunosEscolaDto>>(cacheAlunos);
+                return JsonConvert.DeserializeObject<List<DadosMatriculaAlunoDto>>(cacheAlunos);
             else
             {
-                var listaAlunos = await alunoRepository.ObterDadosAlunosEscola(request.CodigoUe, request.CodigoDre, request.AnoLetivo,request.CodigosAlunos);
+                var listaAlunos = await alunoRepository.ObterDadosMatriculaAluno(request.CodigoUe, request.CodigoDre, request.AnoLetivo,request.CodigosAlunos);
                 var json = JsonConvert.SerializeObject(listaAlunos);
                 await repositorioCache.SalvarAsync(cacheChave, json);
                 return listaAlunos;

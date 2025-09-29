@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.SR.Data;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
@@ -42,50 +41,48 @@ namespace SME.SR.Application
         private async Task<List<FrequenciaGlobalDto>> MapearRetornoQuery(FiltroFrequenciaGlobalDto filtro, IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
         {
             var retornoMapeado = new ConcurrentBag<FrequenciaGlobalDto>();
-            var alunosEscola = await ObterMatriculasAlunos(filtro.CodigoUe, filtro.CodigoDre, filtro.AnoLetivo, retornoQuery);
-            var agrupamento = alunosEscola
-                .OrderBy(x => x.CodigoAluno)
-                .ThenBy(x => x.CodigoMatricula)
-                .ThenBy(x => x.DataMatricula)
-                .ThenBy(x => x.DataSituacao)
-                .GroupBy(x => new { CodigoAluno = x.CodigoAluno.ToString(), CodigoTurma = x.CodigoTurma })
-                .ToDictionary(g => $"{g.Key.CodigoAluno.ToString()}-{g.Key.CodigoTurma}", g => g.ToList());
+            var codigosAlunosParaFiltrar = retornoQuery.Select(r => r.CodigoEol).Distinct().ToArray();
+            var dadosMatriculaAlunos = await ObterMatriculasAlunos(filtro.CodigoUe, filtro.CodigoDre, filtro.AnoLetivo, codigosAlunosParaFiltrar);
+            var matriculasAgrupadas = dadosMatriculaAlunos.ToLookup(x => $"{x.CodigoAluno}-{x.CodigoTurma}");
 
             retornoQuery
                 .AsParallel()
                 .WithDegreeOfParallelism(variaveisAmbiente.ProcessamentoMaximoUes)
                 .GroupBy(x => x.UeCodigo)
                 .ForAll(agrupamentoUe =>
-            { 
-                    foreach (var item in agrupamentoUe)
-                    {
-                        if (agrupamento.TryGetValue($"{item.CodigoEol}-{item.TurmaCodigo}", out var alunoAgrupado))
+            {
+                foreach (var item in agrupamentoUe)
+                {
+                    var chave = $"{item.CodigoEol}-{item.TurmaCodigo}";
+                    var matriculasDoAluno = matriculasAgrupadas[chave].ToList();
+                    
+                    if (!matriculasDoAluno.Any())
+                        continue;
+                    
+                        var dadosSituacaoAluno = DeveImprimirNoRelatorio(matriculasDoAluno, item.Mes, filtro.AnoLetivo);
+                        if (dadosSituacaoAluno.ImprimirRelatorio)
                         {
-                            var dadosSituacaoAluno = DeveImprimirNoRelatorio(alunoAgrupado, item.Mes, filtro.AnoLetivo);
-                            if (dadosSituacaoAluno.ImprimirRelatorio)
+                            retornoMapeado.Add(new FrequenciaGlobalDto()
                             {
-                                retornoMapeado.Add(new FrequenciaGlobalDto()
-                                    {
-                                        SiglaDre = item.DreSigla,
-                                        DreCodigo = item.DreCodigo,
-                                        UeNome = string.Concat(item.DescricaoTipoEscola, " - ", item.UeNome),
-                                        UeCodigo = item.UeCodigo,
-                                        Mes = item.Mes,
-                                        TurmaCodigo = item.TurmaCodigo,
-                                        Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
-                                        CodigoEOL = item.CodigoEol,
-                                        Estudante = dadosSituacaoAluno.NomeFinalAluno,
-                                        NumeroChamadda = dadosSituacaoAluno.NroChamada,
-                                        PercentualFrequencia = item.Percentual,
-                                        QuantidadeCompensacoesAusencias = item.QuantidadeCompensacoes,
-                                        QuantidadeAusencias = item.QuantidadeAusencias,
-                                        QuantidadeAulas = item.QuantidadeAulas
-                                });
-                            }
-                        }
+                                SiglaDre = item.DreSigla,
+                                DreCodigo = item.DreCodigo,
+                                UeNome = string.Concat(item.DescricaoTipoEscola, " - ", item.UeNome),
+                                UeCodigo = item.UeCodigo,
+                                Mes = item.Mes,
+                                TurmaCodigo = item.TurmaCodigo,
+                                Turma = string.Concat(ObterModalidade(item.ModalidadeCodigo).ShortName(), " - ", item.TurmaNome),
+                                CodigoEOL = item.CodigoEol,
+                                Estudante = dadosSituacaoAluno.NomeFinalAluno,
+                                NumeroChamadda = dadosSituacaoAluno.NroChamada,
+                                PercentualFrequencia = item.Percentual,
+                                QuantidadeCompensacoesAusencias = item.QuantidadeCompensacoes,
+                                QuantidadeAusencias = item.QuantidadeAusencias,
+                                QuantidadeAulas = item.QuantidadeAulas
+                            });
                     }
-                });
-            
+                }
+            });
+
             return retornoMapeado
                 .OrderBy(c => c.SiglaDre)
                 .ThenBy(c => c.UeNome)
@@ -101,25 +98,17 @@ namespace SME.SR.Application
             public string CodigoTurma { get; set; }
         }
 
-        private async Task<IEnumerable<DadosAlunosEscolaDto>> ObterMatriculasAlunos(string codigoUe, string codigoDre, int anoLetivo, IEnumerable<FrequenciaAlunoMensalConsolidadoDto> frequencias)
+        private async Task<IEnumerable<DadosMatriculaAlunoDto>> ObterMatriculasAlunos(string codigoUe, string codigoDre, int anoLetivo, string[] codigosAlunos)
         {
-            List<DadosAlunosEscolaDto> alunos = new List<DadosAlunosEscolaDto>();
-            List<Dre> dres;
-            if (string.IsNullOrEmpty(codigoDre) || (codigoDre == FILTRO_OPCAO_TODOS))
-                dres = frequencias.Select(x => x.DreCodigo).Distinct().Select(x => new Dre() { Codigo = x }).ToList();
-            else
-                dres = new List<Dre> { await mediator.Send(new ObterDrePorCodigoQuery(codigoDre)) };
-            foreach (var dre in dres)
-                alunos.AddRange(await mediator
-                                .Send(new ObterDadosAlunosEscolaQuery(codigoUe, dre.Codigo, anoLetivo, null)));
+            var alunos = await mediator.Send(new ObterDadosAlunosEscolaQuery(codigoUe, codigoDre, anoLetivo, codigosAlunos));
 
             return alunos;
         }
 
-        private UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto DeveImprimirNoRelatorio(List<DadosAlunosEscolaDto> agrupamento, int mesSelecionado, int anoLetivoSelecionado)
+        private UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto DeveImprimirNoRelatorio(List<DadosMatriculaAlunoDto> dadosMatricula, int mesSelecionado, int anoLetivoSelecionado)
         {
             var dadosSituacaoAluno = new UltimaSituacaoAlunoRelatorioFrequenciaGlobalDto { ImprimirRelatorio = false };
-            var itemsMesSelecionado = FiltrarMatriculasConsideradasNoMes(agrupamento, mesSelecionado, anoLetivoSelecionado);
+            var itemsMesSelecionado = FiltrarMatriculasConsideradasNoMes(dadosMatricula, mesSelecionado, anoLetivoSelecionado);
 
             if (itemsMesSelecionado.Any())
             {
@@ -144,17 +133,17 @@ namespace SME.SR.Application
                 .Cast<Modalidade>().FirstOrDefault(x => (int)x == modalidadeCodigo);
         }
 
-        private IEnumerable<DadosAlunosEscolaDto> FiltrarMatriculasConsideradasNoMes(List<DadosAlunosEscolaDto> lista, int mesConsiderado, int anoLetivoSelecionado)
+        private IEnumerable<DadosMatriculaAlunoDto> FiltrarMatriculasConsideradasNoMes(List<DadosMatriculaAlunoDto> dadosMatricula, int mesConsiderado, int anoLetivoSelecionado)
         {
-            if (lista.Any(x => x.AnoLetivo == anoLetivoSelecionado))
+            if (dadosMatricula.Any(x => x.AnoLetivo == anoLetivoSelecionado))
             {
-                return lista.Last().Ativo && lista.First().DataMatricula.AntecedeMesAno(mesConsiderado, anoLetivoSelecionado) ||
-                       lista.Last().Inativo && lista.Last().DataSituacao.PosteriorOuEquivalenteMesAno(mesConsiderado, anoLetivoSelecionado)
-                       ? lista
-                       : Enumerable.Empty<DadosAlunosEscolaDto>();
+                return dadosMatricula.Last().Ativo && dadosMatricula.First().DataMatricula.AntecedeMesAno(mesConsiderado, anoLetivoSelecionado) ||
+                       dadosMatricula.Last().Inativo && dadosMatricula.Last().DataSituacao.PosteriorOuEquivalenteMesAno(mesConsiderado, anoLetivoSelecionado)
+                       ? dadosMatricula
+                       : Enumerable.Empty<DadosMatriculaAlunoDto>();
             }
             else
-                return lista.Last().Ativo ? lista : Enumerable.Empty<DadosAlunosEscolaDto>();
+                return dadosMatricula.Last().Ativo ? dadosMatricula : Enumerable.Empty<DadosMatriculaAlunoDto>();
         }
     }
 }
