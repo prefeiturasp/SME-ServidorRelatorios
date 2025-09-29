@@ -14,7 +14,6 @@ namespace SME.SR.Application
 {
     public class ObterRelatorioDeFrequenciaGlobalQueryHandler : IRequestHandler<ObterRelatorioDeFrequenciaGlobalQuery, List<FrequenciaGlobalDto>>
     {
-        private const string FILTRO_OPCAO_TODOS = "-99";
         private readonly VariaveisAmbiente variaveisAmbiente;
 
 

@@ -76,37 +76,7 @@ namespace SME.SR.Aplicacao.Teste.Queries
             // Assert
             Assert.Single(resultado);
             Assert.Equal("Aluno Ativo", resultado.First().Estudante);
-            _mediatorMock.Verify(m => m.Send(It.IsAny<ObterDrePorCodigoQuery>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediatorMock.Verify(m => m.Send(It.IsAny<ObterDadosAlunosEscolaQuery>(), It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_QuandoFiltroDreEhTodos_DeveMapearCorretamente()
-        {
-            // Arrange
-            var filtro = CriarFiltro(codigoDre: "-99");
-            var query = new ObterRelatorioDeFrequenciaGlobalQuery(filtro);
-
-            var frequenciaConsolidado = CriarFrequenciaConsolidada("Aluno Ativo", "DRE-01", "UE-01");
-            frequenciaConsolidado.AddRange(CriarFrequenciaConsolidada("Aluno Ativo 2", "DRE-02", "UE-02"));
-
-            _frequenciaRepositorioMock.Setup(r => r.ObterFrequenciaAlunoMensal(It.IsAny<bool>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Modalidade>(),
-                                                                               It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<int[]>(), It.IsAny<int>()))
-                                      .ReturnsAsync(frequenciaConsolidado);
-
-            _mediatorMock.Setup(m => m.Send(It.Is<ObterDadosAlunosEscolaQuery>(q => q.CodigoDre == "DRE-01"), It.IsAny<CancellationToken>()))
-                         .ReturnsAsync(CriarDadosAluno("Aluno Ativo", SituacaoMatriculaAluno.Ativo, new DateTime(ANO_LETIVO, MES_REFERENCIA, 10)));
-
-            _mediatorMock.Setup(m => m.Send(It.Is<ObterDadosAlunosEscolaQuery>(q => q.CodigoDre == "DRE-02"), It.IsAny<CancellationToken>()))
-                         .ReturnsAsync(CriarDadosAluno("Aluno Ativo 2", SituacaoMatriculaAluno.Ativo, new DateTime(ANO_LETIVO, MES_REFERENCIA, 10)));
-
-            // Act
-            var resultado = await _handler.Handle(query, CancellationToken.None);
-
-            // Assert
-            Assert.Equal(2, resultado.Count);
-            _mediatorMock.Verify(m => m.Send(It.IsAny<ObterDrePorCodigoQuery>(), It.IsAny<CancellationToken>()), Times.Never);
-            _mediatorMock.Verify(m => m.Send(It.IsAny<ObterDadosAlunosEscolaQuery>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
         }
 
         [Fact]
@@ -196,11 +166,11 @@ namespace SME.SR.Aplicacao.Teste.Queries
             };
         }
 
-        private IEnumerable<DadosAlunosEscolaDto> CriarDadosAluno(string nomeAluno, SituacaoMatriculaAluno situacao, DateTime dataSituacao)
+        private IEnumerable<DadosMatriculaAlunoDto> CriarDadosAluno(string nomeAluno, SituacaoMatriculaAluno situacao, DateTime dataSituacao)
         {
-            return new List<DadosAlunosEscolaDto>
+            return new List<DadosMatriculaAlunoDto>
             {
-                new DadosAlunosEscolaDto
+                new DadosMatriculaAlunoDto
                 {
                     CodigoAluno = 12345,
                     NomeAluno = nomeAluno,
