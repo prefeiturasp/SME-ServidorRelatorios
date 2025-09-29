@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SME.SR.Application
 {
-    public class ObterDadosAlunosEscolaQuery : IRequest<IEnumerable<DadosAlunosEscolaDto>>
+    public class ObterDadosAlunosEscolaQuery : IRequest<IEnumerable<DadosMatriculaAlunoDto>>
     {
         public ObterDadosAlunosEscolaQuery(string codigoEscola, string codigoDre, int anoLetivo, string[] codigosAlunos)
         {
