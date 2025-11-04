@@ -720,7 +720,7 @@ namespace SME.SR.Data
                     NumeroAlunoChamada";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, new { anoLetivo, codigosAlunos }, commandTimeout: 120);
+            return await conexao.QueryAsync<AlunoHistoricoEscolar>(query, new { anoLetivo, codigosAlunos }, commandTimeout: 900);
         }
 
         public async Task<IEnumerable<Aluno>> ObterPorCodigosAlunoETurma(string[] codigosTurma, string[] codigosAluno)

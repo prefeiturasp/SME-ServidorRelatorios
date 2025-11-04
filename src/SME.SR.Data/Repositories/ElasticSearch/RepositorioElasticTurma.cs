@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Nest;
-using SME.Pedagogico.Repository;
+﻿using Nest;
 using SME.SR.Data.Interfaces.ElasticSearch;
 using SME.SR.Data.Models.ElasticSearch;
 using SME.SR.Data.Repositories.ElasticSearch.Base;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.ElasticSearch;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.ElasticSearch
 {
@@ -146,8 +145,50 @@ namespace SME.SR.Data.Repositories.ElasticSearch
                                                     .ThenByDescending(aluno => aluno.NumeroAlunoChamada)
                                                     .First());
 
-            
             return (result?.FirstOrDefault().DataMatricula, result?.FirstOrDefault().DataSituacao);
+        }
+
+        public async Task<IEnumerable<AlunoSituacaoDto>> ObterTodosAlunosNaTurmaAsync(long codigoTurma)
+        {
+            QueryContainer query = new QueryContainerDescriptor<AlunoNaTurmaDTO>();
+
+            query = query && new QueryContainerDescriptor<AlunoNaTurmaDTO>().Term(termo => termo.CodigoTurma, codigoTurma);
+
+            var alunosTurma = await ObterListaAsync<AlunoNaTurmaDTO>(
+                IndicesElastic.INDICE_ALUNO_TURMA_DRE, _ => query,
+                "Busca matricula aluno na turma",
+                new { codigoTurma });
+
+            if (alunosTurma == null || !alunosTurma.Any())
+                return new List<AlunoSituacaoDto>();
+
+            var alunosFiltrados = alunosTurma
+                .GroupBy(aluno => aluno.CodigoMatricula)
+                .Select(agrupado =>
+                    agrupado.OrderByDescending(aluno => aluno.DataSituacao)
+                    .ThenByDescending(aluno => aluno.NumeroAlunoChamada)
+                    .First())
+                .OrderBy(a => a.NomeAluno)
+                .ToList();
+
+            var listaRetorno = new List<AlunoSituacaoDto>();
+
+            foreach (var matriculaAlunoAtual in alunosFiltrados)
+            {
+                listaRetorno.Add(new AlunoSituacaoDto()
+                {
+                    CodigoAluno = matriculaAlunoAtual.CodigoAluno,
+                    CodigoTurma = matriculaAlunoAtual.CodigoTurma,
+                    NomeAluno = matriculaAlunoAtual.ObterNomeFinal(), // Usar o método que considera nome social
+                    CodigoSituacaoMatricula = (SituacaoMatriculaAluno)matriculaAlunoAtual.CodigoSituacaoMatricula,
+                    SituacaoMatricula = matriculaAlunoAtual.SituacaoMatricula,
+                    NumeroAlunoChamada = matriculaAlunoAtual.NumeroAlunoChamada,
+                    DataSituacaoAluno = matriculaAlunoAtual.DataSituacao,
+                    DataMatricula = matriculaAlunoAtual.DataMatricula
+                });
+            }
+
+            return listaRetorno;
         }
     }
 }
