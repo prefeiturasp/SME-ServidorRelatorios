@@ -98,5 +98,22 @@ namespace SME.SR.Workers.SGP.Controllers
                 return NoContent();
             }
         }
+
+        [HttpPost("titulos-mais-pesquisados")]
+        public async Task<IActionResult> RelatorioTitulosMaisPesquisados([FromBody] FiltroRelatorioSincronoDto request,
+            [FromServices] IRelatorioTitulosMaisPesquisadosUseCase relatorioTitulosMaisPesquisadosUseCase)
+        {
+            try
+            {
+                var file = await relatorioTitulosMaisPesquisadosUseCase.Executar(request);
+                return File(file,
+                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                     "relatorio.xlsx");
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
+        }
     }
 }
