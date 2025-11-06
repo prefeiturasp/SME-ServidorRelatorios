@@ -289,5 +289,33 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
             return await conexao.QueryAsync<AcervoDevolucaoDto>(query.ToString(), parametros);
         }
+
+        public async Task<IEnumerable<RelatorioTitulosMaisPesquisadosDto>> ObterRelatorioTitulosMaisPesquisados(DateTime dataInicio, DateTime dataFim, List<TipoAcervo> tiposAcervos)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                SELECT TRIM(LOWER(unaccent(termo_pesquisado))) AS TermoNormalizado,
+                                       COUNT(*) AS Quantidade
+                                  FROM historico_consultas_acervos
+                                 WHERE data_consulta between @dataInicio and @dataFim");
+
+            if (tiposAcervos != null && tiposAcervos.Any())
+            {
+                query.AppendLine(" AND tipo_acervo = ANY(@tiposAcervos)");
+            }
+            query.AppendLine(@"
+                              GROUP BY TermoNormalizado
+                              ORDER BY Quantidade DESC, TermoNormalizado;");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("dataInicio", dataInicio);
+            parametros.Add("dataFim", dataFim);
+            if (tiposAcervos != null && tiposAcervos.Any())
+            {
+                parametros.Add("tiposAcervos", tiposAcervos.Select(ta => (int)ta).ToArray());
+            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<RelatorioTitulosMaisPesquisadosDto>(query.ToString(), parametros);
+        }
     }
 }
