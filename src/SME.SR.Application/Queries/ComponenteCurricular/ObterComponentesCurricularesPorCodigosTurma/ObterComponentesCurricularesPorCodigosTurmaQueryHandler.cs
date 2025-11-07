@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.ElasticSearch;
+using SME.SR.Infra.Dtos.ElasticSearch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +14,17 @@ namespace SME.SR.Application
     public class ObterComponentesCurricularesPorCodigosTurmaQueryHandler : IRequestHandler<ObterComponentesCurricularesPorCodigosTurmaQuery, IEnumerable<ComponenteCurricular>>
     {
         private readonly IComponenteCurricularRepository componenteCurricularRepository;
+        private readonly IRepositorioElasticComponenteCurricular componenteCurricularElasticRepository;
         private readonly IMediator mediator;
         private const long CODIGO_COMPONENTE_CURRICULAR_EDFISICA = 6;
 
         public ObterComponentesCurricularesPorCodigosTurmaQueryHandler(IComponenteCurricularRepository componenteCurricularRepository,
+            IRepositorioElasticComponenteCurricular componenteCurricularElasticRepository,
                                                                        IMediator mediator)
         {
             this.componenteCurricularRepository = componenteCurricularRepository ?? throw new ArgumentNullException(nameof(componenteCurricularRepository)); ;
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); ;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator)); 
+            this.componenteCurricularElasticRepository = componenteCurricularElasticRepository ?? throw new ArgumentNullException(nameof(componenteCurricularElasticRepository)); ;
         }
 
         public async Task<IEnumerable<ComponenteCurricular>> Handle(ObterComponentesCurricularesPorCodigosTurmaQuery request, CancellationToken cancellationToken)
@@ -27,6 +32,7 @@ namespace SME.SR.Application
             request.ComponentesCurriculares ??= await componenteCurricularRepository.ListarInformacoesPedagogicasComponentesCurriculares();
 
             var componentesCurriculares = await ObterComponentesCurriculares(request.CodigosTurma);
+
             PreencherComponenteCurricularEhTerritorio(componentesCurriculares, request.ComponentesCurriculares);
 
             await AdicionarComponentesTerritorio(request.CodigosTurma, componentesCurriculares);
@@ -49,7 +55,7 @@ namespace SME.SR.Application
                 var informacaoComponenteCurricular = request.ComponentesCurriculares.FirstOrDefault(x => x.Codigo == cc.Codigo || x.Codigo == cc.CodigoComponenteCurricularTerritorioSaber);
                 cc.CodComponentePai = cc.CodigoComponentePai(request.ComponentesCurriculares) ?? cc.CodComponentePai;
                 cc.Compartilhada = cc.EhCompartilhada(request.ComponentesCurriculares);
-                cc.Descricao = cc.TerritorioSaber ? cc.Descricao : informacaoComponenteCurricular.Descricao.Trim();
+                cc.Descricao = cc.TerritorioSaber ? cc.Descricao : informacaoComponenteCurricular?.Descricao?.Trim();
                 cc.LancaNota = cc.PodeLancarNota(request.ComponentesCurriculares);
                 cc.Frequencia = cc.ControlaFrequencia(request.ComponentesCurriculares);
                 cc.ComponentePlanejamentoRegencia = cc.EhRegencia(request.ComponentesCurriculares) || cc.ComponentePlanejamentoRegencia;
@@ -135,7 +141,7 @@ namespace SME.SR.Application
         {
             var componentesCurriculares = new List<ComponenteCurricular>();
 
-            var componentesDaTurma = await componenteCurricularRepository.ObterComponentesPorTurmas(codigosTurma);
+            var componentesDaTurma = await componenteCurricularElasticRepository.ObterComponentesCurricularesAsync(codigosTurma);
             componentesCurriculares.AddRange(componentesDaTurma);
 
             AdicionarComponentesProfessorEmebs(componentesCurriculares);

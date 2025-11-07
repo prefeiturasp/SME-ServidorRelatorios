@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SME.SR.Data.Interfaces.ElasticSearch.Base;
+using SME.SR.Infra;
+using SME.SR.Infra.Dtos.ElasticSearch;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SME.SR.Data.Interfaces.ElasticSearch.Base;
-using SME.SR.Infra.Dtos.ElasticSearch;
 
 namespace SME.SR.Data.Interfaces.ElasticSearch
 {
@@ -13,6 +14,7 @@ namespace SME.SR.Data.Interfaces.ElasticSearch
         Task<IEnumerable<TurmaComponentesDto>> ObterTurmasAsync(int[] codigosTurmas);
 
         Task<IEnumerable<AlunoNaTurmaDTO>> ObterMatriculasAlunoNaTurma(int[] codigosTurmas);
+        Task<IEnumerable<AlunoSituacaoDto>> ObterTodosAlunosNaTurmaAsync(long codigosTurma);
         Task<(DateTime? dataMatricula, DateTime? dataSituacao)> ObterMatriculasAlunoNaTurma(int codigoAluno, int codigoTurma);
     }
 }
