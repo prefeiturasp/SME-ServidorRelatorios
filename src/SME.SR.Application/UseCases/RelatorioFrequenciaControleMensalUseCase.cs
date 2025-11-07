@@ -44,7 +44,7 @@ namespace SME.SR.Application.UseCases
 
             var frequencias = await mediator.Send(new ObterFrequenciaRealatorioControleMensalQuery(filtro.AnoLetivo, filtro.MesesReferencias.ToArray(), filtro.CodigoUe
                 , filtro.CodigoDre, (int)filtro.Modalidade, valorSemestre, filtro.CodigoTurma,
-                filtro.AlunosCodigo));
+                filtro.AlunosCodigo));           
 
             var agrupadoPorAlunos = frequencias.GroupBy(x => x.CodigoAluno).Distinct().ToList();
             var diasMesEvento = await ObterDiasLetivosEventos(dadosTurma, filtro.AnoLetivo);
@@ -52,6 +52,11 @@ namespace SME.SR.Application.UseCases
             foreach (var alunoFrequencia in agrupadoPorAlunos)
             {
                 var dadosAluno = await mediator.Send(new ObterNomeAlunoPorCodigoQuery(alunoFrequencia.Key));
+
+                var nomeParaExibir = !string.IsNullOrWhiteSpace(dadosAluno.NomeSocial)
+                    ? dadosAluno.NomeSocial
+                    : dadosAluno.Nome;
+
                 var controFrequenciaMensal = new ControleFrequenciaMensalDto
                 {
                     Ano = filtro.AnoLetivo,
@@ -60,11 +65,11 @@ namespace SME.SR.Application.UseCases
                     Ue = ueComDre.NomeRelatorio,
                     Turma = dadosTurma.NomeRelatorio,
                     CodigoCriancaEstudante = dadosAluno.Codigo,
-                    NomeCriancaEstudante = dadosAluno.Nome,
+                    NomeCriancaEstudante = nomeParaExibir,
                     DataImpressao = DateTime.Now.ToString("dd/MM/yyyy"),
                 };
                 var agrupadoPorMes = alunoFrequencia.GroupBy(x => x.Mes);
-                
+
                 foreach (var mesAgrupado in agrupadoPorMes)
                 {
                     double totalFrequenciaDoPeriodo = 0;
@@ -126,8 +131,8 @@ namespace SME.SR.Application.UseCases
 
         private double PercentualFrequenciaComponente(IGrouping<string, ConsultaRelatorioFrequenciaControleMensalDto> componenteAgrupado)
         {
-            var totalAulas = componenteAgrupado.Sum(aula => aula.TotalAula);                        
-            var numeroCompensacao = componenteAgrupado.Where(x => x.TotalCompensacao.HasValue).Sum(x => x.TotalCompensacao.Value);            
+            var totalAulas = componenteAgrupado.Sum(aula => aula.TotalAula);
+            var numeroCompensacao = componenteAgrupado.Where(x => x.TotalCompensacao.HasValue).Sum(x => x.TotalCompensacao.Value);
             var totalAusencias = componenteAgrupado.Where(af => af.TipoFrequencia == (int)TipoFrequencia.F).Sum(af => af.TotalAula);
 
             if (totalAulas == 0)
@@ -139,7 +144,7 @@ namespace SME.SR.Application.UseCases
                 TotalAusencias = totalAusencias,
                 TotalCompensacoes = numeroCompensacao
             };
-           
+
             return FrequenciaAluno.ArredondarPercentual(frequenciaAluno.PercentualFrequencia);
         }
 
