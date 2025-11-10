@@ -317,5 +317,38 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
             return await conexao.QueryAsync<RelatorioTitulosMaisPesquisadosDto>(query.ToString(), parametros);
         }
+
+        public async Task<IEnumerable<ControleDownloadAcervoDTO>> ObterRelatorioControleDownloadAcervo(string titulo, TipoAcervo tipoAcervo)
+        {
+            const int finalizadoAutomaticamente = 3;
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                  SELECT 
+                                         acervo.tipo as tipoAcervo,
+                                         COALESCE(acervo.codigo_novo, acervo.codigo) as codigoTombo,
+                                         acervo.titulo,
+                                         count(acervo.id) as quantidadeVezBaixado
+                                    FROM acervo_solicitacao_item
+                                         INNER JOIN acervo on acervo.id = acervo_solicitacao_item.acervo_id
+                                   WHERE NOT acervo_solicitacao_item.excluido
+                                     AND NOT acervo.excluido
+                                     AND acervo_solicitacao_item.situacao = @situacao
+                                     AND (acervo.tipo = @tipoAcervo or @tipoAcervo = 0 or @tipoAcervo is null)
+                                     AND (acervo.titulo = @titulo or @titulo is null or @titulo = '')
+                                   GROUP BY  
+                                         acervo.tipo,
+                                         acervo.codigo, acervo.codigo_novo,
+                                         acervo_solicitacao_item.situacao,
+                                         acervo.titulo 
+                                   ORDER BY tipoAcervo, codigoTombo
+                            ");
+            var parametros = new DynamicParameters();
+            parametros.Add("situacao", finalizadoAutomaticamente);
+            parametros.Add("tipoAcervo", tipoAcervo);
+            parametros.Add("titulo", titulo);
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<ControleDownloadAcervoDTO>(query.ToString(), parametros);
+        }
     }
 }
