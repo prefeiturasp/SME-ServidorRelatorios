@@ -7,7 +7,11 @@ namespace SME.SR.Infra
         public object Mensagem { get; set; }        
         public T ObterObjetoFiltro<T>() where T : class
         {
-            return JsonConvert.DeserializeObject<T>(Mensagem.ToString());
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            return JsonConvert.DeserializeObject<T>(Mensagem.ToString(), settings);
         }
     }
 }

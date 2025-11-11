@@ -115,5 +115,22 @@ namespace SME.SR.Workers.SGP.Controllers
                 return NoContent();
             }
         }
+
+        [HttpPost("controle-download-acervo")]
+        public async Task<IActionResult> RelatorioControleDownloadAcervo([FromBody] FiltroRelatorioSincronoDto request,
+            [FromServices] IRelatorioControleDownloadAcervoUseCase relatorioControleDownloadAcervoUseCase)
+        {
+            try
+            {
+                var file = await relatorioControleDownloadAcervoUseCase.Executar(request);
+                return File(file,
+                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                     "relatorio.xlsx");
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
+        }
     }
 }
