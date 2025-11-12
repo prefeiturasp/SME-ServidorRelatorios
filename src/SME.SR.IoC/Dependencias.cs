@@ -28,6 +28,8 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
+using Nest; 
+using Elasticsearch.Net;
 
 namespace SME.SR.IoC
 {
@@ -50,12 +52,42 @@ namespace SME.SR.IoC
             services.AddSingleton(channel);
         }
 
+        public static void AddElasticSearch(IServiceCollection services, IConfiguration configuration)
+        {
+            var elasticUri = configuration["Elasticsearch:uri"] ?? "https://localhost:9200";
+            var elasticUsuario = configuration["Elasticsearch:Usuario"] ?? "elastic";
+            var elasticSenha = configuration["Elasticsearch:Senha"] ?? "";
+            var elasticPrefixo = configuration["Elasticsearch:Prefixo"] ?? "";
+
+            var uri = new Uri(elasticUri);
+
+            var connectionPool = new SingleNodeConnectionPool(uri);
+
+            var settings = new ConnectionSettings(connectionPool)
+                .DefaultIndex($"{elasticPrefixo}default")
+                .DisableDirectStreaming()
+                .PrettyJson()
+                .BasicAuthentication(elasticUsuario, elasticSenha);
+
+            if (uri.Scheme == "https")
+            {
+                settings = settings.ServerCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) =>
+                {
+                    return true;
+                });
+            }
+
+            var client = new ElasticClient(settings);
+            services.AddSingleton<IElasticClient>(client);
+        }
+
         public static void RegistrarDependencias(this IServiceCollection services, IConfiguration configuration)
         {
             var assembly = AppDomain.CurrentDomain.Load("SME.SR.Application");
 
             services.AddMediatR(assembly);
             AddRabbitMQ(services, configuration);
+            AddElasticSearch(services, configuration); 
 
             var urlJasper = configuration.GetSection("ConfiguracaoJasper:Hostname").Value;
             var usuarioJasper = configuration.GetSection("ConfiguracaoJasper:Username").Value;
@@ -214,7 +246,8 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IPropostaRepository), typeof(PropostaRepository));
             services.TryAddScoped(typeof(IConsolidacaoProdutividadeFrequenciaRepository), typeof(ConsolidacaoProdutividadeFrequenciaRepository));
             services.TryAddScoped(typeof(IRelatorioControleLivrosRepository), typeof(RelatorioControleLivrosRepository));
-            services.TryAddScoped<IRepositorioElasticTurma, RepositorioElasticTurma>();
+            services.TryAddScoped(typeof(IRepositorioElasticTurma), typeof(RepositorioElasticTurma));
+            services.TryAddScoped(typeof(IRepositorioElasticComponenteCurricular), typeof(RepositorioElasticComponenteCurricular));
         }
 
         private static void RegistrarServicos(IServiceCollection services)

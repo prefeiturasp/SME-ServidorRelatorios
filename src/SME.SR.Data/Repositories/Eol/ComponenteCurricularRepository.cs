@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -236,7 +237,8 @@ namespace SME.SR.Data
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorTurmas(string[] codigosTurma)
         {
             var query = @"select distinct iif(pcc.cd_componente_curricular is not null, pcc.cd_componente_curricular,
-                                        cc.cd_componente_curricular) as Codigo,
+                                          iif(cc.cd_componente_curricular is not null, cc.cd_componente_curricular,
+                                    tcn.componente_curricular_codigo )) as Codigo,
                                     iif(pcc.dc_componente_curricular is not null, pcc.dc_componente_curricular,
                                         cc.dc_componente_curricular) as Descricao,
                                         esc.tp_escola                    as TipoEscola,
@@ -268,6 +270,9 @@ namespace SME.SR.Data
                              left join grade_componente_curricular pgcc on pgcc.cd_grade = teg.cd_grade
                              left join componente_curricular pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular
                         and pcc.dt_cancelamento is null
+                        -- Componentes diretos da turma (ADICIONADO)
+                        left join turma_componentes_norm tcn on tcn.turma_codigo = te.cd_turma_escola
+
                         -- Turno     
                              inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
                     where te.cd_turma_escola in @codigosTurma
@@ -276,7 +281,7 @@ namespace SME.SR.Data
             var parametros = new { codigosTurma };
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros);
+            return await conexao.QueryAsync<ComponenteCurricular>(query, parametros, commandTimeout: 300);
         }
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesCurricularesPorTurmas(string[] codigosTurma)
@@ -319,16 +324,16 @@ namespace SME.SR.Data
                             inner join componente_curricular (nolock) pcc on pgcc.cd_componente_curricular = pcc.cd_componente_curricular and pcc.dt_cancelamento is null                        
                             inner join duracao_tipo_turno dtt on te.cd_tipo_turno = dtt.cd_tipo_turno and te.cd_duracao = dtt.cd_duracao
                         where te.cd_turma_escola in @codigosTurma
-                            and te.st_turma_escola in ('O', 'A', 'C') ";                         
+                            and te.st_turma_escola in ('O', 'A', 'C') ";
 
             var parametros = new { CodigosTurma = Array.ConvertAll(codigosTurma, codigo => int.Parse(codigo)) };
 
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros,commandTimeout:180);
+                return await conexao.QueryAsync<ComponenteCurricular>(query, parametros, commandTimeout: 300);
             }
         }
-        
+
         public async Task<IEnumerable<ComponenteCurricularTerritorioSaber>> ObterComponentesTerritorioDosSaberes(string[] turmasCodigo, IEnumerable<long> componentesCurricularesId)
         {
             var query = @"select
@@ -423,7 +428,7 @@ namespace SME.SR.Data
             return await conexao.QueryFirstOrDefaultAsync<string>(query, parametros);
         }
 
-        
+
 
         public async Task<IEnumerable<ComponenteCurricular>> ObterComponentesPorAlunos(int[] codigosTurmas, int[] alunosCodigos, int anoLetivo, int semestre, bool consideraHistorico = false)
         {
@@ -458,7 +463,7 @@ namespace SME.SR.Data
 
             using (var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgp))
             {
-                return await conexao.QueryFirstOrDefaultAsync<long>(sql, new { componenteCurricularId});
+                return await conexao.QueryFirstOrDefaultAsync<long>(sql, new { componenteCurricularId });
             }
         }
 
@@ -545,9 +550,8 @@ namespace SME.SR.Data
                                  order by dataAtribuicao, CodigoTerritorioSaber, CodigoExperienciaPedagogica, rfProfessor, CodigoComponenteCurricular;";
             using (var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol))
             {
-                return await conexao.QueryAsync<ComponenteCurricularTerritorioAtribuidoTurmaDTO>(consultaSQL, parametro);
+                return await conexao.QueryAsync<ComponenteCurricularTerritorioAtribuidoTurmaDTO>(consultaSQL, parametro, commandTimeout: 300);
             }
         }
-
     }
 }
