@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using SME.SR.Infra;
 using System;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace SME.SR.Application
     public class RelatorioConselhoClasseAtaFinalUseCase : IRelatorioConselhoClasseAtaFinalUseCase
     {
         private readonly IMediator mediator;
+        private readonly ILogger<RelatorioConselhoClasseAtaFinalUseCase> logger;
 
-        public RelatorioConselhoClasseAtaFinalUseCase(IMediator mediator)
+        public RelatorioConselhoClasseAtaFinalUseCase(IMediator mediator, ILogger<RelatorioConselhoClasseAtaFinalUseCase> logger)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.logger = logger;
         }
 
         public async Task Executar(FiltroRelatorioDto request)
@@ -30,12 +33,20 @@ namespace SME.SR.Application
             switch (filtros.TipoFormatoRelatorio)
             {
                 case TipoFormatoRelatorio.Xlsx:
-                    var relatorioDto = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalExcelQuery() { ObjetoExportacao = relatoriosTurmas });
-                    if (relatorioDto == null)
-                        throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
+                    try
+                    {
+                        var relatorioDto = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalExcelQuery() { ObjetoExportacao = relatoriosTurmas });
+                        if (relatorioDto == null)
+                            throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
 
-                    await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
-                    break;
+                        await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "Erro ao gerar relatório de Ata Final de Resultados em Excel.");
+                        throw;
+                    }
                 case TipoFormatoRelatorio.Pdf:
                     await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
                     break;
