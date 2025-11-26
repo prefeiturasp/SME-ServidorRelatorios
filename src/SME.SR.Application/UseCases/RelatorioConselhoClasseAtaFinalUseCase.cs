@@ -33,20 +33,12 @@ namespace SME.SR.Application
             switch (filtros.TipoFormatoRelatorio)
             {
                 case TipoFormatoRelatorio.Xlsx:
-                    try
-                    {
-                        var relatorioDto = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalExcelQuery() { ObjetoExportacao = relatoriosTurmas });
-                        if (relatorioDto == null)
-                            throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
+                    var relatorioDto = await mediator.Send(new ObterRelatorioConselhoClasseAtaFinalExcelQuery() { ObjetoExportacao = relatoriosTurmas });
+                    if (relatorioDto == null)
+                        throw new NegocioException("Não foi possível transformar os dados obtidos em dados excel.");
 
-                        await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "Erro ao gerar relatório de Ata Final de Resultados em Excel.");
-                        throw;
-                    }
+                    await mediator.Send(new GerarRelatorioAtaFinalExcelCommand(relatorioDto, relatoriosTurmas, "RelatorioAtasComColunaFinal", request.UsuarioLogadoRF));
+                    break;
                 case TipoFormatoRelatorio.Pdf:
                     await mediator.Send(new GerarRelatorioAtaFinalHtmlParaPdfCommand("RelatorioAtasComColunaFinal", relatoriosTurmas, request.CodigoCorrelacao, mensagensErro.ToString()));
                     break;
