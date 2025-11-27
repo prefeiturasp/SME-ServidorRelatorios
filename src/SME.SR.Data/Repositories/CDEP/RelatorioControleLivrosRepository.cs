@@ -356,6 +356,7 @@ namespace SME.SR.Data
             var query = new StringBuilder();
             query.AppendLine(@"
                                 SELECT U.NOME AS nomeSolicitante
+                                     , U.LOGIN AS loginSolicitante
                                      , ACERVO.TIPO AS tipoAcervo
                                      , ACERVO.TITULO
                                      , COALESCE(ACERVO.codigo_novo, ACERVO.codigo) AS codigoTombo
@@ -400,6 +401,7 @@ namespace SME.SR.Data
 
             query.AppendLine(@"
                                 GROUP  BY U.NOME
+                                        , U.LOGIN
                                         , tipoAcervo
                                         , titulo
                                         , codigoTombo
