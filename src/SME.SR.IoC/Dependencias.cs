@@ -327,6 +327,7 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioControleDevolucaoLivrosUseCase, RelatorioControleDevolucaoLivrosUseCase>();
             services.TryAddScoped<IRelatorioTitulosMaisPesquisadosUseCase, RelatorioTitulosMaisPesquisadosUseCase>();
             services.TryAddScoped<IRelatorioControleDownloadAcervoUseCase, RelatorioControleDownloadAcervoUseCase>();
+            services.AddScoped<IRelatorioHistoricoSolicitacaoAcervoUseCase, RelatorioHistoricoSolicitacaoAcervoUseCase>();
         }
 
         private static void RegistrarServicoRelatorioAnaliticoSondagem(IServiceCollection services)
