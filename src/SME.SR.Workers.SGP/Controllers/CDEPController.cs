@@ -132,5 +132,22 @@ namespace SME.SR.Workers.SGP.Controllers
                 return NoContent();
             }
         }
+
+        [HttpPost("historico-solicitacao-acervo")]
+        public async Task<IActionResult> RelatorioHistoricoSolicitacaoAcervo([FromBody] FiltroRelatorioSincronoDto request,
+            [FromServices] IRelatorioHistoricoSolicitacaoAcervoUseCase relatorioHistoricoSolicitacaoAcervoUseCase)
+        {
+            try
+            {
+                var file = await relatorioHistoricoSolicitacaoAcervoUseCase.Executar(request);
+                return File(file,
+                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                     "relatorio.xlsx");
+            }
+            catch (System.Exception)
+            {
+                return NoContent();
+            }
+        }
     }
 }
