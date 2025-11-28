@@ -63,7 +63,7 @@ namespace SME.SR.Application.Commands.CDEP.GerarRelatorioHistoricoSolicitacaoAce
             // Dados do relatório
             foreach (var item in dadosDoRelatorio)
             {
-                sheet.Cell(row, 1).Value = item.NomeSolicitante;
+                sheet.Cell(row, 1).Value = $"{item.NomeSolicitante} ({item.LoginSolicitante})";
                 sheet.Cell(row, 2).Value = item.TipoAcervo.Description();
                 sheet.Cell(row, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 sheet.Cell(row, 3).Value = item.CodigoTombo;
