@@ -30,6 +30,20 @@ namespace SME.SR.Application
             if (notas == null || !notas.Any())
                 throw new NegocioException("Não foi possível obter as notas dos alunos");
             notas = notas.Where(x => request.CodigosTurmas.Contains(x.CodigoTurma) && (x.NotaConceito?.Nota != null || !string.IsNullOrEmpty(x.NotaConceito?.NotaConceito)));
+
+            var alunosComConselhoDeClasse = notas
+                .Where(n => n.ConselhoClasseAlunoId > 0)
+                .Select(n => n.CodigoAluno)
+                .Distinct()
+                .ToHashSet();
+
+            if (!alunosComConselhoDeClasse.Any())
+                throw new NegocioException("Não existem alunos com conselho de classe para gerar a ata final.");
+
+            notas = notas
+                    .Where(n => alunosComConselhoDeClasse.Contains(n.CodigoAluno))
+                    .ToList();
+
             await CarregarConselhoDeClasseAlunoId(notas);
 
             return notas.GroupBy(nf => nf.CodigoTurma);
@@ -48,9 +62,6 @@ namespace SME.SR.Application
             var turmaIds = notasAluno.Select(nota => nota.IdTurma).Distinct().ToArray();
             var alunosCodigos = notasAluno.Select(nota => nota.CodigoAluno).Distinct().ToArray();
             var conselhos = await conselhoClasseAlunoRepository.ObterConselhoDeClasseAlunoId(turmaIds, alunosCodigos);
-
-            if (!conselhos.Any())
-                throw new NegocioException("Não existem alunos com conselho de classe para gerar a ata final.");
 
             if (conselhos.Any())
             {
