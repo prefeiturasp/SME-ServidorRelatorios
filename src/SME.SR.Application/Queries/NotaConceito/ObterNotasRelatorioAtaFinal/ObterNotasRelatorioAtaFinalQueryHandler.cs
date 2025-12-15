@@ -49,6 +49,9 @@ namespace SME.SR.Application
             var alunosCodigos = notasAluno.Select(nota => nota.CodigoAluno).Distinct().ToArray();
             var conselhos = await conselhoClasseAlunoRepository.ObterConselhoDeClasseAlunoId(turmaIds, alunosCodigos);
 
+            if (!conselhos.Any())
+                throw new NegocioException("Não existem alunos com conselho de classe para gerar a ata final.");
+
             if (conselhos.Any())
             {
                 foreach(var nota in notasAluno)
