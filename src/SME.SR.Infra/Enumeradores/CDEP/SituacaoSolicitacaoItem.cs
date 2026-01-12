@@ -17,6 +17,9 @@ namespace SME.SR.Infra.CDEP
         CANCELADO = 4,
 
         [Display(Description = "Finalizado manualmente")]
-        FINALIZADO_MANUALMENTE = 5
+        FINALIZADO_MANUALMENTE = 5,
+
+        [Display(Description = "Sem resposta do solicitante")]
+        SEM_RESPOSTA_SOLICITANTE = 6
     }
 }
