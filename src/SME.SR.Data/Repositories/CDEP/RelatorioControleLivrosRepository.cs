@@ -324,7 +324,7 @@ namespace SME.SR.Data
             var query = new StringBuilder();
             query.AppendLine(@"
                                   SELECT 
-                                         acervo.tipo as tiposAcervos,
+                                         acervo.tipo as tipoAcervo,
                                          COALESCE(acervo.codigo_novo, acervo.codigo) as codigoTombo,
                                          acervo.titulo,
                                          count(acervo.id) as quantidadeVezBaixado
