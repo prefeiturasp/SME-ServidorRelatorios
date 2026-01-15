@@ -196,8 +196,8 @@ namespace SME.SR.Data
 
             if (tipoAcervo.HasValue && tipoAcervo.Value > 0)
             {
-                query.AppendLine(" AND a.Tipo = @tipoAcervo");
-                parametros.Add("tipoAcervo", tipoAcervo);
+                query.AppendLine(" AND a.Tipo = @tiposAcervos");
+                parametros.Add("tiposAcervos", tipoAcervo);
             }
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
@@ -288,6 +288,131 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
             return await conexao.QueryAsync<AcervoDevolucaoDto>(query.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<RelatorioTitulosMaisPesquisadosDto>> ObterRelatorioTitulosMaisPesquisados(DateTime dataInicio, DateTime dataFim, List<TipoAcervo> tiposAcervos)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                SELECT TRIM(LOWER(unaccent(termo_pesquisado))) AS TermoNormalizado,
+                                       COUNT(*) AS Quantidade
+                                  FROM historico_consultas_acervos
+                                 WHERE data_consulta between @dataInicio and @dataFim");
+
+            if (tiposAcervos != null && tiposAcervos.Any())
+            {
+                query.AppendLine(" AND tipo_acervo = ANY(@tiposAcervos)");
+            }
+            query.AppendLine(@"
+                              GROUP BY TermoNormalizado
+                              ORDER BY Quantidade DESC, TermoNormalizado;");
+
+            var parametros = new DynamicParameters();
+            parametros.Add("dataInicio", dataInicio);
+            parametros.Add("dataFim", dataFim);
+            if (tiposAcervos != null && tiposAcervos.Any())
+            {
+                parametros.Add("tiposAcervos", tiposAcervos.Select(ta => (int)ta).ToArray());
+            }
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<RelatorioTitulosMaisPesquisadosDto>(query.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<ControleDownloadAcervoDTO>> ObterRelatorioControleDownloadAcervo(string titulo, TipoAcervo tipoAcervo)
+        {
+            const int finalizadoAutomaticamente = 3;
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                  SELECT 
+                                         acervo.tipo as tipoAcervo,
+                                         COALESCE(acervo.codigo_novo, acervo.codigo) as codigoTombo,
+                                         acervo.titulo,
+                                         count(acervo.id) as quantidadeVezBaixado
+                                    FROM acervo_solicitacao_item
+                                         INNER JOIN acervo on acervo.id = acervo_solicitacao_item.acervo_id
+                                   WHERE NOT acervo_solicitacao_item.excluido
+                                     AND NOT acervo.excluido
+                                     AND acervo_solicitacao_item.situacao = @situacao
+                                     AND (acervo.tipo = @tiposAcervos or @tiposAcervos = 0 or @tiposAcervos is null)
+                                     AND (acervo.titulo = @titulo or @titulo is null or @titulo = '')
+                                   GROUP BY  
+                                         acervo.tipo,
+                                         acervo.codigo, acervo.codigo_novo,
+                                         acervo_solicitacao_item.situacao,
+                                         acervo.titulo 
+                                   ORDER BY tiposAcervos, codigoTombo
+                            ");
+            var parametros = new DynamicParameters();
+            parametros.Add("situacao", finalizadoAutomaticamente);
+            parametros.Add("tiposAcervos", tipoAcervo);
+            parametros.Add("titulo", titulo);
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<ControleDownloadAcervoDTO>(query.ToString(), parametros);
+        }
+
+        public async Task<IEnumerable<HistoricoSolicitacaoAcervoDto>> ObterRelatorioHistoricoSolicitacaoAcervo(string solicitante, List<SituacaoSolicitacaoItem> situacoesSolicitacoes, List<TipoAcervo> tiposAcervos, DateTime dataInicio, DateTime dataFim)
+        {
+            var query = new StringBuilder();
+            query.AppendLine(@"
+                                SELECT U.NOME AS nomeSolicitante
+                                     , U.LOGIN AS loginSolicitante
+                                     , ACERVO.TIPO AS tipoAcervo
+                                     , ACERVO.TITULO
+                                     , COALESCE(ACERVO.codigo_novo, ACERVO.codigo) AS codigoTombo
+                                     , ACERVO_SOLICITACAO.DATA_SOLICITACAO AS dataSolicitacao
+                                     , ASI.SITUACAO AS situacaoSolicitacao
+                                     , ASI.DT_VISITA AS dataVisita
+                                 FROM  ACERVO_SOLICITACAO_ITEM AS ASI
+                                       INNER JOIN ACERVO_SOLICITACAO ON
+                                                  ACERVO_SOLICITACAO.ID = ASI.ACERVO_SOLICITACAO_ID
+  	                                   INNER JOIN ACERVO ON
+	 	 	                                      ACERVO.ID = ASI.ACERVO_ID
+                                       INNER JOIN USUARIO AS U ON
+                                                  U.ID = ASI.USUARIO_RESPONSAVEL_ID
+                                WHERE  NOT ASI.EXCLUIDO
+                                  AND  NOT ACERVO_SOLICITACAO.EXCLUIDO
+                                  AND  NOT ACERVO.EXCLUIDO
+                                  AND  ACERVO_SOLICITACAO.DATA_SOLICITACAO  BETWEEN @dataInicio AND @dataFim
+                            ");
+
+
+            var parametros = new DynamicParameters();
+            parametros.Add("dataInicio", dataInicio);
+            parametros.Add("dataFim", dataFim);
+            if (tiposAcervos != null && tiposAcervos.Any())
+            {
+                query.AppendLine(" AND ACERVO.TIPO = ANY(@tiposAcervos)");
+                parametros.Add("tiposAcervos", tiposAcervos.Select(ta => (int)ta).ToArray());
+            }
+
+            if (!string.IsNullOrWhiteSpace(solicitante))
+            {
+                query.AppendLine(" AND u.login = @Solicitante");
+                parametros.Add("Solicitante", solicitante);
+            }
+
+
+            if (situacoesSolicitacoes != null && situacoesSolicitacoes.Any())
+            {
+                query.AppendLine(" AND ASI.SITUACAO = ANY(@Situacoes)");
+                parametros.Add("Situacoes", situacoesSolicitacoes.Select(ss => (int)ss).ToArray());
+            }
+
+            query.AppendLine(@"
+                                GROUP  BY U.NOME
+                                        , U.LOGIN
+                                        , tipoAcervo
+                                        , titulo
+                                        , codigoTombo
+                                        , dataSolicitacao
+                                        , ASI.SITUACAO
+                                        , dataVisita
+                                ORDER  BY U.NOME, dataSolicitacao DESC 
+                            ");
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringCDEP);
+            return await conexao.QueryAsync<HistoricoSolicitacaoAcervoDto>(query.ToString(), parametros);
         }
     }
 }
