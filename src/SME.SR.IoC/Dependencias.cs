@@ -1,9 +1,11 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
+using Elasticsearch.Net;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Nest;
 using RabbitMQ.Client;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
@@ -28,8 +30,6 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
-using Nest; 
-using Elasticsearch.Net;
 
 namespace SME.SR.IoC
 {
@@ -87,7 +87,7 @@ namespace SME.SR.IoC
 
             services.AddMediatR(assembly);
             AddRabbitMQ(services, configuration);
-            AddElasticSearch(services, configuration); 
+            AddElasticSearch(services, configuration);
 
             var urlJasper = configuration.GetSection("ConfiguracaoJasper:Hostname").Value;
             var usuarioJasper = configuration.GetSection("ConfiguracaoJasper:Username").Value;
@@ -222,7 +222,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRegistroFrequenciaAlunoRepository), typeof(RegistroFrequenciaAlunoRepository));
 
             services.TryAddScoped(typeof(IRegistrosPedagogicosRepository), typeof(RegistrosPedagogicosRepository));
-            
+
             services.TryAddScoped(typeof(IQuestionarioRepository), typeof(QuestionarioRepository));
             services.TryAddScoped(typeof(IPlanoAeeRespostaRepository), typeof(PlanoAeeRespostaRepository));
             services.TryAddScoped(typeof(IPlanoAeeVersaoRepository), typeof(PlanoAeeVersaoRepository));
@@ -238,7 +238,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(ISondagemAnaliticaRepository), typeof(SondagemAnaliticaRepository));
             services.TryAddScoped(typeof(IHistoricoEscolarObservacaoRepository), typeof(HistoricoEscolarObservacaoRepository));
-            
+
             services.TryAddScoped(typeof(IPlanoAnualRepository), typeof(PlanoAnualRepository));
 
             services.TryAddScoped(typeof(IMapeamentoEstudanteRepository), typeof(MapeamentoEstudanteRepository));
