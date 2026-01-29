@@ -38,7 +38,7 @@ namespace SME.SR.HtmlPdf
                 doc.Objects.Add(new ObjectSettings()
                 {
                     HtmlContent = html,
-                    WebSettings = { DefaultEncoding = "utf-8" } ,
+                    WebSettings = { DefaultEncoding = "utf-8" },
                     PagesCount = true
                 });
             else
@@ -49,16 +49,16 @@ namespace SME.SR.HtmlPdf
                     WebSettings = { DefaultEncoding = "utf-8" },
                     PagesCount = true,
                     HeaderSettings = { HtmUrl = templateHeader },
-                    FooterSettings = { 
-                        FontName="Roboto", 
-                        FontSize = 9, 
-                        Right = tipoDePaginacao == EnumTipoDePaginacao.PaginaComTotalPaginas ? "[page] / [toPage]" : "[page]", 
+                    FooterSettings = {
+                        FontName="Roboto",
+                        FontSize = 9,
+                        Right = tipoDePaginacao == EnumTipoDePaginacao.PaginaComTotalPaginas ? "[page] / [toPage]" : "[page]",
                         Left = tituloRelatorioRodape != "" ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
                     }
-                }); 
+                });
             }
 
-            converter.Convert(doc);            
+            converter.Convert(doc);
         }
 
         public void ConvertToPdf(List<string> paginas, string nomeArquivo)
@@ -73,6 +73,27 @@ namespace SME.SR.HtmlPdf
             byte[] pdf = converter.Convert(doc);
 
             return pdf;
+        }
+
+        public byte[] ConvertHtmlToPdfLandscape(string html, string caminhoBase, string nomeArquivo)
+        {
+            HtmlToPdfDocument doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Landscape,
+                    PaperSize = PaperKind.A4,
+                    Margins = new MarginSettings() { Top = 0, Bottom = 0, Left = 0, Right = 0 }
+                },
+                Objects = {
+                    new ObjectSettings()
+                    {
+                        HtmlContent = html,
+                        WebSettings = { DefaultEncoding = "utf-8" }
+                    }
+                }
+            };
+            return converter.Convert(doc);
         }
 
         public void ConvertToPdf(List<string> paginas, string caminhoBase, string nomeArquivo)
@@ -146,7 +167,7 @@ namespace SME.SR.HtmlPdf
                 });
             }
 
-            
+
             return doc;
         }
         private HtmlToPdfDocument StartBasicDoc(List<string> paginas)
@@ -156,7 +177,7 @@ namespace SME.SR.HtmlPdf
                 GlobalSettings = {
                     ColorMode = ColorMode.Color,
                     Orientation = Orientation.Landscape,
-                    PaperSize = PaperKind.A4,                    
+                    PaperSize = PaperKind.A4,
                     Margins = new MarginSettings() { Top = 5, Bottom = 5, Left = 5, Right = 5 }
                 }
             };
@@ -167,7 +188,7 @@ namespace SME.SR.HtmlPdf
                 doc.Objects.Add(new ObjectSettings()
                 {
                     HtmlContent = pagina,
-                    WebSettings = { DefaultEncoding = "utf-8" }                    
+                    WebSettings = { DefaultEncoding = "utf-8" }
                 });
             }
 
