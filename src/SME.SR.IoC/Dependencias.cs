@@ -22,6 +22,7 @@ using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
+using SME.SR.Infra.Excel.Codaf.Gerador;
 using SME.SR.JRSClient;
 using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Interfaces;
@@ -130,6 +131,9 @@ namespace SME.SR.IoC
             RegistrarServicos(services);
             RegistrarOptions(services, configuration);
             RegistrarServicoRelatorioAnaliticoSondagem(services);
+
+            services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
+            services.AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>();
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)

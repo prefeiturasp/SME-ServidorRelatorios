@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf;
+using System;
 using System.Threading.Tasks;
 
 namespace SME.SR.Workers.SGP
@@ -9,6 +11,9 @@ namespace SME.SR.Workers.SGP
     {
         public async static Task Main(string[] args)
         {
+            //Console.WriteLine("Iniciando PoC Codaf...");
+            //new PocCodaf().ExecutarPoc();
+            //Console.WriteLine("PoC Codaf finalizado.");
             var host = CreateHostBuilder(args).Build();
             await host.RunAsync();
         }

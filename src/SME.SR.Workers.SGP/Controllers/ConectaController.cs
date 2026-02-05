@@ -2,8 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SME.SR.Application.Commands.Conecta.GerarCertificadoCodaf;
+using SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf;
 using SME.SR.Application.Interfaces;
 using SME.SR.HtmlPdf;
+using SME.SR.Infra.Dtos.Codaf;
 using SME.SR.Infra.Dtos.Relatorios.Conecta;
 using SME.SR.Workers.SGP.Filters;
 using System;
@@ -33,6 +35,13 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             var resultado = await mediator.Send(new GerarPdfCertificadoCodafCommand(request));
             return File(resultado, "application/pdf", "certificado-codaf.pdf");
+        }
+
+        [HttpPost("gerar-planilha-codaf")]
+        public async Task<IActionResult> GerarPlanilhaCodaf([FromBody] RelatorioCodafDto request, [FromServices] IMediator mediator)
+        {
+            var resultado = await mediator.Send(new GerarPlanilhaCodafCommand(request));
+            return File(resultado, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"relatorio-codaf-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
         }
     }
 }
