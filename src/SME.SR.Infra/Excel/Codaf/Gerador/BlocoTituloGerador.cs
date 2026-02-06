@@ -74,7 +74,7 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
             var imagemBytes = Convert.FromBase64String(base64Imagem);
             return new MemoryStream(imagemBytes);
         }
-        private void CriarLinhaTitulo(IXLWorksheet sheet, int linha, string texto)
+        private static void CriarLinhaTitulo(IXLWorksheet sheet, int linha, string texto)
         {
             var range = sheet.Range($"C{linha}:R{linha}");
             range.Merge();

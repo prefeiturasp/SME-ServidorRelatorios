@@ -1,9 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Nest;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 
 namespace SME.SR.Infra.Extensions.Codaf
 {
@@ -31,23 +26,24 @@ namespace SME.SR.Infra.Extensions.Codaf
             range.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
         }
 
-        public static void EstilizarValor(this IXLRange range, bool negrito = true, bool bordaDireita = false)
+        public static void EstilizarValor(this IXLRange range, XLBorderStyleValues bordaDireita, bool centralizar = false)
         {
-            range.Style.Font.Bold = negrito;
-            range.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            range.Style.Font.Bold = true;
             range.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-
-            if (bordaDireita)
-                range.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            range.Style.Alignment.Horizontal = centralizar ? XLAlignmentHorizontalValues.Center : XLAlignmentHorizontalValues.Left;
+            range.Style.Border.RightBorder = bordaDireita;
+            range.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            range.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
         }
 
-        public static void EstilizarValor(this IXLCell cell, bool negrito = true, bool bordaDireita = false)
+        public static void EstilizarValor(this IXLCell cell, XLBorderStyleValues bordaDireita, bool centralizar = false)
         {
-            cell.Style.Font.Bold = negrito;
-            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            cell.Style.Font.Bold = true;
             cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            if (bordaDireita)
-                cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            cell.Style.Alignment.Horizontal = centralizar ? XLAlignmentHorizontalValues.Center : XLAlignmentHorizontalValues.Left;
+            cell.Style.Border.RightBorder = bordaDireita;
+            cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
         }
 
         public static void ConfigurarLabelComFundo(this IXLRange range, string texto, bool negrito = false)
@@ -74,6 +70,42 @@ namespace SME.SR.Infra.Extensions.Codaf
             cell.Style.Font.Bold = true;
             cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        }
+        public static void ConfigurarCelula(this IXLWorksheet sheet, int linha, string col, string valor, bool alinharDireita = false)
+        {
+            var cell = sheet.Cell(linha, col);
+            cell.Value = valor;
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            cell.Style.Alignment.Horizontal = alinharDireita ? XLAlignmentHorizontalValues.Right : XLAlignmentHorizontalValues.Left;
+        }
+
+        public static IXLRange ObterRange(this IXLWorksheet sheet, string cols, int linha, bool merge = true)
+        {
+            var rangeString = ObterRangeString(cols, linha);
+            var range = sheet.Range(rangeString);
+            if (merge && cols.Contains(':')) range.Merge();
+            return range;
+        }
+
+        public static string FormatarValorOuMascarar(this int valor)
+        {
+            return valor == 0 ? "***" : valor.ToString();
+        }
+
+        public static string FormatarValorOuMascarar(this string valor)
+        {
+            return string.IsNullOrWhiteSpace(valor) ? "***" : valor;
+        }
+
+        private static string ObterRangeString(string cols, int linha)
+        {
+            if (cols.Contains(':'))
+            {
+                var partes = cols.Split(':');
+                return $"{partes[0]}{linha}:{partes[1]}{linha}";
+            }
+            return $"{cols}{linha}";
         }
     }
 }

@@ -27,12 +27,8 @@ namespace SME.SR.Infra.Dtos.Codaf
         public PreviaInscritosRelatorioCodafDto PreviaInscritosSme { get; set; }
         public PreviaInscritosRelatorioCodafDto PreviaInscritosSemRf { get; set; }
         public string Observacao { get; set; }
-        public bool EhCurso { get; set; }
-        public bool EhEvento { get; set; }
-        public bool EhDistancia { get; set; }
-        public bool EhHibrido { get; set; }
-        public bool EhPresencial { get; set; }
-        public bool ComCertificacao { get; set; }
-        public bool SemCertificacao { get; set; }
+        public TipoFormacaoRelatorioCodaf TipoFormacao { get; set; }
+        public ModalidadeRelatorioCodaf Modalidade { get; set; }
+        public TipoCertificacaoRelatorioCodaf TipoCertificacao { get; set; }
     }
 }

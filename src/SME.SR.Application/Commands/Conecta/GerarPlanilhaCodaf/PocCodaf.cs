@@ -1,11 +1,9 @@
-﻿using System;
-using System.CodeDom.Compiler;
+﻿using ClosedXML.Excel;
+using ClosedXML.Excel.Drawings;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using ClosedXML.Excel;
-using ClosedXML.Excel.Drawings;
 
 namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
 {
@@ -18,7 +16,7 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
             using var fileStream = File.Create(nomeArquivo);
             stream.CopyTo(fileStream);
             stream.Close();
-                        
+
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
             {
                 FileName = nomeArquivo,
@@ -156,25 +154,72 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
 
 
 
-            // Duas linhas que não são do cabeçalho, vão entrar aqui. São uma prévia dos inscritos.
+            ConfigurarLabel(sheet, proximaLinha, "A:D", "SME:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            ConfigurarLabel(sheet, proximaLinha, "E:H", "Nº DE INSCRITOS:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            ConfigurarLabel(sheet, proximaLinha, "J:L", "Nº DE APROVADOS:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            ConfigurarLabel(sheet, proximaLinha, "N:P", "Nº DE REPROVADOS:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            var rangeInscritosSme = sheet.Cell($"I{proximaLinha}");
+            rangeInscritosSme.Value = "34";
+            rangeInscritosSme.Style.Font.Bold = true;
+            rangeInscritosSme.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeInscritosSme.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
+            var rangeAprovadosSme = sheet.Cell($"M{proximaLinha}");
+            rangeAprovadosSme.Value = "20";
+            rangeAprovadosSme.Style.Font.Bold = true;
+            rangeAprovadosSme.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeAprovadosSme.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
+            var rangeReprovadosSme = sheet.Cell($"Q{proximaLinha}");
+            rangeReprovadosSme.Value = "14";
+            rangeReprovadosSme.Style.Font.Bold = true;
+            rangeReprovadosSme.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeReprovadosSme.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
 
-            ConfigurarLabel(sheet, proximaLinha, "A:B", "OBSERVAÇÕES:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            ConfigurarLabel(sheet, ++proximaLinha, "A:D", "SEM R.F:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            ConfigurarLabel(sheet, proximaLinha, "E:H", "Nº DE INSCRITOS:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            ConfigurarLabel(sheet, proximaLinha, "J:L", "Nº DE APROVADOS:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            ConfigurarLabel(sheet, proximaLinha, "N:P", "Nº DE REPROVADOS:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+            var rangeInscritosSemRf = sheet.Cell($"I{proximaLinha}");
+            rangeInscritosSemRf.Value = "";
+            rangeInscritosSemRf.Style.Font.Bold = true;
+            rangeInscritosSemRf.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeInscritosSemRf.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            var rangeAprovadosSemRf = sheet.Cell($"M{proximaLinha}");
+            rangeAprovadosSemRf.Value = "";
+            rangeAprovadosSemRf.Style.Font.Bold = true;
+            rangeAprovadosSemRf.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeAprovadosSemRf.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            var rangeReprovadosSemRf = sheet.Cell($"Q{proximaLinha}");
+            rangeReprovadosSemRf.Value = "";
+            rangeReprovadosSemRf.Style.Font.Bold = true;
+            rangeReprovadosSemRf.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeReprovadosSemRf.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            ConfigurarLabel(sheet, ++proximaLinha, "A:B", "OBSERVAÇÕES:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
             var rangeObservacoes = sheet.Range($"C{proximaLinha}:T{proximaLinha}");
             rangeObservacoes.Merge();
             rangeObservacoes.Value = "";
 
             sheet.Rows(6, proximaLinha).Height = 32;
 
-            var rangeLinhasCabecalho = sheet.Range($"A7:T{proximaLinha}");
+            var rangeLinhasCabecalho = sheet.Range($"A7:T{proximaLinha++}");
             rangeLinhasCabecalho.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             rangeLinhasCabecalho.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
 
-            // Depois do final do cabeçalho, vem outros blocos (Professores, Inscritos, etc)
-            // Os inscritos serão divididos em blocos de aprovados e reprovados
+            // ======== INÍCIO DA IMPLEMENTAÇÃO NOVA NA POC - REGENTES E PARTICIPANTES ========
+            ConstruirBlocoRegentesDaTurma(sheet, ref proximaLinha);
 
-            // Ao final de tudo, tem os blocos para assinaturas
+            var rangeLinhaVazia = sheet.Range($"A{proximaLinha}:T{proximaLinha++}");
+            rangeLinhaVazia.Merge();
+            rangeLinhaVazia.Style.Border.LeftBorder = XLBorderStyleValues.Thick;
+            rangeLinhaVazia.Style.Border.RightBorder = XLBorderStyleValues.Thick;
+
+            ConstruirBlocoParticipantes(sheet, ref proximaLinha, participantes);
+            RenderizarBlocoAssinaturas(sheet, ref proximaLinha);
+            // ======== FIM DA IMPLEMENTAÇÃO NOVA NA POC - REGENTES E PARTICIPANTES ========
 
             workbook.SaveAs(stream);
             stream.Position = 0;
@@ -206,6 +251,8 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
         }
 
         private readonly XLColor _corFundoLabel = XLColor.FromHtml("#F2F2F2");
+        private readonly XLColor _corFundoTitulo = XLColor.FromHtml("#BFBFBF");
+        private readonly XLColor _corFundoSubTitulo = XLColor.FromHtml("#E6E6E6");
         private void ConstruirLinhaDadosTurma(IXLWorksheet sheet, int linha)
         {
             ConfigurarLabel(sheet, linha, "A:B", "DRE:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
@@ -371,7 +418,254 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
             ConfigurarLabel(sheet, linha, "S:T", "SEM CERTIFICAÇÃO", negrito: false);
         }
 
-        // --- Helpers Privados (O Segredo do Clean Code) ---
+        public class DadosRegente
+        {
+            public string Nome { get; set; }
+            public string Rf { get; set; }
+            public string NumeroRegistro { get; set; }
+        }
+        private void ConstruirBlocoRegentesDaTurma(IXLWorksheet sheet, ref int linha)
+        {
+            var rangeTitulo = sheet.Range($"A{linha}:T{linha}");
+            rangeTitulo.Merge();
+            rangeTitulo.Value = "REGENTES DA TURMA COM RF";
+            rangeTitulo.Style.Font.Bold = true;
+            rangeTitulo.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeTitulo.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            rangeTitulo.Style.Fill.BackgroundColor = _corFundoSubTitulo;
+            rangeTitulo.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+
+            var regentesTurma = new List<DadosRegente>
+            {
+                new DadosRegente
+                {
+                    Nome = "LUCIANA XAVIER FERREIRA",
+                    Rf = "812.130.3",
+                    NumeroRegistro = "23280"
+                },
+                new DadosRegente
+                {
+                    Nome = "MARINEUSA MEDEIROS DA SILVA",
+                    Rf = "695.581.9",
+                    NumeroRegistro = "23281"
+                },
+                new DadosRegente
+                {
+                    Nome = "RICARDO DE SOUZA",
+                    Rf = "721.363.8",
+                    NumeroRegistro = "23282"
+                },
+                new DadosRegente
+                {
+                    Nome = "ROGÉRIO GONÇALVES DA SILVA",
+                    Rf = "752.813.2",
+                    NumeroRegistro = "23283"
+                },
+                new DadosRegente
+                {
+                    Nome = "REGINA CÉLIA  FORTUNA BROTI GAVASSA",
+                    Rf = "",
+                    NumeroRegistro = "*****"
+                }
+            };
+
+
+            foreach (var regente in regentesTurma)
+            {
+                ConfigurarLabel(sheet, ++linha, "A", "NOME:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+                var rangeNomeRegente = sheet.Range($"B{linha}:K{linha}");
+                rangeNomeRegente.Merge();
+                rangeNomeRegente.Value = regente.Nome;
+                rangeNomeRegente.Style.Font.Bold = true;
+                rangeNomeRegente.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeNomeRegente.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+                ConfigurarLabel(sheet, linha, "L", "R.F.:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+                var rangeRfRegente = sheet.Range($"M{linha}:O{linha}");
+                rangeRfRegente.Merge();
+                rangeRfRegente.Value = regente.Rf;
+                rangeRfRegente.Style.Font.Bold = true;
+                rangeRfRegente.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                rangeRfRegente.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeRfRegente.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+                ConfigurarLabel(sheet, linha, "P:R", "Nº DE REGISTRO:", false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Right);
+                var rangeRegistroRegente = sheet.Range($"S{linha}:T{linha}");
+                rangeRegistroRegente.Merge();
+                rangeRegistroRegente.Value = regente.NumeroRegistro;
+                rangeRegistroRegente.Style.Font.Bold = true;
+                rangeRegistroRegente.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                rangeRegistroRegente.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeRegistroRegente.Style.Border.RightBorder = XLBorderStyleValues.Thick;
+
+                var rangeLinhaAtual = sheet.Range($"A{linha}:T{linha}");
+                rangeLinhaAtual.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            }
+            linha++;
+        }
+
+        public class DadosParticipante
+        {
+            public string Nome { get; set; }
+            public string Documento { get; set; }
+            public decimal Frequencia { get; set; }
+            public bool Obrigatoria { get; set; }
+            public string ConceitoFinal { get; set; }
+            public string NumeroCertificado { get; set; }
+            public bool Aprovado { get; set; }
+        }
+        private void ConstruirBlocoParticipantes(IXLWorksheet sheet, ref int linha, List<DadosParticipante> participantes)
+        {
+            var indice = 0;
+            var participantesAprovados = participantes.Where(p => p.Aprovado).ToList();
+            var participantesReprovados = participantes.Where(p => !p.Aprovado).ToList();
+
+            var aprovadosComCpf = participantesAprovados.Where(p => p.Documento.Length >= 11).ToList();
+            var reprovadosComCpf = participantesReprovados.Where(p => p.Documento.Length >= 11).ToList();
+
+            var aprovadosSemCpf = participantesAprovados.Where(p => p.Documento.Length < 11).ToList();
+            var reprovadosSemCpf = participantesReprovados.Where(p => p.Documento.Length < 11).ToList();
+
+            var rangeTituloAprovados = sheet.Range($"A{linha}:T{linha}");
+            rangeTituloAprovados.Merge();
+            rangeTituloAprovados.Value = "PARTICIPANTES APROVADOS";
+            rangeTituloAprovados.Style.Font.Bold = true;
+            rangeTituloAprovados.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeTituloAprovados.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            rangeTituloAprovados.Style.Fill.BackgroundColor = _corFundoTitulo;
+            rangeTituloAprovados.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+            rangeTituloAprovados.Style.Font.FontSize = 14;
+            sheet.Row(linha).Height = 30;
+            linha++;
+
+            RenderizarTabelaParticipantes(sheet, ref linha, ref indice, aprovadosSemCpf);
+            RenderizarTabelaParticipantes(sheet, ref linha, ref indice, aprovadosComCpf);
+
+            var rangeTituloReprovados = sheet.Range($"A{linha}:T{linha}");
+            rangeTituloReprovados.Merge();
+            rangeTituloReprovados.Value = "PARTICIPANTES DESISTENTES E REPROVADOS";
+            rangeTituloReprovados.Style.Font.Bold = true;
+            rangeTituloReprovados.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeTituloReprovados.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            rangeTituloReprovados.Style.Fill.BackgroundColor = _corFundoTitulo;
+            rangeTituloReprovados.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+            rangeTituloReprovados.Style.Font.FontSize = 14;
+            sheet.Row(linha).Height = 30;
+            linha++;
+
+            RenderizarTabelaParticipantes(sheet, ref linha, ref indice, reprovadosSemCpf);
+            RenderizarTabelaParticipantes(sheet, ref linha, ref indice, reprovadosComCpf);
+        }
+        private void RenderizarTabelaParticipantes(IXLWorksheet sheet, ref int linha, ref int indice, List<DadosParticipante> participantes)
+        {
+            var temCpf = participantes.Any(p => p.Documento.Length >= 11);
+            var tituloColunaDocumento = temCpf ? "CPF" : "REGISTRO FUNCIONAL";
+            var tituloColunaNome = temCpf ? "RELAÇÃO DE PARTICIPANTES DA REDE PARCEIRA" : "RELAÇÃO DE PARTICIPANTES EXCLUSIVAMENTE DA REDE MUNICIPAL DE ENSINO";
+
+            // Cabeçalho da Tabela
+            ConfigurarLabel(sheet, linha, "A", "Nº", true, XLBorderStyleValues.Thick, XLAlignmentHorizontalValues.Center);
+            ConfigurarLabel(sheet, linha, "B:C", tituloColunaDocumento, true, XLBorderStyleValues.Thick, XLAlignmentHorizontalValues.Center);
+            ConfigurarLabel(sheet, linha, "D:N", tituloColunaNome, true, XLBorderStyleValues.Thick, XLAlignmentHorizontalValues.Center);
+            ConfigurarLabel(sheet, linha, "O", "FREQUÊNCIA (%)", true, XLBorderStyleValues.Thick, XLAlignmentHorizontalValues.Center);
+            ConfigurarLabel(sheet, linha, "P", "ATIVIDADE OBRIGATÓRIA S/N", true, XLBorderStyleValues.Thick, XLAlignmentHorizontalValues.Center);
+            ConfigurarLabel(sheet, linha, "Q:R", "CONCEITO FINAL", true, XLBorderStyleValues.Thick, XLAlignmentHorizontalValues.Center);
+            ConfigurarLabel(sheet, linha, "S:T", "NÚMERO DE REGISTRO DO CERTIFICADO", true, XLBorderStyleValues.Thick, XLAlignmentHorizontalValues.Center);
+            // O texto deve quebrar linha se for muito grande
+            sheet.Row(linha).Height = 45;
+            sheet.Row(linha++).Style.Alignment.WrapText = true;
+
+            // Linhas de Dados
+            foreach (var participante in participantes)
+            {
+                ConfigurarLabel(sheet, linha, "A", (++indice).ToString(), false, XLBorderStyleValues.Thin, XLAlignmentHorizontalValues.Center);
+                var rangeDocumento = sheet.Range($"B{linha}:C{linha}");
+                rangeDocumento.Merge();
+                rangeDocumento.Value = participante.Documento;
+                rangeDocumento.Style.Font.Bold = true;
+                rangeDocumento.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                rangeDocumento.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeDocumento.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                var rangeNome = sheet.Range($"D{linha}:N{linha}");
+                rangeNome.Merge();
+                rangeNome.Value = participante.Nome;
+                rangeNome.Style.Font.Bold = true;
+                rangeNome.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeNome.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                var rangeFrequencia = sheet.Range($"O{linha}");
+                rangeFrequencia.Value = participante.Frequencia.ToString("F2") + "%";
+                rangeFrequencia.Style.Font.Bold = true;
+                rangeFrequencia.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                rangeFrequencia.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeFrequencia.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+                var rangeAtividadeObrigatoria = sheet.Range($"P{linha}");
+                rangeAtividadeObrigatoria.Value = participante.Obrigatoria ? "S" : "N";
+                rangeAtividadeObrigatoria.Style.Font.Bold = true;
+                rangeAtividadeObrigatoria.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                rangeAtividadeObrigatoria.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeAtividadeObrigatoria.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+                var rangeConceitoFinal = sheet.Range($"Q{linha}:R{linha}");
+                rangeConceitoFinal.Merge();
+                rangeConceitoFinal.Value = participante.ConceitoFinal;
+                rangeConceitoFinal.Style.Font.Bold = true;
+                rangeConceitoFinal.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                rangeConceitoFinal.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeConceitoFinal.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+                var rangeNumeroCertificado = sheet.Range($"S{linha}:T{linha}");
+                rangeNumeroCertificado.Merge();
+                rangeNumeroCertificado.Value = participante.NumeroCertificado;
+                rangeNumeroCertificado.Style.Font.Bold = true;
+                rangeNumeroCertificado.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                rangeNumeroCertificado.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                rangeNumeroCertificado.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                // Borda Inferior da Linha
+                var rangeLinhaAtual = sheet.Range($"A{linha}:T{linha}");
+                rangeLinhaAtual.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                linha++;
+            }
+        }
+        private void RenderizarBlocoAssinaturas(IXLWorksheet sheet, ref int linha)
+        {
+            linha++;
+            RenderizarAssinatura(sheet, ref linha, 2, "Responsável da Área Promotora pela documentação");
+            RenderizarAssinatura(sheet, ref linha, 12, "Responsável da Área Promotora por conferir a documentação");
+
+            sheet.Row(linha + 3).Height = 70;
+        }
+        private void RenderizarAssinatura(IXLWorksheet sheet, ref int linha, int colunaComeco, string titulo)
+        {
+            var colunaFinal = colunaComeco + 8;
+            var rangeTitulo = sheet.Range(linha, colunaComeco, linha, colunaFinal);
+            rangeTitulo.Merge();
+            rangeTitulo.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            rangeTitulo.Value = titulo;
+            rangeTitulo.Style.Font.Bold = true;
+            rangeTitulo.Style.Font.FontSize = 9;
+            rangeTitulo.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            rangeTitulo.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            var rangeNome = sheet.Range(linha + 1, colunaComeco, linha + 1, colunaFinal);
+            rangeNome.Merge();
+            rangeNome.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            rangeNome.Value = "NOME/RF DO RESPONSÁVEL:";
+            rangeNome.Style.Font.Bold = true;
+            rangeNome.Style.Font.FontSize = 9;
+            rangeNome.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+
+            var rangeAssinatura = sheet.Range(linha + 2, colunaComeco, linha + 3, colunaFinal);
+            rangeAssinatura.Merge();
+            rangeAssinatura.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            rangeAssinatura.Value = "ASSINATURA / CARIMBO:";
+            rangeAssinatura.Style.Font.Bold = false;
+            rangeAssinatura.Style.Font.FontSize = 9;
+            rangeAssinatura.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            rangeTitulo.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+
+            var rangeBlocoAssinatura = sheet.Range(linha, colunaComeco, linha + 3, colunaFinal);
+            rangeBlocoAssinatura.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+        }
 
         private void ConfigurarCheck(IXLWorksheet sheet, int linha, string coluna, bool marcado)
         {
@@ -545,5 +839,353 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
         {
             coluna.Width = cm * FatorCmParaExcel;
         }
+
+        private readonly List<DadosParticipante> participantes = new List<DadosParticipante>
+            {
+                // Participantes Aprovados
+                new DadosParticipante
+                {
+                    Nome = "Maria Cristina Barboza Ribeiro Chaves",
+                    Documento = "7807571",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23284",
+                    Aprovado = true
+                },
+                new DadosParticipante
+                {
+                    Nome = "Maria Isabel De La Torre Santos",
+                    Documento = "6716423",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23285",
+                    Aprovado = true
+                },
+                new DadosParticipante
+                {
+                    Nome = "Maria Luisa do Nascimento Quandt",
+                    Documento = "7459653",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23286",
+                    Aprovado = true
+                },
+                new DadosParticipante
+                {
+                    Nome = "PATRICIA KITAZAWA DE SOUZA SANTOS",
+                    Documento = "8097143",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23287",
+                    Aprovado = true
+                },
+                new DadosParticipante
+                {
+                    Nome = "Rita de Cássia Ferreira de Lemos",
+                    Documento = "6299669588",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23288",
+                    Aprovado = true
+                },
+                new DadosParticipante
+                {
+                    Nome = "Tania Regina Aparecida dos Santos Vogel",
+                    Documento = "83702900519",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23289",
+                    Aprovado = true
+                },
+                new DadosParticipante
+                {
+                    Nome = "Tatiane Marli Oliveira Ramalho dos Santos",
+                    Documento = "81951029588",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23290",
+                    Aprovado = true
+                },
+                new DadosParticipante
+                {
+                    Nome = "Yolanda Maria Aparecida Castro",
+                    Documento = "72116435888",
+                    Frequencia = 100,
+                    Obrigatoria = true,
+                    ConceitoFinal = "S",
+                    NumeroCertificado = "23291",
+                    Aprovado = true
+                },
+
+                // Participantes Desistentes e Reprovados
+                new DadosParticipante
+                {
+                    Nome = "Maria Amélia Quadrado",
+                    Documento = "5412355",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Maria Aparecida Reginato Viana",
+                    Documento = "8542154",
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Maria de Fátima Borges de Oliveira",
+                    Documento = "9854211",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Marília Clotildes Silva Magalhães",
+                    Documento = "6541852",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Marina Matias de Menezes",
+                    Documento = "1234567",
+                    Frequencia = 25,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Marisa de Almeida Pedroso Diz",
+                    Documento = "7654321",
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Marta Ferreira Marques",
+                    Documento = "2345678",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Michele Renata Morelli Acquafreda",
+                    Documento = "8765432",//
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Michelle Weinberger Coutinho Silva",
+                    Documento = "81951029590",
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                // Início da Relação de Participantes da Rede Parceira
+                new DadosParticipante
+                {
+                    Nome = "Nilma da Silva Oliveira",
+                    Documento = "82835675988",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Patrícia Gomes de Miranda",
+                    Documento = "79206285984",
+                    Frequencia = 50,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "***",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Regiane Veschi",
+                    Documento = "82835675989",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "RENATO HIDEO CAETANO DA SILVA",
+                    Documento = "79206285985",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Rita de Cassia Pereira Xavier de Araujo",
+                    Documento = "82835675990",
+                    Frequencia = 50,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Rosane Nunes Rodrigues",
+                    Documento = "79206285986",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Rosangela Tomini Barbosa",
+                    Documento = "82835675991",
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "ROSILENE DOS SANTOS PEREIRA",
+                    Documento = "79206285987",
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Sandra Cristina Lima da Silva",
+                    Documento = "82835675992",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Sandra de Araújo Muniz Lopes",
+                    Documento = "79206285988",
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Simeia de Matos Oliveira",
+                    Documento = "82835675993",
+                    Frequencia = 25,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Tatiana Domingues Macarrão",
+                    Documento = "79206285989",
+                    Frequencia = 50,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Tatiana Monteiro Raquel",
+                    Documento = "82835675994",
+                    Frequencia = 85,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "THUANE DO NASCIMENTO AMORIM NOGUEIRA",
+                    Documento = "79206285990",
+                    Frequencia = 25,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Valéria Azambuja Pereira",
+                    Documento = "82835675995",
+                    Frequencia = 25,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Vanda Michele Costa de Souza Lima",
+                    Documento = "79206285991",
+                    Frequencia = 25,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                },
+                new DadosParticipante
+                {
+                    Nome = "Vinicius Agnellos Silva",
+                    Documento = "82835675996",
+                    Frequencia = 0,
+                    Obrigatoria = false,
+                    ConceitoFinal = "NS",
+                    NumeroCertificado = "",
+                    Aprovado = false
+                }
+            };
     }
 }
