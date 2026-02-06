@@ -134,6 +134,9 @@ namespace SME.SR.IoC
 
             services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
             services.AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>();
+            services.AddSingleton<IBlocoRegentesGerador, BlocoRegentesGerador>();
+            services.AddSingleton<IBlocoAlunosGerador, BlocoAlunosGerador>();
+            services.AddSingleton<IBlocoAssinaturaGerador, BlocoAssinaturaGerador>();
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)

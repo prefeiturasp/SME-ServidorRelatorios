@@ -31,14 +31,16 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
             // Observações
             RenderizarObservacao(sheet, ref linha, dados);
 
-            // Fechamento visual do cabeçalho
-            var linhaFinalCabecalho = linha-1;
-            var rangeCabecalho = sheet.Range($"A6:T{linhaFinalCabecalho}");
-            rangeCabecalho.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
-            rangeCabecalho.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            sheet.Rows(6, linhaFinalCabecalho).Height = 32;
+            FinalizarEstiloCabecalho(sheet, linhaInicial, linha - 1);
 
             return linha;
+        }
+        private static void FinalizarEstiloCabecalho(IXLWorksheet sheet, int linhaInicial, int linhaFinal)
+        {
+            var range = sheet.Range(linhaInicial, 1, linhaFinal, 20); // A até T
+            range.Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
+            range.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            sheet.Rows(linhaInicial, linhaFinal).Height = 32;
         }
 
         private static void RenderizarLinhaOpcoes(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
@@ -46,70 +48,37 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
             // Linha 6 - Opções com Checkboxes
             sheet.Range(linha, 1, linha, 20).Style.Border.OutsideBorder = XLBorderStyleValues.Thick;
 
-            // Curso
-            sheet.Cell(linha, 1).ConfigurarCheckbox(dados.EhCurso); // A
-            sheet.Range(linha, 2, linha, 2).ConfigurarLabelComFundo("CURSO"); // B
+            // --- GRUPO 1: TIPO FORMAÇÃO ---
+            RenderizarOpcaoCheckbox(sheet, linha, 1, "CURSO", dados.TipoFormacao == TipoFormacaoRelatorioCodaf.Curso);
+            RenderizarSeparadorOu(sheet, linha, 3);
+            RenderizarOpcaoCheckbox(sheet, linha, 4, "EVENTO", dados.TipoFormacao == TipoFormacaoRelatorioCodaf.Evento,
+                colsLabel: 2, bordaDireita: XLBorderStyleValues.Thick);
 
-            sheet.Cell(linha, 3).Value = "OU"; // C
-            sheet.Cell(linha, 3).EstilizarValor();
+            // --- GRUPO 2: MODALIDADE ---
+            RenderizarOpcaoCheckbox(sheet, linha, 7, "A DISTÂNCIA", dados.Modalidade == ModalidadeRelatorioCodaf.Distancia,
+                colsLabel: 2, bordaDireita: XLBorderStyleValues.Thin);
+            RenderizarOpcaoCheckbox(sheet, linha, 10, "HÍBRIDO", dados.Modalidade == ModalidadeRelatorioCodaf.Hibrido,
+                colsLabel: 1, bordaDireita: XLBorderStyleValues.Thin);
+            RenderizarOpcaoCheckbox(sheet, linha, 12, "PRESENCIAL", dados.Modalidade == ModalidadeRelatorioCodaf.Presencial,
+                colsLabel: 1, bordaDireita: XLBorderStyleValues.Thick);
 
-            // Evento
-            sheet.Cell(linha, 4).ConfigurarCheckbox(dados.EhEvento); // D
-            var rangeEvento = sheet.Range(linha, 5, linha, 6); // E:F
-            rangeEvento.Merge();
-            rangeEvento.ConfigurarLabelComFundo("EVENTO");
-            rangeEvento.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-
-            // A distância
-            sheet.Cell(linha, 7).ConfigurarCheckbox(dados.EhDistancia); // G
-            var rangeDistancia = sheet.Range(linha, 8, linha, 9); // H:I
-            rangeDistancia.Merge();
-            rangeDistancia.ConfigurarLabelComFundo("A DISTÂNCIA");
-            rangeDistancia.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-
-            // Híbrido
-            sheet.Cell(linha, 10).ConfigurarCheckbox(dados.EhHibrido); // J
-            var cellHibrido = sheet.Cell(linha, 11); // K
-            cellHibrido.ConfigurarLabelComFundo("HÍBRIDO");
-            cellHibrido.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-
-            // Presencial
-            sheet.Cell(linha, 12).ConfigurarCheckbox(dados.EhPresencial); // L
-            var cellPresencial = sheet.Cell(linha, 13); // M
-            cellPresencial.ConfigurarLabelComFundo("PRESENCIAL");
-            cellPresencial.Style.Border.RightBorder = XLBorderStyleValues.Thick;
-
-            // Com Certificação
-            sheet.Cell(linha, 14).ConfigurarCheckbox(dados.ComCertificacao); // N
-            var rangeComCertificacao = sheet.Range(linha, 15, linha, 16); // O:P
-            rangeComCertificacao.Merge();
-            rangeComCertificacao.ConfigurarLabelComFundo("COM CERTIFICAÇÃO");
-
-            sheet.Cell(linha, 17).Value = "OU"; // Q
-            sheet.Cell(linha, 17).EstilizarValor();
-
-            // Sem Certificação
-            sheet.Cell(linha, 18).ConfigurarCheckbox(dados.SemCertificacao); // R
-            var rangeSemCertificacao = sheet.Range(linha, 19, linha, 20); // S:T
-            rangeSemCertificacao.Merge();
-            rangeSemCertificacao.ConfigurarLabelComFundo("SEM CERTIFICAÇÃO");
+            // --- GRUPO 3: CERTIFICAÇÃO ---
+            RenderizarOpcaoCheckbox(sheet, linha, 14, "COM CERTIFICAÇÃO", dados.TipoCertificacao == TipoCertificacaoRelatorioCodaf.ComCertificacao,
+                colsLabel: 2);
+            RenderizarSeparadorOu(sheet, linha, 17);
+            RenderizarOpcaoCheckbox(sheet, linha, 18, "SEM CERTIFICAÇÃO", dados.TipoCertificacao == TipoCertificacaoRelatorioCodaf.SemCertificacao,
+                colsLabel: 2);
             linha++;
 
         }
 
         private static void RenderizarDadosDaFormação(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
-            // Linha 7 - Área Promotora
-            CriarCampoChaveValor(sheet, linha++, "A:B", "ÁREA PROMOTORA:", "C:T", dados.AreaPromotora, bordaDireitaValor: true);
-            var rangeLinha7 = sheet.Range(ObterRangeString("C:T", linha-1));
-            rangeLinha7.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            // Layout: Label A:B | Valor C:T
+            CriarLinhaPadrao(sheet, linha++, "ÁREA PROMOTORA:", dados.AreaPromotora, bordaDireitaGrossa: true, alinharEsquerda: true);
+            CriarLinhaPadrao(sheet, linha++, "NOME DA FORMAÇÃO:", dados.NomeFormacao, bordaDireitaGrossa: true, alinharEsquerda: true);
 
-            // Linha 8 - Nome Formação
-            CriarCampoChaveValor(sheet, linha++, "A:B", "NOME DA FORMAÇÃO:", "C:T", dados.NomeFormacao, bordaDireitaValor: true);
-            var rangeLinha8 = sheet.Range(ObterRangeString("C:T", linha - 1));
-            rangeLinha8.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-
-            // Linha 9 - Homologação e Código
+            // Linha Mista
             CriarCampoChaveValor(sheet, linha, "A:B", "HOMOLOGAÇÃO:", "C:F", dados.NumeroHomologacao.ToString());
             CriarCampoChaveValor(sheet, linha++, "G:J", "CÓDIGO DO EVENTO (SIGPEC):", "K:T", dados.CodigoEventoSigpec.ToString(), bordaDireitaValor: true);
         }
@@ -131,7 +100,7 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
             int totalItens = retificacoes.Any() ? retificacoes.Count : 1;
             int qtdLinhas = (int)Math.Ceiling(totalItens / 3.0); // 3 slots por linha
             int linhaFinal = linhaInicial + qtdLinhas - 1;
-            linha = linhaFinal + 1;
+            linha += qtdLinhas;
 
             // Label Lateral Mesclada
             var rangeLateral = sheet.Range(linhaInicial, 1, linhaFinal, 2); // A:B
@@ -155,27 +124,17 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
 
         private static void RenderizarDadosAulas(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
-            // Linha "12" - Dados das Aulas
-            var dataInicio = dados.DataPeriodoRealizacaoInicio.ToString("dd/MM");
-            var dataFim = dados.DataPeriodoRealizacaoFim.ToString("dd/MM/yyyy");
-            CriarCampoChaveValor(sheet, linha, "A:B", "PERÍODO DE REALIZAÇÃO:", "C:G", $"{dataInicio} a {dataFim}");
-            
-            var lista = dados.DataDasAulasSincronas
-                 ?.Select(d => d.ToString("dd/MM"))
-                 .ToList() ?? new List<string>();
-            var datasAulas = lista.Count switch
-            {
-                0 => "",
-                1 => lista[0],
-                _ => $"{string.Join(", ", lista.Take(lista.Count - 1))} e {lista[^1]}"
-            };
-            CriarCampoChaveValor(sheet, linha++, "H:L", "DATAS DAS AULAS SÍNCRONAS/ PRESENCIAIS:", "M:T", datasAulas);
+            var periodo = $"{dados.DataPeriodoRealizacaoInicio:dd/MM} a {dados.DataPeriodoRealizacaoFim:dd/MM/yyyy}";
+            CriarCampoChaveValor(sheet, linha, "A:B", "PERÍODO DE REALIZAÇÃO:", "C:G", periodo);
+
+            string textoDatas = FormatarDatasAulas(dados.DataDasAulasSincronas);
+            CriarCampoChaveValor(sheet, linha++, "H:L", "DATAS DAS AULAS SÍNCRONAS/ PRESENCIAIS:", "M:T", textoDatas);
         }
 
         private static void RenderizarCargaHoraria(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
             // Linha "13" - Carga Horária
-            CriarCampoChaveValor(sheet, linha, "A:B", "CARGA HORÁRIA TOTAL:", "C:E", dados.CargaHorariaTotal.ToString()+'h', bordaDireitaValor: true);
+            CriarCampoChaveValor(sheet, linha, "A:B", "CARGA HORÁRIA TOTAL:", "C:E", $"{dados.CargaHorariaTotal}h", bordaDireitaValor: true);
             CriarCampoChaveValor(sheet, linha, "F:I", "CARGA HORÁRIA A DISTÂNCIA:", "J:L", dados.CargaHorariaDistancia.ToString(), bordaDireitaValor: true);
             CriarCampoChaveValor(sheet, linha++, "M:P", "CARGA PRESENCIAL:", "Q:T", dados.CargaHorariaPresencial.ToString());
         }
@@ -202,49 +161,91 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
         private static void RenderizarObservacao(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
             // Linha "17" de Observações
-            CriarCampoChaveValor(sheet, linha++, "A:B", "OBSERVAÇÕES:", "C:T", dados.Observacao);
+            CriarLinhaPadrao(sheet, linha++, "OBSERVAÇÕES:", dados.Observacao);
+        }
+
+        private static void RenderizarOpcaoCheckbox(IXLWorksheet sheet, int linha, int colCheck, string label, bool marcado,
+            int colsLabel = 1, XLBorderStyleValues bordaDireita = XLBorderStyleValues.None)
+        {
+            // Checkbox
+            sheet.Cell(linha, colCheck).ConfigurarCheckbox(marcado);
+
+            // Label
+            var colInicioLabel = colCheck + 1;
+            var colFimLabel = colInicioLabel + colsLabel - 1;
+            var rangeLabel = sheet.Range(linha, colInicioLabel, linha, colFimLabel);
+
+            if (colsLabel > 1) rangeLabel.Merge();
+
+            rangeLabel.ConfigurarLabelComFundo(label);
+
+            if (bordaDireita != XLBorderStyleValues.None)
+                rangeLabel.Style.Border.RightBorder = bordaDireita;
+        }
+
+        private static void RenderizarSeparadorOu(IXLWorksheet sheet, int linha, int col)
+        {
+            var cell = sheet.Cell(linha, col);
+            cell.ConfigurarLabelComFundo("OU");
         }
 
         private static void RenderizarSlotRetificacao(IXLWorksheet sheet, int linha, int slot, RetificacaoRelatorioCodafDto dto)
         {
-            string colLabelData = slot == 1 ? "C" : (slot == 2 ? "I" : "N");
-            string colValData = slot == 1 ? "D:E" : (slot == 2 ? "J:K" : "O:P");
-            string colLabelPag = slot == 1 ? "F:G" : (slot == 2 ? "L" : "Q:R");
-            string colValPag = slot == 1 ? "H" : (slot == 2 ? "M" : "S:T");
+            var (colLblData, colValData, colLblPag, colValPag) = slot switch
+            {
+                1 => ("C", "D:E", "F:G", "H"),
+                2 => ("I", "J:K", "L", "M"),
+                _ => ("N", "O:P", "Q:R", "S:T")
+            };
 
-            CriarCampoChaveValor(sheet, linha, colLabelData, "DATA:", colValData, dto?.Data.ToString("dd/MM/yyyy") ?? "");
-            CriarCampoChaveValor(sheet, linha, colLabelPag, "PÁGINA:", colValPag, dto?.NumeroPagina.ToString() ?? "");
+            var dataTexto = dto?.Data.ToString("dd/MM/yyyy") ?? "";
+            var pagTexto = dto?.NumeroPagina.ToString() ?? "";
+
+            CriarCampoChaveValor(sheet, linha, colLblData, "DATA:", colValData, dataTexto);
+            CriarCampoChaveValor(sheet, linha, colLblPag, "PÁGINA:", colValPag, pagTexto);
         }
+
+        private static string FormatarDatasAulas(List<DateTime> datas)
+        {
+            if (datas == null || !datas.Any()) return "";
+
+            var datasFormatadas = datas.Select(d => d.ToString("dd/MM")).ToList();
+            if (datasFormatadas.Count == 1) return datasFormatadas[0];
+
+            var todasMenosUltima = string.Join(", ", datasFormatadas.Take(datasFormatadas.Count - 1));
+            var ultima = datasFormatadas.Last();
+            return $"{todasMenosUltima} e {ultima}";
+        }
+
+        private static void CriarLinhaPadrao(IXLWorksheet sheet, int linha, string label, string valor,
+            bool bordaDireitaGrossa = false, bool alinharEsquerda = false)
+        {
+            CriarCampoChaveValor(sheet, linha, "A:B", label, "C:T", valor, bordaDireitaValor: bordaDireitaGrossa);
+            if (alinharEsquerda)
+            {
+                sheet.ObterRange("C:T", linha).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            }
+        }
+
         private static void CriarCampoChaveValor(IXLWorksheet sheet, int linha,
             string colsLabel, string textoLabel,
             string colsValor, string textoValor,
             bool labelNegrito = false, bool bordaDireitaValor = false)
         {
-            var rangeLabel = sheet.Range(ObterRangeString(colsLabel, linha));
-            if (colsLabel.Contains(':')) rangeLabel.Merge();
-            rangeLabel.Value = textoLabel;
+            var rangeLabel = sheet.ObterRange(colsLabel, linha);
+            rangeLabel.ConfigurarLabelComFundo(textoLabel);
             rangeLabel.EstilizarLabel(negrito: labelNegrito);
             rangeLabel.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             rangeLabel.Style.Border.OutsideBorderColor = XLColor.Black;
 
             if (!string.IsNullOrEmpty(colsValor))
             {
-                var rangeValor = sheet.Range(ObterRangeString(colsValor, linha));
-                if (colsValor.Contains(':')) rangeValor.Merge();
+                var rangeValor = sheet.ObterRange(colsValor, linha);
                 rangeValor.Value = textoValor;
-                rangeValor.EstilizarValor(bordaDireita: bordaDireitaValor);
-                rangeValor.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                rangeValor.Style.Border.OutsideBorderColor = XLColor.Black;
+                rangeValor.EstilizarValor(bordaDireitaValor ? XLBorderStyleValues.Thin : XLBorderStyleValues.None, centralizar: true);
+                rangeValor.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                rangeValor.Style.Border.RightBorder = XLBorderStyleValues.Thin;
             }
-        }
-        private static string ObterRangeString(string cols, int linha)
-        {
-            if (cols.Contains(':'))
-            {
-                var partes = cols.Split(':');
-                return $"{partes[0]}{linha}:{partes[1]}{linha}";
-            }
-            return $"{cols}{linha}";
         }
     }
 }
