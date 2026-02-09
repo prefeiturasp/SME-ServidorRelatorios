@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
 
 namespace SME.SR.Infra.Excel.Codaf.Gerador
 {

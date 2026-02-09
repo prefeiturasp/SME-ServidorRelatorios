@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using SME.SR.Infra.Dtos.Codaf;
+using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
 using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Extensions.Codaf;
 

@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using SME.SR.Infra.Dtos.Codaf;
+using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
 using SME.SR.Infra.Extensions.Codaf;
 using System;
 using System.Collections.Generic;
@@ -97,7 +98,7 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
         {
             // Linha 11 em diante - Retificações
             var linhaInicial = linha;
-            int totalItens = retificacoes.Any() ? retificacoes.Count : 1;
+            int totalItens = retificacoes != null && retificacoes.Any() ? retificacoes.Count : 1;
             int qtdLinhas = (int)Math.Ceiling(totalItens / 3.0); // 3 slots por linha
             int linhaFinal = linhaInicial + qtdLinhas - 1;
             linha += qtdLinhas;

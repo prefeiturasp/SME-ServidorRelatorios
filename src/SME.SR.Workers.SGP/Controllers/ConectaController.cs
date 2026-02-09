@@ -37,10 +37,10 @@ namespace SME.SR.Workers.SGP.Controllers
             return File(resultado, "application/pdf", "certificado-codaf.pdf");
         }
 
-        [HttpPost("gerar-planilha-codaf")]
-        public async Task<IActionResult> GerarPlanilhaCodaf([FromBody] RelatorioCodafDto request, [FromServices] IMediator mediator)
+        [HttpPost("codaf/{codafId:long}/gerar-planilha")]
+        public async Task<IActionResult> GerarPlanilhaCodaf(long codafId, [FromServices] IMediator mediator)
         {
-            var resultado = await mediator.Send(new GerarPlanilhaCodafCommand(request));
+            var resultado = await mediator.Send(new GerarPlanilhaCodafCommand(codafId));
             return File(resultado, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"relatorio-codaf-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
         }
     }
