@@ -44,10 +44,10 @@ namespace SME.SR.IoC
         {
             var factory = new ConnectionFactory
             {
-                HostName = "10.50.1.209",
-                UserName = "usr_amcom",
-                Password = "AMcom20anos",
-                VirtualHost = "hom"
+                HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
+                UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
+                Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
             };
 
             var conexaoRabbit = factory.CreateConnection();
