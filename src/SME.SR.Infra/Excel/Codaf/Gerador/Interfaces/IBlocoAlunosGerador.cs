@@ -1,6 +1,6 @@
 ﻿using SME.SR.Infra.Dtos.Codaf;
 
-namespace SME.SR.Infra.Excel.Codaf.Gerador
+namespace SME.SR.Infra.Excel.Codaf.Gerador.Interfaces
 {
     public interface IBlocoAlunosGerador : IBlocoGerador<GrupoAlunosRelatorioCodafDto> { }
 }

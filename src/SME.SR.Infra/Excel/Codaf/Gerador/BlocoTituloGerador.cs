@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using ClosedXML.Excel.Drawings;
+using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
 using System;
 using System.Collections.Concurrent;
 using System.IO;

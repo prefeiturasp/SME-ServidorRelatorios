@@ -88,6 +88,11 @@ namespace SME.SR.Infra.Extensions.Codaf
             return range;
         }
 
+        public static string FormatarValorOuMascarar(this long valor)
+        {
+            return valor == 0 ? "***" : valor.ToString();
+        }
+
         public static string FormatarValorOuMascarar(this int valor)
         {
             return valor == 0 ? "***" : valor.ToString();

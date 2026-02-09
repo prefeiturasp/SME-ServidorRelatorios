@@ -13,14 +13,14 @@ namespace SME.SR.Workers.SGP.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            //var chaveApi = Environment.GetEnvironmentVariable(ChaveIntegracaoEnvironmentVariableName);
+            var chaveApi = Environment.GetEnvironmentVariable(ChaveIntegracaoEnvironmentVariableName);
 
-            //if (!context.HttpContext.Request.Headers.TryGetValue(ChaveIntegracaoHeader, out var chaveRecebida) ||
-            //    !chaveRecebida.Equals(chaveApi))
-            //{
-            //    context.Result = new UnauthorizedResult();
-            //    return;
-            //}
+            if (!context.HttpContext.Request.Headers.TryGetValue(ChaveIntegracaoHeader, out var chaveRecebida) ||
+                !chaveRecebida.Equals(chaveApi))
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
 
             await next();
         }

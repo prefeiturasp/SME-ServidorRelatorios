@@ -8,6 +8,6 @@
         public int PercentualFrequencia { get; set; }
         public bool AtividadeObrigatoria { get; set; }
         public string ConceitoFinal { get; set; }
-        public int CodigoCertificado { get; set; }
+        public long CodigoCertificado { get; set; }
     }
 }

@@ -107,7 +107,7 @@ namespace SME.SR.Data
             var query = new StringBuilder();
 
             query.AppendLine(@"SELECT p.id, ap.nome as NomeAreaPromotora, ap.tipo as TipoAreaPromotora, 
-                                     p.tipo_formacao as TipoFormacao, p.formato as Modalidade,
+                                     p.tipo_formacao as TipoFormacaoConecta, p.formato as Modalidade,
                                      p.justificativa, p.objetivos, p.conteudo_programatico as ConteudoProgramatico,
                                      p.procedimento_metodologico as Procedimentos, p.referencia as Referencias,
                                      p.descricao_atividade as DescricaoAtividade,
@@ -225,7 +225,7 @@ namespace SME.SR.Data
 
         private string ObterQueryEncontros()
         {
-            return @"SELECT pt.nome as Turma, pe.proposta_id, pe.tipo as TipoEncontro, 
+            return @"SELECT pt.nome as Turma, pe.proposta_id, pe.tipo as TipoEncontroConecta, 
                         pe.local, ped.data_inicio as DataInicio, ped.data_fim as DataFim, 
                         pe.hora_inicio as HoraInicio, pe.hora_fim as HoraFim 
                     FROM proposta_encontro pe
