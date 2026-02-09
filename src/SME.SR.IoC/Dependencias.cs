@@ -11,17 +11,22 @@ using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Application.Interfaces.UseCases;
 using SME.SR.Application.Services;
+using SME.SR.Application.Services.Codaf;
 using SME.SR.Application.UseCases;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.Conecta;
 using SME.SR.Data.Interfaces.ElasticSearch;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Repositories.Cache;
+using SME.SR.Data.Repositories.Conecta;
 using SME.SR.Data.Repositories.ElasticSearch;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
+using SME.SR.Infra.Excel.Codaf.Gerador;
+using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
 using SME.SR.JRSClient;
 using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Interfaces;
@@ -130,6 +135,14 @@ namespace SME.SR.IoC
             RegistrarServicos(services);
             RegistrarOptions(services, configuration);
             RegistrarServicoRelatorioAnaliticoSondagem(services);
+
+            services.AddScoped<IRelatorioCodafRepository, RelatorioCodafRepository>();
+            services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
+            services.AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>();
+            services.AddSingleton<IBlocoRegentesGerador, BlocoRegentesGerador>();
+            services.AddSingleton<IBlocoAlunosGerador, BlocoAlunosGerador>();
+            services.AddSingleton<IBlocoAssinaturaGerador, BlocoAssinaturaGerador>();
+            services.AddScoped<IGeradorRelatorioCodafService, GeradorRelatorioCodafService>();
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)

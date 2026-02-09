@@ -27,5 +27,19 @@ namespace SME.SR.Infra.Extensions
         {
             return filtro is "-99" || string.IsNullOrEmpty(filtro);
         }
+
+        public static int ConverterHoraMinutoParaInteiro(this string? horasTexto)
+        {
+            if (string.IsNullOrWhiteSpace(horasTexto)) return 0;
+
+            var partes = horasTexto.Split(':');
+            if (partes.Length != 2) return 0;
+
+            if (int.TryParse(partes[0], out int horas) && int.TryParse(partes[1], out int minutos))
+            {
+                return (horas * 60 + minutos) / 60;
+            }
+            return 0;
+        }
     }
 }
