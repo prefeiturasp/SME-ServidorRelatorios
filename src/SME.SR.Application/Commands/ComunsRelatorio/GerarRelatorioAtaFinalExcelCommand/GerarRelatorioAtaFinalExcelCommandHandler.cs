@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Sentry;
+using Sentry.Protocol;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -19,16 +21,21 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
+        private readonly string sentryDSN;
         private const int LINHA_CABECALHO_DRE = 6;
         private const int LINHA_CABECALHO_CICLO = 7;
 
         private const int LINHA_GRUPOS = 9;
         private const int LINHA_COMPONENTES = 10;
 
-        public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
+        public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila, IConfiguration configuration)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            sentryDSN = configuration.GetValue<string>("Sentry:DSN");
         }
 
         public async Task<Unit> Handle(GerarRelatorioAtaFinalExcelCommand request, CancellationToken cancellationToken)
@@ -85,8 +92,8 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
-                SentrySdk.CaptureException(ex);
-                throw ex;
+                LogSaveAs(ex, request.UsuarioRf);
+                throw;
             }
         }
 
@@ -250,6 +257,35 @@ namespace SME.SR.Application
             worksheet.Range(linha, celulaInicial, linha, final - 1).Merge();
 
             return final;
+        }
+
+        private bool SentryAtivo()
+        {
+            try
+            {
+                return SentrySdk.IsEnabled;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void LogSaveAs(Exception ex, string usuarioRf)
+        {
+            if (!SentryAtivo())
+            {
+                SentrySdk.Init(sentryDSN);
+            }
+
+            SentrySdk.WithScope(scope =>
+            {
+                scope.Level = SentryLevel.Error;
+                scope.SetTag("xlsx.saveas", "failed");
+                scope.SetExtra("usuarioRf", usuarioRf);
+
+                SentrySdk.CaptureException(ex);
+            });
         }
     }
 }
