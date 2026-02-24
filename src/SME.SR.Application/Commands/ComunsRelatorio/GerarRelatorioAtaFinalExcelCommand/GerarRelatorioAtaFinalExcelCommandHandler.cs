@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Sentry;
+using Sentry.Protocol;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
@@ -19,16 +21,21 @@ namespace SME.SR.Application
     {
         private readonly IMediator mediator;
         private readonly IServicoFila servicoFila;
+        private readonly string sentryDSN;
         private const int LINHA_CABECALHO_DRE = 6;
         private const int LINHA_CABECALHO_CICLO = 7;
 
         private const int LINHA_GRUPOS = 9;
         private const int LINHA_COMPONENTES = 10;
 
-        public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila)
+        public GerarRelatorioAtaFinalExcelCommandHandler(IMediator mediator, IServicoFila servicoFila, IConfiguration configuration)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            sentryDSN = configuration.GetValue<string>("Sentry:DSN");
         }
 
         public async Task<Unit> Handle(GerarRelatorioAtaFinalExcelCommand request, CancellationToken cancellationToken)
@@ -51,6 +58,8 @@ namespace SME.SR.Application
 
                     using (var workbook = new XLWorkbook())
                     {
+                        LogInfo($"Iniciando geração do relatório de Ata final de resultados - {dadosAgrupadosTurma?.ElementAtOrDefault(i)?.Key?.Turma ?? string.Empty} - Modalidade: {modalidade}", codigoCorrelacao, request.UsuarioRf);
+
                         await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbitSGP.RotaRelatorioCorrelacaoInserir, ExchangeRabbit.Sgp, codigoCorrelacao, request.UsuarioRf)));
 
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
@@ -73,6 +82,7 @@ namespace SME.SR.Application
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
+                        LogInfo($"Relatório de Ata final de resultados - {objetoExportacao?.Key?.Turma ?? string.Empty} - Modalidade: {modalidade} salvo com sucesso. Caminho: {caminhoParaSalvar}.xlsx", codigoCorrelacao, request.UsuarioRf);
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
@@ -85,8 +95,8 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
-                SentrySdk.CaptureException(ex);
-                throw ex;
+                LogError(ex, request.UsuarioRf);
+                throw;
             }
         }
 
@@ -250,6 +260,54 @@ namespace SME.SR.Application
             worksheet.Range(linha, celulaInicial, linha, final - 1).Merge();
 
             return final;
+        }
+
+        private bool SentryAtivo()
+        {
+            try
+            {
+                return SentrySdk.IsEnabled;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void VerificarSentry()
+        {
+            if (!SentryAtivo())
+            {
+                SentrySdk.Init(sentryDSN);
+            }
+        }
+
+        private void LogInfo(string mensagem, Guid codigoCorrelacao, string usuarioRf)
+        {
+            VerificarSentry();
+
+            SentrySdk.WithScope(scope =>
+            {
+                scope.Level = SentryLevel.Info;
+                scope.SetExtra("codigoCorrelacao", codigoCorrelacao);
+                scope.SetExtra("usuarioRf", usuarioRf);
+
+                SentrySdk.CaptureMessage(mensagem);
+            });
+        }
+
+        private void LogError(Exception ex, string usuarioRf)
+        {
+            VerificarSentry();
+
+            SentrySdk.WithScope(scope =>
+            {
+                scope.Level = SentryLevel.Error;
+                scope.SetTag("xlsx.saveas", "failed");
+                scope.SetExtra("usuarioRf", usuarioRf);
+
+                SentrySdk.CaptureException(ex);
+            });
         }
     }
 }
