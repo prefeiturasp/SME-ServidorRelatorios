@@ -58,6 +58,8 @@ namespace SME.SR.Application
 
                     using (var workbook = new XLWorkbook())
                     {
+                        LogInfo($"Iniciando geração do relatório de Ata final de resultados - {dadosAgrupadosTurma?.ElementAtOrDefault(i)?.Key?.Turma ?? string.Empty} - Modalidade: {modalidade}", codigoCorrelacao, request.UsuarioRf);
+
                         await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbitSGP.RotaRelatorioCorrelacaoInserir, ExchangeRabbit.Sgp, codigoCorrelacao, request.UsuarioRf)));
 
                         var worksheet = workbook.Worksheets.Add(request.NomeWorkSheet);
@@ -80,6 +82,7 @@ namespace SME.SR.Application
                         var caminhoParaSalvar = Path.Combine(caminhoBase, $"relatorios", $"{codigoCorrelacao}");
 
                         workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
+                        LogInfo($"Relatório de Ata final de resultados - {objetoExportacao?.Key?.Turma ?? string.Empty} - Modalidade: {modalidade} salvo com sucesso. Caminho: {caminhoParaSalvar}.xlsx", codigoCorrelacao, request.UsuarioRf);
 
                         lstCodigosCorrelacao.Add(codigoCorrelacao, objetoExportacao.Key.Turma);
                     }
@@ -92,7 +95,7 @@ namespace SME.SR.Application
             }
             catch (Exception ex)
             {
-                LogSaveAs(ex, request.UsuarioRf);
+                LogError(ex, request.UsuarioRf);
                 throw;
             }
         }
@@ -271,12 +274,31 @@ namespace SME.SR.Application
             }
         }
 
-        private void LogSaveAs(Exception ex, string usuarioRf)
+        private void VerificarSentry()
         {
             if (!SentryAtivo())
             {
                 SentrySdk.Init(sentryDSN);
             }
+        }
+
+        private void LogInfo(string mensagem, Guid codigoCorrelacao, string usuarioRf)
+        {
+            VerificarSentry();
+
+            SentrySdk.WithScope(scope =>
+            {
+                scope.Level = SentryLevel.Info;
+                scope.SetExtra("codigoCorrelacao", codigoCorrelacao);
+                scope.SetExtra("usuarioRf", usuarioRf);
+
+                SentrySdk.CaptureMessage(mensagem);
+            });
+        }
+
+        private void LogError(Exception ex, string usuarioRf)
+        {
+            VerificarSentry();
 
             SentrySdk.WithScope(scope =>
             {
