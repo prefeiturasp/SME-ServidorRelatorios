@@ -4,7 +4,6 @@ namespace SME.SR.Infra.Dtos.NovoSondagem
 {
     public class FiltroRelatorioSondagemQuestionarioDto
     {
-        public string UsuarioLogadoNome { get; set; } = string.Empty;
         public string DreNome { get; set; } = string.Empty;
         public string UeNome { get; set; } = string.Empty;
         public string TurmaNome { get; set; } = string.Empty;

@@ -6,6 +6,13 @@
     var colunas = Model.Estudantes?
         .FirstOrDefault()?.Coluna?.ToList()
         ?? new List<ColunaQuestionarioDto>();
+
+    // Largura dinâmica das colunas de bimestre (IdCiclo = bimestre).
+    // Espaço fixo das 5 colunas estáticas:
+    //   N°(4.97) + Nome(23.09) + Raça(10.12) + Gênero(10.12) + LP(10.12) = 58.42%
+    // Espaço restante para os bimestres = 41.58% ÷ número de ciclos recebidos
+    int nColunas = colunas.Count > 0 ? colunas.Count : 1;
+    string larguraResp = (41.58 / nColunas).ToString("F2", System.Globalization.CultureInfo.InvariantCulture) + "%";
 }
 
 <div class="report-title">
@@ -14,6 +21,17 @@
 </div>
 
 <table class="main-table">
+    <colgroup>
+        <col style="width: 4.97%;" />
+        <col style="width: 23.09%;" />
+        <col style="width: 10.12%;" />
+        <col style="width: 10.12%;" />
+        <col style="width: 10.12%;" />
+        @for (int i = 0; i < nColunas; i++)
+        {
+            <col style="width: @larguraResp;" />
+        }
+    </colgroup>
     <thead>
         <tr>
             <th rowspan="2" class="col-num">N°</th>
@@ -21,7 +39,7 @@
             <th rowspan="2" class="col-raca">Raça</th>
             <th rowspan="2" class="col-genero">Gênero</th>
             <th rowspan="2" class="col-lp">LP como 2° língua?</th>
-            <th colspan="@colunas.Count">@Model.TituloTabelaRespostas</th>
+            <th colspan="@nColunas">@Model.TituloTabelaRespostas</th>
         </tr>
         <tr>
             @foreach (var coluna in colunas)
@@ -39,7 +57,7 @@
                     <td class="col-num">@estudante.NumeroAlunoChamada</td>
 
                     <td class="col-nome aluno-nome">
-                        @estudante.Nome
+                        @estudante.NomeRelatorio
                         @if (estudante.Aee || estudante.Pap || estudante.PossuiDeficiencia)
                         {
                             <div class="badges-container">

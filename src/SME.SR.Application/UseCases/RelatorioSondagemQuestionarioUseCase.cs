@@ -6,6 +6,7 @@ using SME.SR.Infra;
 using SME.SR.Infra.Dtos.NovoSondagem;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -29,21 +30,40 @@ namespace SME.SR.Application.UseCases
         {
             var filtro = filtroRelatorioDto.ObterObjetoFiltro<FiltroRelatorioSondagemQuestionarioDto>();
 
-            var dadosApi = await ObterDadosQuestionarioExterno(filtro);
+            var tarefaApi = ObterDadosQuestionarioExterno(filtro);
+            var tarefaUsuario = mediator.Send(new ObterNomeUsuarioPorLoginQuery(filtroRelatorioDto.UsuarioLogadoRF));
+
+            await Task.WhenAll(tarefaApi, tarefaUsuario);
+
+            var dadosApi = tarefaApi.Result;
+            var nomeUsuario = tarefaUsuario.Result;
 
             var pagina = new QuestionarioSondagemRelatorioDto
             {
                 AnoLetivo = filtro.AnoLetivo,
                 Dre = filtro.DreNome,
-                Semestre = $"{filtro.Semestre}º semestre",
+                Semestre = dadosApi.Semestre,
                 Turma = filtro.TurmaNome,
                 UnidadeEducacional = $"{filtro.UeCodigo} - {filtro.UeNome}",
                 Modalidade = filtro.ModalidadeNome,
                 Proficiencia = dadosApi.TituloTabelaRespostas,
                 DataImpressao = DateTime.Now,
-                Usuario = filtro.UsuarioLogadoNome,
+                Usuario = nomeUsuario,
                 TituloTabelaRespostas = dadosApi.TituloTabelaRespostas,
-                Estudantes = dadosApi.Estudantes
+
+                Estudantes = dadosApi.Estudantes?.Select(e => new EstudanteQuestionarioDto
+                {
+                    NumeroAlunoChamada = e.NumeroAlunoChamada,
+                    LinguaPortuguesaSegundaLingua = e.LinguaPortuguesaSegundaLingua,
+                    Codigo = e.Codigo,
+                    Raca = e.Raca,
+                    Genero = e.Genero,
+                    NomeRelatorio = e.NomeRelatorio,
+                    Pap = e.Pap,
+                    Aee = e.Aee,
+                    PossuiDeficiencia = e.PossuiDeficiencia,
+                    Coluna = e.Coluna
+                })
             };
 
             await mediator.Send(new GerarRelatorioSondagemQuestionarioHtmlParaPdfCommand(
