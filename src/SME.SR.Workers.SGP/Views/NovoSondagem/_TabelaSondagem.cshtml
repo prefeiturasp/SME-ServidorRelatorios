@@ -1,0 +1,109 @@
+﻿@using SME.SR.Infra.Dtos.NovoSondagem
+@using System.Linq
+@model QuestionarioSondagemRelatorioDto
+
+@{
+    var colunas = Model.Estudantes?
+        .FirstOrDefault()?.Coluna?.ToList()
+        ?? new List<ColunaQuestionarioDto>();
+}
+
+<div class="report-title">
+    <h1>Relatório da Sondagem</h1>
+    <h2>@Model.TituloTabelaRespostas</h2>
+</div>
+
+<table class="main-table">
+    <thead>
+        <tr>
+            <th rowspan="2" class="col-num">N°</th>
+            <th rowspan="2" class="col-nome">Nome</th>
+            <th rowspan="2" class="col-raca">Raça</th>
+            <th rowspan="2" class="col-genero">Gênero</th>
+            <th rowspan="2" class="col-lp">LP como 2° língua?</th>
+            <th colspan="@colunas.Count">@Model.TituloTabelaRespostas</th>
+        </tr>
+        <tr>
+            @foreach (var coluna in colunas)
+            {
+                <th class="col-resp">@coluna.DescricaoColuna</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Estudantes != null)
+        {
+            foreach (var estudante in Model.Estudantes)
+            {
+                <tr>
+                    <td class="col-num">@estudante.NumeroAlunoChamada</td>
+
+                    <td class="col-nome aluno-nome">
+                        @estudante.Nome
+                        @if (estudante.Aee || estudante.Pap || estudante.PossuiDeficiencia)
+                        {
+                            <div class="badges-container">
+                                @if (estudante.Aee)
+                                {
+                                    <img src="logoAEE.png" class="badge-icon" alt="AEE" />
+                                }
+                                @if (estudante.Pap)
+                                {
+                                    <img src="logoPAP.png" class="badge-icon" alt="PAP" />
+                                }
+                                @if (estudante.PossuiDeficiencia)
+                                {
+                                    <img src="logoAcessibilidade.png" class="badge-icon" alt="Deficiência" />
+                                }
+                            </div>
+                        }
+                    </td>
+
+                    <td class="col-raca">@estudante.Raca</td>
+                    <td class="col-genero">@estudante.Genero</td>
+
+                    <td class="col-lp">
+                        @if (estudante.LinguaPortuguesaSegundaLingua)
+                        {
+                            <span class="checkbox-lp checked">&#10003;</span>
+                        }
+                        else
+                        {
+                            <span class="checkbox-lp"></span>
+                        }
+                    </td>
+
+                    @foreach (var coluna in colunas)
+                    {
+                        var colunaEstudante = estudante.Coluna?
+                            .FirstOrDefault(c => c.IdCiclo == coluna.IdCiclo
+                                              && c.QuestaoSubrespostaId == coluna.QuestaoSubrespostaId);
+
+                        var opcaoResposta = colunaEstudante != null
+                            && colunaEstudante.Resposta?.OpcaoRespostaId != null
+                            && colunaEstudante.OpcaoResposta != null
+                            ? colunaEstudante.OpcaoResposta
+                                .FirstOrDefault(o => o.Id == colunaEstudante.Resposta.OpcaoRespostaId)
+                            : null;
+
+                        if (colunaEstudante?.Resposta == null)
+                        {
+                            <td class="col-resp"><span class="resposta-vazio">-</span></td>
+                        }
+                        else if (opcaoResposta == null)
+                        {
+                            <td class="col-resp"><span class="resposta-vazio">Vazio</span></td>
+                        }
+                        else
+                        {
+                            <td class="col-resp"
+                                style="background-color: @(opcaoResposta.CorFundo ?? "transparent"); color: @(opcaoResposta.CorTexto ?? "#333");">
+                                @(opcaoResposta.DescricaoOpcaoResposta ?? opcaoResposta.Legenda)
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        }
+    </tbody>
+</table>
