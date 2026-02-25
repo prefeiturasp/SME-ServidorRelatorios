@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.Testes.QueryHandlers
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{593BCB6A-CEC1-4EF2-98FD-DAA0AE6EEEA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.SR.Aplicacao.Teste", "testes\SME.SR.Aplicacao.Teste\SME.SR.Aplicacao.Teste.csproj", "{6F01C74B-631B-4588-9420-1DA782C806FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.SR.Aplicacao.Teste", "testes\SME.SR.Aplicacao.Teste\SME.SR.Aplicacao.Teste.csproj", "{6F01C74B-631B-4588-9420-1DA782C806FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

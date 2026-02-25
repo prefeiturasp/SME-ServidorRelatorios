@@ -335,6 +335,9 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioEncaminhamentosNaapaDetalhadoUseCase, RelatorioEncaminhamentosNAAPADetalhadoUseCase>();
             services.TryAddScoped<IRelatorioEncaminhamentosNAAPAUseCase, RelatorioEncaminhamentosNAAPAUseCase>();
             services.TryAddScoped<IRelatorioAnaliticoSondagemUseCase, RelatorioAnaliticoSondagemUseCase>();
+
+            services.TryAddScoped<IRelatorioSondagemQuestionarioUseCase, RelatorioSondagemQuestionarioUseCase>();
+
             services.TryAddScoped<IRelatorioListagemItineranciasUseCase, RelatorioListagemItineranciasUseCase>();
             services.TryAddScoped<IRelatorioFrequenciaControleMensalUseCase, RelatorioFrequenciaControleMensalUseCase>();
             services.TryAddScoped<IRelatorioListagemOcorrenciasUseCase, RelatorioListagemOcorrenciasUseCase>();

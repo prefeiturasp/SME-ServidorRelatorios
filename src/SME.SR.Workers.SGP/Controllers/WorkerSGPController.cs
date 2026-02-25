@@ -414,6 +414,14 @@ namespace SME.SR.Workers.SGP.Controllers
             return true;
         }
 
+        [HttpGet("relatorios/sondagem-questionario")]
+        [Action("relatorios/sondagem-questionario", typeof(IRelatorioSondagemQuestionarioUseCase))]
+        public async Task<bool> RelatorioSondagemQuestionario([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemQuestionarioUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
         [HttpGet("relatorios/listagem-itinerancias")]
         [Action("relatorios/listagem-itinerancias", typeof(IRelatorioListagemItineranciasUseCase))]
         public async Task<bool> ListarItinerancias([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioListagemItineranciasUseCase relatorioUseCase)

@@ -93,6 +93,7 @@ namespace SME.SR.Infra
         public const string RotaRelatoriosSolicitadosMapeamentoEstudante = "sr.relatorios.solicitados.mapeamentoestudante";
         public const string RotaRelatoriosSolicitadosBuscaAtiva = "sr.relatorios.solicitados.buscaativa";
         public const string RotaRelatoriosSolicitadosProdutividadeFrequencia = "sr.relatorios.solicitados.produtividade.frequencia";
+        public const string RotaRelatoriosSolicitadosSondagemQuestionario = "sr.relatorios.solicitados.sondagem.questionario";
     }
 
     public static class ArgumentosRabbitSR
