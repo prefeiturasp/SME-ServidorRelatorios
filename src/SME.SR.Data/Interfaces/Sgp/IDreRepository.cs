@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SME.SR.Data.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SR.Data
@@ -10,5 +11,6 @@ namespace SME.SR.Data
         Task<IEnumerable<Dre>> ObterTodas();
         Task<Dre> ObterPorId(long dreId);
         Task<DreUe> ObterDreUePorDreUeCodigo(string dreCodigo, string ueCodigo);
+        Task<DreUeNome> ObterNomeDreUePorUeCodigo(string ueCodigo);
     }
 }

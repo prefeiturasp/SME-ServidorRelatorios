@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
+using SME.SR.Application.Commands.Sondagem.EscritaTurma;
 using SME.SR.Application.Interfaces;
+using SME.SR.Application.Interfaces.UseCases;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
@@ -14,7 +17,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -481,6 +484,13 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpGet("relatorios/produtividade-frequencia")]
         [Action("relatorios/produtividade-frequencia", typeof(IRelatorioProdutividadeFrequenciaUseCase))]
         public async Task<bool> RelatorioProdutividadeFrequencia([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioProdutividadeFrequenciaUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+        [HttpGet("testeExcel")]
+        [Action("testeExcel", typeof(IRelatorioProdutividadeFrequenciaUseCase))]
+        public async Task<bool> testeExcel([FromQuery] FiltroRelatorioDto request, [FromServices] IGerarRelatorioSondagemPorTurmaEscritaUseCase useCase)
         {
             await useCase.Executar(request);
             return true;
