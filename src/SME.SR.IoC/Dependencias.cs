@@ -102,18 +102,6 @@ namespace SME.SR.IoC
             var jasperCookieHandler = new JasperCookieHandler() { CookieContainer = cookieContainer };
             services.AddSingleton(jasperCookieHandler);
 
-
-            services.AddHttpClient(name: "apiNovaSondagem", c =>
-            {
-                c.BaseAddress = new Uri(configuration.GetSection("UrlApiNovaSonsagem").Value);
-                c.DefaultRequestHeaders.Add("Accept", "application/json");
-                c.DefaultRequestHeaders.Add("x-api-sondagem-key", configuration.GetSection("ApiKeyNovaSondagemApi").Value);
-
-                if (configuration.GetSection("HttpClientTimeoutSecond").Value != null)
-                    c.Timeout = TimeSpan.FromSeconds(double.Parse(configuration.GetSection("HttpClientTimeoutSecond").Value));
-            });
-
-
             services.AddHttpClient<IExecucaoRelatorioService, ExecucaoRelatorioService>(c =>
             {
                 c.BaseAddress = new Uri(urlJasper);
@@ -344,7 +332,6 @@ namespace SME.SR.IoC
             services.TryAddScoped<IRelatorioPlanoAnualUseCase, RelatorioPlanoAnualUseCase>();
             services.TryAddScoped<IRelatorioMapeamentosEstudantesUseCase, RelatorioMapeamentosEstudantesUseCase>();
             services.TryAddScoped<IRelatorioProdutividadeFrequenciaUseCase, RelatorioProdutividadeFrequenciaUseCase>();
-            services.TryAddScoped<IGerarRelatorioSondagemPorTurmaEscritaUseCase, GerarRelatorioSondagemPorTurmaEscritaUseCase>();
 
             services.TryAddScoped<IRelatorioBuscasAtivasUseCase, RelatorioBuscasAtivasUseCase>();
             services.TryAddScoped<IRelatorioPropostaLaudaDePublicacaoUseCase, RelatorioPropostaLaudaDePublicacaoUseCase>();

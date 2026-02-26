@@ -18,5 +18,10 @@ namespace SME.SR.Infra.Dtos.NovoSondagem
         public int Semestre { get; set; }
         public string UeCodigo { get; set; } = string.Empty;
         public int? BimestreId { get; set; }
+        public int Tipo
+        {
+            get; set;
+        }
+
     }
 }

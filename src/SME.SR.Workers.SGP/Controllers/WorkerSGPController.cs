@@ -496,12 +496,5 @@ namespace SME.SR.Workers.SGP.Controllers
             await useCase.Executar(request);
             return true;
         }
-        [HttpGet("testeExcel")]
-        [Action("testeExcel", typeof(IRelatorioProdutividadeFrequenciaUseCase))]
-        public async Task<bool> testeExcel([FromQuery] FiltroRelatorioDto request, [FromServices] IGerarRelatorioSondagemPorTurmaEscritaUseCase useCase)
-        {
-            await useCase.Executar(request);
-            return true;
-        }
     }
 }

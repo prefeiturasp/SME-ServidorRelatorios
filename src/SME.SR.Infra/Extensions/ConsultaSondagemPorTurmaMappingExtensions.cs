@@ -1,6 +1,8 @@
 ﻿using SME.SR.Infra.Dtos.SondagemTurmaEscritaEF;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 
 namespace SME.SR.Infra.Extensions
 {
@@ -13,8 +15,9 @@ namespace SME.SR.Infra.Extensions
             string ue,
             string dre,
             string modalidade,
-            string nomeUsuarioSolicitacao)
+            string nomeUsuarioSolicitacao,string displayNameProficiencia)
         {
+
             return new EscritaEfTurmaSondagemCabecalhoExcelDto
             {
                 AnoLetivo = anoLetivo,
@@ -23,7 +26,7 @@ namespace SME.SR.Infra.Extensions
                 Ue = ue,
                 Dre = dre,
                 Modalidade = modalidade,
-                Proeficiencia = "Escrita",
+                Proeficiencia = displayNameProficiencia,
                 DataImpressao = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                 NomeUsuarioSolicitacao = nomeUsuarioSolicitacao,
                 CorpoRelatorio = source.Estudantes?

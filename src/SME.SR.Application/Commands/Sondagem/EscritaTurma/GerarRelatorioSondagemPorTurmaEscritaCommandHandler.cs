@@ -9,10 +9,10 @@ using SME.SR.Infra.Dtos.SondagemTurmaEscritaEF;
 using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +35,17 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             {
                 var dreUeNome = await ObterNomeUeDre(request.UeCodigo);
                 var turmaNome = await ObterTurma(request.TurmaId.ToString());
+                var proficiencia = (ProficienciaSondagemEnum)request.ProficienciaId;
+
+                var displayNameProficiencia = proficiencia
+                    .GetType()
+                    .GetMember(proficiencia.ToString())
+                    .First()
+                    .GetCustomAttribute<DisplayAttribute>()
+                    ?.GetName();
+
+                var exibirBimestre = request.BimestreId is null;
+                var usuarioSolicitacao = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
                 var dto = (await mediator.Send(new ConsultaSondagemPorTurmaQuery(request.TurmaId, request.ProficienciaId, request.ComponenteCurricularId, (int)request.Modalidade, request.Ano, request.AnoLetivo, request.Semestre, request.UeCodigo, request.BimestreId)))
                             .MapToEscritaEfTurmaSondagemCabecalhoExcelDto(
                                     request.AnoLetivo,
@@ -42,15 +53,16 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
                                     dreUeNome.UeNome,
                                     dreUeNome.DreNome,
                                     request.Modalidade.Name(),
-                                    request.NomeUsuarioSolicitacao
+                                    usuarioSolicitacao.NomeRelatorio,
+                                    displayNameProficiencia
                                 );
 
                 switch (request.Modalidade)
                 {
                     case Modalidade.EJA:
                     case Modalidade.Fundamental:
-                        GerarExcelEF(dto, request, request.CodigoCorrelacao, request.Modalidade);
-                        await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(string.Empty, "Relatório da Sondagem"), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
+                        GerarExcelEF(dto, request, request.CodigoCorrelacao, request.Modalidade, displayNameProficiencia);
+                        await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(string.Empty, "Relatório da Sondagem"), RotasRabbitSGP.RotaRelatoriosProntosSgp, RotasRabbitSR.RotaRelatoriosSolicitadosSondagemQuestionario, request.CodigoCorrelacao));
                         break;
                 }
                 return await Task.FromResult(Unit.Value);
@@ -75,7 +87,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             return XLColor.FromArgb(r, g, b);
         }
 
-        private void GerarExcelEF(EscritaEfTurmaSondagemCabecalhoExcelDto dto, GerarRelatorioSondagemPorTurmaEscritaCommand request, Guid codigoCorrelacao, Modalidade modalidade)
+        private void GerarExcelEF(EscritaEfTurmaSondagemCabecalhoExcelDto dto, GerarRelatorioSondagemPorTurmaEscritaCommand request, Guid codigoCorrelacao, Modalidade modalidade, string displayNameProficiencia)
         {
             using var workbook = new XLWorkbook();
             var sheet = workbook.AddWorksheet("Sondagem");
@@ -145,7 +157,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             linha++;
 
             var subtituloCell = sheet.Cell(linha, 1);
-            subtituloCell.Value = "Escrita";
+            subtituloCell.Value = displayNameProficiencia;
             subtituloCell.Style.Font.Bold = true;
             subtituloCell.Style.Font.FontSize = 12;
             subtituloCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -158,7 +170,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             {
                 var grupoEscrita = sheet.Range(linha, 6, linha, 7); 
                 grupoEscrita.Merge();
-                grupoEscrita.Value = "Escrita";
+                grupoEscrita.Value = displayNameProficiencia;
                 grupoEscrita.Style.Font.Bold = true;
                 grupoEscrita.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 grupoEscrita.Style.Fill.BackgroundColor = XLColor.LightGray;
@@ -168,7 +180,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             {
                 var grupoEscrita = sheet.Range(linha, 6, linha, 10);
                 grupoEscrita.Merge();
-                grupoEscrita.Value = "Escrita";
+                grupoEscrita.Value = displayNameProficiencia;
                 grupoEscrita.Style.Font.Bold = true;
                 grupoEscrita.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 grupoEscrita.Style.Fill.BackgroundColor = XLColor.LightGray;

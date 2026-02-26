@@ -7,7 +7,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
     public class GerarRelatorioSondagemPorTurmaEscritaCommand : IRequest
     {
         public GerarRelatorioSondagemPorTurmaEscritaCommand(Guid codigoCorrelacao, int turmaId, int proficienciaId, int componenteCurricularId, 
-            Modalidade modalidade, int ano, int anoLetivo, int semestre, string nomeUsuarioSolicitacao,string ueCodigo = null, int? bimestreId = null)
+            Modalidade modalidade, int ano, int anoLetivo, int semestre, string usuarioLogadoRF, string ueCodigo = null, int? bimestreId = null)
         {
             CodigoCorrelacao = codigoCorrelacao;
             TurmaId = turmaId;
@@ -19,7 +19,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             Semestre = semestre;
             UeCodigo = ueCodigo;
             BimestreId = bimestreId;
-            NomeUsuarioSolicitacao = nomeUsuarioSolicitacao;
+            UsuarioLogadoRF = usuarioLogadoRF;
         }
 
         public Guid CodigoCorrelacao { get; set; }
@@ -32,6 +32,6 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
         public int Semestre { get; set; }
         public string UeCodigo { get; set; } = string.Empty;
         public int? BimestreId { get; set; }
-        public string NomeUsuarioSolicitacao { get; set; }
+        public string UsuarioLogadoRF { get; set; }
     }
 }

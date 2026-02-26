@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
 using SME.SR.Application.Commands.NovoSondagem.GerarRelatorioSondagemQuestionarioHtmlParaPdf;
+using SME.SR.Application.Commands.Sondagem.EscritaTurma;
 using SME.SR.Application.Interfaces.UseCases;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.NovoSondagem;
@@ -29,28 +30,49 @@ namespace SME.SR.Application.UseCases
         {
             var filtro = filtroRelatorioDto.ObterObjetoFiltro<FiltroRelatorioSondagemQuestionarioDto>();
 
-            var dadosApi = await ObterDadosQuestionarioExterno(filtro);
-
-            var pagina = new QuestionarioSondagemRelatorioDto
+            if (filtro.Tipo == (int)TipoFormatoRelatorio.Xlsx)
             {
-                AnoLetivo = filtro.AnoLetivo,
-                Dre = filtro.DreNome,
-                Semestre = $"{filtro.Semestre}º semestre",
-                Turma = filtro.TurmaNome,
-                UnidadeEducacional = $"{filtro.UeCodigo} - {filtro.UeNome}",
-                Modalidade = filtro.ModalidadeNome,
-                Proficiencia = dadosApi.TituloTabelaRespostas,
-                DataImpressao = DateTime.Now,
-                Usuario = filtro.UsuarioLogadoNome,
-                TituloTabelaRespostas = dadosApi.TituloTabelaRespostas,
-                Estudantes = dadosApi.Estudantes
-            };
+                await mediator.Send(new GerarRelatorioSondagemPorTurmaEscritaCommand(
+                                       filtroRelatorioDto.CodigoCorrelacao,
+                                        filtro.TurmaId,
+                                        filtro.ProficienciaId,
+                                        filtro.ComponenteCurricularId,
+                                        (Modalidade)filtro.Modalidade,
+                                        filtro.Ano,
+                                        filtro.AnoLetivo,
+                                        filtro.Semestre,
+                                        filtroRelatorioDto.UsuarioLogadoRF,
+                                        filtro.UeCodigo,
+                                        filtro.BimestreId
+                                        ));
+                return;
+            }
+            else if (filtro.Tipo == (int)TipoFormatoRelatorio.Pdf)
+            {
 
-            await mediator.Send(new GerarRelatorioSondagemQuestionarioHtmlParaPdfCommand(
-                nomeTemplate: "RelatorioSondagemQuestionario",
-                paginas: new List<QuestionarioSondagemRelatorioDto> { pagina },
-                codigoCorrelacao: filtroRelatorioDto.CodigoCorrelacao,
-                mensagemUsuario: filtroRelatorioDto.Mensagem?.ToString() ?? string.Empty));
+                var dadosApi = await ObterDadosQuestionarioExterno(filtro);
+
+                var pagina = new QuestionarioSondagemRelatorioDto
+                {
+                    AnoLetivo = filtro.AnoLetivo,
+                    Dre = filtro.DreNome,
+                    Semestre = $"{filtro.Semestre}º semestre",
+                    Turma = filtro.TurmaNome,
+                    UnidadeEducacional = $"{filtro.UeCodigo} - {filtro.UeNome}",
+                    Modalidade = filtro.ModalidadeNome,
+                    Proficiencia = dadosApi.TituloTabelaRespostas,
+                    DataImpressao = DateTime.Now,
+                    Usuario = filtro.UsuarioLogadoNome,
+                    TituloTabelaRespostas = dadosApi.TituloTabelaRespostas,
+                    Estudantes = dadosApi.Estudantes
+                };
+
+                await mediator.Send(new GerarRelatorioSondagemQuestionarioHtmlParaPdfCommand(
+                    nomeTemplate: "RelatorioSondagemQuestionario",
+                    paginas: new List<QuestionarioSondagemRelatorioDto> { pagina },
+                    codigoCorrelacao: filtroRelatorioDto.CodigoCorrelacao,
+                    mensagemUsuario: filtroRelatorioDto.Mensagem?.ToString() ?? string.Empty));
+            }
         }
 
         private async Task<RetornoApiSondagemQuestionarioDto> ObterDadosQuestionarioExterno(
