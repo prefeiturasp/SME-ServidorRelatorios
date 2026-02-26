@@ -35,14 +35,6 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             {
                 var dreUeNome = await ObterNomeUeDre(request.UeCodigo);
                 var turmaNome = await ObterTurma(request.TurmaId.ToString());
-                var proficiencia = (ProficienciaSondagemEnum)request.ProficienciaId;
-
-                var displayNameProficiencia = proficiencia
-                    .GetType()
-                    .GetMember(proficiencia.ToString())
-                    .First()
-                    .GetCustomAttribute<DisplayAttribute>()
-                    ?.GetName();
 
                 var exibirBimestre = request.BimestreId is null;
                 var usuarioSolicitacao = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
@@ -53,15 +45,14 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
                                     dreUeNome.UeNome,
                                     dreUeNome.DreNome,
                                     request.Modalidade.Name(),
-                                    usuarioSolicitacao.NomeRelatorio,
-                                    displayNameProficiencia
+                                    usuarioSolicitacao.NomeRelatorio
                                 );
 
                 switch (request.Modalidade)
                 {
                     case Modalidade.EJA:
                     case Modalidade.Fundamental:
-                        GerarExcelEF(dto, request, request.CodigoCorrelacao, request.Modalidade, displayNameProficiencia);
+                        GerarExcelEF(dto, request, request.CodigoCorrelacao, request.Modalidade);
                         await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(string.Empty, "Relatório da Sondagem"), RotasRabbitSGP.RotaRelatoriosProntosSgp, RotasRabbitSR.RotaRelatoriosSolicitadosSondagemQuestionario, request.CodigoCorrelacao));
                         break;
                 }
@@ -87,7 +78,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             return XLColor.FromArgb(r, g, b);
         }
 
-        private void GerarExcelEF(EscritaEfTurmaSondagemCabecalhoExcelDto dto, GerarRelatorioSondagemPorTurmaEscritaCommand request, Guid codigoCorrelacao, Modalidade modalidade, string displayNameProficiencia)
+        private void GerarExcelEF(EscritaEfTurmaSondagemCabecalhoExcelDto dto, GerarRelatorioSondagemPorTurmaEscritaCommand request, Guid codigoCorrelacao, Modalidade modalidade)
         {
             using var workbook = new XLWorkbook();
             var sheet = workbook.AddWorksheet("Sondagem");
@@ -157,7 +148,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             linha++;
 
             var subtituloCell = sheet.Cell(linha, 1);
-            subtituloCell.Value = displayNameProficiencia;
+            subtituloCell.Value = dto.Proeficiencia;
             subtituloCell.Style.Font.Bold = true;
             subtituloCell.Style.Font.FontSize = 12;
             subtituloCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -170,7 +161,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             {
                 var grupoEscrita = sheet.Range(linha, 6, linha, 7); 
                 grupoEscrita.Merge();
-                grupoEscrita.Value = displayNameProficiencia;
+                grupoEscrita.Value = dto.Proeficiencia;
                 grupoEscrita.Style.Font.Bold = true;
                 grupoEscrita.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 grupoEscrita.Style.Fill.BackgroundColor = XLColor.LightGray;
@@ -180,7 +171,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             {
                 var grupoEscrita = sheet.Range(linha, 6, linha, 10);
                 grupoEscrita.Merge();
-                grupoEscrita.Value = displayNameProficiencia;
+                grupoEscrita.Value = dto.Proeficiencia;
                 grupoEscrita.Style.Font.Bold = true;
                 grupoEscrita.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 grupoEscrita.Style.Fill.BackgroundColor = XLColor.LightGray;

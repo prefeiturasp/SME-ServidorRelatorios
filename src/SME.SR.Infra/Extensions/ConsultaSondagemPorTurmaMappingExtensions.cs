@@ -15,7 +15,7 @@ namespace SME.SR.Infra.Extensions
             string ue,
             string dre,
             string modalidade,
-            string nomeUsuarioSolicitacao,string displayNameProficiencia)
+            string nomeUsuarioSolicitacao)
         {
 
             return new EscritaEfTurmaSondagemCabecalhoExcelDto
@@ -26,7 +26,7 @@ namespace SME.SR.Infra.Extensions
                 Ue = ue,
                 Dre = dre,
                 Modalidade = modalidade,
-                Proeficiencia = displayNameProficiencia,
+                Proeficiencia = source.TituloTabelaRespostas,
                 DataImpressao = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                 NomeUsuarioSolicitacao = nomeUsuarioSolicitacao,
                 CorpoRelatorio = source.Estudantes?
