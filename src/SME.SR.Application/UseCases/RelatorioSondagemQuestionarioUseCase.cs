@@ -30,7 +30,7 @@ namespace SME.SR.Application.UseCases
         {
             var filtro = filtroRelatorioDto.ObterObjetoFiltro<FiltroRelatorioSondagemQuestionarioDto>();
 
-            if (filtro.Tipo == (int)TipoFormatoRelatorio.Xlsx)
+            if (filtro.TipoRelatorio == (int)TipoFormatoRelatorio.Xlsx)
             {
                 await mediator.Send(new GerarRelatorioSondagemPorTurmaEscritaCommand(
                                        filtroRelatorioDto.CodigoCorrelacao,
@@ -47,7 +47,7 @@ namespace SME.SR.Application.UseCases
                                         ));
                 return;
             }
-            else if (filtro.Tipo == (int)TipoFormatoRelatorio.Pdf)
+            else if (filtro.TipoRelatorio == (int)TipoFormatoRelatorio.Pdf)
             {
 
                 var dadosApi = await ObterDadosQuestionarioExterno(filtro);
