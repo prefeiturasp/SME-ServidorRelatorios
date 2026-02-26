@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -35,5 +36,12 @@ namespace SME.SR.Infra.Dtos.SondagemTurmaEscritaEF
         public string TerceiroBimestre { get; set; }
         public string QuartoBimestre { get; set; }
         public string Cor { get; set; }
+    }
+
+    public class GraficoDto
+    {
+        public string Descricao { get; set; } = string.Empty;
+        public string Cor { get; set; } = string.Empty;
+        public int Quantidade { get; set; }
     }
 }
