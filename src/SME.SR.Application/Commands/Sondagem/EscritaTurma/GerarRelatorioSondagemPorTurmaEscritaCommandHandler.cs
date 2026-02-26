@@ -53,7 +53,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
                     case Modalidade.EJA:
                     case Modalidade.Fundamental:
                         GerarExcelEF(dto, request, request.CodigoCorrelacao, request.Modalidade);
-                        await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(string.Empty, "Relatório da Sondagem"), RotasRabbitSGP.RotaRelatoriosProntosSgp, RotasRabbitSR.RotaRelatoriosSolicitadosSondagemQuestionario, request.CodigoCorrelacao));
+                        await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(string.Empty, "Relatório da Sondagem"), RotasRabbitSGP.RotaRelatoriosProntosSgp, RotasRabbitSR.RotaRelatoriosSolicitadosSondagemPorTurma, request.CodigoCorrelacao));
                         break;
                 }
                 return await Task.FromResult(Unit.Value);

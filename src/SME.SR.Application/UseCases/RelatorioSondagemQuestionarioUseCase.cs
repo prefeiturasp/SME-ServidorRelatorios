@@ -98,7 +98,7 @@ namespace SME.SR.Application.UseCases
         private async Task<RetornoApiSondagemQuestionarioDto> ObterDadosQuestionarioExterno(
             FiltroRelatorioSondagemQuestionarioDto filtro)
         {
-            var url = $"{variaveisAmbiente.UrlApiNovaSondagem}/api/relatorio-integracao/sondagem-por-turma" +
+            var url = $"{variaveisAmbiente.UrlApiNovaSondagem}/relatorio-integracao/sondagem-por-turma" +
                       $"?turmaId={filtro.TurmaId}" +
                       $"&proficienciaId={filtro.ProficienciaId}" +
                       $"&componenteCurricularId={filtro.ComponenteCurricularId}" +
