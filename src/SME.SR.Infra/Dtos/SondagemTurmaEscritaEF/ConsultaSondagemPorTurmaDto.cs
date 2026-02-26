@@ -16,7 +16,7 @@ namespace SME.SR.Infra.Dtos.SondagemTurmaEscritaEF
         public long Codigo { get; set; }
         public string Raca { get; set; }
         public string Genero { get; set; }
-        public string Nome { get; set; }
+        public string NomeRelatorio { get; set; }
         public bool Pap { get; set; }
         public bool Aee { get; set; }
         public bool PossuiDeficiencia { get; set; }

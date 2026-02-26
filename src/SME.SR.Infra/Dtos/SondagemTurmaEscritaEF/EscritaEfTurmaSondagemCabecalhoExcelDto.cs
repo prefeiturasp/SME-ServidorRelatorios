@@ -6,6 +6,10 @@ namespace SME.SR.Infra.Dtos.SondagemTurmaEscritaEF
 {
     public class EscritaEfTurmaSondagemCabecalhoExcelDto
     {
+        public EscritaEfTurmaSondagemCabecalhoExcelDto()
+        {
+            CorpoRelatorio = new List<EscritaEfTurmaSondagemCorpoExcelDto>();
+        }
         public int AnoLetivo { get; set; }
         public string Semestre { get; set; }
         public string Turma { get; set; }

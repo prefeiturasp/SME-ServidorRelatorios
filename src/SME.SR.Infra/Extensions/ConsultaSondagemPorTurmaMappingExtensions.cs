@@ -1,5 +1,6 @@
 ﻿using SME.SR.Infra.Dtos.SondagemTurmaEscritaEF;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +19,7 @@ namespace SME.SR.Infra.Extensions
             string nomeUsuarioSolicitacao)
         {
 
-            return new EscritaEfTurmaSondagemCabecalhoExcelDto
+            var dto = new EscritaEfTurmaSondagemCabecalhoExcelDto
             {
                 AnoLetivo = anoLetivo,
                 Semestre = source.Semestre,
@@ -29,10 +30,12 @@ namespace SME.SR.Infra.Extensions
                 Proeficiencia = source.TituloTabelaRespostas,
                 DataImpressao = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                 NomeUsuarioSolicitacao = nomeUsuarioSolicitacao,
-                CorpoRelatorio = source.Estudantes?
+                CorpoRelatorio = source.Estudantes != null ? source.Estudantes?
                     .Select((estudante, index) => estudante.MapToEscritaEfTurmaSondagemCorpoExcelDto(index + 1))
-                    .ToList()
+                    .ToList() : new List<EscritaEfTurmaSondagemCorpoExcelDto>()
             };
+
+            return dto;
         }
 
         private static EscritaEfTurmaSondagemCorpoExcelDto MapToEscritaEfTurmaSondagemCorpoExcelDto(
@@ -48,10 +51,10 @@ namespace SME.SR.Infra.Extensions
             var opcaoRespostaAtiva = colunaInicial?.OpcaoResposta?.FirstOrDefault(o =>
                 o.Id == colunaInicial.Resposta?.OpcaoRespostaId);
 
-            return new EscritaEfTurmaSondagemCorpoExcelDto
+            var dto = new EscritaEfTurmaSondagemCorpoExcelDto
             {
                 Numero = estudante.NumeroAlunoChamada,
-                Nome = estudante.Nome,
+                Nome = estudante.NomeRelatorio,
                 Raca = estudante.Raca,
                 Genero = estudante.Genero,
                 LpComoLinguaPrincipal = estudante.LinguaPortuguesaSegundaLingua ? "Sim" : "Não",
@@ -62,16 +65,17 @@ namespace SME.SR.Infra.Extensions
                 QuartoBimestre = ObterDescricaoOpcaoResposta(coluna4Bimestre),
                 Cor = opcaoRespostaAtiva?.CorFundo
             };
-        }
 
+            return dto;
+        }
         private static string ObterDescricaoOpcaoResposta(ColunaDto coluna)
         {
             if (coluna?.Resposta?.OpcaoRespostaId == null || coluna.Resposta.OpcaoRespostaId == 0)
-                return string.Empty;
+                return "Vazio";
 
             var opcao = coluna.OpcaoResposta?.FirstOrDefault(o => o.Id == coluna.Resposta.OpcaoRespostaId);
 
-            return opcao?.DescricaoOpcaoResposta ?? string.Empty;
+            return opcao?.DescricaoOpcaoResposta ?? "Vazio";
         }
     }
 

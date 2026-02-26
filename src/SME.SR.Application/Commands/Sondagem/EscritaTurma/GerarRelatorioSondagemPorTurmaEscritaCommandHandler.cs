@@ -159,7 +159,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
 
             if (modalidade == Modalidade.EJA)
             {
-                var grupoEscrita = sheet.Range(linha, 6, linha, 7); 
+                var grupoEscrita = sheet.Range(linha, 6, linha, 8); 
                 grupoEscrita.Merge();
                 grupoEscrita.Value = dto.Proeficiencia;
                 grupoEscrita.Style.Font.Bold = true;
@@ -187,8 +187,9 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
                 (3, "Raça"),
                 (4, "Gênero"),
                 (5, "LP como 2ª língua?"),
-                (6, "1º bim"),
-                (7, "2º bim"),
+                (6, "Sondagem inicial"),
+                (7, "1º bim"),
+                (8, "2º bim"),
             } : new[]
             {
                 (1, "Nº"),
@@ -254,8 +255,9 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
 
                 if (modalidade == Modalidade.EJA)
                 {
-                    preenchererCelulaSondagem(sheet.Cell(linha, 6), item.PrimeiroBimestre, corFundo);
-                    preenchererCelulaSondagem(sheet.Cell(linha, 7), item.SegundoBimestre, corFundo);
+                    preenchererCelulaSondagem(sheet.Cell(linha, 6), item.SondagemInicial, corFundo);
+                    preenchererCelulaSondagem(sheet.Cell(linha, 7), item.PrimeiroBimestre, corFundo);
+                    preenchererCelulaSondagem(sheet.Cell(linha, 8), item.SegundoBimestre, corFundo);
                 }
 
                 if (modalidade == Modalidade.Fundamental) {
@@ -320,9 +322,13 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             cell.Style.Fill.BackgroundColor = corFundo;
 
+            if (valor == "Sem preencher" || valor == "Vazio" || valor == "")
+                cell.Style.Fill.BackgroundColor = XLColor.White;
+            else cell.Style.Fill.BackgroundColor = corFundo;
+
 
             if (valor == "SSVC" || valor == "Sem preencher" || valor == "Vazio" || valor == "")
-                cell.Style.Font.FontColor = XLColor.Black;
+                cell.Style.Font.FontColor = XLColor.Gray;
             else
                 cell.Style.Font.FontColor = XLColor.White;
         }

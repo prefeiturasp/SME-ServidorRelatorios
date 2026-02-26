@@ -47,13 +47,13 @@ namespace SME.SR.Application.Queries.ConsultaSondagemPorTurma
         {
             var queryParams = new List<string>
                 {
-                    $"TurmaId={request.TurmaId}",
-                    $"ProficienciaId={request.ProficienciaId}",
-                    $"ComponenteCurricularId={request.ComponenteCurricularId}",
-                    $"ModalidadeId={request.ModalidadeId}",
-                    $"Ano={request.Ano}",
-                    $"AnoLetivo={request.AnoLetivo}",
-                    $"Semestre={request.Semestre}"
+                    $"turmaId={request.TurmaId}",
+                    $"proficienciaId={request.ProficienciaId}",
+                    $"componenteCurricularId={request.ComponenteCurricularId}",
+                    $"modalidadeId={request.ModalidadeId}",
+                    $"ano={request.Ano}",
+                    $"anoLetivo={request.AnoLetivo}",
+                    $"semestre={request.Semestre}"
                 };
 
             if (!string.IsNullOrEmpty(request.UeCodigo))
