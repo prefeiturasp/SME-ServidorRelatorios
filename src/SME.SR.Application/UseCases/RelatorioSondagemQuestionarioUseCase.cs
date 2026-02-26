@@ -48,7 +48,7 @@ namespace SME.SR.Application.UseCases
                 Modalidade = filtro.ModalidadeNome,
                 Proficiencia = dadosApi.TituloTabelaRespostas,
                 DataImpressao = DateTime.Now,
-                Usuario = nomeUsuario,
+                Usuario = string.IsNullOrWhiteSpace(nomeUsuario) ? "SISTEMA" : nomeUsuario,
                 TituloTabelaRespostas = dadosApi.TituloTabelaRespostas,
 
                 Estudantes = dadosApi.Estudantes?.Select(e => new EstudanteQuestionarioDto

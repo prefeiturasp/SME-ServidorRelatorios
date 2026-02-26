@@ -1,14 +1,12 @@
 ﻿@using SME.SR.Infra.Dtos.NovoSondagem
 @model GraficoSondagemDto
-@*
 
-*@
 
 @{
     var barras = Model.Barras ?? new List<GraficoBarraDto>();
     int maxValor = barras.Count > 0 ? barras.Max(b => b.Quantidade) : 1;
 
-    // Escala eixo Y — step arredondado
+    // Escala eixo Y — step arredondado para número "bonito"
     int stepCount = 7;
     double rawStep = (double)maxValor / (stepCount - 1);
     double magnitude = Math.Pow(10, Math.Floor(Math.Log10(rawStep == 0 ? 1 : rawStep)));
@@ -88,15 +86,19 @@
                         @foreach (var barra in barras)
                         {
                             var altPx = yMax > 0 ? (int)((double)barra.Quantidade / yMax * chartHeight) : 0;
-                            if (barra.Quantidade > 0 && altPx < 10) altPx = 10;
+
+                            if (barra.Quantidade > 0 && altPx < 15) altPx = 15;
                             var paddingTop = chartHeight - altPx;
 
                             <div style="display:inline-block; width:@(barWidth)px; margin-right:@(barMargin)px; vertical-align:top; padding-top:@(paddingTop)px;">
-                                <div style="height:@(altPx)px; background-color:@barra.CorFundo; border-radius:4px 4px 0 0; text-align:center; overflow:hidden;">
-                                    <span style="display:block; font-size:8px; font-weight:700; color:@barra.CorTexto; padding-top:3px; line-height:12px;">
-                                        @barra.Quantidade.ToString("N0", new System.Globalization.CultureInfo("pt-BR"))
-                                    </span>
-                                </div>
+                                @if (barra.Quantidade > 0)
+                                {
+                                    <div style="height:@(altPx)px; background-color:@barra.CorFundo; border-radius:4px 4px 0 0; text-align:center; overflow:hidden;">
+                                        <span style="display:block; font-size:8px; font-weight:700; color:@barra.CorTexto; padding-top:3px; line-height:12px;">
+                                            @barra.Quantidade.ToString("N0", new System.Globalization.CultureInfo("pt-BR"))
+                                        </span>
+                                    </div>
+                                }
                             </div>
                         }
                     </div>
