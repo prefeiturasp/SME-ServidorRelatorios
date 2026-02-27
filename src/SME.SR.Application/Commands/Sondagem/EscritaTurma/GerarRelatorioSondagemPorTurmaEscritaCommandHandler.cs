@@ -8,6 +8,7 @@ using Sentry;
 using SME.SR.Application.Queries.ConsultaSondagemPorTurma;
 using SME.SR.Application.Queries.Dre.ObterDreUeNomePorUeCodigo;
 using SME.SR.Data.Models;
+using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.SondagemTurmaEscritaEF;
 using SME.SR.Infra.Extensions;
@@ -107,10 +108,21 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             using var workbook = new XLWorkbook();
             var sheet = workbook.AddWorksheet("Sondagem");
 
-            var graficoCompleto = ContarOcorrencias(dto.CorpoRelatorio, x => x.SondagemInicial)
+            var graficoCompleto = modalidade == Modalidade.Fundamental ? ContarOcorrencias(dto.CorpoRelatorio, x => x.SondagemInicial)
                 .Concat(ContarOcorrencias(dto.CorpoRelatorio, x => x.PrimeiroBimestre))
+                .Concat(ContarOcorrencias(dto.CorpoRelatorio, x => x.SegundoBimestre))
                 .Concat(ContarOcorrencias(dto.CorpoRelatorio, x => x.TerceiroBimestre))
                 .Concat(ContarOcorrencias(dto.CorpoRelatorio, x => x.QuartoBimestre))
+                .GroupBy(x => x.Descricao)
+                .Select(g => new GraficoDto
+                {
+                    Descricao = g.Key,
+                    Quantidade = g.Sum(x => x.Quantidade),
+                    Cor = g.First().Cor
+                })
+                .ToList() : ContarOcorrencias(dto.CorpoRelatorio, x => x.SondagemInicial)
+                .Concat(ContarOcorrencias(dto.CorpoRelatorio, x => x.PrimeiroBimestre))
+                .Concat(ContarOcorrencias(dto.CorpoRelatorio, x => x.SegundoBimestre))
                 .GroupBy(x => x.Descricao)
                 .Select(g => new GraficoDto
                 {
@@ -251,7 +263,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
 
             sheet.Row(linha).Height = 40;
             linha++;
-
+            var streamsParaDescartar = new List<MemoryStream>();
             foreach (var item in dto.CorpoRelatorio)
             {
                 sheet.Row(linha).Height = 45;
@@ -260,10 +272,48 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
                 var cNum = sheet.Cell(linha, 1);
                 cNum.Value = item.Numero;
                 EstilarCelulaDados(cNum);
-
+                bool temIcone = item.Aee || item.Pap || item.PossuiDeficiencia;
+                sheet.Row(linha).Height = temIcone ? 55 : 35;
                 var cNome = sheet.Cell(linha, 2);
+
                 cNome.Value = item.Nome;
+                cNome.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                cNome.Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
+                cNome.Style.Alignment.WrapText = true;
+                cNome.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 EstilarCelulaDados(cNome);
+                double alturaLinha = sheet.Row(linha).Height;
+                int iconeX = 2;
+                int iconeY = (int)(alturaLinha * 0.96);
+
+                if (item.Aee)
+                {
+                    var ms = ConverterSvgBase64ParaPngStream(SmeConstants.Logo_AEE, 20, 20);
+                    streamsParaDescartar.Add(ms);
+                    sheet.AddPicture(ms)
+                         .MoveTo(sheet.Cell(linha, 2), new System.Drawing.Point(iconeX, iconeY))
+                         .WithSize(20, 20);
+                    iconeX += 24;
+                }
+
+                if (item.Pap)
+                {
+                    var ms = ConverterSvgBase64ParaPngStream(SmeConstants.Logo_PAP, 20, 20);
+                    streamsParaDescartar.Add(ms);
+                    sheet.AddPicture(ms)
+                         .MoveTo(sheet.Cell(linha, 2), new System.Drawing.Point(iconeX, iconeY))
+                         .WithSize(20, 20);
+                    iconeX += 24;
+                }
+
+                if (item.PossuiDeficiencia)
+                {
+                    var ms = ConverterSvgBase64ParaPngStream(SmeConstants.Logo_Acessibilidade, 20, 20);
+                    streamsParaDescartar.Add(ms);
+                    sheet.AddPicture(ms)
+                         .MoveTo(sheet.Cell(linha, 2), new System.Drawing.Point(iconeX, iconeY))
+                         .WithSize(20, 20);
+                }
 
                 var cRaca = sheet.Cell(linha, 3);
                 cRaca.Value = item.Raca;
@@ -306,6 +356,8 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
 
             InjetarGraficoOpenXml($"{caminhoParaSalvar}.xlsx", graficoCompleto, dto.Proeficiencia, linhaGrafico);
+            foreach (var s in streamsParaDescartar)
+                s.Dispose();
         }
 
         private void InjetarGraficoOpenXml(string caminhoArquivo, List<GraficoDto> dados, string tituloProficiencia, int linhaGrafico)
@@ -547,6 +599,23 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             worksheetPart.Worksheet.Save();
         }
 
+        private static MemoryStream ConverterSvgBase64ParaPngStream(string base64, int largura = 24, int altura = 14)
+        {
+            var base64Limpo = base64.Contains(",") ? base64.Split(',')[1] : base64;
+            var svgBytes = Convert.FromBase64String(base64Limpo);
+
+            using var svgStream = new MemoryStream(svgBytes);
+            var svgDoc = Svg.SvgDocument.Open<Svg.SvgDocument>(svgStream);
+
+            svgDoc.Width = new Svg.SvgUnit(Svg.SvgUnitType.Pixel, largura);
+            svgDoc.Height = new Svg.SvgUnit(Svg.SvgUnitType.Pixel, altura);
+
+            using var bitmap = svgDoc.Draw(largura, altura);
+            var outputStream = new MemoryStream();
+            bitmap.Save(outputStream, System.Drawing.Imaging.ImageFormat.Png);
+            outputStream.Position = 0;
+            return outputStream;
+        }
 
         private async Task<string> ObterTurma(string codigoTurma)
         {

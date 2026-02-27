@@ -36,6 +36,9 @@ namespace SME.SR.Infra.Dtos.SondagemTurmaEscritaEF
         public string TerceiroBimestre { get; set; }
         public string QuartoBimestre { get; set; }
         public string Cor { get; set; }
+        public bool Pap { get; set; }
+        public bool Aee { get; set; }
+        public bool PossuiDeficiencia { get; set; }
     }
 
     public class GraficoDto
