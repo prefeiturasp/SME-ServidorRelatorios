@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
+using SME.SR.Data.Models;
 using SME.SR.Infra;
 using System;
 using System.Collections.Generic;
@@ -81,6 +82,31 @@ namespace SME.SR.Data
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
             return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
+        }
+
+        public async Task<DreUeNome> ObterNomeDreUePorUeCodigo(string ueCodigo = null)
+        {
+            if (string.IsNullOrWhiteSpace(ueCodigo))
+                return new DreUeNome() { DreNome = "Todas", UeNome = "Todas"};
+
+            var query = @"
+    
+	                    select
+	                         dre.abreviacao DreNome,
+		                     concat(ue.ue_id, ' - ', tp.descricao, ' ', ue.nome) UeNome 
+	                    from  turma t
+	                    inner join ue on ue.id = t.ue_id 
+	                    inner join dre on ue.dre_id = dre.id 
+	                    inner join tipo_escola tp on ue.tipo_escola = tp.cod_tipo_escola_eol 
+                        where ue.ue_id = @ueCodigo
+                        limit 1
+    
+                    ";
+            var parametros = new {  ueCodigo };
+
+            using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
+
+            return await conexao.QueryFirstOrDefaultAsync<DreUeNome>(query, parametros) ?? new DreUeNome();
         }
     }
 }

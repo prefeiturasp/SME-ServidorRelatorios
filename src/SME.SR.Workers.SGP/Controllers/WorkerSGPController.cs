@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Sentry;
 using SME.SR.Application;
+using SME.SR.Application.Commands.Sondagem.EscritaTurma;
 using SME.SR.Application.Interfaces;
+using SME.SR.Application.Interfaces.UseCases;
 using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Workers.SGP.Commons.Attributes;
@@ -14,7 +17,7 @@ namespace SME.SR.Workers.SGP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ChaveIntegracaoSrApi]
+    //[ChaveIntegracaoSrApi]
     [Worker("sme.sr.workers.sgp")]
     public class WorkerSGPController : ControllerBase
     {
@@ -406,6 +409,14 @@ namespace SME.SR.Workers.SGP.Controllers
         [HttpGet("relatorios/analitico-sondagem")]
         [Action("relatorios/analitico-sondagem", typeof(IRelatorioAnaliticoSondagemUseCase))]
         public async Task<bool> RelatorioAnalicoDaSondagem([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioAnaliticoSondagemUseCase useCase)
+        {
+            await useCase.Executar(request);
+            return true;
+        }
+
+        [HttpGet("relatorios/sondagem-questionario")]
+        [Action("relatorios/sondagem-questionario", typeof(IRelatorioSondagemQuestionarioUseCase))]
+        public async Task<bool> RelatorioSondagemQuestionario([FromQuery] FiltroRelatorioDto request, [FromServices] IRelatorioSondagemQuestionarioUseCase useCase)
         {
             await useCase.Executar(request);
             return true;

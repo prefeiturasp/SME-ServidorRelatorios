@@ -1,0 +1,126 @@
+﻿@using SME.SR.Infra.Dtos.NovoSondagem
+@model GraficoSondagemDto
+
+
+@{
+    var barras = Model.Barras ?? new List<GraficoBarraDto>();
+    int maxValor = barras.Count > 0 ? barras.Max(b => b.Quantidade) : 1;
+
+    // Escala eixo Y — step arredondado para número "bonito"
+    int stepCount = 7;
+    double rawStep = (double)maxValor / (stepCount - 1);
+    double magnitude = Math.Pow(10, Math.Floor(Math.Log10(rawStep == 0 ? 1 : rawStep)));
+    double niceStep = Math.Ceiling(rawStep / magnitude) * magnitude;
+    int yMax = (int)(niceStep * (stepCount - 1));
+    int yStep = (int)niceStep;
+
+    // Dimensões
+    int chartHeight = 260;
+    int rowHeight = stepCount > 1 ? chartHeight / (stepCount - 1) : 40;
+    int areaWidth = 694;
+    int barMargin = 12;
+    int barPadLeft = 8;
+    int barPadRight = 8;
+    int barWidth = barras.Count > 0
+        ? (areaWidth - barPadLeft - barPadRight - barMargin) / barras.Count - barMargin
+        : 70;
+
+    // SVG label Y — URL-encoded para evitar conflito de aspas no atributo src
+    string svgYLabel = "data:image/svg+xml;charset=utf-8,"
+        + "%3Csvg%20xmlns%3D'http%3A//www.w3.org/2000/svg'%20width%3D'16'%20height%3D'"
+        + chartHeight.ToString()
+        + "'%3E%3Ctext%20x%3D'-"
+        + (chartHeight / 2).ToString()
+        + "'%20y%3D'12'%20transform%3D'rotate(-90)'%20font-family%3D'Arial%2Csans-serif'"
+        + "%20font-size%3D'9'%20fill%3D'%2342474A'%20text-anchor%3D'middle'%3E"
+        + "Quantidade%20de%20estudantes%3C/text%3E%3C/svg%3E";
+}
+
+@if (barras.Any())
+{
+    <div style="page-break-before: always; padding-top: 16px;">
+
+        <!-- Título -->
+        <div style="text-align:center; margin-bottom:20px;">
+            <h1 style="font-size:14px; font-weight:700; color:#42474A; margin-bottom:4px;">@Model.Titulo</h1>
+            <h2 style="font-size:10px; font-weight:400; color:#42474A;">@Model.Subtitulo</h2>
+        </div>
+
+        <table style="width:auto; border-collapse:collapse; border:none;">
+            <tr>
+
+                <!-- Coluna 1: label Y (SVG rotacionado) -->
+                <td style="width:16px; padding:0; border:none; vertical-align:middle; text-align:center;">
+                    <img src="@svgYLabel" style="width:16px; height:@(chartHeight)px; display:block;" />
+                </td>
+
+                <!-- Coluna 2: valores numéricos eixo Y -->
+                <td style="width:38px; padding:0; border:none; vertical-align:top;">
+                    @for (int i = stepCount - 1; i >= 0; i--)
+                    {
+                        var nivelValor = yStep * i;
+                        <div style="height:@(rowHeight)px; width:100%;">
+                            <table style="width:100%; height:@(rowHeight)px; border-collapse:collapse;">
+                                <tr>
+                                    <td style="vertical-align:bottom; text-align:right; padding:0 4px 1px 0; font-size:8px; color:#42474A; white-space:nowrap; border:none;">
+                                        @nivelValor.ToString("N0", new System.Globalization.CultureInfo("pt-BR"))
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    }
+                </td>
+
+                <!-- Coluna 3: grade + barras -->
+                <td style="width:@(areaWidth)px; padding:0; border:none; vertical-align:top;">
+
+                    <!-- Linhas de grade -->
+                    @for (int i = stepCount - 1; i >= 0; i--)
+                    {
+                        var border = (i == 0) ? "border-bottom:2px solid #9E9E9E;" : "border-bottom:1px solid #E0E0E0;";
+                        <div style="height:@(rowHeight)px; width:@(areaWidth)px; @border"></div>
+                    }
+
+                    <!-- Barras -->
+                    <div style="margin-top:-@(chartHeight)px; white-space:nowrap; padding-left:@(barPadLeft)px;">
+                        @foreach (var barra in barras)
+                        {
+                            var altPx = yMax > 0 ? (int)((double)barra.Quantidade / yMax * chartHeight) : 0;
+
+                            if (barra.Quantidade > 0 && altPx < 15) altPx = 15;
+                            var paddingTop = chartHeight - altPx;
+
+                            <div style="display:inline-block; width:@(barWidth)px; margin-right:@(barMargin)px; vertical-align:top; padding-top:@(paddingTop)px;">
+                                @if (barra.Quantidade > 0)
+                                {
+                                    <div style="height:@(altPx)px; background-color:@barra.CorFundo; border-radius:4px 4px 0 0; text-align:center; overflow:hidden;">
+                                        <span style="display:block; font-size:8px; font-weight:700; color:@barra.CorTexto; padding-top:3px; line-height:12px;">
+                                            @barra.Quantidade.ToString("N0", new System.Globalization.CultureInfo("pt-BR"))
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Labels eixo X -->
+                    <div style="white-space:nowrap; padding-left:@(barPadLeft)px; margin-top:4px;">
+                        @foreach (var barra in barras)
+                        {
+                            <div style="display:inline-block; width:@(barWidth)px; margin-right:@(barMargin)px; text-align:center; font-size:8px; color:#42474A; white-space:normal; vertical-align:top;">
+                                @barra.Legenda
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Título eixo X -->
+                    <div style="text-align:center; font-size:9px; font-weight:700; color:#42474A; margin-top:6px;">
+                        Opções de respostas
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+
+    </div>
+}
