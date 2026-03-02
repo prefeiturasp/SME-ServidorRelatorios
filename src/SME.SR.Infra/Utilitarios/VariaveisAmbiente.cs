@@ -71,5 +71,16 @@ namespace SME.SR.Infra
             !string.IsNullOrEmpty(configuration.GetSection("ChaveIntegracaoApiSondagem").Value)
                 ? configuration.GetSection("ChaveIntegracaoApiSondagem").Value
                 : Environment.GetEnvironmentVariable("ChaveIntegracaoApiSondagem");
+
+        public string UrlApiNovoSgp =>
+            !string.IsNullOrEmpty(configuration.GetSection("UrlApiNovoSgp").Value)
+                ? configuration.GetSection("UrlApiNovoSgp").Value
+                : Environment.GetEnvironmentVariable("UrlApiNovoSgp");
+
+        public string ChaveIntegracaoApiSgp =>
+            !string.IsNullOrEmpty(configuration.GetSection("ChaveIntegracaoApiSgp").Value)
+                ? configuration.GetSection("ChaveIntegracaoApiSgp").Value
+                : Environment.GetEnvironmentVariable("ChaveIntegracaoApiSgp");
+
     }
 }
