@@ -27,6 +27,8 @@ using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Excel.Codaf.Gerador;
 using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
+using SME.SR.Infra.Integracoes;
+using SME.SR.Infra.Interfaces.Integracoes;
 using SME.SR.JRSClient;
 using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Interfaces;
@@ -135,6 +137,7 @@ namespace SME.SR.IoC
             RegistrarServicos(services);
             RegistrarOptions(services, configuration);
             RegistrarServicoRelatorioAnaliticoSondagem(services);
+            RegistrarIntegracoes(services);
 
             services.AddScoped<IRelatorioCodafRepository, RelatorioCodafRepository>();
             services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
@@ -364,6 +367,12 @@ namespace SME.SR.IoC
             var telemetriaOptions = new TelemetriaOptions();
             configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(telemetriaOptions);
+        }
+
+        private static void RegistrarIntegracoes(IServiceCollection services)
+        {
+            services.AddHttpClient<ISondagemApiClient, SondagemApiClient>();
+            services.AddHttpClient<ISolicitacaoRelatorioApiClient, SolicitacaoRelatorioApiClient>();
         }
     }
 }
