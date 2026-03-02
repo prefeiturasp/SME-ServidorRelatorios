@@ -5,11 +5,11 @@ namespace SME.SR.Application.Queries.Dre.ObterDreUeNomePorUeCodigo
 {
     public class ObterDreUeNomePorUeCodigoQuery : IRequest<DreUeNome>
     {
-        public ObterDreUeNomePorUeCodigoQuery(string ueCodigo)
+        public ObterDreUeNomePorUeCodigoQuery(string ueCodigo = null)
         {
             UeCodigo = ueCodigo;
         }
 
-        public string UeCodigo { get; set; }
+        public string UeCodigo { get; set; } = string.Empty;
     }
 }

@@ -7,6 +7,7 @@ using MediatR;
 using Sentry;
 using SME.SR.Application.Queries.ConsultaSondagemPorTurma;
 using SME.SR.Application.Queries.Dre.ObterDreUeNomePorUeCodigo;
+using SME.SR.Data;
 using SME.SR.Data.Models;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
@@ -46,7 +47,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
                 var turmaNome = await ObterTurma(request.TurmaId.ToString());
 
                 var bimestreLabel = request.BimestreId is null ? string.Empty : $"Bimestre: {request.BimestreId.Value}";
-                var usuarioSolicitacao = await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
+                var usuarioSolicitacao = string.IsNullOrEmpty(request.UsuarioLogadoRF) ? new Usuario() { Nome = string.Empty, CodigoRf = string.Empty} : await mediator.Send(new ObterUsuarioPorCodigoRfQuery(request.UsuarioLogadoRF));
                 var dto = (await mediator.Send(new ConsultaSondagemPorTurmaQuery(request.TurmaId, request.ProficienciaId, request.ComponenteCurricularId, (int)request.Modalidade, request.Ano, request.AnoLetivo, request.Semestre, request.UeCodigo, request.BimestreId)))
                             .MapToEscritaEfTurmaSondagemCabecalhoExcelDto(
                                     request.AnoLetivo,
@@ -619,7 +620,7 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
 
         private async Task<string> ObterTurma(string codigoTurma)
         {
-            if (codigoTurma == "-99")
+            if (codigoTurma == "-99" || string.IsNullOrEmpty(codigoTurma))
                 return "Todos";
 
             var turma = await mediator.Send(new ObterTurmaQuery(codigoTurma));

@@ -11,6 +11,6 @@ namespace SME.SR.Data
         Task<IEnumerable<Dre>> ObterTodas();
         Task<Dre> ObterPorId(long dreId);
         Task<DreUe> ObterDreUePorDreUeCodigo(string dreCodigo, string ueCodigo);
-        Task<DreUeNome> ObterNomeDreUePorUeCodigo(string ueCodigo);
+        Task<DreUeNome> ObterNomeDreUePorUeCodigo(string ueCodigo = null);
     }
 }

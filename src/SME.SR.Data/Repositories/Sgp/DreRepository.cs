@@ -84,8 +84,11 @@ namespace SME.SR.Data
             return await conexao.QueryFirstOrDefaultAsync<DreUe>(query, parametros);
         }
 
-        public async Task<DreUeNome> ObterNomeDreUePorUeCodigo(string ueCodigo)
+        public async Task<DreUeNome> ObterNomeDreUePorUeCodigo(string ueCodigo = null)
         {
+            if (string.IsNullOrWhiteSpace(ueCodigo))
+                return new DreUeNome() { DreNome = "Todas", UeNome = "Todas"};
+
             var query = @"
     
 	                    select
@@ -103,7 +106,7 @@ namespace SME.SR.Data
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
 
-            return await conexao.QueryFirstOrDefaultAsync<DreUeNome>(query, parametros);
+            return await conexao.QueryFirstOrDefaultAsync<DreUeNome>(query, parametros) ?? new DreUeNome();
         }
     }
 }
