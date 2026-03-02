@@ -357,7 +357,6 @@ namespace SME.SR.Application.Commands.Sondagem.EscritaTurma
             workbook.SaveAs($"{caminhoParaSalvar}.xlsx");
 
             InjetarGraficoOpenXml($"{caminhoParaSalvar}.xlsx", graficoCompleto, dto.Proeficiencia, linhaGrafico);
-            //Chamar Query para notificar que o Relatorio foi gerado
             foreach (var s in streamsParaDescartar)
                 s.Dispose();
         }
