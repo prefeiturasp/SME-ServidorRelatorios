@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SR.Application.Interfaces;
-using SME.SR.Data;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
 using SME.SR.Infra.Utilitarios;
@@ -17,7 +16,7 @@ namespace SME.SR.Application
         {
         }
 
-        public delegate Task OpcaoRelatorio(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao);        
+        public delegate Task OpcaoRelatorio(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao);
 
         public async Task Executar(FiltroRelatorioDto request)
         {
@@ -27,13 +26,13 @@ namespace SME.SR.Application
 
             if (filtroTodos)
                 await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"Consultando dados e populando DTO"));
-            
+
             var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
 
             if (filtroTodos)
                 await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"DTO populado"));
 
-            if (listaDeFrenquenciaGlobal?.Any() != true)                
+            if (listaDeFrenquenciaGlobal?.Any() != true)
                 throw new NegocioException($"Não foi possível localizar informações com os filtros selecionados");
             else
             {
@@ -78,12 +77,15 @@ namespace SME.SR.Application
                     NomeUe = item.UeNome,
                     NomeTurma = item.Turma,
                     CodigoTurma = item.TurmaCodigo,
-                    NomeMes  = ObterNomeMesReferencia(item.Mes),
+                    NomeMes = ObterNomeMesReferencia(item.Mes),
                     ValorMes = item.Mes,
                     CodigoAluno = item.CodigoEOL,
                     NumeroAluno = item.NumeroChamadda,
                     NomeAluno = item.Estudante,
-                    ProcentagemFrequencia = item.PercentualFrequencia
+                    ProcentagemFrequencia = item.PercentualFrequencia,
+                    QuantidadeAulas = item.QuantidadeAulas,
+                    QuantidadeAusencias = item.QuantidadeAusencias,
+                    QuantidadeCompensacoes = item.QuantidadeCompensacoesAusencias
                 };
                 dto.Add(frequencia);
             }
@@ -99,7 +101,7 @@ namespace SME.SR.Application
         {
             cabecalhoDto.NomeTurma = await ObterNomeTurma(filtroRelatorio);
 
-            await ObterNomeDreUe(filtroRelatorio.CodigoDre, filtroRelatorio.CodigoUe,cabecalhoDto);
+            await ObterNomeDreUe(filtroRelatorio.CodigoDre, filtroRelatorio.CodigoUe, cabecalhoDto);
             cabecalhoDto.AnoLetivo = filtroRelatorio.AnoLetivo;
             cabecalhoDto.NomeModalidade = filtroRelatorio.Modalidade.Name();
             cabecalhoDto.RfUsuarioSolicitante = filtroRelatorio.UsuarioRf;

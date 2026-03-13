@@ -37,5 +37,7 @@ namespace SME.SR.Data.Interfaces
         Task<IEnumerable<AlunoTurma>> ObterAlunosMatriculasPorTurmas(int[] codigosTurmas);
         Task<IEnumerable<TotalAlunosAnoTurmaDto>> ObterTotalAlunosAtivosPorPeriodoEAnoTurma(int anoLetivo, int[] modalidades, DateTime dataInicio, DateTime dataFim, string ueId, string dreId);
         Task<int> ObterTotalAlunosAtivosPorTurmaEPeriodo(string codigoTurma, DateTime dataReferenciaInicio, DateTime dataReferenciaFim);
+        
+        Task<IEnumerable<DadosMatriculaAlunoDto>> ObterDadosMatriculaAluno(string ueCodigo, string dreCodigo, int anoLetivo, string[] codigosAlunos);
     }
 }

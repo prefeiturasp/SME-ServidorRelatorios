@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Npgsql;
+﻿using Npgsql;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos;
@@ -9,9 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SME.SR.Infra.Dtos.FrequenciaMensal;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.SR.Data
 {
+    [ExcludeFromCodeCoverage]
     public class FrequenciaAlunoRepository : IFrequenciaAlunoRepository
     {
         private readonly VariaveisAmbiente variaveisAmbiente;
@@ -601,7 +602,10 @@ namespace SME.SR.Data
                                 t.turma_id AS TurmaCodigo,
                                 t.nome as TurmaNome,
                                 cfam.aluno_codigo as CodigoEol,
-                                cfam.percentual
+                                cfam.percentual,
+                                cfam.quantidade_ausencias as QuantidadeAusencias,
+                                cfam.quantidade_aulas as QuantidadeAulas,
+                                cfam.quantidade_compensacoes as QuantidadeCompensacoes
                             from consolidacao_frequencia_aluno_mensal cfam
                                 inner join turma t on t.id = cfam.turma_id
                                 inner join ue u on u.id = t.ue_id
@@ -612,6 +616,8 @@ namespace SME.SR.Data
 
             if (codigoDre != "-99")
                 query += " and d.dre_id = @codigoDre";
+            else
+                query += " and t.tipo_turma = @tipoTurma";
 
             if (codigoUe != "-99")
                 query += " and u.ue_id = @codigoUe";
@@ -637,6 +643,7 @@ namespace SME.SR.Data
             {
                 exibirHistorico,
                 anoLetivo,
+                tipoTurma = (int)TipoTurma.Regular,
                 codigoDre,
                 codigoUe,
                 modalidade,

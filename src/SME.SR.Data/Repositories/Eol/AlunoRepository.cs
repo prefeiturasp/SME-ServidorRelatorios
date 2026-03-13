@@ -1576,7 +1576,7 @@ namespace SME.SR.Data
         public async Task<IEnumerable<DadosAlunosEscolaDto>> ObterDadosAlunosEscola(string ueCodigo, string dreCodigo, int anoLetivo, string[] codigosAlunos)
         {
             var sql = @" with matriculas as (
-						select distinct CodigoAluno, isnull(NomeSocialAluno, NomeAluno) NomeAluno, DataNascimento, NomeSocialAluno, CodigoSituacaoMatricula, SituacaoMatricula, te.cd_escola AS CodigoEscola,
+						select CodigoAluno, isnull(NomeSocialAluno, NomeAluno) NomeAluno, DataNascimento, NomeSocialAluno, CodigoSituacaoMatricula, SituacaoMatricula, te.cd_escola AS CodigoEscola,
 						case when NumeroAlunoChamada is null then '0'
 						when NumeroAlunoChamada = 'NULL' then '0'
 						else NumeroAlunoChamada
@@ -1601,7 +1601,8 @@ namespace SME.SR.Data
 								select *
 								from matriculas
 								where sequencia = 1
-								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido ";
+								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido                                 
+				                order by CodigoAluno, CodigoMatricula, DataMatricula, DataSituacao";
 
             using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
 
@@ -1722,6 +1723,82 @@ namespace SME.SR.Data
             }
 
             return totalAlunos;
+        }
+
+        public async Task<IEnumerable<DadosMatriculaAlunoDto>> ObterDadosMatriculaAluno(string ueCodigo, string dreCodigo, int anoLetivo, string[] codigosAlunos)
+        {
+            var sql = @"
+                        with matriculas as (
+							select 
+								CodigoAluno,
+								CodigoTurma,
+								CodigoSituacaoMatricula,
+								DataSituacao,
+								DataMatricula,
+								AnoLetivo,
+								CodigoMatricula,
+								isnull(NomeSocialAluno, NomeAluno) NomeAluno,
+								NomeSocialAluno,
+								case when NumeroAlunoChamada is null or NumeroAlunoChamada = 'NULL' then '0' else NumeroAlunoChamada end as NumeroAlunoChamada,
+								SituacaoMatricula,								 
+								row_number() over (
+									partition by CodigoMatricula, 
+									CodigoTurma 
+									order by 
+									DataSituacao desc
+								) as Sequencia 
+							from 
+								alunos_matriculas_norm nm 
+								inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma 
+								inner join v_cadastro_unidade_educacao ue ON te.cd_escola = ue.cd_unidade_educacao 
+							--where CodigoAluno in @codigosAlunos 
+where 1=1 ";
+
+            if (!string.IsNullOrEmpty(ueCodigo) && ueCodigo != "-99")
+                sql += @" AND ue.cd_unidade_educacao = @ueCodigo ";
+
+            if (!string.IsNullOrEmpty(dreCodigo) && dreCodigo != "-99")
+                sql += @" AND ue.cd_unidade_administrativa_referencia = @dreCodigo ";
+
+            sql += @" and te.an_letivo = @anoLetivo )
+								select *
+								from matriculas
+								where sequencia = 1
+								and CodigoSituacaoMatricula <> @codigoSituacaoVinculoIndevido                                 
+				                order by CodigoAluno, CodigoMatricula, DataMatricula, DataSituacao";
+
+
+            if (codigosAlunos == null || !codigosAlunos.Any())
+            {
+                return Enumerable.Empty<DadosMatriculaAlunoDto>();
+            }
+            const int tamanhoPaginaArrayAlunos = 1000;
+            var resultadosFinais = new List<DadosMatriculaAlunoDto>();
+
+            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+            await conexao.OpenAsync();
+
+			for (int i = 0; i < codigosAlunos.Length; i += tamanhoPaginaArrayAlunos)
+			{
+                var paginaDeCodigos = codigosAlunos.Skip(i).Take(tamanhoPaginaArrayAlunos).ToArray();
+                if (!paginaDeCodigos.Any()) continue;
+
+                var parametros = new
+                {
+                    ueCodigo,
+                    dreCodigo,
+                    anoLetivo,
+                    codigosAlunos = paginaDeCodigos,
+                    codigoSituacaoVinculoIndevido = (int)SituacaoMatriculaAluno.VinculoIndevido
+                };
+
+				var resultadoDaPagina = await conexao.QueryAsync<DadosMatriculaAlunoDto>(sql, parametros);
+
+                if (resultadoDaPagina != null)
+                    resultadosFinais.AddRange(resultadoDaPagina);
+            }
+
+            return resultadosFinais;
         }
     }
 }
