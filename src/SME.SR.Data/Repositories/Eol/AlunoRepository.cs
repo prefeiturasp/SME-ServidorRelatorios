@@ -1,8 +1,10 @@
-﻿using SME.Pedagogico.Repository.Constantes;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using SME.Pedagogico.Repository.Constantes;
 using SME.SR.Data.Extensions;
 using SME.SR.Data.Interfaces;
 using SME.SR.Infra;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -1751,8 +1753,7 @@ namespace SME.SR.Data
 								alunos_matriculas_norm nm 
 								inner join turma_escola te on te.cd_turma_escola = nm.CodigoTurma 
 								inner join v_cadastro_unidade_educacao ue ON te.cd_escola = ue.cd_unidade_educacao 
-							--where CodigoAluno in @codigosAlunos 
-where 1=1 ";
+							where CodigoAluno in @codigosAlunos ";
 
             if (!string.IsNullOrEmpty(ueCodigo) && ueCodigo != "-99")
                 sql += @" AND ue.cd_unidade_educacao = @ueCodigo ";
@@ -1769,36 +1770,70 @@ where 1=1 ";
 
 
             if (codigosAlunos == null || !codigosAlunos.Any())
-            {
                 return Enumerable.Empty<DadosMatriculaAlunoDto>();
-            }
-            const int tamanhoPaginaArrayAlunos = 1000;
-            var resultadosFinais = new List<DadosMatriculaAlunoDto>();
 
-            using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
-            await conexao.OpenAsync();
+            var codigosAlunosFiltrados = codigosAlunos
+                .Where(c => !string.IsNullOrWhiteSpace(c))
+                .Distinct()
+                .ToArray();
 
-			for (int i = 0; i < codigosAlunos.Length; i += tamanhoPaginaArrayAlunos)
+            if (!codigosAlunosFiltrados.Any())
+                return Enumerable.Empty<DadosMatriculaAlunoDto>();
+
+			const int tamanhoPaginaArrayAlunos = 2000;
+			const int maximoParalelismo = 4;
+			var resultadosFinais = new ConcurrentBag<DadosMatriculaAlunoDto>();
+			var tarefas = new List<Task>();
+			var semaforo = new System.Threading.SemaphoreSlim(maximoParalelismo);
+
+			try
 			{
-                var paginaDeCodigos = codigosAlunos.Skip(i).Take(tamanhoPaginaArrayAlunos).ToArray();
-                if (!paginaDeCodigos.Any()) continue;
+				for (int i = 0; i < codigosAlunosFiltrados.Length; i += tamanhoPaginaArrayAlunos)
+				{
+					var paginaDeCodigos = codigosAlunosFiltrados.Skip(i).Take(tamanhoPaginaArrayAlunos).ToArray();
+					if (!paginaDeCodigos.Any())
+						continue;
 
-                var parametros = new
-                {
-                    ueCodigo,
-                    dreCodigo,
-                    anoLetivo,
-                    codigosAlunos = paginaDeCodigos,
-                    codigoSituacaoVinculoIndevido = (int)SituacaoMatriculaAluno.VinculoIndevido
-                };
+					await semaforo.WaitAsync();
 
-				var resultadoDaPagina = await conexao.QueryAsync<DadosMatriculaAlunoDto>(sql, parametros);
+					tarefas.Add(Task.Run(async () =>
+					{
+						try
+						{
+							var parametros = new
+							{
+								ueCodigo,
+								dreCodigo,
+								anoLetivo,
+								codigosAlunos = paginaDeCodigos,
+								codigoSituacaoVinculoIndevido = (int)SituacaoMatriculaAluno.VinculoIndevido
+							};
 
-                if (resultadoDaPagina != null)
-                    resultadosFinais.AddRange(resultadoDaPagina);
-            }
+							using var conexao = new SqlConnection(variaveisAmbiente.ConnectionStringEol);
+							await conexao.OpenAsync();
+							var resultadoDaPagina = await conexao.QueryAsync<DadosMatriculaAlunoDto>(sql, parametros, commandTimeout: 600);
 
-            return resultadosFinais;
-        }
+							if (resultadoDaPagina != null)
+							{
+								foreach (var item in resultadoDaPagina)
+									resultadosFinais.Add(item);
+							}
+						}
+						finally
+						{
+							semaforo.Release();
+						}
+					}));
+				}
+
+				await Task.WhenAll(tarefas);
+			}
+			finally
+			{
+				semaforo.Dispose();
+			}
+
+			return resultadosFinais;
+		}
     }
 }
