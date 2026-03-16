@@ -9,6 +9,7 @@ namespace SME.SR.Application
     {
         public IEnumerable<ControleFrequenciaMensalDto> ControlesFrequenciasMensais { get; set; }
         public Guid CodigoCorrelacao { get; set; }
+        public string UsuarioRf { get; internal set; }
 
         public GerarRelatoricoControleDeFrequenciaMensalExcelCommand(IEnumerable<ControleFrequenciaMensalDto> controlesFrequenciasMensais, Guid codigoCorrelacao)
         {

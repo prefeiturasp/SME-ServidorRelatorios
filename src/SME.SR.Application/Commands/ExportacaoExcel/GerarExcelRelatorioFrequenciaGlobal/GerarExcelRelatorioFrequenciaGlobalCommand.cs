@@ -14,6 +14,7 @@ namespace SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequen
         public string NotaRodape { get; set; }
         public bool RelatorioFrequenciaGlobal { get; set; }
         public string MensagemTitulo { get; set; }
+        public string UsuarioRf { get; internal set; }
 
         public GerarExcelRelatorioFrequenciaGlobalCommand(IList<FrequenciaGlobalDto> objetoExportacaoExcel, string nomeWorkSheet, Guid codigoCorrelacao, bool possuiNotaRodape = false, string notaRodape = null, bool relatorioFrequenciaGlobal = false, string mensagemTitulo = "")
         {
