@@ -5,6 +5,7 @@ using SME.SR.JRSClient.Grupos;
 using SME.SR.JRSClient.Interfaces;
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SME.SR.JRSClient.Services
@@ -15,6 +16,11 @@ namespace SME.SR.JRSClient.Services
         {
         }
         
+        public RelatorioService(HttpClient httpClient, Configuracoes configuracoes)
+            : base(httpClient, configuracoes)
+        {
+        }
+
         public async Task<Stream> GetRelatorioSincrono(RelatorioSincronoDto Dto)
         {
             if (string.IsNullOrWhiteSpace(Dto.CaminhoRelatorio) || (int)Dto.Formato == 0)

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequenciaGlobal;
 using SME.SR.Application.Interfaces;
 using SME.SR.Infra;
 using SME.SR.Infra.Extensions;
@@ -147,7 +148,7 @@ namespace SME.SR.Application
         }
         private async Task ExecuteExcel(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao)
         {
-            await mediator.Send(new GerarExcelGenericoCommand(listaDeFrequencia.Cast<object>().ToList(), "Frequência Global", codigoCorrelacao, relatorioFrequenciaGlobal: true));
+            await mediator.Send(new GerarExcelRelatorioFrequenciaGlobalCommand(listaDeFrequencia, "Frequência Global", codigoCorrelacao, relatorioFrequenciaGlobal: true));
         }
         private string ObterNomeMesReferencia(int mes)
             => Enum.GetValues(typeof(Mes)).Cast<Mes>().Where(x => (int)x == mes).FirstOrDefault().ToString();

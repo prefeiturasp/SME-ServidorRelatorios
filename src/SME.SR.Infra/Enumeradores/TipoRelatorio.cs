@@ -6,5 +6,8 @@ namespace SME.SR.Infra
     {
         [Display(Name = "relatorios/atafinalresultados", ShortName = "RelatorioAtaFinalResultados", Description = "Ata final de resultados")]
         ConselhoClasseAtaFinal = 5,
+
+        [Display(Name = "relatorios/frequencia-global-todos", ShortName = "RelatorioFrequenciaMensalTodosDreUe", Description = "Relatório de frequência mensal filtro todos dre ou ue")]
+        FrequenciaMensalTodosDreUe = 57,
     }
 }
