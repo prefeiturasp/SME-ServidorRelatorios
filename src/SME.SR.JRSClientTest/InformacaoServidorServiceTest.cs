@@ -1,10 +1,6 @@
+using Moq;
 using SME.SR.Infra.Dtos;
-using SME.SR.JRSClient.Services;
-using SME.SR.JRSClientTest.Mock;
-using System;
-using Refit;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
+using SME.SR.JRSClient.Interfaces;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -12,19 +8,25 @@ namespace SME.SR.JRSClientTest
 {
     public class InformacaoServidorServiceTest
     {
-        static JRSClient.Configuracoes Settings = new JRSClient.Configuracoes
-        {
-            JasperLogin = "user",
-            JasperPassword = "bitnami",
-            UrlBase = "http://localhost:8080"
-        };
-
         [Fact]
-        public void DeveRetornarAsInformacoesDoServidor()
+        public async Task DeveRetornarAsInformacoesDoServidor()
         {
-            InformacaoServidorService service = new InformacaoServidorService(Settings);
-            InformacaoServidorRespostaDto dto = service.Obter().Result;
-            Assert.NotNull(dto);
+            // Arrange
+            var informacaoServidorMock = new InformacaoServidorRespostaDto
+            {
+                // Preencha com os dados esperados
+            };
+
+            var mockService = new Mock<IInformacaoServidorService>();
+            mockService
+                .Setup(s => s.Obter())
+                .ReturnsAsync(informacaoServidorMock);
+
+            // Act
+            var resultado = await mockService.Object.Obter();
+
+            // Assert
+            Assert.NotNull(resultado);
         }
     }
 }

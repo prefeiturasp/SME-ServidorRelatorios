@@ -2,6 +2,7 @@
 using Moq;
 using Newtonsoft.Json;
 using SME.SR.Application;
+using SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequenciaGlobal;
 using SME.SR.Data;
 using SME.SR.Infra;
 
@@ -44,15 +45,13 @@ namespace SME.SR.Aplicacao.Teste.CasosDeUso.Relatorio
             var request = CriarFiltroRelatorio(filtro);
             var dadosRelatorio = CriarListaFrequenciaGlobalDto();
 
-            _mediatorMock
-                .Setup(m => m.Send(It.IsAny<ObterRelatorioDeFrequenciaGlobalQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(dadosRelatorio);
+            ConfigurarMocks(dadosRelatorio);
 
             // Act
             await _useCase.Executar(request);
 
             // Assert
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GerarExcelGenericoCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GerarExcelRelatorioFrequenciaGlobalCommand>(), It.IsAny<CancellationToken>()), Times.Once);
             _mediatorMock.Verify(m => m.Send(It.IsAny<GerarRelatorioHtmlParaPdfCommand>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
