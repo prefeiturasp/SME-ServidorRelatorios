@@ -20,7 +20,7 @@ namespace SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequen
         public GerarExcelRelatorioFrequenciaGlobalCommandHandler(IServicoFila servicoFila, IMediator mediator)
         {
             this.servicoFila = servicoFila ?? throw new ArgumentNullException(nameof(servicoFila));
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(servicoFila));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
         private PropertyInfo[] ExtractClassPropertyNames(object item)
         {
@@ -43,7 +43,7 @@ namespace SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequen
                 for (int i = 0; i < dadosAgrupadosDre.Count(); i++)
                 {
                     var codigoCorrelacao = Guid.NewGuid();
-                    var mensagem = new MensagemInserirCodigoCorrelacaoDto(TipoRelatorio.FrequenciaMensalTodosDreUe, TipoFormatoRelatorio.Xlsx);
+                    var mensagem = new MensagemInserirCodigoCorrelacaoDto(codigoCorrelacao, request.UsuarioRf, TipoRelatorio.FrequenciaMensalTodosDreUe, request.TipoFormatoRelatorio);
                     await mediator.Send(new InserirFilaRabbitCommand(new PublicaFilaDto(mensagem, RotasRabbitSGP.RotaRelatorioCorrelacaoInserir, ExchangeRabbit.Sgp, codigoCorrelacao, request.UsuarioRf)));
 
                     using (var workbook = new XLWorkbook())
@@ -78,7 +78,7 @@ namespace SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequen
                 }
 
                 foreach (var codigoCorrelacaoDre in listaCodigoCorrelacaoDre)
-                    await servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(request.MensagemTitulo, codigoCorrelacaoDre.Value), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, codigoCorrelacaoDre.Key));
+                    await servicoFila.PublicaFila(new PublicaFilaDto(ObterNotificacao(request.MensagemTitulo, codigoCorrelacaoDre.Value), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, codigoCorrelacaoDre.Key, request.UsuarioRf));
 
                 return await Task.FromResult(Unit.Value);
             }
@@ -91,10 +91,7 @@ namespace SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequen
 
         private MensagemRelatorioProntoDto ObterNotificacao(string mensagemTitulo, string dreCodigo)
         {
-            return new MensagemRelatorioProntoDto()
-            {
-                MensagemTitulo = $"{mensagemTitulo} - {dreCodigo}"
-            };
+            return new MensagemRelatorioProntoDto("Relatório de Frequência Global pronto para download", $"{mensagemTitulo} - {dreCodigo}");
         }
 
         private static void AdicionarZeroNaUeFrequênciaGlobal(XLWorkbook workbook)

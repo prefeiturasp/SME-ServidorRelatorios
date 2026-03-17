@@ -28,12 +28,12 @@ namespace SME.SR.Application
             if (filtroTodos)
                 await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"Consultando dados e populando DTO"));
 
-            var listaDeFrenquenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
+            var listaDeFrequenciaGlobal = await mediator.Send(new ObterRelatorioDeFrequenciaGlobalQuery(filtroRelatorio));
 
             if (filtroTodos)
                 await mediator.Send(new SalvarLogViaRabbitCommand($"Log monitoramento Relatório Frequência Mensal {logId}", LogNivel.Informacao, $"DTO populado"));
 
-            if (listaDeFrenquenciaGlobal?.Any() != true)
+            if (listaDeFrequenciaGlobal?.Any() != true)
                 throw new NegocioException($"Não foi possível localizar informações com os filtros selecionados");
             else
             {
@@ -43,10 +43,10 @@ namespace SME.SR.Application
                 switch (filtroRelatorio.TipoFormatoRelatorio)
                 {
                     case TipoFormatoRelatorio.Pdf:
-                        await GerarRelatorioPdf(listaDeFrenquenciaGlobal, request, filtroRelatorio);
+                        await GerarRelatorioPdf(listaDeFrequenciaGlobal, request, filtroRelatorio);
                         break;
                     case TipoFormatoRelatorio.Xlsx:
-                        await ExecuteExcel(listaDeFrenquenciaGlobal, request.CodigoCorrelacao);
+                        await ExecuteExcel(listaDeFrequenciaGlobal, filtroRelatorio, request.UsuarioLogadoRF, TipoFormatoRelatorio.Xlsx);
                         break;
                     default:
                         throw new NegocioException($"Não foi possível exportar este relátorio para o formato {filtroRelatorio.TipoFormatoRelatorio}");
@@ -146,9 +146,16 @@ namespace SME.SR.Application
                 cabecalhoDto.NomeDre = "Todas";
             }
         }
-        private async Task ExecuteExcel(List<FrequenciaGlobalDto> listaDeFrequencia, Guid codigoCorrelacao)
+        private async Task ExecuteExcel(List<FrequenciaGlobalDto> listaDeFrequencia, FiltroFrequenciaGlobalDto filtroRelatorio, string usuarioLogado, TipoFormatoRelatorio tipoFormato)
         {
-            await mediator.Send(new GerarExcelRelatorioFrequenciaGlobalCommand(listaDeFrequencia, "Frequência Global", codigoCorrelacao, relatorioFrequenciaGlobal: true));
+            await mediator.Send(new GerarExcelRelatorioFrequenciaGlobalCommand(
+                listaDeFrequencia,
+                "Frequência Global",
+                relatorioFrequenciaGlobal: true,
+                mensagemTitulo: "Relatório de frequência mensal filtro todos dre ou ue",
+                usuarioRf: usuarioLogado,
+                tipoFormatoRelatorio: tipoFormato
+            ));
         }
         private string ObterNomeMesReferencia(int mes)
             => Enum.GetValues(typeof(Mes)).Cast<Mes>().Where(x => (int)x == mes).FirstOrDefault().ToString();
