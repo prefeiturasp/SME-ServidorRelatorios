@@ -45,7 +45,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
 
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
-            reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), DateTime.Now.ToString("dd/MM/yyyy"));
+            reportConverter.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), $"SGP - Sistema de Gestão Pedagógica | {DateTime.Now.ToString("dd/MM/yyyy")}");
 
             if (request.EnvioPorRabbit)
             {

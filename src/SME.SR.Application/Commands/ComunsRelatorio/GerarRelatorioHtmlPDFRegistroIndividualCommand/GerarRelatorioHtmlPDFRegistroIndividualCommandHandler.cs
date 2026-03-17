@@ -65,7 +65,7 @@ namespace SME.SR.Application.Commands.ComunsRelatorio.GerarRelatorioHtmlParaPdf
             var nomeArquivo = Path.Combine(caminhoBase, "relatorios");
 
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString());
+            pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, nomeArquivo, request.CodigoCorrelacao.ToString(), "SGP - Sistema de Gestão Pedagógica");
 
             if (request.EnvioPorRabbit)
             {

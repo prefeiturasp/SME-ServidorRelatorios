@@ -72,7 +72,7 @@ namespace SME.SR.Application
             PdfGenerator pdfGenerator = new PdfGenerator(converter);
 
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de ocorrências");
+            pdfGenerator.ConvertToPdfPaginacaoSolo(paginas, caminhoBase, request.CodigoCorrelacao.ToString(), "SGP - Sistema de Gestão Pedagógica | Relatório de ocorrências");
 
             await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));
         }

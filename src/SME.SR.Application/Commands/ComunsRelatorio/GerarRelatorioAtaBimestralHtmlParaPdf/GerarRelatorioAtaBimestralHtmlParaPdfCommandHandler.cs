@@ -50,7 +50,7 @@ namespace SME.SR.Application
 
                 var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
 
-                pdfGenerator.ConvertToPdfPaginacaoSolo(paginasEmHtml, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório de Ata Bimestral", DinkToPdf.Orientation.Landscape);
+                pdfGenerator.ConvertToPdfPaginacaoSolo(paginasEmHtml, caminhoBase, request.CodigoCorrelacao.ToString(), "SGP - Sistema de Gestão Pedagógica | Relatório de Ata Bimestral", DinkToPdf.Orientation.Landscape);
                 await servicoFila.PublicaFila(new PublicaFilaDto(new MensagemRelatorioProntoDto(request.MensagemUsuario, string.Empty), RotasRabbitSGP.RotaRelatoriosProntosSgp, ExchangeRabbit.Sgp, request.CodigoCorrelacao));                
             }
 

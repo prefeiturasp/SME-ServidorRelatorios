@@ -56,7 +56,7 @@ namespace SME.SR.Application
             }
 
             var caminhoBase = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "relatorios");
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, request.CodigoCorrelacao.ToString(), "Relatório do encaminhamento NAAPA");
+            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, request.CodigoCorrelacao.ToString(), "SGP - Sistema de Gestão Pedagógica | Relatório do encaminhamento NAAPA");
         }
 
         private async Task GerarRelatorioPdfComAnexo(GerarRelatorioHtmlPDFEncaminhamentoNaapaDetalhadoCommand request)
@@ -72,7 +72,7 @@ namespace SME.SR.Application
                 paginasSolo.Add(await GerarPagina(pagina, pagina.Pagina, relatorioPaginas.Count()));
             }
 
-            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, pdfSemAnexo, "Relatório do encaminhamento NAAPA");
+            pdfGenerator.ConvertToPdfPaginacaoSolo(paginasSolo, caminhoBase, pdfSemAnexo, "SGP - Sistema de Gestão Pedagógica | Relatório do encaminhamento NAAPA");
 
             await mediator.Send(new UnificarPdfNAAPACommand(pdfSemAnexo, relatorioDto.AnexosPdf.ToList(), request.CodigoCorrelacao.ToString()));
         }
