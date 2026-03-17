@@ -9,22 +9,32 @@ namespace SME.SR.Application.Commands.ExportacaoExcel.GerarExcelRelatorioFrequen
     {
         public IList<FrequenciaGlobalDto> ObjetoExportacao { get; }
         public string NomeWorkSheet { get; set; }
-        public Guid CodigoCorrelacao { get; set; }
         public bool PossuiNotaRodape { get; set; }
         public string NotaRodape { get; set; }
         public bool RelatorioFrequenciaGlobal { get; set; }
         public string MensagemTitulo { get; set; }
         public string UsuarioRf { get; internal set; }
+        public TipoFormatoRelatorio TipoFormatoRelatorio { get; internal set; }
 
-        public GerarExcelRelatorioFrequenciaGlobalCommand(IList<FrequenciaGlobalDto> objetoExportacaoExcel, string nomeWorkSheet, Guid codigoCorrelacao, bool possuiNotaRodape = false, string notaRodape = null, bool relatorioFrequenciaGlobal = false, string mensagemTitulo = "")
+        public GerarExcelRelatorioFrequenciaGlobalCommand(
+            IList<FrequenciaGlobalDto> objetoExportacaoExcel,
+            string nomeWorkSheet,
+            TipoFormatoRelatorio tipoFormatoRelatorio,
+            bool possuiNotaRodape = false,
+            string notaRodape = null,
+            bool relatorioFrequenciaGlobal = false,
+            string mensagemTitulo = "",
+            string usuarioRf = null,
+            TipoFormatoRelatorio TipoFormatoRelatorio = default)
         {
             ObjetoExportacao = objetoExportacaoExcel;
             NomeWorkSheet = nomeWorkSheet;
-            CodigoCorrelacao = codigoCorrelacao;
             PossuiNotaRodape = possuiNotaRodape;
             NotaRodape = notaRodape;
             RelatorioFrequenciaGlobal = relatorioFrequenciaGlobal;
             MensagemTitulo = mensagemTitulo;
+            this.UsuarioRf = usuarioRf;
+            this.TipoFormatoRelatorio = tipoFormatoRelatorio;
         }
     }
 }
