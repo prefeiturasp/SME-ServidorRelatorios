@@ -104,8 +104,8 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
                     TipoFormacao = tipoFormacao,
                     NomeFormacao = dadosBruto.NomeFormacao,
                     QuantidadeTurmas = dadosBruto.QuantidadeTurmas,
-                    DataPeriodoRealizacaoInicio = dadosBruto.PeriodoRealizacoInicio,
-                    DataPeriodoRealizacaoFim = dadosBruto.PeriodoRealizacoFim,
+                    DataPeriodoRealizacaoInicio = dadosBruto.PeriodoRealizacaoInicio,
+                    DataPeriodoRealizacaoFim = dadosBruto.PeriodoRealizacaoFim,
                     TipoCertificacao = dadosBruto.CursoComCertificado ? TipoCertificacaoRelatorioCodaf.ComCertificacao : TipoCertificacaoRelatorioCodaf.SemCertificacao,
                     NumeroHomologacao = dadosBruto.NumeroHomologacao,
                     CodigoEventoSigpec = dadosBruto.CodigoEventoSigpec,
@@ -180,7 +180,7 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
 
             foreach (var periodo in periodos)
             {
-                if (periodo.DataInicio.Date == periodo.DataFim.Date)
+                if (!periodo.DataFim.HasValue || periodo.DataInicio.Date == periodo.DataFim.Value.Date)
                 {
                     datasExpandidas.Add(periodo.DataInicio.Date);
                     continue;
