@@ -13,8 +13,8 @@ namespace SME.SR.Infra.Dtos.Relatorios.Conecta
         public TipoFormacaoConecta TipoFormacao { get; set; }
         public string NomeFormacao { get; set; }
         public int QuantidadeTurmas { get; set; }
-        public DateTime PeriodoRealizacoInicio { get; set; }
-        public DateTime PeriodoRealizacoFim { get; set; }
+        public DateTime PeriodoRealizacaoInicio { get; set; }
+        public DateTime PeriodoRealizacaoFim { get; set; }
         public bool CursoComCertificado { get; set; }
         public int NumeroHomologacao { get; set; }
         public int CodigoEventoSigpec { get; set; }
