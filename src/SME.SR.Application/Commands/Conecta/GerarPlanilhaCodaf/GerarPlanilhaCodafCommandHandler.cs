@@ -180,7 +180,7 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
 
             foreach (var periodo in periodos)
             {
-                if (periodo.DataInicio.Date == periodo.DataFim.Date)
+                if (!periodo.DataFim.HasValue || periodo.DataInicio.Date == periodo.DataFim.Value.Date)
                 {
                     datasExpandidas.Add(periodo.DataInicio.Date);
                     continue;
