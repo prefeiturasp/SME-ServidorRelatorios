@@ -155,15 +155,27 @@ namespace SME.SR.HtmlPdf
 
             foreach (var pagina in paginas)
             {
+                var exibirSgp = tituloRelatorioRodape != "Relatório de Proposta - Lauda completa";
+
+                var textoRodape = string.Empty;
+
+                if (!string.IsNullOrEmpty(tituloRelatorioRodape))
+                {
+                    textoRodape = exibirSgp
+                        ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}"
+                        : tituloRelatorioRodape;
+                }
+
                 doc.Objects.Add(new ObjectSettings()
                 {
                     HtmlContent = pagina.Html,
                     WebSettings = { DefaultEncoding = "utf-8" },
                     FooterSettings = {
-                    FontName="Roboto Mono",
-                    FontSize = 9, Right = $"{pagina.Pagina} / {pagina.Total}",
-                    Left = !string.IsNullOrEmpty(tituloRelatorioRodape) ? $"SGP - Sistema de Gestão Pedagógica | {tituloRelatorioRodape}" : "",
-                }
+                        FontName="Roboto Mono",
+                        FontSize = 9,
+                        Right = $"{pagina.Pagina} / {pagina.Total}",
+                        Left = textoRodape
+                    }
                 });
             }
 
