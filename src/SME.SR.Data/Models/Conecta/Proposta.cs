@@ -38,6 +38,7 @@ namespace SME.SR.Data.Models.Conecta
         public string FuncaoEspecifica_Outros { get; set; }
         public string Criterios_Outros { get; set; }
         public string CriteriosValidacao_Outros { get; set; }
+        public int CodigoEventoSIGPEC { get; set; }
 
         public string ObterPeriodoRealizacao()
         {

@@ -149,7 +149,7 @@ namespace SME.SR.Application
 
         private RelatorioCampoLaudaCompletaDto ObterCampoNumeroProposta()
         {
-            return ObterCampo("NÚMERO DA PROPOSTA DE VALIDAÇÃO", propostaCompleta.Id.ToString());
+            return ObterCampo("NÚMERO DA PROPOSTA DE VALIDAÇÃO", propostaCompleta.CodigoEventoSIGPEC.ToString());
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoTipoFormacao()
