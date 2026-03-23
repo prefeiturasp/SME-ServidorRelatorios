@@ -46,4 +46,12 @@
     <None Remove="Queries\Ue\ObterUeComDrePorCodigo\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Commands\Conecta\GerarPlanilhaCodaf\brasao_prefeitura_titulo_educacao.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Commands\Conecta\GerarPlanilhaCodaf\brasao_prefeitura_titulo_educacao.png" />
+  </ItemGroup>
+
 </Project>

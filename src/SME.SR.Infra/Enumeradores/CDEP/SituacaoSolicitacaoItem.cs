@@ -20,6 +20,9 @@ namespace SME.SR.Infra.CDEP
         FINALIZADO_MANUALMENTE = 5,
 
         [Display(Description = "Sem resposta do solicitante")]
-        SEM_RESPOSTA_SOLICITANTE = 6
+        SEM_RESPOSTA_SOLICITANTE = 6,
+
+        [Display(Description = "Presencial em aberto")]
+        PRESENCIAL_EM_ABERTO = 7
     }
 }

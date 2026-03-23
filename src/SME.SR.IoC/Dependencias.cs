@@ -1,25 +1,32 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
+using Elasticsearch.Net;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Nest;
 using RabbitMQ.Client;
 using SME.SR.Application;
 using SME.SR.Application.Interfaces;
 using SME.SR.Application.Interfaces.UseCases;
 using SME.SR.Application.Services;
+using SME.SR.Application.Services.Codaf;
 using SME.SR.Application.UseCases;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
+using SME.SR.Data.Interfaces.Conecta;
 using SME.SR.Data.Interfaces.ElasticSearch;
 using SME.SR.Data.Interfaces.Sondagem;
 using SME.SR.Data.Repositories.Cache;
+using SME.SR.Data.Repositories.Conecta;
 using SME.SR.Data.Repositories.ElasticSearch;
 using SME.SR.Data.Repositories.Sgp;
 using SME.SR.Data.Repositories.Sondagem;
 using SME.SR.HtmlPdf;
 using SME.SR.Infra;
+using SME.SR.Infra.Excel.Codaf.Gerador;
+using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
 using SME.SR.JRSClient;
 using SME.SR.JRSClient.Extensions;
 using SME.SR.JRSClient.Interfaces;
@@ -28,8 +35,6 @@ using SME.SR.Workers.SGP;
 using System;
 using System.IO;
 using System.Net;
-using Nest; 
-using Elasticsearch.Net;
 
 namespace SME.SR.IoC
 {
@@ -87,7 +92,7 @@ namespace SME.SR.IoC
 
             services.AddMediatR(assembly);
             AddRabbitMQ(services, configuration);
-            AddElasticSearch(services, configuration); 
+            AddElasticSearch(services, configuration);
 
             var urlJasper = configuration.GetSection("ConfiguracaoJasper:Hostname").Value;
             var usuarioJasper = configuration.GetSection("ConfiguracaoJasper:Username").Value;
@@ -130,6 +135,14 @@ namespace SME.SR.IoC
             RegistrarServicos(services);
             RegistrarOptions(services, configuration);
             RegistrarServicoRelatorioAnaliticoSondagem(services);
+
+            services.AddScoped<IRelatorioCodafRepository, RelatorioCodafRepository>();
+            services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
+            services.AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>();
+            services.AddSingleton<IBlocoRegentesGerador, BlocoRegentesGerador>();
+            services.AddSingleton<IBlocoAlunosGerador, BlocoAlunosGerador>();
+            services.AddSingleton<IBlocoAssinaturaGerador, BlocoAssinaturaGerador>();
+            services.AddScoped<IGeradorRelatorioCodafService, GeradorRelatorioCodafService>();
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
@@ -222,7 +235,7 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IRegistroFrequenciaAlunoRepository), typeof(RegistroFrequenciaAlunoRepository));
 
             services.TryAddScoped(typeof(IRegistrosPedagogicosRepository), typeof(RegistrosPedagogicosRepository));
-            
+
             services.TryAddScoped(typeof(IQuestionarioRepository), typeof(QuestionarioRepository));
             services.TryAddScoped(typeof(IPlanoAeeRespostaRepository), typeof(PlanoAeeRespostaRepository));
             services.TryAddScoped(typeof(IPlanoAeeVersaoRepository), typeof(PlanoAeeVersaoRepository));
@@ -238,7 +251,7 @@ namespace SME.SR.IoC
 
             services.TryAddScoped(typeof(ISondagemAnaliticaRepository), typeof(SondagemAnaliticaRepository));
             services.TryAddScoped(typeof(IHistoricoEscolarObservacaoRepository), typeof(HistoricoEscolarObservacaoRepository));
-            
+
             services.TryAddScoped(typeof(IPlanoAnualRepository), typeof(PlanoAnualRepository));
 
             services.TryAddScoped(typeof(IMapeamentoEstudanteRepository), typeof(MapeamentoEstudanteRepository));
