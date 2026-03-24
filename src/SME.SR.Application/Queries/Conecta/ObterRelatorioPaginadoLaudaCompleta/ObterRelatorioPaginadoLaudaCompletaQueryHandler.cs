@@ -149,7 +149,11 @@ namespace SME.SR.Application
 
         private RelatorioCampoLaudaCompletaDto ObterCampoNumeroProposta()
         {
-            return ObterCampo("NÚMERO DA PROPOSTA DE VALIDAÇÃO", propostaCompleta.CodigoEventoSIGPEC.ToString());
+            var valor = propostaCompleta.CodigoEventoSIGPEC == 0
+                ? "-"
+                : propostaCompleta.CodigoEventoSIGPEC.ToString();
+
+            return ObterCampo("NÚMERO DA PROPOSTA DE VALIDAÇÃO", valor);
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoTipoFormacao()
@@ -231,11 +235,64 @@ namespace SME.SR.Application
             var descricao = new StringBuilder();
 
             descricao.AppendLine($"PERÍODO DE REALIZAÇÃO: {propostaCompleta.ObterPeriodoRealizacao()}");
+            descricao.AppendLine("<br><br>DATAS E HORÁRIOS DOS ENCONTROS PRESENCIAIS:<br>");
 
-            foreach (var encontro in propostaCompleta.Encontros)
-                descricao.AppendLine($"<br>{encontro.ObterLocalDetalhado()}");
+            var turmasAgrupadas = propostaCompleta.Encontros
+                .GroupBy(e => e.Turma)
+                .OrderBy(g => g.Key);
 
-            return ObterCampo("CRONOGRAMA DETALHADO", descricao.ToString(), true);
+            foreach (var turma in turmasAgrupadas)
+            {
+                descricao.Append($"<br><strong>{turma.Key.ToUpper()}:</strong> ");
+
+                var horariosAgrupados = turma
+                    .GroupBy(e => new { e.HoraInicio, e.HoraFim })
+                    .OrderBy(h => h.Key.HoraInicio);
+
+                bool primeiraLinha = true;
+
+                foreach (var grupoHorario in horariosAgrupados)
+                {
+                    var datas = grupoHorario
+                        .Select(e => e.DataInicio.ToString("dd/MM"))
+                        .Distinct()
+                        .OrderBy(d => d);
+
+                    var datasFormatadas = string.Join("; ", datas);
+
+                    var linha = $"{datasFormatadas} – DAS {FormatarHora(grupoHorario.Key.HoraInicio)} ÀS {FormatarHora(grupoHorario.Key.HoraFim)}";
+
+                    if (!primeiraLinha) 
+                        descricao.Append("<br>\u00A0\u00A0\u00A0\u00A0\u00A0");
+
+                    descricao.Append(linha);
+
+                    primeiraLinha = false;
+                }
+            }
+
+            var local = propostaCompleta.Encontros
+                .Select(e => e.Local)
+                .FirstOrDefault(l => !string.IsNullOrEmpty(l));
+
+            if (!string.IsNullOrEmpty(local))
+            {
+                descricao.AppendLine($"<br><br>LOCAL: {local.ToUpper()}");
+            }
+
+            return ObterCampo("CRONOGRAMA", descricao.ToString(), true);
+        }
+
+        private string FormatarHora(string hora)
+        {
+            if (TimeSpan.TryParse(hora, out var time))
+            {
+                return time.Minutes == 0
+                    ? $"{time.Hours}H"
+                    : $"{time.Hours}H{time.Minutes:D2}";
+            }
+
+            return hora;
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoCriterioCertificacao()
