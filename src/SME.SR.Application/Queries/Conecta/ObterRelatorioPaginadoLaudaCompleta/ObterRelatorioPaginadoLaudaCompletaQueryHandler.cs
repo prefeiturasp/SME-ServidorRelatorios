@@ -235,7 +235,7 @@ namespace SME.SR.Application
             var descricao = new StringBuilder();
 
             descricao.AppendLine($"PERÍODO DE REALIZAÇÃO: {propostaCompleta.ObterPeriodoRealizacao()}");
-            descricao.AppendLine("<br><br>DATAS E HORÁRIOS DOS ENCONTROS PRESENCIAIS:<br>");
+            descricao.AppendLine("<br><br>DATAS E HORÁRIOS DOS ENCONTROS:<br>");
 
             var turmasAgrupadas = propostaCompleta.Encontros
                 .GroupBy(e => e.Turma)
