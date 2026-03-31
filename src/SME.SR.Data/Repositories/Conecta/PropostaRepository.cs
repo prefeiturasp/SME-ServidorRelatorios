@@ -212,7 +212,7 @@ namespace SME.SR.Data
         {
             return @"SELECT COUNT(pet.proposta_encontro_id) TotalTurmas, proposta_id, 
                         pe.local as Local, ped.data_inicio as DataInicio, ped.data_fim as DataFim, 
-                        pe.hora_inicio as HoraInicio, pe.hora_fim as HoraFim 
+                        coalesce(ped.hora_inicio, pe.hora_inicio) as HoraInicio, coalesce(ped.hora_fim, pe.hora_fim) as HoraFim  
                     FROM proposta_encontro pe
                     INNER JOIN proposta_encontro_turma pet ON pet.proposta_encontro_id = pe.id 
                     INNER JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id
@@ -220,15 +220,15 @@ namespace SME.SR.Data
                        AND NOT pet.excluido
                        AND NOT ped.excluido
                        AND pe.proposta_id = @propostaId
-                    GROUP BY proposta_id, pe.local, ped.data_inicio, ped.data_fim, pe.hora_inicio, pe.hora_fim  
+                    GROUP BY proposta_id, pe.local, ped.data_inicio, ped.data_fim, ped.hora_inicio, pe.hora_inicio, ped.hora_fim, pe.hora_fim  
                     HAVING COUNT(pet.proposta_encontro_id) >= 1 AND COUNT(ped.proposta_encontro_id) = 1;";
         }
 
         private string ObterQueryEncontros()
         {
-            return @"SELECT pt.nome as Turma, pe.proposta_id, pe.tipo as TipoEncontroConecta, 
+            return @"SELECT pt.nome as Turma, pe.proposta_id, pe.tipo as TipoEncontro, 
                         pe.local, ped.data_inicio as DataInicio, ped.data_fim as DataFim, 
-                        pe.hora_inicio as HoraInicio, pe.hora_fim as HoraFim 
+                        coalesce(ped.hora_inicio, pe.hora_inicio) as HoraInicio, coalesce(ped.hora_fim, pe.hora_fim) as HoraFim  
                     FROM proposta_encontro pe
                     INNER JOIN proposta_encontro_turma pet ON pet.proposta_encontro_id = pe.id 
                     INNER JOIN proposta_encontro_data ped ON ped.proposta_encontro_id = pe.id
