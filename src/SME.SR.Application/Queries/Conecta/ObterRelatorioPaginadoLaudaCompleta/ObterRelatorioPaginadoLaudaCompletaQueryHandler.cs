@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,16 +25,16 @@ namespace SME.SR.Application
 
         public async Task<RelatorioPaginadoLaudaCompletaDto> Handle(ObterRelatorioPaginadoLaudaCompletaQuery request, CancellationToken cancellationToken)
         {
-            this.propostaCompleta = request.PropostaCompleta;
+            propostaCompleta = request.PropostaCompleta;
 
             relatorioPaginado = new RelatorioPaginadoLaudaCompletaDto();
 
-            CarreguePaginas();
+            CarregaPaginas();
 
             return relatorioPaginado;
         }
 
-        private void CarreguePaginas()
+        private void CarregaPaginas()
         {
             CriarPagina(1);
             CriarCampos();
@@ -106,7 +105,7 @@ namespace SME.SR.Application
             var linhaRestantes = TOTAL_LINHAS - totalLinhaPaginaAtual;
 
             return linhaRestantes > 4 && linhaRestantes < linhasCampo;
-        } 
+        }
 
         private List<Func<RelatorioCampoLaudaCompletaDto>> ObterFuncoesCampos()
         {
@@ -237,53 +236,78 @@ namespace SME.SR.Application
             descricao.AppendLine($"PERÍODO DE REALIZAÇÃO: {propostaCompleta.ObterPeriodoRealizacao()}");
             descricao.AppendLine("<br><br>DATAS E HORÁRIOS DOS ENCONTROS:<br>");
 
-            var turmasAgrupadas = propostaCompleta.Encontros
-                .GroupBy(e => e.Turma)
+            var locaisNormalizados = NormalizarLocal(propostaCompleta.Encontros);
+
+            var locaisAgrupados = locaisNormalizados
+                .GroupBy(e => e.Local)
                 .OrderBy(g => g.Key);
 
-            foreach (var turma in turmasAgrupadas)
+            if (locaisAgrupados.Count() > 1)
+                descricao.AppendLine("<br><hr><br>");
+
+            var listaDescricaoCronogramaLocais = new List<string>();            
+
+            foreach (var localEncontro in locaisAgrupados)
             {
-                descricao.Append($"<br><strong>{turma.Key.ToUpper()}:</strong> ");
+                var descricaoCronogramaLocais = new StringBuilder();
+                var turmasAgrupadas = localEncontro
+                    .GroupBy(e => e.Turma)
+                    .OrderBy(g => g.Key);
 
-                var horariosAgrupados = turma
-                    .GroupBy(e => new { e.HoraInicio, e.HoraFim })
-                    .OrderBy(h => h.Key.HoraInicio);
-
-                bool primeiraLinha = true;
-
-                foreach (var grupoHorario in horariosAgrupados)
+                foreach (var turma in turmasAgrupadas)
                 {
-                    var datas = grupoHorario
-                        .Select(e => e.DataInicio.ToString("dd/MM"))
-                        .Distinct()
-                        .OrderBy(d => d);
+                    descricaoCronogramaLocais.Append($"<br><strong>{turma.Key.ToUpper()}:</strong> ");
 
-                    var datasFormatadas = string.Join("; ", datas);
+                    var horariosAgrupados = turma
+                        .GroupBy(e => new { e.HoraInicio, e.HoraFim })
+                        .OrderBy(h => h.Key.HoraInicio);
 
-                    var linha = $"{datasFormatadas} – DAS {FormatarHora(grupoHorario.Key.HoraInicio)} ÀS {FormatarHora(grupoHorario.Key.HoraFim)}";
+                    bool primeiraLinha = true;
 
-                    if (!primeiraLinha) 
-                        descricao.Append("<br>\u00A0\u00A0\u00A0\u00A0\u00A0");
+                    foreach (var grupoHorario in horariosAgrupados)
+                    {
+                        var datas = grupoHorario
+                            .Select(e => e.DataInicio.ToString("dd/MM"))
+                            .Distinct()
+                            .OrderBy(d => d);
 
-                    descricao.Append(linha);
+                        var datasFormatadas = string.Join("; ", datas);
 
-                    primeiraLinha = false;
+                        var linha = $"{datasFormatadas} – DAS {FormatarHora(grupoHorario.Key.HoraInicio)} ÀS {FormatarHora(grupoHorario.Key.HoraFim)}";
+
+                        if (!primeiraLinha)
+                            descricaoCronogramaLocais.Append("<br>\u00A0\u00A0\u00A0\u00A0\u00A0");
+
+                        descricaoCronogramaLocais.Append(linha);
+
+                        primeiraLinha = false;
+                    }
                 }
+                var local = localEncontro.First().Local;
+                if (!string.IsNullOrEmpty(local))
+                {
+                    descricaoCronogramaLocais.AppendLine($"<br><br>LOCAL: {local.ToUpper()}");
+                }
+                listaDescricaoCronogramaLocais.Add(descricaoCronogramaLocais.ToString());
             }
-
-            var local = propostaCompleta.Encontros
-                .Select(e => e.Local)
-                .FirstOrDefault(l => !string.IsNullOrEmpty(l));
-
-            if (!string.IsNullOrEmpty(local))
-            {
-                descricao.AppendLine($"<br><br>LOCAL: {local.ToUpper()}");
-            }
+            descricao.AppendLine(string.Join("<br><hr>", listaDescricaoCronogramaLocais));
 
             return ObterCampo("CRONOGRAMA", descricao.ToString(), true);
         }
 
-        private string FormatarHora(string hora)
+        private static IEnumerable<PropostaLocal> NormalizarLocal(IEnumerable<PropostaLocal> locais)
+        {
+            return locais.Select(l =>
+            {
+                if (string.IsNullOrEmpty(l.Local) && l.TipoEncontro == TipoEncontro.Assincrono)
+                    l.Local = "SGA";
+                else if (string.IsNullOrEmpty(l.Local))
+                    l.Local = "A DEFINIR";
+                return l;
+            });
+        }
+
+        private static string FormatarHora(string hora)
         {
             if (TimeSpan.TryParse(hora, out var time))
             {
@@ -304,11 +328,11 @@ namespace SME.SR.Application
                     item.DescricaoAdicional = propostaCompleta.Criterios_Outros;
             });
 
-            var criterios = criteriosCertificacao is null ? 
-                          string.Empty : 
+            var criterios = criteriosCertificacao is null ?
+                          string.Empty :
                           String.Join(", ", criteriosCertificacao.Select(p => $@"{p.Nome}{(string.IsNullOrEmpty(p.DescricaoAdicional)
                                                                                                                 ? string.Empty : $": {p.DescricaoAdicional}")}"));
-            
+
             return ObterCampo("CRITÉRIOS DE AVALIAÇÃO E APROVAÇÃO PARA EXPEDIÇÃO DE CERTIFICADO", criterios, true);
         }
 
