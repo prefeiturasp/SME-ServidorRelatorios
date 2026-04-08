@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,16 +25,16 @@ namespace SME.SR.Application
 
         public async Task<RelatorioPaginadoLaudaCompletaDto> Handle(ObterRelatorioPaginadoLaudaCompletaQuery request, CancellationToken cancellationToken)
         {
-            this.propostaCompleta = request.PropostaCompleta;
+            propostaCompleta = request.PropostaCompleta;
 
             relatorioPaginado = new RelatorioPaginadoLaudaCompletaDto();
 
-            CarreguePaginas();
+            CarregaPaginas();
 
             return relatorioPaginado;
         }
 
-        private void CarreguePaginas()
+        private void CarregaPaginas()
         {
             CriarPagina(1);
             CriarCampos();
@@ -106,7 +105,7 @@ namespace SME.SR.Application
             var linhaRestantes = TOTAL_LINHAS - totalLinhaPaginaAtual;
 
             return linhaRestantes > 4 && linhaRestantes < linhasCampo;
-        } 
+        }
 
         private List<Func<RelatorioCampoLaudaCompletaDto>> ObterFuncoesCampos()
         {
@@ -149,7 +148,11 @@ namespace SME.SR.Application
 
         private RelatorioCampoLaudaCompletaDto ObterCampoNumeroProposta()
         {
-            return ObterCampo("NÚMERO DA PROPOSTA DE VALIDAÇÃO", propostaCompleta.Id.ToString());
+            var valor = propostaCompleta.CodigoEventoSIGPEC == 0
+                ? "-"
+                : propostaCompleta.CodigoEventoSIGPEC.ToString();
+
+            return ObterCampo("NÚMERO DA PROPOSTA DE VALIDAÇÃO", valor);
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoTipoFormacao()
@@ -231,11 +234,89 @@ namespace SME.SR.Application
             var descricao = new StringBuilder();
 
             descricao.AppendLine($"PERÍODO DE REALIZAÇÃO: {propostaCompleta.ObterPeriodoRealizacao()}");
+            descricao.AppendLine("<br><br>DATAS E HORÁRIOS DOS ENCONTROS:<br>");
 
-            foreach (var encontro in propostaCompleta.Encontros)
-                descricao.AppendLine($"<br>{encontro.ObterLocalDetalhado()}");
+            var locaisNormalizados = NormalizarLocal(propostaCompleta.Encontros);
 
-            return ObterCampo("CRONOGRAMA DETALHADO", descricao.ToString(), true);
+            var locaisAgrupados = locaisNormalizados
+                .GroupBy(e => e.Local)
+                .OrderBy(g => g.Key);
+
+            if (locaisAgrupados.Count() > 1)
+                descricao.AppendLine("<br><hr><br>");
+
+            var listaDescricaoCronogramaLocais = new List<string>();            
+
+            foreach (var localEncontro in locaisAgrupados)
+            {
+                var descricaoCronogramaLocais = new StringBuilder();
+                var turmasAgrupadas = localEncontro
+                    .GroupBy(e => e.Turma)
+                    .OrderBy(g => g.Key);
+
+                foreach (var turma in turmasAgrupadas)
+                {
+                    descricaoCronogramaLocais.Append($"<br><strong>{turma.Key.ToUpper()}:</strong> ");
+
+                    var horariosAgrupados = turma
+                        .GroupBy(e => new { e.HoraInicio, e.HoraFim })
+                        .OrderBy(h => h.Key.HoraInicio);
+
+                    bool primeiraLinha = true;
+
+                    foreach (var grupoHorario in horariosAgrupados)
+                    {
+                        var datas = grupoHorario
+                            .Select(e => e.DataInicio.ToString("dd/MM"))
+                            .Distinct()
+                            .OrderBy(d => d);
+
+                        var datasFormatadas = string.Join("; ", datas);
+
+                        var linha = $"{datasFormatadas} – DAS {FormatarHora(grupoHorario.Key.HoraInicio)} ÀS {FormatarHora(grupoHorario.Key.HoraFim)}";
+
+                        if (!primeiraLinha)
+                            descricaoCronogramaLocais.Append("<br>\u00A0\u00A0\u00A0\u00A0\u00A0");
+
+                        descricaoCronogramaLocais.Append(linha);
+
+                        primeiraLinha = false;
+                    }
+                }
+                var local = localEncontro.First().Local;
+                if (!string.IsNullOrEmpty(local))
+                {
+                    descricaoCronogramaLocais.AppendLine($"<br><br>LOCAL: {local.ToUpper()}");
+                }
+                listaDescricaoCronogramaLocais.Add(descricaoCronogramaLocais.ToString());
+            }
+            descricao.AppendLine(string.Join("<br><hr>", listaDescricaoCronogramaLocais));
+
+            return ObterCampo("CRONOGRAMA", descricao.ToString(), true);
+        }
+
+        private static IEnumerable<PropostaLocal> NormalizarLocal(IEnumerable<PropostaLocal> locais)
+        {
+            return locais.Select(l =>
+            {
+                if (string.IsNullOrEmpty(l.Local) && l.TipoEncontro == TipoEncontro.Assincrono)
+                    l.Local = "SGA";
+                else if (string.IsNullOrEmpty(l.Local))
+                    l.Local = "A DEFINIR";
+                return l;
+            });
+        }
+
+        private static string FormatarHora(string hora)
+        {
+            if (TimeSpan.TryParse(hora, out var time))
+            {
+                return time.Minutes == 0
+                    ? $"{time.Hours}H"
+                    : $"{time.Hours}H{time.Minutes:D2}";
+            }
+
+            return hora;
         }
 
         private RelatorioCampoLaudaCompletaDto ObterCampoCriterioCertificacao()
@@ -247,11 +328,11 @@ namespace SME.SR.Application
                     item.DescricaoAdicional = propostaCompleta.Criterios_Outros;
             });
 
-            var criterios = criteriosCertificacao is null ? 
-                          string.Empty : 
+            var criterios = criteriosCertificacao is null ?
+                          string.Empty :
                           String.Join(", ", criteriosCertificacao.Select(p => $@"{p.Nome}{(string.IsNullOrEmpty(p.DescricaoAdicional)
                                                                                                                 ? string.Empty : $": {p.DescricaoAdicional}")}"));
-            
+
             return ObterCampo("CRITÉRIOS DE AVALIAÇÃO E APROVAÇÃO PARA EXPEDIÇÃO DE CERTIFICADO", criterios, true);
         }
 
