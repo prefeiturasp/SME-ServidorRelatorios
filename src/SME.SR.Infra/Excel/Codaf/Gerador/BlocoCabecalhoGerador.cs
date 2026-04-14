@@ -125,7 +125,7 @@ namespace SME.SR.Infra.Excel.Codaf.Gerador
 
         private static void RenderizarDadosAulas(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
-            var periodo = $"{dados.DataPeriodoRealizacaoInicio:dd/MM} a {dados.DataPeriodoRealizacaoFim:dd/MM/yyyy}";
+            var periodo = $"{dados.DataPeriodoRealizacaoInicio:dd/MM/yyyy} a {dados.DataPeriodoRealizacaoFim:dd/MM/yyyy}";
             CriarCampoChaveValor(sheet, linha, "A:B", "PERÍODO DE REALIZAÇÃO:", "C:G", periodo);
 
             string textoDatas = FormatarDatasAulas(dados.DataDasAulasSincronas);
