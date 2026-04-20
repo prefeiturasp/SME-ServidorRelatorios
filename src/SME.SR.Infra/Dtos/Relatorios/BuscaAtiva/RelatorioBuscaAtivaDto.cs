@@ -13,6 +13,7 @@ namespace SME.SR.Infra
         public string UsuarioNome { get; set; }
         public int AnoLetivo { get; set; }
         public int? Semestre { get; set; }
+        public List<string> UesNome { get; set; } = new List<string>();
         public string Turma { get; set; }
         public Modalidade Modalidade { get; set; }
         public List<AgrupamentoBuscaAtivaDreUeDto> RegistrosAcaoDreUe { get; set; }
