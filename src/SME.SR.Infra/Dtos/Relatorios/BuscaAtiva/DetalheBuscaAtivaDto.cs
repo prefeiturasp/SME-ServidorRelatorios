@@ -11,7 +11,7 @@ namespace SME.SR.Infra
         }
         public string Aluno { get; set; }
         public string Turma { get; set; }
-        public DateTime DataRegistroAcao { get; set; }
+        public DateTime? DataRegistroAcao { get; set; }
         public List<ItemQuestaoDetalheBuscaAtivaDto> Questoes { get; set; }
     }
 
