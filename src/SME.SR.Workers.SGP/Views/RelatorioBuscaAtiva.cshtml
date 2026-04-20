@@ -85,8 +85,8 @@
                 <tbody>
                     <tr>
                         <td class='espaco-esquerda-10 width-20 espacamento7'><strong>Ano Letivo:</strong> @Model.AnoLetivo</td>
-                        <td class='espaco-esquerda-10 width-20 espacamento7'><strong>DRE:</strong> @Model.DreNome</td>
-                        <td class='espaco-esquerda-10 espacamento7'><strong>UE:</strong> @Model.UeNome</td>
+                        <td class='espaco-esquerda-10 width-20 espacamento7'><strong>DRE:</strong> @relatorio.DreNome</td>
+                        <td class='espaco-esquerda-10 espacamento7'><strong>UE:</strong> @relatorio.UeNome</td>
                     </tr>
                 </tbody>
             </table>
@@ -112,41 +112,58 @@
     }
 
     void MontarInformacoesBuscaAtiva(RelatorioBuscaAtivaDto relatorioBuscaAtiva)
+{
+    if (relatorioBuscaAtiva.RegistrosAcaoDreUe.Any())
     {
-        if (relatorioBuscaAtiva.RegistrosAcaoDreUe.Any())
+        foreach (var relatorio in relatorioBuscaAtiva.RegistrosAcaoDreUe)
         {
-            foreach (var relatorio in relatorioBuscaAtiva.RegistrosAcaoDreUe)
+            var relatorioUeAtual = new RelatorioBuscaAtivaDto()
             {
-                if (relatorio.MostrarAgrupamento)
-                {
-                    AvaliarQuebraPagina(QDADE_LINHAS_LINHA_UNICA + QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO, efetuaFechamentoAberturaTables: false);
-                    MontarDreUe(relatorio.DreNome, relatorio.UeNome);
-                    contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
-                }
-                @foreach (var detalhe in relatorio.Detalhes)
-                {
-                    AvaliarQuebraPagina(QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO, efetuaFechamentoAberturaTables: false);
-                    <table class='tabela-cabecalho'> <tbody>
-                            @{
-                                MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
-                                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
-                                foreach (var questaoIndex in detalhe.Questoes.Select((questao, index) => new { Questao = questao, Index = index+1 }))
-                                {
-                                    var lengthResposta = questaoIndex.Questao.Resposta?.Length ?? 0;
-                                    var resposta = questaoIndex.Questao.Resposta ?? string.Empty;
-                                    var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questaoIndex.Questao.Questao.Length + lengthResposta);
-                                    AvaliarQuebraPagina(qdadeLinhasPrevista);
-                                    MontarLinhaSimples(questaoIndex.Questao.Questao, resposta, RetornarClasseCssFundoCinzaLinhaPar(questaoIndex.Index));
-                                    contadorQuebrarPagina += qdadeLinhasPrevista;
-                                }
-                            }
-                        </tbody></table>
-                    <br/>
-                    contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
-                }
+                AnoLetivo = relatorioBuscaAtiva.AnoLetivo,
+                Modalidade = relatorioBuscaAtiva.Modalidade,
+                Semestre = relatorioBuscaAtiva.Semestre,
+                Turma = relatorioBuscaAtiva.Turma,
+                UsuarioNome = relatorioBuscaAtiva.UsuarioNome,
+                DreNome = mostrarDre ? relatorio.DreNome : relatorioBuscaAtiva.DreNome,
+                UeNome = mostrarUe ? relatorio.UeNome : relatorioBuscaAtiva.UeNome,
+            };
+            relatorioAtual = relatorioUeAtual;
+
+            if (relatorio.MostrarAgrupamento)
+            {
+                AvaliarQuebraPagina(QDADE_LINHAS_LINHA_UNICA + QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO, 
+                    relatorio: relatorioUeAtual, 
+                    efetuaFechamentoAberturaTables: false);
+                MontarDreUe(relatorio.DreNome, relatorio.UeNome);
+                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
+            }
+
+            @foreach (var detalhe in relatorio.Detalhes)
+            {
+                AvaliarQuebraPagina(QDADE_MINIMA_LINHAS_NOVO_REGISTRO_ALUNO, 
+                    relatorio: relatorioUeAtual,  
+                    efetuaFechamentoAberturaTables: false);
+                <table class='tabela-cabecalho'><tbody>
+                    @{
+                        MontaLinhaCriancaTurma(detalhe.Aluno, detalhe.Turma);
+                        contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
+                        foreach (var questaoIndex in detalhe.Questoes.Select((questao, index) => new { Questao = questao, Index = index + 1 }))
+                        {
+                            var lengthResposta = questaoIndex.Questao.Resposta?.Length ?? 0;
+                            var resposta = questaoIndex.Questao.Resposta ?? string.Empty;
+                            var qdadeLinhasPrevista = RetornarQdadeLinhasPrevistas(questaoIndex.Questao.Questao.Length + lengthResposta);
+                            AvaliarQuebraPagina(qdadeLinhasPrevista, relatorio: relatorioUeAtual); 
+                            MontarLinhaSimples(questaoIndex.Questao.Questao, resposta, RetornarClasseCssFundoCinzaLinhaPar(questaoIndex.Index));
+                            contadorQuebrarPagina += qdadeLinhasPrevista;
+                        }
+                    }
+                </tbody></table>
+                <br/>
+                contadorQuebrarPagina += QDADE_LINHAS_LINHA_UNICA;
             }
         }
     }
+}
 
     string RetornarClasseCssFundoCinzaLinhaPar(int linha)
     => LinhaPar(linha) ? "fundo-cinza" : string.Empty;
@@ -344,14 +361,50 @@
           width: 100%;
         }      
     </style>
-    <div>
-        @{
-            if (Model != null)
-                @MontarHTMLQuebraPagina();
-            relatorioAtual = Model;           
+<div>
+    @{
+        if (Model != null)
+            @MontarHTMLQuebraPagina();
+
+        if (Model.UesNome != null && Model.UesNome.Count > 1)
+        {
+            bool primeiraUe = true;
+            foreach (var ueNome in Model.UesNome)
+            {
+                var agrupamentosDaUe = Model.RegistrosAcaoDreUe
+                    .Where(r => r.UeNome == ueNome).ToList();
+
+                if (!agrupamentosDaUe.Any()) continue;
+
+                if (!primeiraUe)
+                    @MontarHTMLQuebraPagina();
+
+                var relatorioUe = new RelatorioBuscaAtivaDto()
+                {
+                    AnoLetivo = Model.AnoLetivo,
+                    Modalidade = Model.Modalidade,
+                    Semestre = Model.Semestre,
+                    Turma = Model.Turma,
+                    UsuarioNome = Model.UsuarioNome,
+                    DreNome = agrupamentosDaUe.First().DreNome,
+                    UeNome = ueNome,
+                    RegistrosAcaoDreUe = agrupamentosDaUe,
+                };
+
+                relatorioAtual = relatorioUe;
+                contadorQuebrarPagina = 0;
+                MontarCabecalho(relatorioUe);
+                MontarInformacoesBuscaAtiva(relatorioUe);
+                primeiraUe = false;
+            }
+        }
+        else
+        {
+            relatorioAtual = Model;
             MontarCabecalho(Model);
             MontarInformacoesBuscaAtiva(Model);
         }
-    </div>
+    }
+</div>
 </body>
 </html>
