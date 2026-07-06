@@ -1,11 +1,9 @@
-﻿using DinkToPdf.Contracts;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SME.SR.Application.Commands.Conecta.GerarCertificadoCodaf;
 using SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf;
+using SME.SR.Application.Commands.Conecta.GerarPlanilhaCodafSuplementar;
 using SME.SR.Application.Interfaces;
-using SME.SR.HtmlPdf;
-using SME.SR.Infra.Dtos.Codaf;
 using SME.SR.Infra.Dtos.Relatorios.Conecta;
 using SME.SR.Workers.SGP.Filters;
 using System;
@@ -42,6 +40,13 @@ namespace SME.SR.Workers.SGP.Controllers
         {
             var resultado = await mediator.Send(new GerarPlanilhaCodafCommand(codafId));
             return File(resultado, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"relatorio-codaf-{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        }
+
+        [HttpPost("codaf-suplementar/{codafListaPresencaId:long}/gerar-planilha")]
+        public async Task<IActionResult> GerarPlanilhaCodafSuplementar(long codafListaPresencaId, [FromServices] IMediator mediator)
+        {
+            var resultado = await mediator.Send(new GerarPlanilhaCodafSuplementarCommand(codafListaPresencaId));
+            return File(resultado, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"relatorio-codaf-suplementar{DateTime.Now:yyyyMMddHHmmss}.xlsx");
         }
     }
 }
