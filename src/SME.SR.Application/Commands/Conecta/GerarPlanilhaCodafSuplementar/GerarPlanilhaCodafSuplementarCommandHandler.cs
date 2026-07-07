@@ -125,6 +125,7 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodafSuplementar
                     NumeroVagas = dadosBruto.QuantidadeVagasTurma,
                     NomeDre = dadosBruto.NomeDre,
                     Observacao = dadosBruto.Observacao,
+                    DataCodaf = dadosBruto.DataCodaf,
                     DataDasAulasSincronas = ExpandirDataAulas(dadosBruto.DataAulas),
                     Retificacoes = dadosBruto.Retificacoes.Select(r => new RetificacaoRelatorioCodafDto
                     {

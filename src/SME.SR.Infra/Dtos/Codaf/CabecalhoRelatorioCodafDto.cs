@@ -27,6 +27,7 @@ namespace SME.SR.Infra.Dtos.Codaf
         public PreviaInscritosRelatorioCodafDto PreviaInscritosSme { get; set; }
         public PreviaInscritosRelatorioCodafDto PreviaInscritosSemRf { get; set; }
         public string Observacao { get; set; }
+        public DateTime DataCodaf { get; set; }
         public TipoFormacaoRelatorioCodaf TipoFormacao { get; set; }
         public ModalidadeRelatorioCodaf Modalidade { get; set; }
         public TipoCertificacaoRelatorioCodaf TipoCertificacao { get; set; }

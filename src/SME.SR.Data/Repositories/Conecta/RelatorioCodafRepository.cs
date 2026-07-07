@@ -51,7 +51,8 @@ namespace SME.SR.Data.Repositories.Conecta
        		            WHEN D.DRE_ID IS NULL THEN ''
        		            ELSE D.NOME 
                    END AS nomeDre,
-                    CLP.OBSERVACAO
+                   CLP.Criado_Em AS DataCodaf,
+                   CLP.OBSERVACAO
             FROM   PUBLIC.PROPOSTA AS P
                    INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.PROPOSTA_ID = P.ID
                    INNER JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.ID = P.AREA_PROMOTORA_ID
