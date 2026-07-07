@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Excel\CodafSuplementar\Assets\brasao_prefeitura_titulo_educacao.png" />
     <EmbeddedResource Include="Excel\Codaf\Assets\brasao_prefeitura_titulo_educacao.png" />
   </ItemGroup>
 

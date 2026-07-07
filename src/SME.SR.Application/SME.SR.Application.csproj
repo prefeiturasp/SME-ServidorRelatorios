@@ -52,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Commands\Conecta\GerarPlanilhaCodafSuplementar\brasao_prefeitura_titulo_educacao.png" />
     <EmbeddedResource Include="Commands\Conecta\GerarPlanilhaCodaf\brasao_prefeitura_titulo_educacao.png" />
   </ItemGroup>
 
