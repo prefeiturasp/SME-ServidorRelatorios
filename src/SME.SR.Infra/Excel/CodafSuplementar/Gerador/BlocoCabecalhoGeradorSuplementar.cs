@@ -163,7 +163,36 @@ namespace SME.SR.Infra.Excel.CodafSuplementar.Gerador
         private static void RenderizarObservacao(IXLWorksheet sheet, ref int linha, CabecalhoRelatorioCodafDto dados)
         {
             // Linha "17" de Observações
-            CriarLinhaPadrao(sheet, linha++, "OBSERVAÇÕES:", dados.Observacao);
+            var textoObservacao = dados.Observacao;
+            var textoDocumento = "Documento suplementar do arquivo gerado em " + dados.DataCodaf.ToShortDateString();
+
+            // Renderiza a observação normalmente
+            var rangeLabel = sheet.ObterRange("A:B", linha);
+            rangeLabel.ConfigurarLabelComFundo("OBSERVAÇÕES:");
+            rangeLabel.EstilizarLabel();
+            rangeLabel.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            rangeLabel.Style.Border.OutsideBorderColor = XLColor.Black;
+            rangeLabel.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+
+            // Renderiza o valor da observação (esquerda)
+            var rangeObservacao = sheet.ObterRange("C:O", linha);
+            rangeObservacao.Value = textoObservacao;
+            rangeObservacao.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            rangeObservacao.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            rangeObservacao.Style.Alignment.WrapText = true;
+            rangeObservacao.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            rangeObservacao.Style.Border.RightBorder = XLBorderStyleValues.None;
+
+            // Renderiza o texto do documento (direita)
+            var rangeDocumento = sheet.ObterRange("P:T", linha);
+            rangeDocumento.Value = textoDocumento;
+            rangeDocumento.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+            rangeDocumento.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            rangeDocumento.Style.Alignment.WrapText = true;
+            rangeDocumento.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            rangeDocumento.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+            linha++;
         }
 
         private static void RenderizarOpcaoCheckbox(IXLWorksheet sheet, int linha, int colCheck, string label, bool marcado,
