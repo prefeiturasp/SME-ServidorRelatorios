@@ -29,6 +29,7 @@ namespace SME.SR.Infra.Dtos.Relatorios.Conecta
         public short PaginaComunicadoDom { get; set; }
         public string NomeDre { get; set; }
         public string Observacao { get; set; }
+        public DateTime DataCodaf { get; set; }
 
         public IEnumerable<DataAulaTurmaRelatorioCodafDto> DataAulas { get; set; }
         public IEnumerable<DadosRegenteTurmaRelatorioCodafDto> RegentesTurma { get; set; }

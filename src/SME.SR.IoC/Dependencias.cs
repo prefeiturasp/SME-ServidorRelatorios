@@ -2,6 +2,7 @@
 using DinkToPdf.Contracts;
 using Elasticsearch.Net;
 using MediatR;
+using Microsoft.ApplicationInsights;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -12,6 +13,7 @@ using SME.SR.Application.Interfaces;
 using SME.SR.Application.Interfaces.UseCases;
 using SME.SR.Application.Services;
 using SME.SR.Application.Services.Codaf;
+using SME.SR.Application.Services.CodafSuplementar;
 using SME.SR.Application.UseCases;
 using SME.SR.Data;
 using SME.SR.Data.Interfaces;
@@ -27,6 +29,8 @@ using SME.SR.HtmlPdf;
 using SME.SR.Infra;
 using SME.SR.Infra.Excel.Codaf.Gerador;
 using SME.SR.Infra.Excel.Codaf.Gerador.Interfaces;
+using SME.SR.Infra.Excel.CodafSuplementar.Gerador;
+using SME.SR.Infra.Excel.CodafSuplementar.Gerador.Interfaces;
 using SME.SR.Infra.Integracoes;
 using SME.SR.Infra.Interfaces.Integracoes;
 using SME.SR.JRSClient;
@@ -93,6 +97,7 @@ namespace SME.SR.IoC
             var assembly = AppDomain.CurrentDomain.Load("SME.SR.Application");
 
             services.AddMediatR(assembly);
+            services.AddApplicationInsightsTelemetry(configuration);
             AddRabbitMQ(services, configuration);
             AddElasticSearch(services, configuration);
 
@@ -140,12 +145,22 @@ namespace SME.SR.IoC
             RegistrarIntegracoes(services);
 
             services.AddScoped<IRelatorioCodafRepository, RelatorioCodafRepository>();
+            // Registrar serviços CODAF
             services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
             services.AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>();
             services.AddSingleton<IBlocoRegentesGerador, BlocoRegentesGerador>();
             services.AddSingleton<IBlocoAlunosGerador, BlocoAlunosGerador>();
             services.AddSingleton<IBlocoAssinaturaGerador, BlocoAssinaturaGerador>();
+            // Registrar serviços CODAF SUPLEMENTAR
+            services.AddSingleton<IBlocoTituloGeradorSuplementar>(sp => new BlocoTituloGeradorSuplementar());
+            services.AddSingleton<IBlocoCabecalhoGeradorSuplementar>(sp => new BlocoCabecalhoGeradorSuplementar());
+            services.AddSingleton<IBlocoRegentesGeradorSuplementar>(sp => new BlocoRegentesGeradorSuplementar());
+            services.AddSingleton<IBlocoAlunosGeradorSuplementar>(sp => new BlocoAlunosGeradorSuplementar());
+            services.AddSingleton<IBlocoAssinaturaGeradorSuplementar>(sp => new BlocoAssinaturaGeradorSuplementar());
             services.AddScoped<IGeradorRelatorioCodafService, GeradorRelatorioCodafService>();
+            services.AddScoped<IGeradorRelatorioCodafSuplementarService, GeradorRelatorioCodafSuplementarService>();
+            services.AddScoped<IServicoArmazenamento, ServicoArmazenamento>();
+            services.AddScoped<IServicoTelemetria, ServicoTelemetria>();
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
@@ -210,7 +225,6 @@ namespace SME.SR.IoC
             services.TryAddScoped(typeof(IMathPoolCARepository), typeof(MathPoolCARepository));
             services.TryAddScoped(typeof(IMathPoolCMRepository), typeof(MathPoolCMRepository));
 
-            services.TryAddScoped(typeof(IRelatorioSondagemPortuguesPorTurmaRepository), typeof(RelatorioSondagemPortuguesPorTurmaRepository));
             services.TryAddScoped(typeof(ISondagemOrdemRepository), typeof(SondagemOrdemRepository));
             services.TryAddScoped(typeof(ISondagemRelatorioRepository), typeof(SondagemRelatorioRepository));
             services.TryAddScoped(typeof(IEventoRepository), typeof(EventoRepository));
@@ -367,6 +381,10 @@ namespace SME.SR.IoC
             var telemetriaOptions = new TelemetriaOptions();
             configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(telemetriaOptions);
+
+            var configuracaoRabbitLogOptions = new ConfiguracaoRabbitLogOptions();
+            configuration.GetSection(ConfiguracaoRabbitLogOptions.Secao).Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(configuracaoRabbitLogOptions);
         }
 
         private static void RegistrarIntegracoes(IServiceCollection services)

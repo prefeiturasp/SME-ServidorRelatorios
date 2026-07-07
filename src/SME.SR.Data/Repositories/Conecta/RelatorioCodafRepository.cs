@@ -31,8 +31,10 @@ namespace SME.SR.Data.Repositories.Conecta
                    P.TIPO_FORMACAO AS tipoFormacao, -- 1-Curso; 2-Evento
                    P.NOME_FORMACAO AS nomeFormacao,
                    P.QUANTIDADE_TURMAS AS quantidadeTurmas,
-                   P.DATA_REALIZACAO_INICIO AS periodoRealizacaoInicio,
-                   P.DATA_REALIZACAO_FIM AS periodoRealizacaoFim,
+                   COALESCE(PGP.DATA_INICIO, P.DATA_REALIZACAO_INICIO)
+                        AS periodoRealizacaoInicio,
+                   COALESCE(PGP.DATA_FIM, P.DATA_REALIZACAO_FIM) 
+                        AS periodoRealizacaoFim,
                    P.CURSO_COM_CERTIFICADO AS cursoComCertificado,
                    p.NUMERO_HOMOLOGACAO AS numeroHomologacao,
                    p.CODIGO_EVENTO_SIGPEC AS codigoEventoSigpec,
@@ -49,13 +51,17 @@ namespace SME.SR.Data.Repositories.Conecta
        		            WHEN D.DRE_ID IS NULL THEN ''
        		            ELSE D.NOME 
                    END AS nomeDre,
-                    CLP.OBSERVACAO
+                   CLP.Criado_Em AS DataCodaf,
+                   CLP.OBSERVACAO
             FROM   PUBLIC.PROPOSTA AS P
                    INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.PROPOSTA_ID = P.ID
                    INNER JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.ID = P.AREA_PROMOTORA_ID
 	               INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
                    INNER JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID 
 	               INNER JOIN PUBLIC.DRE AS D ON D.ID = PD.DRE_ID 
+                   LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO_TURMA PGPT ON PGPT.PROPOSTA_TURMA_ID = PT.ID AND NOT PGPT.EXCLUIDO
+                   LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO PGP ON PGP.ID = PGPT.GRUPO_PERIODO_ID AND NOT PGP.EXCLUIDO
+
             WHERE  CLP.ID = @codafId;
 
             -- Data das Aulas
