@@ -145,6 +145,7 @@ namespace SME.SR.IoC
             RegistrarIntegracoes(services);
 
             services.AddScoped<IRelatorioCodafRepository, RelatorioCodafRepository>();
+            services.AddScoped<IRelatorioCodafSuplementarRepository, RelatorioCodafSuplementarRepository>();
             // Registrar serviços CODAF
             services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
             services.AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>();
