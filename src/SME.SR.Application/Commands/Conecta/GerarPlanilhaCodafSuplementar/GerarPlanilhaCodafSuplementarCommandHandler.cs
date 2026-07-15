@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.SR.Application.Services.Codaf;
 using SME.SR.Application.Services.CodafSuplementar;
 using SME.SR.Data.Interfaces.Conecta;
 using SME.SR.Infra;
@@ -16,17 +15,17 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodafSuplementar
 {
     public class GerarPlanilhaCodafSuplementarCommandHandler : IRequestHandler<GerarPlanilhaCodafSuplementarCommand, byte[]>
     {
-        private readonly IRelatorioCodafRepository _repository;
+        private readonly IRelatorioCodafSuplementarRepository _repository;
         private readonly IGeradorRelatorioCodafSuplementarService _geradorRelatorioCodafSuplementarService;
 
-        public GerarPlanilhaCodafSuplementarCommandHandler(IRelatorioCodafRepository repository, IGeradorRelatorioCodafSuplementarService geradorRelatorioCodafSuplementarService)
+        public GerarPlanilhaCodafSuplementarCommandHandler(IRelatorioCodafSuplementarRepository repository, IGeradorRelatorioCodafSuplementarService geradorRelatorioCodafSuplementarService)
         {
             _repository = repository;   
             _geradorRelatorioCodafSuplementarService = geradorRelatorioCodafSuplementarService;
         }
         public async Task<byte[]> Handle(GerarPlanilhaCodafSuplementarCommand request, CancellationToken cancellationToken)
         {
-            var dadosBrutoRelatorio = await _repository.ObterDadosRelatorioAsync(request.CodafListaPresencaId);
+            var dadosBrutoRelatorio = await _repository.ObterDadosRelatorioSuplementarAsync(request.CodafListaPresencaId);
 
             if (dadosBrutoRelatorio == null)
                 throw new NegocioException("Nenhuma informação encontrada para o codaf informado.");
@@ -56,6 +55,8 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodafSuplementar
 
             var previaInscritosSme = new PreviaInscritosRelatorioCodafDto
             {
+                //assume true, visto que sempre terá RF
+                TemRf = true,
                 TotalInscritos = dadosBruto.Participantes.Count(p => p.TemRf),
                 TotalAprovados = dadosBruto.Participantes.Count(p => p.TemRf && p.Aprovado),
                 TotalReprovados = dadosBruto.Participantes.Count(p => p.TemRf && !p.Aprovado)
