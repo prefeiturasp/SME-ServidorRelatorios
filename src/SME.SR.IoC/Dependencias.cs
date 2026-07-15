@@ -142,6 +142,7 @@ namespace SME.SR.IoC
             RegistrarServicoRelatorioAnaliticoSondagem(services);
 
             services.AddScoped<IRelatorioCodafRepository, RelatorioCodafRepository>();
+            services.AddScoped<IRelatorioCodafSuplementarRepository, RelatorioCodafSuplementarRepository>();
             // Registrar serviços CODAF
             services.AddSingleton<IBlocoTituloGerador, BlocoTituloGerador>();
             services.AddSingleton<IBlocoCabecalhoGerador, BlocoCabecalhoGerador>();
