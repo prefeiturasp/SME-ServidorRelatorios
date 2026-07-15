@@ -55,6 +55,8 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
 
             var previaInscritosSme = new PreviaInscritosRelatorioCodafDto
             {
+                //assume true, visto que sempre terá RF
+                TemRf = true,
                 TotalInscritos = dadosBruto.Participantes.Count(p => p.TemRf),
                 TotalAprovados = dadosBruto.Participantes.Count(p => p.TemRf && p.Aprovado),
                 TotalReprovados = dadosBruto.Participantes.Count(p => p.TemRf && !p.Aprovado)

@@ -7,23 +7,22 @@ using System.Threading.Tasks;
 
 namespace SME.SR.Data.Repositories.Conecta
 {
-    public class RelatorioCodafRepository : IRelatorioCodafRepository
+    public class RelatorioCodafSuplementarRepository : IRelatorioCodafSuplementarRepository
     {
         private readonly VariaveisAmbiente _variaveisAmbiente;
         private readonly string _conectaStringConnection;
 
-        public RelatorioCodafRepository(VariaveisAmbiente variaveisAmbiente)
+        public RelatorioCodafSuplementarRepository(VariaveisAmbiente variaveisAmbiente)
         {
             _variaveisAmbiente = variaveisAmbiente;
             _conectaStringConnection = variaveisAmbiente.ConnectionStringConecta;
         }
-
-        public async Task<DadosPrincipaisRelatorioCodafDto> ObterDadosRelatorioAsync(long codafId)
+        public async Task<DadosPrincipaisRelatorioCodafDto> ObterDadosRelatorioSuplementarAsync(long codafSuplementarId)
         {
             var sql = @"
             -- Dados Principais Das Turmas
             SELECT DISTINCT
-                   CLP.ID AS codafId,
+                   CS.ID AS codafId,
                    PT.ID AS turmaId,
                    PT.NOME AS nomeTurma,
                    p.QUANTIDADE_VAGAS_TURMA AS quantidadeVagasTurma,
@@ -66,21 +65,22 @@ namespace SME.SR.Data.Repositories.Conecta
                    INNER JOIN PUBLIC.PROPOSTA_TURMA AS PT ON PT.PROPOSTA_ID = P.ID
                    INNER JOIN PUBLIC.AREA_PROMOTORA AS AP ON AP.ID = P.AREA_PROMOTORA_ID
 	               INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.PROPOSTA_TURMA_ID = PT.ID
+                   INNER JOIN PUBLIC.CODAF_SUPLEMENTAR AS CS ON CS.CODAF_LISTA_PRESENCA_ID = CLP.ID
                    INNER JOIN PUBLIC.PROPOSTA_DRE AS PD ON PD.PROPOSTA_ID = P.ID 
 	               INNER JOIN PUBLIC.DRE AS D ON D.ID = PD.DRE_ID 
                    LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO_TURMA PGPT ON PGPT.PROPOSTA_TURMA_ID = PT.ID AND NOT PGPT.EXCLUIDO
                    LEFT JOIN PUBLIC.PROPOSTA_GRUPO_PERIODO PGP ON PGP.ID = PGPT.GRUPO_PERIODO_ID AND NOT PGP.EXCLUIDO
-
-            WHERE  CLP.ID = @codafId;
+            WHERE  CS.ID = @codafSuplementarId;
 
             -- Data das Aulas
             SELECT PED.DATA_INICIO AS dataInicio,
                    PED.DATA_FIM AS dataFim
-            FROM   PUBLIC.CODAF_LISTA_PRESENCA AS CLP
+            FROM   PUBLIC.CODAF_SUPLEMENTAR AS CS
+                   INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.ID = CS.CODAF_LISTA_PRESENCA_ID
                    INNER JOIN PUBLIC.PROPOSTA_ENCONTRO_TURMA AS PET ON PET.TURMA_ID = CLP.PROPOSTA_TURMA_ID
                    INNER JOIN PUBLIC.PROPOSTA_ENCONTRO AS PE ON PE.ID = PET.PROPOSTA_ENCONTRO_ID 
                    INNER JOIN PUBLIC.PROPOSTA_ENCONTRO_DATA AS PED ON PED.PROPOSTA_ENCONTRO_ID = PE.ID 
-            WHERE  CLP.ID = @codafId
+            WHERE  CS.ID = @codafSuplementarId
               AND  PE.TIPO IN (@presencial, @sincrono)
               AND NOT PE.EXCLUIDO 
               AND NOT PET.EXCLUIDO 
@@ -90,35 +90,39 @@ namespace SME.SR.Data.Repositories.Conecta
             SELECT coalesce(U.NOME, PR.NOME_REGENTE) AS nome,
                    PR.REGISTRO_FUNCIONAL AS registroFuncional,
                    U.ID AS numeroRegistro
-            FROM   PUBLIC.CODAF_LISTA_PRESENCA AS CLP
+            FROM   PUBLIC.CODAF_SUPLEMENTAR AS CS
+                   INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.ID = CS.CODAF_LISTA_PRESENCA_ID
                    INNER JOIN PUBLIC.PROPOSTA_REGENTE_TURMA AS PRT ON PRT.TURMA_ID = CLP.PROPOSTA_TURMA_ID
                    INNER JOIN PUBLIC.PROPOSTA_REGENTE AS PR ON PR.ID = PRT.PROPOSTA_REGENTE_ID 
                    LEFT JOIN PUBLIC.USUARIO AS U ON U.LOGIN = PR.REGISTRO_FUNCIONAL 
-            WHERE  CLP.ID = @codafId;
-
+            WHERE  CS.ID = @codafSuplementarId;
 
             -- Dados dos Participantes
             SELECT U.LOGIN AS documento,
                    (U.LOGIN <> U.CPF) AS temRf,
                    U.NOME,
-                   CILP.APROVADO,
-                   CILP.ATIVIDADE_OBRIGATORIO AS atividadeObrigatoria,
-                   CILP.CONCEITO_FINAL AS conceitoFinal,
-                   CILP.PERCENTUAL_FREQUENCIA AS percentualFrequencia,
+                   CSI.APROVADO,
+                   CSI.ATIVIDADE_OBRIGATORIO AS atividadeObrigatoria,
+                   CSI.CONCEITO_FINAL AS conceitoFinal,
+                   CSI.PERCENTUAL_FREQUENCIA AS percentualFrequencia,
                    CC.CODIGO_CERTIFICADO AS codigoCertificado
-            FROM   PUBLIC.CODAF_INSCRICAO_LISTA_PRESENCA AS CILP
-                   INNER JOIN PUBLIC.INSCRICAO AS I ON I.ID = CILP.INSCRICAO_ID
+            FROM   PUBLIC.CODAF_SUPLEMENTAR_INSCRICAO AS CSI 
+                   INNER JOIN PUBLIC.INSCRICAO AS I ON I.ID = CSI.INSCRICAO_ID
                    INNER JOIN PUBLIC.USUARIO AS U ON U.ID = I.USUARIO_ID
-                   LEFT JOIN PUBLIC.CODAF_CERTIFICADOS AS CC ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CILP.ID 
-            WHERE  CILP.CODAF_LISTA_PRESENCA_ID  = @codafId;
+                   LEFT JOIN PUBLIC.CODAF_CERTIFICADOS AS CC ON CC.CODAF_INSCRICAO_LISTA_PRESENCA_ID = CSI.ID 
+            WHERE  NOT CSI.EXCLUIDO 
+              AND  CSI.CODAF_SUPLEMENTAR_ID = @codafSuplementarId
+              AND  NOT U.EXCLUIDO;
 
             SELECT CRLP.DATA_RETIFICACAO AS DATA, CRLP.PAGINA_RETIFICACAO_DOM AS pagina
-            FROM PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP
-            WHERE CRLP.CODAF_LISTA_PRESENCA_ID = @codafId;";
+            FROM PUBLIC.CODAF_SUPLEMENTAR AS CS
+                 INNER JOIN PUBLIC.CODAF_LISTA_PRESENCA AS CLP ON CLP.ID = CS.CODAF_LISTA_PRESENCA_ID
+                 INNER JOIN PUBLIC.CODAF_RETIFICACAO_LISTA_PRESENCA AS CRLP ON CRLP.CODAF_LISTA_PRESENCA_ID = CLP.ID
+            WHERE CS.ID = @codafSuplementarId;";
 
             var parametros = new
             {
-                codafId,
+                codafSuplementarId,
                 presencial = 0,
                 sincrono = 1
             };
