@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.SR.Application.Services.Codaf;
+using SME.SR.Application.Services.CodafSuplementar;
 using SME.SR.Data.Interfaces.Conecta;
 using SME.SR.Infra;
 using SME.SR.Infra.Dtos.Codaf;
@@ -11,28 +11,28 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
+namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodafSuplementar
 {
-    public class GerarPlanilhaCodafCommandHandler : IRequestHandler<GerarPlanilhaCodafCommand, byte[]>
+    public class GerarPlanilhaCodafSuplementarCommandHandler : IRequestHandler<GerarPlanilhaCodafSuplementarCommand, byte[]>
     {
-        private readonly IRelatorioCodafRepository _repository;
-        private readonly IGeradorRelatorioCodafService _geradorRelatorioCodafService;
+        private readonly IRelatorioCodafSuplementarRepository _repository;
+        private readonly IGeradorRelatorioCodafSuplementarService _geradorRelatorioCodafSuplementarService;
 
-        public GerarPlanilhaCodafCommandHandler(IRelatorioCodafRepository repository, IGeradorRelatorioCodafService geradorRelatorioCodafService)
+        public GerarPlanilhaCodafSuplementarCommandHandler(IRelatorioCodafSuplementarRepository repository, IGeradorRelatorioCodafSuplementarService geradorRelatorioCodafSuplementarService)
         {
-            _repository = repository;
-            _geradorRelatorioCodafService = geradorRelatorioCodafService;
+            _repository = repository;   
+            _geradorRelatorioCodafSuplementarService = geradorRelatorioCodafSuplementarService;
         }
-        public async Task<byte[]> Handle(GerarPlanilhaCodafCommand request, CancellationToken cancellationToken)
+        public async Task<byte[]> Handle(GerarPlanilhaCodafSuplementarCommand request, CancellationToken cancellationToken)
         {
-            var dadosBrutoRelatorio = await _repository.ObterDadosRelatorioAsync(request.CodafId);
+            var dadosBrutoRelatorio = await _repository.ObterDadosRelatorioSuplementarAsync(request.CodafListaPresencaId);
 
             if (dadosBrutoRelatorio == null)
                 throw new NegocioException("Nenhuma informação encontrada para o codaf informado.");
 
             var relatorioDto = MapearParaDtoEstruturado(dadosBrutoRelatorio);
 
-            var streamExcel = _geradorRelatorioCodafService.GerarRelatorio(relatorioDto);
+            var streamExcel = _geradorRelatorioCodafSuplementarService.GerarRelatorio(relatorioDto);
             var fileBytes = streamExcel.ToArray();
             return fileBytes;
         }
@@ -126,6 +126,7 @@ namespace SME.SR.Application.Commands.Conecta.GerarPlanilhaCodaf
                     NumeroVagas = dadosBruto.QuantidadeVagasTurma,
                     NomeDre = dadosBruto.NomeDre,
                     Observacao = dadosBruto.Observacao,
+                    DataCodaf = dadosBruto.DataCodaf,
                     DataDasAulasSincronas = ExpandirDataAulas(dadosBruto.DataAulas),
                     Retificacoes = dadosBruto.Retificacoes.Select(r => new RetificacaoRelatorioCodafDto
                     {
