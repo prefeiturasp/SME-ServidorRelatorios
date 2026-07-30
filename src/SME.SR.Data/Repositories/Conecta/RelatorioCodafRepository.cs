@@ -100,7 +100,7 @@ namespace SME.SR.Data.Repositories.Conecta
             -- Dados dos Participantes
             SELECT U.LOGIN AS documento,
                    (U.LOGIN <> U.CPF) AS temRf,
-                   U.NOME,
+                   COALESCE(NULLIF(TRIM(U.NOME_SOCIAL), ''), U.NOME) AS nome,
                    CILP.APROVADO,
                    CILP.ATIVIDADE_OBRIGATORIO AS atividadeObrigatoria,
                    CILP.CONCEITO_FINAL AS conceitoFinal,
