@@ -1,5 +1,6 @@
 ﻿using SME.SR.Infra;
 using SME.SR.Infra.Utilitarios;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SME.SR.Data
@@ -26,18 +27,32 @@ namespace SME.SR.Data
         {
             get
             {
-                if ((int)TipoEscola > 0)
-                    return $"{Codigo} - {TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
-
+                // Verifica se é maior que 0 E se o número existe de fato no Enum
+                if ((int)TipoEscola > 0 && Enum.IsDefined(typeof(TipoEscola), TipoEscola))
+                {
+                    var atributo = TipoEscola.GetAttribute<DisplayAttribute>();
+                    return $"{Codigo} - {atributo?.ShortName ?? "Escola"} {Nome}";
+                }
 
                 return $"{Codigo ?? $"{Codigo} - "} {Nome}";
             }
         }
 
-    public string TituloTipoEscolaNome =>
-        $"{TipoEscola.GetAttribute<DisplayAttribute>().ShortName ?? "Escola"} {Nome}";
+        public string TituloTipoEscolaNome
+        {
+            get
+            {
+                if ((int)TipoEscola > 0 && Enum.IsDefined(typeof(TipoEscola), TipoEscola))
+                {
+                    var atributo = TipoEscola.GetAttribute<DisplayAttribute>();
+                    return $"{atributo?.ShortName ?? "Escola"} {Nome}";
+                }
 
-    public string NomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {Nome}"; } }
+                return $"Escola {Nome}";
+            }
+        }
+
+        public string NomeComTipoEscola { get { return $"{TipoEscola.ShortName()} - {Nome}"; } }
 
     public string NomeComTipoEscolaEDre { get { return $"{TipoEscola.ShortName()} - {Nome} ({Dre.Abreviacao})"; } }
 }
