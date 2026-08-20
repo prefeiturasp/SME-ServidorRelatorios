@@ -22,35 +22,40 @@ namespace SME.SR.Application.Services
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> ObterRelatorio(FiltroRelatorioAnaliticoSondagemDto filtro)
         {
-            this.filtro = filtro;
-            periodoFixoSondagem = await ObterPeriodoFixoSondagemPortugues(false);
+                this.filtro = filtro;
+                periodoFixoSondagem = await ObterPeriodoFixoSondagemPortugues(false);
 
-            var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
-            var respostasEscrita = await sondagemAnaliticaRepository.ObterRespostaRelatorioAnaliticoDeEscrita(filtro, EhTodosPreenchidos());
-            var dres = await ObterDres();
+                var retorno = new List<RelatorioSondagemAnaliticoPorDreDto>();
+                var respostasEscrita = await sondagemAnaliticaRepository.ObterRespostaRelatorioAnaliticoDeEscrita(filtro, EhTodosPreenchidos());
+                var dres = await ObterDres();
 
-            if (respostasEscrita.Any(x => x.DreCodigo != null))
-            {
-                var agrupamentoPorDre = ObterAgrupamentoPorDre(dres, respostasEscrita);
-
-                foreach (var itemDre in agrupamentoPorDre)
+                if (respostasEscrita.Any(x => x.DreCodigo != null))
                 {
-                    var relatorioSondagemAnaliticoEscritaDto = new RelatorioSondagemAnaliticoEscritaDto();
-                    var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
-                    var uesDre = await ObterUesDre(dres.First(d => d.Codigo == itemDre.Key).Id);
-                    var agrupamentoPorUe = ObterAgrupamentoPorUe(uesDre, itemDre).ToList();                        
+                    var agrupamentoPorDre = ObterAgrupamentoPorDre(dres, respostasEscrita);
 
-                    relatorioSondagemAnaliticoEscritaDto.Respostas.AddRange(await ObterRespostas(agrupamentoPorUe, dre));
+                    foreach (var itemDre in agrupamentoPorDre)
+                    {
+                       
+                        var relatorioSondagemAnaliticoEscritaDto = new RelatorioSondagemAnaliticoEscritaDto();
+                        var dre = dres.FirstOrDefault(x => x.Codigo == itemDre.Key);
+                        if (dre == null)
+                        {
+                            continue;
+                        }
+                        var uesDre = await ObterUesDre(dre.Id);
+                        var agrupamentoPorUe = ObterAgrupamentoPorUe(uesDre, itemDre).ToList();
 
-                    relatorioSondagemAnaliticoEscritaDto.Dre = dre.Nome;
-                    relatorioSondagemAnaliticoEscritaDto.DreSigla = dre.Abreviacao;
-                    relatorioSondagemAnaliticoEscritaDto.AnoLetivo = filtro.AnoLetivo;
-                    relatorioSondagemAnaliticoEscritaDto.Periodo = filtro.Periodo;
-                    retorno.Add(relatorioSondagemAnaliticoEscritaDto);
+                        relatorioSondagemAnaliticoEscritaDto.Respostas.AddRange(await ObterRespostas(agrupamentoPorUe, dre));
+
+                        relatorioSondagemAnaliticoEscritaDto.Dre = dre.Nome;
+                        relatorioSondagemAnaliticoEscritaDto.DreSigla = dre.Abreviacao;
+                        relatorioSondagemAnaliticoEscritaDto.AnoLetivo = filtro.AnoLetivo;
+                        relatorioSondagemAnaliticoEscritaDto.Periodo = filtro.Periodo;
+                        retorno.Add(relatorioSondagemAnaliticoEscritaDto);
+                    }
                 }
-            }
 
-            return retorno;
+                return retorno;
         }
 
         protected override bool EhTodosPreenchidos()
@@ -62,27 +67,29 @@ namespace SME.SR.Application.Services
                                                                     List<IGrouping<string, TotalRespostasAnaliticoEscritaDto>> agrupadoRespostasPorUe,
                                                                     Dre dre)
         {
-            var ues = await ObterUe(agrupadoRespostasPorUe.Select(x => x.Key).ToArray());
-            var totalDeTurmas = await ObterQuantidadeTurmaPorAnoDre(dre.Id);
-            var respostas = new List<RespostaSondagemAnaliticoEscritaDto>();
-            var totalDeAlunosPorAno = await ObterTotalDeAlunosPorDre(dre.Codigo);
+                var ues = await ObterUe(agrupadoRespostasPorUe.Select(x => x.Key).ToArray());
+                var totalDeTurmas = await ObterQuantidadeTurmaPorAnoDre(dre.Id);
+                var respostas = new List<RespostaSondagemAnaliticoEscritaDto>();
+                var totalDeAlunosPorAno = await ObterTotalDeAlunosPorDre(dre.Codigo);
 
-            foreach (var itemUe in agrupadoRespostasPorUe)
-            {
-                var totalDeAlunosUe = await ObterTotalDeAlunosPorUe(dre.Codigo, itemUe.Key, totalDeAlunosPorAno);
-                var totalTurmasUe = await ObterQuantidadeTurmaPorAnoUe(dre.Id, itemUe.Key, totalDeTurmas);
-                var turmasUe = await ObterTurmasUe(itemUe.Key);
-                var agrupamentoPorAnoTurma = ObterAgrupamentoPorAnoTurma(turmasUe, itemUe);
-
-                foreach (var anoTurma in agrupamentoPorAnoTurma)
+                foreach (var itemUe in agrupadoRespostasPorUe)
                 {
-                    var ue = ues.FirstOrDefault(x => x.Codigo == itemUe.Key);
 
-                    respostas.Add(ObterRespostaEscrita(anoTurma, ue, totalTurmasUe, ObterTotalDeAluno(totalDeAlunosUe, anoTurma.Key)));
+                    var totalDeAlunosUe = await ObterTotalDeAlunosPorUe(dre.Codigo, itemUe.Key, totalDeAlunosPorAno);
+                    var totalTurmasUe = await ObterQuantidadeTurmaPorAnoUe(dre.Id, itemUe.Key, totalDeTurmas);
+                    var turmasUe = await ObterTurmasUe(itemUe.Key);
+                    var agrupamentoPorAnoTurma = ObterAgrupamentoPorAnoTurma(turmasUe, itemUe);
+
+                    foreach (var anoTurma in agrupamentoPorAnoTurma)
+                    {
+                        var ue = ues.FirstOrDefault(x => x.Codigo == itemUe.Key);
+
+                        respostas.Add(ObterRespostaEscrita(anoTurma, ue, totalTurmasUe, ObterTotalDeAluno(totalDeAlunosUe, anoTurma.Key)));
+                    }
                 }
-            }
 
-            return respostas;
+                return respostas;
+
         }
 
         private RespostaSondagemAnaliticoEscritaDto ObterRespostaEscrita(
@@ -91,6 +98,7 @@ namespace SME.SR.Application.Services
                                                         IEnumerable<TotalDeTurmasPorAnoDto> totalTurmaUe,
                                                         int totalDeAlunos)
         {
+
             return new RespostaSondagemAnaliticoEscritaDto
             {
                 PreSilabico = respostaAnoTurma.Select(x => x.PreSilabico).Sum(),

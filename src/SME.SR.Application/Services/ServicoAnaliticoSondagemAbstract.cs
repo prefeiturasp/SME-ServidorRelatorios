@@ -84,6 +84,9 @@ namespace SME.SR.Application.Services
 
         protected async Task<IEnumerable<Dre>> ObterDres(string[] codigos)
         {
+            if(codigos.Length == 0)
+                return Enumerable.Empty<Dre>();
+
             return await dreRepository.ObterPorCodigos(codigos);
         }
 
@@ -179,8 +182,12 @@ namespace SME.SR.Application.Services
 
         private int ObterTotalDeAlunos(IEnumerable<PerguntaRespostaOrdemDto> respostasOrdem)
         {
+            if (respostasOrdem == null || !respostasOrdem.Any())
+                return 0;
+
             return respostasOrdem.GroupBy(pergunta => new { pergunta.OrdemPergunta, pergunta.SubPerguntaDescricao })
                                  .Select(subpergunta => subpergunta.Sum(x => x.QtdRespostas))
+                                 .DefaultIfEmpty(0) 
                                  .Max();
         }
 
