@@ -80,6 +80,9 @@ namespace SME.SR.Infra
         EMEFPFOM = 32,
 
         [Display(Name = "ESCOLA MUNICIPAL DE EDUCACAO INFANTIL PRIVADA FOMENTO", ShortName = "EMEI P FOM")]
-        EMEIPFOM = 33
+        EMEIPFOM = 33,
+
+        [Display(Name = "Centro de Estudos de Línguas Paulistano", ShortName = "CEU POLO")]
+        CELP = 38
     }
 }

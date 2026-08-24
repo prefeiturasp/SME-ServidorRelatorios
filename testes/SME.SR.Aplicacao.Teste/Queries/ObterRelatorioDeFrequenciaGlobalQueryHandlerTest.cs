@@ -114,6 +114,33 @@ namespace SME.SR.Aplicacao.Teste.Queries
             Assert.Empty(resultado);
         }
 
+        [Fact]
+        public async Task Handle_QuandoRepositorioRetornaDuplicidade_DeveIncluirAlunoUmaUnicaVez()
+        {
+            // Arrange
+            var filtro = CriarFiltro(codigoDre: "DRE-01");
+            var query = new ObterRelatorioDeFrequenciaGlobalQuery(filtro);
+            var frequencias = CriarFrequenciaConsolidada("Aluno Duplicado", filtro.CodigoDre, "UE-01");
+            var frequenciaDuplicada = CriarFrequenciaConsolidada("Aluno Duplicado", filtro.CodigoDre, "UE-01").Single();
+            frequenciaDuplicada.Percentual = 80;
+            frequenciaDuplicada.QuantidadeAusencias = 20;
+            frequencias.Add(frequenciaDuplicada);
+
+            _frequenciaRepositorioMock.Setup(r => r.ObterFrequenciaAlunoMensal(It.IsAny<bool>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Modalidade>(),
+                                                                               It.IsAny<int>(), It.IsAny<string[]>(), It.IsAny<int[]>(), It.IsAny<int>()))
+                                      .ReturnsAsync(frequencias);
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ObterDadosAlunosEscolaQuery>(), It.IsAny<CancellationToken>()))
+                         .ReturnsAsync(CriarDadosAluno("Aluno Duplicado", SituacaoMatriculaAluno.Ativo, new DateTime(ANO_LETIVO, MES_REFERENCIA, 10)));
+
+            // Act
+            var resultado = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.Single(resultado);
+            Assert.Equal("12345", resultado.Single().CodigoEOL);
+        }
+
         #region Metodos Privados Auxiliares
 
         private void ConfigurarMocks(FiltroFrequenciaGlobalDto filtro, string nomeAluno, SituacaoMatriculaAluno situacao, DateTime dataSituacao)
