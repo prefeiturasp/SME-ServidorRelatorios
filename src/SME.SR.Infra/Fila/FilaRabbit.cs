@@ -36,21 +36,30 @@ namespace SME.SR.Infra
                 HostName = configuration.GetSection("ConfiguracaoRabbit:HostName").Value,
                 UserName = configuration.GetSection("ConfiguracaoRabbit:UserName").Value,
                 Password = configuration.GetSection("ConfiguracaoRabbit:Password").Value,
-                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value
+                VirtualHost = configuration.GetSection("ConfiguracaoRabbit:Virtualhost").Value,
+                AutomaticRecoveryEnabled = true
             };
             await policy.ExecuteAsync(() => PublicaMensagem(publicaFilaDto, body, factory));
         }
-
-        private async Task PublicaMensagem(PublicaFilaDto publicaFilaDto, byte[] body, ConnectionFactory factory)
+        private  static Task PublicaMensagem(PublicaFilaDto publicaFilaDto, byte[] body, ConnectionFactory factory)
         {
-            var exchange = publicaFilaDto.Exchange ?? ExchangeRabbit.WorkerRelatorios;
-            factory.AutomaticRecoveryEnabled = true;
-            using (var conexaoRabbit = factory.CreateConnection())
+            try
             {
-                using (IModel _channel = conexaoRabbit.CreateModel())
+                var exchange = publicaFilaDto.Exchange ?? ExchangeRabbit.WorkerRelatorios;
+
+                using (var conexaoRabbit = factory.CreateConnection())
+                using (var channel = conexaoRabbit.CreateModel())
                 {
-                    _channel.BasicPublish(exchange, publicaFilaDto.Rota,  null, body);
+                    var props = channel.CreateBasicProperties();
+
+                    channel.BasicPublish(exchange, publicaFilaDto.Rota, false, props, body);
                 }
+
+                return Task.CompletedTask;
+            }
+            catch (Exception)
+            {
+                return Task.Delay(5000);
             }
         }
     }
