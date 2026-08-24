@@ -18,13 +18,20 @@ namespace SME.SR.Application
 
         public async Task Executar(FiltroRelatorioDto request)
         {
-            var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
-            var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
-            
-            if (relatorios == null || !relatorios.Any())
-                throw new NegocioException("Não há dados para o relatório analítico da sondagem.");
+            try
+            {
+                var filtro = request.ObterObjetoFiltro<FiltroRelatorioAnaliticoSondagemDto>();
+                var relatorios = await mediator.Send(new ObterRelatorioAnaliticoSondagemQuery(filtro));
 
-            await mediator.Send(new GerarRelatorioAnaliticoDaSondagemExcelCommand(relatorios, filtro.TipoSondagem, request.CodigoCorrelacao));
+                if (relatorios == null || !relatorios.Any())
+                    throw new NegocioException("Não há dados para o relatório analítico da sondagem.");
+
+                await mediator.Send(new GerarRelatorioAnaliticoDaSondagemExcelCommand(relatorios, filtro.TipoSondagem, request.CodigoCorrelacao));
+            }
+            catch (Exception ex)
+            {
+                await mediator.Send(new SalvarLogViaRabbitCommand($"Erro ao gerar o relatorio no no use case RelatorioAnaliticoSondagemUseCase,{request.Mensagem} ,{ex.InnerException?.ToString()},{ex.StackTrace?.ToString()}", LogNivel.Critico, ex.Message));
+            }
         }
     }
 }
