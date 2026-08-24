@@ -593,51 +593,145 @@ namespace SME.SR.Data
         public async Task<IEnumerable<FrequenciaAlunoMensalConsolidadoDto>> ObterFrequenciaAlunoMensal(bool exibirHistorico, int anoLetivo, string codigoDre,
             string codigoUe, Modalidade modalidade, int semestre, string[] codigosTurmas, int[] mesesReferencias, int percentualAbaixoDe)
         {
-            var query = @"select distinct d.dre_id AS DreCodigo, d.abreviacao as DreSigla,
-                                u.nome as UeNome,
-                                u.ue_id AS UeCodigo,
-                                te.descricao as DescricaoTipoEscola,
-                                cfam.mes,
-                                t.modalidade_codigo as ModalidadeCodigo,
-                                t.turma_id AS TurmaCodigo,
-                                t.nome as TurmaNome,
-                                cfam.aluno_codigo as CodigoEol,
-                                cfam.percentual,
-                                cfam.quantidade_ausencias as QuantidadeAusencias,
-                                cfam.quantidade_aulas as QuantidadeAulas,
-                                cfam.quantidade_compensacoes as QuantidadeCompensacoes
-                            from consolidacao_frequencia_aluno_mensal cfam
-                                inner join turma t on t.id = cfam.turma_id
-                                inner join ue u on u.id = t.ue_id
-                                inner join tipo_escola te on te.cod_tipo_escola_eol = u.tipo_escola
-                                inner join dre d on d.id = u.dre_id
-                            where t.ano_letivo = @anoLetivo
-                            and t.modalidade_codigo = @modalidade";
+            var query = new StringBuilder(@"with consolidacoes_filtradas as (
+                                select cfam.id,
+                                       cfam.turma_id,
+                                       cfam.aluno_codigo,
+                                       cfam.mes,
+                                       cfam.percentual,
+                                       cfam.quantidade_ausencias,
+                                       cfam.quantidade_aulas,
+                                       cfam.quantidade_compensacoes,
+                                       d.dre_id as dre_codigo,
+                                       d.abreviacao as dre_sigla,
+                                       u.nome as ue_nome,
+                                       u.ue_id as ue_codigo,
+                                       te.descricao as descricao_tipo_escola,
+                                       t.modalidade_codigo,
+                                       t.turma_id as turma_codigo,
+                                       t.nome as turma_nome
+                                  from consolidacao_frequencia_aluno_mensal cfam
+                                  inner join turma t on t.id = cfam.turma_id
+                                  inner join ue u on u.id = t.ue_id
+                                  inner join tipo_escola te on te.cod_tipo_escola_eol = u.tipo_escola
+                                  inner join dre d on d.id = u.dre_id
+                                 where t.ano_letivo = @anoLetivo
+                                   and t.modalidade_codigo = @modalidade");
 
             if (codigoDre != "-99")
-                query += " and d.dre_id = @codigoDre";
+                query.AppendLine(" and d.dre_id = @codigoDre");
             else
-                query += " and t.tipo_turma = @tipoTurma";
+                query.AppendLine(" and t.tipo_turma = @tipoTurma");
 
             if (codigoUe != "-99")
-                query += " and u.ue_id = @codigoUe";
+                query.AppendLine(" and u.ue_id = @codigoUe");
 
             if (!exibirHistorico)
-                query += " and not t.historica ";
+                query.AppendLine(" and not t.historica");
 
             if (semestre > 0)
-                query += " and t.semestre = @semestre ";
+                query.AppendLine(" and t.semestre = @semestre");
 
             if (codigosTurmas.Length > 0 && !codigosTurmas.Contains("-99"))
-                query += " and t.turma_id = any(@codigosTurmas) ";
+                query.AppendLine(" and t.turma_id = any(@codigosTurmas)");
 
             if (mesesReferencias.Length > 0 && !mesesReferencias.Contains(-99))
-                query += " and cfam.mes = any(@mesesReferencias) ";
+                query.AppendLine(" and cfam.mes = any(@mesesReferencias)");
             else
-                query += " and cfam.mes > 1";
+                query.AppendLine(" and cfam.mes > 1");
+
+            query.AppendLine(@"),
+                              chaves_divergentes as (
+                                select turma_id, aluno_codigo, mes
+                                  from consolidacoes_filtradas
+                                 group by turma_id, aluno_codigo, mes
+                                having count(*) > 1
+                                   and count(distinct (percentual, quantidade_ausencias, quantidade_aulas, quantidade_compensacoes)) > 1
+                              ),
+                              frequencias_origem as (
+                                select cd.turma_id,
+                                       cd.aluno_codigo,
+                                       cd.mes,
+                                       count(distinct(rfa.aula_id * rfa.numero_aula)) as quantidade_aulas,
+                                       count(distinct(rfa.aula_id * rfa.numero_aula)) filter (where rfa.valor = 2) as quantidade_ausencias,
+                                       count(caaa.id) as quantidade_compensacoes
+                                  from chaves_divergentes cd
+                                  inner join turma t on t.id = cd.turma_id
+                                  inner join aula a on a.turma_id = t.turma_id
+                                                   and extract(month from a.data_aula) = cd.mes
+                                                   and not a.excluido
+                                  inner join registro_frequencia_aluno rfa on rfa.aula_id = a.id
+                                                                         and rfa.codigo_aluno = cd.aluno_codigo
+                                                                         and rfa.numero_aula <= a.quantidade
+                                                                         and not rfa.excluido
+                                  left join compensacao_ausencia_aluno_aula caaa on caaa.registro_frequencia_aluno_id = rfa.id
+                                                                                 and not caaa.excluido
+                                 group by cd.turma_id, cd.aluno_codigo, cd.mes
+                              ),
+                              representantes as (
+                                select distinct on (turma_id, aluno_codigo, mes)
+                                       id,
+                                       turma_id,
+                                       aluno_codigo,
+                                       mes,
+                                       percentual,
+                                       quantidade_ausencias,
+                                       quantidade_aulas,
+                                       quantidade_compensacoes,
+                                       dre_codigo,
+                                       dre_sigla,
+                                       ue_nome,
+                                       ue_codigo,
+                                       descricao_tipo_escola,
+                                       modalidade_codigo,
+                                       turma_codigo,
+                                       turma_nome
+                                  from consolidacoes_filtradas
+                                 order by turma_id, aluno_codigo, mes, id
+                              ),
+                              resultado as (
+                                select r.dre_codigo as DreCodigo,
+                                       r.dre_sigla as DreSigla,
+                                       r.ue_nome as UeNome,
+                                       r.ue_codigo as UeCodigo,
+                                       r.descricao_tipo_escola as DescricaoTipoEscola,
+                                       r.mes,
+                                       r.modalidade_codigo as ModalidadeCodigo,
+                                       r.turma_codigo as TurmaCodigo,
+                                       r.turma_nome as TurmaNome,
+                                       r.aluno_codigo as CodigoEol,
+                                       case
+                                           when fo.turma_id is null then r.percentual
+                                           when fo.quantidade_aulas = 0 then 0
+                                           else round(least(100::numeric,
+                                                100 - (((fo.quantidade_ausencias - fo.quantidade_compensacoes)::numeric / fo.quantidade_aulas) * 100)), 2)
+                                       end as Percentual,
+                                       coalesce(fo.quantidade_ausencias, r.quantidade_ausencias) as QuantidadeAusencias,
+                                       coalesce(fo.quantidade_aulas, r.quantidade_aulas) as QuantidadeAulas,
+                                       coalesce(fo.quantidade_compensacoes, r.quantidade_compensacoes) as QuantidadeCompensacoes
+                                  from representantes r
+                                  left join frequencias_origem fo on fo.turma_id = r.turma_id
+                                                                 and fo.aluno_codigo = r.aluno_codigo
+                                                                 and fo.mes = r.mes
+                              )
+                              select DreCodigo,
+                                     DreSigla,
+                                     UeNome,
+                                     UeCodigo,
+                                     DescricaoTipoEscola,
+                                     mes as Mes,
+                                     ModalidadeCodigo,
+                                     TurmaCodigo,
+                                     TurmaNome,
+                                     CodigoEol,
+                                     Percentual,
+                                     QuantidadeAusencias,
+                                     QuantidadeAulas,
+                                     QuantidadeCompensacoes
+                                from resultado");
 
             if (percentualAbaixoDe > 0)
-                query += " and cfam.percentual < @percentualAbaixoDe";
+                query.AppendLine(" where Percentual < @percentualAbaixoDe");
 
             var parametros = new
             {
@@ -654,7 +748,7 @@ namespace SME.SR.Data
             };
 
             using var conexao = new NpgsqlConnection(variaveisAmbiente.ConnectionStringSgpConsultas);
-            return await conexao.QueryAsync<FrequenciaAlunoMensalConsolidadoDto>(query, parametros);
+            return await conexao.QueryAsync<FrequenciaAlunoMensalConsolidadoDto>(query.ToString(), parametros);
         }
 
         public async Task<IEnumerable<RelatorioFrequenciaIndividualDiariaAlunoDto>> ObterFrequenciaAlunosDiario(

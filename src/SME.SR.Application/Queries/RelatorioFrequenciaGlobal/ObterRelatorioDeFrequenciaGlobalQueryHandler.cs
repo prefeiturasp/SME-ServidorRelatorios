@@ -34,7 +34,13 @@ namespace SME.SR.Application
                 request.Filtro.MesesReferencias.Select(c => Convert.ToInt32(c)).ToArray(), request.Filtro.ApenasAlunosPercentualAbaixoDe);
             if (retornoQuery == null || !retornoQuery.Any())
                 return Enumerable.Empty<FrequenciaGlobalDto>().ToList();
-            return await MapearRetornoQuery(request.Filtro, retornoQuery);
+
+            var retornoNormalizado = retornoQuery
+                .GroupBy(frequencia => new { frequencia.UeCodigo, frequencia.TurmaCodigo, frequencia.CodigoEol, frequencia.Mes })
+                .Select(agrupamento => agrupamento.First())
+                .ToList();
+
+            return await MapearRetornoQuery(request.Filtro, retornoNormalizado);
         }
 
         private async Task<List<FrequenciaGlobalDto>> MapearRetornoQuery(FiltroFrequenciaGlobalDto filtro, IEnumerable<FrequenciaAlunoMensalConsolidadoDto> retornoQuery)
