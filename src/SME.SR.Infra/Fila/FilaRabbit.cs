@@ -44,7 +44,7 @@ namespace SME.SR.Infra
         private async Task PublicaMensagem(PublicaFilaDto publicaFilaDto, byte[] body, ConnectionFactory factory)
         {
             var exchange = publicaFilaDto.Exchange ?? ExchangeRabbit.WorkerRelatorios;
-
+            factory.AutomaticRecoveryEnabled = true;
             using (var conexaoRabbit = factory.CreateConnection())
             {
                 using (IModel _channel = conexaoRabbit.CreateModel())
