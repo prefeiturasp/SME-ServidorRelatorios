@@ -21,7 +21,7 @@ namespace SME.SR.Application
         }
 
         public async Task<IEnumerable<RelatorioSondagemAnaliticoPorDreDto>> Handle(ObterRelatorioAnaliticoSondagemQuery request, CancellationToken cancellationToken)
-        {
+         {
             var servico = ObterServico(request.Filtro.TipoSondagem);
 
             if (servico != null)
